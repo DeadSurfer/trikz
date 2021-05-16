@@ -43,5 +43,15 @@ void Block(int client)
 
 void Partner(int client)
 {
-	
+	Menu menu = new Menu(partner_handler)
+	menu.SetTitle("Choose partner")
+	char sName[MAX_NAME_LENGTH]
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsPlayerAlive(i) && !IsFakeClient(i))
+		{
+			GetClientName(i, sName, MAX_NAME_LENGTH)
+			menu.AddItem("player", sName)
+		}
+	}
 }
