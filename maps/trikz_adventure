@@ -1,0 +1,491 @@
+modify:
+{
+    match:
+    {
+		"targetname"    "1lvl"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-784.81 -556 824"
+    }
+	insert:
+	{
+		"OnPressed" "1lvl,Disable,,0,1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "97309"
+	}
+	insert:
+	{
+		"OnPressed" "linear03,Enable,,0,-1"
+		"OnPressed" "linear03,Disable,,30,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "114295"
+	}
+	replace:
+	{
+		"classname" "func_brush"
+		"origin" "183.995 397 56"
+	}
+	insert:
+	{
+		"StartDisabled" "1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "97476"
+	}
+	insert:
+	{
+		"OnPressed" "linear02,Enable,,0,-1"
+		"OnPressed" "linear02,Disable,,30,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "114205"
+	}
+	replace:
+	{
+		"classname" "func_brush"
+		"origin" "184.01 1336 56"
+	}
+	insert:
+	{
+		"StartDisabled" "1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "97687"
+	}
+	insert:
+	{
+		"OnPressed" "linear01,Enable,,0,-1"
+		"OnPressed" "linear01,Disable,,30,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "97606"
+	}
+	replace:
+	{
+		"classname" "func_brush"
+		"origin" "512 2280 56"
+	}
+	insert:
+	{
+		"StartDisabled" "1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "111804"
+	}
+	insert:
+	{
+		"OnPressed" "dr_01,Disable,,0,-1"
+		"OnPressed" "dr_01,Enable,,30,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"hammerid" "822246"
+	}
+	replace:
+	{
+		"classname" "func_brush"
+	}
+}
+
+filter:
+{
+	"hammerid" "1483051" ;song
+}
+
+filter:
+{
+	"hammerid" "1483054" ;song
+}
+
+filter:
+{
+	"hammerid" "1483057" ;song
+}
+
+filter:
+{
+	"hammerid" "1483060" ;song
+}
+
+filter:
+{
+	"hammerid" "1483063" ;song
+}
+
+filter:
+{
+	"hammerid" "1483066" ;song
+}
+
+filter:
+{
+	"hammerid" "1483069" ;song
+}
+
+filter:
+{
+	"hammerid" "1483072" ;song
+}
+
+filter:
+{
+	"hammerid" "1499540" ;song
+}
+
+filter:
+{
+	"hammerid" "1499766" ;song
+}
+
+filter:
+{
+	"hammerid" "1499778" ;song
+}
+
+filter:
+{
+	"hammerid" "1499805" ;song
+}
+
+filter:
+{
+	"hammerid" "1499823" ;song
+}
+
+filter:
+{
+	"OnMapSpawn" "suka_boat3,Open,,0,-1"
+	"OnMapSpawn" "suka_boat2,Open,,0,-1"
+	"OnMapSpawn" "suka_boat1,Open,,0,-1"
+	"OnMapSpawn" "openme_lvl03_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl04,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl05_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl08_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl09_01,Disable,,0,-1"
+	"OnMapSpawn" "ladder03,Disable,,0,-1"
+	"OnMapSpawn" "ladder04,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl10_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl11_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl12_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl13_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl14_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl1337_01,Disable,,0,-1"
+	"OnMapSpawn" "openme_lvl15_01,Disable,,0,-1"
+	"OnMapSpawn" "ladder033,Disable,,0,-1"
+	"OnMapSpawn" "ladder0333,Disable,,0,-1"
+}
+
+modify:
+{
+	match:
+	{
+		"targetname" "runboost_03"
+	}
+	replace:
+	{
+		"classname"	"func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "2718 2464.5 245.5"
+	}
+	insert:
+	{
+		"OnStartTouch" "runboost_03,Enable,,0,-1"
+		"OnEndTouch" "runboost_03,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"targetname" "linear04"
+	}
+	replace:
+	{
+		"classname"	"func_brush"
+		"origin"	"5974 -5566 -471"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "5697.5 -5654.5 -371"
+	}
+	insert:
+	{
+		"OnPressed" "linear04,Enable,,0,-1"
+		"OnPressed" "linear04,Disable,,60,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"targetname" "trikz2"
+	}
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "2846.47 -1774.99 251.75"
+	}
+	insert:
+	{
+		"OnPressed" "trikz2,Disable,,0,-1"
+		"OnPressed" "trikz2,Enable,,30,-1"
+	}
+}
+
+filter:
+{
+	"targetname"	"trikz_template2"
+}
+
+modify:
+{
+	match:
+	{
+		"targetname" "runboost02"
+	}
+	replace:
+	{
+		"classname"	"func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"targetname" "runboost02_trigger"
+	}
+	insert:
+	{
+		"OnStartTouch" "runboost02,Enable,,0,-1"
+		"OnEndTouch" "runboost02,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "-6415 -845 1172.4"
+	}
+	insert:
+	{
+		"OnPressed" "gamerasuxatx_prodoor1,Enable,,10,-1"
+		"OnPressed" "gamerasuxatx_prodoor1,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"targetname" "gamerasuxatx_prodoor1"
+	}
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "8987.51 2056.66 392"
+	}
+	insert:
+	{
+		"OnStartTouch" "lvl6tele,Enable,,0,-1"
+		"OnStartTouch" "lvl6tele,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "12872 2041 155.5"
+	}
+	insert:
+	{
+		"OnStartTouch" "lvl7tele,Enable,,0,-1"
+		"OnStartTouch" "lvl7tele,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "2164 -4975 434"
+	}
+	insert:
+	{
+		"OnStartTouch" "1tele,Disable,,0.1,-1"
+		"OnStartTouch" "1tele,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "426 -6931.22 660"
+	}
+	insert:
+	{
+		"OnStartTouch" "skyboost_02,Enable,,0,-1"
+		"OnStartTouch" "skyboost_02,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "-4481 -3393.5 936"
+	}
+	insert:
+	{
+		"OnStartTouch" "2x_sky_tele02,Disable,,0.1,-1"
+		"OnStartTouch" "2x_sky_tele02,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "-9549.5 -2664.5 766"
+	}
+	insert:
+	{
+		"OnStartTouch" "privetflash1_tele,Enable,,0,-1"
+		"OnStartTouch" "privetflash1_tele,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "-7220.5 -1822.5 1105"
+	}
+	insert:
+	{
+		"OnStartTouch" "privetflash2_tele,Disable,,0.1,-1"
+		"OnStartTouch" "privetflash2_tele,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+	match:
+	{
+		"origin" "-12473.4 735 2621.01"
+	}
+	insert:
+	{
+		"OnStartTouch" "lvloutdoortele,Enable,,0,-1"
+		"OnStartTouch" "lvloutdoortele,Disable,,0.1,-1"
+	}
+}
