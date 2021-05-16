@@ -10,4 +10,6 @@ Action cmd_trikz(int client, int args)
 
 void Trikz()
 {
+  Menu menu = new 
+  SetTitle("Trikz")
 }
