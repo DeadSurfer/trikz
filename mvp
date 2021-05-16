@@ -1,0 +1,54 @@
+#include <cstrike>
+
+#pragma newdecls required
+
+int gI_killCount[MAXPLAYERS + 1]
+ConVar gCV_MVPFirst = null
+ConVar gCV_MVPLimit = null
+ConVar gCV_MVPStep = null
+
+public Plugin myinfo =
+{
+	name = "MVP by kills",
+	author = "Smesh",
+	description = "Giving MVP star by kills",
+	version = "0.1",
+	url = "http://www.sourcemod.net/"
+}
+
+public void OnPluginStart()
+{
+	HookEvent("player_death", Event_PlayerDeath)
+	gCV_MVPFirst = CreateConVar("sm_mvpfirst", "6", "Give mvp star at first number (ex. at 6).")
+	gCV_MVPLimit = CreateConVar("sm_mvplimit", "9999", "Stop giving mvp stars (9999 engine limit CS:S OB).")
+	gCV_MVPStep = CreateConVar("sm_mvpstep", "6", "Give mvp star each step number (ex. 6, 12, 18).")
+	AutoExecConfig(true)
+}
+
+Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
+{
+	int victim = GetClientOfUserId(event.GetInt("userid"))
+	if(gI_killCount[victim] != 0)
+		gI_killCount[victim] = 0
+	
+	int attacker = GetClientOfUserId(event.GetInt("attacker"))
+	gI_killCount[attacker] = gI_killCount[attacker] + 1
+	
+	char sFirst[5]
+	GetConVarString(gCV_MVPFirst, sFirst, 5)
+	int iFirst = StringToInt(sFirst)
+	char sLimit[5]
+	GetConVarString(gCV_MVPLimit, sLimit, 5)
+	int iLimit = StringToInt(sLimit)
+	char sStep[5]
+	GetConVarString(gCV_MVPStep, sStep, 5)
+	int iStep = StringToInt(sStep)
+	for(int i = iFirst; i <= iLimit; i += iStep)
+	{
+		if(gI_killCount[attacker] == i)
+		{
+			CS_SetMVPCount(attacker, CS_GetMVPCount(attacker) + 1)
+			PrintToChat(attacker, "[SM] You received mvp star by %i kills.", gI_killCount[attacker])
+		}
+	}
+}
