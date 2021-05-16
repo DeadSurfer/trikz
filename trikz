@@ -1,0 +1,9 @@
+public OnPluginStart()
+{
+  RegConsoleCmd("sm_trikz", cmd_trikz)
+}
+
+Action cmd_trikz(int client, int args)
+{
+
+}
