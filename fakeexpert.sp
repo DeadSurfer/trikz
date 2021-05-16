@@ -55,3 +55,7 @@ void Partner(int client)
 		}
 	}
 }
+
+int partner_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+}
