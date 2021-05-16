@@ -1,0 +1,1843 @@
+modify:
+{
+    match:
+    {
+		"origin"    "-1290.67 -11126.9 196"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb1,Enable,,0,-1"
+		"OnEndTouch" "rb1,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rb1"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-1024 -10224 416"
+    }
+	insert:
+	{
+		"OnStartTouch" "!self,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,3,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-1024 -11856 576"
+    }
+	insert:
+	{
+		"OnStartTouch" "2_invertedx_wall,Enable,,3,-1"
+		"OnStartTouch" "2_invertedx_wall,Disable,,0,-1"
+		"OnStartTouch" "2_invertedx_wall_tp,Enable,,3,-1"
+		"OnStartTouch" "2_invertedx_wall_tp,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "2_invertedx_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-520 -6336 102"
+    }
+	insert:
+	{
+		"OnPressed" "door_1,Disable,,20,-1"
+		"OnPressed" "door_tp_1,Disable,,20,-1"
+		"OnPressed" "door_1,Enable,,0,-1"
+		"OnPressed" "door_tp_1,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_1"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-1024 288 2208"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp1,Enable,,0,-1"
+		"OnStartTouch" "tp1,Disable,,0.1,-1"
+		"OnStartTouch" "4_wall,Disable,,0,-1"
+		"OnStartTouch" "4_wall,Enable,,3,-1"
+		"OnStartTouch" "4_wall_tp,Enable,,3,-1"
+		"OnStartTouch" "4_wall_tp,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,3,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "4_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-384 9416 550"
+    }
+	insert:
+	{
+		"OnPressed" "door_2,Disable,,20,-1"
+		"OnPressed" "door_tp_2,Disable,,20,-1"
+		"OnPressed" "door_2,Enable,,0,-1"
+		"OnPressed" "door_tp_2,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3616 9920 960"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp2,Enable,,0,-1"
+		"OnStartTouch" "tp2,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "9280 9416 550"
+    }
+	insert:
+	{
+		"OnPressed" "door_3,Disable,,20,-1"
+		"OnPressed" "door_tp_3,Disable,,20,-1"
+		"OnPressed" "door_3,Enable,,0,-1"
+		"OnPressed" "door_tp_3,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_3"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "9536 10976 1696"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp3,Enable,,0,-1"
+		"OnStartTouch" "tp3,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "11904 15112 550"
+    }
+	insert:
+	{
+		"OnPressed" "door_4,Disable,,20,-1"
+		"OnPressed" "door_tp_4,Disable,,20,-1"
+		"OnPressed" "door_4,Enable,,0,-1"
+		"OnPressed" "door_tp_4,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_4"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "12160 13664 480"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp4,Enable,,0,-1"
+		"OnStartTouch" "tp4,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "12160 12576 992"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp5,Enable,,0,-1"
+		"OnStartTouch" "tp5,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "12160 9952 672"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp6,Enable,,0,-1"
+		"OnStartTouch" "tp6,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "12160 8096 992"
+    }
+	insert:
+	{
+		"OnStartTouch" "13_x2,Disable,,0,-1"
+		"OnStartTouch" "13_x2,Enable,,5,-1"
+		"OnStartTouch" "13_x2_tp,Enable,,5,-1"
+		"OnStartTouch" "13_x2_tp,Disable,,0,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,5,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "13_x2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "12160 928 768"
+    }
+	insert:
+	{
+		"OnStartTouch" "13_wall,Disable,,0,-1"
+		"OnStartTouch" "13_wall,Enable,,6,-1"
+		"OnStartTouch" "13_surfwall,Disable,,6,-1"
+		"OnStartTouch" "13_surfwall,Enable,,0,-1"
+		"OnStartTouch" "13_wall_tp,Enable,,6,-1"
+		"OnStartTouch" "13_wall_tp,Disable,,0,-1"
+		"OnStartTouch" "13_surfwall_ceil,Enable,,6,-1"
+		"OnStartTouch" "13_surfwall_ceil,Disable,,0,-1"
+		"OnStartTouch" "13_surfwall_tp,Disable,,6,-1"
+		"OnStartTouch" "13_surfwall_tp,Enable,,0,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,6,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "13_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "13_surfwall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled" "1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "13_surfwall_ceil"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "11656 1984 1254"
+    }
+	insert:
+	{
+		"OnPressed" "door_5,Disable,,20,-1"
+		"OnPressed" "door_tp_5,Disable,,20,-1"
+		"OnPressed" "door_5,Enable,,0,-1"
+		"OnPressed" "door_tp_5,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_5"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "12192 960 1790"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb2,Enable,,0,-1"
+		"OnEndTouch" "rb2,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rb2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled" "1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "10272 224 2016"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp7,Enable,,0,-1"
+		"OnStartTouch" "tp7,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "6528 224 1152"
+    }
+	insert:
+	{
+		"OnStartTouch" "16_wall_tp,Disable,,0,-1"
+		"OnStartTouch" "16_wall_tp,Enable,,3,-1"
+		"OnStartTouch" "16_wall,Enable,,3,-1"
+		"OnStartTouch" "16_wall,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,3,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "16_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "6048 224 1152"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp8,Enable,,0,-1"
+		"OnStartTouch" "tp8,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "2760 -3840 742"
+    }
+	insert:
+	{
+		"OnPressed" "door_6,Disable,,20,-1"
+		"OnPressed" "door_tp_6,Disable,,20,-1"
+		"OnPressed" "door_6,Enable,,0,-1"
+		"OnPressed" "door_tp_6,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_6"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3264 -4352 836"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb3,Enable,,0,-1"
+		"OnEndTouch" "rb3,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "16_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3264 -9248 -928"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp9,Enable,,0,-1"
+		"OnStartTouch" "tp9,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3360 -9952 682"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb4,Enable,,0,-1"
+		"OnEndTouch" "rb4,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rb4"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled" "1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3311 -9931 408"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb4_gate_tp,Disable,,0,-1"
+		"OnStartTouch" "rb4_gate_tp,Enable,,5,-1"
+		"OnStartTouch" "rb4_gate,Enable,,5,-1"
+		"OnStartTouch" "rb4_gate,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rb4_gate"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3604 -10260 408"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb4_gate2,Enable,,4,-1"
+		"OnStartTouch" "rb4_gate2_tp,Enable,,4,-1"
+		"OnStartTouch" "rb4_gate2,Disable,,0,-1"
+		"OnStartTouch" "rb4_gate2_tp,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rb4_gate2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3468 -10123.5 408"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb4_gate_tp_start,Disable,,7,-1"
+		"OnStartTouch" "rb4_gate_start,Disable,,7,-1"
+		"OnStartTouch" "20_wall_tp,Disable,,7,-1"
+		"OnStartTouch" "20_wall,Disable,,7,-1"
+		"OnStartTouch" "rb4_2,Disable,,7,-1"
+		"OnStartTouch" "rb4_2_wall,Enable,,7,-1"
+		"OnStartTouch" "rb4_2_wall_tp,Enable,,7,-1"
+		"OnStartTouch" "rb4_gate_tp_start,Enable,,0,-1"
+		"OnStartTouch" "rb4_gate_start,Enable,,0,-1"
+		"OnStartTouch" "20_wall_tp,Enable,,0,-1"
+		"OnStartTouch" "20_wall,Enable,,0,-1"
+		"OnStartTouch" "rb4_2,Enable,,0,-1"
+		"OnStartTouch" "rb4_2_wall,Disable,,0,-1"
+		"OnStartTouch" "rb4_2_wall_tp,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rb4_gate2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "3808 -10112 832"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp10,Enable,,0,-1"
+		"OnStartTouch" "tp10,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "4416 -12384 352"
+    }
+	insert:
+	{
+		"OnStartTouch" "push,Enable,,0,-1"
+		"OnStartTouch" "push,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "1664 -12320 512"
+    }
+	insert:
+	{
+		"OnStartTouch" "21_wall,Disable,,0,-1"
+		"OnStartTouch" "21_wall,Enable,,3,-1"
+		"OnStartTouch" "21_wall_tp,Enable,,3,-1"
+		"OnStartTouch" "21_wall_tp,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,3,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "21_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-2432 -15240 614"
+    }
+	insert:
+	{
+		"OnPressed" "door_7,Disable,,20,-1"
+		"OnPressed" "door_tp_7,Disable,,20,-1"
+		"OnPressed" "door_7,Enable,,0,-1"
+		"OnPressed" "door_tp_7,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_7"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "math_counter_23_birdge"
+    }
+	insert:
+	{
+		"OnHitMax" "23_bridge,Enable,,0,-1"
+		"OnHitMax" "23_bridge,Disable,,8,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "23_bridge"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-4864 -11936 1056"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp11,Enable,,0,-1"
+		"OnStartTouch" "tp11,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-4864 -10005.3 416"
+    }
+	insert:
+	{
+		"OnStartTouch" "wall_26_2,Disable,,0,-1"
+		"OnStartTouch" "wall_26_2,Enable,,4,-1"
+		"OnStartTouch" "wall_tp_26_2,Enable,,4,-1"
+		"OnStartTouch" "wall_tp_26_2,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "wall_26_2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-6304 -8352 1184"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp12,Disable,,0.1,-1"
+		"OnStartTouch" "tp12,Enable,,0,-1"
+		"OnStartTouch" "wall_26,Disable,,0,-1"
+		"OnStartTouch" "wall_26,Enable,,4,-1"
+		"OnStartTouch" "wall_tp_26,Enable,,4,-1"
+		"OnStartTouch" "wall_tp_26,Disable,,0,-1"
+		"OnStartTouch" "wall_ceiling_26,Enable,,4,-1"
+		"OnStartTouch" "wall_ceiling_26,Disable,,0,-1"
+		"OnStartTouch" "26_platform,Enable,,4,-1"
+		"OnStartTouch" "26_platform,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,4,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "wall_26"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "wall_ceiling_26"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "26_platform"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-2696 -2176 -282"
+    }
+	insert:
+	{
+		"OnPressed" "door_8,Disable,,20,-1"
+		"OnPressed" "door_tp_8,Disable,,20,-1"
+		"OnPressed" "door_8,Enable,,0,-1"
+		"OnPressed" "door_tp_8,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_8"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-4272 -2432 632"
+    }
+	insert:
+	{
+		"OnPressed" "28_2b_wall,Enable,,3,-1"
+		"OnPressed" "28_2b_wall,Disable,,0,-1"
+		"OnPressed" "28_2b_wall_tp,Enable,,3,-1"
+		"OnPressed" "28_2b_wall_tp,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "28_2b_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-4192 -2936 230"
+    }
+	insert:
+	{
+		"OnPressed" "28_2b_door,Enable,,20,-1"
+		"OnPressed" "28_2b_door_frame,Disable,,20,-1"
+		"OnPressed" "28_2b_door,Disable,,0,-1"
+		"OnPressed" "28_2b_door_frame,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "28_2b_door"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "28_2b_door_frame"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 -2936 -282"
+    }
+	insert:
+	{
+		"OnPressed" "door_9_2,Disable,,20,-1"
+		"OnPressed" "door_tp_9_2,Disable,,20,-1"
+		"OnPressed" "door_9_2,Enable,,0,-1"
+		"OnPressed" "door_tp_9_2,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_9_2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 -1888 -322"
+    }
+	insert:
+	{
+		"OnStartTouch" "28_3_2_noflash,Enable,,3,-1"
+		"OnStartTouch" "28_3_2_noflash,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,3,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-14130 -614 -30"
+    }
+	insert:
+	{
+		"OnStartTouch" "28_3_2_wall,Disable,,0,-1"
+		"OnStartTouch" "28_3_2_wall,Enable,,4,-1"
+		"OnStartTouch" "28_3_2_wall_as,Enable,,4,-1"
+		"OnStartTouch" "28_3_2_wall_as,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,4,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "28_3_2_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 -224 -32"
+    }
+	insert:
+	{
+		"OnStartTouch" "28_3_2_tp,Enable,,0,-1"
+		"OnStartTouch" "28_3_2_tp,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 736 290"
+    }
+	insert:
+	{
+		"OnStartTouch" "28_3_2_wall_2,Disable,,0,-1"
+		"OnStartTouch" "28_3_2_wall_2,Enable,,4,-1"
+		"OnStartTouch" "28_3_2_wall_2_tp,Enable,,4,-1"
+		"OnStartTouch" "28_3_2_wall_2_tp,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,4,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "28_3_2_wall_2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12624 2560 -484"
+    }
+	insert:
+	{
+		"OnStartTouch" "rbbhop,Enable,,0,-1"
+		"OnEndTouch" "rbbhop,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rbbhop"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12848 5128 -460"
+    }
+	insert:
+	{
+		"OnStartTouch" "rbbhop_2,Enable,,0,-1"
+		"OnEndTouch" "rbbhop_2,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rbbhop_2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12680 5856 576"
+    }
+	insert:
+	{
+		"OnStartTouch" "28_3_4_tp,Enable,,0,-1"
+		"OnStartTouch" "28_3_4_tp,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12168 8000 134"
+    }
+	insert:
+	{
+		"OnPressed" "door_9_3,Disable,,20,-1"
+		"OnPressed" "door_tp_9_3,Disable,,20,-1"
+		"OnPressed" "door_9_3,Enable,,0,-1"
+		"OnPressed" "door_tp_9_3,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_9_3"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 8448 0"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp13,Enable,,0,-1"
+		"OnStartTouch" "tp13,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 10368 484"
+    }
+	insert:
+	{
+		"OnStartTouch" "bh_block,Enable,,0,-1"
+		"OnStartTouch" "bh_block,Disable,,3,-1"
+		"OnStartTouch" "!self,Enable,,3,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "bh_block"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 10048 484"
+    }
+	insert:
+	{
+		"OnStartTouch" "bh_block_2,Enable,,0,-1"
+		"OnStartTouch" "bh_block_2,Disable,,3,-1"
+		"OnStartTouch" "!self,Enable,,2,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "bh_block_2"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 9696 484"
+    }
+	insert:
+	{
+		"OnStartTouch" "28_4_wall,Enable,,4,-1"
+		"OnStartTouch" "28_4_wall,Disable,,0,-1"
+		"OnStartTouch" "28_4_wall_tp,Enable,,4,-1"
+		"OnStartTouch" "28_4_wall_tp,Disable,,0,-1"
+		"OnStartTouch" "!self,Enable,,4,-1"
+		"OnStartTouch" "!self,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "28_4_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "29_mp"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp14,Enable,,0,-1"
+		"OnStartTouch" "tp14,Disable,,0.1,-1"
+		"OnStartTouch" "29_platform,Enable,,3,-1"
+		"OnStartTouch" "29_platform,Disable,,0,-1"
+		"OnStartTouch" "30_platform,Disable,,3,-1"
+		"OnStartTouch" "30_platform,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "29_platform"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "30_platform"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "30_mp"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp15,Disable,,0.1,-1"
+		"OnStartTouch" "tp15,Enable,,0,-1"
+		"OnStartTouch" "31_platform,Disable,,3,-1"
+		"OnStartTouch" "31_platform,Enable,,0,-1"
+		"OnStartTouch" "31_wall,Enable,,3,-1"
+		"OnStartTouch" "31_wall,Disable,,0,-1"
+		"OnStartTouch" "31_wall_tp,Enable,,3,-1"
+		"OnStartTouch" "31_wall_tp,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "31_wall"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "31_platform"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-12672 14496 224"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp16,Enable,,0,-1"
+		"OnStartTouch" "tp16,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "-3104 15552 -1888"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp16_2,Enable,,0,-1"
+		"OnStartTouch" "tp16_2,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "6200 15552 -1946"
+    }
+	insert:
+	{
+		"OnPressed" "door_9,Disable,,20,-1"
+		"OnPressed" "door_tp_9,Disable,,20,-1"
+		"OnPressed" "door_9,Enable,,0,-1"
+		"OnPressed" "door_tp_9,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_9"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "8736 15904 -2240"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp17,Enable,,0,-1"
+		"OnStartTouch" "tp17,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "10112 15048 -2138"
+    }
+	insert:
+	{
+		"OnPressed" "door_10,Disable,,20,-1"
+		"OnPressed" "door_tp_10,Disable,,20,-1"
+		"OnPressed" "door_10,Enable,,0,-1"
+		"OnPressed" "door_tp_10,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_10"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "13168 15552 -1824"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp18,Enable,,0,-1"
+		"OnStartTouch" "tp18,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "14736 15264 -674"
+    }
+	insert:
+	{
+		"OnStartTouch" "rb5,Enable,,0,-1"
+		"OnEndTouch" "rb5,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rb5"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "14688 15552 -768"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp19,Enable,,0,-1"
+		"OnStartTouch" "tp19,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15264 15008 -768"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp20,Enable,,0,-1"
+		"OnStartTouch" "tp20,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15264 14048 -1060"
+    }
+	insert:
+	{
+		"OnStartTouch" "rbbhop3,Enable,,0,-1"
+		"OnEndTouch" "rbbhop3,Disable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "rbbhop3"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15240 4768 -1178"
+    }
+	insert:
+	{
+		"OnPressed" "door_12,Disable,,20,-1"
+		"OnPressed" "door_tp_12,Disable,,20,-1"
+		"OnPressed" "door_12,Enable,,0,-1"
+		"OnPressed" "door_tp_12,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_12"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15744 4688 32"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp21,Enable,,0,-1"
+		"OnStartTouch" "tp21,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15744 3936 864"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp22,Enable,,0,-1"
+		"OnStartTouch" "tp22,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15744 2112 1920"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp23,Enable,,0,-1"
+		"OnStartTouch" "tp23,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15744 -352 -768"
+    }
+	insert:
+	{
+		"OnStartTouch" "tp24,Enable,,0,-1"
+		"OnStartTouch" "tp24,Disable,,0.1,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"origin"    "15240 -8960 -922"
+    }
+	insert:
+	{
+		"OnPressed" "door_13,Disable,,20,-1"
+		"OnPressed" "door_tp_13,Disable,,20,-1"
+		"OnPressed" "door_13,Enable,,0,-1"
+		"OnPressed" "door_tp_13,Enable,,0,-1"
+	}
+}
+
+modify:
+{
+    match:
+    {
+		"targetname"    "door_13"
+    }
+	replace:
+	{
+		"classname" "func_brush"
+	}
+	insert:
+	{
+		"StartDisabled"	"1"
+		"solidbsp"	"1"
+	}
+}
