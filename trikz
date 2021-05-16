@@ -5,5 +5,9 @@ public OnPluginStart()
 
 Action cmd_trikz(int client, int args)
 {
+  Trikz()
+}
 
+void Trikz()
+{
 }
