@@ -232,8 +232,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKProjectile(int entity)
 {
-	PrintToServer("%i", entity)
-	if(0 < entity > 2048)
+	//PrintToServer("%i", entity)
+	if(0 < entity < 2048)
 	{
 		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 		GivePlayerItem(client, "weapon_flashbang")
