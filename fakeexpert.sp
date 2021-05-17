@@ -98,17 +98,20 @@ void Partner(int client)
 				menu.AddItem(sNameID, sName)
 			}
 		}
+		menu.Display(client, 20)
 	}
 	else
 	{
-		Menu menu = new Menu(closepartner_handler)
+		Menu menu = new Menu(cancelpartner_handler)
 		menu.SetTitle("Cancel partnership")
 		char sName[MAX_NAME_LENGTH]
 		GetClientName(gB_partner[client], sName, MAX_NAME_LENGTH)
-		menu.AddItem(gB_partner[client], "Yes")
+		char sPartner[32]
+		IntToString(gB_partner[client], sPartner, 32)
+		menu.AddItem(sPartner, "Yes")
 		menu.AddItem("", "No")
+		menu.Display(client, 20)
 	}
-	menu.Display(client, 20)
 }
 
 int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = partner
