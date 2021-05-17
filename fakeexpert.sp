@@ -71,25 +71,25 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 Action cmd_block(int client, int args)
 {
 	Block(client)
-	return Plugin_Handled
+	//return Plugin_Handled
 }
 
-Action Block(int client)
+void Block(int client)
 {
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
+	//if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 75)
 		gB_block[client] = false
 	}
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+	//if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 	{
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		SetEntityRenderMode(client, RENDER_NORMAL)
-		gB_block[client] = true
+		//SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+		//SetEntityRenderMode(client, RENDER_NORMAL)
+		//gB_block[client] = true
 	}
-	return Plugin_Handled
+	//return Plugin_Handled
 }
 
 Action cmd_partner(int client, int args)
