@@ -22,12 +22,15 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partn", cmd_partner)
 	RegConsoleCmd("sm_partne", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
+	for(int i; i <= MaxClients; i++)
+		OnClientPutInServer(client)
 }
 
 public void OnClientPutInServer(int client)
 {
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
+	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 }
 
 Action cmd_trikz(int client, int args)
@@ -222,7 +225,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 	StrContains(classname, "projectile")
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-		SDKHook(entity, SDKHook_SpawnPost, SDKPlayerSpawn)
 	}
 }
 
