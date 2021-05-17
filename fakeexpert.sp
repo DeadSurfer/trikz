@@ -1,3 +1,5 @@
+#include <sdktools>
+
 bool gB_block[MAXPLAYERS + 1]
 bool gB_partner[MAXPLAYERS + 1]
 
@@ -207,11 +209,11 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(buttons == IN_JUMP)
 	{
 		PrintToServer("jump")
-		buttons |= IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
+		buttons &= IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
 	}
 }
