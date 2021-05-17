@@ -236,13 +236,14 @@ Action SDKProjectile(int entity)
 	if(0 < entity < 2048)
 	{
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-		if(!IsFakeClient(client))
+		int index = EntRefToEntIndex(client)
+		if(!IsFakeClient(index))
 		{
-			GivePlayerItem(client, "weapon_flashbang")
+			GivePlayerItem(index, "weapon_flashbang")
 			//PrintToServer("projectile")
 			//int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
 			//SetEntProp(client, Prop_Data, "m_hActiveWeapon", weapon)
-			ClientCommand(client, "lastinv")
+			ClientCommand(index, "lastinv")
 		}
 	}
 }
