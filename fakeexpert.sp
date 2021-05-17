@@ -243,4 +243,11 @@ void SDKPlayerSpawn(int client)
 		SetEntProp(client, Prop_Data, "m_iAmmo", i, 2)
 	//PrintToServer("%N", client)
 	//GivePlayerAmmo(client, 2, 48, true)
+	RequestFrame(client, frame)
+}
+
+void frame(int client)
+{
+	//for(int i = 0; i <= 128; i++)
+	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2)
 }
