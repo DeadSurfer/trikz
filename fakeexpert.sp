@@ -226,7 +226,8 @@ Action cmd_vec(int client, int args)
 	vec[0] = 256.0
 	vec[1] = 256.0
 	vec[2] = 256.0
-	GetClientAbsOrigin(client, vec)
+	//GetClientAbsOrigin(client, vec)
+	GetEntProp(client, Prop_Data, "m_vecOrigin", vec)
 	vec[2] = vec[2] + 256.0
 	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchSpawn(trigger)
