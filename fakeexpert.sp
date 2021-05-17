@@ -221,6 +221,13 @@ Action cmd_vec(int client, int args)
 	GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+	int trigger = CreateEntityByName("trigger_multiple")
+	float vec[3]
+	vec[0] = 256.0
+	vec[1] = 256.0
+	vec[2] = 256.0
+	DispatchKeyValueVector(trigger, "zone1", vec)
+	DispatchSpawn(trigger)
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -241,7 +248,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKProjectile(int entity)
 {
-	//PrintToServer("%i", entity)
+	PrintToServer("%i", entity)
 	if(0 < entity <= 2048)
 	{
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
@@ -263,7 +270,7 @@ void SDKPlayerSpawn(int client)
 	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	for(int i = 0; i <= 128; i++)
 		SetEntProp(client, Prop_Data, "m_iAmmo", i, 2)
-	//PrintToServer("%N", client)
+	PrintToServer("%N", client)
 	GivePlayerAmmo(client, 2, 48, true)
 	RequestFrame(frame, client)
 }
