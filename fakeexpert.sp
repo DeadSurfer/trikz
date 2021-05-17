@@ -226,7 +226,7 @@ Action cmd_vec(int client, int args)
 	vec[0] = 256.0
 	vec[1] = 256.0
 	vec[2] = 256.0
-	DispatchKeyValueVector(trigger, "zone1", vec)
+	DispatchKeyValueVector(trigger, "zone1", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098
 	DispatchSpawn(trigger)
 }
 
