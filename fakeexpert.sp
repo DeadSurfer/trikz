@@ -222,10 +222,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 	StrContains(classname, "projectile")
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
+		SDKHook(entity, SDKHook_SpawnPost, SDKPlayerSpawn)
 	}
 }
 
 Action SDKProjectile(int entity)
 {
 	PrintToServer("projectile")
+}
+
+void SDKPlayerSpawn(int entity)
+{
+	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2)
+	//SetEntData(client, FindDataMapInfo(entity, "m_iAmmo"), 12 * 4, 2)
 }
