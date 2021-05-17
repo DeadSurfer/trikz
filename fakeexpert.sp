@@ -238,7 +238,7 @@ Action SDKProjectile(int entity)
 void SDKPlayerSpawn(int client)
 {
 	GivePlayerItem(client, "weapon_flashbang")
-	SetEntProp(client, Prop_Send, "m_iAmmo", 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527
+	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//PrintToServer("%N", client)
 	//GivePlayerAmmo(client, 2, 48, true)
 }
