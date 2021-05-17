@@ -255,7 +255,8 @@ void frame(int client)
 
 void frame2(int client)
 {
-	//for(int i = 0; i <= 128; i++)
-	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2)
-	//SetEntData(client, FindDataMapInfo(client, "m_iAmmo"), 12 * 4, 2)
+	for(int i = 0; i <= 128; i++)
+		SetEntProp(client, Prop_Data, "m_iAmmo", i, 2)
+	for(int i = 0; i <= 128; i++)
+		SetEntData(client, FindDataMapInfo(client, "m_iAmmo"), i, 2)
 }
