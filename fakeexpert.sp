@@ -222,12 +222,16 @@ Action cmd_vec(int client, int args)
 	GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 	int trigger = CreateEntityByName("trigger_multiple")
-	float vec[3]
+	//float vec2[3]
 	vec[0] = 256.0
 	vec[1] = 256.0
 	vec[2] = 256.0
-	DispatchKeyValueVector(trigger, "zone1", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098
+	GetClientAbsOrigin(client, vec)
+	vec[2] = vec[2] + 256.0
+	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchSpawn(trigger)
+	//float vec3[3]
+	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
