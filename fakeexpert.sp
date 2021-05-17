@@ -211,7 +211,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if((buttons == IN_JUMP) && (GetEntityFlags(client) == FL_ONGROUND)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags
+	if((buttons == IN_JUMP) && (GetEntityFlags(client) != FL_ONGROUND)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags
 	{
 		PrintToServer("jump")
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
