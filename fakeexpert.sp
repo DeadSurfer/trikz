@@ -30,7 +30,7 @@ public void OnClientPutInServer(int client)
 {
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
-	if(!IsFakeClient(client))
+	if(IsClientInGame(client) && !IsFakeClient(client))
 		SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 }
 
