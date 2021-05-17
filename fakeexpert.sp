@@ -38,14 +38,25 @@ void Trikz(int client)
 	Menu menu = new Menu(trikz_handler)
 	menu.SetTitle("Trikz")
 	menu.AddItem("block", "Block")
-	menu.AddItem("partner", "Partner")
+	char sDisplay[32]
+	Format(sDisplay, 32, gB_partner[client] ? "Cancel partnership" : "Select partner")
+	menu.AddItem("partner", sDisplay)
 	menu.AddItem("restart", "Restart")
 	menu.Display(client, 20)
 }
 
 int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 {
-	
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char sItem[32]
+			menu.GetItem(param1, sItem, 32)
+			//if(gB_partner[param1] == 0)
+			Partner(param1)
+		}
+	}
 }
 
 Action cmd_block(int client, int args)
@@ -72,18 +83,30 @@ Action cmd_partner(int client, int args)
 
 void Partner(int client)
 {
-	Menu menu = new Menu(partner_handler)
-	menu.SetTitle("Choose partner")
-	char sName[MAX_NAME_LENGTH]
-	for(int i = 1; i <= MaxClients; i++)
+	if(gB_partner[client] == 0)
 	{
-		if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i))
+		Menu menu = new Menu(partner_handler)
+		menu.SetTitle("Choose partner")
+		char sName[MAX_NAME_LENGTH]
+		for(int i = 1; i <= MaxClients; i++)
 		{
-			GetClientName(i, sName, MAX_NAME_LENGTH)
-			char sNameID[32]
-			IntToString(i, sNameID, 32)
-			menu.AddItem(sNameID, sName)
+			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i))
+			{
+				GetClientName(i, sName, MAX_NAME_LENGTH)
+				char sNameID[32]
+				IntToString(i, sNameID, 32)
+				menu.AddItem(sNameID, sName)
+			}
 		}
+	}
+	else
+	{
+		Menu menu = new Menu(closepartner_handler)
+		menu.SetTitle("Cancel partnership")
+		char sName[MAX_NAME_LENGTH]
+		GetClientName(gB_partner[client], sName, MAX_NAME_LENGTH)
+		menu.AddItem(gB_partner[client], "Yes")
+		menu.AddItem("", "No")
 	}
 	menu.Display(client, 20)
 }
@@ -133,6 +156,31 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				case 1:
 				{
 					PrintToChat(param1, "Partnersheep declined with %N.", partner)
+				}
+			}
+		}
+	}
+}
+
+int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char sItem[32]
+			menu.GetItem(param2, sItem, 32)
+			int partner = StringToInt(sItem)
+			switch(param2)
+			{
+				case 0:
+				{
+					gB_partner[param1] = 0
+					gB_partner[partner] = 0
+					PrintToChat(param1, "Partnership is canceled with %N", partner)
+				}
+				case 1:
+				{
 				}
 			}
 		}
