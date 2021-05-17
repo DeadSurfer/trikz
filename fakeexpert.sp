@@ -6,6 +6,7 @@ int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[3]
 float gF_vec2[3]
 int gI_beam
+int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 
 public void OnPluginStart()
@@ -37,7 +38,9 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
-	gI_beam = PrecacheModel("materials/sprites/tp_beam001")
+	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
+	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
+	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 }
 
 public void OnClientPutInServer(int client)
@@ -267,7 +270,7 @@ Action cmd_sum(int client, int args)
 	int trigger = CreateEntityByName("trigger_multiple")
 	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchSpawn(trigger)
-	TE_SetupBeamPoints(gF_vec1, gF_vec2, gI_beam, gI_beam, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612
+	TE_SetupBeamPoints(gF_vec1, gF_vec2, gI_beam, gI_halo, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612
 	TE_SendToAll(0.0)
 }
 
