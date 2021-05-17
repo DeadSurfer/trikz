@@ -79,9 +79,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Trikz(param1)
 				}
 				case 1:
-				{
 					Partner(param1)
-				}
 			}
 		}
 	}
@@ -139,7 +137,7 @@ void Partner(int client)
 	else
 	{
 		Menu menu = new Menu(cancelpartner_handler)
-		menu.SetTitle("Cancel partnership")
+		menu.SetTitle("Cancel partnership with %N", gI_partner[client])
 		char sName[MAX_NAME_LENGTH]
 		GetClientName(gI_partner[client], sName, MAX_NAME_LENGTH)
 		char sPartner[32]
@@ -276,9 +274,7 @@ Action cmd_sum(int client, int args)
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags
-	{
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
-	}
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
