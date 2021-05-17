@@ -83,7 +83,7 @@ void Block(int client)
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		gB_block[client] = false
+		gB_block[client] = true
 	}
 }
 
