@@ -26,6 +26,7 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
+	RegConsoleCmd("sm_vec", cmd_vec)
 }
 
 public void OnClientPutInServer(int client)
@@ -212,6 +213,14 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+}
+
+Action cmd_vec(int client, int args)
+{
+	float vec[3]
+	GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
+	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
