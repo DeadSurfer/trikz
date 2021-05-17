@@ -30,7 +30,8 @@ public void OnClientPutInServer(int client)
 {
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
-	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
+	if(!IsFakeClient(client))
+		SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 }
 
 Action cmd_trikz(int client, int args)
