@@ -243,7 +243,7 @@ void SDKPlayerSpawn(int client)
 		SetEntProp(client, Prop_Data, "m_iAmmo", i, 2)
 	//PrintToServer("%N", client)
 	//GivePlayerAmmo(client, 2, 48, true)
-	RequestFrame(client, frame)
+	RequestFrame(frame, client)
 }
 
 void frame(int client)
