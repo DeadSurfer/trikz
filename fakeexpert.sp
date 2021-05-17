@@ -1,4 +1,4 @@
-//#include <sdktools>
+#include <sdkhooks>
 
 bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
@@ -215,4 +215,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	}
+}
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	StrContains(classname, "projectile")
+	{
+		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
+	}
+}
+
+Action SDKProjectile(int entity)
+{
+	PrintToServer("projectile")
 }
