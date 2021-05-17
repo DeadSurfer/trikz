@@ -38,7 +38,7 @@ void Trikz(int client)
 	Menu menu = new Menu(trikz_handler)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
-	FormatEx(sDisplay, 32, gB_block[client] ? "Block [On]" : "Block [Off]")
+	FormatEx(sDisplay, 32, gB_block[client] ? "Block [x]" : "Block [v]")
 	menu.AddItem("block", sDisplay)
 	FormatEx(sDisplay, 32, gB_partner[client] ? "Cancel partnership" : "Select partner")
 	menu.AddItem("partner", sDisplay)
@@ -52,8 +52,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			char sItem[32]
-			menu.GetItem(param2, sItem, 32)
 			switch(param2)
 			{
 				case 0:
@@ -80,10 +78,12 @@ void Block(int client)
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		gB_block[client] = false
 	}
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+		gB_block[client] = false
 	}
 }
 
