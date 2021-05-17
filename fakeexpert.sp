@@ -22,6 +22,12 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partner", cmd_partner)
 }
 
+void OnClientPutInServer(int client)
+{
+	gB_partner[client] = 0
+	gB_partner[gB_partner[client]] = 0
+}
+
 Action cmd_trikz(int client, int args)
 {
 	Trikz(client)
@@ -109,8 +115,26 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
 			int partner = StringToInt(sItem)
-			gB_partner[param1] = partner
-			gB_partner[partner] = param1
+			switch(param2)
+			{
+				case 0:
+				{
+					if(gB_partner[partner] == 0)
+					{
+						gB_partner[param1] = partner
+						gB_partner[partner] = param1
+						PrintToChat(param1, "Partnersheep agreed with %N.", partner)
+					}
+					else
+					{
+						PrintToChat(param1, "A player already have a partner.")
+					}
+				}
+				case 1:
+				{
+					PrintToChat(param1, "Partnersheep declined with %N.", partner)
+				}
+			}
 		}
 	}
 }
