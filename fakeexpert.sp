@@ -233,13 +233,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 Action SDKProjectile(int entity)
 {
 	//PrintToServer("%i", entity)
-	//if(0 < entity < 2048)
+	if(0 < entity < 2048)
 	{
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-		GivePlayerItem(client, "weapon_flashbang")
-		//PrintToServer("projectile")
-		int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
-		SetEntPropEnt(client, Prop_Data, "m_hActiveWeapon", weapon)
+		if(!IsFakeClient(client))
+		{
+			GivePlayerItem(client, "weapon_flashbang")
+			//PrintToServer("projectile")
+			//int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
+			//SetEntProp(client, Prop_Data, "m_hActiveWeapon", weapon)
+			ClientCommand(client, "lastinv")
+		}
 	}
 }
 
