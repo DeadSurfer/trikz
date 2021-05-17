@@ -38,7 +38,7 @@ void Trikz(int client)
 	Menu menu = new Menu(trikz_handler)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
-	Format(sDisplay, 32, gB_block[client] ? "Block [x]" : "Block [v]")
+	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gB_partner[client] ? "Cancel partnership" : "Select partner")
 	menu.AddItem("partner", sDisplay)
