@@ -82,7 +82,7 @@ void Partner(int client)
 	menu.Display(client, 20)
 }
 
-int partner_handler(Menu menu, MenuAction action, int param1, int param2)
+int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = partner
 {
 	switch(action)
 	{
@@ -90,18 +90,17 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
-			int item = StringToInt(sItem)
+			int partner = StringToInt(sItem)
 			Menu menu = new Menu(askpartner_handle)
 			menu.SetTitle("Agree partner with %N?", param1)
-			//PrintToServer("%s %i %i", sItem, param1, param2)
 			menu.AddItem(sItem, "Yes")
 			menu.AddItem(sItem, "No")
-			menu.Display(item, 20)
+			menu.Display(partner, 20)
 		}
 	}
 }
 
-int askpartner_handle(Menu menu, MenuAction action, int param1, int param2)
+int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = partner
 {
 	switch(action)
 	{
@@ -109,9 +108,9 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
-			int item = StringToInt(sItem)
-			gB_partner[param1] = item
-			gB_partner[item] = param1
+			int partner = StringToInt(sItem)
+			gB_partner[param1] = partner
+			gB_partner[partner] = param1
 		}
 	}
 }
