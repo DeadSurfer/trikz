@@ -3,6 +3,8 @@
 
 bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
+float gF_vec1[MAXPLAYERS + 1]
+float gF_vec2[MAXPLAYERS + 1]
 
 public void OnPluginStart()
 {
@@ -26,7 +28,9 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
-	RegConsoleCmd("sm_vec", cmd_vec)
+	RegConsoleCmd("sm_vec1", cmd_vec1)
+	RegConsoleCmd("sm_vec2", cmd_vec2)
+	RegConsoleCmd("sm_sum", cmd_sum)
 }
 
 public void OnClientPutInServer(int client)
@@ -215,24 +219,50 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-Action cmd_vec(int client, int args)
+Action cmd_vec1(int client, int args)
 {
 	float vec[3]
-	GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
+	//GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
+	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+	//float vec2[3]
+	//vec[0] = 256.0
+	//vec[1] = 256.0
+	//vec[2] = 256.0
+	GetClientAbsOrigin(client, vec)
+	//GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
+	vec[2] = vec[2] + 256.0
+
+	//float vec3[3]
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+}
+
+Action cmd_vec2(int client, int args)
+{
+	float vec[3]
+	//GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
+	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 	int trigger = CreateEntityByName("trigger_multiple")
 	//float vec2[3]
-	vec[0] = 256.0
-	vec[1] = 256.0
-	vec[2] = 256.0
-	//GetClientAbsOrigin(client, vec)
-	GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
+	//vec[0] = 256.0
+	//vec[1] = 256.0
+	//vec[2] = 256.0
+	GetClientAbsOrigin(client, vec)
+	//GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
 	vec[2] = vec[2] + 256.0
 	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchSpawn(trigger)
 	//float vec3[3]
-	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+}
+
+Action cmd_sum(int client, int args)
+{
+	float vec[3]
+	int trigger = CreateEntityByName("trigger_multiple")
+	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	DispatchSpawn(trigger)
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
