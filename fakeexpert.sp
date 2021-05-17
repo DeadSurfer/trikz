@@ -5,6 +5,7 @@ bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[3]
 float gF_vec2[3]
+int gI_beam
 
 public void OnPluginStart()
 {
@@ -31,6 +32,11 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vec1", cmd_vec1)
 	RegConsoleCmd("sm_vec2", cmd_vec2)
 	RegConsoleCmd("sm_sum", cmd_sum)
+}
+
+public void OnMapStart()
+{
+	gI_beam = PrecacheModel("materials/sprites/tp_beam001")
 }
 
 public void OnClientPutInServer(int client)
@@ -262,6 +268,8 @@ Action cmd_sum(int client, int args)
 	int trigger = CreateEntityByName("trigger_multiple")
 	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchSpawn(trigger)
+	TE_SetupBeamPoints(gF_vec1, gF_vec2, gI_beam, gI_beam, 1, 1, 1.0, 1.0, 1.0, 1, 1.0, {255, 255, 255, 255}, 1)
+	TE_SendToAll(0.0)
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
