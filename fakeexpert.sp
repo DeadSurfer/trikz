@@ -54,17 +54,15 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
-			//PrintToServer("%s", sItem)
-			//StrEqual(sItem, "block")
 			switch(param2)
 			{
 				case 0:
 				{
 					Block(param1)
+					Trikz(param1)
 				}
 				case 1:
 				{
-					//StrEqual(sItem, "partner")
 					Partner(param1)
 				}
 			}
