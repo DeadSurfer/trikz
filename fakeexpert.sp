@@ -248,6 +248,13 @@ void SDKPlayerSpawn(int client)
 
 void frame(int client)
 {
+	RequestFrame(frame2, client)
+	//for(int i = 0; i <= 128; i++)
+	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2)
+}
+
+void frame2(int client)
+{
 	//for(int i = 0; i <= 128; i++)
 	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2)
 }
