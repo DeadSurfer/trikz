@@ -232,9 +232,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKProjectile(int entity)
 {
-	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-	GivePlayerItem(client, "weapon_flashbang")
-	//PrintToServer("projectile")
+	PrintToServer("%i", entity)
+	if(0 < entity > 2048)
+	{
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
+		GivePlayerItem(client, "weapon_flashbang")
+		//PrintToServer("projectile")
+	}
 }
 
 void SDKPlayerSpawn(int client)
