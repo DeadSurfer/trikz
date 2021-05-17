@@ -75,7 +75,7 @@ Action cmd_block(int client, int args)
 
 void Block(int client)
 {
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
+	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 4)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
@@ -84,7 +84,7 @@ void Block(int client)
 	}
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 	{
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+		SetEntProp(client, Prop_Data, "m_CollisionGroup", 4)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		gB_block[client] = true
 	}
