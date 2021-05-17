@@ -22,16 +22,16 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partn", cmd_partner)
 	RegConsoleCmd("sm_partne", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
-	for(int i; i <= MaxClients; i++)
-		OnClientPutInServer(i)
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			OnClientPutInServer(i)
 }
 
 public void OnClientPutInServer(int client)
 {
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
-	if(IsClientInGame(client) && !IsFakeClient(client))
-		SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
+	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 }
 
 Action cmd_trikz(int client, int args)
