@@ -238,7 +238,7 @@ Action SDKProjectile(int entity)
 void SDKPlayerSpawn(int client)
 {
 	GivePlayerItem(client, "weapon_flashbang")
-	SetEntData(client, FindDataMapInfo(client, "m_iAmmo"), 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527
+	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527
 	
 	//GivePlayerAmmo(client, 2, 48, true)
 }
