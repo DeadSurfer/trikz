@@ -1,4 +1,4 @@
-bool gB_block[MAXPLAYERS + 1] = {true, ...}
+bool gB_block[MAXPLAYERS + 1]
 bool gB_partner[MAXPLAYERS + 1]
 
 public void OnPluginStart()
@@ -38,9 +38,9 @@ void Trikz(int client)
 	Menu menu = new Menu(trikz_handler)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
-	FormatEx(sDisplay, 32, gB_block[client] ? "Block [x]" : "Block [v]")
+	Format(sDisplay, 32, gB_block[client] ? "Block [x]" : "Block [v]")
 	menu.AddItem("block", sDisplay)
-	FormatEx(sDisplay, 32, gB_partner[client] ? "Cancel partnership" : "Select partner")
+	Format(sDisplay, 32, gB_partner[client] ? "Cancel partnership" : "Select partner")
 	menu.AddItem("partner", sDisplay)
 	menu.AddItem("restart", "Restart")
 	menu.Display(client, 20)
