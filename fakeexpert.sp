@@ -90,17 +90,28 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
-			//int item = StringToInt(sItem)
+			int item = StringToInt(sItem)
 			Menu menu = new Menu(askpartner_handle)
 			menu.SetTitle("Agree partner with %N?", param1)
-			PrintToServer("%s", sItem)
+			//PrintToServer("%s %i %i", sItem, param1, param2)
 			menu.AddItem(sItem, "Yes")
 			menu.AddItem(sItem, "No")
-			menu.Display(param2, 20)
+			menu.Display(item, 20)
 		}
 	}
 }
 
 int askpartner_handle(Menu menu, MenuAction action, int param1, int param2)
 {
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char sItem[32]
+			menu.GetItem(param2, sItem, 32)
+			int item = StringToInt(sItem)
+			gB_partner[param1] = item
+			gB_partner[item] = param1
+		}
+	}
 }
