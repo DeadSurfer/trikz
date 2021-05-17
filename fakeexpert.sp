@@ -282,7 +282,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	StrContains(classname, "projectile")
+	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 	}
@@ -290,44 +290,25 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKProjectile(int entity)
 {
-	PrintToServer("%i", entity)
-	if(0 < entity <= 2048)
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
+	
+	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 	{
-		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-		int index = EntRefToEntIndex(client)
-		if(!IsFakeClient(index))
-		{
-			GivePlayerItem(index, "weapon_flashbang")
-			//PrintToServer("projectile")
-			//int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
-			//SetEntProp(client, Prop_Data, "m_hActiveWeapon", weapon)
-			ClientCommand(index, "lastinv")
-		}
+		return
 	}
+	
+	GivePlayerItem(client, "weapon_flashbang")
+	//PrintToServer("projectile")
+	//int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
+	//SetEntProp(client, Prop_Data, "m_hActiveWeapon", weapon)
+	//PrintToServer("%i", entity)
+	ClientCommand(client, "lastinv")
+	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+	//PrintToChat(client, "yes")
 }
 
 void SDKPlayerSpawn(int client)
 {
 	GivePlayerItem(client, "weapon_flashbang")
-	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
-	for(int i = 0; i <= 128; i++)
-		SetEntProp(client, Prop_Data, "m_iAmmo", i, 2)
-	PrintToServer("%N", client)
-	GivePlayerAmmo(client, 2, 48, true)
-	RequestFrame(frame, client)
-}
-
-void frame(int client)
-{
-	RequestFrame(frame2, client)
-	for(int i = 0; i <= 128; i++)
-	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2)
-}
-
-void frame2(int client)
-{
-	for(int i = 0; i <= 4096; i++)
-		SetEntProp(client, Prop_Data, "m_iAmmo", i, 2)
-	for(int i = 0; i <= 4096; i++)
-		SetEntData(client, FindDataMapInfo(client, "m_iAmmo"), i, 2)
+	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 }
