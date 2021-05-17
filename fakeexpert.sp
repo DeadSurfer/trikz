@@ -74,7 +74,7 @@ Action cmd_block(int client, int args)
 	return Plugin_Handled
 }
 
-void Block(int client)
+Action Block(int client)
 {
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
 	{
@@ -89,6 +89,7 @@ void Block(int client)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		gB_block[client] = true
 	}
+	return Plugin_Handled
 }
 
 Action cmd_partner(int client, int args)
