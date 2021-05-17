@@ -233,6 +233,5 @@ Action SDKProjectile(int entity)
 
 void SDKPlayerSpawn(int entity)
 {
-	SetEntProp(client, Prop_Data, "m_iAmmo", 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?p=1286187
 	SetEntData(client, FindDataMapInfo(entity, "m_iAmmo"), 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527
 }
