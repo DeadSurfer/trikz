@@ -3,8 +3,8 @@
 
 bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
-float gF_vec1[MAXPLAYERS + 1]
-float gF_vec2[MAXPLAYERS + 1]
+float gF_vec1[3]
+float gF_vec2[3]
 
 public void OnPluginStart()
 {
@@ -221,7 +221,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_vec1(int client, int args)
 {
-	float vec[3]
+	//float vec[3]
 	//GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	//GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
 	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
@@ -229,17 +229,16 @@ Action cmd_vec1(int client, int args)
 	//vec[0] = 256.0
 	//vec[1] = 256.0
 	//vec[2] = 256.0
-	GetClientAbsOrigin(client, vec)
+	GetClientAbsOrigin(client, gF_vec1)
 	//GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
-	vec[2] = vec[2] + 256.0
-
+	gF_vec1[2] = gF_vec1[2] + 256.0
 	//float vec3[3]
-	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+	PrintToServer("%f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 }
 
 Action cmd_vec2(int client, int args)
 {
-	float vec[3]
+	//float vec[3]
 	//GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	//GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
 	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
@@ -248,13 +247,13 @@ Action cmd_vec2(int client, int args)
 	//vec[0] = 256.0
 	//vec[1] = 256.0
 	//vec[2] = 256.0
-	GetClientAbsOrigin(client, vec)
+	GetClientAbsOrigin(client, gF_vec2)
 	//GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
-	vec[2] = vec[2] + 256.0
-	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	gF_vec2[2] = gF_vec2[2] + 256.0
+	DispatchKeyValueVector(trigger, "origin", gF_vec2) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchSpawn(trigger)
 	//float vec3[3]
-	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+	PrintToServer("%f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 }
 
 Action cmd_sum(int client, int args)
