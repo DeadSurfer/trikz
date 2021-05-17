@@ -1,4 +1,4 @@
-bool gB_block[MAXPLAYERS + 1]
+bool gB_block[MAXPLAYERS + 1] = {true, ...}
 bool gB_partner[MAXPLAYERS + 1]
 
 public void OnPluginStart()
