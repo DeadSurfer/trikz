@@ -23,7 +23,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partne", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
 	for(int i; i <= MaxClients; i++)
-		OnClientPutInServer(client)
+		OnClientPutInServer(i)
 }
 
 public void OnClientPutInServer(int client)
@@ -233,7 +233,7 @@ Action SDKProjectile(int entity)
 	PrintToServer("projectile")
 }
 
-void SDKPlayerSpawn(int entity)
+void SDKPlayerSpawn(int client)
 {
-	SetEntData(client, FindDataMapInfo(entity, "m_iAmmo"), 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527
+	SetEntData(client, FindDataMapInfo(client, "m_iAmmo"), 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527
 }
