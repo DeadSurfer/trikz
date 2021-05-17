@@ -1,4 +1,4 @@
-#include <sdktools>
+//#include <sdktools>
 
 bool gB_block[MAXPLAYERS + 1]
 bool gB_partner[MAXPLAYERS + 1]
@@ -24,7 +24,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partner", cmd_partner)
 }
 
-void OnClientPutInServer(int client)
+public void OnClientPutInServer(int client)
 {
 	gB_partner[client] = 0
 	gB_partner[gB_partner[client]] = 0
@@ -214,6 +214,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(buttons == IN_JUMP)
 	{
 		PrintToServer("jump")
-		buttons &= IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
+		buttons = IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
 	}
 }
