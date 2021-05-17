@@ -131,7 +131,7 @@ void Partner(int client)
 	}
 }
 
-int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = partner
+int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
@@ -149,7 +149,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 	}
 }
 
-int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = partner
+int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
