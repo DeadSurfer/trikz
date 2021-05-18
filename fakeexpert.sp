@@ -246,14 +246,20 @@ Action cmd_create(int client, int args)
 
 Action cmd_vec1(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec1)
+	//GetClientAbsOrigin(client, gF_vec1)
+	gF_vec1[0] = -256.0
+	gF_vec1[1] = -256.0
+	gF_vec1[2] = -256.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", gF_vec1) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 }
 
 Action cmd_vec2(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec1)
+	//GetClientAbsOrigin(client, gF_vec1)
+	gF_vec2[0] = 256.0
+	gF_vec2[1] = 256.0
+	gF_vec2[2] = 256.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", gF_vec2)
 	PrintToServer("%f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 }
