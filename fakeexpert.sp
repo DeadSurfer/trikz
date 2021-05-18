@@ -221,9 +221,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 				}
-				case 1:
-				{
-				}
 			}
 		}
 	}
