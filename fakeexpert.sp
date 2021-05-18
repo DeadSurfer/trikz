@@ -311,4 +311,5 @@ void SDKPlayerSpawn(int client)
 {
 	GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+	//GivePlayerAmmo(client, 2, 48, true)
 }
