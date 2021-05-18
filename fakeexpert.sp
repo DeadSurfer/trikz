@@ -233,11 +233,13 @@ Action cmd_create(int client, int args)
 	float vec[3]
 	GetClientAbsOrigin(client, vec)
 	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
 	DispatchKeyValue(gI_trigger, "spawnflags", "1")
 	DispatchKeyValue(gI_trigger, "wait", "0")
 	//DispatchKeyValue(gI_trigger, "StartDisabled", "0")
 	//SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
-	ActivateEntity(gI_trigger)
+	//ActivateEntity(gI_trigger)
+	PrintToServer("entity: %i created", gI_trigger)
 }
 
 Action cmd_vecmins(int client, int args)
@@ -248,7 +250,7 @@ Action cmd_vecmins(int client, int args)
 	vec[0] = -256.0
 	vec[1] = -256.0
 	vec[2] = -256.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	SetEntPropVector(gI_trigger, Prop_Data, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
@@ -260,7 +262,7 @@ Action cmd_vecmaxs(int client, int args)
 	vec[0] = 256.0
 	vec[1] = 256.0
 	vec[2] = 256.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
+	SetEntPropVector(gI_trigger, Prop_Data, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
