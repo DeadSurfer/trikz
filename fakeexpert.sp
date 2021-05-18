@@ -32,8 +32,10 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
+	RegConsoleCmd("sm_create", cmd_create)
 	RegConsoleCmd("sm_vec1", cmd_vec1)
 	RegConsoleCmd("sm_vec2", cmd_vec2)
+	RegConsoleCmd("sm_starttouch", cmd_starttouch)
 	RegConsoleCmd("sm_sum", cmd_sum)
 	AddNormalSoundHook(SoundHook)
 }
@@ -225,11 +227,11 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_create(int client, int args)
 {
-	int gI_trigger = CreateEntityByName("trigger_multiple")
+	gI_trigger = CreateEntityByName("trigger_multiple")
 	float vec[3]
 	GetClientAbsOrigin(client, vec)
-	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	DispatchSpawn(trigger)
+	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	DispatchSpawn(gI_trigger)
 }
 
 Action cmd_vec1(int client, int args)
