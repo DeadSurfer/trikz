@@ -39,6 +39,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_starttouch", cmd_starttouch)
 	RegConsoleCmd("sm_sum", cmd_sum)
 	RegConsoleCmd("sm_getid", cmd_getid)
+	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	AddNormalSoundHook(SoundHook)
 }
 
@@ -249,7 +250,7 @@ Action cmd_create(int client, int args)
 	TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
 	//SetEntProp(gI_trigger, Prop_Data, "m_nSolidType", 2)
 	PrintToServer("entity: %i created", gI_trigger)
-	retrun Plugin_Handled
+	return Plugin_Handled
 }
 
 Action cmd_vecmins(int client, int args)
@@ -262,7 +263,7 @@ Action cmd_vecmins(int client, int args)
 	vec[2] = -128.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
-	retrun Plugin_Handled
+	return Plugin_Handled
 }
 
 Action cmd_vecmaxs(int client, int args)
@@ -276,7 +277,7 @@ Action cmd_vecmaxs(int client, int args)
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
 	//ActivateEntity(gI_trigger)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
-	retrun Plugin_Handled
+	return Plugin_Handled
 }
 
 Action cmd_starttouch(int client, int args)
@@ -286,7 +287,7 @@ Action cmd_starttouch(int client, int args)
 	{
 		PrintToServer("Trigger is valid.")
 	}
-	retrun Plugin_Handled
+	return Plugin_Handled
 }
 
 void SDKStartTouch(int entity, int other)
@@ -306,13 +307,7 @@ Action cmd_sum(int client, int args)
 	vec2[1] = vec2[1] += 256.0
 	TE_SetupBeamPoints(vec, vec2, gI_beam, gI_halo, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612 //Exception reported: Stack leak detected: sp:42876 should be 25228!
 	TE_SendToAll(0.0)
-	retrun Plugin_Handled
-}
-
-Action cmd_tp(int client, int args)
-{
-	TeleportEntity(client, gI_trigger, NULL_STRING, NULL_VECTOR)
-	retrun Plugin_Handled
+	return Plugin_Handled
 }
 
 Action cmd_getid(int client, int args)
@@ -332,6 +327,13 @@ Action cmd_getid(int client, int args)
 			PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 		}
 	}
+	return Plugin_Handled
+}
+
+Action cmd_tp(int client, int args)
+{
+	TeleportEntity(client, gI_trigger, NULL_STRING, NULL_VECTOR)
+	return Plugin_Handled
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
