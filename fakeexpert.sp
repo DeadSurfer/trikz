@@ -232,10 +232,11 @@ Action cmd_create(int client, int args)
 	gI_trigger = CreateEntityByName("trigger_multiple")
 	float vec[3]
 	GetClientAbsOrigin(client, vec)
-	//DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(gI_trigger, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(gI_trigger, "wait", "0")
-	TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
+	//ActivateEntity(gI_trigger)
+	//TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
 	PrintToServer("entity: %i created", gI_trigger)
 }
 
