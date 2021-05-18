@@ -294,22 +294,11 @@ Action SDKProjectile(int entity)
 		return
 	
 	GivePlayerItem(client, "weapon_flashbang")
-	//PrintToServer("projectile")
-	//int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
-	//SetEntProp(client, Prop_Data, "m_hActiveWeapon", weapon)
-	//PrintToServer("%i", entity)
-	//FakeClientCommand(client, "weapon_knife")
-	ClientCommand(client, "lastinv")
-	RequestFrame(frame, client)
-	//ClientCommand(client, "lastinv")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
-	//GivePlayerAmmo(client, 2, 48, true)
-	//PrintToChat(client, "yes")
-}
-
-void frame(int client)
-{
+	//FakeClientCommand(client, "use weapon_knife")
 	ClientCommand(client, "lastinv")
+	ClientCommand(client, "lastinv")
+	//GivePlayerAmmo(client, 2, 48, true)
 }
 
 void SDKPlayerSpawn(int client)
