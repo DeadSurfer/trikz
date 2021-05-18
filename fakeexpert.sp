@@ -37,6 +37,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
 	RegConsoleCmd("sm_starttouch", cmd_starttouch)
 	RegConsoleCmd("sm_sum", cmd_sum)
+	RegConsoleCmd("sm_getid", cmd_getid)
 	AddNormalSoundHook(SoundHook)
 }
 
