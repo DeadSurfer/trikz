@@ -267,7 +267,8 @@ Action cmd_vecmins(int client, int args)
 	vec[0] = -128.0
 	vec[1] = -128.0
 	vec[2] = -128.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition1", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 	return Plugin_Handled
 }
@@ -280,7 +281,8 @@ Action cmd_vecmaxs(int client, int args)
 	vec[0] = 128.0
 	vec[1] = 128.0
 	vec[2] = 128.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
+	//SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
+	SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition2", vec)
 	//ActivateEntity(gI_trigger)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 	return Plugin_Handled
