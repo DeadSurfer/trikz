@@ -317,10 +317,11 @@ void SDKPlayerSpawn(int client)
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav")
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 	{
 		volume = 0.0
 		return Plugin_Handled
 	}
+	return Plugin_Continue
 	//PrintToServer("%s", sample)
 }
