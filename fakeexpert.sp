@@ -250,12 +250,12 @@ Action cmd_vec2(int client, int args)
 
 Action cmd_starttouch(int client, int args)
 {
-	SDKHook(gI_trigger, SDKHook_StartTouch, SDKStartTouch)
+	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
 }
 
-Action SDKStartTouch(int entity, int other)
+void SDKStartTouch(int entity, int other)
 {
-	PrintToServer("Start touch.")
+	PrintToServer("Start touch post.")
 }
 
 Action cmd_sum(int client, int args)
