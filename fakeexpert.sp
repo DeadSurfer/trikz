@@ -3,8 +3,8 @@
 
 bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
-float gF_vec1[3]
-float gF_vec2[3]
+//float gF_vec1[3]
+//float gF_vec2[3]
 int gI_beam
 int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
@@ -233,31 +233,24 @@ Action cmd_create(int client, int args)
 	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(gI_trigger, "spawnflags", "1")
 	DispatchKeyValue(gI_trigger, "wait", "0")
-	//DispatchSpawn(gI_trigger)
-	if(DispatchSpawn(gI_trigger))
-		PrintToServer("yes")
-	else
-		PrintToServer("no")
-	if(ActivateEntity(gI_trigger))
-		PrintToServer("yes")
-	else
-		PrintToServer("no")
 }
 
-Action cmd_vec1(int client, int args)
+Action cmd_vecmins(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec1)
-	gF_vec1[2] = gF_vec1[2] -= 32.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", gF_vec1) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	PrintToServer("%f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	float vec[3]
+	GetClientAbsOrigin(client, vec)
+	vec[2] = vec[2] -= 64.0
+	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	PrintToServer("%f %f %f", vec[0], vec[1], gF_vec1vec2])
 }
 
-Action cmd_vec2(int client, int args)
+Action cmd_vecmaxs(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec2)
-	gF_vec2[2] = gF_vec2[2] += 32.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", gF_vec2)
-	PrintToServer("%f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	float vec[3]
+	GetClientAbsOrigin(client, gF_vec)
+	vec[2] = vec[2] += 64.0
+	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
+	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 Action cmd_starttouch(int client, int args)
