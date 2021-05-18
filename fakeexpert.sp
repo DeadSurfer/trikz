@@ -306,7 +306,7 @@ Action SDKProjectile(int entity)
 Action timer_delete(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
-		AcceptEntityInput(entity, "Kill")
+		RemoveEntity(entity)
 }
 
 void SDKPlayerSpawn(int client)
