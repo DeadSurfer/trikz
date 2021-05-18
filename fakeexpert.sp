@@ -233,14 +233,14 @@ Action cmd_create(int client, int args)
 	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(gI_trigger, "spawnflags", "1")
 	DispatchKeyValue(gI_trigger, "wait", "0")
-	DispatchKeyValue(gI_trigger, "StartDisabled", "0")
+	//DispatchKeyValue(gI_trigger, "StartDisabled", "0")
 }
 
 Action cmd_vecmins(int client, int args)
 {
 	float vec[3]
 	GetClientAbsOrigin(client, vec)
-	vec[2] = vec[2] += 64.0
+	vec[2] = vec[2] -= 64.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
@@ -249,7 +249,7 @@ Action cmd_vecmaxs(int client, int args)
 {
 	float vec[3]
 	GetClientAbsOrigin(client, vec)
-	vec[2] = vec[2] -= 64.0
+	vec[2] = vec[2] += 64.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
