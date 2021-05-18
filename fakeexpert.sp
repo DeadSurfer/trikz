@@ -332,7 +332,7 @@ Action cmd_getid(int client, int args)
 
 Action cmd_tp(int client, int args)
 {
-	TeleportEntity(client, gI_trigger, NULL_STRING, NULL_VECTOR)
+	TeleportEntity(client, gI_trigger, NULL_VECTOR, NULL_VECTOR)
 	return Plugin_Handled
 }
 
