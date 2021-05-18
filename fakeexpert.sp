@@ -233,6 +233,7 @@ Action cmd_create(int client, int args)
 	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(gI_trigger, "spawnflags", "1")
 	DispatchKeyValue(gI_trigger, "wait", "0")
+	DispatchKeyValue(gI_trigger, "StartDisabled", "0")
 }
 
 Action cmd_vecmins(int client, int args)
@@ -257,7 +258,10 @@ Action cmd_starttouch(int client, int args)
 {
 	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
 	if(IsValidEntity(gI_trigger))
+	{
 		PrintToServer("Trigger is valid.")
+		ActivateEntity(gI_trigger)
+	}
 }
 
 void SDKStartTouch(int entity, int other)
