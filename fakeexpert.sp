@@ -49,6 +49,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
+	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 }
 
 Action cmd_trikz(int client, int args)
@@ -319,6 +320,11 @@ void SDKPlayerSpawn(int client)
 	GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//GivePlayerAmmo(client, 2, 48, true)
+}
+
+Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
+{
+	return Plugin_Handled
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
