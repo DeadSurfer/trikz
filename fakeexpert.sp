@@ -8,6 +8,7 @@ float gF_vec2[3]
 int gI_beam
 int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
+int gI_trigger
 
 public void OnPluginStart()
 {
@@ -222,47 +223,38 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
+Action cmd_create(int client, int args)
+{
+	int gI_trigger = CreateEntityByName("trigger_multiple")
+	float vec[3]
+	GetClientAbsOrigin(client, vec)
+	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	DispatchSpawn(trigger)
+}
+
 Action cmd_vec1(int client, int args)
 {
-	//float vec[3]
-	//GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	//GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
-	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
-	//float vec2[3]
-	//vec[0] = 256.0
-	//vec[1] = 256.0
-	//vec[2] = 256.0
 	GetClientAbsOrigin(client, gF_vec1)
-	//GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
-	gF_vec1[2] = gF_vec1[2] + 256.0
-	//float vec3[3]
+	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", gF_vec1) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 }
 
 Action cmd_vec2(int client, int args)
 {
-	//float vec[3]
-	//GetEntPropVector(client, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	//GetEntPropVector(client, Prop_Send, "m_vecMaxs", vec)
-	//PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
-	int trigger = CreateEntityByName("trigger_multiple")
-	//float vec2[3]
-	//vec[0] = 256.0
-	//vec[1] = 256.0
-	//vec[2] = 256.0
-	GetClientAbsOrigin(client, gF_vec2)
-	//GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
-	gF_vec2[2] = gF_vec2[2] + 256.0
-	DispatchKeyValueVector(trigger, "origin", gF_vec2) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	DispatchSpawn(trigger)
-	//float vec3[3]
-	PrintToServer("%f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	GetClientAbsOrigin(client, gF_vec1)
+	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", gF_vec2)
+	PrintToServer("%f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+}
+
+Action cmd_origin(int client, int args)
+{
+
 }
 
 Action cmd_sum(int client, int args)
 {
 	float vec[3]
-	int trigger = CreateEntityByName("trigger_multiple")
+	
 	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchSpawn(trigger)
 	//TE_SetupBeamPoints(gF_vec1, gF_vec2, gI_beam, gI_halo, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612 //Exception reported: Stack leak detected: sp:42876 should be 25228!
