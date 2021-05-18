@@ -283,9 +283,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
-	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-	}
 }
 
 Action SDKProjectile(int entity)
@@ -293,18 +291,25 @@ Action SDKProjectile(int entity)
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 	
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
-	{
 		return
-	}
 	
 	GivePlayerItem(client, "weapon_flashbang")
 	//PrintToServer("projectile")
 	//int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
 	//SetEntProp(client, Prop_Data, "m_hActiveWeapon", weapon)
 	//PrintToServer("%i", entity)
+	//FakeClientCommand(client, "weapon_knife")
 	ClientCommand(client, "lastinv")
+	RequestFrame(frame, client)
+	//ClientCommand(client, "lastinv")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+	//GivePlayerAmmo(client, 2, 48, true)
 	//PrintToChat(client, "yes")
+}
+
+void frame(int client)
+{
+	ClientCommand(client, "lastinv")
 }
 
 void SDKPlayerSpawn(int client)
