@@ -246,17 +246,22 @@ Action cmd_vec2(int client, int args)
 	PrintToServer("%f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 }
 
-Action cmd_origin(int client, int args)
+Action cmd_starttouch(int client, int args)
 {
+	SDKHook(gI_trigger, SDKHook_StartTouch, SDKStartTouch)
+}
 
+Action SDKStartTouch(int entity, int other)
+{
+	PrintToServer("Start touch.")
 }
 
 Action cmd_sum(int client, int args)
 {
-	float vec[3]
+	//float vec[3]
 	
-	DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	DispatchSpawn(trigger)
+	//DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	//DispatchSpawn(trigger)
 	//TE_SetupBeamPoints(gF_vec1, gF_vec2, gI_beam, gI_halo, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612 //Exception reported: Stack leak detected: sp:42876 should be 25228!
 	//TE_SendToAll(0.0)
 }
