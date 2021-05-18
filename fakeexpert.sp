@@ -194,7 +194,6 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						PrintToChat(param1, "A player already have a partner.")
 				}
 				case 1:
-				{
 					PrintToChat(param1, "Partnersheep declined with %N.", partner)
 			}
 		}
