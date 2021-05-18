@@ -271,7 +271,7 @@ Action cmd_vecmaxs(int client, int args)
 	vec[1] = 128.0
 	vec[2] = 128.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
-	ActivateEntity(gI_trigger)
+	//ActivateEntity(gI_trigger)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
