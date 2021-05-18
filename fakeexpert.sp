@@ -256,9 +256,9 @@ Action cmd_vecmaxs(int client, int args)
 	float vec[3]
 	//GetClientAbsOrigin(client, vec)
 	//vec[2] = vec[2] -= 64.0
-	vec[0] = 0.0
-	vec[1] = 0.0
-	vec[2] = 0.0
+	vec[0] = 256.0
+	vec[1] = 256.0
+	vec[2] = 256.0
 	SetEntPropVector(gI_trigger, Prop_Data, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
