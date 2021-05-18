@@ -324,8 +324,8 @@ void SDKPlayerSpawn(int client)
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
-	SetEntProp(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
-	SetEntProp(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
 	return Plugin_Handled
 }
 
