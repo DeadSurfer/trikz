@@ -238,7 +238,10 @@ Action cmd_create(int client, int args)
 		PrintToServer("yes")
 	else
 		PrintToServer("no")
-	ActivateEntity(gI_trigger)
+	if(ActivateEntity(gI_trigger))
+		PrintToServer("yes")
+	else
+		PrintToServer("no")
 }
 
 Action cmd_vec1(int client, int args)
