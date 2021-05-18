@@ -236,17 +236,18 @@ Action cmd_create(int client, int args)
 	DispatchKeyValue(gI_trigger, "spawnflags", "1")
 	DispatchKeyValue(gI_trigger, "wait", "0")
 	//DispatchKeyValue(gI_trigger, "StartDisabled", "0")
-	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
+	//SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
+	ActivateEntity(gI_trigger)
 }
 
 Action cmd_vecmins(int client, int args)
 {
 	float vec[3]
-	GetClientAbsOrigin(client, vec)
-	vec[2] = vec[2] -= 64.0
-	//vec[0] = 256.0
-	//vec[1] = 256.0
-	//vec[2] = 256.0
+	//GetClientAbsOrigin(client, vec)
+	//vec[2] = vec[2] += 64.0
+	vec[0] = -256.0
+	vec[1] = -256.0
+	vec[2] = -256.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
@@ -254,22 +255,21 @@ Action cmd_vecmins(int client, int args)
 Action cmd_vecmaxs(int client, int args)
 {
 	float vec[3]
-	GetClientAbsOrigin(client, vec)
-	vec[2] = vec[2] += 64.0
-	//vec[0] = -256.0
-	//vec[1] = -256.0
-	//vec[2] = -256.0
+	//GetClientAbsOrigin(client, vec)
+	//vec[2] = vec[2] -= 64.0
+	vec[0] = 256.0
+	vec[1] = 256.0
+	vec[2] = 256.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 Action cmd_starttouch(int client, int args)
 {
-	//SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
+	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
 	if(IsValidEntity(gI_trigger))
 	{
 		PrintToServer("Trigger is valid.")
-		ActivateEntity(gI_trigger)
 	}
 }
 
