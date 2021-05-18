@@ -235,7 +235,7 @@ Action cmd_create(int client, int args)
 	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(gI_trigger, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(gI_trigger, "wait", "0")
-	
+	SetEntityModel(gI_trigger, "models/player/t_arctic.mdl")
 	GetEntPropVector(gI_trigger, Prop_Data, "m_vecOrigin", vec)
 	PrintToServer("| %f %f %f", vec[0], vec[1], vec[2])
 	int spawnflags = GetEntProp(gI_trigger, Prop_Data, "m_spawnflags")
@@ -253,9 +253,9 @@ Action cmd_vecmins(int client, int args)
 	float vec[3]
 	//GetClientAbsOrigin(client, vec)
 	//vec[2] = vec[2] += 64.0
-	vec[0] = -256.0
-	vec[1] = -256.0
-	vec[2] = -256.0
+	vec[0] = -128.0
+	vec[1] = -128.0
+	vec[2] = -128.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
@@ -265,16 +265,16 @@ Action cmd_vecmaxs(int client, int args)
 	float vec[3]
 	//GetClientAbsOrigin(client, vec)
 	//vec[2] = vec[2] -= 64.0
-	vec[0] = 256.0
-	vec[1] = 256.0
-	vec[2] = 256.0
+	vec[0] = 128.0
+	vec[1] = 128.0
+	vec[2] = 128.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 Action cmd_starttouch(int client, int args)
 {
-	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
+	SDKHook(gI_trigger, SDKHook_TouchPost, SDKStartTouch)
 	if(IsValidEntity(gI_trigger) && ActivateEntity(gI_trigger) && DispatchSpawn(gI_trigger))
 	{
 		PrintToServer("Trigger is valid.")
