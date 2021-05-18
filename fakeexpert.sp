@@ -9,6 +9,7 @@ int gI_beam
 int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 int gI_trigger
+int gI_entity
 
 public void OnPluginStart()
 {
@@ -290,15 +291,18 @@ Action cmd_sum(int client, int args)
 Action cmd_getid(int client, int args)
 {
 	char sName[32]
-	int entity
-	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
+	//int entity
+	while((gI_entity = FindEntityByClassname(gI_entity, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
 	{
 		char sName[32]
-		if(IsValidEntity(entity))
+		if(IsValidEntity(gI_entity))
 		{
-			GetEntPropString(entity, Prop_Data, "m_iGlobalname", sName, 32)
-			//PrintToServer("1. %i %i [%s]", entity, GetEntProp(entity, Prop_Data, "m_iHammerID"), sName)
-			PrintToServer("1. %i [%i]", entity, GetEntProp(entity, Prop_Data, "m_iHammerID"))
+			GetEntPropString(gI_entity, Prop_Data, "m_iGlobalname", sName, 32)
+			//PrintToServer("1. %i %i [%s]", gI_entity, GetEntProp(gI_entity, Prop_Data, "m_iHammerID"), sName)
+			PrintToServer("1. %i [%i]", gI_entity, GetEntProp(gI_entity, Prop_Data, "m_iHammerID"))
+			float vec[3]
+			GetEntPropVector(gI_entity, Prop_Data, "m_vecMins", vec)
+			PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 		}
 	}
 }
