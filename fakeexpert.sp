@@ -232,6 +232,7 @@ Action cmd_create(int client, int args)
 	GetClientAbsOrigin(client, vec)
 	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(gI_trigger, "spawnflags", "1")
+	DispatchKeyValue(gI_trigger, "wait", "0")
 	//DispatchSpawn(gI_trigger)
 	if(DispatchSpawn(gI_trigger))
 		PrintToServer("yes")
