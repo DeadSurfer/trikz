@@ -235,6 +235,7 @@ Action cmd_create(int client, int args)
 	DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(gI_trigger, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(gI_trigger, "wait", "0")
+	ActivateEntity(gI_trigger)
 	SetEntityModel(gI_trigger, "models/player/t_arctic.mdl")
 	GetEntPropVector(gI_trigger, Prop_Data, "m_vecOrigin", vec)
 	PrintToServer("| %f %f %f", vec[0], vec[1], vec[2])
@@ -243,7 +244,7 @@ Action cmd_create(int client, int args)
 	float wait = GetEntPropFloat(gI_trigger, Prop_Data, "m_flWait")
 	PrintToServer("| %f", wait)
 	//ActivateEntity(gI_trigger)
-	//TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
+	TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
 	//SetEntProp(gI_trigger, Prop_Data, "m_nSolidType", 2)
 	PrintToServer("entity: %i created", gI_trigger)
 }
