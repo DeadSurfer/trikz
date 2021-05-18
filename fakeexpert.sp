@@ -33,8 +33,8 @@ public void OnPluginStart()
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_create", cmd_create)
-	RegConsoleCmd("sm_vec1", cmd_vec1)
-	RegConsoleCmd("sm_vec2", cmd_vec2)
+	RegConsoleCmd("sm_vecmins", cmd_vecmins)
+	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
 	RegConsoleCmd("sm_starttouch", cmd_starttouch)
 	RegConsoleCmd("sm_sum", cmd_sum)
 	AddNormalSoundHook(SoundHook)
@@ -241,13 +241,13 @@ Action cmd_vecmins(int client, int args)
 	GetClientAbsOrigin(client, vec)
 	vec[2] = vec[2] -= 64.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	PrintToServer("%f %f %f", vec[0], vec[1], gF_vec1vec2])
+	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 Action cmd_vecmaxs(int client, int args)
 {
 	float vec[3]
-	GetClientAbsOrigin(client, gF_vec)
+	GetClientAbsOrigin(client, vec)
 	vec[2] = vec[2] += 64.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
