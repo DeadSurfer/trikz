@@ -234,16 +234,17 @@ Action cmd_create(int client, int args)
 	DispatchKeyValue(gI_trigger, "spawnflags", "1")
 	DispatchKeyValue(gI_trigger, "wait", "0")
 	//DispatchKeyValue(gI_trigger, "StartDisabled", "0")
+	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
 }
 
 Action cmd_vecmins(int client, int args)
 {
 	float vec[3]
-	//GetClientAbsOrigin(client, vec)
-	//vec[2] = vec[2] -= 64.0
-	vec[0] = 256.0
-	vec[1] = 256.0
-	vec[2] = 256.0
+	GetClientAbsOrigin(client, vec)
+	vec[2] = vec[2] -= 64.0
+	//vec[0] = 256.0
+	//vec[1] = 256.0
+	//vec[2] = 256.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
@@ -251,18 +252,18 @@ Action cmd_vecmins(int client, int args)
 Action cmd_vecmaxs(int client, int args)
 {
 	float vec[3]
-	//GetClientAbsOrigin(client, vec)
-	//vec[2] = vec[2] += 64.0
-	vec[0] = -256.0
-	vec[1] = -256.0
-	vec[2] = -256.0
+	GetClientAbsOrigin(client, vec)
+	vec[2] = vec[2] += 64.0
+	//vec[0] = -256.0
+	//vec[1] = -256.0
+	//vec[2] = -256.0
 	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
 	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 Action cmd_starttouch(int client, int args)
 {
-	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
+	//SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
 	if(IsValidEntity(gI_trigger))
 	{
 		PrintToServer("Trigger is valid.")
@@ -283,6 +284,22 @@ Action cmd_sum(int client, int args)
 	//DispatchSpawn(trigger)
 	//TE_SetupBeamPoints(gF_vec1, gF_vec2, gI_beam, gI_halo, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612 //Exception reported: Stack leak detected: sp:42876 should be 25228!
 	//TE_SendToAll(0.0)
+}
+
+Action cmd_getid(int client, int args)
+{
+	char sName[32]
+	int entity
+	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
+	{
+		char sName[32]
+		if(IsValidEntity(entity))
+		{
+			GetEntPropString(entity, Prop_Data, "m_iGlobalname", sName, 32)
+			//PrintToServer("1. %i %i [%s]", entity, GetEntProp(entity, Prop_Data, "m_iHammerID"), sName)
+			PrintToServer("1. %i [%i]", entity, GetEntProp(entity, Prop_Data, "m_iHammerID"))
+		}
+	}
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
