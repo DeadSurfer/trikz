@@ -34,6 +34,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vec1", cmd_vec1)
 	RegConsoleCmd("sm_vec2", cmd_vec2)
 	RegConsoleCmd("sm_sum", cmd_sum)
+	AddNormalSoundHook(SoundHook)
 }
 
 public void OnMapStart()
@@ -295,15 +296,26 @@ Action SDKProjectile(int entity)
 	
 	GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
-	//FakeClientCommand(client, "use weapon_knife")
+	FakeClientCommand(client, "use weapon_knife")
 	ClientCommand(client, "lastinv")
-	ClientCommand(client, "lastinv")
+	//ClientCommand(client, "lastinv")
 	//GivePlayerAmmo(client, 2, 48, true)
+	//RequestFrame(frame, client)
 }
+
+//void frame(int client)
+//{
+//	ClientCommand(client, "lastinv")
+//}
 
 void SDKPlayerSpawn(int client)
 {
 	GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//GivePlayerAmmo(client, 2, 48, true)
+}
+
+Action SoundHook(int clients[MAXPLAYERS + 1], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
+{
+	PrintToServer("%s", sample)
 }
