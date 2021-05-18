@@ -256,6 +256,8 @@ Action cmd_vecmaxs(int client, int args)
 Action cmd_starttouch(int client, int args)
 {
 	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
+	if(IsValidEntity(gI_trigger))
+		PrintToServer("Trigger is valid.")
 }
 
 void SDKStartTouch(int entity, int other)
