@@ -296,17 +296,23 @@ Action SDKProjectile(int entity)
 	
 	GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+	//GivePlayerAmmo(client, 2, 48, true)
 	FakeClientCommand(client, "use weapon_knife")
 	ClientCommand(client, "lastinv")
 	//ClientCommand(client, "lastinv")
-	//GivePlayerAmmo(client, 2, 48, true)
 	//RequestFrame(frame, client)
+	CreateTimer(1.4, timer_delete, entity)
 }
 
 //void frame(int client)
 //{
 //	ClientCommand(client, "lastinv")
 //}
+
+Action timer_delete(Handle timer, int entity)
+{
+	AcceptEntityInput(entity, "Kill")
+}
 
 void SDKPlayerSpawn(int client)
 {
