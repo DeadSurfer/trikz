@@ -280,8 +280,8 @@ Action cmd_create(int client, int args)
 	maxs[0] = FloatAbs((gF_vec1[0] + gF_vec2[0]) / 2.0)
 	maxs[1] = FloatAbs((gF_vec1[1] + gF_vec2[1]) / 2.0)
 	maxs[2] = FloatAbs((gF_vec1[2] + gF_vec2[2]) / 2.0)
-	maxs[0] = maxs[0] * -1.0
-	maxs[1] = maxs[1] * -1.0
+	maxs[0] = maxs[0] * -2.0
+	maxs[1] = maxs[1] * -2.0
 	maxs[2] = 128.0
 	PrintToServer("maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
