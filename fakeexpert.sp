@@ -268,17 +268,22 @@ Action cmd_create(int client, int args)
 	//mins[0] = -128.0
 	//mins[1] = -128.0
 	//mins[2] = -128.0
-	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0) + 128.0
-	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0) + 128.0
-	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0) + 128.0
-	mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
-	mins[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
-	mins[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0
+	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
+	PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
+	//float distance = SquareRoot(Pow(gF_vec1[client][0] - vec2[0], 2.0) + Pow(gF_vec1[client][1] - vec2[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
+	//mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	//mins[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	//mins[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0
+	//mins[0] = SquareRoot(Pow(gF_vec1[0] - gF_vec2[0], 2.0) + Pow(gF_vec1[1] - gF_vec2[1], 2.0)) + 12.0
+	//mins[1] = SquareRoot(Pow(gF_vec1[1] - gF_vec2[1], 2.0) + Pow(gF_vec1[1] - gF_vec2[1], 2.0)) + 12.0
+	//mins[0] = SquareRoot(Pow(gF_vec1[0] - gF_vec2[0], 2.0) + Pow(gF_vec1[1] - gF_vec2[1], 2.0)) + 12.0
 	//mins[0] = -center[0] + 128.0
 	//mins[1] = -center[1] + 128.0
 	//mins[2] = -center[2] + 128.0
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	float maxs[3]
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", gF_vec1) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//float maxs[3]
 	//maxs[0] = 128.0
 	//maxs[1] = 128.0
 	//maxs[2] = 128.0
@@ -288,10 +293,10 @@ Action cmd_create(int client, int args)
 	//maxs[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0) - 128.0
 	//maxs[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0) - 128.0
 	//maxs[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0) - 128.0
-	maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
-	maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
-	maxs[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	//maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	//maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	//maxs[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", gF_vec1)
 	//SetEntPropVector(entity, Prop_Send, "m_vecPosition1", vec)
 	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
 	//GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
