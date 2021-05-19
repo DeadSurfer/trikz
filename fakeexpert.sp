@@ -234,40 +234,41 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_create(int client, int args)
 {
-	gI_trigger = CreateEntityByName("trigger_multiple")
+	int entity = CreateEntityByName("trigger_multiple")
 	float vec[3]
-	//GetClientAbsOrigin(client, vec)
+	GetClientAbsOrigin(client, vec)
 	//TeleportEntity(client, vec, NULL_VECTOR, NULL_VECTOR)
-	//DispatchKeyValueVector(gI_trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	DispatchKeyValue(gI_trigger, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
-	DispatchKeyValue(gI_trigger, "wait", "0")
-	ActivateEntity(gI_trigger)
-	DispatchSpawn(gI_trigger)
-	SetEntityModel(gI_trigger, "models/player/t_arctic.mdl")
-	SetEntProp(gI_trigger, Prop_Data, "m_fEffects", 32)
-	GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
-	//SetEntPropVector(gI_trigger, Prop_Data, "m_vecOrigin", vec)
-	TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
+	DispatchKeyValueVector(entity, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
+	DispatchKeyValue(entity, "wait", "0")
+	//ActivateEntity(entity)
+	DispatchSpawn(entity)
+	SetEntityModel(entity, "models/player/t_arctic.mdl")
+	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
+	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
+	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
+	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
 	vec[0] = -128.0
 	vec[1] = -128.0
 	vec[2] = -128.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	vec[0] = 128.0
 	vec[1] = 128.0
 	vec[2] = 128.0
-	SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
-	//SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition1", vec)
-	//TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
-	//GetEntPropVector(gI_trigger, Prop_Data, "m_vecOrigin", vec)
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", vec)
+	//SetEntPropVector(entity, Prop_Send, "m_vecPosition1", vec)
+	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
+	//GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	//PrintToServer("| %f %f %f", vec[0], vec[1], vec[2])
-	//int spawnflags = GetEntProp(gI_trigger, Prop_Data, "m_spawnflags")
+	//int spawnflags = GetEntProp(entity, Prop_Send, "m_spawnflags")
 	//PrintToServer("| %i", spawnflags)
-	//float wait = GetEntPropFloat(gI_trigger, Prop_Data, "m_flWait")
+	//float wait = GetEntPropFloat(entity, Prop_Send, "m_flWait")
 	//PrintToServer("| %f", wait)
-	//ActivateEntity(gI_trigger)
-	SetEntProp(gI_trigger, Prop_Data, "m_nSolidType", 2)
-	SDKHook(gI_trigger, SDKHook_TouchPost, SDKStartTouch)
-	PrintToServer("entity: %i created", gI_trigger)
+	//ActivateEntity(entity)
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
+	SDKHook(entity, SDKHook_TouchPost, SDKStartTouch)
+	//DispatchKeyValue(entity, "targetname", "test")
+	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
 }
 
