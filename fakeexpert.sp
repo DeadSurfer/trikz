@@ -265,20 +265,26 @@ Action cmd_create(int client, int args)
 	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
-	mins[0] = -128.0
-	mins[1] = -128.0
-	mins[2] = -128.0
+	//mins[0] = -128.0
+	//mins[1] = -128.0
+	//mins[2] = -128.0
+	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
 	//mins[0] = -center[0] + 128.0
 	//mins[1] = -center[1] + 128.0
 	//mins[2] = -center[2] + 128.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	float maxs[3]
-	maxs[0] = 128.0
-	maxs[1] = 128.0
-	maxs[2] = 128.0
+	//maxs[0] = 128.0
+	//maxs[1] = 128.0
+	//maxs[2] = 128.0
 	//maxs[0] = center[0] - 128.0
 	//maxs[1] = center[1] - 128.0
 	//maxs[2] = center[2] - 128.0
+	maxs[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	maxs[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	maxs[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	//SetEntPropVector(entity, Prop_Send, "m_vecPosition1", vec)
 	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
