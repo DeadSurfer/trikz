@@ -264,6 +264,7 @@ Action cmd_create(int client, int args)
 	center[1] = (gF_vec2[1] + gF_vec1[1]) / 2
 	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR)
+	TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	//mins[0] = -128.0
 	//mins[1] = -128.0
@@ -271,9 +272,9 @@ Action cmd_create(int client, int args)
 	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
 	mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
 	mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
-	mins[0] = mins[0] * 3.0
+	mins[0] = mins[0] * 2.0
 	mins[0] = -mins[0]
-	mins[1] = mins[1] * 3.0
+	mins[1] = mins[1] * 2.0
 	mins[1] = -mins[1]
 	mins[2] = -128.0
 	PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
@@ -295,16 +296,20 @@ Action cmd_create(int client, int args)
 	//maxs[0] = center[0] - 128.0
 	//maxs[1] = center[1] - 128.0
 	//maxs[2] = center[2] - 128.0
-	maxs[0] = FloatAbs((gF_vec1[0] + gF_vec2[0]) / 2.0)
-	maxs[1] = FloatAbs((gF_vec1[1] + gF_vec2[1]) / 2.0)
-	maxs[2] = FloatAbs((gF_vec1[2] + gF_vec2[2]) / 2.0)
-	PrintToServer("maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
-	//maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
-	//maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
-	//maxs[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0
-	mins[0] = mins[0] * -1.0
-	mins[1] = mins[1] * -1.0
-	mins[2] = 128.0
+	//maxs[0] = FloatAbs((gF_vec1[0] + gF_vec2[0]) / 2.0)
+	//maxs[1] = FloatAbs((gF_vec1[1] + gF_vec2[1]) / 2.0)
+	//maxs[2] = FloatAbs((gF_vec1[2] + gF_vec2[2]) / 2.0)
+	//PrintToServer("maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
+	maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	maxs[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0
+	maxs[0] = maxs[0] * -1.0
+	maxs[1] = maxs[1] * -1.0
+	maxs[2] = 128.0
+	//mins[0] = mins[0] * -1.0
+	//mins[1] = mins[1] * -1.0
+	//mins[2] = 128.0
+	PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	//SetEntPropVector(entity, Prop_Send, "m_vecPosition1", vec)
 	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
