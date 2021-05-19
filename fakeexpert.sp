@@ -253,18 +253,12 @@ Action cmd_create(int client, int args)
 	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
-	//center[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
-	//center[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
-	//center[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
-	//center[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
-	//center[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
-	//center[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
 	center[1] = (gF_vec2[1] + gF_vec1[1]) / 2
 	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR)
-	TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
+	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
 	mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
@@ -281,15 +275,6 @@ Action cmd_create(int client, int args)
 	mins[2] = 128.0
 	PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
-	//SetEntPropVector(entity, Prop_Send, "m_vecPosition1", vec)
-	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
-	//GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
-	//PrintToServer("| %f %f %f", vec[0], vec[1], vec[2])
-	//int spawnflags = GetEntProp(entity, Prop_Send, "m_spawnflags")
-	//PrintToServer("| %i", spawnflags)
-	//float wait = GetEntPropFloat(entity, Prop_Send, "m_flWait")
-	//PrintToServer("| %f", wait)
-	//ActivateEntity(entity)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//DispatchKeyValue(entity, "targetname", "test")
