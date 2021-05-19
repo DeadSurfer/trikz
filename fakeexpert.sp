@@ -236,8 +236,8 @@ Action cmd_create(int client, int args)
 {
 	int entity = CreateEntityByName("trigger_multiple")
 	float vec[3]
-	//GetClientAbsOrigin(client, vec)
-	GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
+	GetClientAbsOrigin(client, vec)
+	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
 	//TeleportEntity(client, vec, NULL_VECTOR, NULL_VECTOR)
 	DispatchKeyValueVector(entity, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
