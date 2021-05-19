@@ -253,14 +253,16 @@ Action cmd_create(int client, int args)
 	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
-	center[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
-	center[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
-	center[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
+	//center[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	//center[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	//center[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
 	//center[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
 	//center[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
 	//center[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	//center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
+	center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
+	center[1] = (gF_vec2[1] + gF_vec1[1]) / 2
+	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	mins[0] = -128.0
