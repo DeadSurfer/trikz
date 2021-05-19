@@ -242,10 +242,12 @@ Action cmd_create(int client, int args)
 	DispatchKeyValue(gI_trigger, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(gI_trigger, "wait", "0")
 	ActivateEntity(gI_trigger)
+	DispatchSpawn(gI_trigger)
 	SetEntityModel(gI_trigger, "models/player/t_arctic.mdl")
 	SetEntProp(gI_trigger, Prop_Data, "m_fEffects", 32)
 	GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
-	SetEntPropVector(gI_trigger, Prop_Data, "m_vecOrigin", vec)
+	//SetEntPropVector(gI_trigger, Prop_Data, "m_vecOrigin", vec)
+	TeleportEntity(gI_entity, vec, NULL_VECTOR, NULL_VECTOR)
 	vec[0] = -128.0
 	vec[1] = -128.0
 	vec[2] = -128.0
