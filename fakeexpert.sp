@@ -271,6 +271,7 @@ Action cmd_create(int client, int args)
 	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
 	mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
 	mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
+	mins[2] = 128.0
 	PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	//float distance = SquareRoot(Pow(gF_vec1[client][0] - vec2[0], 2.0) + Pow(gF_vec1[client][1] - vec2[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 	//mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
@@ -292,7 +293,7 @@ Action cmd_create(int client, int args)
 	//maxs[2] = center[2] - 128.0
 	maxs[0] = FloatAbs((gF_vec1[0] + gF_vec2[0]) / 2.0)
 	maxs[1] = FloatAbs((gF_vec1[1] + gF_vec2[1]) / 2.0)
-	maxs[2] = FloatAbs((gF_vec1[2] + gF_vec2[2]) / 2.0) + 128.0
+	maxs[2] = FloatAbs((gF_vec1[2] + gF_vec2[2]) / 2.0)
 	PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
 	//maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
