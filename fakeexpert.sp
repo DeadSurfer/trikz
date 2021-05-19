@@ -281,7 +281,7 @@ Action cmd_create(int client, int args)
 	maxs[1] = FloatAbs((gF_vec1[1] + gF_vec2[1]) / 2.0)
 	maxs[2] = FloatAbs((gF_vec1[2] + gF_vec2[2]) / 2.0)
 	maxs[0] = maxs[0] * -0.75
-	maxs[1] = maxs[1] * -2.75
+	maxs[1] = maxs[1] * -3.0
 	maxs[2] = 128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
