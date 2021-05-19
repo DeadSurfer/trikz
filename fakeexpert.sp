@@ -266,7 +266,7 @@ Action cmd_create(int client, int args)
 	//PrintToServer("| %f", wait)
 	//ActivateEntity(entity)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
-	SDKHook(entity, SDKHook_TouchPost, SDKStartTouch)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//DispatchKeyValue(entity, "targetname", "test")
 	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
@@ -313,7 +313,7 @@ Action cmd_starttouch(int client, int args)
 
 void SDKStartTouch(int entity, int other)
 {
-	PrintToServer("Start touch post.")
+	PrintToServer("Start touch.")
 }
 
 Action cmd_sum(int client, int args)
