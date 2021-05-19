@@ -269,8 +269,10 @@ Action cmd_create(int client, int args)
 	mins[0] = FloatAbs((gF_vec1[0] + gF_vec2[0]) / 2.0)
 	mins[1] = FloatAbs((gF_vec1[1] + gF_vec2[1]) / 2.0)
 	mins[2] = FloatAbs((gF_vec1[2] + gF_vec2[2]) / 2.0)
-	mins[0] = mins[0] * 0.75
-	mins[1] = mins[1] * 2.25
+	mins[0] = mins[0] * -0.75
+	mins[0] = mins[0] * -1.0
+	mins[1] = mins[1] * -2.25
+	mins[1] = mins[1] * -1.0
 	mins[2] = 128.0
 	PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
