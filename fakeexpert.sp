@@ -271,9 +271,9 @@ Action cmd_create(int client, int args)
 	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0) + 128.0
 	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0) + 128.0
 	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0) + 128.0
-	mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0)
-	mins[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0)
-	mins[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0)
+	mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	mins[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	mins[2] = (gF_vec1[2] - gF_vec2[2]) / 2.0
 	//mins[0] = -center[0] + 128.0
 	//mins[1] = -center[1] + 128.0
 	//mins[2] = -center[2] + 128.0
