@@ -3,8 +3,8 @@
 
 bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
-//float gF_vec1[3]
-//float gF_vec2[3]
+float gF_vec1[3]
+float gF_vec2[3]
 int gI_beam
 int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
@@ -239,11 +239,11 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 Action cmd_create(int client, int args)
 {
 	int entity = CreateEntityByName("trigger_multiple")
-	float vec[3]
-	GetClientAbsOrigin(client, vec)
+	//float vec[3]
+	//GetClientAbsOrigin(client, vec)
 	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
 	//TeleportEntity(client, vec, NULL_VECTOR, NULL_VECTOR)
-	DispatchKeyValueVector(entity, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	//DispatchKeyValueVector(entity, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
 	//ActivateEntity(entity)
@@ -252,15 +252,27 @@ Action cmd_create(int client, int args)
 	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
 	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
-	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
-	vec[0] = -128.0
-	vec[1] = -128.0
-	vec[2] = -128.0
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	vec[0] = 128.0
-	vec[1] = 128.0
-	vec[2] = 128.0
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", vec)
+	float center[3]
+	center[0] = FloatAbs(gF_vec1[0] - gF_vec2[0] / 2.0)
+	center[1] = FloatAbs(gF_vec1[1] - gF_vec2[1] / 2.0)
+	center[2] = FloatAbs(gF_vec1[2] - gF_vec2[2] / 2.0)
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR)
+	//vec[0] = -128.0
+	//vec[1] = -128.0
+	//vec[2] = -128.0
+	float mins[3]
+	mins[0] = -center[0] + 128.0
+	mins[1] = -center[1] + 128.0
+	mins[2] = -center[2] + 128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//vec[0] = 128.0
+	//vec[1] = 128.0
+	//vec[2] = 128.0
+	float maxs[3]
+	maxs[0] = center[0] - 128.0
+	maxs[1] = center[1] - 128.0
+	maxs[2] = center[2] - 128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	//SetEntPropVector(entity, Prop_Send, "m_vecPosition1", vec)
 	//TeleportEntity(entity, vec, NULL_VECTOR, NULL_VECTOR)
 	//GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
@@ -279,30 +291,30 @@ Action cmd_create(int client, int args)
 
 Action cmd_vecmins(int client, int args)
 {
-	float vec[3]
-	//GetClientAbsOrigin(client, vec)
+	//float vec[3]
+	GetClientAbsOrigin(client, gF_vec1)
 	//vec[2] = vec[2] += 64.0
-	vec[0] = -128.0
-	vec[1] = -128.0
-	vec[2] = -128.0
+	//vec[0] = -128.0
+	//vec[1] = -128.0
+	//vec[2] = -128.0
 	//SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition1", vec)
-	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+	//SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition1", vec)
+	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	return Plugin_Handled
 }
 
 Action cmd_vecmaxs(int client, int args)
 {
-	float vec[3]
-	//GetClientAbsOrigin(client, vec)
+	//float vec[3]
+	GetClientAbsOrigin(client, gF_vec2)
 	//vec[2] = vec[2] -= 64.0
-	vec[0] = 128.0
-	vec[1] = 128.0
-	vec[2] = 128.0
+	//vec[0] = 128.0
+	//vec[1] = 128.0
+	//vec[2] = 128.0
 	//SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
-	SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition2", vec)
+	//SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition2", vec)
 	//ActivateEntity(gI_trigger)
-	PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
+	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	return Plugin_Handled
 }
 
