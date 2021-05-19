@@ -10,6 +10,7 @@ int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 int gI_trigger
 int gI_entity
+Handle gH_sql
 
 public void OnPluginStart()
 {
@@ -45,6 +46,9 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_getid", cmd_getid)
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	AddNormalSoundHook(SoundHook)
+	char sError[128]
+	gH_sql = SQL_Connect("fakeexpert", false, sError, 128)
+	PrintToServer("Mysql: %s", sError)
 }
 
 public void OnMapStart()
@@ -338,7 +342,7 @@ Action cmd_getid(int client, int args)
 	//int entity
 	while((gI_entity = FindEntityByClassname(gI_entity, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
 	{
-		char sName[32]
+		//char sName[32]
 		if(IsValidEntity(gI_entity))
 		{
 			GetEntPropString(gI_entity, Prop_Data, "m_iGlobalname", sName, 32)
