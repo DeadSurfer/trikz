@@ -368,11 +368,11 @@ Action cmd_createtable(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXIST `%zones'` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT")
-	gH_mysql.Connect("fakeexpert", "mysql")
+	gH_mysql.Connect(SQlConnect, "fakeexpert")
 	gH_mysql.Query(SQLCreateTable, sQuery)
 }
 
-void(Database db, const char[] error, any data)
+void( SQLConnectDatabase db, const char[] error, any data)
 {
 }
 
