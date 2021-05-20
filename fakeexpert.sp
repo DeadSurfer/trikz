@@ -366,9 +366,9 @@ Action cmd_getid(int client, int args)
 
 Action cmd_createtable(int args)
 {
+	gH_mysql.Connect(SQlConnect, "fakeexpert")
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXIST `%zones'` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT")
-	gH_mysql.Connect(SQlConnect, "fakeexpert")
 	gH_mysql.Query(SQLCreateTable, sQuery)
 }
 
