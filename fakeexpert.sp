@@ -308,7 +308,7 @@ Action cmd_starttouch(int client, int args)
 void SDKStartTouch(int entity, int other)
 {
 	PrintToServer("Start touch. [entity %i; other: %i]", entity, other)
-	gF_TimeStart[client] = GetEngineTime()
+	gF_TimeStart[other] = GetEngineTime()
 }
 
 Action cmd_sum(int client, int args)
@@ -381,7 +381,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//Timer
 	if(gB_state[client]== true)
 		gF_Time[client] = GetEngineTime()
-		gF_TimeStart[client] - gF_Time[client]
+		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 }
 
 Action cmd_time(int client, int args)
