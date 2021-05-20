@@ -241,11 +241,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 Action cmd_create(int client, int args)
 {
 	int entity = CreateEntityByName("trigger_multiple")
-	//float vec[3]
-	//GetClientAbsOrigin(client, vec)
-	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
-	//TeleportEntity(client, vec, NULL_VECTOR, NULL_VECTOR)
-	//DispatchKeyValueVector(entity, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
 	//ActivateEntity(entity)
@@ -259,7 +254,7 @@ Action cmd_create(int client, int args)
 	center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
 	center[1] = (gF_vec2[1] + gF_vec1[1]) / 2
 	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
-	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR)
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
@@ -270,12 +265,12 @@ Action cmd_create(int client, int args)
 	mins[1] = mins[1] * 2.0
 	mins[1] = -mins[1]
 	mins[2] = -128.0
-	PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
+	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	mins[0] = mins[0] * -1.0
 	mins[1] = mins[1] * -1.0
 	mins[2] = 128.0
-	PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
+	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
@@ -286,29 +281,14 @@ Action cmd_create(int client, int args)
 
 Action cmd_vecmins(int client, int args)
 {
-	//float vec[3]
 	GetClientAbsOrigin(client, gF_vec1)
-	//vec[2] = vec[2] += 64.0
-	//vec[0] = -128.0
-	//vec[1] = -128.0
-	//vec[2] = -128.0
-	//SetEntPropVector(gI_trigger, Prop_Send, "m_vecMins", vec) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	//SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition1", vec)
 	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	return Plugin_Handled
 }
 
 Action cmd_vecmaxs(int client, int args)
 {
-	//float vec[3]
 	GetClientAbsOrigin(client, gF_vec2)
-	//vec[2] = vec[2] -= 64.0
-	//vec[0] = 128.0
-	//vec[1] = 128.0
-	//vec[2] = 128.0
-	//SetEntPropVector(gI_trigger, Prop_Send, "m_vecMaxs", vec)
-	//SetEntPropVector(gI_trigger, Prop_Data, "m_vecPosition2", vec)
-	//ActivateEntity(gI_trigger)
 	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	return Plugin_Handled
 }
