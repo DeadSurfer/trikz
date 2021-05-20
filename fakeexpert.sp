@@ -47,7 +47,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	AddNormalSoundHook(SoundHook)
-	Database.Connect(SQLConnect, "fakeexpert")
+	gH_mysql.Connect(SQLConnect, "fakeexpert")
 }
 
 public void OnMapStart()
@@ -369,10 +369,10 @@ Action cmd_createtable(int args)
 
 void SQLConnect(Database db, const char[] error, any data)
 {
-	PrintToServer("Connect")
+	PrintToServer("Successfuly connected to database.")
 }
 
-void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
+public void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	//char sID[32]
 	//db.GetIndentifier(sID, 32)
