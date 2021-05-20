@@ -374,6 +374,7 @@ Action cmd_createtable(int args)
 
 void SQLConnect(Database db, const char[] error, any data)
 {
+	PrintToServer("Connect")
 }
 
 void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
