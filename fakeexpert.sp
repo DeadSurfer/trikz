@@ -47,9 +47,9 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	AddNormalSoundHook(SoundHook)
-	char sError[128]
-	gH_mysql = SQL_Connect("fakeexpert", false, sError, 128)
-	PrintToServer("Mysql: %s", sError)
+	//char sError[128]
+	//gH_mysql = SQL_Connect("fakeexpert", false, sError, 128)
+	//PrintToServer("Mysql: %s", sError)
 }
 
 public void OnMapStart()
