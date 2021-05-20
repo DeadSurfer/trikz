@@ -10,7 +10,7 @@ int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 int gI_trigger
 int gI_entity
-Handle gH_mysql //https://forums.alliedmods.net/archive/index.php/t-260008.html
+//Handle gH_mysql //https://forums.alliedmods.net/archive/index.php/t-260008.html
 Database gD_mysql
 
 public void OnPluginStart()
@@ -48,7 +48,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	AddNormalSoundHook(SoundHook)
-	gH_mysql.Connect(SQLConnect, "fakeexpert")
+	Database.Connect(SQLConnect, "fakeexpert")
 }
 
 public void OnMapStart()
@@ -363,6 +363,7 @@ Action cmd_getid(int client, int args)
 
 Action cmd_createtable(int args)
 {
+	gD_mysql.SetCharset("utf8")
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, PRIMARY KEY (id))")
 	gD_mysql.Query(SQLCreateTable, sQuery, 0, DBPrio_High)
