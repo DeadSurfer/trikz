@@ -10,7 +10,7 @@ int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 int gI_trigger
 int gI_entity
-Database gH_mysql = null
+Database gH_mysql
 
 public void OnPluginStart()
 {
@@ -47,9 +47,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	AddNormalSoundHook(SoundHook)
-	//char sError[128]
-	//gH_mysql = SQL_Connect("fakeexpert", false, sError, 128)
-	//PrintToServer("Mysql: %s", sError)
+	Database.Connect(SQLConnect, "fakeexpert")
 }
 
 public void OnMapStart()
@@ -279,8 +277,6 @@ Action cmd_create(int client, int args)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//DispatchKeyValue(entity, "targetname", "test")
-	//Format(sQuery, 32, ""
-	//SQL_Query(gH_mysql, sQuery, 32)
 	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
 }
@@ -366,7 +362,6 @@ Action cmd_getid(int client, int args)
 
 Action cmd_createtable(int args)
 {
-	Database.Connect(SQLConnect, "fakeexpert")
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, PRIMARY KEY (id))")
 	gH_mysql.Query(SQLCreateTable, sQuery, 0, DBPrio_High)
