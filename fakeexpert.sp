@@ -379,7 +379,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	
 	//Timer
-	if(gB_state[client]== true)
+	//if(gB_state[client] == true)
 		gF_Time[client] = GetEngineTime()
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 }
