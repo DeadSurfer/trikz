@@ -387,6 +387,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 Action cmd_time(int client, int args)
 {
+	FormatTime()
 	PrintToChat(client, "Time: %f", gF_Time[client])
 }
 
