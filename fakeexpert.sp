@@ -394,7 +394,8 @@ Action cmd_time(int client, int args)
 	//FormatTime(sTime, 32, NULL_STRING, )
 	//if(gF_Time[client] > 59.9)
 	//Format(sTime, 32, "" //https://forums.alliedmods.net/archive/index.php/t-23912.html
-	gI_hour = gF_Time[client] / 86400.0
+	int hour = RoundFloat(gF_Time[client])
+	gI_hour = hour / 86400
 	int minute = RoundFloat(gF_Time[client])
 	gI_minute = (minute / 3600) % 24
 	int second = RoundFloat(gF_Time[client])
