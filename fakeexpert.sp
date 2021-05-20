@@ -396,6 +396,7 @@ Action cmd_time(int client, int args)
 	//Format(sTime, 32, "" //https://forums.alliedmods.net/archive/index.php/t-23912.html
 	gF_hour = gF_Time[client] / 86400.0
 	gF_minute = (gF_Time[client] / 3600.0) % 24.0
+	//int second = FloatToInt
 	gF_second = gF_Time[client] % 60.0
 	PrintToChat(client, "Time: %f [%0.f:%0.f:%0.f]", gF_Time[client], gF_hour, gF_minute, gF_second)
 }
