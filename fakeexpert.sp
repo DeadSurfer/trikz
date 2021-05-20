@@ -12,6 +12,8 @@ int gI_trigger
 int gI_entity
 //Handle gH_mysql //https://forums.alliedmods.net/archive/index.php/t-260008.html
 Database gD_mysql
+float gF_TimeStart[MAXPLAYERS + 1]
+float gF_Time[MAXPLAYERS + 1]
 
 public void OnPluginStart()
 {
@@ -378,7 +380,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	
 	//Timer
 	if(gB_state[client]== true)
-		gF_Time = GetEngineTime()
+		gF_Time[client] = GetEngineTime()
+		gF_TimeStart[client] - gF_Time[client]
 }
 
 Action cmd_time(int client, int args)
