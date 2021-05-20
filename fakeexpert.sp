@@ -14,9 +14,9 @@ int gI_entity
 Database gD_mysql
 float gF_TimeStart[MAXPLAYERS + 1]
 float gF_Time[MAXPLAYERS + 1]
-float gI_hour
-float gI_minute
-float gI_second
+float gF_hour
+float gF_minute
+float gF_second
 
 public void OnPluginStart()
 {
