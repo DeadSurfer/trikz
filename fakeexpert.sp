@@ -14,6 +14,9 @@ int gI_entity
 Database gD_mysql
 float gF_TimeStart[MAXPLAYERS + 1]
 float gF_Time[MAXPLAYERS + 1]
+int gI_hour
+int gI_minute
+int gI_second
 
 public void OnPluginStart()
 {
@@ -387,8 +390,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 Action cmd_time(int client, int args)
 {
-	//FormatTime()
-	PrintToChat(client, "Time: %f", gF_Time[client])
+	//char sTime[32]
+	//FormatTime(sTime, 32, NULL_STRING, )
+	//if(gF_Time[client] > 59.9)
+	//Format(sTime, 32, "" //https://forums.alliedmods.net/archive/index.php/t-23912.html
+	gI_hour = gF_Time[client] / 86400.0
+	gL_minute = (gF_Time[client] / 3600) % 24
+	gI_second = gF_Time[client] % 60
+	PrintToChat(client, "Time: %f [%i:%i:%i]", gF_Time[client], gI_hour, gI_minute, gI_second)
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
