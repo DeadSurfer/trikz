@@ -117,6 +117,7 @@ Action Block(int client)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 75)
 		gB_block[client] = false
+		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
@@ -124,6 +125,7 @@ Action Block(int client)
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		gB_block[client] = true
+		PrintToChat(client, "Block enabled.")
 		return Plugin_Handled
 	}
 	return Plugin_Continue
