@@ -395,8 +395,8 @@ Action cmd_time(int client, int args)
 	//if(gF_Time[client] > 59.9)
 	//Format(sTime, 32, "" //https://forums.alliedmods.net/archive/index.php/t-23912.html
 	gF_hour = gF_Time[client] / 86400.0
-	int minute
-	gF_minute = (gF_Time[client] / 3600.0) % 24.0
+	int minute = RoundFloat(gF_Time[client)
+	gF_minute = (minute / 3600.0) % 24.0
 	int second = RoundFloat(gF_Time[client])
 	gF_second = second % 60.0 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 	PrintToChat(client, "Time: %f [%0.f:%0.f:%0.f]", gF_Time[client], gF_hour, gF_minute, gF_second)
