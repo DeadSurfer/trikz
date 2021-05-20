@@ -376,8 +376,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	
 	//Timer
-	if(gB_state[0] == true)
-		gF_Time = 
+	if(gB_state[client]== true)
+		gF_Time = GetEngineTime()
+}
+
+Action cmd_time(int client, int args)
+{
+	PrintToChat(client, "Time: %f", gF_Time[client]
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
