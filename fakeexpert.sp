@@ -49,6 +49,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_getid", cmd_getid)
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
+	RegConsoleCmd("sm_time", cmd_time)
 	AddNormalSoundHook(SoundHook)
 	Database.Connect(SQLConnect, "fakeexpert")
 }
