@@ -372,7 +372,7 @@ Action cmd_createtable(int args)
 	gH_mysql.Query(SQLCreateTable, sQuery)
 }
 
-void( SQLConnectDatabase db, const char[] error, any data)
+void SQLConnect(Database db, const char[] error, any data)
 {
 }
 
