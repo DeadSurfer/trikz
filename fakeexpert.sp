@@ -10,7 +10,7 @@ int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 int gI_trigger
 int gI_entity
-Database gH_mysql
+Handle gH_mysql //https://forums.alliedmods.net/archive/index.php/t-260008.html
 
 public void OnPluginStart()
 {
