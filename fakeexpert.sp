@@ -305,7 +305,8 @@ Action cmd_starttouch(int client, int args)
 
 void SDKStartTouch(int entity, int other)
 {
-	PrintToServer("Start touch.")
+	PrintToServer("Start touch. [entity %i; other: %i]", entity, other)
+	gF_TimeStart[client] = GetEngineTime()
 }
 
 Action cmd_sum(int client, int args)
