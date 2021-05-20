@@ -381,16 +381,7 @@ void SQLCreateTable(Database db, DBResultSet results, const char[] error, any da
 {
 	char sID[32]
 	db.GetIndentifier(sID, 32)
-	PrintToServer("%s", sID)
-	//if(Result == null)
-	//{
-		//PrintToServer("Error")
-	//}
-	//else
-	//{
-		PrintToServer("Success")
-	//}
-}
+	PrintToServer("Success, %s", sID)
 
 Action cmd_tp(int client, int args)
 {
