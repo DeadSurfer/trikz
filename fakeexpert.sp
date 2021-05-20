@@ -368,10 +368,11 @@ Action cmd_createtable(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXIST `%zones'` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT")
-	SQL_Query(gH_mysql, sQuery)
+	SQL_Connect("fakeexpert", true, sQuery, 512)
+	SQL_Query(SQLCreateTable, sQuery)
 }
 
-void SQLCreateTable(Database db, DBResult results, const char[] error, any data)
+void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
@@ -445,3 +446,4 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 	return Plugin_Continue
 	//PrintToServer("%s", sample)
 }
+
