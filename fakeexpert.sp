@@ -379,6 +379,9 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
 {
+	char sID[32]
+	db.GetIndentifier(sID, 32)
+	PrintToServer("%s", sID)
 	//if(Result == null)
 	//{
 		//PrintToServer("Error")
