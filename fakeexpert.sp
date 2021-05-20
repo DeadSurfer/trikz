@@ -379,14 +379,14 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(Result == null)
-	{
-		PrintToServer("Error")
-	}
-	else
-	{
+	//if(Result == null)
+	//{
+		//PrintToServer("Error")
+	//}
+	//else
+	//{
 		PrintToServer("Success")
-	}
+	//}
 }
 
 Action cmd_tp(int client, int args)
