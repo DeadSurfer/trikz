@@ -379,9 +379,10 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
 {
-	char sID[32]
-	db.GetIndentifier(sID, 32)
-	PrintToServer("Success, %s", sID)
+	//char sID[32]
+	//db.GetIndentifier(sID, 32)
+	//PrintToServer("Success, %s", sID)
+	PrintToServer("Success")
 }
 
 Action cmd_tp(int client, int args)
