@@ -10,7 +10,7 @@ int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 int gI_trigger
 int gI_entity
-Handle gH_mysql
+Database gH_mysql
 
 public void OnPluginStart()
 {
@@ -368,8 +368,8 @@ Action cmd_createtable(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXIST `%zones'` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT")
-	SQL_Connect("fakeexpert", true, sQuery, 512)
-	SQL_Query(SQLCreateTable, sQuery)
+	gH_mysql.Connect("fakeexpert", "mysql")
+	gH_mysql.Query(SQLCreateTable, sQuery)
 }
 
 void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
