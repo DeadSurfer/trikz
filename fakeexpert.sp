@@ -74,22 +74,6 @@ public void OnMapStart()
 	gD_mysql.Query(SQLSetupZones, sQuery)
 }
 
-void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
-{
-	while(results.FetchRow())
-	{
-		gF_vec1[0] = results.FetchFloat(0)
-		gF_vec1[1] = results.FetchFloat(0)
-		gF_vec1[2] = results.FetchFloat(0)
-		gI_zonetype = results.FetchInt(0)
-		gF_vec2[0] = results.FetchFloat(0)
-		gF_vec2[1] = results.FetchFloat(0)
-		gF_vec2[2] = results.FetchFloat(0)
-	}
-	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
-	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
-}
-
 public void OnClientPutInServer(int client)
 {
 	gI_partner[client] = 0
@@ -357,6 +341,22 @@ Action cmd_createend(int client, int args)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
+}
+
+void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
+{
+	while(results.FetchRow())
+	{
+		gF_vec1[0] = results.FetchFloat(0)
+		gF_vec1[1] = results.FetchFloat(0)
+		gF_vec1[2] = results.FetchFloat(0)
+		gI_zonetype = results.FetchInt(0)
+		gF_vec2[0] = results.FetchFloat(0)
+		gF_vec2[1] = results.FetchFloat(0)
+		gF_vec2[2] = results.FetchFloat(0)
+	}
+	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
+	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
 }
 
 Action cmd_vecmins(int client, int args)
