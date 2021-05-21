@@ -406,21 +406,29 @@ void SDKStartTouch(int entity, int other)
 		int client = GetSteamAccountID(other)
 		int partner = GetSteamAccountID(gI_partner[other])
 		
-		char sQuery[32]
-		Format(sQuery, 32, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-		gD_mysql.Query(SQLRecords, sQuery, GetClientFromSerial(client))
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
+		gD_mysql.Query(SQLRecords, sQuery, GetClientSerial(client))
 	}
 }
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
 {
-	//int client = data
-	PrintToServer("%N", data)
+	int client = GetClientFromSerial(data)
+	PrintToServer("%N", client)
 	if(results.FetchRow())
 	{
 		float fTime = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
-		fTime < gF_Time[data]
-		//PrintToServer("%fTime"
+		if(gF_Time[client] < fTime)
+		{
+			PrintToServer("SQL time: %f", fTime)
+			char sQuery[512]
+			Format(sQuery, 512, "SELECT REPLACE('time', %f, %f), fTime, gF_Time[client]") //https://www.w3schools.com/SQL/func_sqlserver_replace.asp#:~:text=SQL%20Server%20REPLACE%20%28%29%20Function%201%20Definition%20and,Parameter%20Values%204%20Technical%20Details%205%20More%20Examples
+		}
+	}
+	else
+	{
+		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, date) VALUES (%i, %i, %f, %i)") //https://www.w3schools.com/sql/sql_insert.asp
 	}
 }
 
