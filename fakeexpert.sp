@@ -361,7 +361,7 @@ Action cmd_createuser(int args)
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
-void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any daya)
+void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
