@@ -416,20 +416,26 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
 	PrintToServer("%N", client)
+	char sQuery[512]
 	if(results.FetchRow())
 	{
 		float fTime = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
 		if(gF_Time[client] < fTime)
 		{
 			PrintToServer("SQL time: %f", fTime)
-			char sQuery[512]
 			Format(sQuery, 512, "SELECT REPLACE('time', %f, %f), fTime, gF_Time[client]") //https://www.w3schools.com/SQL/func_sqlserver_replace.asp#:~:text=SQL%20Server%20REPLACE%20%28%29%20Function%201%20Definition%20and,Parameter%20Values%204%20Technical%20Details%205%20More%20Examples
 		}
 	}
 	else
 	{
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, date) VALUES (%i, %i, %f, %i)") //https://www.w3schools.com/sql/sql_insert.asp
+		gH_mysql.Query(SQLInsertRecord, sQuery)
 	}
+}
+
+void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("Record inserted.")
 }
 
 Action cmd_sum(int client, int args)
