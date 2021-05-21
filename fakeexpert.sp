@@ -437,7 +437,7 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 	}
 	else
 	{
-		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, date) VALUES (%i, %i, %f, %i)", client, partner, time, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
+		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, date) VALUES (%i, %i, %f, %i)", GetSteamAccountID(client), GetSteamAccountID(partner), time, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
 		gD_mysql.Query(SQLInsertRecord, sQuery)
 	}
 }
