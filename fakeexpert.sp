@@ -401,7 +401,7 @@ Action cmd_time(int client, int args)
 	gI_minute = (minute / 60) % 24
 	int second = RoundToFloor(gF_Time[client])
 	gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-	PrintToChat(client, "Time: %f [%i:%i:%i]", gF_Time[client], gI_hour, gI_minute, gI_second)
+	PrintToChat(client, "Time: %f [%1.i:%i:%i]", gF_Time[client], gI_hour, gI_minute, gI_second)
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
