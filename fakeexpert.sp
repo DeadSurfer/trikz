@@ -407,18 +407,19 @@ void SDKStartTouch(int entity, int other)
 		int partner = GetSteamAccountID(gI_partner[other])
 		//shavitush - datapack
 		DataPack dp = new DataPack
-		dp.WriteCell(client)
-		dp.WriteCell(partner)
-		dp.WriteFloat //https://sm.alliedmods.net/new-api/datapack/DataPack
+		dp.WriteCell(GetClientSerial(client))
+		dp.WriteCell(GetClientSerial(partner))
+		dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-		gD_mysql.Query(SQLRecords, sQuery, GetClientSerial(client))
+		gD_mysql.Query(SQLRecords, sQuery, dp)
 	}
 }
 
-void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	int client = GetClientFromSerial(data)
+	int client = GetClientFromSerial(dp)
+	int partner = GetClientFromSerial(dp)
 	PrintToServer("%N", client)
 	char sQuery[512]
 	if(results.FetchRow())
