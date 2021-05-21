@@ -409,6 +409,7 @@ void SDKStartTouch(int entity, int other)
 		DataPack dp = new DataPack
 		dp.WriteCell(client)
 		dp.WriteCell(partner)
+		dp.WriteFloat //https://sm.alliedmods.net/new-api/datapack/DataPack
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
 		gD_mysql.Query(SQLRecords, sQuery, GetClientSerial(client))
