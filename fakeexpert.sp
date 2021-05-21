@@ -392,12 +392,10 @@ Action cmd_vecmins(int client, int args)
 
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	//PrintToServer("%s", error)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		//int type = results.FetchInt(0)
-		char sMap[192 + 1]
+		char sMap[192]
 		results.FetchString(0, sMap, 192)
 		if(StrEqual(sMap, gS_map))
 		{
@@ -407,7 +405,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 	}
 	else
 	{
-		Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUES (%s, %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
+		Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUES (%s, %i, %f, %f, %f);", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		PrintToServer("Select successufly incompleted.")
 	}
 	gD_mysql.Query(SQLSetZones2, sQuery)
