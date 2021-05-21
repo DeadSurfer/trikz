@@ -71,7 +71,23 @@ public void OnMapStart()
 	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
-	gD_mysql.Query(SQLSetupZones, sQuery)
+	gD_mysql.Query(SQLSetupZones, sQuery, 0, DBPrio_Low)
+}
+
+void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
+{
+	while(results.FetchRow())
+	{
+		gF_vec1[0] = results.FetchFloat(0)
+		gF_vec1[1] = results.FetchFloat(0)
+		gF_vec1[2] = results.FetchFloat(0)
+		gI_zonetype = results.FetchInt(0)
+		gF_vec2[0] = results.FetchFloat(0)
+		gF_vec2[1] = results.FetchFloat(0)
+		gF_vec2[2] = results.FetchFloat(0)
+	}
+	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
+	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
 }
 
 public void OnClientPutInServer(int client)
@@ -341,22 +357,6 @@ Action cmd_createend(int client, int args)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
-}
-
-void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
-{
-	while(results.FetchRow())
-	{
-		gF_vec1[0] = results.FetchFloat(0)
-		gF_vec1[1] = results.FetchFloat(0)
-		gF_vec1[2] = results.FetchFloat(0)
-		gI_zonetype = results.FetchInt(0)
-		gF_vec2[0] = results.FetchFloat(0)
-		gF_vec2[1] = results.FetchFloat(0)
-		gF_vec2[2] = results.FetchFloat(0)
-	}
-	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
-	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
 }
 
 Action cmd_vecmins(int client, int args)
