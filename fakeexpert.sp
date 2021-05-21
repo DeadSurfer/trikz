@@ -9,7 +9,7 @@ int gI_beam
 int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
 int gI_trigger
-int gI_entity
+//int gI_entity
 //Handle gH_mysql //https://forums.alliedmods.net/archive/index.php/t-260008.html
 Database gD_mysql
 float gF_TimeStart[MAXPLAYERS + 1]
