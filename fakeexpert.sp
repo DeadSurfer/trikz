@@ -19,6 +19,7 @@ int gI_minute
 int gI_second
 bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
+int gI_zonetype
 
 public void OnPluginStart()
 {
@@ -69,7 +70,22 @@ public void OnMapStart()
 	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT map, possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
+	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
+	gD_mysql.Query(SQLSetupZones, sQuery)
+}
+
+void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		gF_vec1[0] = results.FetchFloat()
+		gF_vec1[1] = results.FetchFloat()
+		gF_vec1[2] = results.FetchFloat()
+		gI_zonetype = results.FetchInt()
+		gF_vec2[0] = results.FetchFloat()
+		gF_vec2[1] = results.FetchFloat()
+		gF_vec2[2] = results.FetchFloat()
+	}
 }
 
 public void OnClientPutInServer(int client)
