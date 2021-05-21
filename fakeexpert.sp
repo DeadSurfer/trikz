@@ -419,10 +419,11 @@ void SDKStartTouch(int entity, int other)
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	//delete dp
+	dp.Reset() //shavit.wr 1395
 	int client = GetClientFromSerial(dp.ReadCell()) //shavit.wr 1396
 	int partner = GetClientFromSerial(dp.ReadCell())
 	float time = dp.ReadFloat()
-	delete dp
+	//delete dp
 	PrintToServer("%N", client)
 	char sQuery[512]
 	if(results.FetchRow())
