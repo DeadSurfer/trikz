@@ -397,26 +397,15 @@ Action cmd_vecmins(int client, int args)
 
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	//dp.Reset()
-	//int type = dp.ReadCell()
-	//int type = results.FetchInt(0)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		//int type = results.FetchInt(0)
 		PrintToServer("Select successfuly completed.")
-		//if(type == 1)
-			//Format(sQuery, 512, "UPDATE zones SET map = %s, type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, type, gF_vec1[0], gF_vec1[1], gF_vec1[2])
-		//else
-			Format(sQuery, 512, "UPDATE zones SET map = %s, type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
+		Format(sQuery, 512, "UPDATE zones SET map = %s, type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	}
 	else
 	{
-		//int type = results.FetchInt(0)
-		//if(type == 1)
-			//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, type, gF_vec1[0], gF_vec1[1], gF_vec1[2])
-		//else
-			Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
+		Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		PrintToServer("Select successufly incompleted.")
 	}
 	gD_mysql.Query(SQLSetZones2, sQuery)
