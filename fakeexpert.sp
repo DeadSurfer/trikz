@@ -377,13 +377,17 @@ Action cmd_vecmins(int client, int args)
 	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	char sQuery[512]
 	//Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_x = %f, possition_y = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
-	Format(sQuery, 512, "INSERT INTO zones (possition_x, possition_y, possition_z) VALUE (%f, %f, %f)", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	Format(sQuery, 512, "INSERT INTO zones (map, possition_x, possition_y, possition_z) VALUE (%s, %f, %f, %f)", gS_map, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
 
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
+	if(results.FetchRow())
+	{
+		
+	}
 }
 
 Action cmd_vecmaxs(int client, int args)
@@ -630,3 +634,4 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 	return Plugin_Continue
 	//PrintToServer("%s", sample)
 }
+
