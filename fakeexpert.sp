@@ -403,12 +403,12 @@ void SDKStartTouch(int entity, int other)
 		gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
 		PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
-		int client = GetSteamAccountID(other)
-		int partner = GetSteamAccountID(gI_partner[other])
+		//int client = GetSteamAccountID(other)
+		//int partner = GetSteamAccountID(gI_partner[other])
 		//shavitush - datapack
 		DataPack dp = new DataPack()
-		dp.WriteCell(GetClientSerial(client))
-		dp.WriteCell(GetClientSerial(partner))
+		dp.WriteCell(GetClientSerial(other))
+		dp.WriteCell(GetClientSerial(gI_partner[other]))
 		dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
