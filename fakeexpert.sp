@@ -356,8 +356,8 @@ Action cmd_starttouch(int client, int args)
 
 Action cmd_createuser(int args)
 {
-	char sQuery[32]
-	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid`, `points` INT)")
+	char sQuery[64]
+	Format(sQuery, 64, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid`, `points` INT)")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
