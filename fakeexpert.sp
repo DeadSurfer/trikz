@@ -376,37 +376,23 @@ Action cmd_vecmins(int client, int args)
 	GetClientAbsOrigin(client, gF_vec1)
 	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	char sQuery[512]
-	//Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_x = %f, possition_y = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	if(args)
 	{
 		gI_zonetype = 1
-		//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		Format(sQuery, 512, "SELECT map FROM zones")
 	}
 	else
 	{
 		gI_zonetype = 0
-		//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		Format(sQuery, 512, "SELECT map FROM zones")
 	}
-	//PrintToServer("%s", gS_map)
-	//DataPack dp = new DataPack()
-	//dp.WriteCell(args)
 	gD_mysql.Query(SQLSetZones, sQuery)
-	//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_y2) VALUES (%s, %i, %f, %f, %f, %f, %f, %f)", gS_map, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-	//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_y2) VALUES (`trikz_eonia`, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)")
-	//gD_mysql.Query(SQLTest, sQuery)
 	return Plugin_Handled
 }
 
-//void SQLTest(Database db, DBResultSet results, const char[] error, any data)
-//{
-//	PrintToServer("SQLTest: %s", error)
-//}
-
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("%s", error)
+	//PrintToServer("%s", error)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
