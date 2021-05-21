@@ -366,7 +366,13 @@ void SQLCreateTable(Database db, DBResultSet results, const char[] error, any da
 Action cmd_createrecords(int client, int args)
 {
 	char sQuery[32]
-	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT"
+	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT")
+	gH_mysql.Query(SQLRecordsTable, sQuery)
+}
+
+void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("Success Create Records Table.")
 }
 
 void SDKStartTouch(int entity, int other)
@@ -397,15 +403,20 @@ void SDKStartTouch(int entity, int other)
 		int client = GetSteamAccountID(other)
 		int partner = GetSteamAccountID(gI_partner[other])
 		
-		//char sQuery[32]
+		char sQuery[32]
 		Format(sQuery, 32, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-		//gH_mysql.Query(SQLRecords, sQuery)
+		gH_mysql.Query(SQLRecords, sQuery, client)
 	}
 }
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
 {
-	//results.
+	int client = GetClientFromSerial(data)
+	PrintToServer("%N", client)
+	if(results.FetchRow())
+		float fTime = FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
+		fTime < gF_Time[client]
+		//PrintToServer("%fTime"
 }
 
 Action cmd_sum(int client, int args)
