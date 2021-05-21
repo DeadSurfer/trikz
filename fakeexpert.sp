@@ -356,10 +356,10 @@ Action cmd_createuser(int client, int args)
 {
 	char sQuery[32]
 	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid`, `points` INT)")
-	gH_mysql.Query(SQLUserTable, sQuery)
+	gH_mysql.Query(SQLUserUserTable, sQuery)
 }
 
-void SQLCreateTable(Database db, DBResultSet results, const char[] error, any daya)
+void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any daya)
 {
 }
 
