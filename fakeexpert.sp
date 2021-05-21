@@ -251,6 +251,7 @@ Action cmd_createstart(int client, int args)
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
+	DispatchKeyValue(entity, "targetname", "fakexpert_startzone")
 	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
@@ -282,7 +283,6 @@ Action cmd_createstart(int client, int args)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	DispatchKeyValue(entity, "targetname", "fakexpert_startzone")
 	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
 }
@@ -292,6 +292,7 @@ Action cmd_createend(int client, int args)
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
+	DispatchKeyValue(entity, "targetname", "fakexpert_endzone")
 	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
@@ -323,7 +324,6 @@ Action cmd_createend(int client, int args)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	DispatchKeyValue(entity, "targetname", "fakexpert_endzone")
 	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
 }
