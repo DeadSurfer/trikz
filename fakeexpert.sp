@@ -17,6 +17,7 @@ float gF_Time[MAXPLAYERS + 1]
 int gI_hour
 int gI_minute
 int gI_second
+bool gB_state[MAXPLAYERS + 1]
 
 public void OnPluginStart()
 {
@@ -354,7 +355,13 @@ Action cmd_starttouch(int client, int args)
 void SDKStartTouch(int entity, int other)
 {
 	PrintToServer("Start touch. [entity %i; other: %i]", entity, other)
-	gF_TimeStart[other] = GetEngineTime()
+	char sTriggerName[32]
+	GetEntPropString(entity, Prop_Data, "m_iGlobalname", sTriggerName, 32)
+	if(StrEqual(sTriggerName, "fakeexpert_startzone"))
+		gB_state[other] = true
+		gF_TimeStart[other] = GetEngineTime()
+	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
+		gB_state[other] = false
 }
 
 Action cmd_sum(int client, int args)
@@ -426,9 +433,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	
 	//Timer
-	//if(gB_state[client] == true)
-	gF_Time[client] = GetEngineTime()
-	gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
+	if(gB_state[client])
+		gF_Time[client] = GetEngineTime()
+		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 }
 
 Action cmd_time(int client, int args)
