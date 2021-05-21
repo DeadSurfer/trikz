@@ -69,7 +69,7 @@ public void OnMapStart()
 	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT map, possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2"
+	Format(sQuery, 512, "SELECT map, possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
 }
 
 public void OnClientPutInServer(int client)
