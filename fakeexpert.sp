@@ -358,8 +358,10 @@ void SDKStartTouch(int entity, int other)
 	char sTriggerName[32]
 	GetEntPropString(entity, Prop_Data, "m_iGlobalname", sTriggerName, 32)
 	if(StrEqual(sTriggerName, "fakeexpert_startzone"))
+	{
 		gB_state[other] = true
 		gF_TimeStart[other] = GetEngineTime()
+	}
 	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
 		gB_state[other] = false
 }
