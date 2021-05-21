@@ -376,7 +376,8 @@ Action cmd_vecmins(int client, int args)
 	GetClientAbsOrigin(client, gF_vec1)
 	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	char sQuery[512]
-	Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_x = %f, possition_y = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	//Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_x = %f, possition_y = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	Format(sQuery, 512, "INSERT INTO zones (possition_x, possition_y, possition_z) VALUE (%f, %f, %f)", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
@@ -629,4 +630,3 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 	return Plugin_Continue
 	//PrintToServer("%s", sample)
 }
-
