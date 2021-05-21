@@ -414,12 +414,12 @@ void SDKStartTouch(int entity, int other)
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
 {
-	int client = GetClientFromSerial(data)
-	PrintToServer("%N", client)
+	//int client = GetClientFromSerial(data)
+	PrintToServer("%N", data)
 	if(results.FetchRow())
 	{
 		float fTime = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
-		fTime < gF_Time[client]
+		fTime < gF_Time[data]
 		//PrintToServer("%fTime"
 	}
 }
