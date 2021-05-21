@@ -390,7 +390,7 @@ Action cmd_vecmins(int client, int args)
 		Format(sQuery, 512, "SELECT map, type FROM zones")
 	}
 	//DataPack dp = new DataPack()
-	gD_mysql.Query(SQLSetZones, sQuery, type)
+	gD_mysql.Query(SQLSetZones, sQuery, args)
 	return Plugin_Handled
 }
 
