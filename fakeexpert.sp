@@ -357,7 +357,7 @@ Action cmd_starttouch(int client, int args)
 Action cmd_createuser(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid` INT, `points` INT)")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid` INT, `points` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
@@ -369,7 +369,7 @@ void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, an
 Action cmd_createrecords(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT)")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
