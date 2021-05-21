@@ -286,10 +286,13 @@ Action cmd_createstart(int client, int args)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("entity: %i created", entity)
-	PrintToServer("%i", args)
-	//char sQuery[512]
-	//Format(sQuery, 512, "UPDATE zones SET type = %i", type)
-	//gD_mysql.Query(SQLSetZones, sQuery)
+	//PrintToServer("%i", args)
+	char sQuery[512]
+	if(args)
+		Format(sQuery, 512, "UPDATE zones SET type = %i", args)
+	else
+		Format(sQuery, 512, "UPDATE zones SET type = %i" args)
+	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
 
