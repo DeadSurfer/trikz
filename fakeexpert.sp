@@ -352,6 +352,23 @@ Action cmd_starttouch(int client, int args)
 	return Plugin_Handled
 }
 
+Action cmd_createuser(int client, int args)
+{
+	char sQuery[32]
+	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid`, `points` INT)")
+	gH_mysql.Query(SQLUserTable, sQuery)
+}
+
+void SQLCreateTable(Database db, DBResultSet results, const char[] error, any daya)
+{
+}
+
+Action cmd_createrecords(int client, int args)
+{
+	char sQuery[32]
+	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT"
+}
+
 void SDKStartTouch(int entity, int other)
 {
 	PrintToServer("Start touch. [entity %i; other: %i]", entity, other)
@@ -377,7 +394,18 @@ void SDKStartTouch(int entity, int other)
 		gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
 		PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
+		int client = GetSteamAccountID(other)
+		int partner = GetSteamAccountID(gI_partner[other])
+		
+		//char sQuery[32]
+		Format(sQuery, 32, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
+		//gH_mysql.Query(SQLRecords, sQuery)
 	}
+}
+
+void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
+{
+	//results.
 }
 
 Action cmd_sum(int client, int args)
