@@ -418,9 +418,9 @@ void SDKStartTouch(int entity, int other)
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	int client = GetClientFromSerial(dp)
-	int partner = GetClientFromSerial(dp)
-	float time = dp
+	int client = dp.ReadCell(GetClientFromSerial())
+	int partner = dp.ReadCell(GetClientFromSerial())
+	float time = dp.ReadFloat()
 	//delete dp
 	PrintToServer("%N", client)
 	char sQuery[512]
@@ -430,7 +430,7 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 		if(gF_Time[client] < fTime)
 		{
 			PrintToServer("SQL time: %f", fTime)
-			Format(sQuery, 512, "SELECT REPLACE('time', %f, %f), fTime, gF_Time[client]") //https://www.w3schools.com/SQL/func_sqlserver_replace.asp#:~:text=SQL%20Server%20REPLACE%20%28%29%20Function%201%20Definition%20and,Parameter%20Values%204%20Technical%20Details%205%20More%20Examples
+			//Format(sQuery, 512, "SELECT REPLACE('time', %f, %f), fTime, gF_Time[client]") //https://www.w3schools.com/SQL/func_sqlserver_replace.asp#:~:text=SQL%20Server%20REPLACE%20%28%29%20Function%201%20Definition%20and,Parameter%20Values%204%20Technical%20Details%205%20More%20Examples
 		}
 	}
 	else
