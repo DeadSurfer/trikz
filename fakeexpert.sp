@@ -76,7 +76,7 @@ public void OnMapStart()
 Action Timer_ZonesSetup(Handle timer)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = "%s"", gS_map)
+	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = %s", gS_map)
 	gD_mysql.Query(SQLSetupZones, sQuery)
 }
 
