@@ -411,8 +411,8 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 	if(results.FetchRow())
 	{
 		//int type = results.FetchInt(0)
-		char sMap[192]
-		sMap = results.FetchString(0)
+		char sMap[192 + 1]
+		results.FetchString(0, sMap, 192)
 		if(StrEqual(sMap, gS_map))
 		{
 			PrintToServer("Select successfuly completed.")
