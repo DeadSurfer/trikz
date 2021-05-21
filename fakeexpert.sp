@@ -397,11 +397,13 @@ Action cmd_vecmins(int client, int args)
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
 	dp.Reset()
-	
+	int type = results.FetchInt(0)
 	if(results.FetchRow())
 	{
 		PrintToServer("Select successfuly completed.")
-		Format(sQuery, 512, "UPDATE zones SET"
+		if(type == 1)
+			Format(sQuery, 512, "UPDATE zones SET map = %s, type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map,
+		else
 	}
 	else
 	{
