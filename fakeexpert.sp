@@ -68,6 +68,8 @@ public void OnMapStart()
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
 	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
+	char sQuery[512]
+	Format(sQuery, 512, "SELECT map, possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2"
 }
 
 public void OnClientPutInServer(int client)
@@ -358,7 +360,7 @@ Action cmd_vecmaxs(int client, int args)
 	GetClientAbsOrigin(client, gF_vec2)
 	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	char sQuery[512]
-	Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_y = %f, possition_z = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	Format(sQuery, 512, "UPDATE zones SET possition_x2 = %f, possition_y2 = %f, possition_z2 = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
@@ -490,7 +492,7 @@ Action cmd_sum(int client, int args)
 Action cmd_createtable(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, `possition_x2` FLOAT, `possition_y2` FLOAT, `possition_z2` FLOAT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
 	gD_mysql.Query(SQLCreateZonesTable, sQuery, 0, DBPrio_High)
 }
 
