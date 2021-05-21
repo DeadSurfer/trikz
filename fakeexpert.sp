@@ -60,8 +60,8 @@ public void OnPluginStart()
 	RegServerCmd("sm_createusertable", cmd_createuser)
 	RegServerCmd("sm_createrecordstable", cmd_createrecords)
 	AddNormalSoundHook(SoundHook)
-	//Database.Connect(SQLConnect, "fakeexpert")
 	GetCurrentMap(gS_map, 192)
+	//Database.Connect(SQLConnect, "fakeexpert")
 }
 
 public void OnMapStart()
