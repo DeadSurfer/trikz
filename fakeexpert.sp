@@ -55,6 +55,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	RegConsoleCmd("sm_time", cmd_time)
+	RegServerCmd("sm_createusertable", cmd_createuser)
+	RegServerCmd("sm_createrecordstable", cmd_createrecords)
 	AddNormalSoundHook(SoundHook)
 	Database.Connect(SQLConnect, "fakeexpert")
 }
@@ -352,18 +354,18 @@ Action cmd_starttouch(int client, int args)
 	return Plugin_Handled
 }
 
-Action cmd_createuser(int client, int args)
+Action cmd_createuser(int args)
 {
 	char sQuery[32]
 	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid`, `points` INT)")
-	gH_mysql.Query(SQLUserUserTable, sQuery)
+	gH_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any daya)
 {
 }
 
-Action cmd_createrecords(int client, int args)
+Action cmd_createrecords(int args)
 {
 	char sQuery[32]
 	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT")
