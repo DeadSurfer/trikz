@@ -420,6 +420,8 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 {
 	int client = GetClientFromSerial(dp)
 	int partner = GetClientFromSerial(dp)
+	float time = dp
+	//delete dp
 	PrintToServer("%N", client)
 	char sQuery[512]
 	if(results.FetchRow())
