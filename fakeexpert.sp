@@ -387,7 +387,7 @@ Action cmd_vecmins(int client, int args)
 	{
 		gI_zonetype = 0
 		//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
-		Format(sQuery, 512, "SELECT map FROM zones WHERE")
+		Format(sQuery, 512, "SELECT map FROM zones")
 	}
 	//PrintToServer("%s", gS_map)
 	//DataPack dp = new DataPack()
