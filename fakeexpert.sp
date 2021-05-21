@@ -74,7 +74,7 @@ public void OnMapStart()
 
 void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	while(results.FetchRow())
+	if(results.FetchRow())
 	{
 		gF_vec1[0] = results.FetchFloat(0)
 		gF_vec1[1] = results.FetchFloat(0)
