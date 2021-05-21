@@ -408,13 +408,13 @@ void SDKStartTouch(int entity, int other)
 		
 		char sQuery[32]
 		Format(sQuery, 32, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-		gD_mysql.Query(SQLRecords, sQuery, client)
+		gD_mysql.Query(SQLRecords, sQuery, GetClientFromSerial(client))
 	}
 }
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
 {
-	//int client = GetClientFromSerial(data)
+	//int client = data
 	PrintToServer("%N", data)
 	if(results.FetchRow())
 	{
