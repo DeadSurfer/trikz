@@ -410,7 +410,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, DataPack 
 	else
 	{
 		if(type == 1)
-			Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, type, gF_vec1[0], gF_vec[1], gF_vec1[2])
+			Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, type, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		else
 			Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, type, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		PrintToServer("Select successufly incompleted.")
