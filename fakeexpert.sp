@@ -424,14 +424,14 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 	int partner = GetClientFromSerial(dp.ReadCell())
 	float time = dp.ReadFloat()
 	//delete dp
-	PrintToServer("%N", client)
+	//PrintToServer("%N", client)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
 		float fTime = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
 		if(gF_Time[client] < fTime)
 		{
-			PrintToServer("SQL time: %f", fTime)
+			//PrintToServer("SQL time: %f", fTime)
 			Format(sQuery, 512, "UPDATE records SET time = %f", gF_Time[client]) //https://en.wikipedia.org/wiki/Update_(SQL)#:~:text=An%20SQL%20UPDATE%20statement%20changes%20the%20data%20of,column_name%20%3D%20value%20%20%20column_name%20%3D%20value...%5D
 			gD_mysql.Query(SQLUpdateRecord, sQuery)
 		}
@@ -445,12 +445,12 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("Record updated.")
+	//PrintToServer("Record updated.")
 }
 
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("Record inserted.")
+	//PrintToServer("Record inserted.")
 }
 
 Action cmd_sum(int client, int args)
