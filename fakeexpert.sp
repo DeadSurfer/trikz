@@ -436,8 +436,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	
 	//Timer
 	if(gB_state[client])
+	{
 		gF_Time[client] = GetEngineTime()
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
+	}
 }
 
 Action cmd_time(int client, int args)
