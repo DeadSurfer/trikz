@@ -78,13 +78,13 @@ void SQLSetupZones(Database db, DBResultSet results, const char[] error, any dat
 {
 	while(results.FetchRow())
 	{
-		gF_vec1[0] = results.FetchFloat()
-		gF_vec1[1] = results.FetchFloat()
-		gF_vec1[2] = results.FetchFloat()
-		gI_zonetype = results.FetchInt()
-		gF_vec2[0] = results.FetchFloat()
-		gF_vec2[1] = results.FetchFloat()
-		gF_vec2[2] = results.FetchFloat()
+		gF_vec1[0] = results.FetchFloat(0)
+		gF_vec1[1] = results.FetchFloat(0)
+		gF_vec1[2] = results.FetchFloat(0)
+		gI_zonetype = results.FetchInt(0)
+		gF_vec2[0] = results.FetchFloat(0)
+		gF_vec2[1] = results.FetchFloat(0)
+		gF_vec2[2] = results.FetchFloat(0)
 	}
 	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
 	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
