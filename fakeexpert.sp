@@ -368,6 +368,7 @@ void SDKStartTouch(int entity, int other)
 	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
 	{
 		gB_state[other] = false
+		gB_state[gI_partner[other]] = false
 		int hour = RoundToFloor(gF_Time[other])
 		gI_hour = hour / 360
 		int minute = RoundToFloor(gF_Time[other])
