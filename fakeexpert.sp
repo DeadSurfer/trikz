@@ -70,6 +70,14 @@ public void OnMapStart()
 	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	Database.Connect(SQLConnect, "fakeexpert")
+	CreateTimer(1.0, Timer_ZonesSetup)
+}
+
+Action Timer_ZonesSetup(Handle timer)
+{
+	char sQuery[512]
+	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
+	gD_mysql.Query(SQLSetupZones, sQuery)
 }
 
 void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
@@ -516,9 +524,6 @@ void SQLConnect(Database db, const char[] error, any data)
 {
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
-	char sQuery[512]
-	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
-	gD_mysql.Query(SQLSetupZones, sQuery)
 }
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
