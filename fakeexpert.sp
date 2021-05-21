@@ -406,7 +406,7 @@ void SDKStartTouch(int entity, int other)
 		int client = GetSteamAccountID(other)
 		int partner = GetSteamAccountID(gI_partner[other])
 		//shavitush - datapack
-		DataPack dp = new DataPack
+		DataPack dp = new DataPack()
 		dp.WriteCell(GetClientSerial(client))
 		dp.WriteCell(GetClientSerial(partner))
 		dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
@@ -418,8 +418,10 @@ void SDKStartTouch(int entity, int other)
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	int client = dp.ReadCell(GetClientFromSerial())
-	int partner = dp.ReadCell(GetClientFromSerial())
+	int client = dp.ReadCell()
+	client = GetClientFromSerial(client)
+	int partner = dp.ReadCell()
+	partner = GetClientFromSerial(partner)
 	float time = dp.ReadFloat()
 	//delete dp
 	PrintToServer("%N", client)
