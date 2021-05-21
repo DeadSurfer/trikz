@@ -432,7 +432,7 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 		if(gF_Time[client] < fTime)
 		{
 			PrintToServer("SQL time: %f", fTime)
-			Format(sQuery, 512, "UPDATE records SET time = %f" gF_Time[client]) //https://en.wikipedia.org/wiki/Update_(SQL)#:~:text=An%20SQL%20UPDATE%20statement%20changes%20the%20data%20of,column_name%20%3D%20value%20%20%20column_name%20%3D%20value...%5D
+			Format(sQuery, 512, "UPDATE records SET time = %f", gF_Time[client]) //https://en.wikipedia.org/wiki/Update_(SQL)#:~:text=An%20SQL%20UPDATE%20statement%20changes%20the%20data%20of,column_name%20%3D%20value%20%20%20column_name%20%3D%20value...%5D
 			gD_mysql.Query(SQLUpdateRecord, sQuery)
 		}
 	}
