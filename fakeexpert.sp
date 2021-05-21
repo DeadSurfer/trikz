@@ -363,6 +363,7 @@ Action cmd_createuser(int args)
 
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
+	PrintToServer("Successfuly created user table.")
 }
 
 Action cmd_createrecords(int args)
@@ -374,7 +375,7 @@ Action cmd_createrecords(int args)
 
 void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("Success Create Records Table.")
+	PrintToServer("Successfuly created records table.")
 }
 
 void SDKStartTouch(int entity, int other)
