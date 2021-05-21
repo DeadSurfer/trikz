@@ -361,6 +361,7 @@ void SDKStartTouch(int entity, int other)
 	if(StrEqual(sTriggerName, "fakeexpert_startzone"))
 	{
 		gB_state[other] = true
+		gB_state[gI_partner[other]] = true
 		gF_TimeStart[other] = GetEngineTime()
 		//PrintToChat(other, "Your time is: %f"
 	}
