@@ -389,17 +389,27 @@ Action cmd_vecmins(int client, int args)
 		//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		Format(sQuery, 512, "SELECT type FROM zones WHERE map = %s", gS_map)
 	}
+	PrintToServer("%s", gS_map)
 	//DataPack dp = new DataPack()
 	//dp.WriteCell(args)
-	gD_mysql.Query(SQLSetZones, sQuery)
+	//gD_mysql.Query(SQLSetZones, sQuery)
+	Format(sQuery, 512, "INSERT INTO zones (map, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_y2) VALUE (%s, %i, %f, %f, %f, %f, %f, %f)", gS_map, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+	gD_mysql.Query(SQLTest, sQuery)
 	return Plugin_Handled
+}
+
+void SQLTest(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("%s", error)
 }
 
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
+	PrintToServer("%s", error)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
+		//int type = results.FetchInt(0)
 		PrintToServer("Select successfuly completed.")
 		Format(sQuery, 512, "UPDATE zones SET map = %s, type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	}
