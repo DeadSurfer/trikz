@@ -429,7 +429,7 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
 	else
 	{
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, date) VALUES (%i, %i, %f, %i)") //https://www.w3schools.com/sql/sql_insert.asp
-		gH_mysql.Query(SQLInsertRecord, sQuery)
+		gD_mysql.Query(SQLInsertRecord, sQuery)
 	}
 }
 
