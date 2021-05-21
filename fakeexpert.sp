@@ -398,6 +398,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, DataPack 
 {
 	dp.Reset()
 	int type = results.FetchInt(0)
+	char sQuery[512]
 	if(results.FetchRow())
 	{
 		PrintToServer("Select successfuly completed.")
@@ -414,6 +415,12 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, DataPack 
 			Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUE (%s, %i, %f, %f, %f)", gS_map, type, gF_vec1[0], gF_vec1[1], gF_vec[2])
 		PrintToServer("Select successufly incompleted.")
 	}
+	gD_mysql.Query(sQuery, SQLSetZones2)
+}
+
+void SQLSetZones2(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("Succesfuly zoned.")
 }
 
 Action cmd_vecmaxs(int client, int args)
