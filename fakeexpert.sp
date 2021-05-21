@@ -334,13 +334,23 @@ Action cmd_vecmins(int client, int args)
 {
 	GetClientAbsOrigin(client, gF_vec1)
 	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	char sQuery[512]
+	Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_x = %f, possition_y = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
+}
+
+void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 Action cmd_vecmaxs(int client, int args)
 {
 	GetClientAbsOrigin(client, gF_vec2)
 	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	char sQuery[512]
+	Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_y = %f, possition_z = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	gD_mysql(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
 
@@ -468,32 +478,11 @@ Action cmd_sum(int client, int args)
 	return Plugin_Handled
 }
 
-Action cmd_getid(int client, int args)
-{
-	char sName[32]
-	//int entity
-	while((gI_entity = FindEntityByClassname(gI_entity, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
-	{
-		//char sName[32]
-		if(IsValidEntity(gI_entity))
-		{
-			GetEntPropString(gI_entity, Prop_Data, "m_iGlobalname", sName, 32)
-			//PrintToServer("1. %i %i [%s]", gI_entity, GetEntProp(gI_entity, Prop_Data, "m_iHammerID"), sName)
-			PrintToServer("1. %i [%i]", gI_entity, GetEntProp(gI_entity, Prop_Data, "m_iHammerID"))
-			float vec[3]
-			GetEntPropVector(gI_entity, Prop_Data, "m_vecMins", vec)
-			PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
-		}
-	}
-	return Plugin_Handled
-}
-
 Action cmd_createtable(int args)
 {
-	//gD_mysql.SetCharset("utf8")
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
-	gD_mysql.Query(SQLCreateTable, sQuery, 0, DBPrio_High)
+	gD_mysql.Query(SQLCreateZonesTable, sQuery, 0, DBPrio_High)
 }
 
 void SQLConnect(Database db, const char[] error, any data)
@@ -502,11 +491,8 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql = db 
 }
 
-public void SQLCreateTable(Database db, DBResultSet results, const char[] error, any data)
+public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
 {
-	//char sID[32]
-	//db.GetIndentifier(sID, 32)
-	//PrintToServer("Success, %s", sID)
 	PrintToServer("Success")
 }
 
