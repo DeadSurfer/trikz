@@ -40,7 +40,8 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
-	RegConsoleCmd("sm_create", cmd_create)
+	RegConsoleCmd("sm_createstart", cmd_createstart)
+	RegConsoleCmd("sm_createend", cmd_createend)
 	RegConsoleCmd("sm_1", cmd_create)
 	RegConsoleCmd("sm_vecmins", cmd_vecmins)
 	RegConsoleCmd("sm_2", cmd_vecmins)
@@ -244,7 +245,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-Action cmd_create(int client, int args)
+Action cmd_createstart(int client, int args)
 {
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
@@ -280,7 +281,48 @@ Action cmd_create(int client, int args)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	//DispatchKeyValue(entity, "targetname", "test")
+	DispatchKeyValue(entity, "targetname", "fakexpert_startzone")
+	PrintToServer("entity: %i created", entity)
+	return Plugin_Handled
+}
+
+Action cmd_createend(int client, int args)
+{
+	int entity = CreateEntityByName("trigger_multiple")
+	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
+	DispatchKeyValue(entity, "wait", "0")
+	//ActivateEntity(entity)
+	DispatchSpawn(entity)
+	SetEntityModel(entity, "models/player/t_arctic.mdl")
+	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
+	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
+	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
+	float center[3]
+	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
+	center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
+	center[1] = (gF_vec2[1] + gF_vec1[1]) / 2
+	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
+	float mins[3]
+	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
+	mins[0] = mins[0] * 2.0
+	mins[0] = -mins[0]
+	mins[1] = mins[1] * 2.0
+	mins[1] = -mins[1]
+	mins[2] = -128.0
+	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	mins[0] = mins[0] * -1.0
+	mins[1] = mins[1] * -1.0
+	mins[2] = 128.0
+	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	DispatchKeyValue(entity, "targetname", "fakexpert_endzone")
 	PrintToServer("entity: %i created", entity)
 	return Plugin_Handled
 }
