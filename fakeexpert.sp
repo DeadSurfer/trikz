@@ -76,7 +76,7 @@ public void OnMapStart()
 
 void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
+	while(results.FetchRow())
 	{
 		gF_vec1[0] = results.FetchFloat()
 		gF_vec1[1] = results.FetchFloat()
@@ -86,6 +86,8 @@ void SQLSetupZones(Database db, DBResultSet results, const char[] error, any dat
 		gF_vec2[1] = results.FetchFloat()
 		gF_vec2[2] = results.FetchFloat()
 	}
+	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
+	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
 }
 
 public void OnClientPutInServer(int client)
