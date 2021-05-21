@@ -356,10 +356,8 @@ void SDKStartTouch(int entity, int other)
 {
 	PrintToServer("Start touch. [entity %i; other: %i]", entity, other)
 	char sTriggerName[32]
-	GetEntPropString(entity, Prop_Data, "m_iGlobalname", sTriggerName, 32)
-	char sTriggerName2[32]
-	GetEntPropString(entity, Prop_Data, "m_iName", sTriggerName2, 32)
-	PrintToServer("[%s] [%s]", sTriggerName, sTriggerName2)
+	GetEntPropString(entity, Prop_Data, "m_iName", sTriggerName, 32)
+	PrintToServer("[%s]", sTriggerName)
 	if(StrEqual(sTriggerName, "fakeexpert_startzone"))
 	{
 		gB_state[other] = true
