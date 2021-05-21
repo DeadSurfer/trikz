@@ -432,7 +432,8 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 		if(gF_Time[client] < fTime)
 		{
 			PrintToServer("SQL time: %f", fTime)
-			//Format(sQuery, 512, "SELECT REPLACE('time', %f, %f), fTime, gF_Time[client]") //https://www.w3schools.com/SQL/func_sqlserver_replace.asp#:~:text=SQL%20Server%20REPLACE%20%28%29%20Function%201%20Definition%20and,Parameter%20Values%204%20Technical%20Details%205%20More%20Examples
+			Format(sQuery, 512, "UPDATE records SET time = %f" gF_Time[client]) //https://en.wikipedia.org/wiki/Update_(SQL)#:~:text=An%20SQL%20UPDATE%20statement%20changes%20the%20data%20of,column_name%20%3D%20value%20%20%20column_name%20%3D%20value...%5D
+			gD_mysql.Query(SQLUpdateRecord, sQuery)
 		}
 	}
 	else
@@ -440,6 +441,11 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, date) VALUES (%i, %i, %f, %i)", GetSteamAccountID(client), GetSteamAccountID(partner), time, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
 		gD_mysql.Query(SQLInsertRecord, sQuery)
 	}
+}
+
+void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("Record updated.")
 }
 
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
