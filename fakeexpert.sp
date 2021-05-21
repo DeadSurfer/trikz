@@ -51,7 +51,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_starttouch", cmd_starttouch)
 	RegConsoleCmd("sm_4", cmd_starttouch)
 	RegConsoleCmd("sm_sum", cmd_sum)
-	RegConsoleCmd("sm_getid", cmd_getid)
+	//RegConsoleCmd("sm_getid", cmd_getid)
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	RegConsoleCmd("sm_time", cmd_time)
@@ -354,7 +354,7 @@ Action cmd_vecmaxs(int client, int args)
 	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	char sQuery[512]
 	Format(sQuery, 512, "UPDATE zones SET possition_x = %f, possition_y = %f, possition_z = %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
-	gD_mysql(SQLSetZones, sQuery)
+	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
 
