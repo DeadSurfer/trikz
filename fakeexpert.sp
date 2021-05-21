@@ -365,6 +365,7 @@ void SDKStartTouch(int entity, int other)
 		//PrintToChat(other, "Your time is: %f"
 	}
 	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
+	{
 		gB_state[other] = false
 		int hour = RoundToFloor(gF_Time[other])
 		gI_hour = hour / 360
@@ -374,6 +375,7 @@ void SDKStartTouch(int entity, int other)
 		gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
 		PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gI_partner[other], gI_hour, gI_minute, gI_second)
+	}
 }
 
 Action cmd_sum(int client, int args)
