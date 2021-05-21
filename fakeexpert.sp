@@ -518,7 +518,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql = db
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
-	gD_mysql.Query(SQLSetupZones, sQuery, 0, DBPrio_Low)
+	gD_mysql.Query(SQLSetupZones, sQuery)
 }
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
