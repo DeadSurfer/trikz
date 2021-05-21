@@ -18,6 +18,7 @@ int gI_hour
 int gI_minute
 int gI_second
 bool gB_state[MAXPLAYERS + 1]
+char gS_map[192]
 
 public void OnPluginStart()
 {
@@ -59,6 +60,7 @@ public void OnPluginStart()
 	RegServerCmd("sm_createrecordstable", cmd_createrecords)
 	AddNormalSoundHook(SoundHook)
 	Database.Connect(SQLConnect, "fakeexpert")
+	GetCurrentMap(gS_map, 192)
 }
 
 public void OnMapStart()
