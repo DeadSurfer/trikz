@@ -323,9 +323,15 @@ Action cmd_createstart(int client, int args)
 	//PrintToServer("%i", args)
 	char sQuery[512]
 	if(args)
-		Format(sQuery, 512, "UPDATE zones SET type = %i", args)
+	{
+		//Format(sQuery, 512, "UPDATE zones SET type = %i", args)
+		Format(sQuery, 512, "INSERT INTO zones (type) VALUE (%i)", args)
+	}
 	else
-		Format(sQuery, 512, "UPDATE zones SET type = %i", args)
+	{
+		//Format(sQuery, 512, "UPDATE zones SET type = %i", args)
+		Format(sQuery, 512, "INSERT INTO zones (type) VALUE (%i)", args)
+	}
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
