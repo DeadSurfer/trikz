@@ -414,9 +414,11 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, any data)
 	int client = GetClientFromSerial(data)
 	PrintToServer("%N", client)
 	if(results.FetchRow())
+	{
 		float fTime = FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
 		fTime < gF_Time[client]
 		//PrintToServer("%fTime"
+	}
 }
 
 Action cmd_sum(int client, int args)
