@@ -60,7 +60,7 @@ public void OnPluginStart()
 	RegServerCmd("sm_createusertable", cmd_createuser)
 	RegServerCmd("sm_createrecordstable", cmd_createrecords)
 	AddNormalSoundHook(SoundHook)
-	Database.Connect(SQLConnect, "fakeexpert")
+	//Database.Connect(SQLConnect, "fakeexpert")
 	GetCurrentMap(gS_map, 192)
 }
 
@@ -69,7 +69,7 @@ public void OnMapStart()
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
 	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
-	//Database.Connect(SQLConnect, "fakeexpert")
+	Database.Connect(SQLConnect, "fakeexpert")
 }
 
 void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
@@ -518,7 +518,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql = db
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = `%s`", gS_map)
-	gD_mysql.Query(SQLSetupZones, sQuery)
+	gD_mysql.Query(SQLSetupZones, sQuery, 0, DBPrio_Low)
 }
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
