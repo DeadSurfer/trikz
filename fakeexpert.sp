@@ -358,7 +358,7 @@ Action cmd_createuser(int args)
 {
 	char sQuery[32]
 	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `steamid`, `points` INT)")
-	gH_mysql.Query(SQLCreateUserTable, sQuery)
+	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any daya)
@@ -369,7 +369,7 @@ Action cmd_createrecords(int args)
 {
 	char sQuery[32]
 	Format(sQuery, 32, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT")
-	gH_mysql.Query(SQLRecordsTable, sQuery)
+	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
 void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
@@ -407,7 +407,7 @@ void SDKStartTouch(int entity, int other)
 		
 		char sQuery[32]
 		Format(sQuery, 32, "SELECT playerid,partnerid FROM records WHERE ((playerid = %i AND partnerid) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-		gH_mysql.Query(SQLRecords, sQuery, client)
+		gD_mysql.Query(SQLRecords, sQuery, client)
 	}
 }
 
