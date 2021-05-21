@@ -394,7 +394,7 @@ Action cmd_vecmins(int client, int args)
 	return Plugin_Handled
 }
 
-void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetZones(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
 	int type = results.FetchInt(0)
