@@ -594,10 +594,14 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		dp.WriteCell(points)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
+		DataPack dp = new DataPack()
+		dp.WriteCell(other)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp)
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
+		//DataPack dp = new DataPack()
+		//dp.WriteCell(partner)
 		gD_mysql.Query(SQLGetPoints, sQuery)
-		PrintToChat(other, "You recive %i points. You have %i points."
+		//PrintToChat(other, "You recive %i points. You have %i points.", 
 	}
 }
 
