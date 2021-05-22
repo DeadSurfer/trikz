@@ -614,6 +614,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
 	int other = GetClientFromSerial(dp2.ReadCell())
+	PrintToServer("SQLGetPoints: %i", other)
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
