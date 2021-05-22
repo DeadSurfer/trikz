@@ -323,7 +323,7 @@ Action cmd_createstart(int client, int args)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("entity: %i created", entity)
 	//PrintToServer("%i", args)
-	char sQuery[512]
+	//char sQuery[512]
 	//if(args)
 	///	Format(sQuery, 512, "UPDATE zones SET type = %i", args)
 	//else
@@ -599,7 +599,7 @@ void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] err
 	PrintToServer("Successful SQLForceDefaultZonesType.")
 }
 
-void SQLForceZonesSetup(Database db, DBResultSet resuluts, const char[] error, any data)
+void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
