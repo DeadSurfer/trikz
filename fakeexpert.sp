@@ -289,7 +289,7 @@ Action cmd_createstart(int client, int args)
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
-	DispatchKeyValue(entity, "targetname", "fakeexpert_startzone")
+	//DispatchKeyValue(entity, "targetname", "fakeexpert_startzone")
 	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
@@ -324,11 +324,11 @@ Action cmd_createstart(int client, int args)
 	PrintToServer("entity: %i created", entity)
 	//PrintToServer("%i", args)
 	char sQuery[512]
-	if(args)
-		Format(sQuery, 512, "UPDATE zones SET type = %i", args)
-	else
-		Format(sQuery, 512, "UPDATE zones SET type = %i", args)
-	gD_mysql.Query(SQLSetZones, sQuery)
+	//if(args)
+	///	Format(sQuery, 512, "UPDATE zones SET type = %i", args)
+	//else
+	//	Format(sQuery, 512, "UPDATE zones SET type = %i", args)
+	//gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
 
@@ -337,7 +337,7 @@ Action cmd_createend(int client, int args)
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
-	DispatchKeyValue(entity, "targetname", "fakeexpert_endzone")
+	//DispatchKeyValue(entity, "targetname", "fakeexpert_endzone")
 	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
@@ -604,7 +604,12 @@ void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] err
 
 void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any data)
 {
-	
+	if(results.FetchRow())
+	{
+		gF_vec1[0] = results.FetchFloat(0)
+		gF_vec1[1] = results.FetchFloat(1)
+		gF_vec1[2] = results.FetchFloat(2)
+	}
 }
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
