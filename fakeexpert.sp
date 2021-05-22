@@ -407,6 +407,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 	{
 		Format(sQuery, 512, "INSERT INTO `zones` (`map`, `type`, `possition_x`, `possition_y`, `possition_z`) VALUES (`%s`, `%i`, `%f`, `%f`, `%f`);", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		PrintToServer("Select successufly incompleted.")
+		PrintToServer("%s %i %f %f %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	}
 	gD_mysql.Query(SQLSetZones2, sQuery)
 }
