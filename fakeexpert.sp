@@ -553,7 +553,7 @@ void SDKStartTouch(int entity, int other)
 		//t.Exe
 		//gD_mysql.Execute(t, SQLTransGetMapTier)
 		//
-		gD_mysql.Execute(t, SQLTransGetMapTier)
+		gD_mysql.Execute(t, SQLTransGetMapTier) //shavit
 	}
 }
 
