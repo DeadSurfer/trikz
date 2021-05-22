@@ -573,6 +573,8 @@ void SQLConnect(Database db, const char[] error, any data)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT map FROM zones")
 	gD_mysql.Query(SQLForceDefaultZones, sQuery)
+	Format(sQuery, 512, "SELECT map FROM zones")
+	gD_mysql.Query(SQLForceZonesSetup, sQuery)
 }
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
@@ -590,19 +592,22 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 		}
 	}
+}
+
+void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("Successful SQLForceDefaultZonesType.")
+}
+
+void SQLForceZonesSetup(Database db, DBResultSet resuluts, const char[] error, any data)
+{
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLSetZonesEntity, sQuery)
 		Format(sQuery, 512, "SELECT possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
 		gD_mysql.Query(SQLSetZoneEnd, sQuery)
-		PrintToServer("Succesfuly selected zones.")
 	}
-}
-
-void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
-{
-	PrintToServer("Successful SQLForceDefaultZonesType.")
 }
 
 void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any data)
