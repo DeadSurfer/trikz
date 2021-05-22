@@ -487,7 +487,14 @@ Action cmd_createuser(int args)
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("Successfuly created user table.")
-	char s
+	char sQuery[512]
+	//Format(sQuery, 512, "INSERT INTO users (id) VALUES (1)"
+	Format(sQuery, 512, "INSERT INTO user (points) VALUES (0)"
+	gD_mysql.Query(sQuery, SQLAddFakePoint)
+}
+
+void SQLAddFakePoint(Database db, DBResultSet, const char[] error, any data)
+{
 }
 
 Action cmd_createrecords(int args)
