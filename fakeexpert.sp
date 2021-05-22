@@ -562,7 +562,7 @@ void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] res
 	Transaction t = new Transaction()
 	for(int i = 0; i < numQueries; i++)
 	{
-		if(results[i].FetchRow())
+		while(results[i].FetchRow())
 		{
 			//DataPack dp = new DataPack(queryData[i])
 			int client = results[i].FetchInt(0)
