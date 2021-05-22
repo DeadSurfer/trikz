@@ -132,7 +132,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		char sQuery[512]
 		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
 		//gD_mysql.Query(sQuery, SQLUserAdded)
-		gD_mysql.Query(SQLUserAdded)
+		gD_mysql.Query(SQLUserAdded, sQuery)
 	}
 }
 
@@ -513,7 +513,8 @@ void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, an
 	char sQuery[512]
 	//Format(sQuery, 512, "INSERT INTO users (id) VALUES (1)"
 	Format(sQuery, 512, "INSERT INTO user (points) VALUES (0)")
-	gD_mysql.Query(sQuery, SQLAddFakePoint)
+	//gD_mysql.Query(sQuery, SQLAddFakePoint)
+	gD_mysql.Query(SQLAddFakePoint, sQuery)
 }
 
 void SQLAddFakePoint(Database db, DBResultSet, const char[] error, any data)
