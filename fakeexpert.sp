@@ -62,6 +62,7 @@ public void OnPluginStart()
 	RegServerCmd("sm_setup", cmd_setup)
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
+	RegConsoleCmd("sm_maptier", cmd_maptier)
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -395,6 +396,14 @@ Action cmd_vecminsend(int client, int args)
 	args = 1
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
 	gD_mysql.Query(SQLSetZones, sQuery)
+	return Plugin_Handled
+}
+
+Action cmd_maptier(int client, int args)
+{
+	PrintToServer("Args: %i", GetCmdArgs())
+	//char sQuery[512]
+	//Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", 
 	return Plugin_Handled
 }
 
