@@ -124,7 +124,8 @@ public void OnClientPutInServer(int client)
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
-	int steamid = GetAccountSteamID(client)
+	//int steamid = GetAccountSteamID(client)GetAccountSteamID()
+	int steamid = GetSteamAccountID(client)
 	if(!results.FetchRow())
 	{
 		char sQuery[512]
@@ -509,7 +510,7 @@ void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, an
 	PrintToServer("Successfuly created user table.")
 	char sQuery[512]
 	//Format(sQuery, 512, "INSERT INTO users (id) VALUES (1)"
-	Format(sQuery, 512, "INSERT INTO user (points) VALUES (0)"
+	Format(sQuery, 512, "INSERT INTO user (points) VALUES (0)")
 	gD_mysql.Query(sQuery, SQLAddFakePoint)
 }
 
