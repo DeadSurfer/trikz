@@ -560,7 +560,7 @@ void SDKStartTouch(int entity, int other)
 void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
 {
 	Transaction t = new Transaction()
-	for(int i = 0; i <= numQueries; i++)
+	for(int i = 0; i < numQueries; i++)
 	{
 		if(results[i].FetchRow())
 		{
