@@ -401,10 +401,18 @@ Action cmd_vecminsend(int client, int args)
 
 Action cmd_maptier(int client, int args)
 {
-	PrintToServer("Args: %i", GetCmdArgs())
-	//char sQuery[512]
-	//Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", 
+	char sArgString[512]
+	GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+	int tier = StringToInt(sArgString)
+	PrintToServer("Args: %i", tier)
+	char sQuery[512]
+	Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
+	gD_mysql.Query(SQLTier, sQuery)
 	return Plugin_Handled
+}
+
+void SQLTier(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
@@ -584,7 +592,7 @@ Action cmd_sum(int client, int args)
 Action cmd_createtable(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, `possition_x2` FLOAT, `possition_y2` FLOAT, `possition_z2` FLOAT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, `possition_x2` FLOAT, `possition_y2` FLOAT, `possition_z2` FLOAT, `tier` INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
 	gD_mysql.Query(SQLCreateZonesTable, sQuery)
 }
 
