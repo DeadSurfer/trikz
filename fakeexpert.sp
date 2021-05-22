@@ -453,7 +453,7 @@ Action cmd_vecmaxs(int client, int args)
 	return Plugin_Handled
 }
 
-Action cmd_vecmaxsend(int client, int args)
+Action cmd_vecmaxssend(int client, int args)
 {
 	GetClientAbsOrigin(client, gF_vec2)
 	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
