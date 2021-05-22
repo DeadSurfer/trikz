@@ -115,7 +115,16 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
-	gD_mysql.Query(sQuery, SQLUserAdd)
+	//gD_mysql.Query(sQuery, SQLUserAdd)
+	gD_mysql.Query(sQuery, SQLAddUser)
+}
+
+void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(!results.FetchRow())
+	{
+		
+	}
 }
 
 Action cmd_trikz(int client, int args)
