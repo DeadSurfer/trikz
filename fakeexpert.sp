@@ -537,6 +537,7 @@ void SDKStartTouch(int entity, int other)
 		DataPack dp = new DataPack()
 		dp.WriteCell(client)
 		dp.WriteCell(partner)
+		dp.WriteCell(other)
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLGetMapTier, sQuery, dp)
 	}
@@ -584,6 +585,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	dp.Reset()
 	int client = dp.ReadCell()
 	int partner = dp.ReadCell()
+	int other = dp.ReadCell()
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
@@ -595,6 +597,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		gD_mysql.Query(SQLGetPoints, sQuery, dp)
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
 		gD_mysql.Query(SQLGetPoints, sQuery)
+		GetClientFromAuth
 	}
 }
 
