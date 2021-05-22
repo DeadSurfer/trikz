@@ -592,7 +592,7 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 	}
 	if(results.FetchRow())
 	{
-		Format(sQuery, 512, "SELECT map, type, possition_x, possition_y, possition_z FROM zones WHERE map = '%s'", gS_map)
+		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLSetZonesEntity, sQuery)
 	}
 }
