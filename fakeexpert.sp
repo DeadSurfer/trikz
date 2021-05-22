@@ -379,12 +379,12 @@ Action cmd_vecmins(int client, int args)
 	if(args)
 	{
 		gI_zonetype = 1
-		Format(sQuery, 512, "SELECT map FROM zones")
+		Format(sQuery, 512, "SELECT type FROM zones")
 	}
 	else
 	{
 		gI_zonetype = 0
-		Format(sQuery, 512, "SELECT map FROM zones")
+		Format(sQuery, 512, "SELECT type FROM zones")
 	}
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
@@ -395,13 +395,14 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		char sMap[192]
-		results.FetchString(0, sMap, 192)
+		//char sMap[192]
+		//results.FetchString(0, sMap, 192)
+		int type = results.FetchInt(0)
 		if(StrEqual(sMap, gS_map))
 		{
 			PrintToServer("Select successfuly completed.")
-			//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
-			Format(sQuery, 512, "SELECT type FROM zones")
+			Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
+			//Format(sQuery, 512, "SELECT type FROM zones")
 		}
 	}
 	else
@@ -416,9 +417,14 @@ void SQLSetZones2(Database db, DBResultSet results, const char[] error, any data
 {
 	PrintToServer("Succesfuly zoned.")
 	char sQuery[512]
+	Format(sQuery, 512, "SELECT type from zones")
+	gD_mysql.Query(SQLSetZones3, sQuery)
+}
+
+void SQLSetZones3(Database db, DBResultSet results, const char[] error, any data)
+{
 	if(results.FetchRow())
-		int type = results.FetchInt()
-		Format(sQuery, 512, ""
+		
 }
 
 Action cmd_vecmaxs(int client, int args)
