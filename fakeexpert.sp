@@ -118,11 +118,13 @@ public void OnClientPutInServer(int client)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 	//gD_mysql.Query(sQuery, SQLUserAdd)
-	gD_mysql.Query(sQuery, SQLAddUser, steamid)
+	gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
+	int client = GetClientFromSerial(data)
+	int steamid = GetAccountSteamID(client)
 	if(!results.FetchRow())
 	{
 		char sQuery[512]
