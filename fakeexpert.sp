@@ -592,7 +592,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		int points = tier * 16
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
-		dp2.WriteCell(other)
+		dp2.WriteCell(GetClientSerial(other))
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
 		//DataPack dp = new DataPack()
@@ -610,6 +610,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 
 void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp2)
 {
+	PrintToServer("Debug")
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
 	int other = dp2.ReadCell()
