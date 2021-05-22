@@ -511,13 +511,11 @@ void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, an
 {
 	PrintToServer("Successfuly created user table.")
 	char sQuery[512]
-	//Format(sQuery, 512, "INSERT INTO users (id) VALUES (1)"
 	Format(sQuery, 512, "INSERT INTO user (points) VALUES (0)")
-	//gD_mysql.Query(sQuery, SQLAddFakePoint)
-	gD_mysql.Query(SQLAddFakePoint, sQuery)
+	gD_mysql.Query(SQLAddFakePoints, sQuery)
 }
 
-void SQLAddFakePoint(Database db, DBResultSet, const char[] error, any data)
+void SQLAddFakePoints(Database db, DBResultSet, const char[] error, any data)
 {
 }
 
@@ -569,57 +567,13 @@ void SDKStartTouch(int entity, int other)
 		Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
 		gD_mysql.Query(SQLRecords, sQuery, dp)
 		DataPack dp2 = new DataPack()
-		//Transaction t = new Transaction()
 		dp2.WriteCell(client)
 		dp2.WriteCell(partner)
 		dp2.WriteCell(GetClientSerial(other))
-		//gB_other[other]
-		
-		//t.AddQuery
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
-		//t.AddQuery(sQuery, dp2)
-		//gD_mysql.Query(SQLTransGetMapTier, h)
-		//gD_mysql.Execute(t, sQuery, dp2)
-		//gD_mysql.Execute(
-		//t.Execute(sQuery, dp2)
-		//t.Execute(sQuery, SQLTransGetMapTier)
-		//t.Exe
-		//gD_mysql.Execute(t, SQLTransGetMapTier)
-		//
-		//gD_mysql.Execute(t, SQLTransGetMapTier) //shavit
 	}
 }
-
-/*void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
-{
-	Transaction t = new Transaction()
-	for(int i = 0; i < numQueries; i++)
-	{
-		while(results[i].FetchRow())
-		{
-			DataPack dp = view_as<DataPack>(queryData[i])
-			dp.Reset()
-			//int client = results[i].FetchInt(0)
-			//int partner = results[i].FetchInt(1)
-			//int other = results[i].FetchInt(2)
-			int client = dp.ReadCell()
-			int partner = dp.ReadCell()
-			int other = dp.ReadCell()
-			PrintToServer("SQLTransGetTier: %i %i %i", client, partner, other)
-			
-		}
-	}
-	char sQuery[32]
-	
-	t.AddQuery(
-		
-}*/
-
-//void SQLTransGetMapTier(Handle owner, Handle hndl, const char[] error, any data)
-//{
-	/**/
-//}
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
