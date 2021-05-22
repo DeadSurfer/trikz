@@ -535,7 +535,7 @@ void SDKStartTouch(int entity, int other)
 		Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
 		gD_mysql.Query(SQLRecords, sQuery, dp)
 		DataPack dp2 = new DataPack()
-		//Transaction t = new Transaction()
+		Transaction t = new Transaction()
 		dp2.WriteCell(client)
 		dp2.WriteCell(partner)
 		dp2.WriteCell(GetClientSerial(other))
@@ -543,10 +543,39 @@ void SDKStartTouch(int entity, int other)
 		
 		//t.AddQuery
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		gD_mysql.Query(SQLGetMapTier, sQuery, dp)
-		//gD_mysql.Execute(t, SQLTransGetMapTier, SQLErrorGetMapTier,
+		//gD_mysql.Query(SQLGetMapTier, sQuery, dp)
+		t.AddQuery(sQuery, dp2)
+		//gD_mysql.Query(SQLTransGetMapTier, h)
+		//gD_mysql.Execute(t, sQuery, dp2)
+		//gD_mysql.Execute(
+		//t.Execute(sQuery, dp2)
+		//t.Execute(sQuery, SQLTransGetMapTier)
+		//t.Exe
+		//gD_mysql.Execute(t, SQLTransGetMapTier)
+		//
+		gD_mysql.Execute(t, SQLTransGetMapTier)
 	}
 }
+
+void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
+{
+	Transaction t = new Transaction()
+	for(int i = 0; i <= numQueries; i++)
+	{
+		if()
+		//DataPack dp = new DataPack(queryData[i])
+		int client = results[i].FetchInt(0)
+		int partner = results[i].FetchInt(1)
+		int other = results[i].FetchInt(2)
+		PrintToServer("SQLTransGetTier: %i %i %i", client, partner, other)
+	}
+		
+}
+
+//void SQLTransGetMapTier(Handle owner, Handle hndl, const char[] error, any data)
+//{
+	/**/
+//}
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
