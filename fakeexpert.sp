@@ -127,7 +127,12 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	{
 		char sQuery[512]
 		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", data)
+		gD_mysql.Query(sQuery, SQLUserAdded)
 	}
+}
+
+void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 Action cmd_trikz(int client, int args)
