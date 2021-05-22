@@ -535,7 +535,7 @@ void SDKStartTouch(int entity, int other)
 		Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
 		gD_mysql.Query(SQLRecords, sQuery, dp)
 		DataPack dp2 = new DataPack()
-		Transaction t = new Transaction()
+		//Transaction t = new Transaction()
 		dp2.WriteCell(client)
 		dp2.WriteCell(partner)
 		dp2.WriteCell(GetClientSerial(other))
@@ -543,8 +543,8 @@ void SDKStartTouch(int entity, int other)
 		
 		//t.AddQuery
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		//gD_mysql.Query(SQLGetMapTier, sQuery, dp)
-		t.AddQuery(sQuery, dp2)
+		gD_mysql.Query(SQLGetMapTier, sQuery, dp)
+		//t.AddQuery(sQuery, dp2)
 		//gD_mysql.Query(SQLTransGetMapTier, h)
 		//gD_mysql.Execute(t, sQuery, dp2)
 		//gD_mysql.Execute(
@@ -553,7 +553,7 @@ void SDKStartTouch(int entity, int other)
 		//t.Exe
 		//gD_mysql.Execute(t, SQLTransGetMapTier)
 		//
-		gD_mysql.Execute(t, SQLTransGetMapTier) //shavit
+		//gD_mysql.Execute(t, SQLTransGetMapTier) //shavit
 	}
 }
 
@@ -625,7 +625,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	dp.Reset()
 	int client = dp.ReadCell()
 	int partner = dp.ReadCell()
-	int other = GetClientFromSerial(dp.ReadCell())
+	int other = dp.ReadCell()
 	PrintToChat(other, "Work")
 	PrintToServer("SQLGetMapTier: %i [%N]", other, other)
 	if(results.FetchRow())
@@ -656,7 +656,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	PrintToServer("Debug")
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
-	int other = dp2.ReadCell()
+	int other = GetClientFromSerial(dp2.ReadCell())
 	PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
