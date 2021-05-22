@@ -580,17 +580,24 @@ void SQLConnect(Database db, const char[] error, any data)
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
+	{
 		char sMap[192]
 		results.FetchString(0, sMap, 192)
 		if(!StrEqual(sMap, gS_map))
+		{
 			char sQuery[512]
 			Format(sQuery, 512, "INSERT INTO zones (type) VALUES (0)")
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 			Format(sQuery, 512, "INSERT INTO zones (type) VALUES (1)")
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
+		}
+	}
 }
 
-void
+void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("Successful SQLForceDefaultZonesType.")
+}
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
 {
