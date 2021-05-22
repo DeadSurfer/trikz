@@ -118,7 +118,8 @@ public void OnClientPutInServer(int client)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 	//gD_mysql.Query(sQuery, SQLUserAdd)
-	gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
+	//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
+	gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
@@ -129,8 +130,9 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	if(!results.FetchRow())
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", data)
-		gD_mysql.Query(sQuery, SQLUserAdded)
+		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
+		//gD_mysql.Query(sQuery, SQLUserAdded)
+		gD_mysql.Query(SQLUserAdded)
 	}
 }
 
@@ -574,7 +576,7 @@ void SDKStartTouch(int entity, int other)
 		
 		//t.AddQuery
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		gD_mysql.Query(SQLGetMapTier, sQuery, dp)
+		gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
 		//t.AddQuery(sQuery, dp2)
 		//gD_mysql.Query(SQLTransGetMapTier, h)
 		//gD_mysql.Execute(t, sQuery, dp2)
