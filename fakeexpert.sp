@@ -581,8 +581,30 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any dat
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
-		
+		int points = tier * 16
+		DataPack dp = new DataPack()
+		dp.WriteCell(points)
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", steamid)
+		gD_mysql.Query(SQLGetPoints, sQuery, dp)
 	}
+}
+
+void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
+	dp.Reset()
+	int earnedpoints = dp.ReadCell()
+	if(results.FetchRow())
+	{
+		int points = results.FetchInt(0)
+		char sQuery[512]
+		Format(sQuery, 512, "UPDATE users SET points = points + earnedpoints")
+		gD_mysql.Query(SQLEarnedPoints, sQuery)
+	}
+}
+
+void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 Action cmd_sum(int client, int args)
