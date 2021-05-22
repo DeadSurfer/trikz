@@ -114,7 +114,8 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT steamid FROM users WHERE stea,id
+	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
+	gD_mysql.Query(sQuery, SQLUserAdd)
 }
 
 Action cmd_trikz(int client, int args)
