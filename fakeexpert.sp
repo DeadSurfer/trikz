@@ -544,6 +544,7 @@ void SDKStartTouch(int entity, int other)
 		//t.AddQuery
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLGetMapTier, sQuery, dp)
+		//gD_mysql.Execute(t, SQLTransGetMapTier, SQLErrorGetMapTier,
 	}
 }
 
