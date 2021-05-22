@@ -379,12 +379,14 @@ Action cmd_vecmins(int client, int args)
 	if(args)
 	{
 		gI_zonetype = 1
-		Format(sQuery, 512, "SELECT map FROM zones")
+		//Format(sQuery, 512, "SELECT type FROM zones")
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec[2], gS_map, args)
 	}
 	else
 	{
 		gI_zonetype = 0
-		Format(sQuery, 512, "SELECT map FROM zones")
+		//Format(sQuery, 512, "SELECT type FROM zones")
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
 	}
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
@@ -392,29 +394,31 @@ Action cmd_vecmins(int client, int args)
 
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	char sQuery[512]
-	if(results.FetchRow())
-	{
-		char sMap[192]
-		results.FetchString(0, sMap, 192)
-		if(StrEqual(sMap, gS_map))
-		{
-			PrintToServer("Select successfuly completed.")
-			Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE type = %i", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
-		}
+	PrintToServer("Zone successfuly updated.")
+	//char sQuery[512]
+	//if(results.FetchRow())
+	//{
+		//char sMap[192]
+		//results.FetchString(0, sMap, 192)
+		//if(StrEqual(sMap, gS_map))
+		//if(
+		//{
+			//PrintToServer("Select successfuly completed.")
+			//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
+		//}
 	}
 	//else
 	//{
 		//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUES ('%s', %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2]) //shavit-zones.sp 2437
 		//PrintToServer("Select successufly incompleted.")
 	//}
-	gD_mysql.Query(SQLSetZones2, sQuery)
+	//gD_mysql.Query(SQLSetZones2, sQuery)
 }
 
-void SQLSetZones2(Database db, DBResultSet results, const char[] error, any data)
-{
-	PrintToServer("Succesfuly zoned.")
-}
+//void SQLSetZones2(Database db, DBResultSet results, const char[] error, any data)
+//{
+//	PrintToServer("Succesfuly zoned.")
+//}
 
 Action cmd_vecmaxs(int client, int args)
 {
