@@ -568,7 +568,7 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
+	if(!results.FetchRow())
 	{
 		char sMap[192]
 		results.FetchString(0, sMap, 192)
