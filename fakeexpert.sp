@@ -586,6 +586,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	int client = dp.ReadCell()
 	int partner = dp.ReadCell()
 	int other = GetClientFromSerial(dp.ReadCell())
+	PrintToChat(other, "Work")
 	PrintToServer("SQLGetMapTier: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
