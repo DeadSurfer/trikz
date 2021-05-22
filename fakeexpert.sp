@@ -594,6 +594,8 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 	{
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLSetZonesEntity, sQuery)
+		Format(sQuery, 512, "SELECT possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
+		gD_mysql.Query(SQLSetZoneEnd, sQuery)
 	}
 }
 
@@ -609,6 +611,18 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 		gF_vec1[0] = results.FetchFloat(0)
 		gF_vec1[1] = results.FetchFloat(1)
 		gF_vec1[2] = results.FetchFloat(2)
+		cmd_createstart(0)
+	}
+}
+
+void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		gF_vec2[0] = results.FetchFloat(0)
+		gF_vec2[1] = results.FetchFloat(1)
+		gF_vec2[2] = results.FetchFloat(2)
+		cmd_createend(0)
 	}
 }
 
