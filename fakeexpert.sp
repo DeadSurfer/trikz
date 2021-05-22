@@ -586,6 +586,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	int client = dp.ReadCell()
 	int partner = dp.ReadCell()
 	int other = GetClientFromSerial(dp.ReadCell())
+	PrintToServer("SQLGetMapTier: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
@@ -593,6 +594,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
 		dp2.WriteCell(GetClientSerial(other))
+		PrintToServer("SQLGetMapTier: %i [%N]", other, other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
 		//DataPack dp = new DataPack()
@@ -614,7 +616,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
 	int other = GetClientFromSerial(dp2.ReadCell())
-	PrintToServer("SQLGetPoints: %i", other)
+	PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
