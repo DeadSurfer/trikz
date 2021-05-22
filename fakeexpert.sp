@@ -515,7 +515,7 @@ void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, an
 	gD_mysql.Query(SQLAddFakePoints, sQuery)
 }
 
-void SQLAddFakePoints(Database db, DBResultSet, const char[] error, any data)
+void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
@@ -542,6 +542,8 @@ void SDKStartTouch(int entity, int other)
 		gB_state[other] = true
 		gB_state[gI_partner[other]] = true
 		gF_TimeStart[other] = GetEngineTime()
+		//gB_finished[other] = true
+		//gB_finishedPartner[gI_partner[other]
 		//PrintToChat(other, "Your time is: %f"
 	}
 	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
