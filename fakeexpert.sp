@@ -395,6 +395,7 @@ Action cmd_vecminsend(int client, int args)
 	args = 1
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
 	gD_mysql.Query(SQLSetZones, sQuery)
+	return Plugin_Handled
 }
 
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
