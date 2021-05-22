@@ -118,7 +118,7 @@ public void OnClientPutInServer(int client)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 	//gD_mysql.Query(sQuery, SQLUserAdd)
-	gD_mysql.Query(sQuery, SQLAddUser)
+	gD_mysql.Query(sQuery, SQLAddUser, steamid)
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
@@ -126,7 +126,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	if(!results.FetchRow())
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (
+		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", data)
 	}
 }
 
