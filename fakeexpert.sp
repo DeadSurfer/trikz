@@ -584,7 +584,7 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 	else
 	{
 		Format(sQuery, 512, "INSERT INTO zones (type) VALUES (0)")
-		gD_mysql(SQLForceDefaultZonesType, sQuery)
+		gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 		Format(sQuery, 512, "INSERT INTO zones (type) VALUES (1)")
 		gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 	}
