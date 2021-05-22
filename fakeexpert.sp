@@ -597,7 +597,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		gD_mysql.Query(SQLGetPoints, sQuery, dp)
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
 		gD_mysql.Query(SQLGetPoints, sQuery)
-		GetClientFromAuth
+		PrintToChat(other, "You recive %i points. You have %i points."
 	}
 }
 
