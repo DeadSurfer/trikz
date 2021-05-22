@@ -557,7 +557,7 @@ void SDKStartTouch(int entity, int other)
 	}
 }
 
-void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
+/*void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
 {
 	Transaction t = new Transaction()
 	for(int i = 0; i < numQueries; i++)
@@ -573,10 +573,14 @@ void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] res
 			int partner = dp.ReadCell()
 			int other = dp.ReadCell()
 			PrintToServer("SQLTransGetTier: %i %i %i", client, partner, other)
+			
 		}
 	}
+	char sQuery[32]
+	
+	t.AddQuery(
 		
-}
+}*/
 
 //void SQLTransGetMapTier(Handle owner, Handle hndl, const char[] error, any data)
 //{
