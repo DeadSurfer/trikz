@@ -389,8 +389,8 @@ Action cmd_vecmins(int client, int args)
 
 Action cmd_vecminsend(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec2)
-	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	GetClientAbsOrigin(client, gF_vec1)
+	PrintToServer("vec2: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	char sQuery[512]
 	args = 1
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
@@ -427,8 +427,8 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 
 Action cmd_vecmaxs(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec1)
-	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	GetClientAbsOrigin(client, gF_vec2)
+	PrintToServer("vec1: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	char sQuery[512]
 	args = 0
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
