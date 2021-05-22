@@ -611,7 +611,7 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 		gF_vec1[0] = results.FetchFloat(0)
 		gF_vec1[1] = results.FetchFloat(1)
 		gF_vec1[2] = results.FetchFloat(2)
-		cmd_createstart(0)
+		cmd_createstart(0, 0)
 	}
 }
 
@@ -622,7 +622,7 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 		gF_vec2[0] = results.FetchFloat(0)
 		gF_vec2[1] = results.FetchFloat(1)
 		gF_vec2[2] = results.FetchFloat(2)
-		cmd_createend(0)
+		cmd_createend(0, 0)
 	}
 }
 
