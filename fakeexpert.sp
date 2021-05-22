@@ -606,11 +606,11 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	}
 }
 
-void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp2)
 {
-	dp.Reset()
-	int earnedpoints = dp.ReadCell()
-	int other = dp.ReadCell()
+	dp2.Reset()
+	int earnedpoints = dp2.ReadCell()
+	int other = dp2.ReadCell()
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
