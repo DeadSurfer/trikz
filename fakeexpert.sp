@@ -590,14 +590,14 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	{
 		int tier = results.FetchInt(0)
 		int points = tier * 16
-		DataPack dp = new DataPack()
-		dp.WriteCell(points)
-		dp.WriteCell(other)
+		DataPack dp2 = new DataPack()
+		dp2.WriteCell(points)
+		dp2.WriteCell(other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
 		//DataPack dp = new DataPack()
 		//dp.WriteCell(other)
-		gD_mysql.Query(SQLGetPoints, sQuery, dp)
+		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
 		//DataPack dp = new DataPack()
 		//dp.WriteCell(partner)
