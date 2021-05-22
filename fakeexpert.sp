@@ -587,6 +587,7 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
+			PrintToServer("Insert result passed.")
 		}
 	}
 	if(!results.FetchRow())
