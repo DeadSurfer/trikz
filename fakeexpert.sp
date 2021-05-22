@@ -579,8 +579,11 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 	//PrintToServer("Record inserted.")
 }
 
-void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
+	dp.Reset()
+	int client = dp.ReadCell()
+	int partner = dp.ReadCell()
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
@@ -588,8 +591,9 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any dat
 		DataPack dp = new DataPack()
 		dp.WriteCell(points)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", steamid)
+		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp)
+		Format(sQuery, 512, "SELECT points
 	}
 }
 
