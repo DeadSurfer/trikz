@@ -398,7 +398,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 		//char sMap[192]
 		//results.FetchString(0, sMap, 192)
 		int type = results.FetchInt(0)
-		if(StrEqual(sMap, gS_map))
+		//if(StrEqual(sMap, gS_map))
 		{
 			PrintToServer("Select successfuly completed.")
 			Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
@@ -572,6 +572,8 @@ void SQLConnect(Database db, const char[] error, any data)
 {
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
+	char sQuery[512]
+	Format(sQuery, 512, "INSERT INTO zones (
 }
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
