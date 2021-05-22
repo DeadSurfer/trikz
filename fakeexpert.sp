@@ -534,6 +534,8 @@ void SDKStartTouch(int entity, int other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
 		gD_mysql.Query(SQLRecords, sQuery, dp)
+		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
+		gD_mysql.Query(SQLGetMapTier, sQuery)
 	}
 }
 
@@ -572,6 +574,15 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any d
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	//PrintToServer("Record inserted.")
+}
+
+void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		int tier = results.FetchInt(0)
+		
+	}
 }
 
 Action cmd_sum(int client, int args)
