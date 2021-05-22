@@ -581,14 +581,14 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 	{
 		results.FetchString(0, sMap, 192)
 		PrintToServer("Map: %s", sMap)
-		if(StrEqual(sMap, gS_map))
+		if(!StrEqual(sMap, gS_map))
 		{
 			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 			PrintToServer("Insert result passed.")
-			break
+			//return
 		}
 	}
 	if(!results.FetchRow())
