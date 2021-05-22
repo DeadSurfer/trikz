@@ -380,7 +380,7 @@ Action cmd_vecmins(int client, int args)
 	{
 		gI_zonetype = 1
 		//Format(sQuery, 512, "SELECT type FROM zones")
-		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec[2], gS_map, args)
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
 	}
 	else
 	{
