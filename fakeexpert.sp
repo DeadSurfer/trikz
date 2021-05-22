@@ -113,6 +113,8 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
+	char sQuery[512]
+	Format(sQuery, 512, "SELECT steamid FROM users WHERE  
 }
 
 Action cmd_trikz(int client, int args)
@@ -485,6 +487,7 @@ Action cmd_createuser(int args)
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("Successfuly created user table.")
+	char s
 }
 
 Action cmd_createrecords(int args)
