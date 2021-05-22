@@ -534,12 +534,12 @@ void SDKStartTouch(int entity, int other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
 		gD_mysql.Query(SQLRecords, sQuery, dp)
-		DataPack dp = new DataPack()
-		dp.WriteCell(client)
-		dp.WriteCell(partner)
-		dp.WriteCell(other)
+		DataPack dp2 = new DataPack()
+		dp2.WriteCell(client)
+		dp2.WriteCell(partner)
+		dp2.WriteCell(other)
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		gD_mysql.Query(SQLGetMapTier, sQuery, dp)
+		gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
 	}
 }
 
