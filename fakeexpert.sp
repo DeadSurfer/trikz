@@ -564,10 +564,14 @@ void SQLTransGetMapTier(Database db, any data, int numQueries, DBResultSet[] res
 	{
 		while(results[i].FetchRow())
 		{
-			//DataPack dp = new DataPack(queryData[i])
-			int client = results[i].FetchInt(0)
-			int partner = results[i].FetchInt(1)
-			int other = results[i].FetchInt(2)
+			DataPack dp = view_as<DataPack>(queryData[i])
+			dp.Reset()
+			//int client = results[i].FetchInt(0)
+			//int partner = results[i].FetchInt(1)
+			//int other = results[i].FetchInt(2)
+			int client = dp.ReadCell()
+			int partner = dp.ReadCell()
+			int other = dp.ReadCell()
 			PrintToServer("SQLTransGetTier: %i %i %i", client, partner, other)
 		}
 	}
