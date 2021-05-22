@@ -568,9 +568,9 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(!results.FetchRow())
+	char sMap[192]
+	if(results.FetchRow())
 	{
-		char sMap[192]
 		results.FetchString(0, sMap, 192)
 		if(!StrEqual(sMap, gS_map))
 		{
@@ -580,6 +580,13 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 			Format(sQuery, 512, "INSERT INTO zones (type) VALUES (1)")
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 		}
+	}
+	else
+	{
+		Format(sQuery, 512, "INSERT INTO zones (type) VALUES (0)")
+		gD_mysql(SQLForceDefaultZonesType, sQuery)
+		Format(sQuery, 512, "INSERT INTO zones (type) VALUES (1)")
+		gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 	}
 }
 
