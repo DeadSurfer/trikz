@@ -424,16 +424,18 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 
 Action cmd_vecmaxs(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec2)
-	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	//GetClientAbsOrigin(client, gF_vec2)
+	//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	char sQuery[512]
 	if(args)
 	{
+		GetClientAbsOrigin(client, gF_vec1)
 		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
 	}
 	else
 	{
+		
 		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
 	}
