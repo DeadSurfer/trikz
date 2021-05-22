@@ -400,7 +400,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 		if(StrEqual(sMap, gS_map))
 		{
 			PrintToServer("Select successfuly completed.")
-			Format(sQuery, 512, "UPDATE zones SET map = %s, type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
+			Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		}
 	}
 	else
