@@ -113,8 +113,10 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
+	//GetAccountSteamID
+	int steamid = GetSteamAccountID(client)
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
+	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 	//gD_mysql.Query(sQuery, SQLUserAdd)
 	gD_mysql.Query(sQuery, SQLAddUser)
 }
@@ -123,7 +125,8 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(!results.FetchRow())
 	{
-		
+		char sQuery[512]
+		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (
 	}
 }
 
