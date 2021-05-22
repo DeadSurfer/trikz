@@ -573,7 +573,18 @@ void SQLConnect(Database db, const char[] error, any data)
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO zones (
+	Format(sQuery, 512, "SELECT map FROM zones")
+	gD_mysql.Query(SQLForceDefaultZones, sQuery)
+}
+
+void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+		char sMap[192]
+		results.FetchString(0, sMap, 192)
+		if(!StrEqual(sMap, gS_map))
+			char sQuery[512]
+			Format(sQuery, 512, "INSERT INTO zones (type) VALUES 
 }
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
