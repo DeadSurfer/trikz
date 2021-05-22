@@ -537,7 +537,7 @@ void SDKStartTouch(int entity, int other)
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(client)
 		dp2.WriteCell(partner)
-		dp2.WriteCell(other)
+		dp2.WriteCell(GetClientSerial(other))
 		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
 	}
@@ -585,7 +585,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	dp.Reset()
 	int client = dp.ReadCell()
 	int partner = dp.ReadCell()
-	int other = dp.ReadCell()
+	int other = GetClientFromSerial(dp.ReadCell())
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
@@ -613,7 +613,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	PrintToServer("Debug")
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
-	int other = dp2.ReadCell()
+	int other = GetClientFromSerial(dp2.ReadCell())
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
