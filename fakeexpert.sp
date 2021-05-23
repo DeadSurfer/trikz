@@ -349,29 +349,24 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void Restart(int client)
 {
-	gB_insideZone[client] = true
-	//gB_insideZone[Other
-	//gB_insideZone[other
-	gB_insideZone[gI_partner[client]] = true
-	float vecVel[3]
-	vecVel[0] = 30.0
-	vecVel[1] = 30.0
-	vecVel[2] = 0.0
-	TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
-	TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
-	SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-	//Re
-	SetEntityRenderMode(client, RENDER_TRANSALPHA)
-	SetEntityRenderColor(client, 255, 255, 255, 75)
-	//SetEntProp(gI_partner[client]. 
-	//SetEntProp)
-	SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 2)
-	//SetEntData
-	SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
-	//SetEntData
-	SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
-	//CreateTimer(2.0
-	CreateTimer(3.0, Timer_BlockToggle, client)
+	if(gI_parnter[client] != 0)
+	{
+		gB_insideZone[client] = true
+		gB_insideZone[gI_partner[client]] = true
+		float vecVel[3]
+		vecVel[0] = 30.0
+		vecVel[1] = 30.0
+		vecVel[2] = 0.0
+		TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
+		TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
+		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		SetEntityRenderMode(client, RENDER_TRANSALPHA)
+		SetEntityRenderColor(client, 255, 255, 255, 75)
+		SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 2)
+		SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
+		SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
+		CreateTimer(3.0, Timer_BlockToggle, client)
+	}
 }
 
 //Action Timer_BlockToggle(Hadle 
