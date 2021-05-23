@@ -929,6 +929,8 @@ Action cmd_createtable(int args)
 
 void SQLConnect(Database db, const char[] error, any data)
 {
+	if(!db)
+		return
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
 	char sQuery[512]
