@@ -300,6 +300,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						gI_partner[param1] = partner
 						gI_partner[partner] = param1
 						PrintToChat(param1, "Partnersheep agreed with %N.", partner)
+						PrintToChat(partner, "You have %N as partner.", param1)
 					}
 					else
 						PrintToChat(param1, "A player already have a partner.")
