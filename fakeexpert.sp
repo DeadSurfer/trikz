@@ -647,17 +647,22 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 //void SDKStartTouch(int entity, int other
 void SDKEndTouch(int entity, int other)
 {
+	//gB_insideZone[other] = false
+	gB_insideZone[other] = false
 	char sTrigger[32]
 	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 	if(StrEqual(sTrigger, "fakeexpert_startzone"))
 	{
-		gB_state[other] = true
-		gB_state[gI_partner[other]] = true
-		gB_mapfinished[other] = false
-		gB_mapfinished[gI_partner[other]] = false
-		gF_Time[other] = GetEngineTime()
-		gF_Time[gI_partner[other]] = GetEngineTime()
-		gB_insideZone[
+		if(gB_insideZone[other] && gB_insideZone[gI_partner[other]])
+		{
+			gB_state[other] = true
+			gB_state[gI_partner[other]] = true
+			gB_mapfinished[other] = false
+			gB_mapfinished[gI_partner[other]] = false
+			gF_Time[other] = GetEngineTime()
+			gF_Time[gI_partner[other]] = GetEngineTime()
+		}
+		//gB_insideZone[
 	}
 }
 
