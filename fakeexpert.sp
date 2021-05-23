@@ -702,6 +702,7 @@ void SDKStartTouch(int entity, int other)
 			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 			int client = GetSteamAccountID(other)
 			int partner = GetSteamAccountID(gI_partner[other])
+			PrintToServer("%i %i", client, partner)
 			//shavit - datapack
 			DataPack dp = new DataPack()
 			dp.WriteCell(client)
