@@ -408,6 +408,14 @@ Action Timer_BlockToggle(Handle timer, int client)
 
 Action cmd_createstart(int client, int args)
 {
+	char sTriggerName2[64]
+	int index
+	while((index = FindEntityByClassname(index)) != -1)
+	{
+		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
+		if(StrEqual(sTriggerName2, "fakeexpert_startzone")
+			return Plugin_Handled
+	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
@@ -457,6 +465,14 @@ Action cmd_createstart(int client, int args)
 
 Action cmd_createend(int client, int args)
 {
+	char sTriggerName2[64]
+	int index
+	while((index = FindEntityByClassname(index)) != -1)
+	{
+		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
+		if(StrEqual(sTriggerName2, "fakeexpert_endzone")
+			return Plugin_Handled
+	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
