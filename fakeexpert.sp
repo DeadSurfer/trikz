@@ -23,6 +23,7 @@ int gI_zonetype
 bool gB_mapfinished[MAXPLAYERS + 1]
 bool gB_pass
 bool gB_insideZone[MAXPLAYERS + 1]
+bool gB_passzone[MAXPLAYERS + 1]
 
 public void OnPluginStart()
 {
@@ -665,6 +666,8 @@ void SDKEndTouch(int entity, int other)
 			gF_Time[other] = GetEngineTime()
 			gF_Time[gI_partner[other]] = GetEngineTime()
 			PrintToServer("EndTouch")
+			gB_passzone[other] = true
+			gB_passzone[gI_partner[other]] = true
 		}
 		gB_insideZone[other] = false
 	}
@@ -673,7 +676,11 @@ void SDKEndTouch(int entity, int other)
 //void SDKStartTouch(int entity, int other)
 void SDKStartTouch(int entity, int other)
 {
-	gB_insideZone[other] = true
+	if(gB_passzone[other])
+		gB_insideZone[other] = true
+		gB_passzone[other] = false
+	//PrintToServer("%i", other)
+	PrintToServer("SDKStartTouch %i %i", entity, other)
 	char sTrigger[32]
 	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 	if(StrEqual(sTrigger, "fakeexpert_endzone"))
