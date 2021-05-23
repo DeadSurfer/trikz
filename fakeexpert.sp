@@ -733,6 +733,7 @@ void SDKStartTouch(int entity, int other)
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
 			gB_mapfinished[other] = true
+			//gB_zonepass[other
 			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 			{
 				int hour = RoundToFloor(gF_Time[other])
@@ -823,9 +824,9 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
 		DataPack dp3 = new DataPack()
-		
+		dp3.WriteCell(points)
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
-		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
+		gD_mysql.Query(SQLGetPointsPartner, sQuery, dp2)
 	}
 }
 
@@ -843,12 +844,25 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 		Format(sQuery, 512, "UPDATE users SET points = points + earnedpoints")
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 		//PrintToChat(other, "Work")
-		if(gB_passzone[other])
-		{
+		//if(gB_passzone[other])
+		//{
 			PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points)
 			PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points)
-			gB_passzone[other] = false
-		}
+			//gB_passzone[other] = false
+		//}
+	}
+}
+
+void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, DataPack dp3)
+{
+	dp3.Reset()
+	int eranedpoints = dp3.ReadCell()
+	if(results.FeatchRow())
+	{
+		int points = results.FetchInt(0)
+		char sQuery[512]
+		Format(sQuery, 512, "UPDATE users SET points = points + earnedpoints")
+		gD_mysql.Query(SQLEarnedPoints, sQuery)
 	}
 }
 
