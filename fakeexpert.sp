@@ -552,7 +552,7 @@ void SDKStartTouch(int entity, int other)
 	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
 	{
 		gB_mapfinished[other] = true
-		if(gB_mapfinished[other] && gB_map_finished[gI_partner[other]])
+		if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 		{
 			gB_state[other] = false
 			gB_state[gI_partner[other]] = false
