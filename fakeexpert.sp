@@ -119,6 +119,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	//GetAccountSteamID
+	char sQuery[512]
 	if(gB_pass)
 	{
 		for(int i = 1; i <= MaxClients; i++)
@@ -126,7 +127,6 @@ public void OnClientPutInServer(int client)
 			if(IsClientInGame(i))
 			{
 				int steamid = GetSteamAccountID(i)
-				char sQuery[512]
 				Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 				//gD_mysql.Query(sQuery, SQLUserAdd)
 				//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
