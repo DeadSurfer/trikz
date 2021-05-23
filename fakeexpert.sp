@@ -1120,8 +1120,40 @@ void ProjectileBoostFix(int entity, int other)
 			//float flClientSpeed[3]
 			//GetEntPropFloat(other, 
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
+			DataPack dp = new DataPack()
+			dp.WriteCell(entity)
+			dp.WriteCell(other)
+			//RequestFrame(rf_1, dp)
 		}
 	}
+}
+
+void rf_1(DataPack dp)
+{
+	dp.Reset()
+	int entity = dp.ReadCell()
+	int other = dp.ReadCell()
+	DataPack dp2 = new DataPack()
+	dp2.WriteCell(entity)
+	dp2.WriteCell(other)
+	RequestFrame(rf_2, dp2)
+}
+
+void rf_2(DataPack dp)
+{
+	dp.Reset()
+	int entity = dp.ReadCell()
+	int other = dp.ReadCell()
+	PrintToServer("%i %i %N", entity, other, other)
+	float vecAbsVelocity[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
+	PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
+	vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
+	vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
+	vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
+	//float flClientSpeed[3]
+	//GetEntPropFloat(other, 
+	TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
 }
 
 Action cmd_time(int client, int args)
@@ -1144,7 +1176,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
+		SDKHook(entity, SDKHook_Touch, ProjectileBoostFix)
 	}
 }
 
