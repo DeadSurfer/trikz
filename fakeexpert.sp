@@ -1067,8 +1067,9 @@ void ProjectileBoostFix(int entity, int other)
 	GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins)
 	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
 	//vecMins[0] = 
-	vecMaxs[]
-	if(vec
+	//vecMaxs[]
+	//if(vec
+	PrintToServer("%f %f %f, %f %f %f", vecMins[0], vecMins[1], vecMins[2], vecMaxs[0], vecMaxs[1], vecMaxs[2])
 }
 
 Action cmd_time(int client, int args)
