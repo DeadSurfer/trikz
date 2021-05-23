@@ -726,46 +726,47 @@ void SDKStartTouch(int entity, int other)
 	{
 		gB_insideZone[other] = true
 		gB_passzone[other] = false
-	}
-	//PrintToServer("%i", other)
-	PrintToServer("SDKStartTouch %i %i", entity, other)
-	char sTrigger[32]
-	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
-	if(StrEqual(sTrigger, "fakeexpert_endzone"))
-	{
-		gB_mapfinished[other] = true
-		if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
+		//PrintToServer("%i", other)
+		PrintToServer("SDKStartTouch %i %i", entity, other)
+		char sTrigger[32]
+		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
+		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
-			int hour = RoundToFloor(gF_Time[other])
-			hour = hour / 360
-			int minute = RoundToFloor(gF_Time[other])
-			minute = (minute / 60) % 24
-			int second = RoundToFloor(gF_Time[other])
-			second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-			PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-			int client = GetSteamAccountID(other)
-			int partner = GetSteamAccountID(gI_partner[other])
-			PrintToServer("%i %i", client, partner)
-			//shavit - datapack
-			DataPack dp = new DataPack()
-			dp.WriteCell(GetClientSerial(other))
-			//dp.WriteCell(other[)
-			dp.WriteCell(GetClientSerial(gI_partner[other]))
-			PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
-			dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
-			char sQuery[512]
-			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-			gD_mysql.Query(SQLRecords, sQuery, dp)
-			DataPack dp2 = new DataPack()
-			dp2.WriteCell(client)
-			dp2.WriteCell(partner)
-			dp2.WriteCell(GetClientSerial(other))
-			PrintToServer("%i other", other)
-			Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-			gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
+			gB_mapfinished[other] = true
+			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = hour / 360
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 24
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				int client = GetSteamAccountID(other)
+				int partner = GetSteamAccountID(gI_partner[other])
+				PrintToServer("%i %i", client, partner)
+				//shavit - datapack
+				DataPack dp = new DataPack()
+				dp.WriteCell(GetClientSerial(other))
+				//dp.WriteCell(other[)
+				dp.WriteCell(GetClientSerial(gI_partner[other]))
+				PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
+				dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
+				gD_mysql.Query(SQLRecords, sQuery, dp)
+				DataPack dp2 = new DataPack()
+				dp2.WriteCell(client)
+				dp2.WriteCell(partner)
+				dp2.WriteCell(GetClientSerial(other))
+				PrintToServer("%i other", other)
+				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
+				gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
+			}
 		}
 	}
+	//gB_passzone[other] = false
 }
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
@@ -839,7 +840,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = points + earnedpoints")
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
-		PrintToChat(other, "Work")
+		//PrintToChat(other, "Work")
 		PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points)
 		PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points)
 	}
