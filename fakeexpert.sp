@@ -563,7 +563,7 @@ void SDKStartTouch(int entity, int other)
 		gB_mapfinished[other] = false
 		gB_mapfinished[gI_partner[other]] = false
 		gF_TimeStart[other] = GetEngineTime()
-		gF_TimerStart[gI_partner[other]] = GetEngineTime()
+		gF_TimeStart[gI_partner[other]] = GetEngineTime()
 		//gB_finished[other] = true
 		//gB_finishedPartner[gI_partner[other]
 		//PrintToChat(other, "Your time is: %f"
