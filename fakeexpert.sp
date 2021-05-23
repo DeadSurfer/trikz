@@ -708,8 +708,8 @@ void SDKEndTouch(int entity, int other)
 			gB_state[gI_partner[other]] = true
 			gB_mapfinished[other] = false
 			gB_mapfinished[gI_partner[other]] = false
-			gF_Time[other] = GetEngineTime()
-			gF_Time[gI_partner[other]] = GetEngineTime()
+			gF_TimeStart[other] = GetEngineTime()
+			gF_TimeStart[gI_partner[other]] = GetEngineTime()
 			PrintToServer("EndTouch")
 			gB_passzone[other] = true
 			gB_passzone[gI_partner[other]] = true
