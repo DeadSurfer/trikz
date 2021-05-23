@@ -709,27 +709,14 @@ void SDKStartTouch(int entity, int other)
 			dp.WriteCell(partner)
 			dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 			char sQuery[512]
-			//Format(sQuery, 512, "SELECT time FROM records WHERE ((clien
-			//Format(sQuery, 512, "SELECT time FROM records WHERE ((steamid = %i AND s
-			//Format
-			//
-			//Format(Squery
 			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-			/*gD_mysql.Query(SQLRecords, sQuery)
-			DataPack dp2 = new DataPack()
-			dp2.WriteCell(client)
-			dp2.WriteCell(partner)
-			dp2.WriteCell(GetClientSerial(other))*/
 			gD_mysql.Query(SQLRecords, sQuery, dp)
 			DataPack dp2 = new DataPack()
 			dp2.WriteCell(client)
 			dp2.WriteCell(partner)
 			dp2.WriteCell(GetClientSerial(other))
-			//Format(sQuery, 512, "SELECT tier FROM
 			Format(sQuery, 512, "SELECT tier FROM records WHERE map '%s' AND type = 0", gS_map)
 			gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
-			//Foram
-			//Format(sQuery, 512, "SELECT tier FROM records WHERE map = '%s' AND type = 0", gS_map)
 		}
 	}
 }
