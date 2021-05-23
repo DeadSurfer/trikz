@@ -870,12 +870,12 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 
 void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp2)
 {
-	PrintToServer("Debug")
+	//PrintToServer("Debug")
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
 	int other = GetClientFromSerial(dp2.ReadCell())
 	int clientid = dp2.ReadCell()
-	PrintToServer("SQLGetPoints: %i [%N]", other, other)
+	//PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
@@ -959,7 +959,7 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 
 void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("Successful SQLForceDefaultZonesType.")
+	//PrintToServer("Successful SQLForceDefaultZonesType.")
 }
 
 void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
@@ -1008,7 +1008,7 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 		gF_vec2[0] = results.FetchFloat(3)
 		gF_vec2[1] = results.FetchFloat(4)
 		gF_vec2[2] = results.FetchFloat(5)
-		PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+		//PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		cmd_createend(0, 0)
 	}
 }
