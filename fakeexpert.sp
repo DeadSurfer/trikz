@@ -1062,24 +1062,65 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 void ProjectileBoostFix(int entity, int other)
 {
-	float vecMins[3]
-	float vecMaxs[3]
-	//GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins)
-	//GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+	float vecMinsEntity[3]
+	float vecMaxsEntity[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMinsEntity)
+	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxsEntity)
 	//vecMins[0] = 
 	//vecMaxs[]
 	//if(vec
 	//PrintToServer("%f %f %f, %f %f %f", vecMins[0], vecMins[1], vecMins[2], vecMaxs[0], vecMaxs[1], vecMaxs[2])
 	//PrintToServer("%i %i %N", entity, other, other)
+	//float flSpeed2
+	//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", flSpeed2)
+	//PrintToServer("%f", flSpeed2)
 	if(0 < other <= MaxClients && IsPlayerAlive(other))
 	{
+		float vecMins[3]
 		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
-		PrintToServer("%f %f %f", vecMins[0], vecMins[1], vecMins[2])
-		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecMaxs)
-		PrintToServer("%f %f %f", vecMaxs[0], vecMaxs[1], vecMaxs[2])
+		//PrintToServer("%f %f %f", vecMins[0], vecMins[1], vecMins[2])
+		//GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecMaxs)
+		//PrintToServer("%f %f %f", vecMaxs[0], vecMaxs[1], vecMaxs[2])
 		float vecAbs[3]
 		GetClientAbsOrigin(other, vecAbs)
-		PrintToServer("%f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
+		//PrintToServer("%f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
+		//float lowVecBox[3]
+		//lowVecBox[0] = vecAbs[0] - vecMaxs[0]
+		//lowVecBox[1] = vecAbs[1] - vecMaxs[1]
+		//lowVecBox[2] = vecAbs[2] - vecMaxs[2]
+		//if(lowVecBox[0] && lowVecBox[1] && lowVecBox[2])
+		//{
+			//PrintToServer("Delta")
+			//Teleport
+			//float vecProjectileSpeed[3]
+			//float vecProjectileSpeed
+			//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", vecProjectileSpeed)
+			//PrintToServer("%f %f %f", vecProjectileSpeed[0], vecProjectileSpeed[1], vecProjectileSpeed[2])
+			//PrintToServer("%f", vecProjectileSpeed)
+		//}
+		//if(vecMins[2] - 
+		float vecEntityOrigin[3]
+		//GetEntityOrigin(entity, vecEntityOrigin)
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecEntityOrigin)
+		float vecMaxs[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+		//float delta = vecMins[2] - vecMaxsEntity[2] - vecAbs[2] //https://forums.alliedmods.net/showthread.php?p=2051806 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp
+		float delta = vecAbs[2] - vecEntityOrigin[2] - vecMaxs[2]
+		if(delta == 0.031250)
+		{
+			//float flSpeed
+			//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", flSpeed)
+			//PrintToServer("%f %f", delta, flSpeed)
+			float vecAbsVelocity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
+			PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
+			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
+			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
+			vecAbsVelocity[2] = vecAbsVelocity[2] * -1.0
+			//float flClientSpeed[3]
+			//GetEntPropFloat(other, 
+			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
+		}
 	}
 }
 
