@@ -286,6 +286,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 	{
 		case MenuAction_Select:
 		{
+			int param2x = param2
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
 			int partner = StringToInt(sItem)
@@ -295,7 +296,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				{
 					if(gI_partner[partner] == 0)
 					{
-						PrintToServer("%i %N, %i %N", param1, param1, partner, partner)
+						PrintToServer("%i %N, %i %N", param1, param1, param2, param2)
 						gI_partner[param1] = partner
 						gI_partner[partner] = param1
 						PrintToChat(param1, "Partnersheep agreed with %N.", partner)
