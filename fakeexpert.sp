@@ -857,7 +857,7 @@ void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, D
 {
 	dp3.Reset()
 	int eranedpoints = dp3.ReadCell()
-	if(results.FeatchRow())
+	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
 		char sQuery[512]
