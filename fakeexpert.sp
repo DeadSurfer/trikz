@@ -273,7 +273,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			int partner = StringToInt(sItem)
 			Menu menu2 = new Menu(askpartner_handle)
 			menu2.SetTitle("Agree partner with %N?", param1)
-			menu2.AddItem(sItem, "Yes")
+			menu2.AddItem(param1, "Yes")
 			menu2.AddItem(sItem, "No")
 			menu2.Display(partner, 20)
 		}
