@@ -692,8 +692,9 @@ void SDKStartTouch(int entity, int other)
 			PrintToServer("%i %i", client, partner)
 			//shavit - datapack
 			DataPack dp = new DataPack()
-			dp.WriteCell(client)
-			dp.WriteCell(partner)
+			dp.WriteCell(other)
+			//dp.WriteCell(other[)
+			dp.WriteCell(gI_partner[other])
 			dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 			char sQuery[512]
 			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
