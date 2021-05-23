@@ -353,8 +353,12 @@ void Restart(int client)
 	//gB_insideZone[Other
 	//gB_insideZone[other
 	gB_insideZone[gI_partner[client]] = true
-	TeleportEntity(client, gF_vecStart, NULL_VECTOR, 30.0)
-	TeleportEntity(client, gF_vecStart, NULL_VECTOR, 30.0)
+	float vecVel[3]
+	vecVel[0] = 30.0
+	vecVel[1] = 30.0
+	vecVel[2] = 0.0
+	TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
+	TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	//Re
 	SetEntityRenderMode(client, RENDER_TRANSALPHA)
