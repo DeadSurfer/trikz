@@ -141,7 +141,8 @@ public void OnClientPutInServer(int client)
 		{
 			char sName[64]
 			GetClientName(client, sName, 64)
-			Format(sQuery, 512, "UPDATE users SET username = '%s'", sName)
+			int steamid = GetSteamAccountID(client)
+			Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			gD_mysql.Query(SQLUpdateUsername, sQuery)
 		}
 	}
