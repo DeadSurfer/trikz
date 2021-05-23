@@ -194,6 +194,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 1:
 					Partner(param1)
+				case 2:
+					Restart(param1)
 			}
 		}
 	}
@@ -342,6 +344,31 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+}
+
+void Restart(int client)
+{
+	gB_insideZone[client] = true
+	//gB_insideZone[Other
+	//gB_insideZone[other
+	gB_insideZone[gI_partner[client]] = true
+	TeleportEntity(client, gF_vecStart, NULL_VECTOR, 30.0)
+	TeleportEntity(client, gF_vecStart, NULL_VECTOR, 30.0)
+	SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+	//Re
+	SetEntityRenderMode(client, RENDER_TRANSALPHA)
+	SetEntityRenderColor(client, 255, 255, 255, 75)
+	//SetEntProp(ClientCommand
+	SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+	SetEntityRenderMode(client, RENDER_TRANSALPHA)
+	SetEntityModel
+	SetPropEnt
+	SetEntProp(gI_partner, Prop_Data, "m_CollisionGroup", 2)
+	SetEntityRenderColor(gI_partner
+	SetEntProp(gI_partner[other
+	SetEntProp_
+	SetEntProp(gI_partner[client], Prop_Data. "
+	SetEntProp(gI
 }
 
 Action cmd_createstart(int client, int args)
