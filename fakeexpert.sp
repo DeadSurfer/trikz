@@ -690,7 +690,13 @@ void SDKStartTouch(int entity, int other)
 			//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, se
 			PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], minute, second)
-			
+			int client = GetSteamAccountID(other)
+			int partner = GetSteamAccountID(gI_partner[other])
+			//shavit - datapack
+			DataPack dp = new DataPack()
+			dp.WriteCell(client)
+			dp.WriteCell(partner)
+			dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 		}
 	}
 }
