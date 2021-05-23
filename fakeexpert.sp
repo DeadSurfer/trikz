@@ -136,10 +136,13 @@ public void OnClientPutInServer(int client)
 	}
 	else
 	{
-		char sName[64]
-		GetClientName(client, sName, 64)
-		Format(sQuery, 512, "UPDATE users SET username = '%s'", sName)
-		gD_mysql.Query(SQLUpdateUsername, sQuery)
+		if(IsClientInGame(client))
+		{
+			char sName[64]
+			GetClientName(client, sName, 64)
+			Format(sQuery, 512, "UPDATE users SET username = '%s'", sName)
+			gD_mysql.Query(SQLUpdateUsername, sQuery)
+		}
 	}
 }
 
