@@ -715,6 +715,7 @@ void SDKEndTouch(int entity, int other)
 			gB_passzone[gI_partner[other]] = true
 		}
 		gB_insideZone[other] = false
+		gB_insideZone[gI_partner[other]] = false
 	}
 }
 
