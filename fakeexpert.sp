@@ -1054,22 +1054,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }
 
-public void OnEntityCreated(int entity, const char[] classname)
+/*(public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrContains(classname, "projectile")
+	if(StrContains(classname, "projectile"))
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
-}
+}*/
 
 void ProjectileBoostFix(int entity, int other)
 {
 	float vecMins[3]
 	float vecMaxs[3]
-	GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins)
-	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+	//GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins)
+	//GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
 	//vecMins[0] = 
 	//vecMaxs[]
 	//if(vec
-	PrintToServer("%f %f %f, %f %f %f", vecMins[0], vecMins[1], vecMins[2], vecMaxs[0], vecMaxs[1], vecMaxs[2])
+	//PrintToServer("%f %f %f, %f %f %f", vecMins[0], vecMins[1], vecMins[2], vecMaxs[0], vecMaxs[1], vecMaxs[2])
+	//PrintToServer("%i %i %N", entity, other, other)
+	if(IsPlayerAlive(other))
+	{
+		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
+		PrintToServer("%f %f %f", vecMins[0], vecMins[1], vecMins[2])
+		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecMaxs)
+		PrintToServer("%f %f %f", vecMaxs[0], vecMaxs[1], vecMaxs[2])
+	}
 }
 
 Action cmd_time(int client, int args)
@@ -1090,7 +1098,10 @@ Action cmd_time(int client, int args)
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
+	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
+		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
+	}
 }
 
 Action SDKProjectile(int entity)
