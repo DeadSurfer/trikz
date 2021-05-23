@@ -275,7 +275,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			menu2.SetTitle("Agree partner with %N?", param1)
 			char sParam1[32]
 			IntToString(param1, sParam1, 32)
-			menu2.AddItem(param1, "Yes")
+			menu2.AddItem(sParam1, "Yes")
 			menu2.AddItem(sItem, "No")
 			menu2.Display(partner, 20)
 		}
