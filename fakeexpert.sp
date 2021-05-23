@@ -21,6 +21,7 @@ bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
 int gI_zonetype
 bool gB_mapfinished[MAXPLAYERS + 1]
+bool gB_pass
 
 public void OnPluginStart()
 {
@@ -115,11 +116,22 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	//GetAccountSteamID
+	if(gB_pass)
+	{
+		int steamid = GetSteamAccountID(client)
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+		//gD_mysql.Query(sQuery, SQLUserAdd)
+		//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
+		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
+	}
+}
+
+void AddUser(int client)
+{
 	int steamid = GetSteamAccountID(client)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-	//gD_mysql.Query(sQuery, SQLUserAdd)
-	//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
 	gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 }
 
