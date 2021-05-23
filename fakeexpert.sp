@@ -414,7 +414,7 @@ Action cmd_createstart(int client, int args)
 	{
 		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
 		if(StrEqual(sTriggerName2, "fakeexpert_startzone"))
-			continue
+			return Plugin_Handled
 	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
@@ -471,7 +471,7 @@ Action cmd_createend(int client, int args)
 	{
 		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
 		if(StrEqual(sTriggerName2, "fakeexpert_endzone"))
-			continue
+			return Plugin_Handled
 	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
