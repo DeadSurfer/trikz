@@ -562,7 +562,7 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Successfuly created records table.")
 }
 
-void SDKStartTouch(int entity, int other)
+/*void SDKStartTouch(int entity, int other)
 {
 	PrintToServer("Start touch. [entity %i; other: %i]", entity, other)
 	char sTriggerName[32]
@@ -613,7 +613,7 @@ void SDKStartTouch(int entity, int other)
 			gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
 		}
 	}
-}
+}*/
 
 /*void SDKEndTouch(int entity, int other)
 {
