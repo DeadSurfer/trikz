@@ -413,7 +413,7 @@ Action cmd_createstart(int client, int args)
 	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
 	{
 		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
-		if(StrEqual(sTriggerName2, "fakeexpert_startzone")
+		if(StrEqual(sTriggerName2, "fakeexpert_startzone"))
 			continue
 	}
 	int entity = CreateEntityByName("trigger_multiple")
@@ -470,7 +470,7 @@ Action cmd_createend(int client, int args)
 	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
 	{
 		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
-		if(StrEqual(sTriggerName2, "fakeexpert_endzone")
+		if(StrEqual(sTriggerName2, "fakeexpert_endzone"))
 			continue
 	}
 	int entity = CreateEntityByName("trigger_multiple")
