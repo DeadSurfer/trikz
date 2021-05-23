@@ -22,6 +22,7 @@ char gS_map[192]
 int gI_zonetype
 bool gB_mapfinished[MAXPLAYERS + 1]
 bool gB_pass
+bool gB_insideZone[MAXPLAYERS + 1]
 
 public void OnPluginStart()
 {
@@ -669,6 +670,7 @@ void SDKEndTouch(int entity, int other)
 //void SDKStartTouch(int entity, int other)
 void SDKStartTouch(int entity, int other)
 {
+	gB_insideZone[other] = true
 	char sTrigger[32]
 	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 	if(StrEqual(sTrigger, "fakeexpert_endzone"))
