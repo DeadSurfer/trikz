@@ -761,8 +761,8 @@ void SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				int client = GetSteamAccountID(other)
-				int partner = GetSteamAccountID(gI_partner[other])
+				int clientid = GetSteamAccountID(other)
+				int partnerid = GetSteamAccountID(gI_partner[other])
 				PrintToServer("%i %i", client, partner)
 				//shavit - datapack
 				DataPack dp = new DataPack()
@@ -772,11 +772,11 @@ void SDKStartTouch(int entity, int other)
 				PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
 				dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
+				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", clientid, partnerid, partnerid, clientid)
 				gD_mysql.Query(SQLRecords, sQuery, dp)
 				DataPack dp2 = new DataPack()
-				dp2.WriteCell(client)
-				dp2.WriteCell(partner)
+				dp2.WriteCell(clientid)
+				dp2.WriteCell(partnerid)
 				dp2.WriteCell(GetClientSerial(other))
 				PrintToServer("%i other", other)
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
@@ -830,8 +830,8 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
-	int client = dp.ReadCell()
-	int partner = dp.ReadCell()
+	int clientid = dp.ReadCell()
+	int partnerid = dp.ReadCell()
 	int other = dp.ReadCell()
 	if(results.FetchRow())
 	{
@@ -840,14 +840,14 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
 		dp2.WriteCell(other)
-		dp2.WriteCell(client)
+		dp2.WriteCell(clientid)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
+		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", clientid)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
 		DataPack dp3 = new DataPack()
 		dp3.WriteCell(points)
-		dp3.WriteCell(partner)
-		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
+		dp3.WriteCell(partnerid)
+		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partnerid)
 		gD_mysql.Query(SQLGetPointsPartner, sQuery, dp2)
 	}
 }
@@ -858,13 +858,13 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
 	int other = GetClientFromSerial(dp2.ReadCell())
-	int client = dp2.ReadCell()
+	int clientid = dp2.ReadCell()
 	PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, client)
+		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, clientid)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 		PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
 		PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
@@ -875,12 +875,12 @@ void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, D
 {
 	dp3.Reset()
 	int earnedpoints = dp3.ReadCell()
-	int partner = dp3.ReadCell()
+	int partnerid = dp3.ReadCell()
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, partner)
+		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, partnerid)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 	}
 }
