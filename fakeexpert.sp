@@ -672,6 +672,8 @@ void SDKStartTouch(int entity, int other)
 		//if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]] && gB_state
 		if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 		{
+			gB_state[other] = true
+			gB_state[gI_partner[other]] = true
 			//int hour = RoundFloor(
 			//int hour = RoundToFloor(
 			/*int hour = RoundToFloor(gF_Time[other])
