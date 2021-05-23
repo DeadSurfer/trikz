@@ -365,6 +365,21 @@ void Restart(int client)
 	SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
 	//SetEntData
 	SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
+	//CreateTimer(2.0
+	CreateTimer(3.0, Timer_BlockToggle, client)
+}
+
+//Action Timer_BlockToggle(Hadle 
+Action Timer_BlockToggle(Handle timer, int client)
+{
+	SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+	//SET
+	//SetEntityRenderColor(client, 255, 255, 255, 75)
+	//SetEntityRenderMode(client, RENDER_TRANSALPHA)
+	SetEntityRenderMode(client, RENDER_NORMAL)
+	SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
+	//SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
+	SetEntityRenderMode(gI_partner[client], RENDER_NORMAL)
 }
 
 Action cmd_createstart(int client, int args)
