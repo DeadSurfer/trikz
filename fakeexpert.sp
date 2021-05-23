@@ -120,12 +120,15 @@ public void OnClientPutInServer(int client)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			int steamid = GetSteamAccountID(i)
-			char sQuery[512]
-			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-			//gD_mysql.Query(sQuery, SQLUserAdd)
-			//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
-			gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(i))
+			if(IsClientInGame(i))
+			{
+				int steamid = GetSteamAccountID(i)
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+				//gD_mysql.Query(sQuery, SQLUserAdd)
+				//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
+				gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(i))
+			}
 		}
 	}
 }
