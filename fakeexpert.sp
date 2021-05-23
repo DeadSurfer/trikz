@@ -677,8 +677,10 @@ void SDKEndTouch(int entity, int other)
 void SDKStartTouch(int entity, int other)
 {
 	if(gB_passzone[other])
+	{
 		gB_insideZone[other] = true
 		gB_passzone[other] = false
+	}
 	//PrintToServer("%i", other)
 	PrintToServer("SDKStartTouch %i %i", entity, other)
 	char sTrigger[32]
