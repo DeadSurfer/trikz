@@ -134,6 +134,15 @@ public void OnClientPutInServer(int client)
 			}
 		}
 	}
+	else
+	{
+		Format(sQuery, 512, "UPDATE users SET username = '%s'", GetClientName(i))
+		gD_mysql.Query(SQLUpdateUsername, sQuery)
+	}
+}
+
+void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 /*void AddUser(int client)
