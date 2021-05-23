@@ -674,12 +674,23 @@ void SDKStartTouch(int entity, int other)
 		{
 			//int hour = RoundFloor(
 			//int hour = RoundToFloor(
-			int hour = RoundToFloor(gF_Time[other])
+			/*int hour = RoundToFloor(gF_Time[other])
 			gI_hour = hour / 360
 			int minute = RoundToFloor(gF_Time[other])
 			gI_minute = (minute / 60) % 24
 			int second = RoundToFloor(gF_Time[other])
-			gI_second = second % 60
+			gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_*/
+			int hour = RoundToFloor(gF_Time[other])
+			hour = hour / 360
+			int minute = RoundToFloor(gF_Time[other])
+			minute = (minute / 60) % 24
+			int second = RoundToFloor(gF_Time[other])
+			second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, se
+			PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], minute, second)
+			
 		}
 	}
 }
