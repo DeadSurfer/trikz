@@ -856,7 +856,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	Format(sQuery, 512, "SELECT map FROM zones")
 	gD_mysql.Query(SQLForceZonesSetup, sQuery)
 	gB_pass = true
-	OnClientPutInServer(1)
+	OnClientPutInServer()
 }
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
