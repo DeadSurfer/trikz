@@ -349,7 +349,8 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void Restart(int client)
 {
-	if(gI_parnter[client] != 0)
+	//if(gI_parnter[client] != 0)
+	if(gI_partner[client] != 0)
 	{
 		gB_insideZone[client] = true
 		gB_insideZone[gI_partner[client]] = true
