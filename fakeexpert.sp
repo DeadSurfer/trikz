@@ -844,7 +844,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	{
 		int points = results.FetchInt(0)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = points + earnedpoints")
+		Format(sQuery, 512, "UPDATE users SET points = %i + %i", points, earnedpoints)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 		PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points)
 		PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points)
