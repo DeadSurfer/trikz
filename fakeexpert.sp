@@ -20,6 +20,7 @@ int gI_second
 bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
 int gI_zonetype
+bool gB_mapfinished[MAXPLAYERS + 1]
 
 public void OnPluginStart()
 {
@@ -548,32 +549,36 @@ void SDKStartTouch(int entity, int other)
 	}
 	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
 	{
-		gB_state[other] = false
-		gB_state[gI_partner[other]] = false
-		int hour = RoundToFloor(gF_Time[other])
-		gI_hour = hour / 360
-		int minute = RoundToFloor(gF_Time[other])
-		gI_minute = (minute / 60) % 24
-		int second = RoundToFloor(gF_Time[other])
-		gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-		PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
-		PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
-		int client = GetSteamAccountID(other)
-		int partner = GetSteamAccountID(gI_partner[other])
-		//shavitush - datapack
-		DataPack dp = new DataPack()
-		dp.WriteCell(GetClientSerial(other))
-		dp.WriteCell(GetClientSerial(gI_partner[other]))
-		dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-		gD_mysql.Query(SQLRecords, sQuery, dp)
-		DataPack dp2 = new DataPack()
-		dp2.WriteCell(client)
-		dp2.WriteCell(partner)
-		dp2.WriteCell(GetClientSerial(other))
-		Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
+		gB_mapfinished[other] = true
+		if(gB_mapfinished[other] && gB_map_finished[gI_partner[other]])
+		{
+			gB_state[other] = false
+			gB_state[gI_partner[other]] = false
+			int hour = RoundToFloor(gF_Time[other])
+			gI_hour = hour / 360
+			int minute = RoundToFloor(gF_Time[other])
+			gI_minute = (minute / 60) % 24
+			int second = RoundToFloor(gF_Time[other])
+			gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
+			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
+			int client = GetSteamAccountID(other)
+			int partner = GetSteamAccountID(gI_partner[other])
+			//shavitush - datapack
+			DataPack dp = new DataPack()
+			dp.WriteCell(GetClientSerial(other))
+			dp.WriteCell(GetClientSerial(gI_partner[other]))
+			dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
+			char sQuery[512]
+			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
+			gD_mysql.Query(SQLRecords, sQuery, dp)
+			DataPack dp2 = new DataPack()
+			dp2.WriteCell(client)
+			dp2.WriteCell(partner)
+			dp2.WriteCell(GetClientSerial(other))
+			Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
+			gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
+		}
 	}
 }
 
