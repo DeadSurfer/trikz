@@ -25,6 +25,7 @@ bool gB_pass
 bool gB_insideZone[MAXPLAYERS + 1]
 bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
+bool gB_newpass
 
 public void OnPluginStart()
 {
@@ -134,7 +135,7 @@ public void OnClientPutInServer(int client)
 			}
 		}
 	}
-	else
+	if(gB_newpass)
 	{
 		if(IsClientInGame(client))
 		{
@@ -170,6 +171,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		//gD_mysql.Query(sQuery, SQLUserAdded)
 		gD_mysql.Query(SQLUserAdded, sQuery)
 	}
+	gB_newpass = true
 }
 
 void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
