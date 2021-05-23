@@ -722,10 +722,10 @@ void SDKEndTouch(int entity, int other)
 //void SDKStartTouch(int entity, int other)
 void SDKStartTouch(int entity, int other)
 {
-	if(gB_passzone[other])
-	{
+	//if(gB_passzone[other])
+	//{
 		//gB_insideZone[other] = true //Expert-Zone idea.
-		gB_passzone[other] = false
+		//gB_passzone[other] = false
 		//PrintToServer("%i", other)
 		PrintToServer("SDKStartTouch %i %i", entity, other)
 		char sTrigger[32]
@@ -765,7 +765,7 @@ void SDKStartTouch(int entity, int other)
 				gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
 			}
 		}
-	}
+	//}
 	//gB_passzone[other] = false
 }
 
@@ -842,7 +842,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 		//PrintToChat(other, "Work")
 		PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points)
-		PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points)
+		//PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points)
 	}
 }
 
