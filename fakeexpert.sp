@@ -24,6 +24,7 @@ bool gB_mapfinished[MAXPLAYERS + 1]
 bool gB_pass
 bool gB_insideZone[MAXPLAYERS + 1]
 bool gB_passzone[MAXPLAYERS + 1]
+float gF_vecStart[3]
 
 public void OnPluginStart()
 {
@@ -921,6 +922,16 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 		gF_vec2[1] = results.FetchFloat(4)
 		gF_vec2[2] = results.FetchFloat(5)
 		cmd_createstart(0, 0)
+		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
+		float center[3]
+		center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
+		center[1] = (gF_vec2[1] + gF_vec1[1]) / 2
+		center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
+		//gF_vecStart[0] = gF_vec1[0]
+		//gF_vecStart[1] = gF_vec1[1]
+		gF_vecStart[0] = center[0]
+		gF_vecStart[1] = center[1]
+		gF_vecStart[2] = center[2]
 	}
 }
 
