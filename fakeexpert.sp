@@ -302,6 +302,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						PrintToServer("%i %N, %i %N", param1, param1, param2x, param2x)
 						gI_partner[param1] = partner
 						gI_partner[partner] = param1
+						PrintToServer("p1: %i %N p2: %i %N", partner, partner, param1, param1)
 						PrintToChat(param1, "Partnersheep agreed with %N.", partner)
 						PrintToChat(partner, "You have %N as partner.", param1)
 					}
@@ -649,7 +650,7 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 void SDKEndTouch(int entity, int other)
 {
 	//gB_insideZone[other] = false
-	gB_insideZone[other] = false
+	//gB_insideZone[other] = false
 	char sTrigger[32]
 	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 	if(StrEqual(sTrigger, "fakeexpert_startzone"))
@@ -663,7 +664,7 @@ void SDKEndTouch(int entity, int other)
 			gF_Time[other] = GetEngineTime()
 			gF_Time[gI_partner[other]] = GetEngineTime()
 		}
-		//gB_insideZone[
+		gB_insideZone[other] = false
 	}
 }
 
