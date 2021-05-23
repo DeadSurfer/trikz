@@ -1071,7 +1071,7 @@ void ProjectileBoostFix(int entity, int other)
 	//if(vec
 	//PrintToServer("%f %f %f, %f %f %f", vecMins[0], vecMins[1], vecMins[2], vecMaxs[0], vecMaxs[1], vecMaxs[2])
 	//PrintToServer("%i %i %N", entity, other, other)
-	if(IsPlayerAlive(other) && 0 < other >= MaxClients)
+	if(0 < other <= MaxClients && IsPlayerAlive(other))
 	{
 		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
 		PrintToServer("%f %f %f", vecMins[0], vecMins[1], vecMins[2])
