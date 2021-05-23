@@ -524,8 +524,8 @@ Action cmd_vecmaxsend(int client, int args)
 Action cmd_starttouch(int client, int args)
 {
 	//SDKHook(gI_trigger, SDKHook_TouchPost, SDKStartTouch)
-	SDKHook(gI_trigger, SDKHook_StartTouch, SDKStartTouch)
-	SDKHook(gI_trigger, SDKHook_EndTouch, SDKEndTouch)
+	SDKHook(gI_trigger, SDKHook_StartTouchPost, SDKStartTouch)
+	SDKHook(gI_trigger, SDKHook_EndTouchPost, SDKEndTouch)
 	if(IsValidEntity(gI_trigger) && ActivateEntity(gI_trigger) && DispatchSpawn(gI_trigger))
 	{
 		PrintToServer("Trigger is valid.")
@@ -663,7 +663,7 @@ void SDKEndTouch(int entity, int other)
 			gB_mapfinished[gI_partner[other]] = false
 			gF_Time[other] = GetEngineTime()
 			gF_Time[gI_partner[other]] = GetEngineTime()
-			PrintToServer("EndTouc")
+			PrintToServer("EndTouch")
 		}
 		gB_insideZone[other] = false
 	}
