@@ -118,22 +118,25 @@ public void OnClientPutInServer(int client)
 	//GetAccountSteamID
 	if(gB_pass)
 	{
-		int steamid = GetSteamAccountID(client)
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-		//gD_mysql.Query(sQuery, SQLUserAdd)
-		//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
-		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			int steamid = GetSteamAccountID(i)
+			char sQuery[512]
+			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+			//gD_mysql.Query(sQuery, SQLUserAdd)
+			//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
+			gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(i))
+		}
 	}
 }
 
-void AddUser(int client)
+/*void AddUser(int client)
 {
 	int steamid = GetSteamAccountID(client)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 	gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
-}
+}*/
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -718,6 +721,8 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql.Query(SQLForceDefaultZones, sQuery)
 	Format(sQuery, 512, "SELECT map FROM zones")
 	gD_mysql.Query(SQLForceZonesSetup, sQuery)
+	gB_pass = true
+	OnClientPutInServer()
 }
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
