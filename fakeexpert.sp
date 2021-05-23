@@ -542,6 +542,8 @@ void SDKStartTouch(int entity, int other)
 	{
 		gB_state[other] = true
 		gB_state[gI_partner[other]] = true
+		gB_mapfinished[other] = false
+		gB_mapfinished[gI_partner[other]] = false
 		gF_TimeStart[other] = GetEngineTime()
 		//gB_finished[other] = true
 		//gB_finishedPartner[gI_partner[other]
