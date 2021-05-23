@@ -309,6 +309,9 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						PrintToServer("p1: %i %N p2: %i %N", partner, partner, param1, param1)
 						PrintToChat(param1, "Partnersheep agreed with %N.", partner)
 						PrintToChat(partner, "You have %N as partner.", param1)
+						//Reseta
+						Restart(param1)
+						Restart(partner) //Expert-Zone idea.
 					}
 					else
 						PrintToChat(param1, "A player already have a partner.")
