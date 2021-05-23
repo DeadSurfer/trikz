@@ -312,6 +312,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						//Reseta
 						Restart(param1)
 						Restart(partner) //Expert-Zone idea.
+						PrintToServer("partner1: %i %N, partner2: %i %N", gI_partner[param1], gI_partner[param1], gI_partner[partner], gI_partner[partner])
 					}
 					else
 						PrintToChat(param1, "A player already have a partner.")
