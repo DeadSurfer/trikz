@@ -367,6 +367,8 @@ void Restart(int client)
 		SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
 		CreateTimer(3.0, Timer_BlockToggle, client)
 	}
+	else
+		PrintToChat(client, "You must have a partner.")
 }
 
 //Action Timer_BlockToggle(Hadle 
