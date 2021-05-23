@@ -136,7 +136,7 @@ public void OnClientPutInServer(int client)
 	}
 	else
 	{
-		Format(sQuery, 512, "UPDATE users SET username = '%s'", GetClientName(i))
+		Format(sQuery, 512, "UPDATE users SET username = '%s'", GetClientName(client))
 		gD_mysql.Query(SQLUpdateUsername, sQuery)
 	}
 }
