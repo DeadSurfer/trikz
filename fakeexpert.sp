@@ -840,11 +840,13 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
 		dp2.WriteCell(other)
+		dp2.WriteCell(client)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
 		DataPack dp3 = new DataPack()
 		dp3.WriteCell(points)
+		dp3.WriteCell(partner)
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
 		gD_mysql.Query(SQLGetPointsPartner, sQuery, dp2)
 	}
@@ -856,12 +858,13 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
 	int other = GetClientFromSerial(dp2.ReadCell())
+	int client = dp2.ReadCell()
 	PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = %i + %i", points, earnedpoints)
+		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, client)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 		PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
 		PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
@@ -872,11 +875,12 @@ void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, D
 {
 	dp3.Reset()
 	int earnedpoints = dp3.ReadCell()
+	int partner = dp3.ReadCell()
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = %i + %i", points, earnedpoints)
+		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, partner)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 	}
 }
