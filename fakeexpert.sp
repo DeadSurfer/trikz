@@ -929,13 +929,6 @@ Action cmd_createtable(int args)
 
 void SQLConnect(Database db, const char[] error, any data)
 {
-	//shavit results null
-	if(results == null)
-	{
-		PrintToServer("Erro with mysql connection %s", error)
-		return
-	}
-	PrintToServer("%s",
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
 	char sQuery[512]
@@ -949,6 +942,12 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
 {
+	//shavit results null
+	if(results == null)
+	{
+		PrintToServer("Erro with mysql connection %s", error)
+		return
+	}
 	char sMap[192]
 	char sQuery[512]
 	while(results.FetchRow())
@@ -971,6 +970,12 @@ void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] err
 
 void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 {
+	//shavit results null
+	if(results == null)
+	{
+		PrintToServer("Erro with mysql connection %s", error)
+		return
+	}
 	if(results.FetchRow())
 	{
 		char sQuery[512]
