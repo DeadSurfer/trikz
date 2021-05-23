@@ -359,7 +359,7 @@ void Restart(int client)
 		vecVel[1] = 30.0
 		vecVel[2] = 0.0
 		TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
-		TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
+		TeleportEntity(gI_partner[client], gF_vecStart, NULL_VECTOR, vecVel)
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 75)
