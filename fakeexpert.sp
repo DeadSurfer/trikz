@@ -715,7 +715,7 @@ void SDKStartTouch(int entity, int other)
 			dp2.WriteCell(client)
 			dp2.WriteCell(partner)
 			dp2.WriteCell(GetClientSerial(other))
-			Format(sQuery, 512, "SELECT tier FROM records WHERE map '%s' AND type = 0", gS_map)
+			Format(sQuery, 512, "SELECT tier FROM records WHERE map = '%s' AND type = 0", gS_map)
 			gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
 		}
 	}
