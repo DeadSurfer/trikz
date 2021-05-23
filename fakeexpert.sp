@@ -310,7 +310,8 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				case 1:
 				{
 					PrintToChat(param1, "Partnersheep declined with %N.", partner)
-					PrintToChat(partner, "%N declined partnership with you.", param1)
+					//PrintToChat(partner, "%N declined partnership with you.", param1)
+					//PrintToChat(
 				}
 			}
 		}
@@ -333,6 +334,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
+					PrintToChat(partner, "Partnership is canceled by %N", param1)
 				}
 			}
 		}
