@@ -699,7 +699,7 @@ void SDKStartTouch(int entity, int other)
 			second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 			//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, se
 			PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], minute, second)
+			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 			int client = GetSteamAccountID(other)
 			int partner = GetSteamAccountID(gI_partner[other])
 			//shavit - datapack
@@ -856,7 +856,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	Format(sQuery, 512, "SELECT map FROM zones")
 	gD_mysql.Query(SQLForceZonesSetup, sQuery)
 	gB_pass = true
-	OnClientPutInServer()
+	OnClientPutInServer(0)
 }
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
