@@ -260,7 +260,7 @@ void Partner(int client)
 		char sName[MAX_NAME_LENGTH]
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i))
+			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
 			{
 				GetClientName(i, sName, MAX_NAME_LENGTH)
 				char sNameID[32]
@@ -310,7 +310,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 	{
 		case MenuAction_Select:
 		{
-			int param2x = param2
+			//int param2x = param2
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
 			int partner = StringToInt(sItem)
@@ -320,10 +320,10 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				{
 					if(gI_partner[partner] == 0)
 					{
-						PrintToServer("%i %N, %i %N", param1, param1, param2x, param2x)
+						//PrintToServer("%i %N, %i %N", param1, param1, param2x, param2x)
 						gI_partner[param1] = partner
 						gI_partner[partner] = param1
-						PrintToServer("p1: %i %N p2: %i %N", partner, partner, param1, param1)
+						//PrintToServer("p1: %i %N p2: %i %N", partner, partner, param1, param1)
 						PrintToChat(param1, "Partnersheep agreed with %N.", partner)
 						PrintToChat(partner, "You have %N as partner.", param1)
 						//Reseta
@@ -337,8 +337,6 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				case 1:
 				{
 					PrintToChat(param1, "Partnersheep declined with %N.", partner)
-					//PrintToChat(partner, "%N declined partnership with you.", param1)
-					//PrintToChat(
 				}
 			}
 		}
