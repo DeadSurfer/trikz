@@ -722,10 +722,10 @@ void SDKEndTouch(int entity, int other)
 //void SDKStartTouch(int entity, int other)
 void SDKStartTouch(int entity, int other)
 {
-	//if(gB_passzone[other])
-	//{
+	if(gB_passzone[other])
+	{
 		//gB_insideZone[other] = true //Expert-Zone idea.
-		//gB_passzone[other] = false
+		gB_passzone[other] = false
 		//PrintToServer("%i", other)
 		PrintToServer("SDKStartTouch %i %i", entity, other)
 		char sTrigger[32]
@@ -769,7 +769,7 @@ void SDKStartTouch(int entity, int other)
 				gF_Time[gI_partner[other]] = 0.0
 			}
 		}
-	//}
+	}
 	//gB_passzone[other] = false
 }
 
