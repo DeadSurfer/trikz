@@ -655,7 +655,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
 		dp2.WriteCell(other)
-		PrintToServer("SQLGetMapTier: %i [%N]", other, other)
+		//PrintToServer("SQLGetMapTier: %i [%N]", other, other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
 		//DataPack dp = new DataPack()
