@@ -819,7 +819,7 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
-		int points = tier * 16
+		int points = tier * 20
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
 		dp2.WriteCell(other)
