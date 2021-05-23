@@ -663,6 +663,7 @@ void SDKEndTouch(int entity, int other)
 			gB_mapfinished[gI_partner[other]] = false
 			gF_Time[other] = GetEngineTime()
 			gF_Time[gI_partner[other]] = GetEngineTime()
+			PrintToServer("EndTouc")
 		}
 		gB_insideZone[other] = false
 	}
