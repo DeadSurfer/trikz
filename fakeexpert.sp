@@ -703,9 +703,9 @@ void SDKStartTouch(int entity, int other)
 			PrintToServer("%i %i", client, partner)
 			//shavit - datapack
 			DataPack dp = new DataPack()
-			dp.WriteCell(other)
+			dp.WriteCell(GetClientSerial(other))
 			//dp.WriteCell(other[)
-			dp.WriteCell(gI_partner[other])
+			dp.WriteCell(GetClientSerial(gI_partner[other]))
 			PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
 			dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 			char sQuery[512]
