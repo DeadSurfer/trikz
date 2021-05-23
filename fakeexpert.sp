@@ -724,7 +724,7 @@ void SDKStartTouch(int entity, int other)
 {
 	if(gB_passzone[other])
 	{
-		gB_insideZone[other] = true
+		//gB_insideZone[other] = true //Expert-Zone idea.
 		gB_passzone[other] = false
 		//PrintToServer("%i", other)
 		PrintToServer("SDKStartTouch %i %i", entity, other)
