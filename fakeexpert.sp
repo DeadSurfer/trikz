@@ -661,6 +661,28 @@ void SDKEndTouch(int entity, int other)
 }
 
 //void SDKStartTouch(int entity, int other)
+void SDKStartTouch(int entity, int other)
+{
+	char sTrigger[32]
+	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
+	if(StrEqual(sTrigger, "fakeexpert_endzone"))
+	{
+		gB_mapfinished[other] = true
+		//gB_
+		//if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]] && gB_state
+		if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
+		{
+			//int hour = RoundFloor(
+			//int hour = RoundToFloor(
+			int hour = RoundToFloor(gF_Time[other])
+			gI_hour = hour / 360
+			int minute = RoundToFloor(gF_Time[other])
+			gI_minute = (minute / 60) % 24
+			int second = RoundToFloor(gF_Time[other])
+			gI_second = second % 60
+		}
+	}
+}
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
