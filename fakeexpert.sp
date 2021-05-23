@@ -750,8 +750,6 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 	int client = dp.ReadCell()
 	int partner = dp.ReadCell()
 	int other = dp.ReadCell()
-	//PrintToChat(other, "Work")
-	//PrintToServer("SQLGetMapTier: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
@@ -759,19 +757,11 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
 		dp2.WriteCell(other)
-		//PrintToServer("SQLGetMapTier: %i [%N]", other, other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", client)
-		//DataPack dp = new DataPack()
-		//dp.WriteCell(other)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
-		//DataPack dp3 = new DataPack()
-		
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partner)
-		//DataPack dp = new DataPack()
-		//dp.WriteCell(partner)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
-		//PrintToChat(other, "You recive %i points. You have %i points.", 
 	}
 }
 
