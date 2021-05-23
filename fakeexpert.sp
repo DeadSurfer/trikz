@@ -404,6 +404,7 @@ Action Timer_BlockToggle(Handle timer, int client)
 	SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
 	//SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
 	SetEntityRenderMode(gI_partner[client], RENDER_NORMAL)
+	return Plugin_Stop
 }
 
 Action cmd_createstart(int client, int args)
