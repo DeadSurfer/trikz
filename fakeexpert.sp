@@ -949,7 +949,7 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 	//shavit results null
 	if(results == null)
 	{
-		PrintToServer("Erro with mysql connection %s", error)
+		PrintToServer("Error with mysql connection %s", error)
 		return
 	}
 	char sMap[192]
@@ -977,7 +977,7 @@ void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, an
 	//shavit results null
 	if(results == null)
 	{
-		PrintToServer("Erro with mysql connection %s", error)
+		PrintToServer("Error with mysql connection %s", error)
 		return
 	}
 	if(results.FetchRow())
@@ -1052,6 +1052,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = GetEngineTime()
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 	}
+}
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	if(StrContains(classname, "projectile")
+		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
+}
+
+void ProjectileBoostFix(int entity, int other)
+{
+	float vecMins[3]
+	float vecMaxs[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins)
+	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+	//vecMins[0] = 
+	vecMaxs[]
+	if(vec
 }
 
 Action cmd_time(int client, int args)
