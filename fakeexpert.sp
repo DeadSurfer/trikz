@@ -1116,7 +1116,7 @@ void ProjectileBoostFix(int entity, int other)
 			PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
 			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
-			vecAbsVelocity[2] = vecAbsVelocity[2] * -1.0
+			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
 			//float flClientSpeed[3]
 			//GetEntPropFloat(other, 
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
