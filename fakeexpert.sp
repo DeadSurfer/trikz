@@ -764,6 +764,9 @@ void SDKStartTouch(int entity, int other)
 				PrintToServer("%i other", other)
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
+				gF_Time[other] = 0.0
+				//gF_Time[other
+				gF_Time[gI_partner[other]] = 0.0
 			}
 		}
 	//}
