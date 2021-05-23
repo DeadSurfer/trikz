@@ -358,17 +358,13 @@ void Restart(int client)
 	//Re
 	SetEntityRenderMode(client, RENDER_TRANSALPHA)
 	SetEntityRenderColor(client, 255, 255, 255, 75)
-	//SetEntProp(ClientCommand
-	SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-	SetEntityRenderMode(client, RENDER_TRANSALPHA)
-	SetEntityModel
-	SetPropEnt
-	SetEntProp(gI_partner, Prop_Data, "m_CollisionGroup", 2)
-	SetEntityRenderColor(gI_partner
-	SetEntProp(gI_partner[other
-	SetEntProp_
-	SetEntProp(gI_partner[client], Prop_Data. "
-	SetEntProp(gI
+	//SetEntProp(gI_partner[client]. 
+	//SetEntProp)
+	SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 2)
+	//SetEntData
+	SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
+	//SetEntData
+	SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
 }
 
 Action cmd_createstart(int client, int args)
