@@ -161,7 +161,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_Touch, SDKSkyFix)
+	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	//GetAccountSteamID
 	char sQuery[512]
 	if(gB_pass)
@@ -222,111 +222,36 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 {
 }
 
-void SDKSkyFix(int client, int other) //client = booster; other = flyer
+Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	//PrintToServer("%i %i", client, other)
-	//if(MaxClients >= client > 0 && MaxClients >= other > 0)
+	float vecAbsClient[3]
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient)
+	float vecAbsOther[3]
+	GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther)
+	float vecClientMaxs[3]
+	GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
+	//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
+	float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
+	//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
+	//PrintToServer("delta: %f", delta)
+	//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
+	if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 	{
-		//PrintToChat(client, "client: %i %N", client, client)
-		//PrintToChat(other, "other: %i %N", other, other)
-		//int gEnt = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
-		//if(gEnt == client)
-		/*if(other)
-		{
-			float vecAbs[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
-			if(vecAbs[2] < 0.0)
-				vecAbs[2] = vecAbs[2] * -1.0 + 256.0
-			else
-				vecAbs[2] = vecAbs[2] + 256.0
-			//float vecAbsBooster[3]
-			//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsBooster)
-			//if(vecAbsBooster[2] < 0.0)
-			//	vecAbsBooster[2] = vecAbsBooster[2] * -1.0
-			//vecAbs[2] = vecAbsBooster[2] + vecAbs[2]
-			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbs)
-			
-			//PrintToServer("%i %N", gEnt, gEnt)
-		}*/
-		//PrintToServer("%i %i .", client, other)
-		float vecAbsClient[3]
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient)
-		float vecAbsOther[3]
-		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther)
-		float vecClientMaxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
-		//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
-		float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
-		//float vecAbsOther3[3]
-		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
-		//PrintToServer("delta: %f", delta)
-		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
-		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
-		//PrintToServer("%i %i .1:", client, other)
-		//if((delta > 0.0) && (delta < 2.0))
-		if(0.0 < delta < 2.0)
-		{
-			PrintToServer("%i %i ..", client, other)
-			float vecAbs[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
-			//if(vecAbs[2] < 0.0)
-			//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
-			//else
-			//	vecAbs[2] = vecAbs[2] + 128.0
-			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-			PrintToServer("%f", delta)
-			PrintToServer("%f", vecAbs[2])
-			//gI_other[client] = other
-			//gB_runcmd[client] = true
-			//gI_boostTime[other]
-			//gI_boostTime[client] = GetTime()
-			//PrintToServer("%i", GetTime())
-			//gI_boostTime[client] = GetEngineTime()
-			//gF_vecAbs[other][2] = vecAbs[2]
-			//gI_other[client] = other
-			//if(0 < other <= MaxClients)
-			//	gI_other[other] = client
-			//gB_runcmd[other] = true
-			//gB_runcmd[client] = true
-			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
-			float vecVel[3]
-			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
-			PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
-			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
-			/*DataPack dp = new DataPack()
-			dp.WriteCell(vecAbs[0])
-			dp.WriteCell(vecAbs[1])
-			dp.WriteCell(vecAbs[2])
-			dp.WriteCell(other)
-			RequestFrame(rf_3, dp)*/
-		}
-		float vecAbsOther2[3]
-		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther2)
-		float vecAbsClient2[3]
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient2)
-		float vecOtherMins[3]
-		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecOtherMins)
-		//float delta2 = vecAbsClient2[2] + vecAbsOther2[2] + vecOtherMins[2]
-		float delta2 = vecAbsOther2[2] + vecAbsClient2[2] - vecOtherMins[2]
-		//PrintToServer("delta2: %f %f %f", vecAbsClient2[2], vecAbsOther2[2], vecOtherMins[2])
-		if(0.0 > delta2 > -2.0)
-		{
-			float vecAbs[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
-			vecAbs[2] = FloatAbs(vecAbs[2])
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbs)
-			PrintToServer("delta3: %f", delta2)
-		}
-		if(0.0 < delta2 < 2.0)
-		{
-			float vecAbs[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
-			vecAbs[2] = FloatAbs(vecAbs[2])
-			//TeleportEntity(client, Prop_
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbs)
-			PrintToServer("delta2")
-		}
+		PrintToServer("%i %i ..", client, other)
+		float vecAbs[3]
+		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
+		//if(vecAbs[2] < 0.0)
+		//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
+		//else
+		//	vecAbs[2] = vecAbs[2] + 128.0
+		vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+		PrintToServer("%f", delta)
+		PrintToServer("%f", vecAbs[2])
+		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
+		float vecVel[3]
+		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
+		PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
+		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 	}
 }
 
