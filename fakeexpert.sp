@@ -1132,6 +1132,10 @@ void ProjectileBoostFix(int entity, int other)
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsVelocityOther)
 			//vecAbsVelocity[0] = vecAbsVelocity
 			//if(vecAbsVelocity[0] < 0)
+			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsVelocityOther) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L134
+			//SetEntPropVector(other, Prop_Data, "m_vecAbsV
+			//TeleportEntity(other, NULL_VECOTR
+			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocityOther)
 			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] < 0)
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
 			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] > 0)
