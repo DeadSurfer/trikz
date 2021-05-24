@@ -1076,8 +1076,8 @@ void ProjectileBoostFix(int entity, int other)
 	//PrintToServer("%f", flSpeed2)
 	if(0 < other <= MaxClients && IsPlayerAlive(other))
 	{
-		float vecMins[3]
-		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
+		//float vecMins[3]
+		//GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
 		//PrintToServer("%f %f %f", vecMins[0], vecMins[1], vecMins[2])
 		//GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecMaxs)
 		//PrintToServer("%f %f %f", vecMaxs[0], vecMaxs[1], vecMaxs[2])
@@ -1113,8 +1113,8 @@ void ProjectileBoostFix(int entity, int other)
 			//PrintToServer("%f %f", delta, flSpeed)
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
-			PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
-			PrintToChatAll("AbsEntityVelocity: %f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
+			//PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
+			//PrintToChatAll("AbsEntityVelocity: %f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
 			//vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			//vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			//vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
@@ -1131,7 +1131,7 @@ void ProjectileBoostFix(int entity, int other)
 			//GetEntPropFloat(other, 
 			float vecAbsVelocityOther[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsVelocityOther)
-			PrintToChatAll("AbsPlayerVelocity: %f %f %f", vecAbsVelocityOther[0], vecAbsVelocityOther[1], vecAbsVelocityOther[2])
+			//PrintToChatAll("AbsPlayerVelocity: %f %f %f", vecAbsVelocityOther[0], vecAbsVelocityOther[1], vecAbsVelocityOther[2])
 			//vecAbsVelocity[0] = vecAbsVelocity
 			//if(vecAbsVelocity[0] < 0)
 			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsVelocityOther) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L134
@@ -1192,11 +1192,14 @@ void ProjectileBoostFix(int entity, int other)
 				//vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] < 0)
 				//vecAbsVelocity[2] = vecAbsVelocity[2] + FloatAbs(vecAbsVelocityOther[2])
-				
+			//int gEntOther = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
+			//int gEntEntity = GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")
+			//PrintToChatAll("%i %i", gEntOther, gEntEntity)
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
-			DataPack dp = new DataPack()
-			dp.WriteCell(entity)
-			dp.WriteCell(other)
+			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
+			//DataPack dp = new DataPack()
+			//dp.WriteCell(entity)
+			//dp.WriteCell(other)
 			//RequestFrame(rf_1, dp)
 		}
 	}
@@ -1250,7 +1253,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
+		SDKHook(entity, SDKHook_Touch, ProjectileBoostFix)
 	}
 }
 
