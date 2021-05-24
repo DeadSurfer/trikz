@@ -212,8 +212,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther)
 		float vecClientMaxs[3]
 		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
+		//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 		float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
 		//PrintToServer("delta: %f", delta)
+		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			float vecAbs[3]
@@ -229,10 +231,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther2)
 		float vecAbsClient2[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient2)
-		float vecOtherMins[3]
-		GetEntPropVector(other, Prop_Data, "m_vecMins", vecOtherMins)
-		float delta2 = vecAbsClient2[2] + vecAbsOther2[2] + vecOtherMins[2]
-		if(0.0 > delta > 2.0)
+		float vecOtherMaxs[3]
+		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecOtherMaxs)
+		float delta2 = vecAbsClient2[2] - vecAbsOther2[2] - vecOtherMaxs[2]
+		//PrintToServer("delta2: %f %f %f", vecAbsClient2[2], vecAbsOther2[2], vecOtherMaxs[2])
+		if(0.0 < delta2 < 2.0)
 		{
 			float vecAbs[3]
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
