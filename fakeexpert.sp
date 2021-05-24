@@ -214,6 +214,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
 		//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 		float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
+		//float vecAbsOther3[3]
+		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
 		//PrintToServer("delta: %f", delta)
 		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
@@ -225,17 +227,22 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			//else
 			//	vecAbs[2] = vecAbs[2] + 128.0
 			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+			PrintToServer("%f", delta)
+			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbs)
+			//float 
+			SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 		}
-		float vecAbsOther2[3]
+		/*float vecAbsOther2[3]
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther2)
 		float vecAbsClient2[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient2)
-		float vecOtherMaxs[3]
-		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecOtherMaxs)
-		float delta2 = vecAbsClient2[2] - vecAbsOther2[2] - vecOtherMaxs[2]
-		//PrintToServer("delta2: %f %f %f", vecAbsClient2[2], vecAbsOther2[2], vecOtherMaxs[2])
-		if(0.0 < delta2 < 2.0)
+		float vecOtherMins[3]
+		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecOtherMins)
+		//float delta2 = vecAbsClient2[2] + vecAbsOther2[2] + vecOtherMins[2]
+		float delta2 = vecAbsOther2[2] - vecAbsClient2[2] - vecOtherMins[2]
+		PrintToServer("delta2: %f %f %f", vecAbsClient2[2], vecAbsOther2[2], vecOtherMins[2])
+		if(0.0 > delta2 > -2.0)
 		{
 			float vecAbs[3]
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
@@ -243,6 +250,15 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbs)
 			PrintToServer("%f", delta2)
 		}
+		if(0.0 < delta2 < 2.0)
+		{
+			float vecAbs[3]
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
+			vecAbs[2] = FloatAbs(vecAbs[2])
+			//TeleportEntity(client, Prop_
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbs)
+			PrintToServer("delta2")
+		}*/
 	}
 }
 
