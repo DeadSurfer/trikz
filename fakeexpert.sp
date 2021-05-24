@@ -1114,9 +1114,9 @@ void ProjectileBoostFix(int entity, int other)
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
 			PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
-			vecAbsVelocity[0] = vecAbsVelocity[0] * -2.0
-			vecAbsVelocity[1] = vecAbsVelocity[1] * -2.0
-			vecAbsVelocity[2] = vecAbsVelocity[2] * 2.0
+			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
+			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
+			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
 			//vecAbsVelocity[0[ = vecAbsVelocity[0] * -0.135
 			//vecAbsVelocity[1]
 			//vecAbsVelocity[0] = vecAbsVelocity[0] * -0.135
@@ -1129,11 +1129,37 @@ void ProjectileBoostFix(int entity, int other)
 			//float flClientSpeed[3]
 			//GetEntPropFloat(other, 
 			float vecAbsVelocityOther[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsvelocity", vecAbsVelocityOther)
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsVelocityOther)
 			//vecAbsVelocity[0] = vecAbsVelocity
-			if(vecAbsVelocity[0] < 0)
+			//if(vecAbsVelocity[0] < 0)
 			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] < 0)
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
+			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] > 0)
+				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
+			if(vecAbsVelocity[0] > 0 && vecAbsVelocity[other] > 0)
+				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
+			if(vecAbsVelocity[0] > 0 && vecAbsVelocityOther[0] < 0)
+				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
+				
+			if(vecAbsVelocity[1] < 0 && vecAbsVelocityOther[1] < 0)
+				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
+			if(vecAbsVelocity[1] > 0 && vecAbsVelocityOther[1] > 0)
+				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
+			if(vecAbsVelocity[1] > 0 && vecAbsVelocityOther[1] < 0)
+				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
+			if(vecAbsVelocity[1] < 0 && vecAbsVelocityOther[1] > 0)
+				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
+			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2]
+			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] > 
+			if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] < 0)
+				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocity[2]
+			if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] > 0)
+				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
+			if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] > 0)
+				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
+			if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] < 0)
+				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
+				
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
 			DataPack dp = new DataPack()
 			dp.WriteCell(entity)
