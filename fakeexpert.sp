@@ -119,7 +119,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	SDKHook(client, SDKHook_Touch, SDKSkyFix)
 	//GetAccountSteamID
 	char sQuery[512]
 	if(gB_pass)
@@ -180,7 +180,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 {
 }
 
-void SDKSkyFix(int client, int other) //client = booster; other = flyer
+Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(MaxClients >= client > 0 && MaxClients >= other > 0)
 	{
@@ -217,10 +217,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		{
 			float vecAbs[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsvelocity", vecAbs)
-			if(vecAbs[2] < 0.0)
-				vecAbs[2] = vecAbs[2] * -1.0 + 128.0
-			else
-				vecAbs[2] = vecAbs[2] + 128.0
+			//if(vecAbs[2] < 0.0)
+			//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
+			//else
+			//	vecAbs[2] = vecAbs[2] + 128.0
+			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 		}
 	}
