@@ -1114,9 +1114,9 @@ void ProjectileBoostFix(int entity, int other)
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
 			PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
-			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
-			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
-			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
+			//vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
+			//vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
+			//vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
 			//vecAbsVelocity[0[ = vecAbsVelocity[0] * -0.135
 			//vecAbsVelocity[1]
 			//vecAbsVelocity[0] = vecAbsVelocity[0] * -0.135
@@ -1136,29 +1136,32 @@ void ProjectileBoostFix(int entity, int other)
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
 			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] > 0)
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
-			if(vecAbsVelocity[0] > 0 && vecAbsVelocity[other] > 0)
+			if(vecAbsVelocity[0] > 0 && vecAbsVelocityOther[other] > 0)
 				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
 			if(vecAbsVelocity[0] > 0 && vecAbsVelocityOther[0] < 0)
-				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
+				vecAbsVelocity[0] = vecAbsVelocity[0] + FloatAbs(vecAbsVelocityOther[0])
 				
 			if(vecAbsVelocity[1] < 0 && vecAbsVelocityOther[1] < 0)
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
 			if(vecAbsVelocity[1] > 0 && vecAbsVelocityOther[1] > 0)
 				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
 			if(vecAbsVelocity[1] > 0 && vecAbsVelocityOther[1] < 0)
-				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
+				vecAbsVelocity[1] = vecAbsVelocity[1] + FloatAbs(vecAbsVelocityOther[1])
 			if(vecAbsVelocity[1] < 0 && vecAbsVelocityOther[1] > 0)
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
-			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2]
+			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
+			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
+			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
+			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L187
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] > 
-			if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] < 0)
-				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocity[2]
-			if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] > 0)
-				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
-			if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] > 0)
-				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
-			if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] < 0)
-				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
+			//if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] < 0)
+				//vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocity[2]
+			//if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] > 0)
+				//vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
+			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] > 0)
+				//vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
+			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] < 0)
+				//vecAbsVelocity[2] = vecAbsVelocity[2] + FloatAbs(vecAbsVelocityOther[2])
 				
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
 			DataPack dp = new DataPack()
