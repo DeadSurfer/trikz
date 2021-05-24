@@ -119,7 +119,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	SDKHook(client, SDKHook_Touch, SDKSkyFix)
 	//GetAccountSteamID
 	char sQuery[512]
 	if(gB_pass)
@@ -182,7 +182,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(MaxClients >= client > 0 && MaxClients >= other > 0)
+	//if(MaxClients >= client > 0 && MaxClients >= other > 0)
 	{
 		//PrintToChat(client, "client: %i %N", client, client)
 		//PrintToChat(other, "other: %i %N", other, other)
@@ -218,37 +218,42 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
 		//PrintToServer("delta: %f", delta)
 		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
-		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		if(delta > 0.0 && delta < 2.0)
 		{
 			float vecAbs[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsvelocity", vecAbs)
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
 			//if(vecAbs[2] < 0.0)
 			//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
 			//else
 			//	vecAbs[2] = vecAbs[2] + 128.0
 			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 			PrintToServer("%f", delta)
-			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbs)
-			//float 
-			SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
+			PrintToServer("%f", vecAbs[2])
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
+			/*DataPack dp = new DataPack()
+			dp.WriteCell(vecAbs[0])
+			dp.WriteCell(vecAbs[1])
+			dp.WriteCell(vecAbs[2])
+			dp.WriteCell(other)
+			RequestFrame(rf_3, dp)*/
 		}
-		/*float vecAbsOther2[3]
+		float vecAbsOther2[3]
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther2)
 		float vecAbsClient2[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient2)
 		float vecOtherMins[3]
 		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecOtherMins)
 		//float delta2 = vecAbsClient2[2] + vecAbsOther2[2] + vecOtherMins[2]
-		float delta2 = vecAbsOther2[2] - vecAbsClient2[2] - vecOtherMins[2]
-		PrintToServer("delta2: %f %f %f", vecAbsClient2[2], vecAbsOther2[2], vecOtherMins[2])
+		float delta2 = vecAbsOther2[2] + vecAbsClient2[2] - vecOtherMins[2]
+		//PrintToServer("delta2: %f %f %f", vecAbsClient2[2], vecAbsOther2[2], vecOtherMins[2])
 		if(0.0 > delta2 > -2.0)
 		{
 			float vecAbs[3]
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
 			vecAbs[2] = FloatAbs(vecAbs[2])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbs)
-			PrintToServer("%f", delta2)
+			PrintToServer("delta3: %f", delta2)
 		}
 		if(0.0 < delta2 < 2.0)
 		{
@@ -258,9 +263,24 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			//TeleportEntity(client, Prop_
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbs)
 			PrintToServer("delta2")
-		}*/
+		}
 	}
 }
+
+/*void rf_3(DataPack dp)
+{
+	dp.Reset()
+	float vecAbs = dp.ReadCell()
+	float vecAbs1 = dp.ReadCell()
+	float vecAbs2 = dp.ReadCell()
+	int other = dp.ReadCell()
+	float vecAbsx[3]
+	vecAbsx[0] = vecAbs
+	vecAbsx[1] = vecAbs1
+	vecAbsx[2] = vecAbs2
+	//TeleprotEntity
+	TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsx)
+}*/
 
 Action cmd_trikz(int client, int args)
 {
