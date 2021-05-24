@@ -1106,7 +1106,7 @@ void ProjectileBoostFix(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
 		//float delta = vecMins[2] - vecMaxsEntity[2] - vecAbs[2] //https://forums.alliedmods.net/showthread.php?p=2051806 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp
 		float delta = vecAbs[2] - vecEntityOrigin[2] - vecMaxs[2]
-		if(delta == 0.031250)
+		if(0 < delta < 2)
 		{
 			//float flSpeed
 			//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", flSpeed)
@@ -1114,11 +1114,26 @@ void ProjectileBoostFix(int entity, int other)
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
 			PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
-			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
-			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
-			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
+			vecAbsVelocity[0] = vecAbsVelocity[0] * -2.0
+			vecAbsVelocity[1] = vecAbsVelocity[1] * -2.0
+			vecAbsVelocity[2] = vecAbsVelocity[2] * 2.0
+			//vecAbsVelocity[0[ = vecAbsVelocity[0] * -0.135
+			//vecAbsVelocity[1]
+			//vecAbsVelocity[0] = vecAbsVelocity[0] * -0.135
+			//vecAbs[
+			//vecAbsVelocitry[0] = vecAbsVelocity[0] * -0.135
+			//vecAbsVelocity
+			//vecAbsVelocity[0] = vecAbsVelocity[0] * -0.135
+			//vecAbsVelocity[1] = vecAbsVelocity[1] * -0.135
+			//vecAbsVelocity[2] = vecAbsVelocity[2] * 0.135
 			//float flClientSpeed[3]
 			//GetEntPropFloat(other, 
+			float vecAbsVelocityOther[3]
+			GetEntPropVector(other, Prop_Data, "m_vecAbsvelocity", vecAbsVelocityOther)
+			//vecAbsVelocity[0] = vecAbsVelocity
+			if(vecAbsVelocity[0] < 0)
+			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] < 0)
+				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
 			DataPack dp = new DataPack()
 			dp.WriteCell(entity)
