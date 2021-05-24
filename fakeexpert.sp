@@ -238,6 +238,7 @@ Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 	if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 	{
 		PrintToServer("%i %i ..", client, other)
+		PrintToServer("SDKSkyFix")
 		float vecAbs[3]
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
 		//if(vecAbs[2] < 0.0)
@@ -254,21 +255,6 @@ Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 	}
 }
-
-/*void rf_3(DataPack dp)
-{
-	dp.Reset()
-	float vecAbs = dp.ReadCell()
-	float vecAbs1 = dp.ReadCell()
-	float vecAbs2 = dp.ReadCell()
-	int other = dp.ReadCell()
-	float vecAbsx[3]
-	vecAbsx[0] = vecAbs
-	vecAbsx[1] = vecAbs1
-	vecAbsx[2] = vecAbs2
-	//TeleprotEntity
-	TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsx)
-}*/
 
 Action cmd_trikz(int client, int args)
 {
@@ -459,7 +445,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void Restart(int client)
 {
-	//if(gI_parnter[client] != 0)
 	if(gI_partner[client] != 0)
 	{
 		gB_insideZone[client] = true
@@ -482,13 +467,9 @@ void Restart(int client)
 		PrintToChat(client, "You must have a partner.")
 }
 
-//Action Timer_BlockToggle(Hadle 
 Action Timer_BlockToggle(Handle timer, int client)
 {
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-	//SET
-	//SetEntityRenderColor(client, 255, 255, 255, 75)
-	//SetEntityRenderMode(client, RENDER_TRANSALPHA)
 	SetEntityRenderMode(client, RENDER_NORMAL)
 	SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
 	//SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
@@ -543,13 +524,6 @@ Action cmd_createstart(int client, int args)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
 	PrintToServer("entity: %i created", entity)
-	//PrintToServer("%i", args)
-	//char sQuery[512]
-	//if(args)
-	///	Format(sQuery, 512, "UPDATE zones SET type = %i", args)
-	//else
-	//	Format(sQuery, 512, "UPDATE zones SET type = %i", args)
-	//gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
 
@@ -644,30 +618,7 @@ void SQLTier(Database db, DBResultSet results, const char[] error, any data)
 void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("Zone successfuly updated.")
-	//char sQuery[512]
-	//if(results.FetchRow())
-	//{
-		//char sMap[192]
-		//results.FetchString(0, sMap, 192)
-		//if(StrEqual(sMap, gS_map))
-		//if(
-		//{
-			//PrintToServer("Select successfuly completed.")
-			//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2])
-		//}
-	//}
-	//else
-	//{
-		//Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUES ('%s', %i, %f, %f, %f)", gS_map, gI_zonetype, gF_vec1[0], gF_vec1[1], gF_vec1[2]) //shavit-zones.sp 2437
-		//PrintToServer("Select successufly incompleted.")
-	//}
-	//gD_mysql.Query(SQLSetZones2, sQuery)
 }
-
-//void SQLSetZones2(Database db, DBResultSet results, const char[] error, any data)
-//{
-//	PrintToServer("Succesfuly zoned.")
-//}
 
 Action cmd_vecmaxs(int client, int args)
 {
@@ -693,7 +644,6 @@ Action cmd_vecmaxsend(int client, int args)
 
 Action cmd_starttouch(int client, int args)
 {
-	//SDKHook(gI_trigger, SDKHook_TouchPost, SDKStartTouch)
 	SDKHook(gI_trigger, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(gI_trigger, SDKHook_EndTouch, SDKEndTouch)
 	if(IsValidEntity(gI_trigger) && ActivateEntity(gI_trigger) && DispatchSpawn(gI_trigger))
@@ -734,89 +684,6 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Successfuly created records table.")
 }
 
-/*void SDKStartTouch(int entity, int other)
-{
-	PrintToServer("Start touch. [entity %i; other: %i]", entity, other)
-	char sTriggerName[32]
-	GetEntPropString(entity, Prop_Data, "m_iName", sTriggerName, 32)
-	PrintToServer("[%s]", sTriggerName)
-	if(StrEqual(sTriggerName, "fakeexpert_startzone"))
-	{
-		gB_state[other] = true
-		gB_state[gI_partner[other]] = true
-		gB_mapfinished[other] = false
-		gB_mapfinished[gI_partner[other]] = false
-		gF_TimeStart[other] = GetEngineTime()
-		gF_TimeStart[gI_partner[other]] = GetEngineTime()
-		//gB_finished[other] = true
-		//gB_finishedPartner[gI_partner[other]
-		//PrintToChat(other, "Your time is: %f"
-	}
-	if(StrEqual(sTriggerName, "fakeexpert_endzone"))
-	{
-		gB_mapfinished[other] = true
-		if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
-		{
-			gB_state[other] = false
-			gB_state[gI_partner[other]] = false
-			int hour = RoundToFloor(gF_Time[other])
-			gI_hour = hour / 360
-			int minute = RoundToFloor(gF_Time[other])
-			gI_minute = (minute / 60) % 24
-			int second = RoundToFloor(gF_Time[other])
-			gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-			PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
-			PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], gI_hour, gI_minute, gI_second)
-			int client = GetSteamAccountID(other)
-			int partner = GetSteamAccountID(gI_partner[other])
-			//shavitush - datapack
-			DataPack dp = new DataPack()
-			dp.WriteCell(GetClientSerial(other))
-			dp.WriteCell(GetClientSerial(gI_partner[other]))
-			dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
-			char sQuery[512]
-			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", client, partner, partner, client)
-			gD_mysql.Query(SQLRecords, sQuery, dp)
-			DataPack dp2 = new DataPack()
-			dp2.WriteCell(client)
-			dp2.WriteCell(partner)
-			dp2.WriteCell(GetClientSerial(other))
-			Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-			gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
-		}
-	}
-}*/
-
-/*void SDKEndTouch(int entity, int other)
-{
-	char sTrigger[32]
-	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
-	//if(StrEuql(sTrigger, "fakeexpert_start"))
-	if(StrEqual(Strigger, "fakeexpert_startzone")
-	{
-		gB_state[other] = true
-		gB_state[gI_partner[other]] = true
-		map
-	}
-}*/
-
-/*void SDKStartTouch(int entity, int other)
-{
-	char sTrigger[32]
-	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
-	if(StrEqual(sTrigger, "fakeexpert_startzone"))
-	{
-		gB_state[other] = true
-		gB_state[gI_partner[other]] = true
-		gB_mapfinished[other] = false
-		gB_mapfinished[gI_partner[other]] = false
-		gF_Time[other] = GetEngineTime()
-		gF_Time[gI_partner[other]] = GetEngineTime()
-	}
-	
-}*/
-
-//void SDKStartTouch(int entity, int other
 void SDKEndTouch(int entity, int other)
 {
 	//gB_insideZone[other] = false
@@ -1146,87 +1013,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = GetEngineTime()
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 	}
-	
-	//if(gB_runcmd[client] && gI_)
-	/*if(gB_runcmd[client])
-	{
-		PrintToServer("1")
-		int time = GetTime()
-		//if(gI_boostTime[client] < 0.15
-		//time = time - gF_boostTime[client]
-		if(GetEngineTime() - gI_boostTime[client] < 0.15)
-		{
-			PrintToServer("2")
-			//float time =
-			//SetEntPropVector(gI_other[client], Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-			float vecAbs[3]
-			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
-			float vecAbsBase[3]
-			GetEntPropVector(gI_other[client], Prop_Data, "m_vecBaseVelocity", vecAbsBase)
-			//SetEntPropVector(gI_
-			//PrintToServer("base velocity: %f %f %f", vecAbsBase[0], vecAbsBase[1], vecAbsBase[2])
-			//GetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecAbsBase)
-			//PrintToServer("client base velocity: %f %f %f", vecAbsBase[0], vecAbsBase[1], vecAbsBase[2])
-			//TeleportEntity(gI_other[client], Prop_Data, "m_vecAbsV
-			vecAbs[2] = FloatAbs(vecAbs[2])
-			//TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
-			//TeleportEntity(gI_
-			//TeleportEntity(client, Prop_Data, "
-			float vecAbsx[3]
-			//vecAbsx[0] = gF_vecAbs[
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecAbs[client])
-			PrintToServer("runcmd client: %i %N", client, client)
-			gB_runcmd[client] = false
-		}
-	}*/
 }
-
-/*(public void OnEntityCreated(int entity, const char[] classname)
-{
-	if(StrContains(classname, "projectile"))
-		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
-}*/
 
 void ProjectileBoostFix(int entity, int other)
 {
-	//float vecMinsEntity[3]
-	//float vecMaxsEntity[3]
-	//GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMinsEntity)
-	//GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxsEntity)
-	//vecMins[0] = 
-	//vecMaxs[]
-	//if(vec
-	//PrintToServer("%f %f %f, %f %f %f", vecMins[0], vecMins[1], vecMins[2], vecMaxs[0], vecMaxs[1], vecMaxs[2])
-	//PrintToServer("%i %i %N", entity, other, other)
-	//float flSpeed2
-	//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", flSpeed2)
-	//PrintToServer("%f", flSpeed2)
 	if(0 < other <= MaxClients && IsPlayerAlive(other))
 	{
-		//float vecMins[3]
-		//GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
-		//PrintToServer("%f %f %f", vecMins[0], vecMins[1], vecMins[2])
-		//GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecMaxs)
-		//PrintToServer("%f %f %f", vecMaxs[0], vecMaxs[1], vecMaxs[2])
 		float vecAbs[3]
 		GetClientAbsOrigin(other, vecAbs)
-		//PrintToServer("%f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
-		//float lowVecBox[3]
-		//lowVecBox[0] = vecAbs[0] - vecMaxs[0]
-		//lowVecBox[1] = vecAbs[1] - vecMaxs[1]
-		//lowVecBox[2] = vecAbs[2] - vecMaxs[2]
-		//if(lowVecBox[0] && lowVecBox[1] && lowVecBox[2])
-		//{
-			//PrintToServer("Delta")
-			//Teleport
-			//float vecProjectileSpeed[3]
-			//float vecProjectileSpeed
-			//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", vecProjectileSpeed)
-			//PrintToServer("%f %f %f", vecProjectileSpeed[0], vecProjectileSpeed[1], vecProjectileSpeed[2])
-			//PrintToServer("%f", vecProjectileSpeed)
-		//}
-		//if(vecMins[2] - 
 		float vecEntityOrigin[3]
 		//GetEntityOrigin(entity, vecEntityOrigin)
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecEntityOrigin)
@@ -1241,31 +1035,9 @@ void ProjectileBoostFix(int entity, int other)
 			//PrintToServer("%f %f", delta, flSpeed)
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
-			//PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
-			//PrintToChatAll("AbsEntityVelocity: %f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
-			//vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
-			//vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
-			//vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
-			//vecAbsVelocity[0[ = vecAbsVelocity[0] * -0.135
-			//vecAbsVelocity[1]
-			//vecAbsVelocity[0] = vecAbsVelocity[0] * -0.135
-			//vecAbs[
-			//vecAbsVelocitry[0] = vecAbsVelocity[0] * -0.135
-			//vecAbsVelocity
-			//vecAbsVelocity[0] = vecAbsVelocity[0] * -0.135
-			//vecAbsVelocity[1] = vecAbsVelocity[1] * -0.135
-			//vecAbsVelocity[2] = vecAbsVelocity[2] * 0.135
-			//float flClientSpeed[3]
-			//GetEntPropFloat(other, 
 			float vecAbsVelocityOther[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsVelocityOther)
-			//PrintToChatAll("AbsPlayerVelocity: %f %f %f", vecAbsVelocityOther[0], vecAbsVelocityOther[1], vecAbsVelocityOther[2])
-			//vecAbsVelocity[0] = vecAbsVelocity
-			//if(vecAbsVelocity[0] < 0)
 			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsVelocityOther) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L134
-			//SetEntPropVector(other, Prop_Data, "m_vecAbsV
-			//TeleportEntity(other, NULL_VECOTR
-			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocityOther)
 			if(vecAbsVelocity[0] < 0.0 && vecAbsVelocityOther[0] < 0.0)
 			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
@@ -1310,56 +1082,10 @@ void ProjectileBoostFix(int entity, int other)
 			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
-			//vecAbsVelocity[2] = vecAbsVelocityOther[2]
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L187
-			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] > 
-			//if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] < 0)
-				//vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocity[2]
-			//if(vecAbsVelocity[2] < 0 && vecAbsVelocityOther[2] > 0)
-				//vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
-			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] > 0)
-				//vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
-			//if(vecAbsVelocity[2] > 0 && vecAbsVelocityOther[2] < 0)
-				//vecAbsVelocity[2] = vecAbsVelocity[2] + FloatAbs(vecAbsVelocityOther[2])
-			//int gEntOther = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
-			//int gEntEntity = GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")
-			//PrintToChatAll("%i %i", gEntOther, gEntEntity)
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
-			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
-			//DataPack dp = new DataPack()
-			//dp.WriteCell(entity)
-			//dp.WriteCell(other)
-			//RequestFrame(rf_1, dp)
 		}
 	}
-}
-
-void rf_1(DataPack dp)
-{
-	dp.Reset()
-	int entity = dp.ReadCell()
-	int other = dp.ReadCell()
-	DataPack dp2 = new DataPack()
-	dp2.WriteCell(entity)
-	dp2.WriteCell(other)
-	RequestFrame(rf_2, dp2)
-}
-
-void rf_2(DataPack dp)
-{
-	dp.Reset()
-	int entity = dp.ReadCell()
-	int other = dp.ReadCell()
-	PrintToServer("%i %i %N", entity, other, other)
-	float vecAbsVelocity[3]
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
-	PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
-	vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
-	vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
-	vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
-	//float flClientSpeed[3]
-	//GetEntPropFloat(other, 
-	TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
 }
 
 Action cmd_time(int client, int args)
