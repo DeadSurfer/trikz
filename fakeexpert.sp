@@ -54,6 +54,10 @@ bool gB_insideZone[MAXPLAYERS + 1]
 bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
 bool gB_newpass
+bool gB_runcmd[MAXPLAYERS + 1]
+int gI_other[MAXPLAYERS + 1]
+float gI_boostTime[MAXPLAYERS + 1]
+float gF_vecAbs[3]
 
 public Plugin myinfo =
 {
@@ -267,7 +271,14 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 			PrintToServer("%f", delta)
 			PrintToServer("%f", vecAbs[2])
-			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
+			gI_other[client] = other
+			gB_runcmd[client] = true
+			//gI_boostTime[other]
+			//gI_boostTime[client] = GetTime()
+			//PrintToServer("%i", GetTime())
+			gI_boostTime[client] = GetEngineTime()
+			gF_vecAbs[2] = vecAbs[2]
+			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 			/*DataPack dp = new DataPack()
 			dp.WriteCell(vecAbs[0])
 			dp.WriteCell(vecAbs[1])
@@ -1177,6 +1188,9 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 Action cmd_tp(int client, int args)
 {
 	//TeleportEntity(client, gI_trigger, NULL_VECTOR, NULL_VECTOR)
+	float vecBase[3]
+	GetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecBase)
+	PrintToServer("cmd_tp: vecbase: %f %f %f", vecBase[0], vecBase[1], vecBase[2])
 	return Plugin_Handled
 }
 
@@ -1191,6 +1205,35 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		gF_Time[client] = GetEngineTime()
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
+	}
+	
+	//if(gB_runcmd[client] && gI_)
+	if(gB_runcmd[client])
+	{
+		int time = GetTime()
+		//if(gI_boostTime[client] < 0.15
+		//time = time - gF_boostTime[client]
+		if(GetEngineTime() - gI_boostTime[client] < 0.15)
+		{
+			//float time =
+			//SetEntPropVector(gI_other[client], Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+			float vecAbs[3]
+			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
+			float vecAbsBase[3]
+			GetEntPropVector(gI_other[client], Prop_Data, "m_vecBaseVelocity", vecAbsBase)
+			//SetEntPropVector(gI_
+			//PrintToServer("base velocity: %f %f %f", vecAbsBase[0], vecAbsBase[1], vecAbsBase[2])
+			//GetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecAbsBase)
+			//PrintToServer("client base velocity: %f %f %f", vecAbsBase[0], vecAbsBase[1], vecAbsBase[2])
+			//TeleportEntity(gI_other[client], Prop_Data, "m_vecAbsV
+			vecAbs[2] = FloatAbs(vecAbs[2])
+			//TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
+			//TeleportEntity(gI_
+			//TeleportEntity(client, Prop_Data, "
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecAbs)
+			gB_runcmd[client] = false
+		}
 	}
 }
 
