@@ -27,6 +27,15 @@ bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
 bool gB_newpass
 
+public Plugin myinfo =
+{
+	name = "trikz + timer",
+	author = "Smesh",
+	description = "Allows to able make trikz more comfortable",
+	version = "1.0",
+	url = "http://www.sourcemod.net/"
+}
+
 public void OnPluginStart()
 {
 	RegConsoleCmd("sm_t", cmd_trikz)
