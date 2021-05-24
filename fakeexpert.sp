@@ -54,10 +54,10 @@ bool gB_insideZone[MAXPLAYERS + 1]
 bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
 bool gB_newpass
-bool gB_runcmd[MAXPLAYERS + 1]
-int gI_other[MAXPLAYERS + 1]
-float gI_boostTime[MAXPLAYERS + 1]
-float gF_vecAbs[MAXPLAYERS + 1][3]
+//bool gB_runcmd[MAXPLAYERS + 1]
+//int gI_other[MAXPLAYERS + 1]
+//float gI_boostTime[MAXPLAYERS + 1]
+//float gF_vecAbs[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -121,10 +121,6 @@ public void OnMapStart()
 	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	Database.Connect(SQLConnect, "fakeexpert")
-	//char sQuery[512]
-	//Format(sQuery, 512, "SELECT 
-	//CreateTimer(1.0, Timer_ZonesSetup)
-	//for(int i = 1; i <= MaxClients; i++)
 }
 
 Action cmd_setup(int args)
@@ -133,11 +129,6 @@ Action cmd_setup(int args)
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = %s", gS_map)
 	gD_mysql.Query(SQLSetupZones, sQuery)
 }
-
-//Action Timer_ZonesSetup(Handle timer)
-//{
-
-//}
 
 void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -162,7 +153,6 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
-	//GetAccountSteamID
 	char sQuery[512]
 	if(gB_pass)
 	{
@@ -172,15 +162,13 @@ public void OnClientPutInServer(int client)
 			{
 				int steamid = GetSteamAccountID(i)
 				Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-				//gD_mysql.Query(sQuery, SQLUserAdd)
-				//gD_mysql.Query(sQuery, SQLAddUser, GetClientSerial(client))
 				gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(i))
 			}
 		}
 	}
 	if(gB_newpass)
 	{
-		if(IsClientInGame(client))
+		if(IsClientInGame(client) && client != 0)
 		{
 			char sName[64]
 			GetClientName(client, sName, 64)
@@ -195,24 +183,14 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 {
 }
 
-/*void AddUser(int client)
-{
-	int steamid = GetSteamAccountID(client)
-	char sQuery[512]
-	Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-	gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
-}*/
-
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
-	//int steamid = GetAccountSteamID(client)GetAccountSteamID()
 	int steamid = GetSteamAccountID(client)
 	if(!results.FetchRow())
 	{
 		char sQuery[512]
 		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
-		//gD_mysql.Query(sQuery, SQLUserAdded)
 		gD_mysql.Query(SQLUserAdded, sQuery)
 	}
 	gB_newpass = true
@@ -231,6 +209,7 @@ Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 	float vecClientMaxs[3]
 	GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
 	//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
+	//PrintToServer("vecMaxs: %f %f %f", vecClientMaxs[0], vecClientMaxs[1], vecClientMaxs[2])
 	float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
 	//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
 	//PrintToServer("delta: %f", delta)
