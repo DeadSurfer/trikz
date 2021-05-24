@@ -264,7 +264,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		//PrintToServer("%i %i .1:", client, other)
-		if((delta > 0.0) && (delta < 2.0))
+		//if((delta > 0.0) && (delta < 2.0))
+		if(0.0 < delta < 2.0)
 		{
 			PrintToServer("%i %i ..", client, other)
 			float vecAbs[3]
@@ -1222,7 +1223,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	
 	//if(gB_runcmd[client] && gI_)
-	if(gB_runcmd[client])
+	/*if(gB_runcmd[client])
 	{
 		PrintToServer("1")
 		int time = GetTime()
@@ -1253,7 +1254,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			PrintToServer("runcmd client: %i %N", client, client)
 			gB_runcmd[client] = false
 		}
-	}
+	}*/
 }
 
 /*(public void OnEntityCreated(int entity, const char[] classname)
