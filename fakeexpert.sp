@@ -57,7 +57,7 @@ bool gB_newpass
 bool gB_runcmd[MAXPLAYERS + 1]
 int gI_other[MAXPLAYERS + 1]
 float gI_boostTime[MAXPLAYERS + 1]
-float gF_vecAbs[3]
+float gF_vecAbs[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -124,6 +124,7 @@ public void OnMapStart()
 	//char sQuery[512]
 	//Format(sQuery, 512, "SELECT 
 	//CreateTimer(1.0, Timer_ZonesSetup)
+	//for(int i = 1; i <= MaxClients; i++)
 }
 
 Action cmd_setup(int args)
@@ -223,6 +224,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
+	//PrintToServer("%i %i", client, other)
 	//if(MaxClients >= client > 0 && MaxClients >= other > 0)
 	{
 		//PrintToChat(client, "client: %i %N", client, client)
@@ -247,6 +249,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			
 			//PrintToServer("%i %N", gEnt, gEnt)
 		}*/
+		//PrintToServer("%i %i .", client, other)
 		float vecAbsClient[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient)
 		float vecAbsOther[3]
@@ -260,8 +263,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//PrintToServer("delta: %f", delta)
 		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
-		if(delta > 0.0 && delta < 2.0)
+		//PrintToServer("%i %i .1:", client, other)
+		if((delta > 0.0) && (delta < 2.0))
 		{
+			PrintToServer("%i %i ..", client, other)
 			float vecAbs[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
 			//if(vecAbs[2] < 0.0)
@@ -271,14 +276,23 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 			PrintToServer("%f", delta)
 			PrintToServer("%f", vecAbs[2])
-			gI_other[client] = other
-			gB_runcmd[client] = true
+			//gI_other[client] = other
+			//gB_runcmd[client] = true
 			//gI_boostTime[other]
 			//gI_boostTime[client] = GetTime()
 			//PrintToServer("%i", GetTime())
-			gI_boostTime[client] = GetEngineTime()
-			gF_vecAbs[2] = vecAbs[2]
-			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
+			//gI_boostTime[client] = GetEngineTime()
+			//gF_vecAbs[other][2] = vecAbs[2]
+			//gI_other[client] = other
+			//if(0 < other <= MaxClients)
+			//	gI_other[other] = client
+			//gB_runcmd[other] = true
+			//gB_runcmd[client] = true
+			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
+			float vecVel[3]
+			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
+			PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
+			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 			/*DataPack dp = new DataPack()
 			dp.WriteCell(vecAbs[0])
 			dp.WriteCell(vecAbs[1])
@@ -1210,11 +1224,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gB_runcmd[client] && gI_)
 	if(gB_runcmd[client])
 	{
+		PrintToServer("1")
 		int time = GetTime()
 		//if(gI_boostTime[client] < 0.15
 		//time = time - gF_boostTime[client]
 		if(GetEngineTime() - gI_boostTime[client] < 0.15)
 		{
+			PrintToServer("2")
 			//float time =
 			//SetEntPropVector(gI_other[client], Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
 			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
@@ -1231,7 +1247,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
 			//TeleportEntity(gI_
 			//TeleportEntity(client, Prop_Data, "
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecAbs)
+			float vecAbsx[3]
+			//vecAbsx[0] = gF_vecAbs[
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecAbs[client])
+			PrintToServer("runcmd client: %i %N", client, client)
 			gB_runcmd[client] = false
 		}
 	}
