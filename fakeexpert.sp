@@ -1106,7 +1106,7 @@ void ProjectileBoostFix(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
 		//float delta = vecMins[2] - vecMaxsEntity[2] - vecAbs[2] //https://forums.alliedmods.net/showthread.php?p=2051806 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp
 		float delta = vecAbs[2] - vecEntityOrigin[2] - vecMaxs[2]
-		if(0 < delta < 2)
+		if(0 < delta < 1)
 		{
 			//float flSpeed
 			//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", flSpeed)
@@ -1114,6 +1114,7 @@ void ProjectileBoostFix(int entity, int other)
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
 			PrintToServer("%f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
+			PrintToChatAll("AbsEntityVelocity: %f %f %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
 			//vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			//vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			//vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
@@ -1130,29 +1131,54 @@ void ProjectileBoostFix(int entity, int other)
 			//GetEntPropFloat(other, 
 			float vecAbsVelocityOther[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsVelocityOther)
+			PrintToChatAll("AbsPlayerVelocity: %f %f %f", vecAbsVelocityOther[0], vecAbsVelocityOther[1], vecAbsVelocityOther[2])
 			//vecAbsVelocity[0] = vecAbsVelocity
 			//if(vecAbsVelocity[0] < 0)
 			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsVelocityOther) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L134
 			//SetEntPropVector(other, Prop_Data, "m_vecAbsV
 			//TeleportEntity(other, NULL_VECOTR
-			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocityOther)
+			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocityOther)
 			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] < 0)
+			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
+				//PrintToChatAll("0")
+			}
 			if(vecAbsVelocity[0] < 0 && vecAbsVelocityOther[0] > 0)
+			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
+				//PrintToChatAll("1")
+			}
 			if(vecAbsVelocity[0] > 0 && vecAbsVelocityOther[other] > 0)
+			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
+				//PrintToChatAll("2")
+			}
 			if(vecAbsVelocity[0] > 0 && vecAbsVelocityOther[0] < 0)
+			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] + FloatAbs(vecAbsVelocityOther[0])
+				//PrintToChatAll("3")
+			}
 				
 			if(vecAbsVelocity[1] < 0 && vecAbsVelocityOther[1] < 0)
+			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
+				//PrintToChatAll("4")
+			}
 			if(vecAbsVelocity[1] > 0 && vecAbsVelocityOther[1] > 0)
+			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
+				//PrintToChatAll("5")
+			}
 			if(vecAbsVelocity[1] > 0 && vecAbsVelocityOther[1] < 0)
+			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] + FloatAbs(vecAbsVelocityOther[1])
+				//PrintToChatAll("6")
+			}
 			if(vecAbsVelocity[1] < 0 && vecAbsVelocityOther[1] > 0)
+			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
+				//PrintToChatAll("7")
+			}
 			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
@@ -1224,7 +1250,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-		SDKHook(entity, SDKHook_Touch, ProjectileBoostFix)
+		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 	}
 }
 
