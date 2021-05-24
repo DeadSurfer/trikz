@@ -119,7 +119,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_Touch, SDKSkyFix)
+	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	//GetAccountSteamID
 	char sQuery[512]
 	if(gB_pass)
@@ -180,7 +180,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 {
 }
 
-Action SDKSkyFix(int client, int other) //client = booster; other = flyer
+void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(MaxClients >= client > 0 && MaxClients >= other > 0)
 	{
