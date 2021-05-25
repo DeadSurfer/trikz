@@ -714,10 +714,11 @@ void SDKEndTouch(int entity, int other)
 {
 	//gB_insideZone[other] = false
 	//gB_insideZone[other] = false
-	char sTrigger[32]
-	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
-	if(StrEqual(sTrigger, "fakeexpert_startzone"))
+	//char sTrigger[32]
+	//GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
+	//if(StrEqual(sTrigger, "fakeexpert_startzone"))
 	{
+		PrintToServer("preStart endtouch.")
 		//if(gB_insideZone[other] && gB_insideZone[gI_partner[other]])
 		if(gB_readyToStart[other])
 		{
