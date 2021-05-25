@@ -1091,7 +1091,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float fallVel[3]
 		fallVel[0] = gF_fallVel[client][0]
 		fallVel[1] = gF_fallVel[client][1]
-		fallVel[2] = gF_fallVel[client][2] * 3.0
+		fallVel[2] = gF_fallVel[client][2] * 3.5
 		if(buttons & IN_JUMP)
 		{
 			if(fallVel[2] > 800.0)
