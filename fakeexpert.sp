@@ -59,7 +59,7 @@ float gF_vecStart[3]
 //float gI_boostTime[MAXPLAYERS + 1]
 //float gF_vecAbs[MAXPLAYERS + 1][3]
 //int gI_sky[MAXPLAYERS + 1]
-int gI_frame[MAXPLAYERS + 1]
+//int gI_frame[MAXPLAYERS + 1]
 float gF_fallVel[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
@@ -1081,59 +1081,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea.
 	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
 	{
-		/*float vecAbs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
-		float vecAbsBooster[3]
-		GetEntPropVector(groundEntity, Prop_Data, "m_vecAbsVelocity", vecAbsBooster)
-		float vecMaxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs)
-		//float delta = groundEntity[2] - /
-		float delta = vecAbsBooster[2] - vecAbs[2] - vecMaxs[2]
-		if(0.0 < delta < 2.0)
-			PrintToServer("%i %N %f", groundEntity, groundEntity, delta)*/
-		float vecAbsVel[3]
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsVel)
-		vecAbsVel[2] = FloatAbs(vecAbsVel[2])
-		//int frame
-		/*if(gI_frame[client] == 0)
-		{
-			float vecAbsVel[3]
-			vecAbsVel[2] = vecAbsVel[2] = 560.0
-			//SetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsVel)
-			//PrintToServer("%i", GetEntProp(groundEntity, Prop_Data, "m_hEffectEntity"))
-			PrintToServer("%f %f", GetEntPropFloat(client, Prop_Data, "m_flJumpTime"), GetEntPropFloat(client, Prop_Data, "m_flFallVelocity"))
-			//SetEntPropVector(client, Prop_Data, "m_vecPushAngleVel", vecAbsVel)
-		}
-		if(gI_frame[client] == 5)
-		{
-			float vecBaseVel[3]
-			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-			SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecBaseVel)
-			//SetEntPropVector(groundEntity, Prop_Data, "m_vecBaseVelocity", 
-			//SetEntPropVector(groundEntity, Prop_Data, "m_vecBaseVelocity", vecBaseVel)
-		}*/
-		/*if(gI_frame[client] == 15)
-		{
-			//float vecBaseVel[3]
-			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecBaseVel)
-			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-			vecAbsVel[2] = vecAbsVel[2] += 1000.0
-			if(buttons & IN_JUMP)
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbsVel)
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {0.0, 0.0, 1500.0})
-			//if(buttons & IN_JUMP)
-				//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbsVel)
-			//gI_frame[groundEntity]++
-			gI_frame[client] = 0
-		}*/
-		/*if(0 <= gI_frmae[client] <= 1)
-		{
-			float vecVel[3]
-			vecVel[2] = FloatAbs(vecVel[2])
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecVel)
-			//SetEntPropVector
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVel)
-		}*/
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
 		float fallVel[3]
 		fallVel[0] = gF_fallVel[client][0]
@@ -1146,92 +1093,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(fallVel[2] <= 800.0 && !(GetEntityFlags(groundEntity) & FL_ONGROUND))
 			{
 				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
-				PrintToServer("%f", fallVel[2])
+				//PrintToServer("%f", fallVel[2])
 			}
-		}
-		float vecVel2[3]
-		if(!(GetEntityFlags(client) & FL_ONGROUND))
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecVel2)
-		if(GetEntityFlags(client) & FL_ONGROUND)
-		{
-			float vecVel[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecVel)
-			//PrintToServer("2. %f %f %f", vecVel[0], vecVel[1], vecVel[2])
-			//vecVel2[2] = FloatAbs(vecVel2[2])
-			//if(15 >= gI_frame[client] >= 5)
-			{
-				//float fallVel[3]
-				//fallVel[2] = gF_fallVel[client][2]
-				//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
-				//PrintToServer("%f %f %f", vecVel2[0], vecVel2[1], vecVel2[2])
-				//PrintToServer("fallVel: %f", gF_fallVel)
-			}
-			if(gI_frame[client] == 16)
-				gI_frame[client] = 0
-			//PrintToServer("%i %N %i %N", client, client, groundEntity, groundEntity)
-			gI_frame[client]++
 		}
 	}
-	/*//if(gB_sky[client])
-	{
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-		//if((GetEngineTime() - gI_boostTime[client]) < 0.15)
-		if(0 < gI_sky[gI_other[client]] <= 5)
-		{
-			float vecAbs[3]
-			gF_vecAbs[gI_other[client]][0] = vecAbs[0]
-			gF_vecAbs[gI_other[client]][1] = vecAbs[1]
-			gF_vecAbs[gI_other[client]][2] = vecAbs[2]
-			if(gI_sky[gI_other[client]] == 2)
-			{
-				//SetEntPropVector(gI_other[client], NULL_VECTOR, NULL_VECTOR, {0.0, 0.0, 0.0})
-				//SetEntPropVector(gI_other[client], Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-				//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-				TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
-			}
-			//gB_sky[client] = false
-			gI_sky[gI_other[client]]++
-			//PrintToServer("%N", gI_other[client]) //Flyer
-		}
-		if(gI_sky[gI_other[client]] == 5)
-			gI_sky[gI_other[client]] = 0
-	}*/
-	/*if(gB_sky[gI_other[client]])
-	{
-		int frame
-		float vecAbs[3]
-		if(frame == 0)
-		{
-			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
-			PrintToServer("sky frame0: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
-			frame = 1
-		}
-		if(frame == 1)
-		{
-			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
-			PrintToServer("sky frame1: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
-			frame = 2
-		}
-		if(frame == 2)
-		{
-			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
-			PrintToServer("sky frame2: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
-			frame = 3
-		}
-		if(frame == 3)
-		{
-			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
-			PrintToServer("sky frame3: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
-			frame = 4
-		}
-		if(frame == 4)
-		{
-			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
-			PrintToServer("sky frame4: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
-			frame = 0
-			gB_sky[gI_other[client]] = false
-		}
-	}*/
 }
 void ProjectileBoostFix(int entity, int other)
 {
