@@ -250,8 +250,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//gF_fallVel[other][0] = vec
 		//vecAbs[0] = gF_fallVel[other]
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
-		vecAbs[0] = gF_fallVel[other][0]
-		vecAbs[1] = gF_fallVel[other][1]
+		//vecAbs[0] = gF_fallVel[other][0]
+		//vecAbs[1] = gF_fallVel[other][1]
 		gF_fallVel[other][0] = vecAbs[0]
 		gF_fallVel[other][1] = vecAbs[1]
 		//vecAbs[2] = gF_fallVel[other][2]
