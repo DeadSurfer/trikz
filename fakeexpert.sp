@@ -154,28 +154,12 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	char sQuery[512]
-	if(gB_pass)
+	int steamid = GetSteamAccountID(client)
+	if(IsClientInGame(client) && gB_pass)
 	{
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i))
-			{
-				int steamid = GetSteamAccountID(i)
-				Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-				gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(i))
-			}
-		}
-	}
-	if(gB_newpass)
-	{
-		if(IsClientInGame(client) && client != 0)
-		{
-			char sName[64]
-			GetClientName(client, sName, 64)
-			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-			gD_mysql.Query(SQLUpdateUsername, sQuery)
-		}
+		//int steamid = GetSteamAccountID(client)
+		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 	}
 }
 
@@ -183,24 +167,47 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 {
 }
 
+void Updateusername(int client)
+{
+}
+
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
 	int steamid = GetSteamAccountID(client)
-	if(!results.FetchRow())
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
-		gD_mysql.Query(SQLUserAdded, sQuery)
-	}
-	gB_newpass = true
+	char sQuery[512]
+	//if(!results.FetchRow())
+	//{
+	//	Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
+	//	gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
+	//}
+	//else
+	//{
+	char sName[64]
+	GetClientName(client, sName, 64)
+	Format(sQuery, 512, "UPDATE users SET username = '%' WHERE steamid = %i", sName, steamid)
+	gD_mysql.Query(SQLUpdateUsername, sQuery)
+	//}
+	//gB_newpass = true
 }
 
 void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
 {
+	//int steamid = GetSteamAccountID(GetClientFromSerial(data))
+	int client = GetClientFromSerial(data)
+	int steamid = GetSteamAccountID(client)
+	if(IsClientInGame(client))
+	{
+		char sName[64]
+		GetClientName(client, sName, 64)
+		char sQuery[512]
+		int steamid = GetSteamAccountID(client)
+		Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+		gD_mysql.Query(SQLUpdateUsername, sQuery)
+	}
 }
 
-Action SDKSkyFix(int client, int other) //client = booster; other = flyer
+void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	float vecAbsClient[3]
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient)
@@ -214,7 +221,8 @@ Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 	//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
 	//PrintToServer("delta: %f", delta)
 	//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
-	if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+	//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+	if(delta > 0.0 && delta < 2.0)
 	{
 		PrintToServer("%i %i ..", client, other)
 		PrintToServer("SDKSkyFix")
@@ -878,7 +886,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	Format(sQuery, 512, "SELECT map FROM zones")
 	gD_mysql.Query(SQLForceZonesSetup, sQuery)
 	gB_pass = true
-	OnClientPutInServer(0)
+	//OnClientPutInServer(0)
 }
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
