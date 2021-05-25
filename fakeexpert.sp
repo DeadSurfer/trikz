@@ -1108,7 +1108,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(IsPlayerAlive(client) && groundEntity == 0)
 	{
-		gB_onGround[client] = true
+		//gB_onGround[client] = true
 		//PrintToServer("%i %N", gB_onGround, client)
 	}
 }
