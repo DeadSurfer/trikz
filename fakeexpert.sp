@@ -1138,9 +1138,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float fallVel[3]
 		fallVel[0] = gF_fallVel[client][0]
 		fallVel[1] = gF_fallVel[client][1]
-		fallVel[2] = gF_fallVel[client][2] * 3.0
+		fallVel[2] = gF_fallVel[client][2] * 100.0
 		if(buttons & IN_JUMP)
 		{
+			if(fallVel[2] > 900.0)
+				fallVel[2] = 900.0
 			if(fallVel[2] <= 900.0)
 			{
 				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
