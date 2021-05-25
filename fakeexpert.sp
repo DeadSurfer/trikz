@@ -1188,6 +1188,38 @@ void ProjectileBoostFix(int entity, int other)
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
 				//PrintToChatAll("7")
 			}
+			
+			if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] < 0.0)
+			{
+				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
+				//PrintToChatAll("4")
+			}
+			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] > 0.0)
+			{
+				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
+				//PrintToChatAll("5")
+			}
+			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] < 0.0)
+			{
+				vecAbsVelocity[2] = vecAbsVelocity[2] + FloatAbs(vecAbsVelocityOther[2])
+				//PrintToChatAll("6")
+			}
+			if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] > 0.0)
+			{
+				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[1]
+				//PrintToChatAll("7")
+			}
+			/*if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] < 0.0
+			{
+				//vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocity
+				//vecAbsVelocity[1] = vecAbsVelocity[1] 
+				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
+			}
+			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] > 0.0
+				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
+			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] < 0.0)
+				vecAbsVelocity[2] = vecAbsVelocity[2] + FloatAbs(vecAbsVelocityOther[2])
+				*/
 			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
