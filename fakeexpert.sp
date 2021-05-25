@@ -115,6 +115,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegServerCmd("sm_manualinsert", cmd_manualinsert)
+	RegConsoleCmd("sm_gent", cmd_gent)
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -1098,8 +1099,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
 					//PrintToServer("%f", fallVel[2])
-					gB_onGround[client] = false
+					//gB_onGround[client] = false
 				}
+				if(groundEntity == 0)
+					gB_onGround[client] = false
 			}
 		}
 	}
@@ -1108,6 +1111,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gB_onGround[client] = true
 		//PrintToServer("%i %N", gB_onGround, client)
 	}
+}
+Action cmd_gent(int client, int args)
+{
+	int gEnt = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
+	PrintToServer("%i", gEnt)
+	return Plugin_Handled
 }
 void ProjectileBoostFix(int entity, int other)
 {
