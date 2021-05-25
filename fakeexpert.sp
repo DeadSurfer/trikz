@@ -59,6 +59,7 @@ float gF_vecStart[3]
 //float gI_boostTime[MAXPLAYERS + 1]
 //float gF_vecAbs[MAXPLAYERS + 1][3]
 //int gI_sky[MAXPLAYERS + 1]
+int gI_frame[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -1070,7 +1071,37 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = GetEngineTime()
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 	}
-	
+	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea.
+	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
+	{
+		/*float vecAbs[3]
+		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbs)
+		float vecAbsBooster[3]
+		GetEntPropVector(groundEntity, Prop_Data, "m_vecAbsVelocity", vecAbsBooster)
+		float vecMaxs[3]
+		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs)
+		//float delta = groundEntity[2] - /
+		float delta = vecAbsBooster[2] - vecAbs[2] - vecMaxs[2]
+		if(0.0 < delta < 2.0)
+			PrintToServer("%i %N %f", groundEntity, groundEntity, delta)*/
+		float vecAbsVel[3]
+		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsVel)
+		vecAbsVel[2] = FloatAbs(vecAbsVel[2])
+		int frame
+		if(gI_frame[client] == 0)
+		{
+			SetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", {0.0, 0.0, 0.0})
+		}
+		if(gI_frame[client] == 30)
+		{
+			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbsVel)
+			//gI_frame[groundEntity]++
+			gI_frame[client] = 0
+		}
+		//PrintToServer("%i %N %i %N", client, client, groundEntity, groundEntity)
+		gI_frame[client]++
+	}
 	/*//if(gB_sky[client])
 	{
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
