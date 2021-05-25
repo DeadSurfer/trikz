@@ -58,7 +58,7 @@ bool gB_newpass
 int gI_other[MAXPLAYERS + 1]
 float gI_boostTime[MAXPLAYERS + 1]
 float gF_vecAbs[MAXPLAYERS + 1][3]
-bool gB_sky[MAXPLAYERS + 1]
+int gI_sky[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -260,7 +260,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 		gI_boostTime[other] = GetEngineTime()
-		gB_sky[other] = true //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+		gI_sky[other] = 5 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 	}
 }
 
@@ -1033,7 +1033,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(client) & FL_INWATER) && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
-	if(buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
+	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
 		KickClient(client, "Don't use yoystick")
 	//Timer
 	//if(gB_state[client] && gB_mapfinished[client] && gB_mapfinished[gI_partner[client]])
@@ -1043,20 +1043,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 	}
 	
-	/*if(gB_sky[client])
+	//if(gB_sky[client])
 	{
-		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-		if((GetEngineTime() - gI_boostTime[client]) < 0.15)
+		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+		//if((GetEngineTime() - gI_boostTime[client]) < 0.15)
+		if(gI_sky[gI_other[client]] <= 5)
 		{
 			float vecAbs[3]
 			gF_vecAbs[gI_other[client]][0] = vecAbs[0]
 			gF_vecAbs[gI_other[client]][1] = vecAbs[1]
 			gF_vecAbs[gI_other[client]][2] = vecAbs[2]
 			TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
-			gB_sky[client] = false
+			//gB_sky[client] = false
+			gI_sky[gI_other[client]]++
 		}
-	}*/
-	if(gB_sky[gI_other[client]])
+	}
+	/*if(gB_sky[gI_other[client]])
 	{
 		int frame
 		float vecAbs[3]
@@ -1091,7 +1093,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			frame = 0
 			gB_sky[gI_other[client]] = false
 		}
-	}
+	}*/
 }
 void ProjectileBoostFix(int entity, int other)
 {
