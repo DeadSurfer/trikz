@@ -1155,7 +1155,7 @@ void ProjectileBoostFix(int entity, int other)
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
 				//PrintToChatAll("1")
 			}
-			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[other] > 0.0)
+			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] > 0.0)
 			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
 				//PrintToChatAll("2")
