@@ -778,8 +778,18 @@ Action SDKStartTouch(int entity, int other)
 				minute = (minute / 60) % 24
 				int second = RoundToFloor(gF_Time[other])
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				char sQuerySR[512]
+				Format(sQuerySR, 512, "SELECT time FROM records")
+				//DataPack dp3.WriteCell(gF_Time[other])
+				//DataPack dp3.WriteCell
+				DataPack dp3 = new DataPack()
+				dp3.WriteCell(gF_Time[other])
+				dp3.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLSR, sQuerySR)
+				//PrintTo
 				int clientid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
 				PrintToServer("%i %i", clientid, partnerid)
@@ -804,6 +814,42 @@ Action SDKStartTouch(int entity, int other)
 		}
 	}
 	//gB_passzone[other] = false
+}
+
+void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
+	dp.Reset()
+	float timeClient = dp.ReadFloat()
+	int other = GetClientFromSerial(dp.ReadCell())
+	while(results.FetchRow())
+	{
+		float time = results.FetchFloat(0)
+		//float other = GetClientFromSerial(FetchInt(0))
+		if(timeClient < time)
+		{
+			float timeDiff
+			timeDiff = time - timeClient
+			int hour = RoundToFloor(timeDiff) / 60
+			int minute = (RoundToFloor(timeDiff) / 60) % 24
+			int second = RoundToFloor(timeDiff) % 60
+			int personalHour = RoundToFloor(timeClient) / 60
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+			int personalSecond = RoundToFloor(timeClient) % 60
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
+		}
+		else
+		{
+			float timeDiff
+			timeDiff = time - timeClient
+			int hour = RoundToFloor(timeDiff) / 60
+			int minute = (RoundToFloor(timeDiff) / 60) % 24
+			int second = RoundToFloor(timeDiff) % 24
+			int personalHour = RoundToFloor(timeClient) / 60
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+			int personalSecond = RoundToFloor(timeClient) % 60
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
+		}
+	}
 }
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
@@ -873,7 +919,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	//PrintToServer("Debug")
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
-	int other = GetClientFromSerial(dp2.ReadCell())
+	//int other = GetClientFromSerial(dp2.ReadCell())
 	int clientid = dp2.ReadCell()
 	//PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
@@ -882,8 +928,8 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, clientid)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
-		PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
-		PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
+		//PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
+		//PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
 	}
 }
 
@@ -1234,4 +1280,3 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 	return Plugin_Continue
 	//PrintToServer("%s", sample)
 }
-
