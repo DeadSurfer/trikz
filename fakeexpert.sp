@@ -258,9 +258,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
 		//PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
 		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
+		//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
 		gI_boostTime[other] = GetEngineTime()
-		gI_sky[other] = 5 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+		if(gI_other[other] == 0)
+		gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 	}
 }
 
@@ -1053,10 +1054,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_vecAbs[gI_other[client]][0] = vecAbs[0]
 			gF_vecAbs[gI_other[client]][1] = vecAbs[1]
 			gF_vecAbs[gI_other[client]][2] = vecAbs[2]
-			TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
+			//TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
 			//gB_sky[client] = false
 			gI_sky[gI_other[client]]++
+			//PrintToServer("%N", gI_other[client]) //Flyer
 		}
+		if(gI_sky[gI_other[client]] == 5)
+			gI_sky[gI_other[client]] = 0
 	}
 	/*if(gB_sky[gI_other[client]])
 	{
