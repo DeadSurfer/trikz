@@ -241,6 +241,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 	//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 	if(delta > 0.0 && delta < 2.0)
+	if((0.0 < delta < 2.0) && !(GetClientButtons(other) & IN_DUCK))
 	{
 		//PrintToServer("%i %i ..", client, other)
 		//PrintToServer("SDKSkyFix")
