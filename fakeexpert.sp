@@ -1087,13 +1087,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float vecAbsVel[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsVel)
 		vecAbsVel[2] = FloatAbs(vecAbsVel[2])
-		int frame
-		if(gI_frame[client] == 0)
+		//int frame
+		if(gI_frame[client] == 5)
 		{
-			SetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", {0.0, 0.0, 0.0})
+			float vecBaseVel[3]
+			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+			SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecBaseVel)
+			//SetEntPropVector(groundEntity, Prop_Data, "m_vecBaseVelocity", 
+			//SetEntPropVector(groundEntity, Prop_Data, "m_vecBaseVelocity", vecBaseVel)
 		}
-		if(gI_frame[client] == 30)
+		if(gI_frame[client] == 15)
 		{
+			//float vecBaseVel[3]
+			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecBaseVel)
 			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecAbsVel)
 			//gI_frame[groundEntity]++
