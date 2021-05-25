@@ -117,6 +117,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegServerCmd("sm_manualinsert", cmd_manualinsert)
 	RegConsoleCmd("sm_gent", cmd_gent)
+	RegConsoleCmd("sm_vectest", cmd_vectest)
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -476,9 +477,9 @@ void Restart(int client)
 		gB_readyToStart[client] = true
 		gB_readyToStart[gI_partner[client]] = true
 		float vecVel[3]
-		vecVel[0] = 30.0
-		vecVel[1] = 30.0
-		vecVel[2] = 0.0
+		//vecVel[0] = 30.0
+		//vecVel[1] = 30.0
+		//vecVel[2] = 0.0
 		TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
 		TeleportEntity(gI_partner[client], gF_vecStart, NULL_VECTOR, vecVel)
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
@@ -541,11 +542,13 @@ Action cmd_createstart(int client, int args)
 	mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	mins[0] = mins[0] * -1.0
 	mins[1] = mins[1] * -1.0
 	mins[2] = 128.0
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMaxs", gF_vec2)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
@@ -609,7 +612,7 @@ Action cmd_vecmins(int client, int args)
 	char sQuery[512]
 	args = 0
 	//gI_zonetype = 0
-	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
+	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
@@ -617,7 +620,7 @@ Action cmd_vecmins(int client, int args)
 Action cmd_vecminsend(int client, int args)
 {
 	GetClientAbsOrigin(client, gF_vec1)
-	PrintToServer("vec2: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 	char sQuery[512]
 	args = 1
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
@@ -649,10 +652,11 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_vecmaxs(int client, int args)
 {
 	GetClientAbsOrigin(client, gF_vec2)
-	PrintToServer("vec1: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	char sQuery[512]
 	args = 0
-	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
+	PrintToServer("%s", gS_map)
+	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
 }
@@ -710,7 +714,16 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Successfuly created records table.")
 }
 
-void SDKEndTouch(int entity, int other)
+Action cmd_vectest(int client, int args)
+{
+	//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {-6843.03, 4143.97, 1808.03})
+	//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {-7471.97, 3241.55, 1408.03})
+	//TeleportEntity(client, {-6843.03, 4143.97, 1808.03}, NULL_VECTOR, NULL_VECTOR)
+	//TeleportEntity(client, {-7471.97, 3241.55, 1408.03}, NULL_VECTOR, NULL_VECTOR)
+	return Plugin_Handled
+}
+
+Action SDKEndTouch(int entity, int other)
 {
 	//gB_insideZone[other] = false
 	//gB_insideZone[other] = false
@@ -741,13 +754,13 @@ void SDKEndTouch(int entity, int other)
 }
 
 //void SDKStartTouch(int entity, int other)
-void SDKStartTouch(int entity, int other)
+Action SDKStartTouch(int entity, int other)
 {
 	//PrintToServer("%i %i", entity, other)
 	if(0 < other <= MaxClients && gB_passzone[other])
 	{
 		//gB_insideZone[other] = true //Expert-Zone idea.
-		gB_passzone[other] = false
+		//gB_passzone[other] = false
 		//PrintToServer("%i", other)
 		PrintToServer("SDKStartTouch %i %i", entity, other)
 		char sTrigger[32]
@@ -755,6 +768,7 @@ void SDKStartTouch(int entity, int other)
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
 			gB_mapfinished[other] = true
+			gB_passzone[other] = false
 			//gB_zonepass[other
 			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 			{
