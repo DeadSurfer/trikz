@@ -254,6 +254,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//vecAbs[1] = gF_fallVel[other][1]
 		gF_fallVel[other][0] = vecAbs[0]
 		gF_fallVel[other][1] = vecAbs[1]
+		float fallVel = GetEntPropFloat(other, Prop_Data, "m_flFallVelocity")
+		PrintToServer("FallVelFloat: %f", fallVel)
 		//vecAbs[2] = gF_fallVel[other][2]
 		//if(vecAbs[2] < 0.0)
 		//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
