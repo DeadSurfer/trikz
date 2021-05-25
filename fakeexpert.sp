@@ -903,8 +903,8 @@ void SQLConnect(Database db, const char[] error, any data)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT map FROM zones")
 	gD_mysql.Query(SQLForceDefaultZones, sQuery)
-	Format(sQuery, 512, "SELECT map FROM zones")
-	gD_mysql.Query(SQLForceZonesSetup, sQuery)
+	//Format(sQuery, 512, "SELECT map FROM zones")
+	//gD_mysql.Query(SQLForceZonesSetup, sQuery)
 	gB_pass = true
 	//OnClientPutInServer(0)
 }
@@ -917,6 +917,7 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 		PrintToServer("Error with mysql connection %s", error)
 		return
 	}
+	PrintToServer("test")
 	char sMap[192]
 	char sQuery[512]
 	while(results.FetchRow())
@@ -928,6 +929,11 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
 			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
+		}
+		else
+		{
+			Format(sQuery, 512, "SELECT map FROM zones")
+			gD_mysql.Query(SQLForceZonesSetup, sQuery)
 		}
 	}
 }
