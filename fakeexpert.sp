@@ -250,7 +250,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
 		vecAbs[0] = gF_fallVel[other][0]
 		vecAbs[1] = gF_fallVel[other][1]
-		vecAbs[2] = gF_fallVel[other][2]
+		//vecAbs[2] = gF_fallVel[other][2]
 		//if(vecAbs[2] < 0.0)
 		//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
 		//else
@@ -1136,6 +1136,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}*/
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
 		float fallVel[3]
+		fallVel[0] = gF_fallVel[client][0]
+		fallVel[1] = gF_fallVel[client][1]
 		fallVel[2] = gF_fallVel[client][2] * 3.0
 		if(buttons & IN_JUMP)
 		{
