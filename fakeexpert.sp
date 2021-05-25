@@ -825,7 +825,10 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	{
 		float time = results.FetchFloat(0)
 		//float other = GetClientFromSerial(FetchInt(0))
-		if(timeClient < time)
+		float bestTime
+		if(bestTime > time)
+			bestTime = time
+		if(timeClient < bestTime)
 		{
 			float timeDiff
 			timeDiff = time - timeClient
@@ -840,7 +843,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		else
 		{
 			float timeDiff
-			timeDiff = time - timeClient
+			timeDiff = bestTime - timeClient
 			int hour = RoundToFloor(timeDiff) / 60
 			int minute = (RoundToFloor(timeDiff) / 60) % 24
 			int second = RoundToFloor(timeDiff) % 24
