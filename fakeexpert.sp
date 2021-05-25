@@ -1189,7 +1189,7 @@ void ProjectileBoostFix(int entity, int other)
 				//PrintToChatAll("7")
 			}
 			
-			if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] < 0.0)
+			/*if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] < 0.0)
 			{
 				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
 				//PrintToChatAll("4")
@@ -1208,7 +1208,7 @@ void ProjectileBoostFix(int entity, int other)
 			{
 				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[1]
 				//PrintToChatAll("7")
-			}
+			}*/
 			/*if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] < 0.0
 			{
 				//vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocity
