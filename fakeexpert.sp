@@ -53,12 +53,12 @@ bool gB_pass
 bool gB_insideZone[MAXPLAYERS + 1]
 bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
-bool gB_newpass
+//bool gB_newpass
 //bool gB_runcmd[MAXPLAYERS + 1]
-int gI_other[MAXPLAYERS + 1]
-float gI_boostTime[MAXPLAYERS + 1]
-float gF_vecAbs[MAXPLAYERS + 1][3]
-int gI_sky[MAXPLAYERS + 1]
+//int gI_other[MAXPLAYERS + 1]
+//float gI_boostTime[MAXPLAYERS + 1]
+//float gF_vecAbs[MAXPLAYERS + 1][3]
+//int gI_sky[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -181,9 +181,9 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 {
 }
 
-void Updateusername(int client)
-{
-}
+//void Updateusername(int client)
+//{
+//}
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -192,25 +192,25 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		return
 	int steamid = GetSteamAccountID(client)
 	char sQuery[512]
-	//if(!results.FetchRow())
-	//{
-	//	Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
-	//	gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
-	//}
-	//else
-	//{
-	char sName[64]
-	GetClientName(client, sName, 64)
-	Format(sQuery, 512, "UPDATE users SET username = '%' WHERE steamid = %i", sName, steamid)
-	gD_mysql.Query(SQLUpdateUsername, sQuery)
-	//}
+	if(!results.FetchRow())
+	{
+		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
+		gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
+	}
+	else
+	{
+		char sName[64]
+		GetClientName(client, sName, 64)
+		Format(sQuery, 512, "UPDATE users SET username = '%' WHERE steamid = %i", sName, steamid)
+		gD_mysql.Query(SQLUpdateUsername, sQuery)
+	}
 	//gB_newpass = true
 }
 
 void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
 {
 	//int steamid = GetSteamAccountID(GetClientFromSerial(data))
-	int client = GetClientFromSerial(data)
+	/*int client = GetClientFromSerial(data)
 	int steamid = GetSteamAccountID(client)
 	if(IsClientInGame(client))
 	{
@@ -220,7 +220,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 		int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 		gD_mysql.Query(SQLUpdateUsername, sQuery)
-	}
+	}*/
 }
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
@@ -249,19 +249,19 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//else
 		//	vecAbs[2] = vecAbs[2] + 128.0
 		vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		vecAbs[2] = gF_vecAbs[other][2]
-		gI_other[client] = other
+		//vecAbs[2] = gF_vecAbs[other][2]
+		//gI_other[client] = other
 		//PrintToServer("%f", delta)
 		//PrintToServer("absVelocity: %f", vecAbs[2])
 		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
-		float vecVel[3]
-		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
+		//float vecVel[3]
+		//GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
 		//PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
-		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
 		//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
-		gI_boostTime[other] = GetEngineTime()
-		if(gI_other[other] == 0)
-		gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+		//gI_boostTime[other] = GetEngineTime()
+		//if(gI_other[other] == 0)
+		//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 	}
 }
 
@@ -954,10 +954,10 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 	}
 }
 
-void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
-{
+//void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
+//{
 	//PrintToServer("Successful SQLForceDefaultZonesType.")
-}
+//}
 
 void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -1044,24 +1044,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 	}
 	
-	//if(gB_sky[client])
+	/*//if(gB_sky[client])
 	{
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
 		//if((GetEngineTime() - gI_boostTime[client]) < 0.15)
-		if(gI_sky[gI_other[client]] <= 5)
+		if(0 < gI_sky[gI_other[client]] <= 5)
 		{
 			float vecAbs[3]
 			gF_vecAbs[gI_other[client]][0] = vecAbs[0]
 			gF_vecAbs[gI_other[client]][1] = vecAbs[1]
 			gF_vecAbs[gI_other[client]][2] = vecAbs[2]
-			//TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
+			if(gI_sky[gI_other[client]] == 2)
+			{
+				//SetEntPropVector(gI_other[client], NULL_VECTOR, NULL_VECTOR, {0.0, 0.0, 0.0})
+				//SetEntPropVector(gI_other[client], Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+				//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+				TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
+			}
 			//gB_sky[client] = false
 			gI_sky[gI_other[client]]++
 			//PrintToServer("%N", gI_other[client]) //Flyer
 		}
 		if(gI_sky[gI_other[client]] == 5)
 			gI_sky[gI_other[client]] = 0
-	}
+	}*/
 	/*if(gB_sky[gI_other[client]])
 	{
 		int frame
