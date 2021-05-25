@@ -210,9 +210,9 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	float vecAbsClient[3]
-	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vecAbsClient)
+	GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsClient)
 	float vecAbsOther[3]
-	GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbsOther)
+	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsOther)
 	float vecClientMaxs[3]
 	GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
 	//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
