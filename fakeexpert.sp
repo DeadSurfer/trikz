@@ -63,6 +63,7 @@ float gF_vecStart[3]
 float gF_fallVel[MAXPLAYERS + 1][3]
 bool gB_onGround[MAXPLAYERS + 1]
 bool gB_readyToStart[MAXPLAYERS + 1]
+float gF_bestTime
 
 public Plugin myinfo =
 {
@@ -821,37 +822,38 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	dp.Reset()
 	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
+	float time
 	while(results.FetchRow())
 	{
-		float time = results.FetchFloat(0)
+		time = results.FetchFloat(0)
 		//float other = GetClientFromSerial(FetchInt(0))
-		float bestTime
-		if(bestTime > time)
-			bestTime = time
-		if(timeClient < bestTime)
-		{
-			float timeDiff
-			timeDiff = time - timeClient
-			int hour = RoundToFloor(timeDiff) / 60
-			int minute = (RoundToFloor(timeDiff) / 60) % 24
-			int second = RoundToFloor(timeDiff) % 60
-			int personalHour = RoundToFloor(timeClient) / 60
-			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-			int personalSecond = RoundToFloor(timeClient) % 60
-			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
-		}
-		else
-		{
-			float timeDiff
-			timeDiff = bestTime - timeClient
-			int hour = RoundToFloor(timeDiff) / 60
-			int minute = (RoundToFloor(timeDiff) / 60) % 24
-			int second = RoundToFloor(timeDiff) % 24
-			int personalHour = RoundToFloor(timeClient) / 60
-			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-			int personalSecond = RoundToFloor(timeClient) % 60
-			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
-		}
+		//float bestTime
+		if(gF_bestTime > time)
+			gF_bestTime = time
+	}
+	if(timeClient < gF_bestTime)
+	{
+		float timeDiff
+		timeDiff = time - timeClient
+		int hour = RoundToFloor(timeDiff) / 60
+		int minute = (RoundToFloor(timeDiff) / 60) % 24
+		int second = RoundToFloor(timeDiff) % 60
+		int personalHour = RoundToFloor(timeClient) / 60
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalSecond = RoundToFloor(timeClient) % 60
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
+	}
+	else
+	{
+		float timeDiff
+		timeDiff = gF_bestTime - timeClient
+		int hour = RoundToFloor(timeDiff) / 60
+		int minute = (RoundToFloor(timeDiff) / 60) % 24
+		int second = RoundToFloor(timeDiff) % 24
+		int personalHour = RoundToFloor(timeClient) / 60
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalSecond = RoundToFloor(timeClient) % 60
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
 	}
 }
 
