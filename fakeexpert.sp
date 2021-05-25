@@ -532,7 +532,7 @@ Action cmd_createstart(int client, int args)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
-	PrintToServer("entity: %i created", entity)
+	PrintToServer("entity start: %i created", entity)
 	return Plugin_Handled
 }
 
@@ -581,7 +581,7 @@ Action cmd_createend(int client, int args)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	PrintToServer("entity: %i created", entity)
+	PrintToServer("entity end: %i created", entity)
 	return Plugin_Handled
 }
 
@@ -721,7 +721,8 @@ void SDKEndTouch(int entity, int other)
 //void SDKStartTouch(int entity, int other)
 void SDKStartTouch(int entity, int other)
 {
-	if(gB_passzone[other])
+	//PrintToServer("%i %i", entity, other)
+	if(0 < other <= MaxClients && gB_passzone[other])
 	{
 		gB_insideZone[other] = true //Expert-Zone idea.
 		gB_passzone[other] = false
@@ -902,11 +903,12 @@ void SQLConnect(Database db, const char[] error, any data)
 	}
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
-	char sQuery[512]
-	Format(sQuery, 512, "SELECT map FROM zones")
-	gD_mysql.Query(SQLForceDefaultZones, sQuery)
+	//char sQuery[512]
 	//Format(sQuery, 512, "SELECT map FROM zones")
-	//gD_mysql.Query(SQLForceZonesSetup, sQuery)
+	//gD_mysql.Query(SQLForceDefaultZones, sQuery)
+	//Format(sQuery, 512, "SELECT map FROM zones")
+	//gD_mysql.Query(SQLForceZonesSetup2, sQuery)
+	ForceZonesSetup()
 	gB_pass = true
 	//OnClientPutInServer(0)
 	//Format(sQuery, 512, 
@@ -925,7 +927,7 @@ void SQLManualInsert(Database db, DBResultSet results, const char[] error, any d
 {
 }
 
-void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
+/*void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
 {
 	//shavit results null
 	if(results == null)
@@ -948,26 +950,37 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 		}
 		else
 		{
-			Format(sQuery, 512, "SELECT map FROM zones")
+			Format(sQuery, 512, "SELECT map FROM zones WHERE map = '%s' AND type = 0", gS_map)
 			gD_mysql.Query(SQLForceZonesSetup, sQuery)
+			Format(sQuery, 512, "SELECT map FROM zones WHERE map = '%s' AND type = 1", gS_map)
+			gD_mysql.Query(SQLForceZonesSetup2, sQuery)
 		}
 	}
-}
+}*/
 
 //void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
 //{
 	//PrintToServer("Successful SQLForceDefaultZonesType.")
 //}
 
-void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
+//void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
+void ForceZonesSetup()
 {
 	//shavit results null
-	if(results == null)
+	//if(results == null)
+	//{
+		//PrintToServer("Error with mysql connection %s", error)
+		//return
+	//}
+	//if(results.FetchRow())
 	{
-		PrintToServer("Error with mysql connection %s", error)
-		return
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
+		//gD_mysql.Query(SQLSetZonesEntity, sQuery)
+		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
+		//gD_mysql.Query(SQLSetZoneEnd, sQuery)
 	}
-	if(results.FetchRow())
+	//if(results.FetchRow())
 	{
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
@@ -976,6 +989,16 @@ void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, an
 		gD_mysql.Query(SQLSetZoneEnd, sQuery)
 	}
 }
+
+/*void SQLForceZonesSetup2(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 WHERE map = '%s' AND type = 1", gS_map)
+		gD_mysql.Query(SQLSetZoneEnd, sQuery)
+	}
+}*/
 
 void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -998,6 +1021,10 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 		gF_vecStart[0] = center[0]
 		gF_vecStart[1] = center[1]
 		gF_vecStart[2] = center[2]
+		PrintToServer("SQLSetZonesEntity successfuly.")
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
+		//gD_mysql.Query(SQLSetZoneEnd, sQuery)
 	}
 }
 
@@ -1011,7 +1038,7 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 		gF_vec2[0] = results.FetchFloat(3)
 		gF_vec2[1] = results.FetchFloat(4)
 		gF_vec2[2] = results.FetchFloat(5)
-		//PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+		PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		cmd_createend(0, 0)
 	}
 }
