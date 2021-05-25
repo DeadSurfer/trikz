@@ -55,9 +55,10 @@ bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
 bool gB_newpass
 //bool gB_runcmd[MAXPLAYERS + 1]
-//int gI_other[MAXPLAYERS + 1]
-//float gI_boostTime[MAXPLAYERS + 1]
-//float gF_vecAbs[MAXPLAYERS + 1][3]
+int gI_other[MAXPLAYERS + 1]
+float gI_boostTime[MAXPLAYERS + 1]
+float gF_vecAbs[MAXPLAYERS + 1][3]
+bool gB_sky[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -155,7 +156,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	char sQuery[512]
 	int steamid = GetSteamAccountID(client)
-	if(IsClientInGame(client) && gB_pass)
+	if(IsClientInGame(client) && gB_pass && client != 0)
 	{
 		//int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
@@ -224,8 +225,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 	if(delta > 0.0 && delta < 2.0)
 	{
-		PrintToServer("%i %i ..", client, other)
-		PrintToServer("SDKSkyFix")
+		//PrintToServer("%i %i ..", client, other)
+		//PrintToServer("SDKSkyFix")
 		float vecAbs[3]
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
 		//if(vecAbs[2] < 0.0)
@@ -233,13 +234,18 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//else
 		//	vecAbs[2] = vecAbs[2] + 128.0
 		vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		PrintToServer("%f", delta)
-		PrintToServer("%f", vecAbs[2])
+		vecAbs[2] = gF_vecAbs[other][2]
+		gI_other[client] = other
+		//PrintToServer("%f", delta)
+		//PrintToServer("absVelocity: %f", vecAbs[2])
 		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
 		float vecVel[3]
 		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
-		PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
+		//PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
+		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
+		gI_boostTime[other] = GetEngineTime()
+		gB_sky[other] = true //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 	}
 }
 
@@ -1000,8 +1006,57 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = GetEngineTime()
 		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
 	}
+	
+	/*if(gB_sky[client])
+	{
+		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
+		if((GetEngineTime() - gI_boostTime[client]) < 0.15)
+		{
+			float vecAbs[3]
+			gF_vecAbs[gI_other[client]][0] = vecAbs[0]
+			gF_vecAbs[gI_other[client]][1] = vecAbs[1]
+			gF_vecAbs[gI_other[client]][2] = vecAbs[2]
+			TeleportEntity(gI_other[client], NULL_VECTOR, NULL_VECTOR, vecAbs)
+			gB_sky[client] = false
+		}
+	}*/
+	if(gB_sky[gI_other[client]])
+	{
+		int frame
+		float vecAbs[3]
+		if(frame == 0)
+		{
+			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
+			PrintToServer("sky frame0: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
+			frame = 1
+		}
+		if(frame == 1)
+		{
+			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
+			PrintToServer("sky frame1: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
+			frame = 2
+		}
+		if(frame == 2)
+		{
+			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
+			PrintToServer("sky frame2: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
+			frame = 3
+		}
+		if(frame == 3)
+		{
+			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
+			PrintToServer("sky frame3: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
+			frame = 4
+		}
+		if(frame == 4)
+		{
+			GetEntPropVector(gI_other[client], Prop_Data, "m_vecAbsVelocity", vecAbs)
+			PrintToServer("sky frame4: %f %f %f", vecAbs[0], vecAbs[1], vecAbs[2])
+			frame = 0
+			gB_sky[gI_other[client]] = false
+		}
+	}
 }
-
 void ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsPlayerAlive(other))
