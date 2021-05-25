@@ -933,7 +933,7 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 		PrintToServer("Error with mysql connection %s", error)
 		return
 	}
-	PrintToServer("test")
+	//PrintToServer("test")
 	char sMap[192]
 	char sQuery[512]
 	while(results.FetchRow())
