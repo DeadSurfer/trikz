@@ -50,7 +50,7 @@ char gS_map[192]
 int gI_zonetype
 bool gB_mapfinished[MAXPLAYERS + 1]
 bool gB_pass
-bool gB_insideZone[MAXPLAYERS + 1]
+//bool gB_insideZone[MAXPLAYERS + 1]
 bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
 //bool gB_newpass
@@ -62,6 +62,7 @@ float gF_vecStart[3]
 //int gI_frame[MAXPLAYERS + 1]
 float gF_fallVel[MAXPLAYERS + 1][3]
 bool gB_onGround[MAXPLAYERS + 1]
+bool gB_readyToStart[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -470,8 +471,10 @@ void Restart(int client)
 {
 	if(gI_partner[client] != 0)
 	{
-		gB_insideZone[client] = true
-		gB_insideZone[gI_partner[client]] = true
+		//gB_insideZone[client] = true
+		//gB_insideZone[gI_partner[client]] = true
+		gB_readyToStart[client] = true
+		gB_readyToStart[gI_partner[client]] = true
 		float vecVel[3]
 		vecVel[0] = 30.0
 		vecVel[1] = 30.0
@@ -715,7 +718,8 @@ void SDKEndTouch(int entity, int other)
 	GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 	if(StrEqual(sTrigger, "fakeexpert_startzone"))
 	{
-		if(gB_insideZone[other] && gB_insideZone[gI_partner[other]])
+		//if(gB_insideZone[other] && gB_insideZone[gI_partner[other]])
+		if(gB_readyToStart[other])
 		{
 			gB_state[other] = true
 			gB_state[gI_partner[other]] = true
@@ -726,9 +730,12 @@ void SDKEndTouch(int entity, int other)
 			PrintToServer("EndTouch")
 			gB_passzone[other] = true
 			gB_passzone[gI_partner[other]] = true
+			gB_readyToStart[other] = false
+			//gB_readyToStart[gI_other[other
+			gB_readyToStart[gI_partner[other]] = false
 		}
-		gB_insideZone[other] = false
-		gB_insideZone[gI_partner[other]] = false
+		//gB_insideZone[other] = false
+		//gB_insideZone[gI_partner[other]] = false
 	}
 }
 
@@ -738,7 +745,7 @@ void SDKStartTouch(int entity, int other)
 	//PrintToServer("%i %i", entity, other)
 	if(0 < other <= MaxClients && gB_passzone[other])
 	{
-		gB_insideZone[other] = true //Expert-Zone idea.
+		//gB_insideZone[other] = true //Expert-Zone idea.
 		gB_passzone[other] = false
 		//PrintToServer("%i", other)
 		PrintToServer("SDKStartTouch %i %i", entity, other)
@@ -778,9 +785,6 @@ void SDKStartTouch(int entity, int other)
 				PrintToServer("%i other", other)
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
-				//gF_Time[other] = 0.0
-				//gF_Time[other
-				//gF_Time[gI_partner[other]] = 0.0
 			}
 		}
 	}
@@ -924,8 +928,6 @@ void SQLConnect(Database db, const char[] error, any data)
 	//gD_mysql.Query(SQLForceZonesSetup2, sQuery)
 	ForceZonesSetup()
 	gB_pass = true
-	//OnClientPutInServer(0)
-	//Format(sQuery, 512, 
 }
 
 Action cmd_manualinsert(int args)
@@ -941,42 +943,6 @@ void SQLManualInsert(Database db, DBResultSet results, const char[] error, any d
 {
 }
 
-/*void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
-{
-	//shavit results null
-	if(results == null)
-	{
-		PrintToServer("Error with mysql connection %s", error)
-		return
-	}
-	//PrintToServer("test")
-	char sMap[192]
-	char sQuery[512]
-	while(results.FetchRow())
-	{
-		results.FetchString(0, sMap, 192)
-		if(!StrEqual(gS_map, sMap))
-		{
-			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
-			//gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
-			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
-			//gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
-		}
-		else
-		{
-			Format(sQuery, 512, "SELECT map FROM zones WHERE map = '%s' AND type = 0", gS_map)
-			gD_mysql.Query(SQLForceZonesSetup, sQuery)
-			Format(sQuery, 512, "SELECT map FROM zones WHERE map = '%s' AND type = 1", gS_map)
-			gD_mysql.Query(SQLForceZonesSetup2, sQuery)
-		}
-	}
-}*/
-
-//void SQLForceDefaultZonesType(Database db, DBResultSet results, const char[] error, any data)
-//{
-	//PrintToServer("Successful SQLForceDefaultZonesType.")
-//}
-
 //void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 void ForceZonesSetup()
 {
@@ -986,22 +952,11 @@ void ForceZonesSetup()
 		//PrintToServer("Error with mysql connection %s", error)
 		//return
 	//}
-	//if(results.FetchRow())
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		//gD_mysql.Query(SQLSetZonesEntity, sQuery)
-		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
-		//gD_mysql.Query(SQLSetZoneEnd, sQuery)
-	}
-	//if(results.FetchRow())
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		gD_mysql.Query(SQLSetZonesEntity, sQuery)
-		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
-		gD_mysql.Query(SQLSetZoneEnd, sQuery)
-	}
+	char sQuery[512]
+	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
+	gD_mysql.Query(SQLSetZonesEntity, sQuery)
+	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
+	gD_mysql.Query(SQLSetZoneEnd, sQuery)
 }
 
 /*void SQLForceZonesSetup2(Database db, DBResultSet results, const char[] error, any data)
@@ -1103,7 +1058,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
 					//PrintToServer("%f", fallVel[2])
-					//gB_onGround[client] = false
 				}
 				if(groundEntity == 0)
 					gB_onGround[client] = false
@@ -1111,11 +1065,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gB_onGround[client] = true
 			}
 		}
-	}
-	if(IsPlayerAlive(client) && groundEntity == 0)
-	{
-		//gB_onGround[client] = true
-		//PrintToServer("%i %N", gB_onGround, client)
 	}
 }
 Action cmd_gent(int client, int args)
@@ -1139,9 +1088,6 @@ void ProjectileBoostFix(int entity, int other)
 		float delta = vecAbs[2] - vecEntityOrigin[2] - vecMaxs[2]
 		if(0 < delta < 2)
 		{
-			//float flSpeed
-			//GetEntPropFloat(entity, Prop_Data, "m_flSpeed", flSpeed)
-			//PrintToServer("%f %f", delta, flSpeed)
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
 			float vecAbsVelocityOther[3]
@@ -1188,38 +1134,6 @@ void ProjectileBoostFix(int entity, int other)
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
 				//PrintToChatAll("7")
 			}
-			
-			/*if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] < 0.0)
-			{
-				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
-				//PrintToChatAll("4")
-			}
-			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] > 0.0)
-			{
-				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
-				//PrintToChatAll("5")
-			}
-			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] < 0.0)
-			{
-				vecAbsVelocity[2] = vecAbsVelocity[2] + FloatAbs(vecAbsVelocityOther[2])
-				//PrintToChatAll("6")
-			}
-			if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] > 0.0)
-			{
-				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[1]
-				//PrintToChatAll("7")
-			}*/
-			/*if(vecAbsVelocity[2] < 0.0 && vecAbsVelocityOther[2] < 0.0
-			{
-				//vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocity
-				//vecAbsVelocity[1] = vecAbsVelocity[1] 
-				vecAbsVelocity[2] = vecAbsVelocity[2] - vecAbsVelocityOther[2]
-			}
-			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] > 0.0
-				vecAbsVelocity[2] = vecAbsVelocity[2] + vecAbsVelocityOther[2]
-			if(vecAbsVelocity[2] > 0.0 && vecAbsVelocityOther[2] < 0.0)
-				vecAbsVelocity[2] = vecAbsVelocity[2] + FloatAbs(vecAbsVelocityOther[2])
-				*/
 			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
