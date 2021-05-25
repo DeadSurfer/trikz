@@ -1107,7 +1107,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 				if(groundEntity == 0)
 					gB_onGround[client] = false
-				if(groundEntity > 0)
+				if(groundEntity > 0) // expert zone idea.
 					gB_onGround[client] = true
 			}
 		}
