@@ -156,13 +156,25 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	char sQuery[512]
 	int steamid = GetSteamAccountID(client)
-	if(IsClientInGame(client) && gB_pass && client != 0)
+	//PrintToServer("%i", steamid)
+	if(IsClientInGame(client) && gB_pass)
 	{
 		//int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 	}
 }
+
+/*public void OnClinetConnected(int client)
+{
+	char sQuery[512]
+	int steamid = GetSteamAccountID(client)
+	if(IsClientInGame(client) && gB_pass)
+	{
+		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
+	}
+}*/
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -175,6 +187,8 @@ void Updateusername(int client)
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
+	if(client == 0)
+		return
 	int steamid = GetSteamAccountID(client)
 	char sQuery[512]
 	//if(!results.FetchRow())
