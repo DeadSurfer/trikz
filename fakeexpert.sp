@@ -164,7 +164,7 @@ public void OnClientPutInServer(int client)
 	{
 		//int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
+		gD_mysql.Query(SQLAddUser, sQuery, client)
 	}
 }
 
@@ -189,7 +189,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
-	int client = GetClientFromSerial(data)
+	int client = data
 	if(client == 0)
 		return
 	int steamid = GetSteamAccountID(client)
