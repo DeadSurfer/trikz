@@ -111,6 +111,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
+	RegServerCmd("sm_manualinsert", cmd_manualinsert)
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -907,6 +908,20 @@ void SQLConnect(Database db, const char[] error, any data)
 	//gD_mysql.Query(SQLForceZonesSetup, sQuery)
 	gB_pass = true
 	//OnClientPutInServer(0)
+	//Format(sQuery, 512, 
+}
+
+Action cmd_manualinsert(int args)
+{
+	char sQuery[512]
+	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%', 0)", gS_map)
+	gD_mysql.Query(SQLManualInsert, sQuery)
+	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
+	gD_mysql.Query(SQLManualInsert, sQuery)
+}
+
+void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, any data)
@@ -926,9 +941,9 @@ void SQLForceDefaultZones(Database db, DBResultSet results, const char[] error, 
 		if(!StrEqual(gS_map, sMap))
 		{
 			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
-			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
+			//gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 			Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
-			gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
+			//gD_mysql.Query(SQLForceDefaultZonesType, sQuery)
 		}
 		else
 		{
@@ -1018,7 +1033,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(client) & FL_INWATER) && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
-	
+	if(buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
+		KickClient(client, "Don't use yoystick")
 	//Timer
 	//if(gB_state[client] && gB_mapfinished[client] && gB_mapfinished[gI_partner[client]])
 	if(gB_state[client])
