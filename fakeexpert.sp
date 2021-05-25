@@ -1156,8 +1156,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//vecVel2[2] = FloatAbs(vecVel2[2])
 			//if(15 >= gI_frame[client] >= 5)
 			{
-				float fallVel[3]
-				fallVel[2] = gF_fallVel[client][2]
+				//float fallVel[3]
+				//fallVel[2] = gF_fallVel[client][2]
 				//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
 				//PrintToServer("%f %f %f", vecVel2[0], vecVel2[1], vecVel2[2])
 				//PrintToServer("fallVel: %f", gF_fallVel)
