@@ -60,7 +60,7 @@ float gF_vecStart[3]
 //float gF_vecAbs[MAXPLAYERS + 1][3]
 //int gI_sky[MAXPLAYERS + 1]
 int gI_frame[MAXPLAYERS + 1]
-float gF_fallVel[MAXPLAYERS + 1]
+float gF_fallVel[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -245,13 +245,13 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//PrintToServer("%i %i ..", client, other)
 		//PrintToServer("SDKSkyFix")
 		float vecAbs[3]
-		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
+		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_fallVel)
 		//if(vecAbs[2] < 0.0)
 		//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
 		//else
 		//	vecAbs[2] = vecAbs[2] + 128.0
 		vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		gF_fallVel[other] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+		gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 		//vecAbs[2] = gF_vecAbs[other][2]
 		//gI_other[client] = other
 		//PrintToServer("%f", delta)
@@ -1131,7 +1131,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}*/
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
 		float fallVel[3]
-		fallVel[2] = gF_fallVel[client] * 3.0
+		fallVel[2] = gF_fallVel[client][2] * 3.0
 		if(buttons & IN_JUMP)
 		{
 			if(fallVel[2] <= 900.0)
