@@ -254,8 +254,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		gF_fallVel[other][0] = vecAbs[0]
 		gF_fallVel[other][1] = vecAbs[1]
 		vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		if(vecAbs[2] > 0.0)
-			gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+		//if(vecAbs[2] > 0.0)
+		gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
 		//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 	}
