@@ -982,7 +982,7 @@ void SQLConnect(Database db, const char[] error, any data)
 {
 	if(!db)
 	{
-		PrintToServer("Filed to connect to database")
+		PrintToServer("Failed to connect to database")
 		return
 	}
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
@@ -1117,12 +1117,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(fallVel[2] > 800.0)
 				fallVel[2] = 800.0
-			if(fallVel[2] <= 800.0 && !(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
+			if(0.0 < fallVel[2] <= 800.0 && !(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
 			{
 				if(gB_onGround[client])
 				{
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
+					gF_fallVel[client][2] = 0.0
 					//PrintToServer("%f", fallVel[2])
 				}
 				if(groundEntity == 0)
