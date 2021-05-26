@@ -250,35 +250,16 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//PrintToServer("%i %i ..", client, other)
 		//PrintToServer("SDKSkyFix")
 		float vecAbs[3]
-		//gF_fallVel[other][0] = vec
-		//vecAbs[0] = gF_fallVel[other]
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
-		//vecAbs[0] = gF_fallVel[other][0]
-		//vecAbs[1] = gF_fallVel[other][1]
-		gF_fallVel[other][0] = vecAbs[0]
-		gF_fallVel[other][1] = vecAbs[1]
-		//float fallVel = GetEntPropFloat(other, Prop_Data, "m_flFallVelocity")
-		//PrintToServer("FallVelFloat: %f", fallVel)
-		//vecAbs[2] = gF_fallVel[other][2]
-		//if(vecAbs[2] < 0.0)
-		//	vecAbs[2] = vecAbs[2] * -1.0 + 128.0
-		//else
-		//	vecAbs[2] = vecAbs[2] + 128.0
-		vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		//vecAbs[2] = gF_vecAbs[other][2]
-		//gI_other[client] = other
-		//PrintToServer("%f", delta)
-		//PrintToServer("absVelocity: %f", vecAbs[2])
-		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
-		//float vecVel[3]
-		//GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVel)
-		//PrintToServer("vecVelocity: %f %f %f", vecVel[0], vecVel[1], vecVel[2])
-		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", {0.0, 0.0, 0.0})
-		//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbs)
-		//gI_boostTime[other] = GetEngineTime()
-		//if(gI_other[other] == 0)
-		//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+		if(vecAbs[2] > 0.0)
+		{
+			gF_fallVel[other][0] = vecAbs[0]
+			gF_fallVel[other][1] = vecAbs[1]
+			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+			gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
+			//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+		}
 	}
 }
 
