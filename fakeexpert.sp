@@ -1159,9 +1159,27 @@ void ProjectileBoostFix(int entity, int other)
 			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
 		if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0
 			vecVelClient[0] = vecVelClient[0] - vecVelEntity[0]
+		if(vecVelClient[0] < 0.0 && vecVelEntity[0] > 0.0)
+			vecVelClient = vecVelClient[0] - vecVelEntity[0] * -1.0
+		if(vecVelClient[0] > 0.0 && vecVelEntity[0] < 0.0)
+			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0] * -1.0
+			
+		if(vecVelClient[1] < 0.0 && vecVelEntity[1] < 0.0)
+			vecVelClient[1] = vecVelClient[1] + vecVelEntity[1]
+		if(vecVelClient[1] > 0.0 && vecVelEntity[1] > 0.0
+			vecVelClient[1] = vecVelClient[1] - vecVelEntity[1]
+		if(vecVelClient[1] < 0.0 && vecVelEntity[1] > 0.0)
+			vecVelClient = vecVelClient[1] - vecVelEntity[1] * -1.0
+		if(vecVelClient[1] > 0.0 && vecVelEntity[1] < 0.0)
+			vecVelClient[1] = vecVelClient[1] + vecVelEntity[1] * -1.0
+			
+		if(vecVelEntity[2] < 0.0)
+			vecVelEntity[2] = vecVelEntity[2] * -1.0
+		//vecVelClient[2] = 
 		//vecVelClient[2] = 
 		//gB_getBoost[other] = true
-		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, correctVel)
+		//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, correctVel)
+		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 		//PrintToServer("feet collide.")
 	}
 }
