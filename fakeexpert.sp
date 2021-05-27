@@ -1141,43 +1141,43 @@ void ProjectileBoostFix(int entity, int other)
 			if(vecAbsVelocity[0] < 0.0 && vecAbsVelocityOther[0] < 0.0)
 			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
-				//PrintToChatAll("0")
+				PrintToChatAll("0")
 			}
 			if(vecAbsVelocity[0] < 0.0 && vecAbsVelocityOther[0] > 0.0)
 			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
-				//PrintToChatAll("1")
+				PrintToChatAll("1")
 			}
 			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] > 0.0)
 			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
-				//PrintToChatAll("2")
+				PrintToChatAll("2")
 			}
 			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] < 0.0)
 			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] + FloatAbs(vecAbsVelocityOther[0])
-				//PrintToChatAll("3")
+				PrintToChatAll("3")
 			}
 				
 			if(vecAbsVelocity[1] < 0.0 && vecAbsVelocityOther[1] < 0.0)
 			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
-				//PrintToChatAll("4")
+				PrintToChatAll("4")
 			}
 			if(vecAbsVelocity[1] > 0.0 && vecAbsVelocityOther[1] > 0.0)
 			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
-				//PrintToChatAll("5")
+				PrintToChatAll("5")
 			}
 			if(vecAbsVelocity[1] > 0.0 && vecAbsVelocityOther[1] < 0.0)
 			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] + FloatAbs(vecAbsVelocityOther[1])
-				//PrintToChatAll("6")
+				PrintToChatAll("6")
 			}
 			if(vecAbsVelocity[1] < 0.0 && vecAbsVelocityOther[1] > 0.0)
 			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
-				//PrintToChatAll("7")
+				PrintToChatAll("7")
 			}
 			vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
