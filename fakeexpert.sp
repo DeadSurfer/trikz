@@ -1169,7 +1169,7 @@ void ProjectileBoostFix(int entity, int other)
 				//vecAbsVelocity[0] = vecAbsVelocity[0] - (vecAbsVelocityOther[0] * -1.0)
 				//vecAbsVelocity[0] = (vecAbsVelocity[0] * -1.0) + vecAbsVelocityOther[0]
 				//PrintToChatAll("%f %f", vecAbsVelocity[0], vecAbsVelocityOther[0] * -1.0)
-				vecAbsVelocity[0] = (vecAbsVelocity[0] * -1.0) - vecAbsVelocityOther[0]
+				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0] * -1.0
 				//PrintToChatAll("%f", vecAbsVelocity[0] - vecAbsVelocityOther[0] * -1.0)
 				PrintToChatAll("1x: %f", vecAbsVelocity[0])
 			}
@@ -1183,7 +1183,7 @@ void ProjectileBoostFix(int entity, int other)
 			{
 				//vecAbsVelocity[0] = vecAbsVelocity[0] + FloatAbs(vecAbsVelocityOther[0])
 				//vecAbsVelocity[0] = (vecAbsVelocity[0] * -1.0) + vecAbsVelocityOther[0]
-				vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0 - vecAbsVelocityOther[0]
+				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0] * -1.0
 				//vecAbsVelocity[0] = vecAbsVelocity[0]
 				PrintToChatAll("3x %f", vecAbsVelocity[0])
 			}
@@ -1203,7 +1203,7 @@ void ProjectileBoostFix(int entity, int other)
 			{
 				//vecAbsVelocity[1] = vecAbsVelocity[1] + FloatAbs(vecAbsVelocityOther[1])
 				//vecAbsVelocity[1] = (vecAbsVelocity[1] * -1.0) + vecAbsVelocityOther[1]
-				vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0 - vecAbsVelocityOther[1]
+				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1] * -1.0
 				//vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
 				PrintToChatAll("6y: %f", vecAbsVelocity[1])
 			}
@@ -1211,9 +1211,9 @@ void ProjectileBoostFix(int entity, int other)
 			{
 				//vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1] - vecAbsVelocityOther[1])
 				//vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
-				vecAbsVelocity[1] = (vecAbsVelocity[1] * -1.0) + vecAbsVelocityOther[1]
+				//vecAbsVelocity[1] = (vecAbsVelocity[1] * -1.0) + vecAbsVelocityOther[1]
 				//vecAbsVelocity[1] = FloatAbs(vec
-				vecAbsVelocity[1] = (vecAbsVelocity[1] * -1.0) + vecAbsVelocityOther[1]
+				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1] * -1.0
 				PrintToChatAll("7y: %f", vecAbsVelocity[1])
 			}
 			//vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
