@@ -1157,16 +1157,16 @@ void ProjectileBoostFix(int entity, int other)
 		correctVel[2] = vecVelClient[2] + vecVelEntity[2]*/
 		if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
 			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
-		if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0
+		if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
 			vecVelClient[0] = vecVelClient[0] - vecVelEntity[0]
 		if(vecVelClient[0] < 0.0 && vecVelEntity[0] > 0.0)
 			vecVelClient = vecVelClient[0] - vecVelEntity[0] * -1.0
 		if(vecVelClient[0] > 0.0 && vecVelEntity[0] < 0.0)
 			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0] * -1.0
-			
+
 		if(vecVelClient[1] < 0.0 && vecVelEntity[1] < 0.0)
 			vecVelClient[1] = vecVelClient[1] + vecVelEntity[1]
-		if(vecVelClient[1] > 0.0 && vecVelEntity[1] > 0.0
+		if(vecVelClient[1] > 0.0 && vecVelEntity[1] > 0.0)
 			vecVelClient[1] = vecVelClient[1] - vecVelEntity[1]
 		if(vecVelClient[1] < 0.0 && vecVelEntity[1] > 0.0)
 			vecVelClient = vecVelClient[1] - vecVelEntity[1] * -1.0
