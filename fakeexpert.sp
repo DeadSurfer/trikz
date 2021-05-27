@@ -1131,7 +1131,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//PrintToServer("1. %f", deltaOrigin)
 	float vecMaxsEntity[3]
 	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxsEntity)
-	//PrintToServer("%f", deltaOrigin - vecMaxsEntity[2])
+	PrintToServer("%f", deltaOrigin - vecMaxsEntity[2])
 	if(deltaOrigin - vecMaxsEntity[2] == 0.031250 && deltaOrigin - vecMaxsEntity[2] == 2.031250)
 	{
 		float vecVelClient[3]
