@@ -1140,28 +1140,37 @@ void ProjectileBoostFix(int entity, int other)
 			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsVelocityOther) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L134
 			if(vecAbsVelocity[0] < 0.0 && vecAbsVelocityOther[0] < 0.0)
 			{
-				vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] - vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] - vecAbsVelocityOther[0])
+				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
 				PrintToChatAll("0")
 			}
 			if(vecAbsVelocity[0] < 0.0 && vecAbsVelocityOther[0] > 0.0)
 			{
-				vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] - vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] - vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = vecAbsVelocity[0] - FloatvecAbsVelocityOther[0]
+				//vecAbsVelocityOther[0] = vecAbsVelocityOther[0] * -1.0
+				//vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
+				//vecAbsVelocity[0] = vecAbsVelocity[0] - (vecAbsVelocityOther[0] * -1.0)
+				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0] * -1.0
 				PrintToChatAll("1")
 			}
 			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] > 0.0)
 			{
-				vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] + vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] + vecAbsVelocityOther[0])
+				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
 				PrintToChatAll("2")
 			}
-			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] < 0.0)
+			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] < 0.0) //10.0 * -10.0 = -100.0, FloatAbs[-100.0) = 100.0
 			{
 				vecAbsVelocity[0] = vecAbsVelocity[0] + FloatAbs(vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = vecAbsVelocity[0]
 				PrintToChatAll("3")
 			}
 				
 			if(vecAbsVelocity[1] < 0.0 && vecAbsVelocityOther[1] < 0.0)
 			{
-				vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1] - vecAbsVelocityOther[1])
+				//vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1] - vecAbsVelocityOther[1])
+				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
 				PrintToChatAll("4")
 			}
 			if(vecAbsVelocity[1] > 0.0 && vecAbsVelocityOther[1] > 0.0)
@@ -1177,7 +1186,9 @@ void ProjectileBoostFix(int entity, int other)
 			}
 			if(vecAbsVelocity[1] < 0.0 && vecAbsVelocityOther[1] > 0.0)
 			{
-				vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1] - vecAbsVelocityOther[1])
+				//vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1] - vecAbsVelocityOther[1])
+				//vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
+				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1] * -1.0
 				PrintToChatAll("7")
 			}
 			//vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
@@ -1186,6 +1197,8 @@ void ProjectileBoostFix(int entity, int other)
 			//else
 			//	vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			//vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
+			vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0])
+			vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1])
 			vecAbsVelocity[2] = FloatAbs(vecAbsVelocity[2])
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L187
 			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
