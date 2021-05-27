@@ -1127,6 +1127,9 @@ void ProjectileBoostFix(int entity, int other)
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
 	float deltaOrigin = vecOriginClient[2] - vecOriginEntity[2]
 	PrintToServer("1. %f", deltaOrigin)
+	float vecMaxsEntity[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxsEntity)
+	PrintToServer("%f", deltaOrigin - vecMaxsEntity[2])
 }
 
 Action cmd_vectest2(int client, int args)
