@@ -772,9 +772,9 @@ Action SDKStartTouch(int entity, int other)
 				//DataPack dp3.WriteCell(gF_Time[other])
 				//DataPack dp3.WriteCell
 				DataPack dp3 = new DataPack()
-				dp3.WriteCell(gF_Time[other])
+				dp3.WriteFloat(gF_Time[other])
 				dp3.WriteCell(GetClientSerial(other))
-				gD_mysql.Query(SQLSR, sQuerySR)
+				gD_mysql.Query(SQLSR, sQuerySR, dp3)
 				//PrintTo
 				int clientid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
@@ -1007,7 +1007,7 @@ void ForceZonesSetup()
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
 	gD_mysql.Query(SQLSetZonesEntity, sQuery)
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
-	gD_mysql.Query(SQLSetZoneEnd, sQuery)
+	//gD_mysql.Query(SQLSetZoneEnd, sQuery)
 }
 
 /*void SQLForceZonesSetup2(Database db, DBResultSet results, const char[] error, any data)
@@ -1044,7 +1044,7 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 		PrintToServer("SQLSetZonesEntity successfuly.")
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
-		//gD_mysql.Query(SQLSetZoneEnd, sQuery)
+		gD_mysql.Query(SQLSetZoneEnd, sQuery)
 	}
 }
 
