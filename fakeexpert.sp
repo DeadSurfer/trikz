@@ -1121,7 +1121,12 @@ Action cmd_gent(int client, int args)
 }
 void ProjectileBoostFix(int entity, int other)
 {
-	//Get
+	float vecOriginClient[3]
+	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginClient)
+	float vecOriginEntity[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
+	float deltaOrigin = vecOriginClient[2] - vecOriginEntity[2]
+	PrintToServer("1. %f", deltaOrigin)
 }
 
 Action cmd_vectest2(int client, int args)
