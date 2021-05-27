@@ -1126,7 +1126,7 @@ Action cmd_gent(int client, int args)
 	return Plugin_Handled
 }
 
-Action ProjectileBoostFix(int entity, int other)
+Action ProjectileBoostFix1(int entity, int other)
 {
 	float vecOriginClient[3]
 	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginClient)
@@ -1198,6 +1198,18 @@ Action ProjectileBoostFix(int entity, int other)
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 		//PrintToServer("feet collide.")
 	}
+}
+
+Action ProjectileBoostFix(int entity, int other)
+{
+	float vecOriginOther[3]
+	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
+	float vecOriginEntity[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
+	float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
+	float vecMins[3]
+	GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
+	PrintToServer("%f", deltaOrigin - vecMins[2])
 }
 
 Action cmd_vectest2(int client, int args)
