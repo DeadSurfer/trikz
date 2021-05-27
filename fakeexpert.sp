@@ -1147,13 +1147,13 @@ Action ProjectileBoostFix(int entity, int other)
 			vecVelClient[2] = vecVelClient[2] * -1.0
 		if(vecVelEntity[2] < 0.0)
 			vecVelEntity[2] = vecVelEntity[2] * -1.0
-		float correctZvel[3]
-		correctXvel[0] = 0.0
-		correctYvel[1] = 0.0
-		correctZvel[2] = vecVelClient[2] + vecVelEntity[2]
+		float correctVel[3]
+		correctVel[0] = 0.0
+		correctVel[1] = 0.0
+		correctVel[2] = vecVelClient[2] + vecVelEntity[2]
 		//vecVelClient[2] = 
 		//gB_getBoost[other] = true
-		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, correctZvel)
+		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, correctVel)
 		//PrintToServer("feet collide.")
 	}
 }
