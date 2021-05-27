@@ -1126,7 +1126,7 @@ Action cmd_gent(int client, int args)
 	return Plugin_Handled
 }
 
-void ProjectileBoostFix(int entity, int other)
+Action ProjectileBoostFix(int entity, int other)
 {
 	float vecOriginClient[3]
 	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginClient)
@@ -1226,7 +1226,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-		SDKHook(entity, SDKHook_Touch, ProjectileBoostFix)
+		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 	}
 }
 
