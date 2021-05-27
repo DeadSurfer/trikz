@@ -1126,12 +1126,20 @@ void ProjectileBoostFix(int entity, int other)
 	float vecOriginEntity[3]
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
 	float deltaOrigin = vecOriginClient[2] - vecOriginEntity[2]
-	PrintToServer("1. %f", deltaOrigin)
+	//PrintToServer("1. %f", deltaOrigin)
 	float vecMaxsEntity[3]
 	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxsEntity)
-	PrintToServer("%f", deltaOrigin - vecMaxsEntity[2])
+	//PrintToServer("%f", deltaOrigin - vecMaxsEntity[2])
 	if(deltaOrigin - vecMaxsEntity[2] == 0.031250 && deltaOrigin - vecMaxEntity[2] == 2.031250)
-		PrintToServer("feet collide.")
+	{
+		float vecVelClient[3]
+		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
+		float vecVelEntity[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
+		PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
+		PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
+		//PrintToServer("feet collide.")
+	{
 }
 
 Action cmd_vectest2(int client, int args)
