@@ -1113,13 +1113,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 }
+
 Action cmd_gent(int client, int args)
 {
 	int gEnt = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 	PrintToServer("%i", gEnt)
 	return Plugin_Handled
 }
-void ProjectileBoostFix(int entity, int other)
+
+Action ProjectileBoostFix(int entity, int other)
 {
 	float vecOriginClient[3]
 	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginClient)
@@ -1139,7 +1141,7 @@ void ProjectileBoostFix(int entity, int other)
 		PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
 		PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
 		//PrintToServer("feet collide.")
-	{
+	}
 }
 
 Action cmd_vectest2(int client, int args)
