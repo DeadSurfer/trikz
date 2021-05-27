@@ -134,6 +134,10 @@ public void OnMapStart()
 	Database.Connect(SQLConnect, "fakeexpert")
 }
 
+Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
+{
+}
+
 Action cmd_setup(int args)
 {
 	char sQuery[512]
