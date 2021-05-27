@@ -1135,7 +1135,7 @@ void ProjectileBoostFix(int entity, int other)
 		//if(0 < delta < 2)
 		//float vecAbs[3]
 		//GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbs) //thanks to log.
-		float vecOrigin[3]
+		/*float vecOrigin[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOrigin)
 		float vecEntityOrigin[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecEntityOrigin)
@@ -1228,7 +1228,16 @@ void ProjectileBoostFix(int entity, int other)
 			//vecAbsVelocity[2] = FloatAbs(vecAbsVelocity[2])
 			PrintToChatAll("results: x: %f y: %f z: %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L187
-			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
+			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)*/
+			float vecOriginClient[3]
+			GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginClient)
+			float vecOriginEntity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
+			float originDelta = vecOriginClient[2] - vecOriginEntity[2]
+			float vecMaxsEntity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxsEntity)
+			PrintToServer("1. %f", originDelta + vecMaxsEntity[2])
+			PrintToServer("2. %f", originDelta)
 		}
 	}
 }
