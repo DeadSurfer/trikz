@@ -123,6 +123,7 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
+	//HookEvent(
 }
 
 public void OnMapStart()
@@ -1102,7 +1103,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(gB_onGround[client])
 				{
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
+					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
 					//PrintToServer("%f", fallVel[2])
 				}
 				if(groundEntity == 0)
@@ -1149,6 +1150,7 @@ Action ProjectileBoostFix(int entity, int other)
 		float correctZvel[3]
 		correctZvel[2] = vecVelClient[2] + vecVelEntity[2]
 		//vecVelClient[2] = 
+		//gB_getBoost[other] = true
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, correctZvel)
 		//PrintToServer("feet collide.")
 	}
