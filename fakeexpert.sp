@@ -1228,7 +1228,7 @@ void ProjectileBoostFix(int entity, int other)
 			//vecAbsVelocity[2] = FloatAbs(vecAbsVelocity[2])
 			PrintToChatAll("results: x: %f y: %f z: %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L187
-			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocityOther)
+			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
 		}
 	}
 }
