@@ -119,6 +119,7 @@ public void OnPluginStart()
 	RegServerCmd("sm_manualinsert", cmd_manualinsert)
 	RegConsoleCmd("sm_gent", cmd_gent)
 	RegConsoleCmd("sm_vectest", cmd_vectest)
+	RegConsoleCmd("sm_vectest2", cmd_vectest2)
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -1138,12 +1139,14 @@ void ProjectileBoostFix(int entity, int other)
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOrigin)
 		float vecEntityOrigin[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecEntityOrigin)
-		float vecMins[3]
-		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
-		float delta = vecOrigin[2] - vecEntityOrigin[2] + vecMins[2]
+		float vecMaxs[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+		float delta = vecOrigin[2] - vecEntityOrigin[2] - vecMaxs[2]
+		//float delta = vecEntityOther[2] - vecOrigin[2] - vecMaxs[2]
+		//float delta = vecEntityOrigin[2] - vecOrigin[2] - vecMaxs[2]
 		PrintToServer("%f", delta)
 		//if(delta
-		if(0 < delta < 4)
+		if(0.0 < delta < 2.0)
 		{
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
@@ -1153,8 +1156,9 @@ void ProjectileBoostFix(int entity, int other)
 			if(vecAbsVelocity[0] < 0.0 && vecAbsVelocityOther[0] < 0.0)
 			{
 				//vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] - vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
 				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
-				PrintToChatAll("0")
+				PrintToChatAll("0x: %f", vecAbsVelocity[0])
 			}
 			if(vecAbsVelocity[0] < 0.0 && vecAbsVelocityOther[0] > 0.0)
 			{
@@ -1163,45 +1167,54 @@ void ProjectileBoostFix(int entity, int other)
 				//vecAbsVelocityOther[0] = vecAbsVelocityOther[0] * -1.0
 				//vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0]
 				//vecAbsVelocity[0] = vecAbsVelocity[0] - (vecAbsVelocityOther[0] * -1.0)
-				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0] * -1.0
-				PrintToChatAll("1")
+				//vecAbsVelocity[0] = (vecAbsVelocity[0] * -1.0) + vecAbsVelocityOther[0]
+				//PrintToChatAll("%f %f", vecAbsVelocity[0], vecAbsVelocityOther[0] * -1.0)
+				vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0 - vecAbsVelocityOther[0]
+				//PrintToChatAll("%f", vecAbsVelocity[0] - vecAbsVelocityOther[0] * -1.0)
+				PrintToChatAll("1x: %f", vecAbsVelocity[0])
 			}
 			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] > 0.0)
 			{
 				//vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0] + vecAbsVelocityOther[0])
 				vecAbsVelocity[0] = vecAbsVelocity[0] + vecAbsVelocityOther[0]
-				PrintToChatAll("2")
+				PrintToChatAll("2x: %f", vecAbsVelocity[0])
 			}
 			if(vecAbsVelocity[0] > 0.0 && vecAbsVelocityOther[0] < 0.0) //10.0 * -10.0 = -100.0, FloatAbs[-100.0) = 100.0
 			{
-				vecAbsVelocity[0] = vecAbsVelocity[0] + FloatAbs(vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = vecAbsVelocity[0] + FloatAbs(vecAbsVelocityOther[0])
+				//vecAbsVelocity[0] = (vecAbsVelocity[0] * -1.0) + vecAbsVelocityOther[0]
+				vecAbsVelocity[0] = vecAbsVelocity[0] - vecAbsVelocityOther[0] * -1.0
 				//vecAbsVelocity[0] = vecAbsVelocity[0]
-				PrintToChatAll("3")
+				PrintToChatAll("3x %f", vecAbsVelocity[0])
 			}
 				
 			if(vecAbsVelocity[1] < 0.0 && vecAbsVelocityOther[1] < 0.0)
 			{
 				//vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1] - vecAbsVelocityOther[1])
 				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
-				PrintToChatAll("4")
+				PrintToChatAll("4y: %f", vecAbsVelocity[1])
 			}
 			if(vecAbsVelocity[1] > 0.0 && vecAbsVelocityOther[1] > 0.0)
 			{
 				vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
-				PrintToChatAll("5")
+				PrintToChatAll("5y: %f", vecAbsVelocity[1])
 			}
 			if(vecAbsVelocity[1] > 0.0 && vecAbsVelocityOther[1] < 0.0)
 			{
-				vecAbsVelocity[1] = vecAbsVelocity[1] + FloatAbs(vecAbsVelocityOther[1])
+				//vecAbsVelocity[1] = vecAbsVelocity[1] + FloatAbs(vecAbsVelocityOther[1])
+				//vecAbsVelocity[1] = (vecAbsVelocity[1] * -1.0) + vecAbsVelocityOther[1]
+				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1] * -1.0
 				//vecAbsVelocity[1] = vecAbsVelocity[1] + vecAbsVelocityOther[1]
-				PrintToChatAll("6")
+				PrintToChatAll("6y: %f", vecAbsVelocity[1])
 			}
 			if(vecAbsVelocity[1] < 0.0 && vecAbsVelocityOther[1] > 0.0)
 			{
 				//vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1] - vecAbsVelocityOther[1])
 				//vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1]
-				vecAbsVelocity[1] = vecAbsVelocity[1] - vecAbsVelocityOther[1] * -1.0
-				PrintToChatAll("7")
+				vecAbsVelocity[1] = (vecAbsVelocity[1] * -1.0) + vecAbsVelocityOther[1]
+				//vecAbsVelocity[1] = FloatAbs(vec
+				vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0 + vecAbsVelocityOther[1]
+				PrintToChatAll("7y: %f", vecAbsVelocity[1])
 			}
 			//vecAbsVelocity[0] = vecAbsVelocity[0] * -1.0
 			//if(vecAbsVelocity[1] < 0.0)
@@ -1209,13 +1222,21 @@ void ProjectileBoostFix(int entity, int other)
 			//else
 			//	vecAbsVelocity[1] = vecAbsVelocity[1] * -1.0
 			//vecAbsVelocity[2] = vecAbsVelocity[2] * 1.0
-			vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0])
-			vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1])
-			vecAbsVelocity[2] = FloatAbs(vecAbsVelocity[2])
+			//vecAbsVelocity[0] = FloatAbs(vecAbsVelocity[0])
+			//vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1])
+			PrintToChatAll("yEntityVel: %f", vecAbsVelocity[2])
+			//vecAbsVelocity[2] = FloatAbs(vecAbsVelocity[2])
+			PrintToChatAll("results: x: %f y: %f z: %f", vecAbsVelocity[0], vecAbsVelocity[1], vecAbsVelocity[2])
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L187
-			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
+			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocityOther)
 		}
 	}
+}
+
+Action cmd_vectest2(int client, int args)
+{
+	PrintToServer("%f", 2.0 - (1.0 * -1.0))
+	return Plugin_Handled
 }
 
 Action cmd_time(int client, int args)
