@@ -1122,16 +1122,28 @@ void ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsPlayerAlive(other))
 	{
-		float vecAbs[3]
-		GetClientAbsOrigin(other, vecAbs)
-		float vecEntityOrigin[3]
+		//float vecAbs[3]
+		//GetClientAbsOrigin(other, vecAbs)
+		//float vecEntityOrigin[3]
 		//GetEntityOrigin(entity, vecEntityOrigin)
-		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecEntityOrigin)
-		float vecMaxs[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+		//GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecEntityOrigin)
+		//float vecMaxs[3]
+		//GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
 		//float delta = vecMins[2] - vecMaxsEntity[2] - vecAbs[2] //https://forums.alliedmods.net/showthread.php?p=2051806 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp
-		float delta = vecAbs[2] - vecEntityOrigin[2] - vecMaxs[2]
-		if(0 < delta < 2)
+		//float delta = vecAbs[2] - vecEntityOrigin[2] - vecMaxs[2]
+		//if(0 < delta < 2)
+		//float vecAbs[3]
+		//GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbs) //thanks to log.
+		float vecOrigin[3]
+		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOrigin)
+		float vecEntityOrigin[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecEntityOrigin)
+		float vecMins[3]
+		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
+		float delta = vecOrigin[2] - vecEntityOrigin[2] + vecMins[2]
+		PrintToServer("%f", delta)
+		//if(delta
+		if(0 < delta < 4)
 		{
 			float vecAbsVelocity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecAbsVelocity)
@@ -1201,7 +1213,7 @@ void ProjectileBoostFix(int entity, int other)
 			vecAbsVelocity[1] = FloatAbs(vecAbsVelocity[1])
 			vecAbsVelocity[2] = FloatAbs(vecAbsVelocity[2])
 			//if(vecAbsVelocity[2] > 0 && vecAbsVelocity[2] - vecAbsVelocityOther[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L187
-			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
+			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecAbsVelocity)
 		}
 	}
 }
@@ -1226,7 +1238,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-		SDKHook(entity, SDKHook_Touch, ProjectileBoostFix)
+		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 	}
 }
 
