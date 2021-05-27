@@ -1173,9 +1173,14 @@ void ProjectileBoostFix(int entity, int other)
 		if(vecVelClient[1] > 0.0 && vecVelEntity[1] < 0.0)
 			vecVelClient[1] = vecVelClient[1] + vecVelEntity[1] * -1.0
 			
-		if(vecVelEntity[2] < 0.0)
-			vecVelEntity[2] = vecVelEntity[2] * -1.0
-		vecVelClient[2] = vecVelEntity[2]
+		if(vecVelClient[2] < 0.0 && vecVelEntity[2] < 0.0)
+			vecVelClient[2] = vecVelEntity[2]
+		if(vecVelClient[2] > 0.0 && vecVelEntity[2] > 0.0)
+			vecVelClient[2] = vecVelEntity[2]
+		if(vecVelClient[2] < 0.0 && vecVelEntity[2] > 0.0)
+			vecVelClient[2] = vecVelEntity[2] * -1.0
+		if(vecVelClient[2] > 0.0 && vecVelEntity[2] < 0.0)
+			vecVelClient[2] = vecVelEntity[2] * -1.0
 		//vecVelClient[2] = 
 		//vecVelClient[2] = 
 		//gB_getBoost[other] = true
