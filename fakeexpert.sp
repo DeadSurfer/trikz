@@ -994,9 +994,8 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	}
 	if(timeClient < srTime)
 	{
-		float timeDiff
-		timeDiff = srTime - timeClient
-		//timeDiff = timeClient - srTime
+		//float timeDiff = srTime - timeClient
+		float timeDiff = timeClient - srTime
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
@@ -1007,9 +1006,8 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	}
 	else
 	{
-		float timeDiff
-		timeDiff = srTime - timeClient
-		//timeDiff = timeClient - srTime
+		//float timeDiff = srTime - timeClient
+		float timeDiff = timeClient - srTime
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
