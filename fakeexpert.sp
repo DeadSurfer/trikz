@@ -64,6 +64,7 @@ float gF_fallVel[MAXPLAYERS + 1][3]
 bool gB_onGround[MAXPLAYERS + 1]
 bool gB_readyToStart[MAXPLAYERS + 1]
 float gF_bestTime
+float gF_personalBest[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -178,7 +179,23 @@ public void OnClientPutInServer(int client)
 		//int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 		gD_mysql.Query(SQLAddUser, sQuery, client)
+		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
+		gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
 	}
+}
+
+void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
+{
+	int client = GetClientFromSerial(data)
+	if(results.FetchRow())
+	{
+		float time = results.FetchFloat(0)
+		gF_personalBest[client] = time
+	}
+	/*else
+	{
+		gF_
+	}*/
 }
 
 /*public void OnClinetConnected(int client)
@@ -816,7 +833,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	//PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
 	//while(results.FetchRow() || !results.FetchRow())
-	while(results.FetchRow())
+	if(results.FetchRow())
 	{
 		PrintToServer("1")
 		char sMap[192]
@@ -845,7 +862,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 Action cmd_fakerecord(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO records (date) VALUES (%i)", GetTime())
+	Format(sQuery, 512, "INSERT INTO records (date) VALUES (%i);", GetTime())
 	gD_mysql.Query(SQLFakeRecord, sQuery)
 }
 
