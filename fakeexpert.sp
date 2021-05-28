@@ -972,24 +972,24 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	{
 		float timeDiff = FloatAbs(srTime - timeClient)
 		//float timeDiff = FloatAbs(timeClient - srTime)
-		float personalHour = RoundToFloor(timeClient) / 60
-		float personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		float personalSecond = RoundToFloor(timeClient) % 60
-		float srHour = RoundToFloor(timeDiff) / 60
-		float srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		float srSecond = RoundToFloor(timeDiff) % 60
+		float personalHour = timeClient / 60.0
+		float personalMinute = (timeClient / 60.0) % 24.0
+		float personalSecond = timeClient % 60.0
+		float srHour = timeDiff / 60.0
+		float srMinute = (timeDiff / 60.0) % 24.0
+		float srSecond = timeDiff % 60.0
 		PrintToChatAll("%N and %N finished map in %02.f:%02.f:%02.f. (SR -%02.f:%02.f:%02.f)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 	}
 	else
 	{
 		float timeDiff = FloatAbs(srTime - timeClient)
 		//float timeDiff = FloatAbs(timeClient - srTime)
-		float personalHour = RoundToFloor(timeClient) / 60
-		float personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		float personalSecond = RoundToFloor(timeClient) % 60
-		float srHour = RoundToFloor(timeDiff) / 60
-		float srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		float srSecond = RoundToFloor(timeDiff) % 60
+		float personalHour = timeClient / 60.0
+		float personalMinute = (timeClient / 60.0) % 24.0
+		float personalSecond = timeClient % 60.0
+		float srHour = timeDiff / 60.0
+		float srMinute = (timeDiff / 60.0) % 24.0
+		float srSecond = timeDiff % 60.0
 		PrintToChatAll("%N and %N finished map in %02.f:%02.f:%02.f. (SR +%02.f:%02.f:%02.f)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 	}
 }
