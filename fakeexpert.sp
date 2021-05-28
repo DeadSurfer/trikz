@@ -983,7 +983,7 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	if(results.FetchRow())
 	{
 		srTime = results.FetchFloat(0)
-		PrintToServer("%f", srTime)
+		//PrintToServer("%f", srTime)
 		//float other = GetClientFromSerial(FetchInt(0))
 		//float bestTime
 		//if(gF_bestTime < time)
@@ -994,8 +994,8 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	}
 	if(timeClient < srTime)
 	{
-		//float timeDiff = srTime - timeClient
-		float timeDiff = timeClient - srTime
+		float timeDiff = srTime - timeClient
+		//float timeDiff = timeClient - srTime
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
@@ -1006,8 +1006,8 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	}
 	else
 	{
-		//float timeDiff = srTime - timeClient
-		float timeDiff = timeClient - srTime
+		float timeDiff = srTime - timeClient
+		//float timeDiff = timeClient - srTime
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
