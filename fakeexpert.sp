@@ -968,7 +968,7 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 	dp2.WriteFloat(timeClient)
 	dp2.WriteCell(GetClientSerial(other))
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s'", gS_map)
+	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
 	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
 }
 
@@ -978,17 +978,19 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	int timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
 	PrintToServer("x1: %i %N", other, other)
-	int time
+	//int time
 	int srTime
 	while(results.FetchRow())
 	{
-		time = results.FetchFloat(0)
+		srTime = results.FetchFloat(0)
+		PrintToServer("%f", srTime)
 		//float other = GetClientFromSerial(FetchInt(0))
 		//float bestTime
 		//if(gF_bestTime < time)
 		//	gF_bestTime = time
-		if(timeClient < srTime)
-			srTime = timeClient
+		//if(timeClient < srTime)
+			//srTime = timeClient
+		//if(time 
 	}
 	if(timeClient < srTime)
 	{
