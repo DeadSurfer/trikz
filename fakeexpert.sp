@@ -939,33 +939,33 @@ void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, Data
 	if(results.FetchRow())
 	{
 		float srTime = results.FetchFloat(0)
-	}
-	if(timeClient < srTime)
-	{
-		float timeDiff = FloatAbs(srTime - timeClient)
-		PrintToServer("%f", timeDiff)
-		//float timeDiff = FloatAbs(timeClient - srTime)
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		int srHour = RoundToFloor(timeDiff) / 60
-		int srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		int srSecond = RoundToFloor(timeDiff) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-		Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
-		gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
-	}
-	else
-	{
-		float timeDiff = FloatAbs(srTime - timeClient)
-		//float timeDiff = FloatAbs(timeClient - srTime)
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		int srHour = RoundToFloor(timeDiff) / 60
-		int srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		int srSecond = RoundToFloor(timeDiff) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+		if(timeClient < srTime)
+		{
+			float timeDiff = FloatAbs(srTime - timeClient)
+			PrintToServer("%f", timeDiff)
+			//float timeDiff = FloatAbs(timeClient - srTime)
+			int personalHour = RoundToFloor(timeClient) / 60
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+			int personalSecond = RoundToFloor(timeClient) % 60
+			int srHour = RoundToFloor(timeDiff) / 60
+			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
+			int srSecond = RoundToFloor(timeDiff) % 60
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
+		}
+		else
+		{
+			float timeDiff = FloatAbs(srTime - timeClient)
+			//float timeDiff = FloatAbs(timeClient - srTime)
+			int personalHour = RoundToFloor(timeClient) / 60
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+			int personalSecond = RoundToFloor(timeClient) % 60
+			int srHour = RoundToFloor(timeDiff) / 60
+			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
+			int srSecond = RoundToFloor(timeDiff) % 60
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+		}
 	}
 }
 
