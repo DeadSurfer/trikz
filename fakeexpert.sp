@@ -179,12 +179,12 @@ public void OnClientPutInServer(int client)
 		//int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 		gD_mysql.Query(SQLAddUser, sQuery, client)
-		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
-		gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
+		//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
+		//gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
 	}
 }
 
-void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
+/*void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
 	if(results.FetchRow())
@@ -192,11 +192,11 @@ void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data
 		float time = results.FetchFloat(0)
 		gF_personalBest[client] = time
 	}
-	/*else
+	else
 	{
-		gF_
-	}*/
-}
+		//gF_
+	}
+}*/
 
 /*public void OnClinetConnected(int client)
 {
