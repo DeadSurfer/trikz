@@ -775,8 +775,8 @@ Action SDKStartTouch(int entity, int other)
 				//DataPack dp3.WriteCell(gF_Time[other])
 				//DataPack dp3.WriteCell
 				DataPack dp = new DataPack()
-				dp3.WriteFloat(gF_Time[other])
-				dp3.WriteCell(GetClientSerial(other))
+				dp.WriteFloat(gF_Time[other])
+				dp.WriteCell(GetClientSerial(other))
 				gD_mysql.Query(SQLSR, sQuery, dp)
 				//PrintTo
 				int clientid = GetSteamAccountID(other)
