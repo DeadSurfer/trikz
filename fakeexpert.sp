@@ -887,8 +887,8 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	{
 		float record = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
 		PrintToServer("123xx123xs: %f", record)
-		DataPack dp2 = new DataPack()
-		dp2.WriteFloat(timeClient)
+		DataPack dp4 = new DataPack()
+		dp4.WriteFloat(timeClient)
 		//dp2.WriteCell(Get
 		if(record > timeClient)
 		{
