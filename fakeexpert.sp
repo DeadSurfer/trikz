@@ -885,8 +885,10 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataP
 {
 	dp.Reset()
 	int other = GetClientFromSerial(dp.ReadCell())
+	float timeClient = dp.ReadFloat()
 	DataPack dp2 = new DataPack()
 	dp2.WriteCell(GetClientSerial(other))
+	dp2.WriteFloat(timeClient)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s'", gS_map)
 	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
