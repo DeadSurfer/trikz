@@ -848,6 +848,10 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	}
 	else
 	{
+		int personalHour = RoundToFloor(timeClient) / 60
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalSecond = RoundToFloor(timeClient) % 60
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		PrintToServer("2")
 		DataPack dp = new DataPack()
 		dp.WriteCell(GetClientSerial(other))
