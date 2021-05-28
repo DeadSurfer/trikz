@@ -121,6 +121,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vectest", cmd_vectest)
 	RegConsoleCmd("sm_vectest2", cmd_vectest2)
 	RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
+	RegServerCmd("sm_fakerecord", cmd_fakerecord)
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -814,7 +815,8 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	int partnerid = GetSteamAccountID(gI_partner[other])
 	//PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
-	while(results.FetchRow() || !results.FetchRow())
+	//while(results.FetchRow() || !results.FetchRow())
+	while(results.FetchRow())
 	{
 		PrintToServer("1")
 		char sMap[192]
@@ -828,7 +830,8 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 			gD_mysql.Query(SQLUpdateRecord, sQuery, dp)
 		}
 	}
-	/*else
+	//else
+	/*while(!results.FetchRow())
 	{
 		PrintToServer("2")
 		DataPack dp = new DataPack()
@@ -837,6 +840,17 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
 		gD_mysql.Query(SQLInsertRecord, sQuery, dp)
 	}*/
+}
+
+Action cmd_fakerecord(int args)
+{
+	char sQuery[512]
+	Format(sQuery, 512, "INSERT INTO records (date) VALUES (%i)", GetTime())
+	gD_mysql.Query(SQLFakeRecord, sQuery)
+}
+
+void SQLFakeRecord(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 Action cmd_getenginetime(int client, int args)
