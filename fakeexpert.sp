@@ -916,7 +916,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	if(results.FetchRow())
 	{
 		int record = results.FetchFloat(0)
-		if(records > timeClient)
+		if(record > timeClient)
 		{
 			char sQuery[512]
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
@@ -934,7 +934,7 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 
 void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, any data)
 {
-	//PrintToServer("Record insert compelete.")
+	PrintToServer("Record insert compelete.")
 }
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
