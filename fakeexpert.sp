@@ -975,7 +975,7 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
-	int timeClient = dp.ReadFloat()
+	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
 	PrintToServer("x1: %i %N", other, other)
 	//int time
