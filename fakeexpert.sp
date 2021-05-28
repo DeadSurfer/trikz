@@ -814,7 +814,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	int partnerid = GetSteamAccountID(gI_partner[other])
 	//PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
-	if(results.FetchRow())
+	while(results.FetchRow())
 	{
 		PrintToServer("1")
 		char sMap[192]
