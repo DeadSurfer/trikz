@@ -897,6 +897,13 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
 		}
+		else
+		{
+			DataPack dp2 = new DataPack()
+			dp2.WriteFloat(timeClient)
+			dp2.WriteCell(GetClientSerial(other))
+			gD_mysql.Query(SQLUpdateRecordCompelete, "", dp2)
+		}
 	}
 	else
 	{
