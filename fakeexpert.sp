@@ -889,9 +889,12 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		PrintToServer("123xx123xs: %f", record)
 		DataPack dp4 = new DataPack()
 		dp4.WriteFloat(timeClient)
+		dp4.WriteCell(GetClientSerial(other))
 		//dp2.WriteCell(Get
 		if(record > timeClient)
 		{
+			Format(sQuery, 512, "SELECT MIN(time) FROM records")
+			//gD_mysql.Query(SQLUpdateRecordx, sQuery)
 			//char sQuery[512]
 			PrintToServer("123x123")
 			DataPack dp2 = new DataPack()
@@ -902,11 +905,13 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		}
 		else
 		{
+			Format(sQuery, 512, "SELECT MIN(time) FROM records")
 			DataPack dp2 = new DataPack()
 			dp2.WriteFloat(timeClient)
 			dp2.WriteCell(GetClientSerial(other))
 			gD_mysql.Query(SQLUpdateRecordCompelete, "", dp2)
 		}
+		gD_mysql.Query(SQLUpdateRecordx, sQuery, dp4)
 	}
 	else
 	{
@@ -923,6 +928,10 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	}
 	PrintToServer("%i %N", other, other)
 	//PrintToServer("Record updated.")
+}
+
+void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
