@@ -954,7 +954,7 @@ void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, Data
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
-			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
+			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
 		else
 		{
