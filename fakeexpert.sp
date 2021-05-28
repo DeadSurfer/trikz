@@ -812,8 +812,9 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	int other = GetClientFromSerial(dp.ReadCell())
 	int playerid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(gI_partner[other])
-	float time
-	float srTime
+	//float time
+	//float srTime
+	PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
@@ -834,6 +835,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		PrintToServer("2")
 		DataPack dp = new DataPack()
 		dp.WriteCell(GetClientSerial(other))
+		dp.WriteFloat(timeClient)
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
 		gD_mysql.Query(SQLInsertRecord, sQuery, dp)
 	}
@@ -881,7 +883,7 @@ Action cmd_getenginetime(int client, int args)
 	return Plugin_Handled
 }
 
-void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
+/*void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	//delete dp
 	dp.Reset() //shavit.wr 1395
@@ -908,7 +910,7 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, %s, %i)", GetSteamAccountID(client), GetSteamAccountID(partner), time, gS_map, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
 		gD_mysql.Query(SQLInsertRecord, sQuery)
 	}
-}
+}*/
 
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
@@ -921,10 +923,11 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		int record = results.FetchFloat(0)
+		float record = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
 		if(record > timeClient)
 		{
 			//char sQuery[512]
+			PrintToServer("123x123")
 			DataPack dp2 = new DataPack()
 			dp2.WriteFloat(timeClient)
 			dp2.WriteCell(GetClientSerial(other))
