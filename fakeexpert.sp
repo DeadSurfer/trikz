@@ -296,7 +296,8 @@ void Trikz(int client)
 	Menu menu = new Menu(trikz_handler)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
-	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
+	//Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
+	Format(sDisplay, 32, GetEntProp(client, Prop_Data, "m_CollisionGroup") ? "Block [v]" : "Block [x]")
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gI_partner[client] ? "Cancel partnership" : "Select partner")
 	menu.AddItem("partner", sDisplay)
@@ -736,7 +737,7 @@ Action SDKEndTouch(int entity, int other)
 	//GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 	//if(StrEqual(sTrigger, "fakeexpert_startzone"))
 	{
-		PrintToServer("preStart endtouch.")
+		//PrintToServer("preStart endtouch.")
 		//if(gB_insideZone[other] && gB_insideZone[gI_partner[other]])
 		if(gB_readyToStart[other])
 		{
@@ -746,7 +747,7 @@ Action SDKEndTouch(int entity, int other)
 			gB_mapfinished[gI_partner[other]] = false
 			gF_TimeStart[other] = GetEngineTime()
 			gF_TimeStart[gI_partner[other]] = GetEngineTime()
-			PrintToServer("EndTouch")
+			//PrintToServer("EndTouch")
 			gB_passzone[other] = true
 			gB_passzone[gI_partner[other]] = true
 			gB_readyToStart[other] = false
@@ -767,7 +768,7 @@ Action SDKStartTouch(int entity, int other)
 		//gB_insideZone[other] = true //Expert-Zone idea.
 		//gB_passzone[other] = false
 		//PrintToServer("%i", other)
-		PrintToServer("SDKStartTouch %i %i", entity, other)
+		//PrintToServer("SDKStartTouch %i %i", entity, other)
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
@@ -785,7 +786,7 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				char sQuery[512]
 				//Format(sQuerySR, 512, "SELECT time FROM records WHERE ")
 				//Format(sQuery, 512, "INSERT
@@ -799,13 +800,13 @@ Action SDKStartTouch(int entity, int other)
 				//PrintTo
 				int clientid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
-				PrintToServer("%i %i", clientid, partnerid)
+				//PrintToServer("%i %i", clientid, partnerid)
 				//shavit - datapack
 				//DataPack dp = new DataPack()
 				//dp.WriteCell(GetClientSerial(other))
 				//dp.WriteCell(other[)
 				//dp.WriteCell(GetClientSerial(gI_partner[other]))
-				PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
+				//PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
 				//dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 				//char sQuery[512]
 				//Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
@@ -814,7 +815,7 @@ Action SDKStartTouch(int entity, int other)
 				dp2.WriteCell(clientid)
 				dp2.WriteCell(partnerid)
 				dp2.WriteCell(GetClientSerial(other))
-				PrintToServer("%i other", other)
+				//PrintToServer("%i other", other)
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
 			}
@@ -834,7 +835,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		PrintToServer("1")
+		//PrintToServer("1")
 		char sMap[192]
 		results.FetchString(0, sMap, 192)
 		if(StrEqual(gS_map, sMap))
@@ -852,7 +853,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
-		PrintToServer("2")
+		//PrintToServer("2")
 		DataPack dp = new DataPack()
 		dp.WriteCell(GetClientSerial(other))
 		dp.WriteFloat(timeClient)
@@ -903,14 +904,14 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
-		PrintToServer("x1 %f", timeClient)
+		//PrintToServer("x1 %f", timeClient)
 		DataPack dp3 = new DataPack()
 		dp3.WriteFloat(timeClient)
 		dp3.WriteCell(GetClientSerial(other))
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
 		gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp3)
 	}
-	PrintToServer("%i %N", other, other)
+	//PrintToServer("%i %N", other, other)
 	//PrintToServer("Record updated.")
 }
 
@@ -1062,11 +1063,6 @@ void SQLConnect(Database db, const char[] error, any data)
 	}
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
-	//char sQuery[512]
-	//Format(sQuery, 512, "SELECT map FROM zones")
-	//gD_mysql.Query(SQLForceDefaultZones, sQuery)
-	//Format(sQuery, 512, "SELECT map FROM zones")
-	//gD_mysql.Query(SQLForceZonesSetup2, sQuery)
 	ForceZonesSetup()
 	gB_pass = true
 }
@@ -1096,19 +1092,7 @@ void ForceZonesSetup()
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
 	gD_mysql.Query(SQLSetZonesEntity, sQuery)
-	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
-	//gD_mysql.Query(SQLSetZoneEnd, sQuery)
 }
-
-/*void SQLForceZonesSetup2(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.FetchRow())
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 WHERE map = '%s' AND type = 1", gS_map)
-		gD_mysql.Query(SQLSetZoneEnd, sQuery)
-	}
-}*/
 
 void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any data)
 {
