@@ -930,13 +930,13 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 	dp.Reset()
 	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
-	PrintToServer("%i %N", other, other)
+	PrintToServer("123x123123s: %i %N", other, other)
 	//PrintToServer("Record insert compelete.")
 	DataPack dp2 = new DataPack()
 	dp2.WriteFloat(timeClient)
 	dp2.WriteCell(GetClientSerial(other))
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
+	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s';", gS_map)
 	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
 }
 
