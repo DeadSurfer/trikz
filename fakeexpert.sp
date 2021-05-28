@@ -848,6 +848,10 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	}
 	else
 	{
+		int personalHour = RoundToFloor(timeClient) / 60
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalSecond = RoundToFloor(timeClient) % 60
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		PrintToServer("2")
 		DataPack dp = new DataPack()
 		dp.WriteCell(GetClientSerial(other))
@@ -901,7 +905,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 			dp2.WriteFloat(timeClient)
 			dp2.WriteCell(GetClientSerial(other))
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
-			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
+			//gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
 		}
 		else
 		{
@@ -909,7 +913,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 			DataPack dp2 = new DataPack()
 			dp2.WriteFloat(timeClient)
 			dp2.WriteCell(GetClientSerial(other))
-			gD_mysql.Query(SQLUpdateRecordCompelete, "", dp2)
+			//gD_mysql.Query(SQLUpdateRecordCompelete, "", dp2)
 		}
 		gD_mysql.Query(SQLUpdateRecordx, sQuery, dp4)
 	}
@@ -933,8 +937,8 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
-	float timeClient = dp.ReadFloat()
 	int other = dp.ReadCell()
+	float timeClient = dp.ReadFloat()
 	int playerid = GetClientFromSerial(other)
 	int partnerid = GetClientFromSerial(other)
 	char sQuery[512]
@@ -944,7 +948,7 @@ void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, Data
 		if(timeClient < srTime)
 		{
 			float timeDiff = FloatAbs(srTime - timeClient)
-			PrintToServer("%f", timeDiff)
+			PrintToServer("2x2x2: %f", timeDiff)
 			//float timeDiff = FloatAbs(timeClient - srTime)
 			int personalHour = RoundToFloor(timeClient) / 60
 			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
