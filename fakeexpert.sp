@@ -832,7 +832,6 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	int partnerid = GetSteamAccountID(gI_partner[other])
 	//PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
-	//while(results.FetchRow() || !results.FetchRow())
 	if(results.FetchRow())
 	{
 		PrintToServer("1")
@@ -840,15 +839,14 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		results.FetchString(0, sMap, 192)
 		if(StrEqual(gS_map, sMap))
 		{
-			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s';", playerid, partnerid, partnerid, playerid, gS_map)
+			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s';", playerid, partnerid, playerid, partnerid, gS_map)
 			DataPack dp = new DataPack()
 			dp.WriteCell(GetClientSerial(other))
 			dp.WriteFloat(timeClient)
 			gD_mysql.Query(SQLUpdateRecord, sQuery, dp)
 		}
 	}
-	//else
-	/*while(!results.FetchRow())
+	else
 	{
 		PrintToServer("2")
 		DataPack dp = new DataPack()
@@ -856,7 +854,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		dp.WriteFloat(timeClient)
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
 		gD_mysql.Query(SQLInsertRecord, sQuery, dp)
-	}*/
+	}
 }
 
 Action cmd_fakerecord(int args)
@@ -896,7 +894,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 			DataPack dp2 = new DataPack()
 			dp2.WriteFloat(timeClient)
 			dp2.WriteCell(GetClientSerial(other))
-			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
+			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
 		}
 	}
