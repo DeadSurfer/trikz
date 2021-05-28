@@ -29,7 +29,7 @@ software and other kinds of works.
 #include <sdktools>
 #include <sdkhooks>
 
-bool gB_block[MAXPLAYERS + 1]
+//bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[3]
 float gF_vec2[3]
@@ -64,7 +64,7 @@ float gF_fallVel[MAXPLAYERS + 1][3]
 bool gB_onGround[MAXPLAYERS + 1]
 bool gB_readyToStart[MAXPLAYERS + 1]
 float gF_bestTime
-float gF_personalBest[MAXPLAYERS + 1]
+//float gF_personalBest[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -137,9 +137,9 @@ public void OnMapStart()
 	Database.Connect(SQLConnect, "fakeexpert")
 }
 
-Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
-{
-}
+//Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
+//{
+//}
 
 Action cmd_setup(int args)
 {
@@ -339,7 +339,7 @@ Action Block(int client)
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 75)
-		gB_block[client] = false
+		//gB_block[client] = false
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
@@ -347,7 +347,7 @@ Action Block(int client)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
-		gB_block[client] = true
+		//gB_block[client] = true
 		PrintToChat(client, "Block enabled.")
 		return Plugin_Handled
 	}
@@ -841,10 +841,10 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		if(StrEqual(gS_map, sMap))
 		{
 			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s';", playerid, partnerid, playerid, partnerid, gS_map)
-			DataPack dp = new DataPack()
-			dp.WriteCell(GetClientSerial(other))
-			dp.WriteFloat(timeClient)
-			gD_mysql.Query(SQLUpdateRecord, sQuery, dp)
+			DataPack dp2 = new DataPack()
+			dp2.WriteCell(GetClientSerial(other))
+			dp2.WriteFloat(timeClient)
+			gD_mysql.Query(SQLUpdateRecord, sQuery, dp2)
 		}
 	}
 	else
@@ -854,11 +854,11 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		//PrintToServer("2")
-		DataPack dp = new DataPack()
-		dp.WriteCell(GetClientSerial(other))
-		dp.WriteFloat(timeClient)
+		DataPack dp2 = new DataPack()
+		dp2.WriteCell(GetClientSerial(other))
+		dp2.WriteFloat(timeClient)
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
-		gD_mysql.Query(SQLInsertRecord, sQuery, dp)
+		gD_mysql.Query(SQLInsertRecord, sQuery, dp2)
 	}
 }
 
@@ -890,7 +890,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		float record = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
+		//float record = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
 		//PrintToServer("123xx123xs: %f", record)
 		DataPack dp4 = new DataPack()
 		dp4.WriteFloat(timeClient)
@@ -966,9 +966,9 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 {
 }
 
-void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
-{
-}
+//void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
+//{
+//}
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
@@ -1200,7 +1200,7 @@ Action cmd_gent(int client, int args)
 	return Plugin_Handled
 }
 
-Action ProjectileBoostFix1(int entity, int other)
+/*Action ProjectileBoostFix1(int entity, int other)
 {
 	float vecOriginClient[3]
 	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginClient)
@@ -1221,14 +1221,14 @@ Action ProjectileBoostFix1(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
 		PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
 		PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-		/*if(vecVelClient[2] < 0.0)
-			vecVelClient[2] = vecVelClient[2] * -1.0
-		if(vecVelEntity[2] < 0.0)
-			vecVelEntity[2] = vecVelEntity[2] * -1.0
+		//if(vecVelClient[2] < 0.0)
+		//	vecVelClient[2] = vecVelClient[2] * -1.0
+		//if(vecVelEntity[2] < 0.0)
+		//	vecVelEntity[2] = vecVelEntity[2] * -1.0
 		float correctVel[3]
 		correctVel[0] = 0.0
 		correctVel[1] = 0.0
-		correctVel[2] = vecVelClient[2] + vecVelEntity[2]*/
+		correctVel[2] = vecVelClient[2] + vecVelEntity[2]
 		if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
 			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
 		if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
@@ -1247,20 +1247,20 @@ Action ProjectileBoostFix1(int entity, int other)
 		if(vecVelClient[1] > 0.0 && vecVelEntity[1] < 0.0)
 			vecVelClient[1] = vecVelClient[1] + vecVelEntity[1] * -1.0
 			
-		/*if(vecVelClient[2] < 0.0 && vecVelEntity[2] < 0.0)
-			vecVelClient[2] = vecVelEntity[2]
-		if(vecVelClient[2] > 0.0 && vecVelEntity[2] > 0.0)
-			vecVelClient[2] = vecVelEntity[2]
-		if(vecVelClient[2] < 0.0 && vecVelEntity[2] > 0.0)
-			vecVelClient[2] = vecVelEntity[2] * -1.0
-		if(vecVelClient[2] > 0.0 && vecVelEntity[2] < 0.0)
-			vecVelClient[2] = vecVelEntity[2] * -1.0*/
-		/*if(vecVelEntity[2] < 0.0)
-			vecVelClient[2] = vecVelClient[2]
-		if(vecVelEntity[2] < 0.0)
-			vecVelEntity[2] = vecVel
-		if(vecVelEntity[2] < 0.0)
-			vecVelClient[2] = vecEntity*/
+		//if(vecVelClient[2] < 0.0 && vecVelEntity[2] < 0.0)
+		//	vecVelClient[2] = vecVelEntity[2]
+		//if(vecVelClient[2] > 0.0 && vecVelEntity[2] > 0.0)
+		//	vecVelClient[2] = vecVelEntity[2]
+		//if(vecVelClient[2] < 0.0 && vecVelEntity[2] > 0.0)
+		//	vecVelClient[2] = vecVelEntity[2] * -1.0
+		//if(vecVelClient[2] > 0.0 && vecVelEntity[2] < 0.0)
+		//	vecVelClient[2] = vecVelEntity[2] * -1.0
+		//if(vecVelEntity[2] < 0.0)
+		//	vecVelClient[2] = vecVelClient[2]
+		//if(vecVelEntity[2] < 0.0)
+		//	vecVelEntity[2] = vecVel
+		//if(vecVelEntity[2] < 0.0)
+		//	vecVelClient[2] = vecEntity
 		if(vecVelEntity[2] < 0.0)
 			vecVelClient[2] = vecVelEntity[2] * -1.0
 		else
@@ -1272,7 +1272,7 @@ Action ProjectileBoostFix1(int entity, int other)
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 		//PrintToServer("feet collide.")
 	}
-}
+}*/
 
 Action ProjectileBoostFix(int entity, int other)
 {
@@ -1283,15 +1283,15 @@ Action ProjectileBoostFix(int entity, int other)
 	float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 	float vecMins[3]
 	GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
-	PrintToServer("%f", deltaOrigin - vecMins[2])
+	//PrintToServer("%f", deltaOrigin - vecMins[2])
 	if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
 	{
 		float vecVelClient[3]
 		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
 		float vecVelEntity[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
-		PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
-		PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
+		//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
+		//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
 		if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
 			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
 		if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
