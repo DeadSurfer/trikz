@@ -120,6 +120,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_gent", cmd_gent)
 	RegConsoleCmd("sm_vectest", cmd_vectest)
 	RegConsoleCmd("sm_vectest2", cmd_vectest2)
+	RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -691,7 +692,7 @@ void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any 
 Action cmd_createrecords(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, `date` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, `map` VARCHAR(192), `date` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
@@ -787,7 +788,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
 				dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", clientid, partnerid, partnerid, clientid)
+				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) WHERE map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
 				gD_mysql.Query(SQLRecords, sQuery, dp)
 				DataPack dp2 = new DataPack()
 				dp2.WriteCell(clientid)
@@ -808,18 +809,22 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
 	float time
+	float time2
 	while(results.FetchRow())
 	{
 		time = results.FetchFloat(0)
 		//float other = GetClientFromSerial(FetchInt(0))
 		//float bestTime
-		if(gF_bestTime > time)
-			gF_bestTime = time
+		//if(gF_bestTime < time)
+		//	gF_bestTime = time
+		if(timeClient < time)
+			time2 = time
 	}
-	if(timeClient < gF_bestTime)
+	if(timeClient < time2)
 	{
 		float timeDiff
-		timeDiff = time - timeClient
+		//timeDiff = time2 - timeClient
+		timeDiff = timeClient - time2
 		int hour = RoundToFloor(timeDiff) / 60
 		int minute = (RoundToFloor(timeDiff) / 60) % 24
 		int second = RoundToFloor(timeDiff) % 60
@@ -831,7 +836,8 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	else
 	{
 		float timeDiff
-		timeDiff = gF_bestTime - timeClient
+		//timeDiff = time2 - timeClient
+		timeDiff = timeClient - time2
 		int hour = RoundToFloor(timeDiff) / 60
 		int minute = (RoundToFloor(timeDiff) / 60) % 24
 		int second = RoundToFloor(timeDiff) % 24
@@ -840,6 +846,12 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
 	}
+}
+
+Action cmd_getenginetime(int client, int args)
+{
+	PrintToServer("%f", GetEngineTime())
+	return Plugin_Handled
 }
 
 void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
@@ -858,13 +870,13 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 		if(gF_Time[client] < fTime)
 		{
 			//PrintToServer("SQL time: %f", fTime)
-			Format(sQuery, 512, "UPDATE records SET time = %f", gF_Time[client]) //https://en.wikipedia.org/wiki/Update_(SQL)#:~:text=An%20SQL%20UPDATE%20statement%20changes%20the%20data%20of,column_name%20%3D%20value%20%20%20column_name%20%3D%20value...%5D
+			Format(sQuery, 512, "UPDATE records SET time = %f WHERE map = '%s'", gF_Time[client], gS_map) //https://en.wikipedia.org/wiki/Update_(SQL)#:~:text=An%20SQL%20UPDATE%20statement%20changes%20the%20data%20of,column_name%20%3D%20value%20%20%20column_name%20%3D%20value...%5D
 			gD_mysql.Query(SQLUpdateRecord, sQuery)
 		}
 	}
 	else
 	{
-		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, date) VALUES (%i, %i, %f, %i)", GetSteamAccountID(client), GetSteamAccountID(partner), time, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
+		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, %s, %i)", GetSteamAccountID(client), GetSteamAccountID(partner), time, gS_map, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
 		gD_mysql.Query(SQLInsertRecord, sQuery)
 	}
 }
