@@ -825,6 +825,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
 			DataPack dp = new DataPack()
 			dp.WriteCell(GetClientSerial(other))
+			dp.WriteFloat(timeClient)
 			gD_mysql.Query(SQLUpdateRecord, sQuery, dp)
 		}
 	}
@@ -909,6 +910,19 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 {
 	dp.Reset()
 	int other = GetClientFromSerial(dp.ReadCell())
+	int timeClient = dp.ReadFloat()
+	int playerid = GetSteamAccountID(other)
+	int partnerid = GetSteamAccountID(gI_partner[other])
+	if(results.FetchRow())
+	{
+		int record = results.FetchFloat(0)
+		if(records > timeClient)
+		{
+			char sQuery[512]
+			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
+			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
+		}
+	}
 	PrintToServer("%i %N", other, other)
 	//PrintToServer("Record updated.")
 }
@@ -916,6 +930,11 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	//PrintToServer("Record inserted.")
+}
+
+void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, any data)
+{
+	//PrintToServer("Record insert compelete.")
 }
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
