@@ -814,7 +814,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	int partnerid = GetSteamAccountID(gI_partner[other])
 	//PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
-	while(results.FetchRow())
+	if(results.FetchRow())
 	{
 		PrintToServer("1")
 		char sMap[192]
@@ -857,6 +857,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	if(results.FetchRow())
 	{
 		float record = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
+		PrintToServer("123xx123xs: %f", record)
 		if(record > timeClient)
 		{
 			//char sQuery[512]
