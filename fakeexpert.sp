@@ -936,7 +936,8 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 	dp2.WriteFloat(timeClient)
 	dp2.WriteCell(GetClientSerial(other))
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s';", gS_map)
+	//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s';", gS_map)
+	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s'", gS_map)
 	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
 }
 
@@ -963,7 +964,7 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	if(timeClient < srTime)
 	{
 		//float timeDiff = srTime - timeClient
-		float timeDiff = timeClient - srTime
+		float timeDiff = FloatAbs(timeClient - srTime)
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
@@ -975,7 +976,7 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	else
 	{
 		//float timeDiff = srTime - timeClient
-		float timeDiff = timeClient - srTime
+		float timeDiff = FloatAbs(timeClient - srTime)
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
