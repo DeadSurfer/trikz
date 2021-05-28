@@ -935,6 +935,8 @@ void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, Data
 	dp.Reset()
 	float timeClient = dp.ReadFloat()
 	int other = dp.ReadCell()
+	int playerid = GetClientFromSerial(other)
+	int partnerid = GetClientFromSerial(other)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
