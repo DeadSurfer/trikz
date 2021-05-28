@@ -890,7 +890,7 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataP
 	dp2.WriteFloat(timeClient)
 	dp2.WriteCell(GetClientSerial(other))
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s'", gS_map)
+	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
 	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
 	//PrintToServer("Record inserted.")
 }
