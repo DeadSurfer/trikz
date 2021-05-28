@@ -889,6 +889,31 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		PrintToServer("123xx123xs: %f", record)
 		if(record > timeClient)
 		{
+			if(timeClient < record)
+			{
+				float timeDiff = FloatAbs(record - timeClient)
+				PrintToServer("%f", timeDiff)
+				//float timeDiff = FloatAbs(timeClient - record)
+				int personalHour = RoundToFloor(timeClient) / 60
+				int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+				int personalSecond = RoundToFloor(timeClient) % 60
+				int srHour = RoundToFloor(timeDiff) / 60
+				int srMinute = (RoundToFloor(timeDiff) / 60) % 24
+				int srSecond = RoundToFloor(timeDiff) % 60
+				PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			}
+			else
+			{
+				float timeDiff = FloatAbs(record - timeClient)
+				//float timeDiff = FloatAbs(timeClient - record)
+				int personalHour = RoundToFloor(timeClient) / 60
+				int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+				int personalSecond = RoundToFloor(timeClient) % 60
+				int srHour = RoundToFloor(timeDiff) / 60
+				int srMinute = (RoundToFloor(timeDiff) / 60) % 24
+				int srSecond = RoundToFloor(timeDiff) % 60
+				PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			}
 			//char sQuery[512]
 			PrintToServer("123x123")
 			DataPack dp2 = new DataPack()
@@ -899,6 +924,15 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		}
 		else
 		{
+			float timeDiff = FloatAbs(record - timeClient)
+			//float timeDiff = FloatAbs(timeClient - record)
+			int personalHour = RoundToFloor(timeClient) / 60
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+			int personalSecond = RoundToFloor(timeClient) % 60
+			int srHour = RoundToFloor(timeDiff) / 60
+			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
+			int srSecond = RoundToFloor(timeDiff) % 60
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 			DataPack dp2 = new DataPack()
 			dp2.WriteFloat(timeClient)
 			dp2.WriteCell(GetClientSerial(other))
@@ -907,6 +941,13 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	}
 	else
 	{
+		float timeDiff = FloatAbs(record - timeClient)
+		PrintToServer("%f", timeDiff)
+		//float timeDiff = FloatAbs(timeClient - record)
+		int personalHour = RoundToFloor(timeClient) / 60
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalSecond = RoundToFloor(timeClient) % 60
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		PrintToServer("x1 %f", timeClient)
 		DataPack dp3 = new DataPack()
 		dp3.WriteFloat(timeClient)
@@ -967,30 +1008,6 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 		//if(timeClient < srTime)
 			//srTime = timeClient
 		//if(time 
-	}
-	if(timeClient < srTime)
-	{
-		float timeDiff = FloatAbs(srTime - timeClient)
-		//float timeDiff = FloatAbs(timeClient - srTime)
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		int srHour = RoundToFloor(timeDiff) / 60
-		int srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		int srSecond = RoundToFloor(timeDiff) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-	}
-	else
-	{
-		float timeDiff = FloatAbs(srTime - timeClient)
-		//float timeDiff = FloatAbs(timeClient - srTime)
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		int srHour = RoundToFloor(timeDiff) / 60
-		int srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		int srSecond = RoundToFloor(timeDiff) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 	}
 }
 
