@@ -947,7 +947,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	{
 		//float timeDiff = FloatAbs(record - timeClient)
 		//PrintToServer("%f", timeDiff)
-		//float timeDiff = FloatAbs(timeClient - record)
+		//float timeDiff = FloatAbs(timeClient - record) //alliedmodders.com/forum/102-3743-1
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
