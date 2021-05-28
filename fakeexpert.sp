@@ -832,8 +832,10 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	else
 	{
 		PrintToServer("2")
+		DataPack dp = new DataPack()
+		dp.WriteCell(GetClientSerial(other))
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
-		gD_mysql.Query(SQLInsertRecord, sQuery)
+		gD_mysql.Query(SQLInsertRecord, sQuery, dp)
 	}
 	/*while(results.FetchRow())
 	{
@@ -901,6 +903,8 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 	}
 	else
 	{
+		//DataPack dp = new DataPack()
+		//dp.WriteCell(GetClientSerial(
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, %s, %i)", GetSteamAccountID(client), GetSteamAccountID(partner), time, gS_map, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
 		gD_mysql.Query(SQLInsertRecord, sQuery)
 	}
@@ -910,31 +914,107 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 {
 	dp.Reset()
 	int other = GetClientFromSerial(dp.ReadCell())
-	int timeClient = dp.ReadFloat()
+	float timeClient = dp.ReadFloat()
 	int playerid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(gI_partner[other])
+	//PrintToChatAll
+	char sQuery[512]
 	if(results.FetchRow())
 	{
 		int record = results.FetchFloat(0)
 		if(record > timeClient)
 		{
-			char sQuery[512]
+			//char sQuery[512]
+			DataPack dp2 = new DataPack()
+			dp2.WriteFloat(timeClient)
+			dp2.WriteCell(GetClientSerial(other))
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
-			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
+			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
 		}
+	}
+	else
+	{
+		PrintToServer("x1 %f", timeClient)
+		DataPack dp3 = new DataPack()
+		dp3.WriteFloat(timeClient)
+		dp3.WriteCell(GetClientSerial(other))
+		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
+		gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp3)
 	}
 	PrintToServer("%i %N", other, other)
 	//PrintToServer("Record updated.")
 }
 
-void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
+	dp.Reset()
+	int other = GetClientFromSerial(dp.ReadCell())
+	DataPack dp2 = new DataPack()
+	dp2.WriteCell(GetClientSerial(other))
+	char sQuery[512]
+	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s'", gS_map)
+	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
 	//PrintToServer("Record inserted.")
 }
 
-void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, any data)
+void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	PrintToServer("Record insert compelete.")
+	dp.Reset()
+	float timeClient = dp.ReadFloat()
+	int other = GetClientFromSerial(dp.ReadCell())
+	PrintToServer("%i %N", other, other)
+	//PrintToServer("Record insert compelete.")
+	DataPack dp2 = new DataPack()
+	dp2.WriteFloat(timeClient)
+	dp2.WriteCell(GetClientSerial(other))
+	char sQuery[512]
+	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s'", gS_map)
+	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
+}
+
+void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
+	dp.Reset()
+	int timeClient = dp.ReadFloat()
+	int other = GetClientFromSerial(dp.ReadCell())
+	PrintToServer("x1: %i %N", other, other)
+	int srTime
+	while(results.FetchRow())
+	{
+		time = results.FetchFloat(0)
+		//float other = GetClientFromSerial(FetchInt(0))
+		//float bestTime
+		//if(gF_bestTime < time)
+		//	gF_bestTime = time
+		if(timeClient < srTime)
+			srTime = timeClient
+	}
+	if(timeClient < srTime)
+	{
+		float timeDiff
+		//timeDiff = srTime - timeClient
+		timeDiff = timeClient - srTime
+		int hour = RoundToFloor(timeDiff) / 60
+		int minute = (RoundToFloor(timeDiff) / 60) % 24
+		int second = RoundToFloor(timeDiff) % 60
+		int personalHour = RoundToFloor(timeClient) / 60
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalSecond = RoundToFloor(timeClient) % 60
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
+	}
+	else
+	{
+		float timeDiff
+		timeDiff = srTime - timeClient
+		//timeDiff = timeClient - srTime
+		int hour = RoundToFloor(timeDiff) / 60
+		int minute = (RoundToFloor(timeDiff) / 60) % 24
+		int second = RoundToFloor(timeDiff) % 24
+		int personalHour = RoundToFloor(timeClient) / 60
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalSecond = RoundToFloor(timeClient) % 60
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
+	}
 }
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
