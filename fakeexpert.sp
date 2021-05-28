@@ -63,7 +63,7 @@ float gF_vecStart[3]
 float gF_fallVel[MAXPLAYERS + 1][3]
 bool gB_onGround[MAXPLAYERS + 1]
 bool gB_readyToStart[MAXPLAYERS + 1]
-float gF_bestTime
+//float gF_bestTime
 //float gF_personalBest[MAXPLAYERS + 1]
 
 public Plugin myinfo =
