@@ -814,7 +814,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	int partnerid = GetSteamAccountID(gI_partner[other])
 	//PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
-	if(results.FetchRow())
+	while(results.FetchRow() || results.FetchRow())
 	{
 		PrintToServer("1")
 		char sMap[192]
@@ -828,7 +828,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 			gD_mysql.Query(SQLUpdateRecord, sQuery, dp)
 		}
 	}
-	else
+	/*else
 	{
 		PrintToServer("2")
 		DataPack dp = new DataPack()
@@ -836,7 +836,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		dp.WriteFloat(timeClient)
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
 		gD_mysql.Query(SQLInsertRecord, sQuery, dp)
-	}
+	}*/
 }
 
 Action cmd_getenginetime(int client, int args)
