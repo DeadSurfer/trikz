@@ -890,31 +890,11 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	if(results.FetchRow())
 	{
 		float record = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
-		PrintToServer("123xx123xs: %f", record)
+		//PrintToServer("123xx123xs: %f", record)
 		DataPack dp4 = new DataPack()
 		dp4.WriteFloat(timeClient)
 		dp4.WriteCell(GetClientSerial(other))
-		//dp2.WriteCell(Get
-		if(record > timeClient)
-		{
-			Format(sQuery, 512, "SELECT MIN(time) FROM records")
-			//gD_mysql.Query(SQLUpdateRecordx, sQuery)
-			//char sQuery[512]
-			PrintToServer("123x123")
-			DataPack dp2 = new DataPack()
-			dp2.WriteFloat(timeClient)
-			dp2.WriteCell(GetClientSerial(other))
-			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
-			//gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp2)
-		}
-		else
-		{
-			Format(sQuery, 512, "SELECT MIN(time) FROM records")
-			DataPack dp2 = new DataPack()
-			dp2.WriteFloat(timeClient)
-			dp2.WriteCell(GetClientSerial(other))
-			//gD_mysql.Query(SQLUpdateRecordCompelete, "", dp2)
-		}
+		Format(sQuery, 512, "SELECT MIN(time) FROM records")
 		gD_mysql.Query(SQLUpdateRecordx, sQuery, dp4)
 	}
 	else
@@ -978,79 +958,15 @@ void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, Data
 
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp.Reset()
-	int other = GetClientFromSerial(dp.ReadCell())
-	float timeClient = dp.ReadFloat()
-	DataPack dp2 = new DataPack()
-	dp2.WriteFloat(timeClient)
-	dp2.WriteCell(GetClientSerial(other))
-	char sQuery[512]
-	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
-	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
 	//PrintToServer("Record inserted.")
 }
 
 void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp.Reset()
-	float timeClient = dp.ReadFloat()
-	int other = GetClientFromSerial(dp.ReadCell())
-	PrintToServer("123x123123s: %i %N", other, other)
-	//PrintToServer("Record insert compelete.")
-	DataPack dp2 = new DataPack()
-	dp2.WriteFloat(timeClient)
-	dp2.WriteCell(GetClientSerial(other))
-	char sQuery[512]
-	//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s';", gS_map)
-	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s'", gS_map)
-	gD_mysql.Query(SQLPrintRecord, sQuery, dp2)
 }
 
 void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp.Reset()
-	float timeClient = dp.ReadFloat()
-	int other = GetClientFromSerial(dp.ReadCell())
-	PrintToServer("x1: %i %N", other, other)
-	//int time
-	float srTime
-	if(results.FetchRow())
-	{
-		srTime = results.FetchFloat(0)
-		PrintToServer("%f", srTime)
-		//float other = GetClientFromSerial(FetchInt(0))
-		//float bestTime
-		//if(gF_bestTime < time)
-		//	gF_bestTime = time
-		//if(timeClient < srTime)
-			//srTime = timeClient
-		//if(time 
-	}
-	if(timeClient < srTime)
-	{
-		float timeDiff = FloatAbs(srTime - timeClient)
-		PrintToServer("%f", timeDiff)
-		//float timeDiff = FloatAbs(timeClient - srTime)
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		int srHour = RoundToFloor(timeDiff) / 60
-		int srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		int srSecond = RoundToFloor(timeDiff) % 60
-		//PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-	}
-	else
-	{
-		float timeDiff = FloatAbs(srTime - timeClient)
-		//float timeDiff = FloatAbs(timeClient - srTime)
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		int srHour = RoundToFloor(timeDiff) / 60
-		int srMinute = (RoundToFloor(timeDiff) / 60) % 24
-		int srSecond = RoundToFloor(timeDiff) % 60
-		//PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-	}
 }
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
