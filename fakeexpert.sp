@@ -937,8 +937,9 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
-	int other = dp.ReadCell()
 	float timeClient = dp.ReadFloat()
+	int other = dp.ReadCell()
+	PrintToServer("%i %N", other, other)
 	int playerid = GetClientFromSerial(other)
 	int partnerid = GetClientFromSerial(other)
 	char sQuery[512]
