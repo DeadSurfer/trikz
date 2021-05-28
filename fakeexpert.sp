@@ -821,7 +821,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		results.FetchString(0, sMap, 192)
 		if(StrEqual(gS_map, sMap))
 		{
-			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
+			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s';", playerid, partnerid, partnerid, playerid, gS_map)
 			DataPack dp = new DataPack()
 			dp.WriteCell(GetClientSerial(other))
 			dp.WriteFloat(timeClient)
