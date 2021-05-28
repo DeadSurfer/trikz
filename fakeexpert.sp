@@ -788,7 +788,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
 				dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) WHERE map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
+				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
 				gD_mysql.Query(SQLRecords, sQuery, dp)
 				DataPack dp2 = new DataPack()
 				dp2.WriteCell(clientid)
@@ -809,7 +809,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
 	float time
-	float time2
+	float srTime
 	while(results.FetchRow())
 	{
 		time = results.FetchFloat(0)
@@ -817,14 +817,14 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		//float bestTime
 		//if(gF_bestTime < time)
 		//	gF_bestTime = time
-		if(timeClient < time)
-			time2 = time
+		if(timeClient < srTime)
+			srTime = timeClient
 	}
-	if(timeClient < time2)
+	if(timeClient < srTime)
 	{
 		float timeDiff
-		//timeDiff = time2 - timeClient
-		timeDiff = timeClient - time2
+		//timeDiff = srTime - timeClient
+		timeDiff = timeClient - srTime
 		int hour = RoundToFloor(timeDiff) / 60
 		int minute = (RoundToFloor(timeDiff) / 60) % 24
 		int second = RoundToFloor(timeDiff) % 60
@@ -836,8 +836,8 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	else
 	{
 		float timeDiff
-		//timeDiff = time2 - timeClient
-		timeDiff = timeClient - time2
+		timeDiff = srTime - timeClient
+		//timeDiff = timeClient - srTime
 		int hour = RoundToFloor(timeDiff) / 60
 		int minute = (RoundToFloor(timeDiff) / 60) % 24
 		int second = RoundToFloor(timeDiff) % 24
