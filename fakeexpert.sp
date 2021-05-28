@@ -978,6 +978,7 @@ void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPa
 	int timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
 	PrintToServer("x1: %i %N", other, other)
+	int time
 	int srTime
 	while(results.FetchRow())
 	{
