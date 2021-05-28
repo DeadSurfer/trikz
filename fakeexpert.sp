@@ -768,29 +768,29 @@ Action SDKStartTouch(int entity, int other)
 				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
-				char sQuerySR[512]
+				char sQuery[512]
 				//Format(sQuerySR, 512, "SELECT time FROM records WHERE ")
 				//Format(sQuery, 512, "INSERT
-				Format(sQuerySR, 512, "SELECT map FROM records")
+				Format(sQuery, 512, "SELECT map FROM records")
 				//DataPack dp3.WriteCell(gF_Time[other])
 				//DataPack dp3.WriteCell
-				DataPack dp3 = new DataPack()
+				DataPack dp = new DataPack()
 				dp3.WriteFloat(gF_Time[other])
 				dp3.WriteCell(GetClientSerial(other))
-				gD_mysql.Query(SQLSR, sQuerySR, dp3)
+				gD_mysql.Query(SQLSR, sQuery, dp)
 				//PrintTo
 				int clientid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
 				PrintToServer("%i %i", clientid, partnerid)
 				//shavit - datapack
-				DataPack dp = new DataPack()
-				dp.WriteCell(GetClientSerial(other))
+				//DataPack dp = new DataPack()
+				//dp.WriteCell(GetClientSerial(other))
 				//dp.WriteCell(other[)
-				dp.WriteCell(GetClientSerial(gI_partner[other]))
+				//dp.WriteCell(GetClientSerial(gI_partner[other]))
 				PrintToServer("client: %i %N, partner: %i %N", other, other, gI_partner[other], gI_partner[other])
-				dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
-				char sQuery[512]
-				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
+				//dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
+				//char sQuery[512]
+				//Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
 				//gD_mysql.Query(SQLRecords, sQuery, dp)
 				DataPack dp2 = new DataPack()
 				dp2.WriteCell(clientid)
@@ -812,9 +812,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	int other = GetClientFromSerial(dp.ReadCell())
 	int playerid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(gI_partner[other])
-	//float time
-	//float srTime
-	PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
+	//PrintToServer("%i %i %i %N", playerid, partnerid, other, other)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
@@ -839,42 +837,6 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
 		gD_mysql.Query(SQLInsertRecord, sQuery, dp)
 	}
-	/*while(results.FetchRow())
-	{
-		time = results.FetchFloat(0)
-		//float other = GetClientFromSerial(FetchInt(0))
-		//float bestTime
-		//if(gF_bestTime < time)
-		//	gF_bestTime = time
-		if(timeClient < srTime)
-			srTime = timeClient
-	}
-	if(timeClient < srTime)
-	{
-		float timeDiff
-		//timeDiff = srTime - timeClient
-		timeDiff = timeClient - srTime
-		int hour = RoundToFloor(timeDiff) / 60
-		int minute = (RoundToFloor(timeDiff) / 60) % 24
-		int second = RoundToFloor(timeDiff) % 60
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
-	}
-	else
-	{
-		float timeDiff
-		timeDiff = srTime - timeClient
-		//timeDiff = timeClient - srTime
-		int hour = RoundToFloor(timeDiff) / 60
-		int minute = (RoundToFloor(timeDiff) / 60) % 24
-		int second = RoundToFloor(timeDiff) % 24
-		int personalHour = RoundToFloor(timeClient) / 60
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
-		int personalSecond = RoundToFloor(timeClient) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
-	}*/
 }
 
 Action cmd_getenginetime(int client, int args)
@@ -883,39 +845,10 @@ Action cmd_getenginetime(int client, int args)
 	return Plugin_Handled
 }
 
-/*void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack dp)
-{
-	//delete dp
-	dp.Reset() //shavit.wr 1395
-	int client = GetClientFromSerial(dp.ReadCell()) //shavit.wr 1396
-	int partner = GetClientFromSerial(dp.ReadCell())
-	float time = dp.ReadFloat()
-	//delete dp
-	//PrintToServer("%N", client)
-	char sQuery[512]
-	if(results.FetchRow())
-	{
-		float fTime = results.FetchFloat(0) //https://pastebin.com/nhWqErZc 1667
-		if(gF_Time[client] < fTime)
-		{
-			//PrintToServer("SQL time: %f", fTime)
-			Format(sQuery, 512, "UPDATE records SET time = %f WHERE map = '%s'", gF_Time[client], gS_map) //https://en.wikipedia.org/wiki/Update_(SQL)#:~:text=An%20SQL%20UPDATE%20statement%20changes%20the%20data%20of,column_name%20%3D%20value%20%20%20column_name%20%3D%20value...%5D
-			gD_mysql.Query(SQLUpdateRecord, sQuery)
-		}
-	}
-	else
-	{
-		//DataPack dp = new DataPack()
-		//dp.WriteCell(GetClientSerial(
-		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, %s, %i)", GetSteamAccountID(client), GetSteamAccountID(partner), time, gS_map, GetTime()) //https://www.w3schools.com/sql/sql_insert.asp
-		gD_mysql.Query(SQLInsertRecord, sQuery)
-	}
-}*/
-
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp.Reset()
-	int other = GetClientFromSerial(dp.ReadCell())
+	dp.Reset() //shavit.wr 1395
+	int other = GetClientFromSerial(dp.ReadCell()) //shavit.wr 1396
 	float timeClient = dp.ReadFloat()
 	int playerid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(gI_partner[other])
