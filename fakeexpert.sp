@@ -930,8 +930,15 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	//PrintToServer("Record updated.")
 }
 
-void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, any data)
+void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
+	dp.Reset()
+	float clientTime = dp.ReadFloat()
+	int other = dp.ReadCell()
+	if(results.FetchRow())
+	{
+		float time = results.FetchFloat(0)
+	}
 }
 
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
