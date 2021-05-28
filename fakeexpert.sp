@@ -769,7 +769,9 @@ Action SDKStartTouch(int entity, int other)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				char sQuerySR[512]
-				Format(sQuerySR, 512, "SELECT time FROM records")
+				//Format(sQuerySR, 512, "SELECT time FROM records WHERE ")
+				//Format(sQuery, 512, "INSERT
+				Format(sQuerySR, 512, "SELECT map FROM records")
 				//DataPack dp3.WriteCell(gF_Time[other])
 				//DataPack dp3.WriteCell
 				DataPack dp3 = new DataPack()
@@ -789,7 +791,7 @@ Action SDKStartTouch(int entity, int other)
 				dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
-				gD_mysql.Query(SQLRecords, sQuery, dp)
+				//gD_mysql.Query(SQLRecords, sQuery, dp)
 				DataPack dp2 = new DataPack()
 				dp2.WriteCell(clientid)
 				dp2.WriteCell(partnerid)
@@ -808,9 +810,31 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	dp.Reset()
 	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
+	int playerid = GetSteamAccountID(other)
+	int partnerid = GetSteamAccountID(gI_partner[other])
 	float time
 	float srTime
-	while(results.FetchRow())
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		PrintToServer("1")
+		char sMap[192]
+		results.FetchString(0, sMap, 192)
+		if(StrEqual(gS_map, sMap))
+		{
+			Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
+			DataPack dp = new DataPack()
+			dp.WriteCell(GetClientSerial(other))
+			gD_mysql.Query(SQLUpdateRecord, sQuery, dp)
+		}
+	}
+	else
+	{
+		PrintToServer("2")
+		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
+		gD_mysql.Query(SQLInsertRecord, sQuery)
+	}
+	/*while(results.FetchRow())
 	{
 		time = results.FetchFloat(0)
 		//float other = GetClientFromSerial(FetchInt(0))
@@ -845,7 +869,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], hour, minute, second, personalHour, personalMinute, personalSecond)
-	}
+	}*/
 }
 
 Action cmd_getenginetime(int client, int args)
@@ -881,8 +905,11 @@ void SQLRecords(Database db, DBResultSet results, const char[] error, DataPack d
 	}
 }
 
-void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
+	dp.Reset()
+	int other = GetClientFromSerial(dp.ReadCell())
+	PrintToServer("%i %N", other, other)
 	//PrintToServer("Record updated.")
 }
 
