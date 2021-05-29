@@ -1409,7 +1409,12 @@ Action timer_delete(Handle timer, int entity)
 
 void SDKPlayerSpawn(int client)
 {
-	GivePlayerItem(client, "weapon_flashbang")
+	//if(GetEntProp(client, Prop_Data, "m_iAmmo", 
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
+		GivePlayerItem(client, "weapon_flashbang")
+		GivePlayerItem(client, "weapon_flashbang")
+	}
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//GivePlayerAmmo(client, 2, 48, true)
 }
@@ -1423,7 +1428,7 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") || StrEqual(sample, "item/itempickup.wav"))
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 	{
 		//volume = 0.0
 		return Plugin_Handled
