@@ -1391,15 +1391,8 @@ Action SDKProjectile(int entity)
 	//GivePlayerAmmo(client, 2, 48, true)
 	FakeClientCommand(client, "use weapon_knife")
 	ClientCommand(client, "lastinv") //hornet, log idea, mine idea Nick Yurevich since 2019
-	//ClientCommand(client, "lastinv")
-	//RequestFrame(frame, client)
 	CreateTimer(1.5, timer_delete, entity)
 }
-
-//void frame(int client)
-//{
-//	ClientCommand(client, "lastinv")
-//}
 
 Action timer_delete(Handle timer, int entity)
 {
