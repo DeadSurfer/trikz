@@ -1395,18 +1395,18 @@ Action SDKProjectile(int entity)
 	CreateTimer(1.5, timer_delete, entity)
 }
 
-void lastinv(int client)
-{
+//void lastinv(int client)
+//{
 	//RequestFrame(client, "lastinv")
 	//RequestFrame(lastinv2, "lastinv")
 	//RequestFrame(lastinv2, client)
 	//ClientCommand(client, "lastinv")
-}
+//}
 
-void lastinv2(int client)
-{
+//void lastinv2(int client)
+//{
 	//ClientCommand(client, "lastinv")
-}
+//}
 
 Action timer_delete(Handle timer, int entity)
 {
