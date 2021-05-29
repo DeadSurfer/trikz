@@ -123,6 +123,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vectest2", cmd_vectest2)
 	RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
 	RegServerCmd("sm_fakerecord", cmd_fakerecord)
+	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -140,6 +141,12 @@ public void OnMapStart()
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
 //{
 //}
+
+Action listenerf1(int client, const char[] commnd, int argc)
+{
+	Trikz(client)
+	//PrintToServer("autobuy")
+}
 
 Action cmd_setup(int args)
 {
@@ -326,6 +333,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 }
+
+//https://forums.alliedmods.net/showthread.php?t=302374
 
 Action cmd_block(int client, int args)
 {
