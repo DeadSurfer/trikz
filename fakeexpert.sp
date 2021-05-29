@@ -247,7 +247,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	{
 		char sName[64]
 		GetClientName(client, sName, 64)
-		Format(sQuery, 512, "UPDATE users SET username = '%' WHERE steamid = %i", sName, steamid)
+		Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 		gD_mysql.Query(SQLUpdateUsername, sQuery)
 	}
 	//gB_newpass = true
