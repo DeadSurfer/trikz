@@ -782,8 +782,17 @@ Action SDKStartTouch(int entity, int other)
 		//gB_passzone[other] = false
 		//PrintToServer("%i", other)
 		//PrintToServer("SDKStartTouch %i %i", entity, other)
+		
 		char sTrigger[32]
+		
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
+		//if(StrEqual(strigger
+		
+		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapfinished[other])
+		{
+			gB_readyToStart[other] = true
+			gB_readyToStart[gI_partner[other]] = true
+		}
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
 			gB_mapfinished[other] = true
