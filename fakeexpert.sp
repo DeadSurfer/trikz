@@ -1011,8 +1011,8 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPac
 		int points = tier * 20
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(points)
-		dp2.WriteCell(other)
 		dp2.WriteCell(clientid)
+		dp2.WriteCell(other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", clientid)
 		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
@@ -1029,8 +1029,8 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	//PrintToServer("Debug")
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
-	//int other = GetClientFromSerial(dp2.ReadCell())
 	int clientid = dp2.ReadCell()
+	//int other = GetClientFromSerial(dp2.ReadCell())
 	//PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
@@ -1391,22 +1391,8 @@ Action SDKProjectile(int entity)
 	//GivePlayerAmmo(client, 2, 48, true)
 	FakeClientCommand(client, "use weapon_knife")
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
-	//RequestFrame(lastinv, client)
 	CreateTimer(1.5, timer_delete, entity)
 }
-
-//void lastinv(int client)
-//{
-	//RequestFrame(client, "lastinv")
-	//RequestFrame(lastinv2, "lastinv")
-	//RequestFrame(lastinv2, client)
-	//ClientCommand(client, "lastinv")
-//}
-
-//void lastinv2(int client)
-//{
-	//ClientCommand(client, "lastinv")
-//}
 
 Action timer_delete(Handle timer, int entity)
 {
