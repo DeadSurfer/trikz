@@ -194,8 +194,8 @@ public void OnClientPutInServer(int client)
 //public void OnDissconnectClient(
 public void OnClientDisconnect(int clinet)
 {
-	//gI_partner[client] = 0
-	//gI_partner[gI_partner[client]] = 0
+	gI_partner[client] = 0
+	gI_partner[gI_partner[client]] = 0
 }
 
 /*void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
