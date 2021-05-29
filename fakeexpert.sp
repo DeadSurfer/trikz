@@ -790,7 +790,7 @@ Action SDKStartTouch(int entity, int other)
 		
 		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapfinished[other])
 		{
-			//gB_readyToStart[other] = true
+			//gB_readyToStart[other] = true //expert zone idea.
 			//gB_readyToStart[gI_partner[other]] = true
 		}
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
