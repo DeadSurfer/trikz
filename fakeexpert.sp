@@ -1068,7 +1068,7 @@ void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any d
 {
 }
 
-Action cmd_sum(int client, int args)
+/*Action cmd_sum(int client, int args)
 {
 	float vec[3]
 	float vec2[3]
@@ -1081,7 +1081,7 @@ Action cmd_sum(int client, int args)
 	TE_SetupBeamPoints(vec, vec2, gI_beam, gI_halo, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612 //Exception reported: Stack leak detected: sp:42876 should be 25228!
 	TE_SendToAll(0.0)
 	return Plugin_Handled
-}
+}*/
 
 Action cmd_createtable(int args)
 {
