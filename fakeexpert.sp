@@ -144,7 +144,7 @@ public void OnMapStart()
 
 Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
 {
-	Trikz(client)
+	//Trikz(client)
 	//PrintToServer("autobuy")
 }
 
