@@ -192,7 +192,7 @@ public void OnClientPutInServer(int client)
 }
 
 //public void OnDissconnectClient(
-public void OnClientDisconnect(int clinet)
+public void OnClientDisconnect(int client)
 {
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
