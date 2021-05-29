@@ -1390,7 +1390,7 @@ Action SDKProjectile(int entity)
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	//GivePlayerAmmo(client, 2, 48, true)
 	FakeClientCommand(client, "use weapon_knife")
-	ClientCommand(client, "lastinv")
+	ClientCommand(client, "lastinv") //hornet, log idea
 	//ClientCommand(client, "lastinv")
 	//RequestFrame(frame, client)
 	CreateTimer(1.5, timer_delete, entity)
