@@ -772,7 +772,7 @@ Action SDKEndTouch(int entity, int other)
 Action SDKStartTouch(int entity, int other)
 {
 	//PrintToServer("%i %i", entity, other)
-	if(!gB_state[other])
+	if(0 < other <= MaxClients && !gB_state[other])
 		Restart(other)
 	if(0 < other <= MaxClients && gB_passzone[other])
 	{
