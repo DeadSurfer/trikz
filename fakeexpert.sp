@@ -33,10 +33,10 @@ software and other kinds of works.
 int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[3]
 float gF_vec2[3]
-int gI_beam
-int gI_halo
+//int gI_beam
+//int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
-int gI_trigger
+//int gI_trigger
 //int gI_entity
 //Handle gH_mysql //https://forums.alliedmods.net/archive/index.php/t-260008.html
 Database gD_mysql
@@ -47,7 +47,7 @@ int gI_minute
 int gI_second
 bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
-int gI_zonetype
+//int gI_zonetype
 bool gB_mapfinished[MAXPLAYERS + 1]
 bool gB_pass
 //bool gB_insideZone[MAXPLAYERS + 1]
@@ -122,7 +122,7 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_vectest", cmd_vectest)
 	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
 	//RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
-	RegServerCmd("sm_fakerecord", cmd_fakerecord)
+	//RegServerCmd("sm_fakerecord", cmd_fakerecord)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
@@ -133,8 +133,8 @@ public void OnPluginStart()
 public void OnMapStart()
 {
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
-	gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
-	gI_halo = PrecacheModel("sprites/glow01.vmt", true)
+	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
+	//gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	Database.Connect(SQLConnect, "fakeexpert")
 }
 
@@ -149,7 +149,7 @@ Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
 }
 
 //Action cmd_setup(int args)
-void setup()
+/*void setup()
 {
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = %s", gS_map)
@@ -170,7 +170,7 @@ void SQLSetupZones(Database db, DBResultSet results, const char[] error, any dat
 	}
 	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
 	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
-}
+}*/
 
 public void OnClientPutInServer(int client)
 {
@@ -536,7 +536,7 @@ void createstart()
 	{
 		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
 		if(StrEqual(sTriggerName2, "fakeexpert_startzone"))
-			return Plugin_Handled
+			return
 	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
@@ -577,7 +577,7 @@ void createstart()
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
 	//PrintToServer("entity start: %i created", entity)
-	return Plugin_Handled
+	//return Plugin_Handled
 }
 
 //Action cmd_createend(int client, int args)
@@ -589,7 +589,7 @@ void createend()
 	{
 		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
 		if(StrEqual(sTriggerName2, "fakeexpert_endzone"))
-			return Plugin_Handled
+			return
 	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
@@ -627,7 +627,7 @@ void createend()
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//PrintToServer("entity end: %i created", entity)
-	return Plugin_Handled
+	//return Plugin_Handled
 }
 
 Action cmd_vecmins(int client, int args)
@@ -936,7 +936,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		dp4.WriteFloat(timeClient)
 		dp4.WriteCell(GetClientSerial(other))
 		Format(sQuery, 512, "SELECT MIN(time) FROM records")
-		gD_mysql.Query(SQLUpdateRecord, sQuery, dp4)
+		gD_mysql.Query(SQLUpdateRecord2, sQuery, dp4)
 	}
 	else
 	{
@@ -955,7 +955,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	//PrintToServer("Record updated.")
 }
 
-void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
 	float timeClient = dp.ReadFloat()
@@ -1233,12 +1233,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }
 
-Action cmd_gent(int client, int args)
+/*Action cmd_gent(int client, int args)
 {
 	int gEnt = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 	PrintToServer("%i", gEnt)
 	return Plugin_Handled
-}
+}*/
 
 /*Action ProjectileBoostFix1(int entity, int other)
 {
@@ -1358,11 +1358,11 @@ Action ProjectileBoostFix(int entity, int other)
 	}
 }
 
-Action cmd_vectest2(int client, int args)
+/*Action cmd_vectest2(int client, int args)
 {
 	PrintToServer("%f", 2.0 * -1.0 - 1.0)
 	return Plugin_Handled
-}
+}*/
 
 Action cmd_time(int client, int args)
 {
