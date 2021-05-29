@@ -1423,10 +1423,11 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") || StrEqual(sample, "item/itempickup.wav"))
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && StrEqual(sample, "item/itempickup.wav"))
 	{
 		volume = 0.0
-		return Plugin_Handled
+		//return Plugin_Handled
+		return Plugin_Continue
 	}
 	//PrintToServer("%s", sample)
 	return Plugin_Continue
