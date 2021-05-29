@@ -97,31 +97,31 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
-	RegConsoleCmd("sm_createstart", cmd_createstart)
-	RegConsoleCmd("sm_createend", cmd_createend)
+	//RegConsoleCmd("sm_createstart", cmd_createstart)
+	//RegConsoleCmd("sm_createend", cmd_createend)
 	//RegConsoleCmd("sm_1", cmd_create)
 	RegConsoleCmd("sm_vecmins", cmd_vecmins)
-	RegConsoleCmd("sm_2", cmd_vecmins)
+	//RegConsoleCmd("sm_2", cmd_vecmins)
 	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
-	RegConsoleCmd("sm_3", cmd_vecmaxs)
-	RegConsoleCmd("sm_starttouch", cmd_starttouch)
-	RegConsoleCmd("sm_4", cmd_starttouch)
-	RegConsoleCmd("sm_sum", cmd_sum)
+	//RegConsoleCmd("sm_3", cmd_vecmaxs)
+	//RegConsoleCmd("sm_starttouch", cmd_starttouch)
+	//RegConsoleCmd("sm_4", cmd_starttouch)
+	//RegConsoleCmd("sm_sum", cmd_sum)
 	//RegConsoleCmd("sm_getid", cmd_getid)
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	RegConsoleCmd("sm_time", cmd_time)
 	RegServerCmd("sm_createusertable", cmd_createuser)
 	RegServerCmd("sm_createrecordstable", cmd_createrecords)
-	RegServerCmd("sm_setup", cmd_setup)
+	//RegServerCmd("sm_setup", cmd_setup)
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegServerCmd("sm_manualinsert", cmd_manualinsert)
-	RegConsoleCmd("sm_gent", cmd_gent)
-	RegConsoleCmd("sm_vectest", cmd_vectest)
-	RegConsoleCmd("sm_vectest2", cmd_vectest2)
-	RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
+	//RegConsoleCmd("sm_gent", cmd_gent)
+	//RegConsoleCmd("sm_vectest", cmd_vectest)
+	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
+	//RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
 	RegServerCmd("sm_fakerecord", cmd_fakerecord)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
@@ -148,7 +148,8 @@ Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
 	//PrintToServer("autobuy")
 }
 
-Action cmd_setup(int args)
+//Action cmd_setup(int args)
+void setup()
 {
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = %s", gS_map)
@@ -526,7 +527,8 @@ Action Timer_BlockToggle(Handle timer, int client)
 	return Plugin_Stop
 }
 
-Action cmd_createstart(int client, int args)
+//Action cmd_createstart(int client, int args)
+void createstart()
 {
 	char sTriggerName2[64]
 	int index
@@ -574,11 +576,12 @@ Action cmd_createstart(int client, int args)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
-	PrintToServer("entity start: %i created", entity)
+	//PrintToServer("entity start: %i created", entity)
 	return Plugin_Handled
 }
 
-Action cmd_createend(int client, int args)
+//Action cmd_createend(int client, int args)
+void createend()
 {
 	char sTriggerName2[64]
 	int index
@@ -623,30 +626,38 @@ Action cmd_createend(int client, int args)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	PrintToServer("entity end: %i created", entity)
+	//PrintToServer("entity end: %i created", entity)
 	return Plugin_Handled
 }
 
 Action cmd_vecmins(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec1)
-	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
-	char sQuery[512]
-	args = 0
-	//gI_zonetype = 0
-	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
-	gD_mysql.Query(SQLSetZones, sQuery)
+	int steamid = GetSteamAccountID(client)
+	if(steamid == 120192594)
+	{
+		GetClientAbsOrigin(client, gF_vec1)
+		PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+		char sQuery[512]
+		args = 0
+		//gI_zonetype = 0
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
+		gD_mysql.Query(SQLSetZones, sQuery)
+	}
 	return Plugin_Handled
 }
 
 Action cmd_vecminsend(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec1)
-	PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
-	char sQuery[512]
-	args = 1
-	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
-	gD_mysql.Query(SQLSetZones, sQuery)
+	int steamid = GetSteamAccountID(client)
+	if(steamid == 120192594)
+	{
+		GetClientAbsOrigin(client, gF_vec1)
+		//PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+		char sQuery[512]
+		args = 1
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
+		gD_mysql.Query(SQLSetZones, sQuery)
+	}
 	return Plugin_Handled
 }
 
@@ -674,10 +685,10 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_vecmaxs(int client, int args)
 {
 	GetClientAbsOrigin(client, gF_vec2)
-	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	char sQuery[512]
 	args = 0
-	PrintToServer("%s", gS_map)
+	//PrintToServer("%s", gS_map)
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
 	gD_mysql.Query(SQLSetZones, sQuery)
 	return Plugin_Handled
@@ -686,7 +697,7 @@ Action cmd_vecmaxs(int client, int args)
 Action cmd_vecmaxsend(int client, int args)
 {
 	GetClientAbsOrigin(client, gF_vec2)
-	PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+	//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 	char sQuery[512]
 	args = 1
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
@@ -694,7 +705,7 @@ Action cmd_vecmaxsend(int client, int args)
 	return Plugin_Handled
 }
 
-Action cmd_starttouch(int client, int args)
+/*Action cmd_starttouch(int client, int args)
 {
 	SDKHook(gI_trigger, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(gI_trigger, SDKHook_EndTouch, SDKEndTouch)
@@ -703,7 +714,7 @@ Action cmd_starttouch(int client, int args)
 		PrintToServer("Trigger is valid.")
 	}
 	return Plugin_Handled
-}
+}*/
 
 Action cmd_createuser(int args)
 {
@@ -736,14 +747,14 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Successfuly created records table.")
 }
 
-Action cmd_vectest(int client, int args)
+/*Action cmd_vectest(int client, int args)
 {
 	//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {-6843.03, 4143.97, 1808.03})
 	//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {-7471.97, 3241.55, 1408.03})
 	//TeleportEntity(client, {-6843.03, 4143.97, 1808.03}, NULL_VECTOR, NULL_VECTOR)
 	//TeleportEntity(client, {-7471.97, 3241.55, 1408.03}, NULL_VECTOR, NULL_VECTOR)
 	return Plugin_Handled
-}
+}*/
 
 Action SDKEndTouch(int entity, int other)
 {
@@ -891,7 +902,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	}
 }
 
-Action cmd_fakerecord(int args)
+/*Action cmd_fakerecord(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "INSERT INTO records (date) VALUES (%i);", GetTime())
@@ -900,13 +911,13 @@ Action cmd_fakerecord(int args)
 
 void SQLFakeRecord(Database db, DBResultSet results, const char[] error, any data)
 {
-}
+}*/
 
-Action cmd_getenginetime(int client, int args)
+/*Action cmd_getenginetime(int client, int args)
 {
 	PrintToServer("%f", GetEngineTime())
 	return Plugin_Handled
-}
+}*/
 
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
@@ -925,7 +936,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		dp4.WriteFloat(timeClient)
 		dp4.WriteCell(GetClientSerial(other))
 		Format(sQuery, 512, "SELECT MIN(time) FROM records")
-		gD_mysql.Query(SQLUpdateRecordx, sQuery, dp4)
+		gD_mysql.Query(SQLUpdateRecord, sQuery, dp4)
 	}
 	else
 	{
@@ -944,12 +955,12 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	//PrintToServer("Record updated.")
 }
 
-void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
 	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
-	PrintToServer("%i %N", other, other)
+	//PrintToServer("%i %N", other, other)
 	int playerid = GetClientFromSerial(other)
 	int partnerid = GetClientFromSerial(other)
 	char sQuery[512]
@@ -959,7 +970,7 @@ void SQLUpdateRecordx(Database db, DBResultSet results, const char[] error, Data
 		if(timeClient < srTime)
 		{
 			float timeDiff = FloatAbs(srTime - timeClient)
-			PrintToServer("2x2x2: %f", timeDiff)
+			//PrintToServer("2x2x2: %f", timeDiff)
 			//float timeDiff = FloatAbs(timeClient - srTime)
 			int personalHour = RoundToFloor(timeClient) / 60
 			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
@@ -994,10 +1005,6 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataP
 void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 }
-
-//void SQLPrintRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
-//{
-//}
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
@@ -1133,7 +1140,8 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 		gF_vec2[0] = results.FetchFloat(3)
 		gF_vec2[1] = results.FetchFloat(4)
 		gF_vec2[2] = results.FetchFloat(5)
-		cmd_createstart(0, 0)
+		//cmd_createstart(0, 0)
+		createstart()
 		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 		float center[3]
 		center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
@@ -1162,7 +1170,8 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 		gF_vec2[1] = results.FetchFloat(4)
 		gF_vec2[2] = results.FetchFloat(5)
 		PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
-		cmd_createend(0, 0)
+		//cmd_createend(0, 0)
+		createend()
 	}
 }
 
