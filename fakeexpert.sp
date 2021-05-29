@@ -1412,8 +1412,11 @@ void SDKPlayerSpawn(int client)
 	//if(GetEntProp(client, Prop_Data, "m_iAmmo", 
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
+		PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 		GivePlayerItem(client, "weapon_flashbang")
+		PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 		GivePlayerItem(client, "weapon_flashbang")
+		PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	}
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//GivePlayerAmmo(client, 2, 48, true)
