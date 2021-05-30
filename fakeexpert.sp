@@ -1417,6 +1417,7 @@ Action SDKProjectile(int entity)
 	//SetEntProp(client, Prop_Data, "m_nSequenceLoops", 0)
 	//SetEntPropFloat(client, Prop_Data, "m_flPlaybackRate", 200.0)
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
+	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_delete, entity)
 }
 
