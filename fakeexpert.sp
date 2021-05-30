@@ -903,23 +903,6 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	}
 }
 
-/*Action cmd_fakerecord(int args)
-{
-	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO records (date) VALUES (%i);", GetTime())
-	gD_mysql.Query(SQLFakeRecord, sQuery)
-}
-
-void SQLFakeRecord(Database db, DBResultSet results, const char[] error, any data)
-{
-}*/
-
-/*Action cmd_getenginetime(int client, int args)
-{
-	PrintToServer("%f", GetEngineTime())
-	return Plugin_Handled
-}*/
-
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset() //shavit.wr 1395
