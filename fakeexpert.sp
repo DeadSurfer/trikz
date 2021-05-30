@@ -117,7 +117,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
-	RegServerCmd("sm_manualinsert", cmd_manualinsert)
+	//RegServerCmd("sm_manualinsert", cmd_manualinsert)
 	//RegConsoleCmd("sm_gent", cmd_gent)
 	//RegConsoleCmd("sm_vectest", cmd_vectest)
 	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
@@ -179,7 +179,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_Touch, SDKSkyFix)
+	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	char sQuery[512]
 	int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
@@ -239,16 +239,18 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	if(client == 0)
 		return
 	int steamid = GetSteamAccountID(client)
+	char sName[64]
+	GetClientName(client, sName, 64)
 	char sQuery[512]
 	if(!results.FetchRow())
 	{
-		Format(sQuery, 512, "INSERT INTO users (steamid) VALUES (%i)", steamid)
+		Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 		gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
 	}
 	else
 	{
-		char sName[64]
-		GetClientName(client, sName, 64)
+		//char sName[64]
+		//GetClientName(client, sName, 64)
 		Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 		gD_mysql.Query(SQLUpdateUsername, sQuery)
 	}
@@ -1117,7 +1119,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	gB_pass = true
 }
 
-Action cmd_manualinsert(int args)
+/*Action cmd_manualinsert(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%', 0)", gS_map)
@@ -1128,7 +1130,7 @@ Action cmd_manualinsert(int args)
 
 void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
 {
-}
+}*/
 
 //void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 void ForceZonesSetup()
