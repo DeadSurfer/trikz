@@ -275,7 +275,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < other <= MaxClients)
 	{
-		float vecAbsClient[3]
+		/*float vecAbsClient[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsClient)
 		float vecAbsOther[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsOther)
@@ -301,7 +301,16 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
 			//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
-		}
+		}*/
+		
+		float vecAbsBooster[3]
+		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
+		float vecAbsFlyer[3]
+		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsFlyer)
+		float vecMins[3]
+		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
+		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMins[2]
+		PrintToServer("%f")
 	}
 }
 
