@@ -1413,7 +1413,7 @@ Action SDKProjectile(int entity)
 	//SetEntProp(client, Prop_Data, "m_flCycle", 0.0)
 	//SetEntProp
 	FakeClientCommand(client, "use weapon_knife")
-	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders.
+	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019
 	//SetEntProp(client, Prop_Data, "m_nSequenceLoops", 0)
 	//SetEntPropFloat(client, Prop_Data, "m_flPlaybackRate", 200.0)
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
