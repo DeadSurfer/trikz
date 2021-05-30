@@ -179,7 +179,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	SDKHook(client, SDKHook_Touch, SDKSkyFix)
 	char sQuery[512]
 	int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
