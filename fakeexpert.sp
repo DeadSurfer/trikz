@@ -273,32 +273,35 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	float vecAbsClient[3]
-	GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsClient)
-	float vecAbsOther[3]
-	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsOther)
-	float vecClientMaxs[3]
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
-	//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
-	//PrintToServer("vecMaxs: %f %f %f", vecClientMaxs[0], vecClientMaxs[1], vecClientMaxs[2])
-	float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
-	//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
-	//PrintToServer("delta: %f", delta)
-	//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
-	//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
-	if(delta > 0.0 && delta < 2.0)
+	if(0 < other <= MaxClients)
 	{
-		//PrintToServer("%i %i ..", client, other)
-		//PrintToServer("SDKSkyFix")
-		float vecAbs[3]
-		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
-		gF_fallVel[other][0] = vecAbs[0]
-		gF_fallVel[other][1] = vecAbs[1]
-		vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		//if(vecAbs[2] > 0.0)
-		gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
-		//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+		float vecAbsClient[3]
+		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsClient)
+		float vecAbsOther[3]
+		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsOther)
+		float vecClientMaxs[3]
+		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
+		//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
+		//PrintToServer("vecMaxs: %f %f %f", vecClientMaxs[0], vecClientMaxs[1], vecClientMaxs[2])
+		float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
+		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
+		//PrintToServer("delta: %f", delta)
+		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
+		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		if(delta > 0.0 && delta < 2.0)
+		{
+			//PrintToServer("%i %i ..", client, other)
+			//PrintToServer("SDKSkyFix")
+			float vecAbs[3]
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
+			gF_fallVel[other][0] = vecAbs[0]
+			gF_fallVel[other][1] = vecAbs[1]
+			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+			//if(vecAbs[2] > 0.0)
+			gF_fallVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
+			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
+			//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+		}
 	}
 }
 
