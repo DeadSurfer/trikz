@@ -1233,7 +1233,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//fallVel[2] = fallVel[2] += gF_fallVel[client][2]
 		//if(gF_fallVel[client][2] < 500.0)
 		gF_fallVel[client][2] += 300.0
-			
+		//PrintToServer("JumpTime: %f", GetEntPropFloat(client, Prop_Data, "m_flJumpTime")) //https://forums.alliedmods.net/showthread.php?t=249353
 		fallVel[2] = gF_fallVel[client][2]
 		if(buttons & IN_JUMP)
 		{
