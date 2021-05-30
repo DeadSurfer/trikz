@@ -123,7 +123,7 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
 	//RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
 	//RegServerCmd("sm_fakerecord", cmd_fakerecord)
-	RegConsoleCmd("sm_testtext", cmd_testtext)
+	//RegConsoleCmd("sm_testtext", cmd_testtext)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
@@ -944,7 +944,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		int personalHour = RoundToFloor(timeClient) / 60
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. \0x04(SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		//PrintToServer("x1 %f", timeClient)
 		DataPack dp3 = new DataPack()
 		dp3.WriteFloat(timeClient)
@@ -979,7 +979,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			int srHour = RoundToFloor(timeDiff) / 60
 			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
 			int srSecond = RoundToFloor(timeDiff) % 60
-			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. \0x04(SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
@@ -993,7 +993,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			int srHour = RoundToFloor(timeDiff) / 60
 			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
 			int srSecond = RoundToFloor(timeDiff) % 60
-			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. \0x02(SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 		}
 	}
 }
@@ -1007,12 +1007,12 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 {
 }
 
-Action cmd_testtext(int client, int args)
+/*Action cmd_testtext(int client, int args)
 {
-	PrintToChat(client, "%N and %N finished map in 05:04:22. \0x06(SR -00:00:00)", client, client)
-	PrintToChat(client, "%N and %N finished map in 05:04:22. \0x07 (SR +00:00:00)", client, client)
+	PrintToChat(client, "%N and %N finished map in 05:04:22. (SR -00:00:00)", client, client)
+	PrintToChat(client, "%N and %N finished map in 05:04:22. (SR +00:00:00)", client, client)
 	return Plugin_Handled
-}
+}*/
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
