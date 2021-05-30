@@ -123,6 +123,7 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
 	//RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
 	//RegServerCmd("sm_fakerecord", cmd_fakerecord)
+	RegConsoleCmd("sm_testtext", cmd_testtext)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
@@ -1004,6 +1005,13 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataP
 
 void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
+}
+
+Action cmd_testtext(int client, int args)
+{
+	PrintToChat(client, "%N and %N finished map in 05:04:22. \0x06(SR -00:00:00)", client, client)
+	PrintToChat(client, "%N and %N finished map in 05:04:22. \0x07 (SR +00:00:00)", client, client)
+	return Plugin_Handled
 }
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
