@@ -1408,14 +1408,8 @@ Action SDKProjectile(int entity)
 	//GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	//GivePlayerAmmo(client, 2, 48, true)
-	//SetEntPropFloat(client, Prop_Data, "m_flPlaybackRate", 200.0)
-	//PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nSequence"))
-	//SetEntProp(client, Prop_Data, "m_flCycle", 0.0)
-	//SetEntProp
 	FakeClientCommand(client, "use weapon_knife")
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019
-	//SetEntProp(client, Prop_Data, "m_nSequenceLoops", 0)
-	//SetEntPropFloat(client, Prop_Data, "m_flPlaybackRate", 200.0)
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_delete, entity)
