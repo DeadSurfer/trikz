@@ -838,8 +838,8 @@ Action SDKStartTouch(int entity, int other)
 				dp.WriteCell(GetClientSerial(other))
 				gD_mysql.Query(SQLSR, sQuery, dp)
 				//PrintTo
-				int clientid = GetSteamAccountID(other)
-				int partnerid = GetSteamAccountID(gI_partner[other])
+				//int clientid = GetSteamAccountID(other)
+				//int partnerid = GetSteamAccountID(gI_partner[other])
 				//PrintToServer("%i %i", clientid, partnerid)
 				//shavit - datapack
 				//DataPack dp = new DataPack()
@@ -851,13 +851,13 @@ Action SDKStartTouch(int entity, int other)
 				//char sQuery[512]
 				//Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", clientid, partnerid, partnerid, clientid, gS_map)
 				//gD_mysql.Query(SQLRecords, sQuery, dp)
-				DataPack dp2 = new DataPack()
-				dp2.WriteCell(clientid)
-				dp2.WriteCell(partnerid)
-				dp2.WriteCell(GetClientSerial(other))
+				//DataPack dp2 = new DataPack()
+				//dp2.WriteCell(clientid)
+				//dp2.WriteCell(partnerid)
+				//dp2.WriteCell(GetClientSerial(other))
 				//PrintToServer("%i other", other)
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
-				gD_mysql.Query(SQLGetMapTier, sQuery, dp2)
+				gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
 			}
 		}
 	}
@@ -1009,9 +1009,11 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
-	int clientid = dp.ReadCell()
-	int partnerid = dp.ReadCell()
+	//int clientid = dp.ReadCell()
+	//int partnerid = dp.ReadCell()
 	int other = dp.ReadCell()
+	int clientid = GetSteamAccountID(other)
+	int partnerid = GetSteamAccountID(other)
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
