@@ -1436,7 +1436,7 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 	return Plugin_Handled
 }*/
 
-void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
 {
 	//dp.Reset()
 	//int clientid = dp.ReadCell()
