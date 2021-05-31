@@ -1438,10 +1438,11 @@ void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] err
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp.Reset()
+	//dp.Reset()
 	//int clientid = dp.ReadCell()
 	//int partnerid = dp.ReadCell()
-	int other = dp.ReadCell()
+	//int other = dp.ReadCell()
+	int other = GetClientFromSerial(data)
 	int clientid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(other)
 	if(results.FetchRow())
