@@ -28,6 +28,7 @@ software and other kinds of works.
 	your programs, too.*/
 #include <sdktools>
 #include <sdkhooks>
+//#include <dhooks>
 
 //bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
@@ -65,6 +66,12 @@ bool gB_onGround[MAXPLAYERS + 1]
 bool gB_readyToStart[MAXPLAYERS + 1]
 //float gF_bestTime
 //float gF_personalBest[MAXPLAYERS + 1]
+//bool gB_trigger[2048 + 1][MAXPLAYERS + 1]
+
+/*bool gB_stateDefaultDisabled[2048 + 1]
+bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
+float gF_buttonDefaultDelay[2048 + 1]
+float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 
 public Plugin myinfo =
 {
@@ -128,8 +135,385 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
-	//HookEvent(
+	/*HookEvent("roundstart", roundstart)
+	Handle hGamedata = LoadGameConfigFile("sdktools.games")
+	if(hGamedata == null)
+	{
+		SetFailState("Failed to load \"sdktools.games\" gamedata.")
+		delete hGamedata
+	}
+	int offset = GameConfGetOffset(hGamedata, "AcceptInput")
+	if(offset == 0)
+	{
+		SetFailState("Failed to load \"AcceptInput\", invalid offset.")
+		delete hGamedata
+	}
+	gH_AcceptInput = DHookCreate(offset, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, AcceptInput)
+	DHookAddParam(gH_AcceptInput, HookParamType_CharPtr)
+	DHookAddParam(gH_AcceptInput, HookParamType_CBaseEntity)
+	DHookAddParam(gH_AcceptInput, HookParamType_CBaseEntity)
+	DHookAddParam(gH_AcceptInput, HookParamType_Object, 20, DHookPass_ByVal|DHookPass_ODTOR|DHookPass_OCTOR|DHookPass_OASSIGNOP) //varaint_t is a union of 12 (float[3]) plus two int type params 12 + 8 = 20
+	DHookAddParam(gH_AcceptInput, HookParamType_Int)
+	//HookEvent("round_start", Event_RoundStart)
+	hGamedata = LoadGameConfigFile("collisionhook")
+	if(hGamedata == null)
+	{
+		SetFailState("Failed to load \"collisionhook.txt\" gamedata.")
+		delete hGamedata
+		delete gH_PassServerEntityFilter
+	}
+	gH_PassServerEntityFilter = DHookCreateFromConf(hGamedata, "PassServerEntityFilter")
+	if(!gH_PassServerEntityFilter)
+	{
+		SetFailState("Failed to setup detour PassServerEntityFilter.")
+		delete hGamedata
+		delete gH_PassServerEntityFilter
+	}
+	if(!DHookEnableDetour(gH_PassServerEntityFilter, false, PassServerEntityFilter))
+	{
+		SetFailState("Failed to load detour PassServerEntityFilter.")
+		delete hGamedata
+		delete gH_PassServerEntityFilter
+	}
+	delete hGamedata
+	delete gH_PassServerEntityFilter*/
+	//CreateForward("Trikz_OnPartner", ET_Hook, Param_Cell, Param_Cell)
+	//CreateForward("Trikz_OnBreakPartner", ET_Hook, Param_Cell, Param_Cell)
+	//CreateForward("Trikz_OnStartTimer", ET_Hook, Param_Cell, Param_Cell)
 }
+
+/*Action roundstart(Event event, const char[] name, bool dontBoardcast)
+{
+	int entity = -1
+	while((entity = FindEntityByClassname(entity, "func_brush")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+		if(GetEntProp(entity, Prop_Data, "m_iDisabled") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			AcceptEntityInput(entity, "Enable")
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	while((entity = FindEntityByClassname(entity, "func_wall_toggle")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+		if(GetEntProp(entity, Prop_Data, "m_spawnflags") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			AcceptEntityInput(entity, "Toggle")
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_Touch, TouchTrigger)
+		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			AcceptEntityInput(entity, "Enable")
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	while((entity = FindEntityByClassname(entity, "trigger_teleport")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_Touch, TouchTrigger)
+		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			AcceptEntityInput(entity, "Enable")
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	while((entity = FindEntityByClassname(entity, "trigger_teleport_relative")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_Touch, TouchTrigger)
+		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			AcceptEntityInput(entity, "Enable")
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	while((entity = FindEntityByClassname(entity, "trigger_push")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_Touch, TouchTrigger)
+		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			AcceptEntityInput(entity, "Enable")
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	while((entity = FindEntityByClassname(entity, "trigger_gravity")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_Touch, TouchTrigger)
+		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			AcceptEntityInput(entity, "Enable")
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	while((entity = FindEntityByClassname(entity, "func_button")) != -1)
+	{
+		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
+		SDKHook(entity, SDKHook_Use, HookButton)
+		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
+		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
+		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+		if(GetEntProp(entity, Prop_Data, "m_bLocked") == 0)
+		{
+			gB_stateDefaultDisabled[entity] = false
+		}
+		else
+		{
+			gB_stateDefaultDisabled[entity] = true
+		}
+	}
+	for(int i = 1; i <= 2048; i++)
+		gB_stateDisabled[0][i] = gB_stateDefaultDisabled[i]
+	HookEntityOutput("trigger_multiple", "OnStartTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_teleport", "OnStartTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_push", "OnStartTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_gravity", "OnStartTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_multiple", "OnEndTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_teleport", "OnEndTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_teleport_relative", "OnEndTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_push", "OnEndTouch", TriggerOutputHook) //make able to work !self
+	HookEntityOutput("trigger_gravity", "OnEndTouch", TriggerOutputHook) //make able to work !self
+}*/
+
+/*Action Trigger(int entity, int other)
+{
+	if(GetEntProp(entity, Prop_Data, "m_bDisabled"))
+		gB_trigger[entity][other] = true
+	else
+		gB_trigger[entity][other] = false
+	if(GetEntProp(entity, Prop_Data, "m_bDisabled"))
+		gB_trigger[entity][other] = true
+	else
+		gB_trigger[entity][other] = false
+	return Plugin_Handled
+}
+
+Action Button(int entity, int activator, int caller, UseType type, float value)
+{
+	//if(GetEntProp(entity, Prop
+}*/
+
+/*MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
+{
+	//if(pThis < 0)
+	//	pThis = EntRefToEntIndex(pThis)
+	char sInput[32]
+	DHookGetParamString(hParams, 1, sInput, 32)
+	if(DHookIsNullParam(hParams, 2))
+		return MRES_Ignored
+	int activator = DHookGetParam(hParams, 2)
+	if(1 > activator || activator > MaxClients)
+		return MRES_Ignored
+	//int caller = DHookGetParam(hParams, 3)
+	int partner = Trikz_FindPartner(activator)
+	//int outputid = DHookGetParam(hParams, 5)
+	if(StrEqual(sInput, "Enable"))
+		if(partner != -1)
+		{
+			gB_stateDisabled[activator][pThis] = false
+			gB_stateDisabled[partner][pThis] = false
+		}
+		else
+		{
+			gB_stateDisabled[0][pThis] = false
+			for(int i = 1; i <= MaxClients; i++)
+				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
+					gB_stateDisabled[i][pThis] = false
+		}
+	if(StrEqual(sInput, "Disable"))
+		if(partner != -1)
+		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+		}
+		else
+		{
+			gB_stateDisabled[0][pThis] = true
+			for(int i = 1; i <= MaxClients; i++)
+				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
+					gB_stateDisabled[i][pThis] = true
+		}
+	char sClassname[32]
+	char sName[32]
+	char sCClassname[32]
+	char sCName[32]
+	GetEntPropString(pThis, Prop_Data, "m_iClassname", sClassname, 32)
+	GetEntPropString(pThis, Prop_Data, "m_iName", sName, 32)
+	GetEntPropString(caller, Prop_Data, "m_iClassname", sCClassname, 32)
+	GetEntPropString(caller, Prop_Data, "m_iName", sCName, 32)
+	PrintToServer("AcceptInput (%s | %s) pThis: %i input: %s activator: %N (%i) caller: %i (%s | %s) outputid: %i", sClassname, sName, pThis, sInput, activator, activator, caller, sCClassname, sCName, outputid)
+	DHookSetReturn(hReturn, false)
+	return MRES_Supercede
+}
+
+MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
+{
+	//if(pThis < 0)
+	//	pThis = EntRefToEntIndex(pThis)
+	char sInput[32]
+	DHookGetParamString(hParams, 1, sInput, 32)
+	if(DHookIsNullParam(hParams, 2))
+		return MRES_Ignored
+	int activator = DHookGetParam(hParams, 2)
+	if(activator < 1)
+		return MRES_Ignored
+	//int caller = DHookGetParam(hParams, 3)
+	int partner = Trikz_FindPartner(activator)
+	//int outputid = DHookGetParam(hParams, 5)
+	if(StrEqual(sInput, "Unlock"))
+		if(partner != -1)
+		{
+			gB_stateDisabled[activator][pThis] = false
+			gB_stateDisabled[partner][pThis] = false
+		}
+		else
+		{
+			gB_stateDisabled[0][pThis] = false
+			for(int i = 1; i <= MaxClients; i++)
+				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
+					gB_stateDisabled[i][pThis] = false
+		}
+	if(StrEqual(sInput, "Lock"))
+		if(partner != -1)
+		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+		}
+		else
+		{
+			gB_stateDisabled[0][pThis] = true
+			for(int i = 1; i <= MaxClients; i++)
+				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
+					gB_stateDisabled[i][pThis] = true
+		}
+	return MRES_Ignored
+}
+
+Action TouchTrigger(int entity, int other)
+{
+	if(0 < other <= MaxClients && gB_stateDisabled[other][entity])
+		return Plugin_Handled
+	
+	
+	if(0 < ent2 <= MaxClients && !gB_stateDisabled[ent2][ent1])
+		return Plugin_Continue
+	char classname[32]
+	GetEntPropString(ent2, Prop_Data, "m_iClassname", classname, 32)
+	if(StrContains(classname, "projectile") != -1)
+	{
+		int ent2owner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
+		if(0 < ent2owner <= MaxClients && !gB_stateDisabled[ent2owner][ent1])
+			return Plugin_Continue
+	}
+	return Plugin_Continue
+}
+
+Action EntityVisibleTransmit(int entity, int client)
+{
+	if(gB_stateDisabled[client][entity])
+		return Plugin_Handled
+	return Plugin_Continue
+}
+
+Action HookButton(int entity, int activator, int caller, UseType type, float value)
+{
+	if(0.0 < gF_buttonReady[activator][entity] > GetGameTime())
+		return Plugin_Handled
+	if(gB_stateDisabled[activator][entity])
+		return Plugin_Handled
+	gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
+	int partner = Trikz_FindPartner(activator)
+	if(partner != -1)
+		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
+	else
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
+				gF_buttonReady[i][entity] = gF_buttonReady[activator][entity]
+	if(GetEntProp(entity, Prop_Data, "m_bLocked") == 1)
+		AcceptEntityInput(entity, "Unlock")
+	return Plugin_Continue
+}
+
+Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
+{
+	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker)
+}
+
+Action TriggerOutputHook(const char[] output, int caller, int activator, float delay)
+{
+	if(gB_stateDisabled[activator][caller])
+		return Plugin_Handled
+	return Plugin_Continue
+}*/
+
+/*MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
+{
+	if(DHookIsNullParam(hParams, 1) || DHookIsNullParam(hParams, 2))
+		return MRES_Ignored
+	int ent1 = DHookGetParam(hParams, 1) //touch reciever
+	int ent2 = DHookGetParam(hParams, 2) //touch sender
+	Action result
+	Call_StartForward(gH_PassServerEntityFilter)
+	Call_PushCell(ent1)
+	Call_PushCell(ent2)
+	Call_Finish(result)
+	if(result > Plugin_Continue)
+	{
+		DHookSetReturn(hReturn, false)
+		return MRES_Supercede
+	}
+	if(0 < ent2 <= MaxClients && !gB_stateDisabled[ent2][ent1])
+		return MRES_Ignored
+	char classname[32]
+	GetEntPropString(ent2, Prop_Data, "m_iClassname", classname, 32)
+	if(StrContains(classname, "projectile") != -1)
+	{
+		int ent2owner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
+		if(0 < ent2owner <= MaxClients && !gB_stateDisabled[ent2owner][ent1])
+			return MRES_Ignored
+	}
+	//PrintToServer("ent1 %i, ent2 %i", ent1, ent2)
+	DHookSetReturn(hReturn, false)
+	return MRES_Supercede
+}*/
 
 public void OnMapStart()
 {
@@ -191,6 +575,11 @@ public void OnClientPutInServer(int client)
 		//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		//gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
 	}
+	/*for(int i = 1; i <= 2048; i++)
+	{
+		gB_stateDisabled[client][i] = gB_stateDisabled[0][i]
+		gF_buttonReady[client][i] = 0.0
+	}*/
 }
 
 //public void OnDissconnectClient(
@@ -479,6 +868,14 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						Restart(param1)
 						Restart(partner) //Expert-Zone idea.
 						PrintToServer("partner1: %i %N, partner2: %i %N", gI_partner[param1], gI_partner[param1], gI_partner[partner], gI_partner[partner])
+
+						/*for(int i = 1; i <= 2048; i++)
+						{
+							gB_stateDisabled[param1][i] = gB_stateDefaultDisabled[i]
+							gB_stateDisabled[partner][i] = gB_stateDefaultDisabled[i]
+							gF_buttonReady[param1][i] = 0.0
+							gF_buttonReady[partner][i] = 0.0
+						}*/
 					}
 					else
 						PrintToChat(param1, "A player already have a partner.")
@@ -509,6 +906,14 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
+
+					/*for(int i = 1; i <= 2048; i++)
+					{
+						gB_stateDisabled[gI_partner[param1]][i] = gB_stateDefaultDisabled[i]
+						gB_stateDisabled[gI_partner[partner]][i] = gB_stateDefaultDisabled[i]
+						gF_buttonReady[gI_partner[param1]][i] = 0.0
+						gF_buttonReady[gI_partner[partner]][i] = 0.0
+					}*/
 				}
 			}
 		}
@@ -804,6 +1209,14 @@ Action SDKEndTouch(int entity, int other)
 			gB_readyToStart[other] = false
 			//gB_readyToStart[gI_other[other
 			gB_readyToStart[gI_partner[other]] = false
+
+			/*for(int i = 1; i <= 2048; i++)
+			{
+				gB_stateDisabled[other][i] = gB_stateDefaultDisabled[i]
+				gB_stateDisabled[gI_partner[other]][i] = gB_stateDefaultDisabled[i]
+				gF_buttonReady[other][i] = 0.0
+				gF_buttonReady[gI_partner[other]][i] = 0.0
+			}*/
 		}
 		//gB_insideZone[other] = false
 		//gB_insideZone[gI_partner[other]] = false
@@ -913,10 +1326,10 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	}
 	else
 	{
-		int personalHour = RoundToFloor(timeClient) / 60
+		int personalHour = RoundToFloor(timeClient) / 360
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
-		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. \0x04(SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
+		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		//PrintToServer("2")
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(GetClientSerial(other))
@@ -942,12 +1355,12 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		DataPack dp4 = new DataPack()
 		dp4.WriteFloat(timeClient)
 		dp4.WriteCell(GetClientSerial(other))
-		Format(sQuery, 512, "SELECT MIN(time) FROM records")
+		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
 		gD_mysql.Query(SQLUpdateRecord2, sQuery, dp4)
 	}
 	else
 	{
-		int personalHour = RoundToFloor(timeClient) / 60
+		int personalHour = RoundToFloor(timeClient) / 360
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
@@ -976,10 +1389,11 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 		float srTime = results.FetchFloat(0)
 		if(timeClient < srTime)
 		{
-			float timeDiff = FloatAbs(srTime - timeClient)
+			//float timeDiff = FloatAbs(srTime - timeClient)
 			//PrintToServer("2x2x2: %f", timeDiff)
 			//float timeDiff = FloatAbs(timeClient - srTime)
-			int personalHour = RoundToFloor(timeClient) / 60
+			float timeDiff = srTime - timeClient
+			int personalHour = RoundToFloor(timeClient) / 360
 			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 			int personalSecond = RoundToFloor(timeClient) % 60
 			int srHour = RoundToFloor(timeDiff) / 60
@@ -991,9 +1405,11 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 		}
 		else
 		{
-			float timeDiff = FloatAbs(srTime - timeClient)
+			//float timeDiff = FloatAbs(srTime - timeClient)
 			//float timeDiff = FloatAbs(timeClient - srTime)
-			int personalHour = RoundToFloor(timeClient) / 60
+			//float timeDiff = srTime - timeClient
+			float timeDiff = timeClient - srTime
+			int personalHour = RoundToFloor(timeClient) / 360
 			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 			int personalSecond = RoundToFloor(timeClient) % 60
 			int srHour = RoundToFloor(timeDiff) / 60
@@ -1422,7 +1838,7 @@ Action SDKProjectile(int entity)
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	//GivePlayerAmmo(client, 2, 48, true)
 	FakeClientCommand(client, "use weapon_knife")
-	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019
+	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_delete, entity)
