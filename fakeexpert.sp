@@ -1396,7 +1396,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			int personalHour = RoundToFloor(timeClient) / 360
 			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 			int personalSecond = RoundToFloor(timeClient) % 60
-			int srHour = RoundToFloor(timeDiff) / 60
+			int srHour = RoundToFloor(timeDiff) / 360
 			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
@@ -1412,7 +1412,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			int personalHour = RoundToFloor(timeClient) / 360
 			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
 			int personalSecond = RoundToFloor(timeClient) % 60
-			int srHour = RoundToFloor(timeDiff) / 60
+			int srHour = RoundToFloor(timeDiff) / 360
 			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
@@ -1636,7 +1636,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//if(!gB_mapfinished[client])
 			//gB_state[client] = false
 	}
-	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea.
+	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
 	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
 	{
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
