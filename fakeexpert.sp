@@ -985,23 +985,44 @@ void createstart()
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
-	mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
-	mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
-	mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
-	mins[0] = mins[0] * 2.0
-	mins[0] = -mins[0]
-	mins[1] = mins[1] * 2.0
-	mins[1] = -mins[1]
-	mins[2] = -128.0
+	//mins[0] = gF_vec[0]
+	//mins[1] = gF_vec[1]
+	//mins[2] = gF_vec[2]
+	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0 + 128.0)
+	//mins[0] = mins[0] * 2.0
+	//mins[0] = -mins[0]
+	//mins[1] = mins[1] * 2.0
+	//mins[1] = -mins[1]
+	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
+	mins[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
+	mins[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
+	mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
+	mins[2] = mins[2] += 128.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
-	mins[0] = mins[0] * -1.0
-	mins[1] = mins[1] * -1.0
-	mins[2] = 128.0
+	//mins[0] = mins[0] * -1.0
+	//mins[1] = mins[1] * -1.0
+	//mins[2] = 128.0
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	//SetEntPropVector(entity, Prop_Data, "m_vecMaxs", gF_vec2)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
+	float maxs[3]
+	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
+	maxs[0] = gF_vec1[0] - gF_vec2[0]
+	if(maxs[0] > 0.0)
+		maxs[0] = maxs[0] * -1.0
+	maxs[1] = gF_vec1[1] - gF_vec2[1]
+	if(maxs[1] > 0.0)
+		maxs[1] = maxs[1] * -1.0
+	maxs[2] = gF_vec1[2] - gF_vec2[2]
+	if(maxs[2] > 0.0)
+		maxs[2] = maxs[2] * -1.0
+	maxs[2] = maxs[2] -= 128.0
+	SetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
