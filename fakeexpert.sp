@@ -1326,8 +1326,8 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	}
 	else
 	{
-		int personalHour = RoundToFloor(timeClient) / 3600
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		//PrintToServer("2")
@@ -1360,8 +1360,8 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	}
 	else
 	{
-		int personalHour = RoundToFloor(timeClient) / 3600
-		int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+		int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+		int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 		//PrintToServer("x1 %f", timeClient)
@@ -1393,11 +1393,11 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			//PrintToServer("2x2x2: %f", timeDiff)
 			//float timeDiff = FloatAbs(timeClient - srTime)
 			float timeDiff = srTime - timeClient
-			int personalHour = RoundToFloor(timeClient) / 3600
-			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+			int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			int personalSecond = RoundToFloor(timeClient) % 60
-			int srHour = RoundToFloor(timeDiff) / 3600
-			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
+			int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
@@ -1409,11 +1409,11 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			//float timeDiff = FloatAbs(timeClient - srTime)
 			//float timeDiff = srTime - timeClient
 			float timeDiff = timeClient - srTime
-			int personalHour = RoundToFloor(timeClient) / 3600
-			int personalMinute = (RoundToFloor(timeClient) / 60) % 24
+			int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			int personalSecond = RoundToFloor(timeClient) % 60
-			int srHour = RoundToFloor(timeDiff) / 3600
-			int srMinute = (RoundToFloor(timeDiff) / 60) % 24
+			int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 		}
