@@ -628,23 +628,24 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	int client = data
 	//if(client == 0)
 	//	return
-	if(!IsClientInGame(client))
-		return
-	int steamid = GetSteamAccountID(client)
-	char sName[64]
-	GetClientName(client, sName, 64)
-	char sQuery[512]
-	if(!results.FetchRow())
+	if(IsClientInGame(client))
 	{
-		Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-		gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
-	}
-	else
-	{
-		//char sName[64]
-		//GetClientName(client, sName, 64)
-		Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-		gD_mysql.Query(SQLUpdateUsername, sQuery)
+		int steamid = GetSteamAccountID(client)
+		char sName[64]
+		GetClientName(client, sName, 64)
+		char sQuery[512]
+		if(!results.FetchRow())
+		{
+			Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
+		}
+		else
+		{
+			//char sName[64]
+			//GetClientName(client, sName, 64)
+			Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			gD_mysql.Query(SQLUpdateUsername, sQuery)
+		}
 	}
 	//gB_newpass = true
 }
@@ -1005,7 +1006,7 @@ void createstart()
 	mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
 	//mins[2] = mins[2] += 128.0
 	mins[2] = 128.0
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	//mins[0] = mins[0] * -1.0
 	//mins[1] = mins[1] * -1.0
@@ -1027,7 +1028,7 @@ void createstart()
 		maxs[2] = maxs[2] * -1.0
 	//maxs[2] = maxs[2] -= 128.0
 	maxs[2] = -128.0
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
