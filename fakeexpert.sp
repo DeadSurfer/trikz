@@ -1005,7 +1005,7 @@ void createstart()
 	mins[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
 	mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
 	//mins[2] = mins[2] += 128.0
-	mins[2] = 128.0
+	mins[2] = mins[2] += 128.0
 	//SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	//mins[0] = mins[0] * -1.0
@@ -1027,7 +1027,7 @@ void createstart()
 	if(maxs[2] > 0.0)
 		maxs[2] = maxs[2] * -1.0
 	//maxs[2] = maxs[2] -= 128.0
-	maxs[2] = -128.0
+	maxs[2] = maxs[2] += -128.0
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
@@ -1050,7 +1050,7 @@ Action cmd_tp1(int client, int args)
 	if(maxs[2] > 0.0)
 		maxs[2] = maxs[2] * -1.0
 	//maxs[2] = maxs[2] -= 128.0
-	maxs[2] = -128.0
+	maxs[2] = maxs[2] += -128.0
 	PrintToServer("%f %f %f", maxs[0], maxs[1], maxs[2])
 	TeleportEntity(client, maxs, NULL_VECTOR, NULL_VECTOR)
 	return Plugin_Handled
