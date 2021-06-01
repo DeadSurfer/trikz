@@ -1032,8 +1032,8 @@ void createstart()
 	//maxs[2] = maxs[2] -= -128.0
 	maxs[2] = -128.0
 	PrintToServer("Maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
+	SetEntPropVector(entity, Prop_Data, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
