@@ -625,7 +625,9 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = data
-	if(client == 0)
+	//if(client == 0)
+	//	return
+	if(!IsClientInGame(client))
 		return
 	int steamid = GetSteamAccountID(client)
 	char sName[64]
