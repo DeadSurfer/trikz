@@ -131,6 +131,7 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
 	//RegServerCmd("sm_fakerecord", cmd_fakerecord)
 	//RegConsoleCmd("sm_testtext", cmd_testtext)
+	RegConsoleCmd("sm_tp1", cmd_tp1)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
@@ -1026,12 +1027,32 @@ void createstart()
 		maxs[2] = maxs[2] * -1.0
 	//maxs[2] = maxs[2] -= 128.0
 	maxs[2] = -128.0
-	SetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs)
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
 	//PrintToServer("entity start: %i created", entity)
 	//return Plugin_Handled
+}
+
+Action cmd_tp1(int client, int args)
+{
+	float maxs[3]
+	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
+	maxs[0] = gF_vec1[0] - gF_vec2[0]
+	if(maxs[0] > 0.0)
+		maxs[0] = maxs[0] * -1.0
+	maxs[1] = gF_vec1[1] - gF_vec2[1]
+	if(maxs[1] > 0.0)
+		maxs[1] = maxs[1] * -1.0
+	maxs[2] = gF_vec1[2] - gF_vec2[2]
+	if(maxs[2] > 0.0)
+		maxs[2] = maxs[2] * -1.0
+	//maxs[2] = maxs[2] -= 128.0
+	maxs[2] = -128.0
+	PrintToServer("%f %f %f", maxs[0], maxs[1], maxs[2])
+	TeleportEntity(client, maxs, NULL_VECTOR, NULL_VECTOR)
+	return Plugin_Handled
 }
 
 //Action cmd_createend(int client, int args)
