@@ -1809,7 +1809,7 @@ Action cmd_time(int client, int args)
 	//char sTime[32]
 	//FormatTime(sTime, 32, NULL_STRING, )
 	//if(gF_Time[client] > 59.9)
-	//Format(sTime, 32, "" //https://forums.alliedmods.net/archive/index.php/t-23912.html
+	//Format(sTime, 32, "" //https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
 	int hour = RoundToFloor(gF_Time[client])
 	gI_hour = (hour / 3600) % 24
 	int minute = RoundToFloor(gF_Time[client])
