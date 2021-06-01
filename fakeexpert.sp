@@ -1030,7 +1030,7 @@ void createstart()
 		maxs[2] = maxs[2] * -1.0
 	//maxs[2] = maxs[2] -= 128.0
 	//maxs[2] = maxs[2] -= -128.0
-	maxs[2] = 128.0
+	maxs[2] = -128.0
 	PrintToServer("Maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
