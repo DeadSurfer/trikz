@@ -567,7 +567,7 @@ public void OnClientPutInServer(int client)
 	char sQuery[512]
 	int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
-	if(IsClientInGame(client) && gB_pass && IsClientConnected(client))
+	if(IsClientConnected(client) && IsClientInGame(client) && gB_pass)
 	{
 		//int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
