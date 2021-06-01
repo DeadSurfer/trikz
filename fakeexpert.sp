@@ -1008,7 +1008,7 @@ void createstart()
 	//mins[2] = mins[2] += 128.0
 	mins[2] = 128.0
 	PrintToServer("Mins: %f %f %f", mins[0], mins[1], mins[2])
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", maxs) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//SetEntPropVector(entity, Prop_Send, "m_vecMins", maxs) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	//mins[0] = mins[0] * -1.0
 	//mins[1] = mins[1] * -1.0
@@ -1032,6 +1032,7 @@ void createstart()
 	//maxs[2] = maxs[2] -= -128.0
 	maxs[2] = -128.0
 	PrintToServer("Maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
