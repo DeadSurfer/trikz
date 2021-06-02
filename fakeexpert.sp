@@ -1127,7 +1127,7 @@ void createend()
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * 1.0
 	maxs[2] = 128.0
-	SetEntPropVector(entity, Prop_Data, "m_vecMaxs" maxs)
+	SetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//PrintToServer("entity end: %i created", entity)
