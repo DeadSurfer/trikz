@@ -1020,11 +1020,11 @@ void createstart()
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	//mins[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
-	mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	mins[0] = gF_vec1[0] - gF_vec2[0]
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//mins[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	mins[1] = gF_vec1[1] - gF_vec2[1]
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0	
 	//mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
@@ -1044,10 +1044,10 @@ void createstart()
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	float maxs[3]
 	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
-	maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	maxs[0] = gF_vec1[0] - gF_vec2[0]
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	maxs[1] = gF_vec1[1] - gF_vec2[1]
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = gF_vec1[2] - gF_vec2[2]
