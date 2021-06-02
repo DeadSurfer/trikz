@@ -1180,7 +1180,7 @@ Action cmd_vecminsend(int client, int args)
 Action cmd_maptier(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid = 120192594)
+	if(steamid == 120192594)
 	{
 		char sArgString[512]
 		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
@@ -1205,7 +1205,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_vecmaxs(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid = 120192594)
+	if(steamid == 120192594)
 	{
 		GetClientAbsOrigin(client, gF_vec2)
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
