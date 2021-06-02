@@ -770,7 +770,7 @@ Action cmd_block(int client, int args)
 
 Action Block(int client)
 {
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
+	if(IsValidEntity(client) && GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
@@ -779,7 +779,7 @@ Action Block(int client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+	if(IsValidEntity(client) && GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
