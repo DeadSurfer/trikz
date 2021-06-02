@@ -1221,7 +1221,7 @@ Action cmd_vecmaxs(int client, int args)
 Action cmd_vecmaxsend(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid = 120192594)
+	if(steamid == 120192594)
 		{
 		GetClientAbsOrigin(client, gF_vec2)
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
