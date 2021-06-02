@@ -2915,9 +2915,9 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0]) / 3600) % 24
-			int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0]) / 60) % 60
-			int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0]) % 60
+			int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
 			PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
