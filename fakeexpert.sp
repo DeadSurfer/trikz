@@ -80,6 +80,7 @@ bool gB_cp[10][MAXPLAYERS + 1]
 bool gB_cpLock[10][MAXPLAYERS + 1]
 float gF_TimeCP[10][MAXPLAYERS + 1]
 float gF_timeDiffCPWin[10][MAXPLAYERS + 1]
+float srCPTime[10][MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -2912,7 +2913,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 	{
 		//float srTime = results.FetchFloat(0)
 		srCPTime[0][other] = results.FetchFloat(1)
-		if(gF_TimeCP[0][other] < srCPTime)
+		if(gF_TimeCP[0][other] < srCPTime[0][other])
 		{
 			gF_timeDiffCPWin[0][other] = srCPTime[0][other] - gF_TimeCP[other][0]
 			gF_timeDiffCPWin[0][gI_partner[other]] = srCPTime[0][other] - gF_TimeCP[gI_partner[other]][0]
@@ -3019,7 +3020,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 		if(gF_TimeCP[4][other] < srCPTime[4][other])
 		{
 			gF_timeDiffCPWin[4][other] = srCPTime[4][other] - gF_TimeCP[other][4]
-			gF_timeDiffCPWin[4][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][4] //idea from Expert-Zone.
+			gF_timeDiffCPWin[4][gI_partner[other]] = srCPTime[4][other] - gF_TimeCP[gI_partner[other]][4] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3045,7 +3046,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 		if(gF_TimeCP[5][other] < srCPTime[5][other])
 		{
 			gF_timeDiffCPWin[5][other] = srCPTime[5][other] - gF_TimeCP[other][5]
-			gF_timeDiffCPWin[5][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][5] //idea from Expert-Zone.
+			gF_timeDiffCPWin[5][gI_partner[other]] = srCPTime[5][other] - gF_TimeCP[gI_partner[other]][5] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
