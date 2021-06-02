@@ -770,7 +770,7 @@ Action cmd_block(int client, int args)
 
 Action Block(int client)
 {
-	if(IsValidEntity(client) && GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
+	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
@@ -779,7 +779,7 @@ Action Block(int client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
-	if(IsValidEntity(client) && GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
@@ -954,11 +954,14 @@ void Restart(int client)
 
 Action Timer_BlockToggle(Handle timer, int client)
 {
-	SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-	SetEntityRenderMode(client, RENDER_NORMAL)
-	SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
-	//SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
-	SetEntityRenderMode(gI_partner[client], RENDER_NORMAL)
+	if(IsValidEntity(client) && IsValidEntity(gI_partner[client])
+	{
+		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+		SetEntityRenderMode(client, RENDER_NORMAL)
+		SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
+		//SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
+		SetEntityRenderMode(gI_partner[client], RENDER_NORMAL)
+	}
 	return Plugin_Stop
 }
 
