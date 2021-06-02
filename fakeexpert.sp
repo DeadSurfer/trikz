@@ -586,11 +586,11 @@ public void OnClientPutInServer(int client)
 //public void OnDissconnectClient(
 public void OnClientDisconnect(int client)
 {
-	PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
+	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	//gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
-	PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
+	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 }
 
 /*void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -1179,13 +1179,17 @@ Action cmd_vecminsend(int client, int args)
 
 Action cmd_maptier(int client, int args)
 {
-	char sArgString[512]
-	GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
-	int tier = StringToInt(sArgString)
-	PrintToServer("Args: %i", tier)
-	char sQuery[512]
-	Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
-	gD_mysql.Query(SQLTier, sQuery)
+	int steamid = GetSteamAccountID(client)
+	if(steamid = 120192594)
+	{
+		char sArgString[512]
+		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+		int tier = StringToInt(sArgString)
+		PrintToServer("Args: %i", tier)
+		char sQuery[512]
+		Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
+		gD_mysql.Query(SQLTier, sQuery)
+	}
 	return Plugin_Handled
 }
 
@@ -1200,24 +1204,32 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 
 Action cmd_vecmaxs(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec2)
-	//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
-	char sQuery[512]
-	args = 0
-	//PrintToServer("%s", gS_map)
-	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
-	gD_mysql.Query(SQLSetZones, sQuery)
+	int steamid = GetSteamAccountID(client)
+	if(steamid = 120192594)
+	{
+		GetClientAbsOrigin(client, gF_vec2)
+		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+		char sQuery[512]
+		args = 0
+		//PrintToServer("%s", gS_map)
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
+		gD_mysql.Query(SQLSetZones, sQuery)
+	}
 	return Plugin_Handled
 }
 
 Action cmd_vecmaxsend(int client, int args)
 {
-	GetClientAbsOrigin(client, gF_vec2)
-	//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
-	char sQuery[512]
-	args = 1
-	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
-	gD_mysql.Query(SQLSetZones, sQuery)
+	int steamid = GetSteamAccountID(client)
+	if(steamid = 120192594)
+		{
+		GetClientAbsOrigin(client, gF_vec2)
+		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+		char sQuery[512]
+		args = 1
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
+		gD_mysql.Query(SQLSetZones, sQuery)
+	}
 	return Plugin_Handled
 }
 
@@ -1574,6 +1586,8 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any dat
 	//int clientid = dp.ReadCell()
 	//int partnerid = dp.ReadCell()
 	//int other = dp.ReadCell()
+	if(data == 0)
+		return
 	int other = GetClientFromSerial(data)
 	int clientid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(other)
