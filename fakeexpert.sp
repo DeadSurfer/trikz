@@ -532,6 +532,7 @@ public void OnMapStart()
 	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	//gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	Database.Connect(SQLConnect, "fakeexpert")
+	gI_cpCount = 0
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
