@@ -3101,9 +3101,9 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
-		//float srTime = results.FetchFloat(0)
+		float srTime = results.FetchFloat(0)
 		gF_srCPTime[0][other] = results.FetchFloat(1)
-		PrintToServer("srCPTime: %f", gF_srCPTime[0][other])
+		PrintToServer("srCPTime: %f srTime: %f", gF_srCPTime[0][other], srTime)
 		if(gF_TimeCP[0][other] < gF_srCPTime[0][other])
 		{
 			gF_timeDiffCPWin[0][other] = gF_srCPTime[0][other] - gF_TimeCP[other][0]
