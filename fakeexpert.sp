@@ -584,7 +584,7 @@ public void OnClientPutInServer(int client)
 }
 
 //public void OnDissconnectClient(
-public void OnClientDisconnect(int client)
+public void OnClientDisconnect_Post(int client)
 {
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
