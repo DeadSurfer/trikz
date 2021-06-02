@@ -2909,241 +2909,261 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 		float srCPTime = results.FetchFloat(1)
 		if(gF_TimeCP[0][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][0]
+			timeDiffCPWin[0][other] = srCPTime - gF_TimeCP[other][0]
+			timeDiffCPWin[0][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][0]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[0]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[0]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[0]) % 60
 			PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][0] - srCPTime
+			timeDiffCPWin[0][other] = gF_TimeCP[other][0] - srCPTime
+			timeDiffCPWin[0][gI_partner[other]] = gF_TimeCP[gI_partner[other]][0] - srCPTime
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[0][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[0][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[0][other]) % 60
 			PrintToChat(other, "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[1][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][1]
+			timeDiffCPWin[1][other] = srCPTime - gF_TimeCP[other][1]
+			timeDiffCPWin[1][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][1]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[1][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[1][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[1][other]) % 60
 			PrintToChat(other, "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][1] - srCPTime
+			timeDiffCPWin[1][other] = gF_TimeCP[other][1] - srCPTime
+			timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[gI_partner[other]][1] - srCPTime
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[1][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[1][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[1][other]) % 60
 			PrintToChat(other, "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[2][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][2]
+			timeDiffCPWin[2][other] = srCPTime - gF_TimeCP[other][2]
+			timeDiffCPWin[2][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][2]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[2][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[2][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[2][other]) % 60
 			PrintToChat(other, "3. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "3. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][2] - srCPTime
+			timeDiffCPWin[2][other] = gF_TimeCP[other][2] - srCPTime
+			timeDiffCPWin[2][gI_partner[other]] = gF_TimeCP[gI_partner[other]][2] - srCPTime
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[2][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[2][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[2][other]) % 60
 			PrintToChat(other, "3. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "3. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[3][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][3]
+			timeDiffCPWin[3][other] = srCPTime - gF_TimeCP[other][3]
+			timeDiffCPWin[3][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][3]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[3][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[3][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[3][other]) % 60
 			PrintToChat(other, "4. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "4. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][3] - srCPTime
+			timeDiffCPWin[3][other] = gF_TimeCP[other][3] - srCPTime
+			timeDiffCPWin[3][gI_partner[other]] = gF_TimeCP[gI_partner[other]][3] - srCPTime
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[3][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[3][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[3][other]) % 60
 			PrintToChat(other, "4. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "4. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[4][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][4]
+			timeDiffCPWin[4][other] = srCPTime - gF_TimeCP[other][4]
+			timeDiffCPWin[4][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][4] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[4][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[4][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[4][other]) % 60
 			PrintToChat(other, "5. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "5. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][4] - srCPTime
+			timeDiffCPWin[4][other] = gF_TimeCP[other][4] - srCPTime
+			timeDiffCPWin[4][gI_partner[other]] = gF_TimeCP[gI_partner[other]][4] - srCPTime
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[4][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[4][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[4][other]) % 60
 			PrintToChat(other, "5. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "5. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[5][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][5]
+			timeDiffCPWin[5][other] = srCPTime - gF_TimeCP[other][5]
+			timeDiffCPWin[5][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][5] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[5][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[5][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[5][other]) % 60
 			PrintToChat(other, "6. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "6. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][5] - srCPTime
+			timeDiffCPWin[5][other] = gF_TimeCP[other][5] - srCPTime
+			timeDiffCPWin[5][gI_partner[other]] = gF_TimeCP[gI_partner[other]][5] - srCPTime //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[5][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[5][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[5][other]) % 60
 			PrintToChat(other, "6. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "6. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[6][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][6]
+			timeDiffCPWin[6][other] = srCPTime - gF_TimeCP[other][6]
+			timeDiffCPWin[6][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][6] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[6][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[6][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[6][other]) % 60
 			PrintToChat(other, "7. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "7. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][6] - srCPTime
+			timeDiffCPWin[6][other] = gF_TimeCP[other][6] - srCPTime
+			timeDiffCPWin[6][gI_partner[other]] = gF_TimeCP[gI_partner[other]][6] - srCPTime //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[6][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[6][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[6][other]) % 60
 			PrintToChat(other, "7. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "7. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[7][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][7]
+			timeDiffCPWin[7][other] = srCPTime - gF_TimeCP[other][7]
+			timeDiffCPWin[7][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][7] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[7][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[7][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[7][other]) % 60
 			PrintToChat(other, "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][7] - srCPTime
+			timeDiffCPWin[7][other] = gF_TimeCP[other][7] - srCPTime
+			timeDiffCPWin[7][gI_partner[other]] = gF_TimeCP[gI_partner[other]][7] - srCPTime //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[7][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[7][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[7][other]) % 60
 			PrintToChat(other, "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[8][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][8]
+			timeDiffCPWin[8][other] = srCPTime - gF_TimeCP[other][8]
+			timeDiffCPWin[8][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][8] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[8][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[8][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[8][other]) % 60
 			PrintToChat(other, "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][8] - srCPTime
+			timeDiffCPWin[8][other] = gF_TimeCP[other][8] - srCPTime
+			timeDiffCPWin[8][gI_partner[other]] = gF_TimeCP[gI_partner[other]][8] - srCPTime //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[8][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[8][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[8][other]) % 60
 			PrintToChat(other, "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		if(gF_TimeCP[9][other] < srCPTime)
 		{
-			float timeDiff = srCPTime - gF_TimeCP[other][9]
+			timeDiffCPWin[9][other] = srCPTime - gF_TimeCP[other][9]
+			timeDiffCPWin[9][gI_partner[other]] = srCPTime - gF_TimeCP[gI_partner[other]][9] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[9][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[9][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[9][other]) % 60
 			PrintToChat(other, "9. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "9. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
-			float timeDiff = gF_TimeCP[other][9] - srCPTime
+			timeDiffCPWin[9][other] = gF_TimeCP[other][9] - srCPTime
+			timeDiffCPWin[9][gI_partner[other]] = gF_TimeCP[gI_partner[other]][9] - srCPTime //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
-			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
-			int srCPSecond = RoundToFloor(timeDiff) % 60
+			int srCPHour = (RoundToFloor(timeDiffCPWin[9][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiffCPWin[9][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiffCPWin[9][other]) % 60
 			PrintToChat(other, "9. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "9. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
