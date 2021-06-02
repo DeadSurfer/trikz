@@ -1435,7 +1435,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	}
 	else
 	{
-		int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+		/*int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
@@ -1444,7 +1444,12 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 		dp3.WriteFloat(timeClient)
 		dp3.WriteCell(GetClientSerial(other))
 		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
-		gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp3)
+		gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp3)*/
+		DataPack dp4 = new DataPack()
+		dp4.WriteFloat(timeClient)
+		dp4.WriteCell(GetClientSerial(other))
+		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
+		gD_mysql.Query(SQLInsertRecord2, sQuery, dp4)
 	}
 	//PrintToServer("%i %N", other, other)
 	//PrintToServer("Record updated.")
@@ -1502,6 +1507,45 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataP
 
 void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
+}
+
+void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
+	dp.Reset()
+	float timeClient = dp.ReadFloat()
+	int other = GetClientFromSerial(dp.ReadCell())
+	int playerid = GetSteamAccountID(other)
+	int partnerid = GetSteamAccountID(gI_partner[other])
+	if(results.FetchRow())
+	{
+		float srTime = results.FetchFloat(0)
+		if(timeClient < srTime)
+		{
+			float timeDiff = srTime - timeClient
+			int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			int personalSecond = RoundToFloor(timeClient) % 60
+			int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srSecond = RoundToFloor(timeDiff) % 60
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
+			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp3)
+		}
+		else
+		{
+			float timeDiff = timeClient - srTime
+			int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			int personalSecond = RoundToFloor(timeClient) % 60
+			int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srSecond = RoundToFloor(timeDiff) % 60
+			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
+			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery, dp3)
+		}
+	}
 }
 
 /*Action cmd_testtext(int client, int args)
