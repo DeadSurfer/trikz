@@ -566,11 +566,11 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	char sQuery[512]
-	int steamid = GetSteamAccountID(client)
+	//int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
 	if(IsClientInGame(client) && gB_pass)
 	{
-		//int steamid = GetSteamAccountID(client)
+		int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 		gD_mysql.Query(SQLAddUser, sQuery, client)
 		//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
@@ -628,7 +628,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	int client = data
 	if(client == 0)
 		return
-	//if(IsClientInGame(client))
+	if(IsClientInGame(client))
 	{
 		int steamid = GetSteamAccountID(client)
 		char sName[64]
