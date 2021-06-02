@@ -947,6 +947,8 @@ void Restart(int client)
 		//gB_insideZone[gI_partner[client]] = true
 		gB_readyToStart[client] = true
 		gB_readyToStart[gI_partner[client]] = true
+		gF_Time[other] = 0.0
+		gF_Time[gI_partner[other]] = 0.0
 		float vecVel[3]
 		//vecVel[0] = 30.0
 		//vecVel[1] = 30.0
