@@ -1324,6 +1324,20 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 			createcp2()
 		if(gI_cpCount == 3)
 			createcp3()
+		if(gI_cpCount == 4)
+			createcp4()
+		if(gI_cpCount == 5
+			createcp5()
+		if(gI_cpCount == 6)
+			createcp6()
+		if(gI_cpCount == 7)
+			createcp7()
+		if(gI_cpCount == 8)
+			createcp8()
+		if(gI_cpCount == 9)
+			createcp9()
+		if(gI_cpCount == 10)
+			createcp10()
 	}
 }
 
@@ -2196,6 +2210,186 @@ Action SDKStartTouch(int entity, int other)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[0][other] = true
 				gB_cpLock[0][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp2"))
+		{
+			gB_cp[1][other] = true
+			if(gB_cp[1][other] && gB_cp[1][gI_partner[other]] && !gB_cpLock[1][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[1][other] = true
+				gB_cpLock[1][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp3"))
+		{
+			gB_cp[2][other] = true
+			if(gB_cp[2][other] && gB_cp[2][gI_partner[other]] && !gB_cpLock[2][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[2][other] = true
+				gB_cpLock[2][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp4"))
+		{
+			gB_cp[3][other] = true
+			if(gB_cp[3][other] && gB_cp[3][gI_partner[other]] && !gB_cpLock[3][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[3][other] = true
+				gB_cpLock[3][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp5"))
+		{
+			gB_cp[4][other] = true
+			if(gB_cp[4][other] && gB_cp[4][gI_partner[other]] && !gB_cpLock[4][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[4][other] = true
+				gB_cpLock[4][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp6"))
+		{
+			gB_cp[5][other] = true
+			if(gB_cp[5][other] && gB_cp[5][gI_partner[other]] && !gB_cpLock[5][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[5][other] = true
+				gB_cpLock[5][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp7"))
+		{
+			gB_cp[6][other] = true
+			if(gB_cp[6][other] && gB_cp[6][gI_partner[other]] && !gB_cpLock[6][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[6][other] = true
+				gB_cpLock[6][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp8"))
+		{
+			gB_cp[7][other] = true
+			if(gB_cp[7][other] && gB_cp[7][gI_partner[other]] && !gB_cpLock[7][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[7][other] = true
+				gB_cpLock[7][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp9"))
+		{
+			gB_cp[8][other] = true
+			if(gB_cp[8][other] && gB_cp[8][gI_partner[other]] && !gB_cpLock[8][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[8][other] = true
+				gB_cpLock[8][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp10"))
+		{
+			gB_cp[9][other] = true
+			if(gB_cp[9][other] && gB_cp[9][gI_partner[other]] && !gB_cpLock[9][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[9][other] = true
+				gB_cpLock[9][gI_partner[other]] = true
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
