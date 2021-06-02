@@ -73,6 +73,10 @@ bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 
+float gF_vec1cp[3]
+float gF_vec2cp[3]
+int gI_cpCount
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -131,6 +135,8 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
 	//RegServerCmd("sm_fakerecord", cmd_fakerecord)
 	//RegConsoleCmd("sm_testtext", cmd_testtext)
+	RegConsoleCmd("sm_cpmins", cmd_cpmins)
+	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
 	RegConsoleCmd("sm_tp1", cmd_tp1)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
@@ -1222,7 +1228,7 @@ Action cmd_vecmaxsend(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
-		{
+	{
 		GetClientAbsOrigin(client, gF_vec2)
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
@@ -1231,6 +1237,292 @@ Action cmd_vecmaxsend(int client, int args)
 		gD_mysql.Query(SQLSetZones, sQuery)
 	}
 	return Plugin_Handled
+}
+
+Action cmd_cpmins(int client, int args)
+{
+	int steamid = GetSteamAccountID(client)
+	if(steamid == 120192594)
+	{
+		char sCmd[512]
+		GetCmdArgString(args, sCmd, 512)
+		GetClientAbsOrigin(client, gF_vec1cp)
+		char sQuery[512]
+		Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
+		gD_mysql.Query(SQLCPUpdate, sQuery)
+	}
+	return Plugin_Handled
+}
+
+Action cmd_cpmaxs(int client, int args)
+{
+	int steamid = GetSteamAccountID(client)
+	if(steamid == 120192594)
+	{
+		char sCmd[512]
+		GetCmdArgString(args, sCmd, 512)
+		GetClientAbsOrigin(client, gF_vec2cp)
+		char sQuery[512]
+		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE map = '%s'", gF_vec2cp[0], gF_vec2cp[1], gF_vec2cp[2], gS_map)
+		gD_mysql.Query(SQLCPUpdate, sQuery)
+	}
+	return Plugin_Handled
+}
+
+void SQLCPUpdate(Database db, DBResultSet results, const char[] error, any data)
+{
+}
+
+Action cmd_manualcp(int args)
+{
+	char sQuery[512]
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `cp` (`id` INT AUTO_INCREMENT, `cpx` FLOAT, `cpy` FLOAT, `cpz` FLOAT, `cpx2` FLOAT, `cpy2` FLOAT, `cpz2` FLOAT, `map` VARCHAR(192),  PRIMARY KEY(id))")
+	gD_mysql.Query(SQLCreateCPTable, sQuery)
+}
+
+void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("CP table successfuly created.")
+}
+
+void CPSetup()
+{
+	char sQuery[512]
+	Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 WHERE map = '%s'", gS_map)
+	gD_mysql.Query(SQLCPSetup, sQuery)
+}
+
+void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
+{
+	while(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		float gF_vec1cp[0] = results.FetchFloat(0)
+		float gF_vec1cp[1] = results.FetchFloat(1)
+		float gF_vec1cp[2] = results.FetchFloat(2)
+		float gF_vec2cp[0] = results.FetchFloat(3)
+		float gF_vec2cp[1] = results.FetchFloat(4)
+		float gF_vec2cp[2] = results.FetchFloat(5)
+		int gI_cpCount++
+		if(count == 1)
+			createcp1()
+		if(count == 2)
+			createcp2()
+		if(count == 3)
+			createcp3()
+	}
+}
+
+void createcp1()
+{
+	char sTriggerName2[64]
+	int index
+	//int gI_cpCount
+	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
+	{
+		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
+		if(StrEqual(sTriggerName2, "fakeexpert_cp1"))
+			return
+	}
+	int entity = CreateEntityByName("trigger_multiple")
+	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
+	DispatchKeyValue(entity, "wait", "0")
+	DispatchKeyValue(entity, "targetname", "fakeexpert_cp1")
+	//ActivateEntity(entity)
+	DispatchSpawn(entity)
+	SetEntityModel(entity, "models/player/t_arctic.mdl")
+	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
+	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
+	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
+	float center[3]
+	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
+	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2
+	center[1] = (gF_vec2cp[1] + gF_vec1[1]) / 2
+	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
+	float mins[3]
+	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
+	//mins[0] = mins[0] * 2.0
+	//mins[0] = -mins[0]
+	//mins[1] = mins[1] * 2.0
+	//mins[1] = -mins[1]
+	//mins[2] = -128.0
+	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
+	mins[0] = gF_vec1cp[0] - gF_vec2cp[0]
+	if(mins[0] > 0.0)
+		mins[0] = mins[0] * -1.0
+	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
+	mins[1] = gF_vec1cp[1] - gF_vec2cp[1]
+	if(mins[1] > 0.0)
+		mins[1] = mins[1] * -1.0
+	mins[2] = -128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//mins[0] = mins[0] * -1.0
+	//mins[1] = mins[1] * -1.0
+	//mins[2] = 128.0
+	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
+	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	float maxs[3]
+	maxs[0] = gF_vec1cp[0] - gF_vec2cp[0]
+	if(maxs[0] < 0.0)
+		maxs[0] = maxs[0] * -1.0
+	maxs[1] = gF_vec1cp[1] - gF_vec2cp[1]
+	if(maxs[1] < 0.0)
+		maxs[1] = maxs[1] * -1.0
+	maxs[2] = 128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMaxs", mins)
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	//PrintToServer("entity end: %i created", entity)
+	//return Plugin_Handled
+}
+
+void createcp2()
+{
+	char sTriggerName2[64]
+	int index
+	//int gI_cpCount
+	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
+	{
+		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
+		if(StrEqual(sTriggerName2, "fakeexpert_cp2"))
+			return
+	}
+	int entity = CreateEntityByName("trigger_multiple")
+	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
+	DispatchKeyValue(entity, "wait", "0")
+	DispatchKeyValue(entity, "targetname", "fakeexpert_cp2")
+	//ActivateEntity(entity)
+	DispatchSpawn(entity)
+	SetEntityModel(entity, "models/player/t_arctic.mdl")
+	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
+	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
+	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
+	float center[3]
+	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
+	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2
+	center[1] = (gF_vec2cp[1] + gF_vec1[1]) / 2
+	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
+	float mins[3]
+	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
+	//mins[0] = mins[0] * 2.0
+	//mins[0] = -mins[0]
+	//mins[1] = mins[1] * 2.0
+	//mins[1] = -mins[1]
+	//mins[2] = -128.0
+	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
+	mins[0] = gF_vec1cp[0] - gF_vec2cp[0]
+	if(mins[0] > 0.0)
+		mins[0] = mins[0] * -1.0
+	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
+	mins[1] = gF_vec1cp[1] - gF_vec2cp[1]
+	if(mins[1] > 0.0)
+		mins[1] = mins[1] * -1.0
+	mins[2] = -128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//mins[0] = mins[0] * -1.0
+	//mins[1] = mins[1] * -1.0
+	//mins[2] = 128.0
+	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
+	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	float maxs[3]
+	maxs[0] = gF_vec1cp[0] - gF_vec2cp[0]
+	if(maxs[0] < 0.0)
+		maxs[0] = maxs[0] * -1.0
+	maxs[1] = gF_vec1cp[1] - gF_vec2cp[1]
+	if(maxs[1] < 0.0)
+		maxs[1] = maxs[1] * -1.0
+	maxs[2] = 128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMaxs", mins)
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	//PrintToServer("entity end: %i created", entity)
+	//return Plugin_Handled
+}
+
+void createcp3()
+{
+	char sTriggerName2[64]
+	int index
+	//int gI_cpCount
+	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
+	{
+		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
+		if(StrEqual(sTriggerName2, "fakeexpert_cp3"))
+			return
+	}
+	int entity = CreateEntityByName("trigger_multiple")
+	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
+	DispatchKeyValue(entity, "wait", "0")
+	DispatchKeyValue(entity, "targetname", "fakeexpert_cp3")
+	//ActivateEntity(entity)
+	DispatchSpawn(entity)
+	SetEntityModel(entity, "models/player/t_arctic.mdl")
+	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
+	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
+	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
+	float center[3]
+	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
+	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2
+	center[1] = (gF_vec2cp[1] + gF_vec1[1]) / 2
+	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
+	float mins[3]
+	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
+	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
+	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
+	//mins[0] = mins[0] * 2.0
+	//mins[0] = -mins[0]
+	//mins[1] = mins[1] * 2.0
+	//mins[1] = -mins[1]
+	//mins[2] = -128.0
+	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
+	mins[0] = gF_vec1cp[0] - gF_vec2cp[0]
+	if(mins[0] > 0.0)
+		mins[0] = mins[0] * -1.0
+	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
+	mins[1] = gF_vec1cp[1] - gF_vec2cp[1]
+	if(mins[1] > 0.0)
+		mins[1] = mins[1] * -1.0
+	mins[2] = -128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	//mins[0] = mins[0] * -1.0
+	//mins[1] = mins[1] * -1.0
+	//mins[2] = 128.0
+	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
+	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	float maxs[3]
+	maxs[0] = gF_vec1cp[0] - gF_vec2cp[0]
+	if(maxs[0] < 0.0)
+		maxs[0] = maxs[0] * -1.0
+	maxs[1] = gF_vec1cp[1] - gF_vec2cp[1]
+	if(maxs[1] < 0.0)
+		maxs[1] = maxs[1] * -1.0
+	maxs[2] = 128.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
+	//SetEntPropVector(entity, Prop_Data, "m_vecMaxs", mins)
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	//PrintToServer("entity end: %i created", entity)
+	//return Plugin_Handled
 }
 
 /*Action cmd_starttouch(int client, int args)
