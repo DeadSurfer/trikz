@@ -1353,6 +1353,7 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[2][0] = results.FetchFloat(3)
 		gF_vec2cp[2][1] = results.FetchFloat(4)
 		gF_vec2cp[2][2] = results.FetchFloat(5)
+		PrintToServer("SQLCPSetup2: %f %f %f %f %f %f", gF_vec1cp[2][0], gF_vec1cp[2][1], gF_vec1cp[2][2], gF_vec2cp[2][0], gF_vec2cp[2][1], gF_vec2[2][2])
 		gI_cpCount++
 		if(gI_cpCount == 2)
 			createcp2()
