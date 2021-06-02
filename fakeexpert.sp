@@ -76,6 +76,8 @@ float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 float gF_vec1cp[3]
 float gF_vec2cp[3]
 int gI_cpCount
+bool gB_cp[9][MAXPLAYERS + 1]
+bool gB_cpLock[9][MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -138,6 +140,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
 	RegConsoleCmd("sm_tp1", cmd_tp1)
+	RegServerCmd("sm_manualcp", cmd_manualcp)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	GetCurrentMap(gS_map, 192)
@@ -1150,6 +1153,7 @@ void createend()
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//PrintToServer("entity end: %i created", entity)
 	//return Plugin_Handled
+	CPSetup()
 }
 
 Action cmd_vecmins(int client, int args)
@@ -1246,9 +1250,11 @@ Action cmd_cpmins(int client, int args)
 	{
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
+		int cpnum = StringToInt(sCmd, 512)
 		GetClientAbsOrigin(client, gF_vec1cp)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
+		//Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
+		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", cpnum, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
 		gD_mysql.Query(SQLCPUpdate, sQuery)
 	}
 	return Plugin_Handled
@@ -1261,9 +1267,11 @@ Action cmd_cpmaxs(int client, int args)
 	{
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
+		int cpnum = StringToInt(sCmd, 512)
 		GetClientAbsOrigin(client, gF_vec2cp)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE map = '%s'", gF_vec2cp[0], gF_vec2cp[1], gF_vec2cp[2], gS_map)
+		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE cpnum = %i AND map = '%s'", gF_vec2cp[0], gF_vec2cp[1], gF_vec2cp[2], cpnum, gS_map)
+		//Format(sQuery, 512, "INSERT INTO cp (
 		gD_mysql.Query(SQLCPUpdate, sQuery)
 	}
 	return Plugin_Handled
@@ -1276,7 +1284,7 @@ void SQLCPUpdate(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_manualcp(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `cp` (`id` INT AUTO_INCREMENT, `cpx` FLOAT, `cpy` FLOAT, `cpz` FLOAT, `cpx2` FLOAT, `cpy2` FLOAT, `cpz2` FLOAT, `map` VARCHAR(192),  PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `cp` (`id` INT AUTO_INCREMENT, `cpnum` INT, `cpx` FLOAT, `cpy` FLOAT, `cpz` FLOAT, `cpx2` FLOAT, `cpy2` FLOAT, `cpz2` FLOAT, `map` VARCHAR(192),  PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateCPTable, sQuery)
 }
 
@@ -1302,18 +1310,18 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		float gF_vec1cp[0] = results.FetchFloat(0)
-		float gF_vec1cp[1] = results.FetchFloat(1)
-		float gF_vec1cp[2] = results.FetchFloat(2)
-		float gF_vec2cp[0] = results.FetchFloat(3)
-		float gF_vec2cp[1] = results.FetchFloat(4)
-		float gF_vec2cp[2] = results.FetchFloat(5)
-		int gI_cpCount++
-		if(count == 1)
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
+		if(gI_cpCount == 1)
 			createcp1()
-		if(count == 2)
+		if(gI_cpCount == 2)
 			createcp2()
-		if(count == 3)
+		if(gI_cpCount == 3)
 			createcp3()
 	}
 }
@@ -1687,6 +1695,26 @@ Action SDKStartTouch(int entity, int other)
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
 			}
+		}
+		if(StrEqual(sTrigger, "fakeexpert_cp1"))
+		{
+			gB_cp[0][other] = true
+			if(gB_cp[0][other] && gB_cp[0][gI_partner[other]] && !gB_cpLock[0][other])
+			{
+				int hour = RoundToFloor(gF_Time[other])
+				hour = (hour / 3600) % 24
+				int minute = RoundToFloor(gF_Time[other])
+				minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other])
+				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				gB_cpLock[0][other] = true
+				gB_cpLock[0][gI_partner[other]] = true
+			}
+			//gB_cp[0][other] = true
+			//gB_cp[0][gI_partner[other]] = true
 		}
 	}
 	//gB_passzone[other] = false
