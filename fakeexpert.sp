@@ -1245,7 +1245,7 @@ Action cmd_cpmins(int client, int args)
 	if(steamid == 120192594)
 	{
 		char sCmd[512]
-		GetCmdArgString(args, sCmd, 512)
+		GetCmdArgString(sCmd, 512)
 		GetClientAbsOrigin(client, gF_vec1cp)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
@@ -1260,7 +1260,7 @@ Action cmd_cpmaxs(int client, int args)
 	if(steamid == 120192594)
 	{
 		char sCmd[512]
-		GetCmdArgString(args, sCmd, 512)
+		GetCmdArgString(sCmd, 512)
 		GetClientAbsOrigin(client, gF_vec2cp)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE map = '%s'", gF_vec2cp[0], gF_vec2cp[1], gF_vec2cp[2], gS_map)
