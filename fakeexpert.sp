@@ -954,7 +954,7 @@ void Restart(int client)
 
 Action Timer_BlockToggle(Handle timer, int client)
 {
-	if(IsValidEntity(client) && IsValidEntity(gI_partner[client])
+	if(IsValidEntity(client) && IsValidEntity(gI_partner[client]))
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
