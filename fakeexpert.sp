@@ -1299,13 +1299,13 @@ void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any 
 void CPSetup()
 {
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 WHERE map = '%s'", gS_map)
+	Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 1 AND map = '%s'", gS_map)
 	gD_mysql.Query(SQLCPSetup, sQuery)
 }
 
 void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 {
-	while(results.FetchRow())
+	if(results.FetchRow())
 	{
 		/*float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
@@ -1322,22 +1322,229 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gI_cpCount++
 		if(gI_cpCount == 1)
 			createcp1()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 2 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup2, sQuery)
+	}
+}
+
+void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 2)
 			createcp2()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 3 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup3, sQuery)
+	}
+}
+
+void SQLCPSetup3(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 3)
 			createcp3()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 4 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup4, sQuery)
+	}
+}
+
+void SQLCPSetup4(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 4)
 			createcp4()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 5 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup5, sQuery)
+	}
+}
+
+void SQLCPSetup5(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 5)
 			createcp5()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 6 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup6, sQuery)
+	}
+}
+
+void SQLCPSetup6(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 6)
 			createcp6()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 7 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup7, sQuery)
+	}
+}
+
+void SQLCPSetup7(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 7)
 			createcp7()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 8 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup8, sQuery)
+	}
+}
+
+void SQLCPSetup8(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 8)
 			createcp8()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 9 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup9, sQuery)
+	}
+}
+
+void SQLCPSetup9(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 9)
 			createcp9()
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 10 AND map = '%s'", gS_map)
+		gD_mysql.Query(SQLCPSetup10, sQuery)
+	}
+}
+
+void SQLCPSetup10(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		/*float cpx = results.FetchFloat(0)
+		float cpy = results.FetchFloat(1)
+		float cpz = results.FetchFloat(2)
+		float cpx2 = results.FetchFloat(3)
+		float cpy2 = results.FetchFloat(4)
+		float cpz2 = results.FetchFloat(5)*/
+		gF_vec1cp[0] = results.FetchFloat(0)
+		gF_vec1cp[1] = results.FetchFloat(1)
+		gF_vec1cp[2] = results.FetchFloat(2)
+		gF_vec2cp[0] = results.FetchFloat(3)
+		gF_vec2cp[1] = results.FetchFloat(4)
+		gF_vec2cp[2] = results.FetchFloat(5)
+		gI_cpCount++
 		if(gI_cpCount == 10)
 			createcp10()
 	}
