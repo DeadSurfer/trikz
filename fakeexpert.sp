@@ -584,10 +584,12 @@ public void OnClientPutInServer(int client)
 }
 
 //public void OnDissconnectClient(
-public void OnClientDisconnect_Post(int client)
+public void OnClientDisconnect(int client)
 {
+	PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
+	PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 }
 
 /*void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
