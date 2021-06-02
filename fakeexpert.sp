@@ -2441,7 +2441,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[0][gI_partner[other]] = gF_Time[other]
 				PrintToServer("%f 2x2", gF_Time[other])
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 				PrintToServer("cp1")
 			}
