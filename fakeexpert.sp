@@ -1419,8 +1419,8 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	dp.Reset() //shavit.wr 1395
 	int other = GetClientFromSerial(dp.ReadCell()) //shavit.wr 1396
 	float timeClient = dp.ReadFloat()
-	int playerid = GetSteamAccountID(other)
-	int partnerid = GetSteamAccountID(gI_partner[other])
+	//int playerid = GetSteamAccountID(other)
+	//int partnerid = GetSteamAccountID(gI_partner[other])
 	//PrintToChatAll
 	char sQuery[512]
 	if(results.FetchRow())
@@ -1461,8 +1461,8 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 	float timeClient = dp.ReadFloat()
 	int other = GetClientFromSerial(dp.ReadCell())
 	//PrintToServer("%i %N", other, other)
-	int playerid = GetClientFromSerial(other)
-	int partnerid = GetClientFromSerial(other)
+	int playerid = GetSteamAccountID(other)
+	int partnerid = GetSteamAccountID(gI_partner[other])
 	char sQuery[512]
 	if(results.FetchRow())
 	{
