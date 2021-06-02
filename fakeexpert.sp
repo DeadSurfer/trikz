@@ -81,6 +81,7 @@ bool gB_cpLock[10][MAXPLAYERS + 1]
 float gF_TimeCP[10][MAXPLAYERS + 1]
 float gF_timeDiffCPWin[10][MAXPLAYERS + 1]
 float srCPTime[10][MAXPLAYERS + 1]
+//bool gB_CPprint[10]
 
 public Plugin myinfo =
 {
@@ -2770,6 +2771,64 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			if(gB_cp[0][other])
+			{
+				if(gF_TimeCP[0][other] < srCPTime[0][other])
+				{
+					gF_timeDiffCPWin[0][other] = srCPTime[0][other] - gF_TimeCP[other][0]
+					gF_timeDiffCPWin[0][gI_partner[other]] = srCPTime[0][other] - gF_TimeCP[gI_partner[other]][0]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
+					PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+				else
+				{
+					gF_timeDiffCPWin[0][other] = gF_TimeCP[other][0] - srCPTime[0][other]
+					gF_timeDiffCPWin[0][gI_partner[other]] = gF_TimeCP[gI_partner[other]][0] - srCPTime[0][other]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
+					PrintToChat(other, "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+			}
+			if(gB_cp[1][other])
+			{
+				if(gF_TimeCP[1][other] < srCPTime[1][other])
+				{
+					gF_timeDiffCPWin[1][other] = srCPTime[1][other] - gF_TimeCP[other][1]
+					gF_timeDiffCPWin[1][gI_partner[other]] = srCPTime[1][other] - gF_TimeCP[gI_partner[other]][1]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
+					PrintToChat(other, "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+				else
+				{
+					gF_timeDiffCPWin[1][other] = gF_TimeCP[other][1] - srCPTime[1][other]
+					gF_timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[gI_partner[other]][1] - srCPTime[1][other]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
+					PrintToChat(other, "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+			}
 			Format(sQuery, 512, "UPDATE records SET time = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
@@ -2786,6 +2845,64 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 			int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			if(gB_cp[0][other])
+			{
+				if(gF_TimeCP[0][other] < srCPTime[0][other])
+				{
+					gF_timeDiffCPWin[0][other] = srCPTime[0][other] - gF_TimeCP[other][0]
+					gF_timeDiffCPWin[0][gI_partner[other]] = srCPTime[0][other] - gF_TimeCP[gI_partner[other]][0]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
+					PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+				else
+				{
+					gF_timeDiffCPWin[0][other] = gF_TimeCP[other][0] - srCPTime[0][other]
+					gF_timeDiffCPWin[0][gI_partner[other]] = gF_TimeCP[gI_partner[other]][0] - srCPTime[0][other]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
+					PrintToChat(other, "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+			}
+			if(gB_cp[1][other])
+			{
+				if(gF_TimeCP[1][other] < srCPTime[1][other])
+				{
+					gF_timeDiffCPWin[1][other] = srCPTime[1][other] - gF_TimeCP[other][1]
+					gF_timeDiffCPWin[1][gI_partner[other]] = srCPTime[1][other] - gF_TimeCP[gI_partner[other]][1]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
+					PrintToChat(other, "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+				else
+				{
+					gF_timeDiffCPWin[1][other] = gF_TimeCP[other][1] - srCPTime[1][other]
+					gF_timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[gI_partner[other]][1] - srCPTime[1][other]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
+					PrintToChat(other, "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+			}
 		}
 	}
 }
@@ -2820,6 +2937,65 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 			int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 			int srSecond = RoundToFloor(timeDiff) % 60
 			PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+			if(gB_cp[0][other])
+			{
+				if(gF_TimeCP[0][other] < srCPTime[0][other])
+				{
+					gF_timeDiffCPWin[0][other] = srCPTime[0][other] - gF_TimeCP[other][0]
+					PrintToServer("%f", gF_timeDiffCPWin[0][other])
+					gF_timeDiffCPWin[0][gI_partner[other]] = srCPTime[0][other] - gF_TimeCP[gI_partner[other]][0]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
+					PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+				else
+				{
+					gF_timeDiffCPWin[0][other] = gF_TimeCP[other][0] - srCPTime[0][other]
+					gF_timeDiffCPWin[0][gI_partner[other]] = gF_TimeCP[gI_partner[other]][0] - srCPTime[0][other]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[0][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
+					PrintToChat(other, "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+			}
+			if(gB_cp[1][other])
+			{
+				if(gF_TimeCP[1][other] < srCPTime[1][other])
+				{
+					gF_timeDiffCPWin[1][other] = srCPTime[1][other] - gF_TimeCP[other][1]
+					gF_timeDiffCPWin[1][gI_partner[other]] = srCPTime[1][other] - gF_TimeCP[gI_partner[other]][1]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
+					PrintToChat(other, "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+				else
+				{
+					gF_timeDiffCPWin[1][other] = gF_TimeCP[other][1] - srCPTime[1][other]
+					gF_timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[gI_partner[other]][1] - srCPTime[1][other]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
+					PrintToChat(other, "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+				}
+			}
 			Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
@@ -2932,6 +3108,8 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 			int srCPSecond = RoundToFloor(gF_timeDiffCPWin[0][other]) % 60
 			PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			//char sQuery[512]
+			//Format(sQuery, 512, "
 		}
 		else
 		{
@@ -2946,6 +3124,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 			PrintToChat(other, "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_cp[0] = true
 	}
 }
 
@@ -2982,6 +3161,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[1] = true
 	}
 }
 
@@ -3018,6 +3198,7 @@ void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "3. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "3. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[2] = true
 	}
 }
 
@@ -3054,6 +3235,7 @@ void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "4. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "4. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[3] = true
 	}
 }
 
@@ -3090,6 +3272,7 @@ void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "5. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "5. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[4] = true
 	}
 }
 
@@ -3126,6 +3309,7 @@ void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "6. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "6. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[5] = true
 	}
 }
 
@@ -3162,6 +3346,7 @@ void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "7. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "7. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[6] = true
 	}
 }
 
@@ -3198,6 +3383,7 @@ void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[7] = true
 	}
 }
 
@@ -3234,6 +3420,7 @@ void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(other, "9. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "9. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[8] = true
 	}
 }
 
@@ -3270,6 +3457,7 @@ void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any dat
 			PrintToChat(other, "10. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "10. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
+		//gB_CP[9] = true
 	}
 }
 
