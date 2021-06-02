@@ -76,8 +76,9 @@ float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 float gF_vec1cp[3]
 float gF_vec2cp[3]
 int gI_cpCount
-bool gB_cp[9][MAXPLAYERS + 1]
-bool gB_cpLock[9][MAXPLAYERS + 1]
+bool gB_cp[10][MAXPLAYERS + 1]
+bool gB_cpLock[10][MAXPLAYERS + 1]
+float gF_TimeCP[10][MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -2064,7 +2065,7 @@ void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any 
 Action cmd_createrecords(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, `map` VARCHAR(192), `date` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, `cp1` FLOAT, `cp2` FLOAT, `cp3` FLOAT, `cp4` FLOAT, `cp5` FLOAT, `cp6` FLOAT, `cp7` FLOAT, `cp8` FLOAT, `cp9` FLOAT, `cp10` FLOAT, `map` VARCHAR(192), `date` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
@@ -2106,7 +2107,13 @@ Action SDKEndTouch(int entity, int other)
 			gB_readyToStart[other] = false
 			//gB_readyToStart[gI_other[other
 			gB_readyToStart[gI_partner[other]] = false
-
+			for(int i = 0; i <= 9; i++)
+			{
+				gB_cp[i][other] = false
+				gB_cp[i][gI_partner[other]] = false
+				gB_cpLock[i][other] = false
+				gB_cpLock[i][gI_partner[other]] = false
+			}
 			/*for(int i = 1; i <= 2048; i++)
 			{
 				gB_stateDisabled[other][i] = gB_stateDefaultDisabled[i]
@@ -2199,17 +2206,21 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[0][other] = true
 			if(gB_cp[0][other] && gB_cp[0][gI_partner[other]] && !gB_cpLock[0][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[0][other] = true
 				gB_cpLock[0][gI_partner[other]] = true
+				gF_TimeCP[0][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2219,7 +2230,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[1][other] = true
 			if(gB_cp[1][other] && gB_cp[1][gI_partner[other]] && !gB_cpLock[1][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2227,9 +2238,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[1][other] = true
 				gB_cpLock[1][gI_partner[other]] = true
+				gF_TimeCP[1][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp2 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2239,7 +2254,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[2][other] = true
 			if(gB_cp[2][other] && gB_cp[2][gI_partner[other]] && !gB_cpLock[2][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2247,9 +2262,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[2][other] = true
 				gB_cpLock[2][gI_partner[other]] = true
+				gF_TimeCP[2][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp3 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2259,7 +2278,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[3][other] = true
 			if(gB_cp[3][other] && gB_cp[3][gI_partner[other]] && !gB_cpLock[3][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2267,9 +2286,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[3][other] = true
 				gB_cpLock[3][gI_partner[other]] = true
+				gF_TimeCP[3][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp4 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2279,7 +2302,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[4][other] = true
 			if(gB_cp[4][other] && gB_cp[4][gI_partner[other]] && !gB_cpLock[4][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2287,9 +2310,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[4][other] = true
 				gB_cpLock[4][gI_partner[other]] = true
+				gF_TimeCP[4][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp5 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2299,7 +2326,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[5][other] = true
 			if(gB_cp[5][other] && gB_cp[5][gI_partner[other]] && !gB_cpLock[5][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2307,9 +2334,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[5][other] = true
 				gB_cpLock[5][gI_partner[other]] = true
+				gF_TimeCP[5][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp6 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2319,7 +2350,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[6][other] = true
 			if(gB_cp[6][other] && gB_cp[6][gI_partner[other]] && !gB_cpLock[6][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2327,9 +2358,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[6][other] = true
 				gB_cpLock[6][gI_partner[other]] = true
+				gF_TimeCP[6][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp7 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2339,7 +2374,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[7][other] = true
 			if(gB_cp[7][other] && gB_cp[7][gI_partner[other]] && !gB_cpLock[7][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2347,9 +2382,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[7][other] = true
 				gB_cpLock[7][gI_partner[other]] = true
+				gF_TimeCP[7][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp8 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2359,7 +2398,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[8][other] = true
 			if(gB_cp[8][other] && gB_cp[8][gI_partner[other]] && !gB_cpLock[8][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2367,9 +2406,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[8][other] = true
 				gB_cpLock[8][gI_partner[other]] = true
+				gF_TimeCP[8][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp9 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2379,7 +2422,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[9][other] = true
 			if(gB_cp[9][other] && gB_cp[9][gI_partner[other]] && !gB_cpLock[9][other])
 			{
-				int hour = RoundToFloor(gF_Time[other])
+				/*int hour = RoundToFloor(gF_Time[other])
 				hour = (hour / 3600) % 24
 				int minute = RoundToFloor(gF_Time[other])
 				minute = (minute / 60) % 60
@@ -2387,9 +2430,13 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[9][other] = true
 				gB_cpLock[9][gI_partner[other]] = true
+				gF_TimeCP[9][other] = gF_Time[other]
+				char sQuery[512]
+				Format(sQuery, 512, "SELECT MIN(time), cp10 FROM records WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[0][other] = true
 			//gB_cp[0][gI_partner[other]] = true
@@ -2643,6 +2690,148 @@ void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, D
 
 void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any data)
 {
+}
+
+void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
+	if(results.FetchRow())
+	{
+		//float srTime = results.FetchFloat(0)
+		float srCPTime = results.FetchFloat(1)
+		if(gF_TimeCP[0][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[2][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[3][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "3. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "3. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[4][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "4. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "4. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[5][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "5. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "5. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[6][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "6. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "6. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[7][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "7. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "7. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[8][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[8][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[9][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "9. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "9. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+		if(gF_TimeCP[10][other] < srCPTime)
+		{
+			float timeDiff = srCPTime - gF_TimeCP[other]
+			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+			//int personalSecond = RoundToFloor(timeClient) % 60
+			int srCPHour = (RoundToFloor(timeDiff) / 3600) % 24
+			int srCPMinute = (RoundToFloor(timeDiff) / 60) % 60
+			int srCPSecond = RoundToFloor(timeDiff) % 60
+			PrintToChat(other, "10. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "10. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+		}
+	}
 }
 
 /*Action cmd_sum(int client, int args)
