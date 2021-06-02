@@ -1001,13 +1001,15 @@ void createstart()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
+	//mins[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
+	mins[0] = gF_vec1[0] - gF_vec2[0]
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
-	mins[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
+	//mins[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
+	mins[1] = gF_vec1[1] - gF_vec2[1]
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0	
-	mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
+	//mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
 	//if(mins[
 	//mins[2] = mins[2] += 128.0
 	//mins[2] = mins[2] += 128.0
@@ -1038,10 +1040,10 @@ void createstart()
 	maxs[2] = 128.0
 	PrintToServer("Maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
-	//SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
-	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", maxs)
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	//SetEntPropVector(entity, Prop_Send, "m_vecMins", maxs)
+	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
