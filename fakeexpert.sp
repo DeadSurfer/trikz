@@ -73,8 +73,8 @@ bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 
-float gF_vec1cp[3]
-float gF_vec2cp[3]
+float gF_vec1cp[11][3]
+float gF_vec2cp[11][3]
 int gI_cpCount
 bool gB_cp[10][MAXPLAYERS + 1]
 bool gB_cpLock[10][MAXPLAYERS + 1]
@@ -1260,7 +1260,7 @@ Action cmd_cpmins(int client, int args)
 		GetCmdArgString(sCmd, 512)
 		int cpnum = StringToInt(sCmd)
 		PrintToChat(client, "%i", cpnum)
-		GetClientAbsOrigin(client, gF_vec1cp)
+		GetClientAbsOrigin(client, gF_vec1cp[cpnum])
 		char sQuery[512]
 		//Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
 		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", cpnum, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
@@ -1277,7 +1277,7 @@ Action cmd_cpmaxs(int client, int args)
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
 		int cpnum = StringToInt(sCmd)
-		GetClientAbsOrigin(client, gF_vec2cp)
+		GetClientAbsOrigin(client, gF_vec2cp[cpnum])
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE cpnum = %i AND map = '%s'", gF_vec2cp[0], gF_vec2cp[1], gF_vec2cp[2], cpnum, gS_map)
 		//Format(sQuery, 512, "INSERT INTO cp (
@@ -1319,12 +1319,12 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[1][0] = results.FetchFloat(0)
+		gF_vec1cp[1][1] = results.FetchFloat(1)
+		gF_vec1cp[1][2] = results.FetchFloat(2)
+		gF_vec2cp[1][0] = results.FetchFloat(3)
+		gF_vec2cp[1][1] = results.FetchFloat(4)
+		gF_vec2cp[1][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 1)
 		{
@@ -1347,12 +1347,12 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[2][0] = results.FetchFloat(0)
+		gF_vec1cp[2][1] = results.FetchFloat(1)
+		gF_vec1cp[2][2] = results.FetchFloat(2)
+		gF_vec2cp[2][0] = results.FetchFloat(3)
+		gF_vec2cp[2][1] = results.FetchFloat(4)
+		gF_vec2cp[2][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 2)
 			createcp2()
@@ -1372,12 +1372,12 @@ void SQLCPSetup3(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[3][0] = results.FetchFloat(0)
+		gF_vec1cp[3][1] = results.FetchFloat(1)
+		gF_vec1cp[3][2] = results.FetchFloat(2)
+		gF_vec2cp[3][0] = results.FetchFloat(3)
+		gF_vec2cp[3][1] = results.FetchFloat(4)
+		gF_vec2cp[3][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 3)
 			createcp3()
@@ -1397,12 +1397,12 @@ void SQLCPSetup4(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[4][0] = results.FetchFloat(0)
+		gF_vec1cp[4][1] = results.FetchFloat(1)
+		gF_vec1cp[4][2] = results.FetchFloat(2)
+		gF_vec2cp[4][0] = results.FetchFloat(3)
+		gF_vec2cp[4][1] = results.FetchFloat(4)
+		gF_vec2cp[4][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 4)
 			createcp4()
@@ -1422,12 +1422,12 @@ void SQLCPSetup5(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[5][0] = results.FetchFloat(0)
+		gF_vec1cp[5][1] = results.FetchFloat(1)
+		gF_vec1cp[5][2] = results.FetchFloat(2)
+		gF_vec2cp[5][0] = results.FetchFloat(3)
+		gF_vec2cp[5][1] = results.FetchFloat(4)
+		gF_vec2cp[5][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 5)
 			createcp5()
@@ -1447,12 +1447,12 @@ void SQLCPSetup6(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[6][0] = results.FetchFloat(0)
+		gF_vec1cp[6][1] = results.FetchFloat(1)
+		gF_vec1cp[6][2] = results.FetchFloat(2)
+		gF_vec2cp[6][0] = results.FetchFloat(3)
+		gF_vec2cp[6][1] = results.FetchFloat(4)
+		gF_vec2cp[6][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 6)
 			createcp6()
@@ -1472,12 +1472,12 @@ void SQLCPSetup7(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[7][0] = results.FetchFloat(0)
+		gF_vec1cp[7][1] = results.FetchFloat(1)
+		gF_vec1cp[7][2] = results.FetchFloat(2)
+		gF_vec2cp[7][0] = results.FetchFloat(3)
+		gF_vec2cp[7][1] = results.FetchFloat(4)
+		gF_vec2cp[7][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 7)
 			createcp7()
@@ -1497,12 +1497,12 @@ void SQLCPSetup8(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[8][0] = results.FetchFloat(0)
+		gF_vec1cp[8][1] = results.FetchFloat(1)
+		gF_vec1cp[8][2] = results.FetchFloat(2)
+		gF_vec2cp[8][0] = results.FetchFloat(3)
+		gF_vec2cp[8][1] = results.FetchFloat(4)
+		gF_vec2cp[8][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 8)
 			createcp8()
@@ -1522,12 +1522,12 @@ void SQLCPSetup9(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[9][0] = results.FetchFloat(0)
+		gF_vec1cp[9][1] = results.FetchFloat(1)
+		gF_vec1cp[9][2] = results.FetchFloat(2)
+		gF_vec2cp[9][0] = results.FetchFloat(3)
+		gF_vec2cp[9][1] = results.FetchFloat(4)
+		gF_vec2cp[9][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 9)
 			createcp9()
@@ -1547,12 +1547,12 @@ void SQLCPSetup10(Database db, DBResultSet results, const char[] error, any data
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[0] = results.FetchFloat(0)
-		gF_vec1cp[1] = results.FetchFloat(1)
-		gF_vec1cp[2] = results.FetchFloat(2)
-		gF_vec2cp[0] = results.FetchFloat(3)
-		gF_vec2cp[1] = results.FetchFloat(4)
-		gF_vec2cp[2] = results.FetchFloat(5)
+		gF_vec1cp[10][0] = results.FetchFloat(0)
+		gF_vec1cp[10][1] = results.FetchFloat(1)
+		gF_vec1cp[10][2] = results.FetchFloat(2)
+		gF_vec2cp[10][0] = results.FetchFloat(3)
+		gF_vec2cp[10][1] = results.FetchFloat(4)
+		gF_vec2cp[10][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 10)
 			createcp10()
@@ -1582,9 +1582,9 @@ void createcp1()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[1][0] + gF_vec1cp[1][0]) / 2.0
+	center[1] = (gF_vec2cp[1][1] + gF_vec1cp[1][1]) / 2.0
+	center[2] = (gF_vec2cp[1][2] + gF_vec1cp[1][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1597,11 +1597,11 @@ void createcp1()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[1][0] - gF_vec2cp[1][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[1][1] - gF_vec2cp[1][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -1612,10 +1612,10 @@ void createcp1()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[1][0] - gF_vec2cp[1][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[1][1] - gF_vec2cp[1][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -1651,9 +1651,9 @@ void createcp2()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2
+	center[0] = (gF_vec2cp[2][0] + gF_vec1cp[2][0]) / 2.0
+	center[1] = (gF_vec2cp[2][1] + gF_vec1cp[2][1]) / 2.0
+	center[2] = (gF_vec2cp[2][2] + gF_vec1cp[2][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1666,11 +1666,11 @@ void createcp2()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[2][0] - gF_vec2cp[2][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[2][1] - gF_vec2cp[2][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -1681,10 +1681,10 @@ void createcp2()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[2][0] - gF_vec2cp[2][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[2][1] - gF_vec2cp[2][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -1720,9 +1720,9 @@ void createcp3()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[3][0] + gF_vec1cp[3][0]) / 2.0
+	center[1] = (gF_vec2cp[3][1] + gF_vec1cp[3][1]) / 2.0
+	center[2] = (gF_vec2cp[3][2] + gF_vec1cp[3][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1735,11 +1735,11 @@ void createcp3()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[3][0] - gF_vec2cp[3][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[3][1] - gF_vec2cp[3][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -1750,10 +1750,10 @@ void createcp3()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[3][0] - gF_vec2cp[3][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[3][1] - gF_vec2cp[3][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -1789,9 +1789,9 @@ void createcp4()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[4][0] + gF_vec1cp[4][0]) / 2.0
+	center[1] = (gF_vec2cp[4][1] + gF_vec1cp[4][1]) / 2.0
+	center[2] = (gF_vec2cp[4][2] + gF_vec1cp[4][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1804,11 +1804,11 @@ void createcp4()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[4][0] - gF_vec2cp[4][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[4][1] - gF_vec2cp[4][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -1819,10 +1819,10 @@ void createcp4()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[4][0] - gF_vec2cp[4][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[4][1] - gF_vec2cp[4][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -1858,9 +1858,9 @@ void createcp5()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[5][0] + gF_vec1cp[5][0]) / 2.0
+	center[1] = (gF_vec2cp[5][1] + gF_vec1cp[5][1]) / 2.0
+	center[2] = (gF_vec2cp[5][2] + gF_vec1cp[5][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1873,11 +1873,11 @@ void createcp5()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[5][0] - gF_vec2cp[5][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[5][1] - gF_vec2cp[5][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -1888,10 +1888,10 @@ void createcp5()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[5][0] - gF_vec2cp[5][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[5][1] - gF_vec2cp[5][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -1927,9 +1927,9 @@ void createcp6()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[6][0] + gF_vec1cp[6][0]) / 2.0
+	center[1] = (gF_vec2cp[6][1] + gF_vec1cp[6][1]) / 2.0
+	center[2] = (gF_vec2cp[6][2] + gF_vec1cp[6][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1942,11 +1942,11 @@ void createcp6()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[6][0] - gF_vec2cp[6][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[6][1] - gF_vec2cp[6][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -1957,10 +1957,10 @@ void createcp6()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[6][0] - gF_vec2cp[6][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[6][1] - gF_vec2cp[6][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -1996,9 +1996,9 @@ void createcp7()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[7][0] + gF_vec1cp[7][0]) / 2.0
+	center[1] = (gF_vec2cp[7][1] + gF_vec1cp[7][1]) / 2.0
+	center[2] = (gF_vec2cp[7][2] + gF_vec1cp[7][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -2011,11 +2011,11 @@ void createcp7()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[7][0] - gF_vec2cp[7][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[7][1] - gF_vec2cp[7][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -2026,10 +2026,10 @@ void createcp7()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[7][0] - gF_vec2cp[7][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[7][1] - gF_vec2cp[7][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -2065,9 +2065,9 @@ void createcp8()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[8][0] + gF_vec1cp[8][0]) / 2.0
+	center[1] = (gF_vec2cp[8][1] + gF_vec1cp[8][1]) / 2.0
+	center[2] = (gF_vec2cp[8][2] + gF_vec1cp[8][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -2080,11 +2080,11 @@ void createcp8()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[8][0] - gF_vec2cp[8][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[8][1] - gF_vec2cp[8][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -2095,10 +2095,10 @@ void createcp8()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[8][0] - gF_vec2cp[8][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[8][1] - gF_vec2cp[8][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -2134,9 +2134,9 @@ void createcp9()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[9][0] + gF_vec1cp[9][0]) / 2.0
+	center[1] = (gF_vec2cp[9][1] + gF_vec1cp[9][1]) / 2.0
+	center[2] = (gF_vec2cp[9][2] + gF_vec1cp[9][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -2149,11 +2149,11 @@ void createcp9()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[9][0] - gF_vec2cp[9][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[9][1] - gF_vec2cp[9][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -2164,10 +2164,10 @@ void createcp9()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[9][0] - gF_vec2cp[9][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[9][1] - gF_vec2cp[9][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -2203,9 +2203,9 @@ void createcp10()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[0] + gF_vec1cp[0]) / 2.0
-	center[1] = (gF_vec2cp[1] + gF_vec1cp[1]) / 2.0
-	center[2] = (gF_vec2cp[2] + gF_vec1cp[2]) / 2.0
+	center[0] = (gF_vec2cp[10][0] + gF_vec1cp[10][0]) / 2.0
+	center[1] = (gF_vec2cp[10][1] + gF_vec1cp[10][1]) / 2.0
+	center[2] = (gF_vec2cp[10][2] + gF_vec1cp[10][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -2218,11 +2218,11 @@ void createcp10()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	mins[0] = (gF_vec1cp[10][0] - gF_vec2cp[10][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	mins[1] = (gF_vec1cp[10][1] - gF_vec2cp[10][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -2233,10 +2233,10 @@ void createcp10()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[0] - gF_vec2cp[0]) / 2.0
+	maxs[0] = (gF_vec1cp[10][0] - gF_vec2cp[10][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[1] - gF_vec2cp[1]) / 2.0
+	maxs[1] = (gF_vec1cp[10][1] - gF_vec2cp[10][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -2446,6 +2446,7 @@ Action SDKStartTouch(int entity, int other)
 		}
 		if(StrEqual(sTrigger, "fakeexpert_cp2"))
 		{
+			PrintToServer("cp2pre")
 			gB_cp[1][other] = true
 			if(gB_cp[1][other] && gB_cp[1][gI_partner[other]] && !gB_cpLock[1][other])
 			{
