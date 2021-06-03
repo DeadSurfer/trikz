@@ -1261,10 +1261,10 @@ Action cmd_cpmins(int client, int args)
 		GetCmdArgString(sCmd, 512)
 		int cpnum = StringToInt(sCmd)
 		PrintToChat(client, "%i", cpnum)
-		GetClientAbsOrigin(client, gF_vec1cp)
+		GetClientAbsOrigin(client, gF_vec1cp[cpnum])
 		char sQuery[512]
 		//Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
-		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", cpnum, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
+		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", cpnum, gF_vec1cp[cpnum][0], gF_vec1cp[cpnum][1], gF_vec1cp[cpnum][2], gS_map)
 		gD_mysql.Query(SQLCPUpdate, sQuery)
 	}
 	return Plugin_Handled
@@ -1278,9 +1278,9 @@ Action cmd_cpmaxs(int client, int args)
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
 		int cpnum = StringToInt(sCmd)
-		GetClientAbsOrigin(client, gF_vec2cp)
+		GetClientAbsOrigin(client, gF_vec2cp[cpnum])
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE cpnum = %i AND map = '%s'", gF_vec2cp[0], gF_vec2cp[1], gF_vec2cp[2], cpnum, gS_map)
+		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE cpnum = %i AND map = '%s'", gF_vec2cp[cpnum][0], gF_vec2cp[cpnum][1], gF_vec2cp[cpnum][2], cpnum, gS_map)
 		//Format(sQuery, 512, "INSERT INTO cp (
 		gD_mysql.Query(SQLCPUpdate, sQuery)
 	}
