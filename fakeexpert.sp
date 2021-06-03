@@ -2422,6 +2422,9 @@ Action SDKStartTouch(int entity, int other)
 		}
 		if(StrEqual(sTrigger, "fakeexpert_cp1"))
 		{
+			//gB_cp[1][other] = true
+			//if(gB_cp[1][other] && gB_cp[1][gI_partner[other]] && !gB_cpLock[1][other])
+			//if(!gB_cpLock[1][other])
 			gB_cp[1][other] = true
 			if(gB_cp[1][other] && gB_cp[1][gI_partner[other]] && !gB_cpLock[1][other])
 			{
@@ -2434,8 +2437,9 @@ Action SDKStartTouch(int entity, int other)
 				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//gB_cp[1][other] = true
 				gB_cpLock[1][other] = true
-				gB_cpLock[1][gI_partner[other]] = true
+				//gB_cpLock[1][gI_partner[other]] = true
 				gF_TimeCP[1][other] = gF_Time[other]
 				//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
 				gF_TimeCP[1][gI_partner[other]] = gF_Time[other]
@@ -2466,7 +2470,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[2][other] = true
-				gB_cpLock[2][gI_partner[other]] = true
+				//gB_cpLock[2][gI_partner[other]] = true
 				gF_TimeCP[2][other] = gF_Time[other]
 				gF_TimeCP[2][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2492,7 +2496,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[3][other] = true
-				gB_cpLock[3][gI_partner[other]] = true
+				//gB_cpLock[3][gI_partner[other]] = true
 				gF_TimeCP[3][other] = gF_Time[other]
 				gF_TimeCP[3][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2518,7 +2522,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[4][other] = true
-				gB_cpLock[4][gI_partner[other]] = true
+				//gB_cpLock[4][gI_partner[other]] = true
 				gF_TimeCP[4][other] = gF_Time[other]
 				gF_TimeCP[4][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2544,7 +2548,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[5][other] = true
-				gB_cpLock[5][gI_partner[other]] = true
+				//gB_cpLock[5][gI_partner[other]] = true
 				gF_TimeCP[5][other] = gF_Time[other]
 				gF_TimeCP[5][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2570,7 +2574,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[6][other] = true
-				gB_cpLock[6][gI_partner[other]] = true
+				//gB_cpLock[6][gI_partner[other]] = true
 				gF_TimeCP[6][other] = gF_Time[other]
 				gF_TimeCP[6][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2596,7 +2600,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[7][other] = true
-				gB_cpLock[7][gI_partner[other]] = true
+				//gB_cpLock[7][gI_partner[other]] = true
 				gF_TimeCP[7][other] = gF_Time[other]
 				gF_TimeCP[7][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2622,7 +2626,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[8][other] = true
-				gB_cpLock[8][gI_partner[other]] = true
+				//gB_cpLock[8][gI_partner[other]] = true
 				gF_TimeCP[8][other] = gF_Time[other]
 				gF_TimeCP[8][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2648,7 +2652,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[9][other] = true
-				gB_cpLock[9][gI_partner[other]] = true
+				//gB_cpLock[9][gI_partner[other]] = true
 				gF_TimeCP[9][other] = gF_Time[other]
 				gF_TimeCP[9][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
@@ -2674,7 +2678,7 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[10][other] = true
-				gB_cpLock[10][gI_partner[other]] = true
+				//gB_cpLock[10][gI_partner[other]] = true
 				gF_TimeCP[10][other] = gF_Time[other]
 				gF_TimeCP[10][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
