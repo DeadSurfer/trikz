@@ -2699,11 +2699,48 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 		int personalSecond = RoundToFloor(timeClient) % 60
 		PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
+		for(int i = 1; i <= 10; i++)
+		{
+			char sPlace[32]
+			IntToString(i, sPlace, 32)
+			if(gB_cp[i][other])
+			{
+				if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
+				{
+					gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[other][i]
+					PrintToServer("%f", gF_timeDiffCPWin[i][other])
+					gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+					//IntToString(i, sPlace, 32)
+					PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+				}
+				/*else
+				{
+					gF_timeDiffCPWin[i][other] = gF_TimeCP[other][i] - gF_srCPTime[i][other]
+					PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
+					gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+					//int personalSecond = RoundToFloor(timeClient) % 60
+					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+					PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+					PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+				}*/
+			}
+		}
 		//PrintToServer("2")
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(GetClientSerial(other))
 		dp2.WriteFloat(timeClient)
-		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, map, date) VALUES (%i, %i, %f, '%s', %i)", playerid, partnerid, timeClient, gS_map, GetTime())
+		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, timeClient, gF_timeDiffCPWin[1][other], gF_timeDiffCPWin[2][other], gF_timeDiffCPWin[3][other], gF_timeDiffCPWin[4][other], gF_timeDiffCPWin[5][other], gF_timeDiffCPWin[6][other], gF_timeDiffCPWin[7][other], gF_timeDiffCPWin[8][other], gF_timeDiffCPWin[9][other], gF_timeDiffCPWin[10][other], gS_map, GetTime())
 		gD_mysql.Query(SQLInsertRecord, sQuery, dp2)
 	}
 }
@@ -2811,276 +2848,6 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					}
 				}
 			}
-			/*if(gB_cp[1][other])
-			{
-				if(gF_TimeCP[1][other] < gF_srCPTime[1][other])
-				{
-					gF_timeDiffCPWin[1][other] = gF_srCPTime[1][other] - gF_TimeCP[other][1]
-					gF_timeDiffCPWin[1][gI_partner[other]] = gF_srCPTime[1][other] - gF_TimeCP[gI_partner[other]][1]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
-					PrintToChat(other, "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[1][other] = gF_TimeCP[other][1] - gF_srCPTime[1][other]
-					PrintToServer("c3c: %f", gF_timeDiffCPWin[1][other])
-					gF_timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[gI_partner[other]][1] - gF_srCPTime[1][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
-					PrintToChat(other, "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[2][other])
-			{
-				if(gF_TimeCP[2][other] < gF_srCPTime[2][other])
-				{
-					gF_timeDiffCPWin[2][other] = gF_srCPTime[2][other] - gF_TimeCP[other][2]
-					gF_timeDiffCPWin[2][gI_partner[other]] = gF_srCPTime[2][other] - gF_TimeCP[gI_partner[other]][2]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[2][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[2][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[2][other]) % 60
-					PrintToChat(other, "3. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "3. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[2][other] = gF_TimeCP[other][2] - gF_srCPTime[2][other]
-					PrintToServer("c3c: %f", gF_timeDiffCPWin[2][other])
-					gF_timeDiffCPWin[2][gI_partner[other]] = gF_TimeCP[gI_partner[other]][2] - gF_srCPTime[2][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[2][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[2][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[2][other]) % 60
-					PrintToChat(other, "3. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "3. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[3][other])
-			{
-				if(gF_TimeCP[3][other] < gF_srCPTime[3][other])
-				{
-					gF_timeDiffCPWin[3][other] = gF_srCPTime[3][other] - gF_TimeCP[other][3]
-					gF_timeDiffCPWin[3][gI_partner[other]] = gF_srCPTime[3][other] - gF_TimeCP[gI_partner[other]][3]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[3][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[3][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[3][other]) % 60
-					PrintToChat(other, "4. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "4. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[3][other] = gF_TimeCP[other][3] - gF_srCPTime[3][other]
-					PrintToServer("c3c: %f", gF_timeDiffCPWin[3][other])
-					gF_timeDiffCPWin[3][gI_partner[other]] = gF_TimeCP[gI_partner[other]][3] - gF_srCPTime[3][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[3][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[3][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[3][other]) % 60
-					PrintToChat(other, "4. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "4. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[4][other])
-			{
-				if(gF_TimeCP[4][other] < gF_srCPTime[4][other])
-				{
-					gF_timeDiffCPWin[4][other] = gF_srCPTime[4][other] - gF_TimeCP[other][4]
-					gF_timeDiffCPWin[4][gI_partner[other]] = gF_srCPTime[4][other] - gF_TimeCP[gI_partner[other]][4]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[4][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[4][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[4][other]) % 60
-					PrintToChat(other, "5. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "5. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[4][other] = gF_TimeCP[other][4] - gF_srCPTime[4][other]
-					//PrintToServer("c3c: %f", gF_timeDiffCPWin[4][other])
-					gF_timeDiffCPWin[4][gI_partner[other]] = gF_TimeCP[gI_partner[other]][4] - gF_srCPTime[4][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[4][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[4][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[4][other]) % 60
-					PrintToChat(other, "5. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "5. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[5][other])
-			{
-				if(gF_TimeCP[5][other] < gF_srCPTime[5][other])
-				{
-					gF_timeDiffCPWin[5][other] = gF_srCPTime[5][other] - gF_TimeCP[other][5]
-					gF_timeDiffCPWin[5][gI_partner[other]] = gF_srCPTime[5][other] - gF_TimeCP[gI_partner[other]][5]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[5][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[5][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[5][other]) % 60
-					PrintToChat(other, "6. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "6. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[5][other] = gF_TimeCP[other][5] - gF_srCPTime[5][other]
-					//PrintToServer("c3c: %f", gF_timeDiffCPWin[5][other])
-					gF_timeDiffCPWin[5][gI_partner[other]] = gF_TimeCP[gI_partner[other]][5] - gF_srCPTime[5][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[5][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[5][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[5][other]) % 60
-					PrintToChat(other, "6. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "6. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[6][other])
-			{
-				if(gF_TimeCP[6][other] < gF_srCPTime[6][other])
-				{
-					gF_timeDiffCPWin[6][other] = gF_srCPTime[6][other] - gF_TimeCP[other][6]
-					gF_timeDiffCPWin[6][gI_partner[other]] = gF_srCPTime[6][other] - gF_TimeCP[gI_partner[other]][6]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[6][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[6][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[6][other]) % 60
-					PrintToChat(other, "7. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "7. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[6][other] = gF_TimeCP[other][6] - gF_srCPTime[6][other]
-					//PrintToServer("c3c: %f", gF_timeDiffCPWin[6][other])
-					gF_timeDiffCPWin[6][gI_partner[other]] = gF_TimeCP[gI_partner[other]][6] - gF_srCPTime[6][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[6][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[6][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[6][other]) % 60
-					PrintToChat(other, "7. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "7. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[7][other])
-			{
-				if(gF_TimeCP[7][other] < gF_srCPTime[7][other])
-				{
-					gF_timeDiffCPWin[7][other] = gF_srCPTime[7][other] - gF_TimeCP[other][7]
-					gF_timeDiffCPWin[7][gI_partner[other]] = gF_srCPTime[7][other] - gF_TimeCP[gI_partner[other]][7]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[7][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[7][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[7][other]) % 60
-					PrintToChat(other, "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "8. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[7][other] = gF_TimeCP[other][7] - gF_srCPTime[7][other]
-					//PrintToServer("c3c: %f", gF_timeDiffCPWin[7][other])
-					gF_timeDiffCPWin[7][gI_partner[other]] = gF_TimeCP[gI_partner[other]][7] - gF_srCPTime[7][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[7][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[7][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[7][other]) % 60
-					PrintToChat(other, "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "8. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[8][other])
-			{
-				if(gF_TimeCP[8][other] < gF_srCPTime[8][other])
-				{
-					gF_timeDiffCPWin[8][other] = gF_srCPTime[8][other] - gF_TimeCP[other][8]
-					gF_timeDiffCPWin[8][gI_partner[other]] = gF_srCPTime[8][other] - gF_TimeCP[gI_partner[other]][8]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[8][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[8][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[8][other]) % 60
-					PrintToChat(other, "9. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "9. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[8][other] = gF_TimeCP[other][8] - gF_srCPTime[8][other]
-					//PrintToServer("c3c: %f", gF_timeDiffCPWin[8][other])
-					gF_timeDiffCPWin[8][gI_partner[other]] = gF_TimeCP[gI_partner[other]][8] - gF_srCPTime[8][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[8][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[8][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[8][other]) % 60
-					PrintToChat(other, "9. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "9. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}
-			if(gB_cp[9][other])
-			{
-				if(gF_TimeCP[9][other] < gF_srCPTime[9][other])
-				{
-					gF_timeDiffCPWin[9][other] = gF_srCPTime[9][other] - gF_TimeCP[other][9]
-					gF_timeDiffCPWin[9][gI_partner[other]] = gF_srCPTime[9][other] - gF_TimeCP[gI_partner[other]][9]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[9][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[9][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[9][other]) % 60
-					PrintToChat(other, "10. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "10. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[9][other] = gF_TimeCP[other][9] - gF_srCPTime[9][other]
-					//PrintToServer("c3c: %f", gF_timeDiffCPWin[9][other])
-					gF_timeDiffCPWin[9][gI_partner[other]] = gF_TimeCP[gI_partner[other]][9] - gF_srCPTime[9][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[9][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[9][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[9][other]) % 60
-					PrintToChat(other, "10. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "10. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}*/
-			}
 			Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, gF_timeDiffCPWin[1][other], gF_timeDiffCPWin[2][other], gF_timeDiffCPWin[3][other], gF_timeDiffCPWin[4][other], gF_timeDiffCPWin[5][other], gF_timeDiffCPWin[6][other], gF_timeDiffCPWin[7][other], gF_timeDiffCPWin[8][other], gF_timeDiffCPWin[9][other], gF_timeDiffCPWin[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
@@ -3132,35 +2899,6 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					}
 				}
 			}
-			/*if(gB_cp[1][other])
-			{
-				if(gF_TimeCP[1][other] < gF_srCPTime[1][other])
-				{
-					gF_timeDiffCPWin[1][other] = gF_srCPTime[1][other] - gF_TimeCP[other][1]
-					gF_timeDiffCPWin[1][gI_partner[other]] = gF_srCPTime[1][other] - gF_TimeCP[gI_partner[other]][1]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
-					PrintToChat(other, "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "2. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-				else
-				{
-					gF_timeDiffCPWin[1][other] = gF_TimeCP[other][1] - gF_srCPTime[1][other]
-					gF_timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[gI_partner[other]][1] - gF_srCPTime[1][other]
-					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
-					PrintToChat(other, "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-				}
-			}*/
 		}
 	}
 }
