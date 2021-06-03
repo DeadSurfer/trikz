@@ -2435,7 +2435,7 @@ Action SDKStartTouch(int entity, int other)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[1][other] = true
-				gB_cpLock[1][gI_partner[other]] = true
+				//gB_cpLock[1][gI_partner[other]] = true
 				gF_TimeCP[1][other] = gF_Time[other]
 				//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
 				gF_TimeCP[1][gI_partner[other]] = gF_Time[other]
@@ -2465,8 +2465,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[2][other] = true
-				gB_cpLock[2][gI_partner[other]] = true
+				//gB_cpLock[2][gI_partner[other]] = true
 				gF_TimeCP[2][other] = gF_Time[other]
+				gF_TimeCP[2][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp2 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect2, sQuery, GetClientSerial(other))
@@ -2489,8 +2490,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[3][other] = true
-				gB_cpLock[3][gI_partner[other]] = true
+				//gB_cpLock[3][gI_partner[other]] = true
 				gF_TimeCP[3][other] = gF_Time[other]
+				gF_TimeCP[3][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp3 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect3, sQuery, GetClientSerial(other))
@@ -2513,8 +2515,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[4][other] = true
-				gB_cpLock[4][gI_partner[other]] = true
+				//gB_cpLock[4][gI_partner[other]] = true
 				gF_TimeCP[4][other] = gF_Time[other]
+				gF_TimeCP[4][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp4 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect4, sQuery, GetClientSerial(other))
@@ -2537,8 +2540,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[5][other] = true
-				gB_cpLock[5][gI_partner[other]] = true
+				//gB_cpLock[5][gI_partner[other]] = true
 				gF_TimeCP[5][other] = gF_Time[other]
+				gF_TimeCP[5][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp5 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect5, sQuery, GetClientSerial(other))
@@ -2561,8 +2565,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[6][other] = true
-				gB_cpLock[6][gI_partner[other]] = true
+				//gB_cpLock[6][gI_partner[other]] = true
 				gF_TimeCP[6][other] = gF_Time[other]
+				gF_TimeCP[6][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp6 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect6, sQuery, GetClientSerial(other))
@@ -2585,8 +2590,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[7][other] = true
-				gB_cpLock[7][gI_partner[other]] = true
+				//gB_cpLock[7][gI_partner[other]] = true
 				gF_TimeCP[7][other] = gF_Time[other]
+				gF_TimeCP[7][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp7 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect7, sQuery, GetClientSerial(other))
@@ -2609,8 +2615,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[8][other] = true
-				gB_cpLock[8][gI_partner[other]] = true
+				//gB_cpLock[8][gI_partner[other]] = true
 				gF_TimeCP[8][other] = gF_Time[other]
+				gF_TimeCP[8][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp8 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect8, sQuery, GetClientSerial(other))
@@ -2633,8 +2640,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[9][other] = true
-				gB_cpLock[9][gI_partner[other]] = true
+				//gB_cpLock[9][gI_partner[other]] = true
 				gF_TimeCP[9][other] = gF_Time[other]
+				gF_TimeCP[9][gI_partner] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp9 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect9, sQuery, GetClientSerial(other))
@@ -2657,8 +2665,9 @@ Action SDKStartTouch(int entity, int other)
 				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[10][other] = true
-				gB_cpLock[10][gI_partner[other]] = true
+				//gB_cpLock[10][gI_partner[other]] = true
 				gF_TimeCP[10][other] = gF_Time[other]
+				gF_TimeCp[10][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp10 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect10, sQuery, GetClientSerial(other))
@@ -2822,7 +2831,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					{
 						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[other][i]
 						PrintToServer("%f", gF_timeDiffCPWin[i][other])
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][gI_partner[other]] - gF_TimeCP[gI_partner[other]][i]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
@@ -2838,7 +2847,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					{
 						gF_timeDiffCPWin[i][other] = gF_TimeCP[other][i] - gF_srCPTime[i][other]
 						//PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
@@ -2875,7 +2884,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 					{
 						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[other][i]
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
@@ -2890,8 +2899,8 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					else
 					{
 						gF_timeDiffCPWin[i][other] = gF_TimeCP[other][i] - gF_srCPTime[i][other]
-						PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+						//PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
@@ -2947,7 +2956,7 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 					if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 					{
 						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[other][i]
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
@@ -2962,8 +2971,8 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 					else
 					{
 						gF_timeDiffCPWin[i][other] = gF_TimeCP[other][i] - gF_srCPTime[i][other]
-						PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+						//PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3056,7 +3065,7 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 					if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 					{
 						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[other][i]
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3072,8 +3081,8 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 					else
 					{
 						gF_timeDiffCPWin[i][other] = gF_TimeCP[other][i] - gF_srCPTime[i][other]
-						PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
-						gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+						//PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
+						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 						//int personalSecond = RoundToFloor(timeClient) % 60
