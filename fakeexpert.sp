@@ -2326,7 +2326,7 @@ Action SDKEndTouch(int entity, int other)
 			gB_readyToStart[other] = false
 			//gB_readyToStart[gI_other[other
 			gB_readyToStart[gI_partner[other]] = false
-			for(int i = 1; i <= 0; i++)
+			for(int i = 1; i <= 10; i++)
 			{
 				gB_cp[i][other] = false
 				gB_cp[i][gI_partner[other]] = false
