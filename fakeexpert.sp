@@ -2705,20 +2705,21 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 			IntToString(i, sPlace, 32)
 			if(gB_cp[i][other])
 			{
-				if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
+				//if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 				{
-					gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[other][i]
-					PrintToServer("%f", gF_timeDiffCPWin[i][other])
-					gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+					//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[other][i]
+					//PrintToServer("%f", gF_timeDiffCPWin[i][other])
+					//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
 					//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 					//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 					//int personalSecond = RoundToFloor(timeClient) % 60
-					int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
-					int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
-					int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+					//int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+					//int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+					//int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 					//IntToString(i, sPlace, 32)
-					PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-					PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+					//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+					PrintToChatAll("%s. Checkpoint: -00:00:00", sPlace)
+					//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 				}
 				/*else
 				{
@@ -2829,13 +2830,14 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 						//IntToString(i, sPlace, 32)
-						PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 					else
 					{
 						gF_timeDiffCPWin[i][other] = gF_TimeCP[other][i] - gF_srCPTime[i][other]
-						PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
+						//PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
 						gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
@@ -2843,8 +2845,9 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
 						int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
-						PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 				}
 			}
@@ -2880,8 +2883,9 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 						//char sPlace[32]
-						PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 					else
 					{
@@ -2894,8 +2898,9 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
 						int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
-						PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 				}
 			}
@@ -2950,8 +2955,9 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 						//char sPlace[32]
-						PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 					else
 					{
@@ -2964,8 +2970,9 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
 						int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
-						PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 				}
 			}
@@ -3058,8 +3065,9 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 						//char sPlace[32]
 						//IntToString(i, sPlace, 32)
-						PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 					else
 					{
@@ -3072,8 +3080,9 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 						int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
 						int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 						int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
-						PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-						PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+						//PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 					}
 				}
 			}
