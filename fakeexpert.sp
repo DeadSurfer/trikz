@@ -2441,7 +2441,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[1][gI_partner[other]] = gF_Time[other]
 				PrintToServer("%f 2x2", gF_Time[other])
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp1 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s'", gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause.
 				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 				PrintToServer("cp1")
 			}
@@ -2469,7 +2469,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[2][other] = gF_Time[other]
 				gF_TimeCP[2][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp2 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp2 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect2, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[2][other] = true
@@ -2494,7 +2494,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[3][other] = gF_Time[other]
 				gF_TimeCP[3][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp3 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp3 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect3, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[3][other] = true
@@ -2519,7 +2519,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[4][other] = gF_Time[other]
 				gF_TimeCP[4][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp4 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp4 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect4, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[4][other] = true
@@ -2544,7 +2544,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[5][other] = gF_Time[other]
 				gF_TimeCP[5][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp5 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp5 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect5, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[5][other] = true
@@ -2569,7 +2569,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[6][other] = gF_Time[other]
 				gF_TimeCP[6][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp6 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp6 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect6, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[6][other] = true
@@ -2594,7 +2594,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[7][other] = gF_Time[other]
 				gF_TimeCP[7][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp7 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp7 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect7, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[7][other] = true
@@ -2619,7 +2619,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[8][other] = gF_Time[other]
 				gF_TimeCP[8][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp8 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp8 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect8, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[8][other] = true
@@ -2644,7 +2644,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[9][other] = gF_Time[other]
 				gF_TimeCP[9][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp9 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp9 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect9, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[9][other] = true
@@ -2669,7 +2669,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[10][other] = gF_Time[other]
 				gF_TimeCP[10][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT cp10 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT MIN(time), cp10 FROM records WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect10, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[10][other] = true
