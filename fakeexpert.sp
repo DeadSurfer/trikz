@@ -2440,8 +2440,9 @@ Action SDKStartTouch(int entity, int other)
 				//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
 				gF_TimeCP[1][gI_partner[other]] = gF_Time[other]
 				PrintToServer("%f 2x2", gF_Time[other])
-				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s'", gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause.
+				char sQuery[512] //https://stackoverflow.com/questions/9617453
+				//Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s' HAVING MIN(time)", gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause. //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 				PrintToServer("cp1")
 			}
@@ -2469,7 +2470,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[2][other] = gF_Time[other]
 				gF_TimeCP[2][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp2 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp2 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect2, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[2][other] = true
@@ -2494,7 +2496,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[3][other] = gF_Time[other]
 				gF_TimeCP[3][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp3 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp3 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect3, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[3][other] = true
@@ -2519,7 +2522,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[4][other] = gF_Time[other]
 				gF_TimeCP[4][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp4 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp4 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect4, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[4][other] = true
@@ -2544,7 +2548,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[5][other] = gF_Time[other]
 				gF_TimeCP[5][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp5 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp5 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect5, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[5][other] = true
@@ -2569,7 +2574,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[6][other] = gF_Time[other]
 				gF_TimeCP[6][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp6 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp6 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect6, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[6][other] = true
@@ -2594,7 +2600,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[7][other] = gF_Time[other]
 				gF_TimeCP[7][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp7 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp7 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect7, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[7][other] = true
@@ -2619,7 +2626,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[8][other] = gF_Time[other]
 				gF_TimeCP[8][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp8 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp8 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect8, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[8][other] = true
@@ -2644,7 +2652,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[9][other] = gF_Time[other]
 				gF_TimeCP[9][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp9 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp9 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect9, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[9][other] = true
@@ -2669,7 +2678,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[10][other] = gF_Time[other]
 				gF_TimeCP[10][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
-				Format(sQuery, 512, "SELECT MIN(time), cp10 FROM records WHERE map = '%s'", gS_map)
+				//Format(sQuery, 512, "SELECT MIN(time), cp10 FROM records WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				gD_mysql.Query(SQLCPSelect10, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[10][other] = true
@@ -3180,9 +3190,9 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
-		float srTime = results.FetchFloat(0)
-		gF_srCPTime[1][other] = results.FetchFloat(1)
-		PrintToServer("srCPTime: %f srTime: %f", gF_srCPTime[1][other], srTime)
+		//float srTime = results.FetchFloat(0)
+		gF_srCPTime[1][other] = results.FetchFloat(0)
+		//PrintToServer("srCPTime: %f srTime: %f", gF_srCPTime[1][other], srTime)
 		if(gF_TimeCP[1][other] < gF_srCPTime[1][other])
 		{
 			gF_timeDiffCPWin[1][other] = gF_srCPTime[1][other] - gF_TimeCP[1][other]
@@ -3221,7 +3231,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[2][other] = results.FetchFloat(1)
+		gF_srCPTime[2][other] = results.FetchFloat(0)
 		if(gF_TimeCP[2][other] < gF_srCPTime[2][other])
 		{
 			gF_timeDiffCPWin[2][other] = gF_srCPTime[2][other] - gF_TimeCP[2][other]
@@ -3258,7 +3268,7 @@ void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[3][other] = results.FetchFloat(1)
+		gF_srCPTime[3][other] = results.FetchFloat(0)
 		if(gF_TimeCP[3][other] < gF_srCPTime[3][other])
 		{
 			gF_timeDiffCPWin[3][other] = gF_srCPTime[3][other] - gF_TimeCP[3][other]
@@ -3295,7 +3305,7 @@ void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[4][other] = results.FetchFloat(1)
+		gF_srCPTime[4][other] = results.FetchFloat(0)
 		if(gF_TimeCP[4][other] < gF_srCPTime[4][other])
 		{
 			gF_timeDiffCPWin[4][other] = gF_srCPTime[4][other] - gF_TimeCP[4][other]
@@ -3332,7 +3342,7 @@ void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[5][other] = results.FetchFloat(1)
+		gF_srCPTime[5][other] = results.FetchFloat(0)
 		if(gF_TimeCP[5][other] < gF_srCPTime[5][other])
 		{
 			gF_timeDiffCPWin[5][other] = gF_srCPTime[5][other] - gF_TimeCP[5][other]
@@ -3369,7 +3379,7 @@ void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[6][other] = results.FetchFloat(1)
+		gF_srCPTime[6][other] = results.FetchFloat(0)
 		if(gF_TimeCP[6][other] < gF_srCPTime[6][other])
 		{
 			gF_timeDiffCPWin[6][other] = gF_srCPTime[6][other] - gF_TimeCP[6][other]
@@ -3406,7 +3416,7 @@ void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[7][other] = results.FetchFloat(1)
+		gF_srCPTime[7][other] = results.FetchFloat(0)
 		if(gF_TimeCP[7][other] < gF_srCPTime[7][other])
 		{
 			gF_timeDiffCPWin[7][other] = gF_srCPTime[7][other] - gF_TimeCP[7][other]
@@ -3443,7 +3453,7 @@ void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[8][other] = results.FetchFloat(1)
+		gF_srCPTime[8][other] = results.FetchFloat(0)
 		if(gF_TimeCP[8][other] < gF_srCPTime[8][other])
 		{
 			gF_timeDiffCPWin[8][other] = gF_srCPTime[8][other] - gF_TimeCP[8][other]
@@ -3480,7 +3490,7 @@ void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[9][other] = results.FetchFloat(1)
+		gF_srCPTime[9][other] = results.FetchFloat(0)
 		if(gF_TimeCP[9][other] < gF_srCPTime[9][other])
 		{
 			gF_timeDiffCPWin[9][other] = gF_srCPTime[9][other] - gF_TimeCP[9][other]
@@ -3517,7 +3527,7 @@ void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any dat
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[10][other] = results.FetchFloat(1)
+		gF_srCPTime[10][other] = results.FetchFloat(0)
 		if(gF_TimeCP[10][other] < gF_srCPTime[10][other])
 		{
 			gF_timeDiffCPWin[10][other] = gF_srCPTime[10][other] - gF_TimeCP[10][other]
