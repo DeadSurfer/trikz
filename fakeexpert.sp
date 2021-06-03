@@ -2642,7 +2642,7 @@ Action SDKStartTouch(int entity, int other)
 				gB_cpLock[9][other] = true
 				//gB_cpLock[9][gI_partner[other]] = true
 				gF_TimeCP[9][other] = gF_Time[other]
-				gF_TimeCP[9][gI_partner] = gF_Time[other]
+				gF_TimeCP[9][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp9 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect9, sQuery, GetClientSerial(other))
@@ -2667,7 +2667,7 @@ Action SDKStartTouch(int entity, int other)
 				gB_cpLock[10][other] = true
 				//gB_cpLock[10][gI_partner[other]] = true
 				gF_TimeCP[10][other] = gF_Time[other]
-				gF_TimeCp[10][gI_partner[other]] = gF_Time[other]
+				gF_TimeCP[10][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				Format(sQuery, 512, "SELECT cp10 FROM records WHERE MIN(time) AND map = '%s'", gS_map)
 				gD_mysql.Query(SQLCPSelect10, sQuery, GetClientSerial(other))
