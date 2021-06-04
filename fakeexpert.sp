@@ -29,7 +29,7 @@ software and other kinds of works.
 #include <sdktools>
 #include <sdkhooks>
 //#include <dhooks>
-
+filterentity.sp code by george idea
 //bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[3]
