@@ -2439,7 +2439,7 @@ Action SDKStartTouch(int entity, int other)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				//gB_cp[1][other] = true
 				gB_cpLock[1][other] = true
-				//gB_cpLock[1][gI_partner[other]] = true
+				gB_cpLock[1][gI_partner[other]] = true
 				gF_TimeCP[1][other] = gF_Time[other]
 				//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
 				gF_TimeCP[1][gI_partner[other]] = gF_Time[other]
