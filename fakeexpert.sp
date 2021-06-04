@@ -2875,7 +2875,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					}
 				}
 			}
-			Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, gF_timeDiffCPWin[1][other], gF_timeDiffCPWin[2][other], gF_timeDiffCPWin[3][other], gF_timeDiffCPWin[4][other], gF_timeDiffCPWin[5][other], gF_timeDiffCPWin[6][other], gF_timeDiffCPWin[7][other], gF_timeDiffCPWin[8][other], gF_timeDiffCPWin[9][other], gF_timeDiffCPWin[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+			Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", timeClient, gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
 		else
@@ -3061,7 +3061,7 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 					PrintToChat(gI_partner[other], "2. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 				}
 			}*/
-			Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, timeClient, gF_timeDiffCPWin[1][other], gF_timeDiffCPWin[2][other], gF_timeDiffCPWin[3][other], gF_timeDiffCPWin[4][other], gF_timeDiffCPWin[5][other], gF_timeDiffCPWin[6][other], gF_timeDiffCPWin[7][other], gF_timeDiffCPWin[8][other], gF_timeDiffCPWin[9][other], gF_timeDiffCPWin[10][other], gS_map, GetTime())
+			Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, timeClient, gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
 		else
@@ -3112,7 +3112,7 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 					}
 				}
 			}
-			Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, timeClient, gF_timeDiffCPWin[1][other], gF_timeDiffCPWin[2][other], gF_timeDiffCPWin[3][other], gF_timeDiffCPWin[4][other], gF_timeDiffCPWin[5][other], gF_timeDiffCPWin[6][other], gF_timeDiffCPWin[7][other], gF_timeDiffCPWin[8][other], gF_timeDiffCPWin[9][other], gF_timeDiffCPWin[10][other], gS_map, GetTime())
+			Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, timeClient, gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 			gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 		}
 	}
@@ -3205,6 +3205,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 		{
 			gF_timeDiffCPWin[1][other] = gF_srCPTime[1][other] - gF_TimeCP[1][other]
 			gF_timeDiffCPWin[1][gI_partner[other]] = gF_srCPTime[1][other] - gF_TimeCP[1][other]
+			//gF_timeDiffCPWin[1][other] = gF_Time[other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
