@@ -2859,7 +2859,8 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					}
 					else
 					{
-						gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+						//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
 						//PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
 						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
@@ -2895,7 +2896,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 				IntToString(i, sPlace, 32)
 				if(gB_cp[i][other])
 				{
-					if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
+					if(gF_TimeCP[i][other] < gF_srCPTime[i][other]) //+15 -13 -6 -49 = -53
 					{
 						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
 						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
@@ -2912,7 +2913,9 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					}
 					else
 					{
-						gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+						//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+						//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] 
+						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
 						//PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
 						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
@@ -3197,6 +3200,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[1][other] = results.FetchFloat(0)
 		//PrintToServer("srCPTime: %f srTime: %f", gF_srCPTime[1][other], srTime)
+		PrintToServer("srCPTime 1: %f", gF_srCPTime[1][other])
 		if(gF_TimeCP[1][other] < gF_srCPTime[1][other])
 		{
 			gF_timeDiffCPWin[1][other] = gF_srCPTime[1][other] - gF_TimeCP[1][other]
@@ -3236,6 +3240,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[2][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 2: %f", gF_srCPTime[2][other])
 		if(gF_TimeCP[2][other] < gF_srCPTime[2][other])
 		{
 			gF_timeDiffCPWin[2][other] = gF_srCPTime[2][other] - gF_TimeCP[2][other]
@@ -3273,6 +3278,7 @@ void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[3][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 3: %f", gF_srCPTime[3][other])
 		if(gF_TimeCP[3][other] < gF_srCPTime[3][other])
 		{
 			gF_timeDiffCPWin[3][other] = gF_srCPTime[3][other] - gF_TimeCP[3][other]
@@ -3310,6 +3316,7 @@ void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[4][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 4: %f", gF_srCPTime[4][other])
 		if(gF_TimeCP[4][other] < gF_srCPTime[4][other])
 		{
 			gF_timeDiffCPWin[4][other] = gF_srCPTime[4][other] - gF_TimeCP[4][other]
@@ -3347,6 +3354,7 @@ void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[5][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 5: %f", gF_srCPTime[5][other])
 		if(gF_TimeCP[5][other] < gF_srCPTime[5][other])
 		{
 			gF_timeDiffCPWin[5][other] = gF_srCPTime[5][other] - gF_TimeCP[5][other]
@@ -3384,6 +3392,7 @@ void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[6][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 6: %f", gF_srCPTime[6][other])
 		if(gF_TimeCP[6][other] < gF_srCPTime[6][other])
 		{
 			gF_timeDiffCPWin[6][other] = gF_srCPTime[6][other] - gF_TimeCP[6][other]
@@ -3421,6 +3430,7 @@ void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[7][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 7: %f", gF_srCPTime[7][other])
 		if(gF_TimeCP[7][other] < gF_srCPTime[7][other])
 		{
 			gF_timeDiffCPWin[7][other] = gF_srCPTime[7][other] - gF_TimeCP[7][other]
@@ -3458,6 +3468,7 @@ void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[8][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 8: %f", gF_srCPTime[8][other])
 		if(gF_TimeCP[8][other] < gF_srCPTime[8][other])
 		{
 			gF_timeDiffCPWin[8][other] = gF_srCPTime[8][other] - gF_TimeCP[8][other]
@@ -3495,6 +3506,7 @@ void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[9][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 9: %f", gF_srCPTime[9][other])
 		if(gF_TimeCP[9][other] < gF_srCPTime[9][other])
 		{
 			gF_timeDiffCPWin[9][other] = gF_srCPTime[9][other] - gF_TimeCP[9][other]
@@ -3532,6 +3544,7 @@ void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any dat
 	{
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[10][other] = results.FetchFloat(0)
+		PrintToServer("srCPTime 10: %f", gF_srCPTime[10][other])
 		if(gF_TimeCP[10][other] < gF_srCPTime[10][other])
 		{
 			gF_timeDiffCPWin[10][other] = gF_srCPTime[10][other] - gF_TimeCP[10][other]
