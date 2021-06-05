@@ -2741,7 +2741,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 					//int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 					//IntToString(i, sPlace, 32)
 					//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-					PrintToChatAll("%s. Checkpoint: -00:00:00", sPlace)
+					PrintToChatAll("%s. Checkpoint: +00:00:00", sPlace)
 					//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 				}
 				/*else
@@ -2860,7 +2860,8 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					else
 					{
 						//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
-						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+						//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+						gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
 						//PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
 						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
@@ -2915,7 +2916,8 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 					{
 						//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
 						//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] 
-						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+						//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+						gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
 						//PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
 						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
@@ -3082,6 +3084,7 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 					if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 					{
 						gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+						//gF_t
 						//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
 						//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 						//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
@@ -3219,8 +3222,8 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 		}
 		else
 		{
-			gF_timeDiffCPWin[1][other] = FloatAbs(gF_TimeCP[1][other] - gF_srCPTime[1][other])
-			gF_timeDiffCPWin[1][gI_partner[other]] = FloatAbs(gF_TimeCP[1][other] - gF_srCPTime[1][other])
+			gF_timeDiffCPWin[1][other] = gF_TimeCP[1][other] - gF_srCPTime[1][other]
+			gF_timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[1][other] - gF_srCPTime[1][other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3257,8 +3260,8 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[2][other] = FloatAbs(gF_TimeCP[2][other] - gF_srCPTime[2][other])
-			gF_timeDiffCPWin[2][gI_partner[other]] = FloatAbs(gF_TimeCP[2][other] - gF_srCPTime[2][other])
+			gF_timeDiffCPWin[2][other] = gF_TimeCP[2][other] - gF_srCPTime[2][other]
+			gF_timeDiffCPWin[2][gI_partner[other]] = gF_TimeCP[2][other] - gF_srCPTime[2][other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3295,8 +3298,8 @@ void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[3][other] = FloatAbs(gF_TimeCP[3][other] - gF_srCPTime[3][other])
-			gF_timeDiffCPWin[3][gI_partner[other]] = FloatAbs(gF_TimeCP[3][other] - gF_srCPTime[3][other])
+			gF_timeDiffCPWin[3][other] = gF_TimeCP[3][other] - gF_srCPTime[3][other]
+			gF_timeDiffCPWin[3][gI_partner[other]] = gF_TimeCP[3][other] - gF_srCPTime[3][other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3333,8 +3336,8 @@ void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[4][other] = FloatAbs(gF_TimeCP[4][other] - gF_srCPTime[4][other])
-			gF_timeDiffCPWin[4][gI_partner[other]] = FloatAbs(gF_TimeCP[4][other] - gF_srCPTime[4][other])
+			gF_timeDiffCPWin[4][other] = gF_TimeCP[4][other] - gF_srCPTime[4][other]
+			gF_timeDiffCPWin[4][gI_partner[other]] = gF_TimeCP[4][other] - gF_srCPTime[4][other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3371,8 +3374,8 @@ void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[5][other] = FloatAbs(gF_TimeCP[5][other] - gF_srCPTime[5][other])
-			gF_timeDiffCPWin[5][gI_partner[other]] = FloatAbs(gF_TimeCP[5][other] - gF_srCPTime[5][other])
+			gF_timeDiffCPWin[5][other] = gF_TimeCP[5][other] - gF_srCPTime[5][other]
+			gF_timeDiffCPWin[5][gI_partner[other]] = gF_TimeCP[5][other] - gF_srCPTime[5][other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3409,8 +3412,8 @@ void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[6][other] = FloatAbs(gF_TimeCP[6][other] - gF_srCPTime[6][other])
-			gF_timeDiffCPWin[6][gI_partner[other]] = FloatAbs(gF_TimeCP[6][other] - gF_srCPTime[6][other]) //idea from Expert-Zone.
+			gF_timeDiffCPWin[6][other] = gF_TimeCP[6][other] - gF_srCPTime[6][other]
+			gF_timeDiffCPWin[6][gI_partner[other]] = gF_TimeCP[6][other] - gF_srCPTime[6][other] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3447,8 +3450,8 @@ void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[7][other] = FloatAbs(gF_TimeCP[7][other] - gF_srCPTime[7][other])
-			gF_timeDiffCPWin[7][gI_partner[other]] = FloatAbs(gF_TimeCP[7][other] - gF_srCPTime[7][other]) //idea from Expert-Zone.
+			gF_timeDiffCPWin[7][other] = gF_TimeCP[7][other] - gF_srCPTime[7][other]
+			gF_timeDiffCPWin[7][gI_partner[other]] = gF_TimeCP[7][other] - gF_srCPTime[7][other] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3485,8 +3488,8 @@ void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[8][other] = FloatAbs(gF_TimeCP[8][other] - gF_srCPTime[8][other])
-			gF_timeDiffCPWin[8][gI_partner[other]] = FloatAbs(gF_TimeCP[8][other] - gF_srCPTime[8][other]) //idea from Expert-Zone.
+			gF_timeDiffCPWin[8][other] = gF_TimeCP[8][other] - gF_srCPTime[8][other]
+			gF_timeDiffCPWin[8][gI_partner[other]] = gF_TimeCP[8][other] - gF_srCPTime[8][other] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3523,8 +3526,8 @@ void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data
 		}
 		else
 		{
-			gF_timeDiffCPWin[9][other] = FloatAbs(gF_TimeCP[9][other] - gF_srCPTime[9][other])
-			gF_timeDiffCPWin[9][gI_partner[other]] = FloatAbs(gF_TimeCP[9][other] - gF_srCPTime[9][other]) //idea from Expert-Zone.
+			gF_timeDiffCPWin[9][other] = gF_TimeCP[9][other] - gF_srCPTime[9][other]
+			gF_timeDiffCPWin[9][gI_partner[other]] = gF_TimeCP[9][other] - gF_srCPTime[9][other] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
@@ -3561,8 +3564,8 @@ void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any dat
 		}
 		else
 		{
-			gF_timeDiffCPWin[10][other] = FloatAbs(gF_TimeCP[10][other] - gF_srCPTime[10][other])
-			gF_timeDiffCPWin[10][gI_partner[other]] = FloatAbs(gF_TimeCP[10][other] - gF_srCPTime[10][other]) //idea from Expert-Zone.
+			gF_timeDiffCPWin[10][other] = gF_TimeCP[10][other] - gF_srCPTime[10][other]
+			gF_timeDiffCPWin[10][gI_partner[other]] = gF_TimeCP[10][other] - gF_srCPTime[10][other] //idea from Expert-Zone.
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
