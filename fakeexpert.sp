@@ -3306,6 +3306,10 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 		}
 		//gB_cp[1] = true
 	}
+	else
+	{
+		PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
+	}
 }
 
 void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data)
