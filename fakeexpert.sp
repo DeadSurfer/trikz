@@ -2452,7 +2452,8 @@ Action SDKStartTouch(int entity, int other)
 				PrintToServer("%f 2x2", gF_Time[other])
 				char sQuery[512] //https://stackoverflow.com/questions/9617453 //https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
 				//Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s' HAVING MIN(time)", gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause. //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm
-				Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)  //log help me alot with this stuff
+				//Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)  //log help me alot with this stuff
+				Format(sQuery, 512, "SELECT cp1 FROM records")
 				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
 				PrintToServer("cp1")
 			}
@@ -2481,7 +2482,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[2][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp2 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp2 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp2 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp2 FROM records")
 				gD_mysql.Query(SQLCPSelect2, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[2][other] = true
@@ -2507,7 +2509,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[3][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp3 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp3 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp3 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp3 FROM records")
 				gD_mysql.Query(SQLCPSelect3, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[3][other] = true
@@ -2533,7 +2536,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[4][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp4 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp4 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp4 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp4 FROM records")
 				gD_mysql.Query(SQLCPSelect4, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[4][other] = true
@@ -2559,7 +2563,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[5][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp5 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp5 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp5 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp5 FROM records")
 				gD_mysql.Query(SQLCPSelect5, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[5][other] = true
@@ -2585,7 +2590,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[6][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp6 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp6 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp6 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp6 FROM records")
 				gD_mysql.Query(SQLCPSelect6, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[6][other] = true
@@ -2611,7 +2617,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[7][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp7 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp7 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp7 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp7 FROM records")
 				gD_mysql.Query(SQLCPSelect7, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[7][other] = true
@@ -2637,7 +2644,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[8][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp8 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp8 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp8 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp8 FROM records")
 				gD_mysql.Query(SQLCPSelect8, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[8][other] = true
@@ -2663,7 +2671,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[9][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp9 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp9 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp9 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp9 FROM records")
 				gD_mysql.Query(SQLCPSelect9, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[9][other] = true
@@ -2689,7 +2698,8 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[10][gI_partner[other]] = gF_Time[other]
 				char sQuery[512]
 				//Format(sQuery, 512, "SELECT MIN(time), cp10 FROM records WHERE map = '%s'", gS_map)
-				Format(sQuery, 512, "SELECT cp10 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				//Format(sQuery, 512, "SELECT cp10 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+				Format(sQuery, 512, "SELECT cp10 FROM records")
 				gD_mysql.Query(SQLCPSelect10, sQuery, GetClientSerial(other))
 			}
 			//gB_cp[10][other] = true
@@ -3269,6 +3279,22 @@ void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any d
 void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "1. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "1. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
@@ -3317,6 +3343,22 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp2 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect2_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "2. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "2. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect2_2(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
@@ -3359,6 +3401,22 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data
 }
 
 void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp3 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect3_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "3. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "3. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect3_2(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
@@ -3405,6 +3463,22 @@ void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data
 void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp4 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect4_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "4. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "4. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect4_2(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
@@ -3447,6 +3521,22 @@ void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data
 }
 
 void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp5 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect5_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "5. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "5. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect5_2(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
@@ -3493,6 +3583,22 @@ void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data
 void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp6 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect6_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "6. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "6. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect6_2(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
@@ -3532,9 +3638,25 @@ void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data
 		PrintToChat(gI_partner[other], "6. Checkpoint: +00:00:00")
 		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
-}
+} 
 
 void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp7 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect7_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "7. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "7. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect7_2(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
@@ -3581,6 +3703,22 @@ void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data
 void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp8 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect8_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "8. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "8. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect8_2(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
@@ -3625,6 +3763,22 @@ void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data
 void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp9 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect9_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "9. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "9. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect9_2(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
@@ -3667,6 +3821,22 @@ void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data
 }
 
 void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any data)
+{
+	int other = GetClientFromSerial(data)
+	char sQuery[512]
+	if(results.FetchRow())
+	{
+		Format(sQuery, 512, "SELECT cp10 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
+		gD_mysql(SQLCPSelect10_2, sQuery, GetClientSerial(other))
+	}
+	else
+	{
+		PrintToChat(other, "10. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "10. Checkpoint: +00:00:00")
+	}
+}
+
+void SQLCPSelect10_2(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
 	if(results.FetchRow())
