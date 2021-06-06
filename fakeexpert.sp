@@ -3347,7 +3347,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp2 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect2_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect2_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3407,7 +3407,7 @@ void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp3 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect3_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect3_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3467,7 +3467,7 @@ void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp4 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect4_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect4_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3527,7 +3527,7 @@ void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp5 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect5_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect5_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3587,7 +3587,7 @@ void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp6 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect6_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect6_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3647,7 +3647,7 @@ void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp7 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect7_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect7_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3707,7 +3707,7 @@ void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp8 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect8_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect8_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3767,7 +3767,7 @@ void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp9 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect9_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect9_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
@@ -3827,7 +3827,7 @@ void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any dat
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp10 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect10_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect10_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
