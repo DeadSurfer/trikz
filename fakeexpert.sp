@@ -2312,7 +2312,7 @@ Action SDKEndTouch(int entity, int other)
 	{
 		//PrintToServer("preStart endtouch.")
 		//if(gB_insideZone[other] && gB_insideZone[gI_partner[other]])
-		if(gB_readyToStart[other])
+		if(0 < other <= MaxClients && gB_readyToStart[other])
 		{
 			gB_state[other] = true
 			gB_state[gI_partner[other]] = true
