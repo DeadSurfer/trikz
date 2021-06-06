@@ -3308,7 +3308,9 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 	}
 	else
 	{
-		PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
+		PrintToChat(other, "1. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "1. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
 }
 
@@ -3348,6 +3350,12 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data
 		}
 		//gB_CP[2] = true
 	}
+	else
+	{
+		PrintToChat(other, "2. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "2. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
+	}
 }
 
 void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data)
@@ -3385,6 +3393,12 @@ void SQLCPSelect3(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(gI_partner[other], "3. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		//gB_CP[3] = true
+	}
+	else
+	{
+		PrintToChat(other, "3. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "3. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
 }
 
@@ -3424,6 +3438,12 @@ void SQLCPSelect4(Database db, DBResultSet results, const char[] error, any data
 		}
 		//gB_CP[4] = true
 	}
+	else
+	{
+		PrintToChat(other, "4. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "4. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
+	}
 }
 
 void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data)
@@ -3461,6 +3481,12 @@ void SQLCPSelect5(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(gI_partner[other], "5. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		//gB_CP[5] = true
+	}
+	else
+	{
+		PrintToChat(other, "5. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "5. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
 }
 
@@ -3500,6 +3526,12 @@ void SQLCPSelect6(Database db, DBResultSet results, const char[] error, any data
 		}
 		//gB_CP[6] = true
 	}
+	else
+	{
+		PrintToChat(other, "6. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "6. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
+	}
 }
 
 void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data)
@@ -3537,6 +3569,12 @@ void SQLCPSelect7(Database db, DBResultSet results, const char[] error, any data
 			PrintToChat(gI_partner[other], "7. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		//gB_CP[7] = true
+	}
+	else
+	{
+		PrintToChat(other, "7. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "7. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
 }
 
@@ -3576,6 +3614,12 @@ void SQLCPSelect8(Database db, DBResultSet results, const char[] error, any data
 		}
 		//gB_CP[8] = true
 	}
+	else
+	{
+		PrintToChat(other, "8. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "8. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
+	}
 }
 
 void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data)
@@ -3614,6 +3658,12 @@ void SQLCPSelect9(Database db, DBResultSet results, const char[] error, any data
 		}
 		//gB_CP[9] = true
 	}
+	else
+	{
+		PrintToChat(other, "9. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "9. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
+	}
 }
 
 void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any data)
@@ -3651,6 +3701,12 @@ void SQLCPSelect10(Database db, DBResultSet results, const char[] error, any dat
 			PrintToChat(gI_partner[other], "10. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
 		}
 		//gB_CP[10] = true
+	}
+	else
+	{
+		PrintToChat(other, "10. Checkpoint: +00:00:00")
+		PrintToChat(gI_partner[other], "10. Checkpoint: +00:00:00")
+		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
 }
 
