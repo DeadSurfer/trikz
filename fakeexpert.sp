@@ -3283,7 +3283,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
 	if(results.FetchRow())
 	{
 		Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql(SQLCPSelect_2, sQuery, GetClientSerial(other))
+		gD_mysql.Query(SQLCPSelect_2, sQuery, GetClientSerial(other))
 	}
 	else
 	{
