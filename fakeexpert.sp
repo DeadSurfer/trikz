@@ -147,7 +147,6 @@ public void OnPluginStart()
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
-	GetCurrentMap(gS_map, 192)
 	//Database.Connect(SQLConnect, "fakeexpert")
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
@@ -536,6 +535,7 @@ public void OnMapStart()
 	//gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	Database.Connect(SQLConnect, "fakeexpert")
 	gI_cpCount = 0
+	GetCurrentMap(gS_map, 192)
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
