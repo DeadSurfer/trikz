@@ -2970,11 +2970,12 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 	int other = GetClientFromSerial(dp.ReadCell())
 	int playerid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(gI_partner[other])
+	char sPlace[32]
 	char sQuery[512]
 	if(results.FetchRow())
 	{
 		float srTime = results.FetchFloat(0)
-		char sPlace[32]
+		//char sPlace[32]
 		if(timeClient < srTime)
 		{
 			float timeDiff = srTime - timeClient
