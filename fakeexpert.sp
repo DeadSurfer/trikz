@@ -533,9 +533,11 @@ public void OnMapStart()
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
 	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	//gI_halo = PrecacheModel("sprites/glow01.vmt", true)
-	Database.Connect(SQLConnect, "fakeexpert")
-	gI_cpCount = 0
 	GetCurrentMap(gS_map, 192)
+	gI_cpCount = 0
+	Database.Connect(SQLConnect, "fakeexpert")
+	//gI_cpCount = 0
+	//GetCurrentMap(gS_map, 192)
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
@@ -2764,7 +2766,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 		DataPack dp2 = new DataPack()
 		dp2.WriteCell(GetClientSerial(other))
 		dp2.WriteFloat(timeClient)
-		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, timeClient, gF_timeDiffCPWin[1][other], gF_timeDiffCPWin[2][other], gF_timeDiffCPWin[3][other], gF_timeDiffCPWin[4][other], gF_timeDiffCPWin[5][other], gF_timeDiffCPWin[6][other], gF_timeDiffCPWin[7][other], gF_timeDiffCPWin[8][other], gF_timeDiffCPWin[9][other], gF_timeDiffCPWin[10][other], gS_map, GetTime())
+		Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, timeClient, gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 		gD_mysql.Query(SQLInsertRecord, sQuery, dp2)
 	}
 }
