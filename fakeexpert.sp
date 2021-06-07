@@ -32,8 +32,8 @@ software and other kinds of works.
 
 //bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
-float gF_vec1[3]
-float gF_vec2[3]
+float gF_vec1[2][3]
+float gF_vec2[2][3]
 //int gI_beam
 //int gI_halo
 //#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
@@ -594,8 +594,6 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, sQuery, client)
 		//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		//gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
-		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
-		gD_mysql.Query(SQLGetServerRecord, sQuery)
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
@@ -1035,9 +1033,9 @@ void createstart()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2[0] + gF_vec1[0]) / 2.0
-	center[1] = (gF_vec2[1] + gF_vec1[1]) / 2.0
-	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2.0
+	center[0] = (gF_vec2[0][0] + gF_vec1[0][0]) / 2.0
+	center[1] = (gF_vec2[0][1] + gF_vec1[0][1]) / 2.0
+	center[2] = (gF_vec2[0][2] + gF_vec1[0][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1054,11 +1052,11 @@ void createstart()
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	//mins[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
-	mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	mins[0] = (gF_vec1[0][0] - gF_vec2[0][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//mins[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	mins[1] = (gF_vec1[0][1] - gF_vec2[0][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0	
 	//mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
@@ -1078,13 +1076,13 @@ void createstart()
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	float maxs[3]
 	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
-	maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	maxs[0] = (gF_vec1[0][0] - gF_vec2[0][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	maxs[1] = (gF_vec1[0][1] - gF_vec2[0][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
-	maxs[2] = gF_vec1[2] - gF_vec2[2]
+	maxs[2] = gF_vec1[0][2] - gF_vec2[0][2]
 	if(maxs[2] < 0.0)
 		maxs[2] = maxs[2] * -1.0
 	//maxs[2] = maxs[2] -= 128.0
@@ -1107,13 +1105,13 @@ Action cmd_tp1(int client, int args)
 {
 	float maxs[3]
 	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
-	maxs[0] = gF_vec1[0] - gF_vec2[0]
+	maxs[0] = gF_vec1[0][0] - gF_vec2[0][0]
 	if(maxs[0] > 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = gF_vec1[1] - gF_vec2[1]
+	maxs[1] = gF_vec1[0][1] - gF_vec2[0][1]
 	if(maxs[1] > 0.0)
 		maxs[1] = maxs[1] * -1.0
-	maxs[2] = gF_vec1[2] - gF_vec2[2]
+	maxs[2] = gF_vec1[0][2] - gF_vec2[0][2]
 	if(maxs[2] > 0.0)
 		maxs[2] = maxs[2] * -1.0
 	//maxs[2] = maxs[2] -= 128.0
@@ -1146,9 +1144,9 @@ void createend()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2[0] + gF_vec1[0]) / 2
-	center[1] = (gF_vec2[1] + gF_vec1[1]) / 2
-	center[2] = (gF_vec2[2] + gF_vec1[2]) / 2
+	center[0] = (gF_vec2[1][0] + gF_vec1[1][0]) / 2
+	center[1] = (gF_vec2[1][1] + gF_vec1[1][1]) / 2
+	center[2] = (gF_vec2[1][2] + gF_vec1[1][2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -1161,11 +1159,11 @@ void createend()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	mins[0] = (gF_vec1[1][0] - gF_vec2[1][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	mins[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -1176,10 +1174,10 @@ void createend()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1[0] - gF_vec2[0]) / 2.0
+	maxs[0] = (gF_vec1[1][0] - gF_vec2[1][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1[1] - gF_vec2[1]) / 2.0
+	maxs[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
@@ -1198,12 +1196,12 @@ Action cmd_vecmins(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
-		GetClientAbsOrigin(client, gF_vec1)
-		PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
+		GetClientAbsOrigin(client, gF_vec1[0])
+		PrintToServer("vec1: %f %f %f", gF_vec[0][0], gF_vec1[0][1], gF_vec1[0][2])
 		char sQuery[512]
 		args = 0
 		//gI_zonetype = 0
-		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
 	}
 	return Plugin_Handled
@@ -1214,11 +1212,11 @@ Action cmd_vecminsend(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
-		GetClientAbsOrigin(client, gF_vec1)
+		GetClientAbsOrigin(client, gF_vec1[1])
 		//PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		char sQuery[512]
 		args = 1
-		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[0], gF_vec1[1], gF_vec1[2], gS_map, args)
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
 	}
 	return Plugin_Handled
@@ -1254,12 +1252,12 @@ Action cmd_vecmaxs(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
-		GetClientAbsOrigin(client, gF_vec2)
+		GetClientAbsOrigin(client, gF_vec2[0])
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
 		args = 0
 		//PrintToServer("%s", gS_map)
-		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0][0], gF_vec2[0][1], gF_vec2[0][2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
 	}
 	return Plugin_Handled
@@ -1270,11 +1268,11 @@ Action cmd_vecmaxsend(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
-		GetClientAbsOrigin(client, gF_vec2)
+		GetClientAbsOrigin(client, gF_vec2[1])
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
 		args = 1
-		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[0], gF_vec2[1], gF_vec2[2], gS_map, args)
+		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[1][0], gF_vec2[1][1], gF_vec2[1][2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
 	}
 	return Plugin_Handled
@@ -4108,6 +4106,8 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql = db
 	ForceZonesSetup()
 	gB_pass = true
+	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
+	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
 
 /*Action cmd_manualinsert(int args)
@@ -4141,19 +4141,19 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 {
 	if(results.FetchRow())
 	{
-		gF_vec1[0] = results.FetchFloat(0)
-		gF_vec1[1] = results.FetchFloat(1)
-		gF_vec1[2] = results.FetchFloat(2)
-		gF_vec2[0] = results.FetchFloat(3)
-		gF_vec2[1] = results.FetchFloat(4)
-		gF_vec2[2] = results.FetchFloat(5)
+		gF_vec1[0][0] = results.FetchFloat(0)
+		gF_vec1[0][1] = results.FetchFloat(1)
+		gF_vec1[0][2] = results.FetchFloat(2)
+		gF_vec2[0][0] = results.FetchFloat(3)
+		gF_vec2[0][1] = results.FetchFloat(4)
+		gF_vec2[0][2] = results.FetchFloat(5)
 		//cmd_createstart(0, 0)
 		createstart()
 		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 		float center[3]
-		center[0] = (gF_vec2[0] + gF_vec1[0]) / 2.0
-		center[1] = (gF_vec2[1] + gF_vec1[1]) / 2.0
-		center[2] = (gF_vec2[2] + gF_vec1[2]) / 2.0
+		center[0] = (gF_vec2[0][0] + gF_vec1[0][0]) / 2.0
+		center[1] = (gF_vec2[0][1] + gF_vec1[0][1]) / 2.0
+		center[2] = (gF_vec2[0][2] + gF_vec1[0][2]) / 2.0
 		//gF_vecStart[0] = gF_vec1[0]
 		//gF_vecStart[1] = gF_vec1[1]
 		gF_vecStart[0] = center[0]
@@ -4170,13 +4170,13 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 {
 	if(results.FetchRow())
 	{
-		gF_vec1[0] = results.FetchFloat(0)
-		gF_vec1[1] = results.FetchFloat(1)
-		gF_vec1[2] = results.FetchFloat(2)
-		gF_vec2[0] = results.FetchFloat(3)
-		gF_vec2[1] = results.FetchFloat(4)
-		gF_vec2[2] = results.FetchFloat(5)
-		PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
+		gF_vec1[1][0] = results.FetchFloat(0)
+		gF_vec1[1][1] = results.FetchFloat(1)
+		gF_vec1[1][2] = results.FetchFloat(2)
+		gF_vec2[1][0] = results.FetchFloat(3)
+		gF_vec2[1][1] = results.FetchFloat(4)
+		gF_vec2[1][2] = results.FetchFloat(5)
+		PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[1][0], gF_vec2[1][1], gF_vec2[1][2])
 		//cmd_createend(0, 0)
 		createend()
 	}
