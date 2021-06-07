@@ -2436,7 +2436,7 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				char sQuery[512]
 				//Format(sQuerySR, 512, "SELECT time FROM records WHERE ")
 				//Format(sQuery, 512, "INSERT
@@ -2507,6 +2507,7 @@ Action SDKStartTouch(int entity, int other)
 						}
 						Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 						gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
+						gF_ServerRecord = gF_Time[other]
 					}
 					else
 					{
