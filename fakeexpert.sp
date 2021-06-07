@@ -158,6 +158,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
 	RegConsoleCmd("sm_tp1", cmd_tp1)
 	RegServerCmd("sm_manualcp", cmd_manualcp)
+	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	//Database.Connect(SQLConnect, "fakeexpert")
@@ -1230,6 +1231,21 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, any dat
 	char sQuery[512]
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, gI_type, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, gI_type)
 	gD_mysql.Query(SQLSetZones, sQuery)
+}
+
+Action cmd_deleteallcp(int client, int args)
+{
+	int steamid = GetSteamAccountID(client)
+	if(steamid == GetConVarInt(gCV_steamid) //https://sm.alliedmods.net/new-api/
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "DELETE FROM cp WHERE map = '%s'", gS_map)
+		gD_mysql.Query(SQLDeleteAllCP, sQuery)
+	}
+}
+
+void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 Action cmd_vecminsend(int client, int args)
