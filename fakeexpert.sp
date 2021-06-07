@@ -1226,6 +1226,7 @@ Action cmd_vecmins(int client, int args)
 
 void SQLDeleteZone(Database db, DBResultSet results, const char[] error, any data)
 {
+	char sQuery[512]
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, gI_type, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, gI_type)
 	gD_mysql.Query(SQLSetZones, sQuery)
 }
@@ -1254,6 +1255,7 @@ Action cmd_vecminsend(int client, int args)
 
 void SQLDeleteZone2(Database db, DBResultSet results, const char[] error, any data)
 {
+	char sQuery[512]
 	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, gI_type, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2], gS_map, gI_type)
 	gD_mysql.Query(SQLSetZones, sQuery)
 }
