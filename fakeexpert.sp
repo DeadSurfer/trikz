@@ -137,7 +137,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
-	//RegServerCmd("sm_manualinsert", cmd_manualinsert)
+	RegServerCmd("sm_manualinsert", cmd_manualinsert)
 	//RegConsoleCmd("sm_gent", cmd_gent)
 	//RegConsoleCmd("sm_vectest", cmd_vectest)
 	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
@@ -1207,6 +1207,7 @@ Action cmd_vecmins(int client, int args)
 		//gI_zonetype = 0
 		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
+		//Format(sQuery, 512, "SELECT
 	}
 	return Plugin_Handled
 }
@@ -4127,10 +4128,10 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
 
-/*Action cmd_manualinsert(int args)
+Action cmd_manualinsert(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%', 0)", gS_map)
+	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
 	gD_mysql.Query(SQLManualInsert, sQuery)
 	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
 	gD_mysql.Query(SQLManualInsert, sQuery)
@@ -4138,7 +4139,7 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
 {
-}*/
+}
 
 //void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 void ForceZonesSetup()
