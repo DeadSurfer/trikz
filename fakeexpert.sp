@@ -683,17 +683,17 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		int steamid = GetSteamAccountID(client)
 		char sName[64]
 		GetClientName(client, sName, 64)
-		char sQuery[512]
+		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
 		if(!results.FetchRow())
 		{
-			Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
 		}
 		else
 		{
 			//char sName[64]
 			//GetClientName(client, sName, 64)
-			Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			gD_mysql.Query(SQLUpdateUsername, sQuery)
 		}
 	}
@@ -1340,7 +1340,7 @@ Action cmd_cpmaxs(int client, int args)
 void SQLCPUpdate(Database db, DBResultSet results, const char[] error, any data)
 {
 }
-
+//https://forums.alliedmods.net/showthread.php?t=261378
 Action cmd_manualcp(int args)
 {
 	char sQuery[512]
