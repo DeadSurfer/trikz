@@ -2473,7 +2473,7 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 								{
-									gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+									//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
 									PrintToServer("%f", gF_timeDiffCPWin[i][other])
 									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][gI_partner[other]] - gF_TimeCP[gI_partner[other]][i]
 									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
@@ -2491,7 +2491,7 @@ Action SDKStartTouch(int entity, int other)
 								{
 									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
 									//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
-									gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
 									//PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
 									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
@@ -2531,7 +2531,7 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(gF_TimeCP[i][other] < gF_srCPTime[i][other]) //+15 -13 -6 -49 = -53
 								{
-									gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+									//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
 									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
 									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 									//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
@@ -2549,7 +2549,7 @@ Action SDKStartTouch(int entity, int other)
 									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
 									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] 
 									//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
-									gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
 									//PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
 									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
 									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
