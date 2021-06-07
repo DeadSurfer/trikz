@@ -2562,7 +2562,7 @@ Action SDKStartTouch(int entity, int other)
 								}
 							}
 						}
-						gF_ServerRecord = gF_Time[other]
+						//gF_ServerRecord = gF_Time[other]
 					}
 				}
 				else if(gF_ServerRecord == 0.0)
@@ -2571,7 +2571,7 @@ Action SDKStartTouch(int entity, int other)
 					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 					int personalSecond = RoundToFloor(gF_Time[other]) % 60
-					PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
+					PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 					for(int i = 1; i <= 10; i++)
 					{
 						char sPlace[32]
@@ -2611,11 +2611,11 @@ Action SDKStartTouch(int entity, int other)
 						}
 					}
 					//PrintToServer("2")
-					DataPack dp2 = new DataPack()
-					dp2.WriteCell(GetClientSerial(other))
-					dp2.WriteFloat(gF_Time[other])
+					//DataPack dp2 = new DataPack()
+					//dp2.WriteCell(GetClientSerial(other))
+					//dp2.WriteFloat(gF_Time[other])
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
-					gD_mysql.Query(SQLInsertRecord, sQuery, dp2)
+					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
 				
 				//Format(sQuery, 512, "SELECT MIN(time) FROM records1 WHERE map = '%s'", gS_map)
@@ -3182,7 +3182,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 	}
 }
 
-void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("Record inserted.")
 }
