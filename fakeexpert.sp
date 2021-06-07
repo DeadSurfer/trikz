@@ -2427,6 +2427,7 @@ Action SDKStartTouch(int entity, int other)
 				//gD_mysql.Query(SQLSR, sQuery, dp)
 				int playerid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
+				char sPlace[32]
 				if(gF_ServerRecord > 0.0)
 				{
 					if(gF_haveRecord[other] > gF_Time[other])
