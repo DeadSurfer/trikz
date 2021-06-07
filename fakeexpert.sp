@@ -1347,7 +1347,7 @@ Action cmd_cpmins(int client, int args)
 		char sQuery[512]
 		//Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
 		gI_cpnum = cpnum
-		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i", gI_cpnum)
+		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", gI_cpnum, gS_map)
 		gD_mysql.Query(SQLCPRemove, sQuery)
 	}
 	return Plugin_Handled
