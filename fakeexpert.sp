@@ -2363,8 +2363,8 @@ Action SDKStartTouch(int entity, int other)
 		//gB_insideZone[other] = true //Expert-Zone idea.
 		//gB_passzone[other] = false
 		//PrintToServer("%i", other)
-		//PrintToServer("SDKStartTouch %i %i", entity, other)
-		PrintToServer("ifcp1")
+		PrintToServer("SDKStartTouch %i %i", entity, other)
+		PrintToServer("ifcp1_startTouch")
 		char sTrigger[32]
 		
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
@@ -2390,7 +2390,7 @@ Action SDKStartTouch(int entity, int other)
 				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+				PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				char sQuery[512]
 				//Format(sQuerySR, 512, "SELECT time FROM records WHERE ")
 				//Format(sQuery, 512, "INSERT
@@ -2732,7 +2732,7 @@ void SQLSR(Database db, DBResultSet results, const char[] error, DataPack dp)
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		//PrintToServer("1")
+		PrintToServer("1")
 		char sMap[192]
 		results.FetchString(0, sMap, 192)
 		if(StrEqual(gS_map, sMap))
@@ -2804,7 +2804,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	float timeClient = dp.ReadFloat()
 	//int playerid = GetSteamAccountID(other)
 	//int partnerid = GetSteamAccountID(gI_partner[other])
-	//PrintToChatAll
+	PrintToChatAll("updatex123")
 	char sQuery[512]
 	if(results.FetchRow())
 	{
@@ -2982,6 +2982,7 @@ void SQLInsertRecord2(Database db, DBResultSet results, const char[] error, Data
 	int partnerid = GetSteamAccountID(gI_partner[other])
 	char sPlace[32]
 	char sQuery[512]
+	PrintToServer("213ci34984|")
 	if(results.FetchRow())
 	{
 		float srTime = results.FetchFloat(0)
