@@ -1236,7 +1236,7 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, any dat
 Action cmd_deleteallcp(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid) //https://sm.alliedmods.net/new-api/
+	if(steamid == GetConVarInt(gCV_steamid)) //https://sm.alliedmods.net/new-api/
 	{
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM cp WHERE map = '%s'", gS_map)
