@@ -2454,6 +2454,7 @@ Action SDKStartTouch(int entity, int other)
 				{
 					if(gF_haveRecord[other] > gF_Time[other])
 					{
+						PrintToServer("12348h394")
 						//float timeDiff = FloatAbs(srTime - timeClient)
 						//PrintToServer("2x2x2: %f", timeDiff)
 						//float timeDiff = FloatAbs(timeClient - srTime)
@@ -2511,6 +2512,7 @@ Action SDKStartTouch(int entity, int other)
 					}
 					else
 					{
+						PrintToServer("213xc3933")
 						//float timeDiff = FloatAbs(srTime - timeClient)
 						//float timeDiff = FloatAbs(timeClient - srTime)
 						//float timeDiff = srTime - timeClient
@@ -2567,6 +2569,7 @@ Action SDKStartTouch(int entity, int other)
 				}
 				else if(gF_ServerRecord == 0.0)
 				{
+					PrintToServer("x123x")
 					gF_ServerRecord = gF_Time[other]
 					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
