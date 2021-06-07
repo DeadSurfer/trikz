@@ -84,7 +84,7 @@ float gF_srCPTime[11][MAXPLAYERS + 1]
 //bool gB_CPprint[10]
 
 float gF_haveRecord[MAXPLAYERS + 1]
-float gF_serverRecord
+float gF_ServerRecord
 
 public Plugin myinfo =
 {
@@ -618,10 +618,10 @@ public void OnClientDisconnect(int client)
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
-	gF_serverRecord = 0.0
+	gF_ServerRecord = 0.0
 	if(results.FetchRow())
 	{
-		gF_serverRecord = results.FetchFloat(0)
+		gF_ServerRecord = results.FetchFloat(0)
 	}
 }
 
@@ -2427,17 +2427,17 @@ Action SDKStartTouch(int entity, int other)
 				//gD_mysql.Query(SQLSR, sQuery, dp)
 				int playerid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
-				if(gF_serverRecord > 0.0)
+				if(gF_ServerRecord > 0.0)
 				{
 					if(gF_haveRecord[other] > gF_Time[other])
 					{
 						//float timeDiff = FloatAbs(srTime - timeClient)
 						//PrintToServer("2x2x2: %f", timeDiff)
 						//float timeDiff = FloatAbs(timeClient - srTime)
-						float timeDiff = gF_serverRecord - gF_Time[other]
-						int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-						int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-						int personalSecond = RoundToFloor(timeClient) % 60
+						float timeDiff = gF_ServerRecord - gF_Time[other]
+						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+						int personalSecond = RoundToFloor(gF_Time[other]) % 60
 						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 						int srSecond = RoundToFloor(timeDiff) % 60
@@ -2490,10 +2490,10 @@ Action SDKStartTouch(int entity, int other)
 						//float timeDiff = FloatAbs(srTime - timeClient)
 						//float timeDiff = FloatAbs(timeClient - srTime)
 						//float timeDiff = srTime - timeClient
-						float timeDiff = gF_Time[other] - gF_serverRecord
-						int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-						int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-						int personalSecond = RoundToFloor(timeClient) % 60
+						float timeDiff = gF_Time[other] - gF_ServerRecord
+						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+						int personalSecond = RoundToFloor(gF_Time[other]) % 60
 						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 						int srSecond = RoundToFloor(timeDiff) % 60
@@ -2540,9 +2540,9 @@ Action SDKStartTouch(int entity, int other)
 						}
 					}
 				}
-				else if(gF_serverRecord == 0.0)
+				else if(gF_ServerRecord == 0.0)
 				{
-					gF_serverRecord = gF_Time[other]
+					gF_ServerRecord = gF_Time[other]
 					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 					int personalSecond = RoundToFloor(gF_Time[other]) % 60
