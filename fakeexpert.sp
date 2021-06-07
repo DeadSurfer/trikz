@@ -628,6 +628,7 @@ void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, an
 void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
+	gF_haveRecord[client] = 0.0
 	if(results.FetchRow())
 	{
 		gF_haveRecord[client] = results.FetchFloat(0)
@@ -2417,13 +2418,181 @@ Action SDKStartTouch(int entity, int other)
 				char sQuery[512]
 				//Format(sQuerySR, 512, "SELECT time FROM records WHERE ")
 				//Format(sQuery, 512, "INSERT
-				Format(sQuery, 512, "SELECT map FROM records")
+				//Format(sQuery, 512, "SELECT map FROM records")
 				//DataPack dp3.WriteCell(gF_Time[other])
 				//DataPack dp3.WriteCell
-				DataPack dp = new DataPack()
-				dp.WriteFloat(gF_Time[other])
-				dp.WriteCell(GetClientSerial(other))
-				gD_mysql.Query(SQLSR, sQuery, dp)
+				//DataPack dp = new DataPack()
+				//dp.WriteFloat(gF_Time[other])
+				//dp.WriteCell(GetClientSerial(other))
+				//gD_mysql.Query(SQLSR, sQuery, dp)
+				int playerid = GetSteamAccountID(other)
+				int partnerid = GetSteamAccountID(gI_partner[other])
+				if(gF_ServerRecord > 0.0)
+				{
+					if(gF_haveRecord[other] > gF_Time[other])
+					{
+						//float timeDiff = FloatAbs(srTime - timeClient)
+						//PrintToServer("2x2x2: %f", timeDiff)
+						//float timeDiff = FloatAbs(timeClient - srTime)
+						float timeDiff = gF_ServerRecord - gF_Time[other]
+						int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+						int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+						int personalSecond = RoundToFloor(timeClient) % 60
+						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+						int srSecond = RoundToFloor(timeDiff) % 60
+						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+						for(int i = 1; i <= 10; i++)
+						{
+							IntToString(i, sPlace, 32)
+							if(gB_cp[i][other])
+							{
+								if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
+								{
+									gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+									PrintToServer("%f", gF_timeDiffCPWin[i][other])
+									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][gI_partner[other]] - gF_TimeCP[gI_partner[other]][i]
+									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+									//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+									//int personalSecond = RoundToFloor(timeClient) % 60
+									int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+									int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+									int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+									//IntToString(i, sPlace, 32)
+									//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								}
+								else
+								{
+									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+									//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+									gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+									//PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
+									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+									//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+									//int personalSecond = RoundToFloor(timeClient) % 60
+									int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+									int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+									int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+									//PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									//PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								}
+							}
+						}
+						Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+						gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
+					}
+					else
+					{
+						//float timeDiff = FloatAbs(srTime - timeClient)
+						//float timeDiff = FloatAbs(timeClient - srTime)
+						//float timeDiff = srTime - timeClient
+						float timeDiff = gF_Time[other] - gF_ServerRecord
+						int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+						int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+						int personalSecond = RoundToFloor(timeClient) % 60
+						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+						int srSecond = RoundToFloor(timeDiff) % 60
+						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+						for(int i = 1; i <= 10; i++)
+						{
+							IntToString(i, sPlace, 32)
+							if(gB_cp[i][other])
+							{
+								if(gF_TimeCP[i][other] < gF_srCPTime[i][other]) //+15 -13 -6 -49 = -53
+								{
+									gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+									//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+									//int personalSecond = RoundToFloor(timeClient) % 60
+									int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+									int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+									int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+									//char sPlace[32]
+									PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								}
+								else
+								{
+									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+									//gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] 
+									//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+									gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+									//PrintToServer("asd2123: %f", gF_timeDiffCPWin[i][other])
+									//gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+									//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+									//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+									//int personalSecond = RoundToFloor(timeClient) % 60
+									int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+									int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+									int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+									PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									//PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+									//PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								}
+							}
+						}
+					}
+				}
+				else if(gF_ServerRecord == 0.0)
+				{
+					gF_ServerRecord = gF_Time[other]
+					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+					int personalSecond = RoundToFloor(gF_Time[other]) % 60
+					PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
+					for(int i = 1; i <= 10; i++)
+					{
+						char sPlace[32]
+						IntToString(i, sPlace, 32)
+						if(gB_cp[i][other])
+						{
+							//if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
+							{
+								//gF_timeDiffCPWin[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
+								//PrintToServer("%f", gF_timeDiffCPWin[i][other])
+								//gF_timeDiffCPWin[i][gI_partner[other]] = gF_srCPTime[i][other] - gF_TimeCP[gI_partner[other]][i]
+								//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+								//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+								//int personalSecond = RoundToFloor(timeClient) % 60
+								//int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+								//int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+								//int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+								//IntToString(i, sPlace, 32)
+								//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("%s. Checkpoint: +00:00:00", sPlace)
+								//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+							}
+							/*else
+							{
+								gF_timeDiffCPWin[i][other] = gF_TimeCP[i][other] - gF_srCPTime[i][other]
+								PrintToServer("%f d33:", gF_timeDiffCPWin[i][other])
+								gF_timeDiffCPWin[i][gI_partner[other]] = gF_TimeCP[gI_partner[other]][i] - gF_srCPTime[i][other]
+								//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
+								//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
+								//int personalSecond = RoundToFloor(timeClient) % 60
+								int srCPHour = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 3600) % 24
+								int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
+								int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
+								PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+							}*/
+						}
+					}
+					//PrintToServer("2")
+					DataPack dp2 = new DataPack()
+					dp2.WriteCell(GetClientSerial(other))
+					dp2.WriteFloat(timeClient)
+					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+					gD_mysql.Query(SQLInsertRecord, sQuery, dp2)
+				}
+				
 				//Format(sQuery, 512, "SELECT MIN(time) FROM records1 WHERE map = '%s'", gS_map)
 				//gD_mysql.Query(SQL123x, sQuery)
 				//PrintTo
