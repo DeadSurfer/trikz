@@ -86,6 +86,8 @@ float gF_srCPTime[11][MAXPLAYERS + 1]
 float gF_haveRecord[MAXPLAYERS + 1]
 float gF_ServerRecord
 
+ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -97,6 +99,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_tr", cmd_trikz)
 	RegConsoleCmd("sm_tri", cmd_trikz)
