@@ -84,6 +84,7 @@ float gF_srCPTime[11][MAXPLAYERS + 1]
 //bool gB_CPprint[10]
 
 float gF_haveRecord[MAXPLAYERS + 1]
+float gF_serverRecord
 
 public Plugin myinfo =
 {
@@ -593,6 +594,10 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, sQuery, client)
 		//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		//gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
+		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
+		gD_mysql.Query(SQLGetServerRecord, sQuery)
+		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
+		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
 	/*for(int i = 1; i <= 2048; i++)
 	{
@@ -609,6 +614,24 @@ public void OnClientDisconnect(int client)
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
+}
+
+void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
+{
+	gF_ServerRecord = 0.0
+	if(results.FetchRow())
+	{
+		gF_ServerRecord = results.FetchFloat(0)
+	}
+}
+
+void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
+{
+	int client = GetClientFromSerial(data)
+	if(results.FetchRow())
+	{
+		gF_haveRecord[client] = results.FetchFloat(0)
+	}
 }
 
 /*void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -2805,6 +2828,7 @@ void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataP
 	//int playerid = GetSteamAccountID(other)
 	//int partnerid = GetSteamAccountID(gI_partner[other])
 	PrintToChatAll("updatex123")
+	PrintToServer("123xkn2349")
 	char sQuery[512]
 	if(results.FetchRow())
 	{
@@ -2966,7 +2990,7 @@ void SQLUpdateRecord2(Database db, DBResultSet results, const char[] error, Data
 
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	//PrintToServer("Record inserted.")
+	PrintToServer("Record inserted.")
 }
 
 void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, DataPack dp)
