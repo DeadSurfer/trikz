@@ -4128,13 +4128,18 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
 
-Action cmd_manualinsert(int args)
+Action cmd_manualinsert(int client, int args)
 {
-	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
-	gD_mysql.Query(SQLManualInsert, sQuery)
-	Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
-	gD_mysql.Query(SQLManualInsert, sQuery)
+	int steamid = GetSteamAccountID(client)
+	if(steamid == 120192594)
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
+		gD_mysql.Query(SQLManualInsert, sQuery)
+		Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
+		gD_mysql.Query(SQLManualInsert, sQuery)
+	}
+	return Plugin_Handled
 }
 
 void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
