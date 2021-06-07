@@ -88,6 +88,8 @@ float gF_ServerRecord
 
 ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 
+int gI_type
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -1210,13 +1212,22 @@ Action cmd_vecmins(int client, int args)
 		//gF_vec1[0][2] = vec[2]
 		PrintToServer("vec1: %f %f %f", gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2])
 		char sQuery[512]
-		args = 0
+		args = 0 //https://www.w3schools.com/sql/sql_delete.asp
+		gI_type = args
 		//gI_zonetype = 0
-		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, args)
-		gD_mysql.Query(SQLSetZones, sQuery)
+		//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, args)
+		//gD_mysql.Query(SQLSetZones, sQuery)
+		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = %i", gS_map, args)
+		gD_mysql.Query(SQLDeleteZone, sQuery)
 		//Format(sQuery, 512, "SELECT
 	}
 	return Plugin_Handled
+}
+
+void SQLDeleteZone(Database db, DBResultSet results, const char[] error, any data)
+{
+	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, gI_type, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, gI_type)
+	gD_mysql.Query(SQLSetZones, sQuery)
 }
 
 Action cmd_vecminsend(int client, int args)
@@ -1232,10 +1243,19 @@ Action cmd_vecminsend(int client, int args)
 		//PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		char sQuery[512]
 		args = 1
-		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2], gS_map, args)
-		gD_mysql.Query(SQLSetZones, sQuery)
+		gI_type = args
+		//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2], gS_map, args)
+		//gD_mysql.Query(SQLSetZones, sQuery)
+		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = %i", gS_map, args)
+		gD_mysql.Query(SQLDeleteZone2, sQuery)
 	}
 	return Plugin_Handled
+}
+
+void SQLDeleteZone2(Database db, DBResultSet results, const char[] error, any data)
+{
+	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, gI_type, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2], gS_map, gI_type)
+	gD_mysql.Query(SQLSetZones, sQuery)
 }
 
 Action cmd_maptier(int client, int args)
@@ -1276,12 +1296,21 @@ Action cmd_vecmaxs(int client, int args)
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
 		args = 0
+		gI_type = args
 		//PrintToServer("%s", gS_map)
 		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0][0], gF_vec2[0][1], gF_vec2[0][2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
+		//Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = %i", gS_map, args)
+		//gD_mysql.Query(SQLDeleteZone3, sQuery)
 	}
 	return Plugin_Handled
 }
+
+/*void SQLDeleteZone3(Database db, DBResultSet results, const char[] error, any data)
+{
+	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, gI_type, gF_vec2[0][0], gF_vec2[0][1], gF_vec2[0][2], gS_map, gI_type)
+	gD_mysql.Query(SQLSetZones, sQuery)
+}*/
 
 Action cmd_vecmaxsend(int client, int args)
 {
@@ -2510,6 +2539,11 @@ Action SDKStartTouch(int entity, int other)
 						gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 						if(gF_ServerRecord > gF_Time[other])
 							gF_ServerRecord = gF_Time[other]
+						if(gF_haveRecord[other] < gF_Time[other])
+						{
+							gF_haveRecord[other] = gF_Time[other]
+							gF_haveRecord[gI_partner[other]] = gF_Time[other]
+						}
 					}
 					else
 					{
@@ -2572,6 +2606,8 @@ Action SDKStartTouch(int entity, int other)
 				{
 					PrintToServer("x123x")
 					gF_ServerRecord = gF_Time[other]
+					gF_haveRecord[other] = gF_Time[other]
+					gF_haveRecord[gI_partner[other]] = gF_Time[other]
 					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 					int personalSecond = RoundToFloor(gF_Time[other]) % 60
