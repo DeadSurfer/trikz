@@ -102,6 +102,7 @@ public void OnPluginStart()
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
 	//https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 	AutoExecConfig(true)
+	//PrintToServer("%i", GetConVarInt(gCV_steamid))
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_tr", cmd_trikz)
 	RegConsoleCmd("sm_tri", cmd_trikz)
@@ -1200,7 +1201,7 @@ void createend()
 Action cmd_vecmins(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[0])
@@ -1221,7 +1222,7 @@ Action cmd_vecmins(int client, int args)
 Action cmd_vecminsend(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[1])
@@ -1240,7 +1241,7 @@ Action cmd_vecminsend(int client, int args)
 Action cmd_maptier(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		char sArgString[512]
 		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
@@ -1265,7 +1266,7 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_vecmaxs(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[0])
@@ -1285,7 +1286,7 @@ Action cmd_vecmaxs(int client, int args)
 Action cmd_vecmaxsend(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[1])
@@ -1304,7 +1305,7 @@ Action cmd_vecmaxsend(int client, int args)
 Action cmd_cpmins(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
@@ -1322,7 +1323,7 @@ Action cmd_cpmins(int client, int args)
 Action cmd_cpmaxs(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
@@ -4137,7 +4138,7 @@ void SQLConnect(Database db, const char[] error, any data)
 Action cmd_manualinsert(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == 120192594)
+	if(steamid == GetConVarInt(gCV_steamid))
 	{
 		char sQuery[512]
 		Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
