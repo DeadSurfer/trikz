@@ -1196,8 +1196,12 @@ Action cmd_vecmins(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
+		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[0])
-		PrintToServer("vec1: %f %f %f", gF_vec[0][0], gF_vec1[0][1], gF_vec1[0][2])
+		//gF_vec1[0][0] = vec[0]
+		//gF_vec1[0][1] = vec[1]
+		//gF_vec1[0][2] = vec[2]
+		PrintToServer("vec1: %f %f %f", gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2])
 		char sQuery[512]
 		args = 0
 		//gI_zonetype = 0
@@ -1212,7 +1216,11 @@ Action cmd_vecminsend(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
+		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[1])
+		//gF_vec1[1][0] = vec[0]
+		//gF_vec1[1][1] = vec[1]
+		//gF_vec1[1][2] = vec[2]
 		//PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		char sQuery[512]
 		args = 1
@@ -1252,7 +1260,11 @@ Action cmd_vecmaxs(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
+		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[0])
+		//gF_vec2[0][0] = vec[0]
+		//gF_vec2[0][1] = vec[1]
+		//gF_vec2[0][2] = vec[2]
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
 		args = 0
@@ -1268,7 +1280,11 @@ Action cmd_vecmaxsend(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	if(steamid == 120192594)
 	{
+		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[1])
+		//gF_vec2[1][0] = vec[0]
+		//gF_vec2[1][1] = vec[1]
+		//gF_vec2[1][2] = vec[2]
 		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
 		args = 1
@@ -4106,6 +4122,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql = db
 	ForceZonesSetup()
 	gB_pass = true
+	char sQuery[512]
 	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
