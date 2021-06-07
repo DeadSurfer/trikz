@@ -89,6 +89,7 @@ float gF_ServerRecord
 ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 
 int gI_type
+int gI_cpnum
 
 public Plugin myinfo =
 {
@@ -1345,10 +1346,18 @@ Action cmd_cpmins(int client, int args)
 		GetClientAbsOrigin(client, gF_vec1cp[cpnum])
 		char sQuery[512]
 		//Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
-		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", cpnum, gF_vec1cp[cpnum][0], gF_vec1cp[cpnum][1], gF_vec1cp[cpnum][2], gS_map)
-		gD_mysql.Query(SQLCPUpdate, sQuery)
+		gI_cpnum = cpnum
+		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i", gI_cpnum)
+		gD_mysql.Query(SQLCPRemove, sQuery)
 	}
 	return Plugin_Handled
+}
+
+void SQLCPRemove(Database db, DBResultSet results, const char[] error, any data)
+{
+	char sQuery[512]
+	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", gI_cpnum, gF_vec1cp[gI_cpnum][0], gF_vec1cp[gI_cpnum][1], gF_vec1cp[gI_cpnum][2], gS_map)
+	gD_mysql.Query(SQLCPUpdate, sQuery)
 }
 
 Action cmd_cpmaxs(int client, int args)
