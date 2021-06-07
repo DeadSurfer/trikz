@@ -100,6 +100,8 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
+	//https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
+	AutoExecConfig(true)
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_tr", cmd_trikz)
 	RegConsoleCmd("sm_tri", cmd_trikz)
