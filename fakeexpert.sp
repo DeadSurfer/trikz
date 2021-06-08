@@ -1361,7 +1361,7 @@ Action cmd_cpmins(int client, int args)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	//if(steamid == GetConVarInt(gCV_steamid))
-	if(StrEqual(sSteamID, sCurrentSteamID)
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
