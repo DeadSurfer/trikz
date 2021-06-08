@@ -1205,7 +1205,14 @@ void createend()
 Action cmd_vecmins(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[0])
@@ -1237,7 +1244,14 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, any dat
 Action cmd_deleteallcp(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid)) //https://sm.alliedmods.net/new-api/
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM cp WHERE map = '%s'", gS_map)
@@ -1252,7 +1266,14 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 Action cmd_vecminsend(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[1])
@@ -1282,7 +1303,14 @@ void SQLDeleteZone2(Database db, DBResultSet results, const char[] error, any da
 Action cmd_maptier(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sArgString[512]
 		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
@@ -1307,7 +1335,14 @@ void SQLSetZones(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_vecmaxs(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[0])
@@ -1336,7 +1371,14 @@ Action cmd_vecmaxs(int client, int args)
 Action cmd_vecmaxsend(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[1])
@@ -1389,7 +1431,14 @@ void SQLCPRemove(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_cpmaxs(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
