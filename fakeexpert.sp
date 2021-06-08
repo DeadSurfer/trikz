@@ -1360,6 +1360,7 @@ Action cmd_cpmins(int client, int args)
 	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
 	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
