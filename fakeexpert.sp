@@ -1355,7 +1355,13 @@ Action cmd_vecmaxsend(int client, int args)
 Action cmd_cpmins(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID)
 	{
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
@@ -1376,6 +1382,7 @@ void SQLCPRemove(Database db, DBResultSet results, const char[] error, any data)
 	char sQuery[512]
 	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", gI_cpnum, gF_vec1cp[gI_cpnum][0], gF_vec1cp[gI_cpnum][1], gF_vec1cp[gI_cpnum][2], gS_map)
 	gD_mysql.Query(SQLCPUpdate, sQuery)
+	PrintToServer("CP is inserted.")
 }
 
 Action cmd_cpmaxs(int client, int args)
