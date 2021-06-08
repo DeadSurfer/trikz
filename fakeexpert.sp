@@ -2625,7 +2625,7 @@ Action SDKStartTouch(int entity, int other)
 						gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 						if(gF_ServerRecord > gF_Time[other])
 							gF_ServerRecord = gF_Time[other]
-						if(gF_haveRecord[other] < gF_Time[other])
+						if(gF_haveRecord[other] > gF_Time[other])
 						{
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
