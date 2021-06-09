@@ -4359,6 +4359,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	}
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
+	gD_mysql.SetCharset("utf8")
 	ForceZonesSetup()
 	gB_pass = true
 	char sQuery[512]
