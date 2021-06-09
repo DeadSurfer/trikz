@@ -4359,9 +4359,9 @@ void SQLConnect(Database db, const char[] error, any data)
 	}
 	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 	gD_mysql = db
-	gD_mysql.SetCharset("utf8")
-	ForceZonesSetup()
-	gB_pass = true
+	gD_mysql.SetCharset("utf8") //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-core.sp#L2883
+	ForceZonesSetup() //https://sm.alliedmods.net/new-api/dbi/__raw
+	gB_pass = true //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
