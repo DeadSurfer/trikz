@@ -1,0 +1,56 @@
+<!DOCTYPE html >
+<html >
+<head>
+<title></title>
+</head>
+ 
+<body>
+ 
+<?php 
+//connect to mysql server with host,username,password
+//if connection fails stop further execution and show mysql error
+$connection=mysql_connect('localhost','root','') or die(mysql_error());
+//select a database for given connection
+//if database selection  fails stop further execution and show mysql error
+mysql_select_db('fakeexpert',$connection) or die(mysql_error());
+ 
+//execute a mysql query to retrieve all the users from users table
+//if  query  fails stop further execution and show mysql error
+$query=mysql_query("SELECT * FROM records") or die(mysql_error());
+ 
+//if we get any results we show them in table data
+if(mysql_num_rows($query)>0):
+ 
+?>
+ 
+<table>
+  <tr>
+    <td align="center">Id</td>
+    <td align="center">Player</td>
+    <td align="center">Partner</td>
+    <td align="center">Time</td>
+    <td align="center">Map</td>
+	<td align="center">Date</td>
+  </tr>
+  <?php 
+  // looping 
+  while($row=mysql_fetch_object($query)):?>
+  <tr>
+    <td align="center"><?php echo $row->id;  //row id ?></td>
+    <td align="center"><?php echo $row->playerid; // row first name ?></td>
+    <td align="center"><?php echo $row->partnerid; //row last name  ?></td>
+    <td align="center"><?php echo $row->time; //row contact number ?></td>
+    <td align="center"><?php echo $row->map; //row created time ?></td>
+	<td align="center"><?php echo $row->date; //row created time ?></td>
+  </tr>
+  <?php endwhile;?>
+</table>
+<?php 
+// no result show 
+else: ?>
+<h3>No Results found.</h3>
+<?php endif; ?>
+</body>
+</html>
+
+//https://arjunphp.com/display-mysql-table-data-html-table/
