@@ -43,7 +43,9 @@
 			}
 			
 			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>';
+			$formatedDate = date("Y-m-d H:i:s", ".$row['date'].")
+			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
+			echo $row['time'] . ' ' . $row['map'] . ' ' . $formatedDate . ' ';
 		}
 		//Step 4
 		mysqli_close($db);
