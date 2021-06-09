@@ -34,7 +34,8 @@
 				$row3 = mysqli_fetch_field($result3);
 				//while($row3 = mysqli_fetch_array($result3))
 				{
-					echo $row2['username'] . ' ' . $row3['username'] . ' ';
+					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
+					printf("%s %s" $row2 -> username , $row3 -> username);
 				}
 			}
 			
