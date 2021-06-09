@@ -20,7 +20,15 @@
 
 		while($row = mysqli_fetch_array($result))
 		{
-			$query2 = "SELECT username FROM users WHERE"
+			$query2 = "SELECT username FROM users WHERE steamid = $row['playerid']"
+			mysqli_query($db, $query2) or die('Error querying in table.');
+			$result2 = mysqli_query($db, $query2);
+			$row2 = mysqli_fetch_array($result);
+			while ($row2 = mysqli_fetch_array($result2))
+			{
+				echo $row2['username'] .
+			}
+			
 			echo $row['id'] . ' ' . $row['playerid'] . ': ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
 		}
 		//Step 4
