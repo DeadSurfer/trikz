@@ -697,6 +697,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		{
 			//char sName[64]
 			//GetClientName(client, sName, 64)
+			PrintToServer("%s", sName)
 			Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			gD_mysql.Query(SQLUpdateUsername, sQuery)
 		}
