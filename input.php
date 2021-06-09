@@ -77,20 +77,45 @@
 
 <label for="country">Map menu</label><br/>
 		<form method = "post" action = "index5.php">
-<select name=”map”>
+<select name="map">
 <?php
-	$sql = “SELECT map FROM zones WHERE type = 0 ORDER BY map ASC”;
-	$result = mysqli_query($conn,$sql) or die(mysqli_error());
+$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+$result = mysqli_query($db,$sql) or die(mysqli_error());
 while($row=mysqli_fetch_assoc($result))
 {
 ?>
-<option value=”<?php echo $row[‘sno’];?>”>
-	<?php echo $row[‘map’];?>
+<option value="<?php echo $row['map'];?>">
+	<?php echo $row['map'];?>
 	</option>
 	<?php
-	} // while
+} // while
 	?>
 </select>
 		<input type = "submit" value = "send">
 		</form>
 https://www.iwebcoding.com/php-drop-down-list-from-a-database/
+https://stackoverflow.com/questions/8022353/how-to-populate-html-dropdown-list-with-values-from-database<br>
+<?php
+
+$conn = new mysqli('localhost', 'root', '', 'fakeexpert') 
+or die ('Cannot connect to db');
+
+    $result = $conn->query("select * from records where type = 0");
+
+    echo "<html>";
+    echo "<body>";
+    echo "<select name='id'>";
+
+    while ($row = $result->fetch_assoc()) {
+
+                  unset($id, $name);
+                  $id = $row['id'];
+				  $name = $row['map']; 
+                  echo '<option value="'.$id.'">'.$name.'</option>';
+
+}
+
+    echo "</select>";
+    echo "</body>";
+    echo "</html>";
+?> 
