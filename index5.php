@@ -16,7 +16,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	<label>Please enter your Name:</label>
 	<input type="text" name="Name" value='<?php echo $name; ?>'/>
 	<br><br>
-	<input name="form" type="submit" value="Submit"/><br><br>
+	<input name="form" type="submit" value="Submit"/><br><br> //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html
 	</form>
 	<?php
 		//Step2
