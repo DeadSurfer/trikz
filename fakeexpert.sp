@@ -2615,7 +2615,7 @@ Action SDKStartTouch(int entity, int other)
 						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 						int srSecond = RoundToFloor(timeDiff) % 60
-						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 						Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 						gD_mysql.Query(SQLUpdateRecordCompelete, sQuery)
 						//if(gF_ServerRecord > gF_Time[other])
