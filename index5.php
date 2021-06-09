@@ -23,19 +23,20 @@
 			$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
 			mysqli_query($db, $query2) or die('Error querying in table.');
 			$result2 = mysqli_query($db, $query2);
-			//$row2 = mysqli_fetch_array($result2);
-			$row2 = mysqli_fetch_field($result2);
+			$row2 = mysqli_fetch_array($result2);
+			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
 				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
 				mysqli_query($db, $query3);
 				$result3 = mysqli_query($db, $query3);
-				//$row3 = mysqli_fetch_array($result3);
-				$row3 = mysqli_fetch_field($result3);
+				$row3 = mysqli_fetch_array($result3);
+				//$row3 = mysqli_fetch_field($result3);
 				//while($row3 = mysqli_fetch_array($result3))
 				{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					printf("%s %s" $row2 -> username , $row3 -> username);
+					echo $row2['username'] . ' ' . $row3['username'] . ' ';
+					//printf("%s %s" $row2, $row3);
+					//printf("%s", mysqli_fetch_field($result2));
 				}
 			}
 			
