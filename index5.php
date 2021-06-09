@@ -7,16 +7,19 @@
 <html>
 <head>Trikz Timer</head>
 <body>
-	<h1>PHP connect to MySQL</h1> //http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page.
-	<form action="" method="post">
-	<label>Please enter your Name:</label><input type="text" name="Name" value='<?php echo $name; ?>'/><br><br>
+	<h1>PHP connect to MySQL</h1> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. -->
+	<!--<form action="" method="post">
+	<label>Please enter your Name:</label>
+	<input type="text" name="Name" value='<?php echo $name; ?>'/>
+	<br><br>
 	<input name="form" type="submit" value="Submit"/><br><br>
-	</form>
+	</form>-->
 	<?php
 		//Step2
 		$query = "SELECT * FROM records ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
-		echo $name
+		//if(strlen($name) > 0)
+		//	echo (string)$name;
 		//Step3
 		$result = mysqli_query($db, $query);
 		$row = mysqli_fetch_array($result);
