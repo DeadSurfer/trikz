@@ -18,8 +18,9 @@
 		$result = mysqli_query($db, $query);
 		$row = mysqli_fetch_array($result);
 
-		while ($row = mysqli_fetch_array($result))
+		while($row = mysqli_fetch_array($result))
 		{
+			$query2 = "SELECT username FROM users WHERE"
 			echo $row['id'] . ' ' . $row['playerid'] . ': ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
 		}
 		//Step 4
