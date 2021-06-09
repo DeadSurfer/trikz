@@ -7,13 +7,16 @@
 <html>
 <head>Trikz Timer</head>
 <body>
-	<h1>PHP connect to MySQL</h1>
-
+	<h1>PHP connect to MySQL</h1> //http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page.
+	<form action="" method="post">
+	<label>Please enter your Name:</label><input type="text" name="Name" value='<?php echo $name; ?>'/><br><br>
+	<input name="form" type="submit" value="Submit"/><br><br>
+	</form>
 	<?php
 		//Step2
 		$query = "SELECT * FROM records ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
-
+		echo $name
 		//Step3
 		$result = mysqli_query($db, $query);
 		$row = mysqli_fetch_array($result);
@@ -48,7 +51,7 @@
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			echo $row2['username'] . ' ' . $row3['username'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $formatedDate . '<br>';
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4
+		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		mysqli_close($db);
 	?>
 
