@@ -34,13 +34,13 @@ if(mysql_num_rows($query) > 0):
 	<?php
 	while($row = mysql_fetch_object($query)):?>
 	<tr>
-		<td align = "center"><?php echo $row->playerid;</td>
-		<td align = "center"><?php echo $row->partnerid;</td>
-		<td align = "center"><?php echo $row->time;</td>
-		<td align = "center"><?php echo $row->map;</td>
-		<td align = "center"><?php echo $row->date;</td>
-	//</td>
-		//<td align = "center"><?php echo
+		<td align = "center"><?php echo $row->playerid;?></td>
+		<td align = "center"><?php echo $row->partnerid;?></td>
+		<td align = "center"><?php echo $row->time;?></td>
+		<td align = "center"><?php echo $row->map;?></td>
+		<td align = "center"><?php echo $row->date;?></td>
+	<!--</td>
+		//<td align = "center"><?php echo?>-->
 	</tr>
 	<?php endwhile;?>
 </table>
