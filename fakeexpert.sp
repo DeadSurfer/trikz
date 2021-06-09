@@ -2787,6 +2787,7 @@ Action SDKStartTouch(int entity, int other)
 						//gF_ServerRecord = gF_Time[other]
 					}
 				}*/
+				}
 				else if(gF_ServerRecord == 0.0)
 				{
 					PrintToServer("x123x")
