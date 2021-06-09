@@ -21,7 +21,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	-->
 	<?php
 		//Step2
-		$query = "SELECT * FROM records WHERE map = ".$name." ORDER BY time";
+		$query = "SELECT * FROM records WHERE map = "$name." ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			echo $name . ' ';
