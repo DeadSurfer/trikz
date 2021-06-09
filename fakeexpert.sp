@@ -2593,7 +2593,8 @@ Action SDKStartTouch(int entity, int other)
 						//float timeDiff = FloatAbs(srTime - timeClient)
 						//PrintToServer("2x2x2: %f", timeDiff)
 						//float timeDiff = FloatAbs(timeClient - srTime)
-						float timeDiff = gF_ServerRecord - gF_Time[other]
+						//float timeDiff = gF_ServerRecord - gF_Time[other]
+						float timeDiff = gF_Time[other] - gF_ServerRecord
 						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 						int personalSecond = RoundToFloor(gF_Time[other]) % 60
@@ -2608,7 +2609,8 @@ Action SDKStartTouch(int entity, int other)
 						//float timeDiff = FloatAbs(srTime - timeClient)
 						//PrintToServer("2x2x2: %f", timeDiff)
 						//float timeDiff = FloatAbs(timeClient - srTime)
-						float timeDiff = gF_ServerRecord - gF_Time[other]
+						//float timeDiff = gF_ServerRecord - gF_Time[other]
+						float timeDiff = gF_Time[other] - gF_ServerRecord
 						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 						int personalSecond = RoundToFloor(gF_Time[other]) % 60
