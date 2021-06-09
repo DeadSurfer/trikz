@@ -27,7 +27,8 @@
 			while ($row2 = mysqli_fetch_array($result2))
 			{
 				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
-				$result3 = mysqli_query($db, $query3);
+				mysqli_query($db, $query3);
+				$result3 = mysqli_query($db, $query3)
 				$row3 = mysqli_fetch_array($result3);
 				while($row3 = mysqli_fetch_array($result3))
 				{
