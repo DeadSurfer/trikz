@@ -20,7 +20,7 @@
 <?php
 $connect = mysql_connect('localhost', 'root', '') or die(mysql_error());
 mysql_select_db('fakeexpert', $connect) or die(mysql_error());
-$query = mysql_query("SELECT playerid, partnerid, time, map, date") or die(mysql_error());
+$query = mysql_query("SELECT playerid, partnerid, time, map, date FROM records") or die(mysql_error());
 if(mysql_num_rows($query) > 0):
 ?>
 <table>
