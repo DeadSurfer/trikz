@@ -100,7 +100,7 @@ https://stackoverflow.com/questions/8022353/how-to-populate-html-dropdown-list-w
 $conn = new mysqli('localhost', 'root', '', 'fakeexpert') 
 or die ('Cannot connect to db');
 
-    $result = $conn->query("select * from records where type = 0");
+    $result = $conn->query("select * from zones where type = 0");
 
     echo "<html>";
     echo "<body>";
@@ -118,4 +118,62 @@ or die ('Cannot connect to db');
     echo "</select>";
     echo "</body>";
     echo "</html>";
-?> 
+?>
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <title>Display data from dropdown</title>
+
+</head>
+
+<body>
+<form>
+
+  City:
+
+  <select>
+
+    <option disabled selected>-- Select City --</option>
+
+    <?php
+
+        //include "config.php";  // Used for establishing the connection with database
+		$conn = mysqli_connect ('localhost', 'root' , '', 'fakeexpert');
+
+		if(!$conn)
+
+		{
+
+		die ('Connection failed'. Mysqlo_connect_error());
+
+		}
+        $records = mysqli_query($db, "SELECT map From zones where type = 0");  // Use select query for selecting the data from dropdown
+
+
+
+        while($data = mysqli_fetch_array($records))
+
+        {
+
+            echo "<option value='". $data['map'] ."'>" .$data['map'] ."</option>";
+
+        }    
+
+    ?> 
+
+  </select>
+
+</form>
+<?php
+
+mysqli_close($db);  // close connection
+
+ ?>
+</body>
+
+</html>
+https://kodlogs.com/blog/347/php-mysql-drop-down-the-menu-to-select-data-to-display
