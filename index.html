@@ -13,3 +13,40 @@
 </html>-->
 //https://arjunphp.com/display-mysql-table-data-html-table/
 <!DOCTYPE html>
+<html>
+<head>
+<title>Trikz timer</title>
+</head>
+<?php
+$connect = mysql_connect('localhost', 'root', '') or die(mysql_error());
+mysql_select_db('fakeexpert', $connect) or die(mysql_error());
+$query = mysql_query("SELECT playerid, partnerid, time, map, date") or die(mysql_error());
+if(mysql_num_rows($query) > 0):
+?>
+<table>
+	<tr>
+		<td align = "center">Player 1</td>
+		<td align = "center">Player 2</td>
+		<td align = "center">Time</td>
+		<td align = "center">Map</td>
+		<td align = "center">Date</td>
+	</tr>
+	<?php
+	while($row = mysql_fetch_object($query)):?>
+	<tr>
+		<td align = "center"><?php echo $row -> playerid;</td>
+		<td align = "center"><?php echo $row -> partnerid;</td>
+		<td align = "center"><?php echo $row -> time;</td>
+		<td align = "center"><?php echo $row -> map;</td>
+		<td align = "center"><?php echo $row -> date;</td>
+	//</td>
+		//<td align = "center"><?php echo
+	</tr>
+<?php endwhile;?>
+</table>
+<?php
+else: ?>
+<h3>No results found.</h3>
+<?php endif: ?>
+</body>
+</html>
