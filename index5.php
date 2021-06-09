@@ -19,12 +19,29 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	<input name="form" type="submit" value="Submit"/><br><br> //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html
 	</form> //https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D.
 	-->
+	<table style="width:100%">
+	  <tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		<th>Age</th>
+	  </tr>
+	  <tr>
+		<td>Jill</td>
+		<td>Smith</td>
+		<td>50</td>
+	  </tr>
+	  <tr>
+		<td>Eve</td>
+		<td>Jackson</td>
+		<td>94</td>
+	  </tr>
+	</table>
 	<?php
 		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
-		//	echo $name . ' ';
+			echo $name . ' ';
 		//Step3
 		$result = mysqli_query($db, $query);
 		$row = mysqli_fetch_array($result);
@@ -60,7 +77,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			echo $row2['username'] . ' ' . $row3['username'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $formatedDate . '<br>';
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		mysqli_close($db);
+		mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?>
 
 	</body>
