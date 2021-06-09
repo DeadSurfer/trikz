@@ -40,7 +40,7 @@
 				}
 			}
 			
-			echo $row['id'] . ' ' . $row['playerid'] . ': ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
+			echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
 		}
 		//Step 4
 		mysqli_close($db);
