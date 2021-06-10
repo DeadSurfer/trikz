@@ -468,3 +468,63 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 
 //https://stackoverflow.com/questions/9494209/how-to-link-mysql-to-html
 2021-2021
+//https://www.php.net/license/index.php
+//https://htmlcodex.com/license/#:~:text=All%20of%20the%20creative%20works%20by%20HTML%20Codex,under%20a%20Creative%20Commons%20Attribution%204.0%20International%20License.
+License
+Creative Commons License
+All of the creative works by HTML Codex are licensed under a Creative Commons Attribution 4.0 International License.
+
+Legal Attribution
+HTML Codex creates and publishes free HTML website templates, landing page templates, email templates, and snippets. When you download or use our creative works, it will attribute the following conditions.
+
+You are allowed
+You are allowed to use for personal and commercial purposes.
+You are allowed to modify/customize however you like.
+You are allowed to convert/port for use for any CMS.
+You are allowed to share/distribute under the HTML Codex brand name.
+You are allowed to put a screenshot or a link on your blog posts or any other websites.
+You are not allowed
+You are not allowed to remove the author’s credit link/backlink without a donation.
+You are not allowed to sell, resale, rent, lease, license, or sub-license.
+You are not allowed to upload on your template websites or template collection websites or any other third party websites without our permission.
+
+PHP Licensing
+PHP Codebase
+PHP 4, PHP 5 and PHP 7 are distributed under the PHP License v3.01, copyright (c) the PHP Group.
+This is an Open Source license, certified by the Open Source Initiative.
+The PHP license is a BSD-style license which does not have the "copyleft" restrictions associated with GPL.
+Some files have been contributed under other (compatible) licenses and carry additional requirements and copyright information.
+This is indicated in the license + copyright comment block at the top of the source file.
+Practical Guidelines:
+Distributing PHP
+Contributing to PHP
+PHP Documentation
+The PHP manual text and comments are covered by the Creative Commons Attribution 3.0 License, copyright (c) the PHP Documentation Group
+Summary in human-readable form
+Practical Information: Documentation HOWTO
+PHP Website
+The Website copyright can be viewed here: Website Copyright
+PHP Logo
+The Logo license terms can be viewed on the Logo and Icon Download page
+Frequently Asked Questions
+Use of the "PHP" name
+Q. I've written a project in PHP that I'm going to release as open source, and I'd like to call it PHPTransmogrifier. Is that OK?
+
+A. We cannot really stop you from using PHP in the name of your project unless you include any code from the PHP distribution, in which case you would be violating the license. See Clause 4 in the PHP License v3.01.
+But we would really prefer if people would come up with their own names independent of the PHP name.
+
+"Why?" you ask. You are only trying to contribute to the PHP community. That may be true, but by using the PHP name you are explicitly linking your efforts to those of the entire PHP development community and the years of work that has gone into the PHP project. Every time a flaw is found in one of the thousands of applications out there that call themselves "PHP-Something" the negative karma that generates reflects unfairly on the entire PHP project. We had nothing to do with PHP-Nuke, for example, and every bugtraq posting on that says "PHP" in it. Your particular project may in fact be the greatest thing ever, but we have to be consistent in how we handle these requests and we honestly have no way of knowing whether your project is actually the greatest thing ever.
+
+So, please, pick a name that stands on its own merits. If your stuff is good, it will not take long to establish a reputation for yourselves. Look at Zope, for example, that is a framework for Python that doesn't have Python in the name. Smarty as well doesn't have PHP in the name and does quite well.
+
+Change in licensing from PHP 4 onwards
+Q. Why is PHP 4 not dual-licensed under the GNU General Public License (GPL) like PHP 3 was?
+
+A. GPL enforces many restrictions on what can and cannot be done with the licensed code. The PHP developers decided to release PHP under a much more loose license (Apache-style), to help PHP become as popular as possible.
+
+Licensing information for related projects
+For related projects, please refer to licensing information on the Project websites:
+
+PECL
+PEAR
+GTK
