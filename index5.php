@@ -52,6 +52,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
 		<thead>
 			<tr>
+				<th>Place</th>
 				<th>Player 1</th>
 				<th>Player 2</th>
 				<th>Time</th>
@@ -63,6 +64,94 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<tr>
 		<td><?php
 		//Step2
+		$queryx = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
+		mysqli_query($db, $queryx) or die('Error querying database.');
+		//if(strlen($name) > 0)
+			//echo $name . ' ';
+		//Step3
+		$resultx = mysqli_query($db, $queryx);
+		$rowx = mysqli_fetch_array($resultx);
+		$countx = 1;
+		while($row = mysqli_fetch_array($resultx))
+		{
+			$query2x = "SELECT username FROM users WHERE steamid = ".$rowx['playerid']."";
+			mysqli_query($db, $query2x) or die('Error querying in table.');
+			$result2x = mysqli_query($db, $query2x);
+			$row2x = mysqli_fetch_array($result2x);
+			//echo $row2['username'] . ' ';
+			//$row2 = mysqli_fetch_field($result2);
+			//while ($row2 = mysqli_fetch_array($result2))
+			{
+				$query3x = "SELECT username FROM users WHERE steamid = ".$rowx['partnerid']."";
+				mysqli_query($db, $query3x) or die('Error querying in table.');
+				$result3x = mysqli_query($db, $query3x);
+				$row3x = mysqli_fetch_array($result3x);
+				//echo $row3['username'] . ' ';
+				//$row3 = mysqli_fetch_field($result3);
+				//while($row3 = mysqli_fetch_array($result3))
+				{
+					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
+					//printf("%s %s" $row2, $row3);
+					//printf("%s", mysqli_fetch_field($result2));
+				}
+			}
+			
+			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
+			$formatedDate = date("Y-m-d H:i:s", (int)$rowx['date']);
+			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
+			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
+			//$countx = 1;
+			echo $countx . '.<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			$countx = $countx + 1;
+			//$someVar="value";
+			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
+			/*function clipboard_copy($text) //https://stackoverflow.com/questions/33926038/copy-to-clipboard-from-php-command-line-script-in-windows-7 //bugs.php.net/bug.php?id=19545
+			{
+				$ie = new COM('InternetExplorer.Application');
+				$ie->Navigate('about:blank');
+				while ($ie->ReadyState != 4)
+				{
+					sleep(0.1);
+				}
+				$ie->document->ParentWindow->ClipboardData->SetData("text", 
+		$text);
+				$ie->Quit();
+			}
+
+			clipboard_copy("foo\r\nbar");*/
+			//echo copy("1.txt", "2.txt"); //bind copy text function php txt with coppy function //https://stackoverflow.com/questions/50729670
+			//function active($currect_page)
+			//{
+			 // $url_array =  explode('/', $_SERVER['REQUEST_URI']) ;
+			//  $url = $row['playerid'] . ' ';  
+			 // if($currect_page == $url)
+				//{
+				//  echo 'active'; //class name in css 
+			  //} 
+			//}//https://stackoverflow.com/questions/15963757/how-to-set-current-page-active-in-php
+
+			// ALL USER DEFINED FUNCTIONS
+			/*$arr = get_defined_functions();
+			foreach ($arr['user'] as $key => $value){
+			echo $value.'<br />';
+			}
+			// ALL USER DEFINED FUNCTIONS
+
+			// ALL INTERNAL FUNCTIONS
+			$arr = get_defined_functions();
+			foreach ($arr['internal'] as $key => $value){
+			echo $value.'<br />';
+			}*/ //https://gtk.php.net/manual/en/html/ //https://gtk.php.net/manual/en/html/gtk/gtk.gtkcombobox.method.get_active_text.html //https://fmhelp.filemaker.com/help/15/fmp/en/index.html#page/FMP_Help/get-activeselectionstart.html
+			// ALL INTERNAL FUNCTIONS
+			//<script type="text/javascript" language="JavaScript">
+			//document.forms['myform'].elements['mytextfield'].focus();
+			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
+		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
+		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
+		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
+	?></td>
+		<td><?php
+		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
@@ -70,7 +159,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		//Step3
 		$result = mysqli_query($db, $query);
 		$row = mysqli_fetch_array($result);
-
+		//$countx = 1;
 		while($row = mysqli_fetch_array($result))
 		{
 			$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
@@ -99,7 +188,9 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
+			//$countx = 1;
 			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//$countx = $countx + 1;
 			//$someVar="value";
 			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
 			/*function clipboard_copy($text) //https://stackoverflow.com/questions/33926038/copy-to-clipboard-from-php-command-line-script-in-windows-7 //bugs.php.net/bug.php?id=19545
