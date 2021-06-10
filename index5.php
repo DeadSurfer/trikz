@@ -21,8 +21,8 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	-->
 	<table style="width:50%">
 	  <tr>
-		<th>PLayer 1</th>
-		<th>PLayer 2</th>
+		<th>Player 1</th>
+		<th>Player 2</th>
 		<th>Time</th>
 		<th>Map</th>
 		<th>Date</th>
