@@ -19,15 +19,18 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	<input name="form" type="submit" value="Submit"/><br><br> //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html
 	</form> //https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D.
 	-->
-	<table style="width:50%">
-	  <tr>
-		<th>Player 1</th>
-		<th>Player 2</th>
-		<th>Time</th>
-		<th>Map</th>
-		<th>Date</th>
-	  </tr>
-	  <tr>
+	<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
+		<thead>
+			<tr>
+				<th>Player 1</th>
+				<th>Player 2</th>
+				<th>Time</th>
+				<th>Map</th>
+				<th>Date</th>
+			</tr>
+		</thead>
+		<tbody>
+		<tr>
 		<td>	<?php
 		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
@@ -249,6 +252,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?></td>
 	  </tr>
+	</tbody>
 	</table>
 	<?php
 		/*//Step2
