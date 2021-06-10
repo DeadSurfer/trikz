@@ -99,7 +99,30 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			echo $row2['username'] . '<br>';
+			echo $row2['username'] . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//function active($currect_page)
+			//{
+			 // $url_array =  explode('/', $_SERVER['REQUEST_URI']) ;
+			//  $url = $row['playerid'] . ' ';  
+			 // if($currect_page == $url)
+				//{
+				//  echo 'active'; //class name in css 
+			  //} 
+			//}//https://stackoverflow.com/questions/15963757/how-to-set-current-page-active-in-php
+
+			// ALL USER DEFINED FUNCTIONS
+			/*$arr = get_defined_functions();
+			foreach ($arr['user'] as $key => $value){
+			echo $value.'<br />';
+			}
+			// ALL USER DEFINED FUNCTIONS
+
+			// ALL INTERNAL FUNCTIONS
+			$arr = get_defined_functions();
+			foreach ($arr['internal'] as $key => $value){
+			echo $value.'<br />';
+			}*/ //https://gtk.php.net/manual/en/html/ //https://gtk.php.net/manual/en/html/gtk/gtk.gtkcombobox.method.get_active_text.html //https://fmhelp.filemaker.com/help/15/fmp/en/index.html#page/FMP_Help/get-activeselectionstart.html
+			// ALL INTERNAL FUNCTIONS
 			//<script type="text/javascript" language="JavaScript">
 			//document.forms['myform'].elements['mytextfield'].focus();
 			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
