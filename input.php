@@ -13,7 +13,7 @@
 		<select name="country" id="submit">
 			<option value="AF"><?php
 	//Step2
-	$query = "SELECT map FROM zones WHERE type = 0";
+	$query = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
 	mysqli_query($db, $query) or die('Error querying database.');
 	//if(strlen($name) > 0)
 	//	echo $name . ' ';
@@ -62,118 +62,40 @@
 <?php
 //echo $row['map'] . ' ';
 ?>
+
+
+<?php 
+
+?>
 <label for="country">Paese</label><br/>
-        <form method = "post" action = "index5.php">
-		<select name="country" id="submit">
-            <option value="AF">Afghanistan</option>
-            <option value="AL">Albania</option>
-            <option value="DZ">Algeria</option>
-            <option value="AS">American Samoa</option>
-            <option value="AD">Andorra</option>
-            <option value="AO">Angola</option>
-        </select>
-		<input type = "submit" value = "send">
-		</form> //https://bytes.com/topic/php/answers/7317-drop-down-menu-php-submit-form <br>
-
-<label for="country">Map menu</label><br/>
 		<form method = "post" action = "index5.php">
-<select name="map">
-<?php
-$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
-$result = mysqli_query($db,$sql) or die(mysqli_error());
-while($row=mysqli_fetch_assoc($result))
-{
+			<select id="country" name="country_name">
+				<option value="">Select Country</option>
+				<?php $sql = "select * from zones where type = 0 order by map ASC"; $rs = mysqli_query($db, $sql);
+					while($rows = mysqli_fetch_assoc($rs))
+					{
+						echo '<option value="'.$rows['id'].'">'.$rows['map'].'</option>';
+					}
+				?>
+			</select>
+<input type=text name=submit>
+<input type=submit value=Submit ></form>
+https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
+
+<br>
+
+<?php 
+	$host 		= "localhost";
+	$user		= "root";
+	$password	= "";
+	$database	= "demo";
+	
+	$conn = mysqli_connect($host,$user,$password,$database);
+	
+	if(!$conn)
+	{
+		die(mysqli_error());
+	}
+ 
 ?>
-<option value="<?php echo $row['map'];?>">
-	<?php echo $row['map'];?>
-	</option>
-	<?php
-} // while
-	?>
-</select>
-		<input type = "submit" value = "send">
-		</form>
-https://www.iwebcoding.com/php-drop-down-list-from-a-database/
-https://stackoverflow.com/questions/8022353/how-to-populate-html-dropdown-list-with-values-from-database<br>
-<?php
-
-$conn = new mysqli('localhost', 'root', '', 'fakeexpert') 
-or die ('Cannot connect to db');
-
-    $result = $conn->query("select * from zones where type = 0");
-
-    echo "<html>";
-    echo "<body>";
-    echo "<select name='id'>";
-
-    while ($row = $result->fetch_assoc()) {
-
-                  unset($id, $name);
-                  $id = $row['id'];
-				  $name = $row['map']; 
-                  echo '<option value="'.$id.'">'.$name.'</option>';
-
-}
-
-    echo "</select>";
-    echo "</body>";
-    echo "</html>";
-?>
-
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-  <title>Display data from dropdown</title>
-
-</head>
-
-<body>
-<form>
-
-  City:
-
-  <select>
-
-    <option disabled selected>-- Select City --</option>
-
-    <?php
-
-        //include "config.php";  // Used for establishing the connection with database
-		$conn = mysqli_connect ('localhost', 'root' , '', 'fakeexpert');
-
-		if(!$conn)
-
-		{
-
-		die ('Connection failed'. Mysqlo_connect_error());
-
-		}
-        $records = mysqli_query($db, "SELECT map From zones where type = 0");  // Use select query for selecting the data from dropdown
-
-
-
-        while($data = mysqli_fetch_array($records))
-
-        {
-
-            echo "<option value='". $data['map'] ."'>" .$data['map'] ."</option>";
-
-        }    
-
-    ?> 
-
-  </select>
-
-</form>
-<?php
-
-mysqli_close($db);  // close connection
-
- ?>
-</body>
-
-</html>
-https://kodlogs.com/blog/347/php-mysql-drop-down-the-menu-to-select-data-to-display
+2021-2021
