@@ -99,7 +99,24 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			echo $row2['username'] . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//$someVar="value";
+			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
+			/*function clipboard_copy($text) //https://stackoverflow.com/questions/33926038/copy-to-clipboard-from-php-command-line-script-in-windows-7 //bugs.php.net/bug.php?id=19545
+			{
+				$ie = new COM('InternetExplorer.Application');
+				$ie->Navigate('about:blank');
+				while ($ie->ReadyState != 4)
+				{
+					sleep(0.1);
+				}
+				$ie->document->ParentWindow->ClipboardData->SetData("text", 
+		$text);
+				$ie->Quit();
+			}
+
+			clipboard_copy("foo\r\nbar");*/
+			//echo copy("1.txt", "2.txt"); //bind copy text function php txt with coppy function //https://stackoverflow.com/questions/50729670
 			//function active($currect_page)
 			//{
 			 // $url_array =  explode('/', $_SERVER['REQUEST_URI']) ;
@@ -168,7 +185,8 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			$formatedDate = date("Y-m-d H:i:s", (int)$row2['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			echo $row32['username'] . '<br>';
+			//echo $row32['username'] . '<br>';
+			echo $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
