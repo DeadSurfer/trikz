@@ -61,7 +61,10 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		</thead>
 		<tbody>
 		<tr>
-		<td>	<?php
+		<td>	<form action='result.php' method='post'> 
+  <input type="text" value="gdf" name="text1" id="text1" /><br /><br />
+  <input type="submit" id="display" name="display"><br /><br />
+</form> <?php
 		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
