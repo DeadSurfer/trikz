@@ -1,0 +1,159 @@
+20444> 2021-06-11 16:49:50> Program: Starting Squirrel Updater: --install .
+20444> 2021-06-11 16:49:50> Program: Starting install, writing to C:\Users\Smesh\AppData\Local\SquirrelTemp
+20444> 2021-06-11 16:49:51> Program: About to install to: C:\Users\Smesh\AppData\Local\Discord
+20444> 2021-06-11 16:49:51> SingleGlobalInstance: Grabbing lockfile with timeout of 00:00:10
+20444> 2021-06-11 16:49:51> CheckForUpdateImpl: Reading RELEASES file from C:\Users\Smesh\AppData\Local\SquirrelTemp
+20444> 2021-06-11 16:49:51> CheckForUpdateImpl: Remote version 1.0.9002 differs from local 
+20444> 2021-06-11 16:49:51> CheckForUpdateImpl: First run or local directory is corrupt, starting from scratch
+20444> 2021-06-11 16:49:51> ApplyReleasesImpl: Writing files to app directory: C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\chrome_100_percent.pak to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\chrome_100_percent.pak
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\chrome_200_percent.pak to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\chrome_200_percent.pak
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\d3dcompiler_47.dll to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\d3dcompiler_47.dll
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\Discord.exe to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\Discord.exe
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\ffmpeg.dll to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\ffmpeg.dll
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\app.ico to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\app.ico
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\icudtl.dat to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\icudtl.dat
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\installer.db to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\installer.db
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\libEGL.dll to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\libEGL.dll
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\libGLESv2.dll to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\libGLESv2.dll
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\snapshot_blob.bin to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\snapshot_blob.bin
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\updater.node to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\updater.node
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\resources.pak to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\resources.pak
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\v8_context_snapshot.bin to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\v8_context_snapshot.bin
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\vk_swiftshader.dll to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\vk_swiftshader.dll
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\vk_swiftshader_icd.json to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\vk_swiftshader_icd.json
+20444> 2021-06-11 16:49:54> ApplyReleasesImpl: Moving file C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\lib\net45\vulkan-1.dll to C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\vulkan-1.dll
+20444> 2021-06-11 16:49:59> ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\Discord.exe]
+20444> 2021-06-11 16:50:06> Utility: Process Started: C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\Discord.exe --squirrel-install 1.0.9002, pid 16268
+20444> 2021-06-11 16:50:28> Utility: Received exitcode 0 from process C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\Discord.exe
+20444> 2021-06-11 16:50:28> ApplyReleasesImpl: ran C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\Discord.exe, pid 17756
+20444> 2021-06-11 16:50:28> ApplyReleasesImpl: Starting fixPinnedExecutables
+20444> 2021-06-11 16:50:28> ApplyReleasesImpl: fixPinnedExecutables: newCurrentFolder: app-1.0.9002
+20444> 2021-06-11 16:50:29> ApplyReleasesImpl: File 'C:\Users\Smesh\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessibility\Narrator.lnk' could not be converted into a valid ShellLink: System.IO.FileNotFoundException: The system cannot find the file specified. (Exception from HRESULT: 0x80070002)
+   at Squirrel.Shell.ShellLink.IShellLinkW.Resolve(IntPtr hWnd, UInt32 fFlags)
+   at Squirrel.Shell.ShellLink.Open(String linkFile, IntPtr hWnd, EShellLinkResolveFlags resolveFlags, UInt16 timeOut)
+   at Squirrel.UpdateManager.ApplyReleasesImpl.<fixPinnedExecutables>b__11_0(FileInfo file)
+20444> 2021-06-11 16:50:29> ApplyReleasesImpl: File 'C:\Users\Smesh\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessibility\On-Screen Keyboard.lnk' could not be converted into a valid ShellLink: System.IO.FileNotFoundException: The system cannot find the file specified. (Exception from HRESULT: 0x80070002)
+   at Squirrel.Shell.ShellLink.IShellLinkW.Resolve(IntPtr hWnd, UInt32 fFlags)
+   at Squirrel.Shell.ShellLink.Open(String linkFile, IntPtr hWnd, EShellLinkResolveFlags resolveFlags, UInt16 timeOut)
+   at Squirrel.UpdateManager.ApplyReleasesImpl.<fixPinnedExecutables>b__11_0(FileInfo file)
+20444> 2021-06-11 16:50:29> ApplyReleasesImpl: Updating shortcut C:\Users\Smesh\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Discord Inc\Discord.lnk
+20444> 2021-06-11 16:50:29> ApplyReleasesImpl: Updating shortcut C:\Users\Smesh\OneDrive\Рабочий стол\Discord.lnk
+20444> 2021-06-11 16:50:29> ApplyReleasesImpl: Fixing up tray icons
+20444> 2021-06-11 16:50:29> ApplyReleasesImpl: cleanDeadVersions: for version 1.0.9002
+20444> 2021-06-11 16:50:29> ApplyReleasesImpl: cleanDeadVersions: exclude current version folder app-1.0.9002
+8164> 2021-06-11 16:50:38> Program: Starting Squirrel Updater: --install .
+8164> 2021-06-11 16:50:38> Program: Starting install, writing to C:\Users\Smesh\AppData\Local\SquirrelTemp
+8164> 2021-06-11 16:50:38> Program: About to install to: C:\Users\Smesh\AppData\Local\Discord
+8164> 2021-06-11 16:50:38> Program: Install path C:\Users\Smesh\AppData\Local\Discord already exists, burning it to the ground
+8164> 2021-06-11 16:50:40> IEnableLogger: Failed to remove existing directory on full install, is the app still running???: System.IO.IOException: The process cannot access the file 'C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\chrome_200_percent.pak' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.File.InternalDelete(String path, Boolean checkHost)
+   at System.IO.File.Delete(String path)
+   at Squirrel.Utility.<>c.<DeleteDirectory>b__22_0(String file)
+   at Squirrel.Utility.<>c__DisplayClass15_1`1.<ForEachAsync>b__1()
+   at System.Threading.Tasks.Task.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c__DisplayClass16_1`1.<<ForEachAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<DeleteDirectory>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c.<<DeleteDirectory>b__22_1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c__DisplayClass16_1`1.<<ForEachAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<DeleteDirectory>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<LogIfThrows>d__37.MoveNext()
+8164> 2021-06-11 16:50:40> Unhandled exception: System.AggregateException: One or more errors occurred. ---> System.IO.IOException: The process cannot access the file 'C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\chrome_200_percent.pak' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.File.InternalDelete(String path, Boolean checkHost)
+   at System.IO.File.Delete(String path)
+   at Squirrel.Utility.<>c.<DeleteDirectory>b__22_0(String file)
+   at Squirrel.Utility.<>c__DisplayClass15_1`1.<ForEachAsync>b__1()
+   at System.Threading.Tasks.Task.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c__DisplayClass16_1`1.<<ForEachAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<DeleteDirectory>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c.<<DeleteDirectory>b__22_1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c__DisplayClass16_1`1.<<ForEachAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<DeleteDirectory>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<LogIfThrows>d__37.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Update.Program.<Install>d__5.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at System.Threading.Tasks.Task.Wait()
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+---> (Inner Exception #0) System.IO.IOException: The process cannot access the file 'C:\Users\Smesh\AppData\Local\Discord\app-1.0.9002\chrome_200_percent.pak' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.File.InternalDelete(String path, Boolean checkHost)
+   at System.IO.File.Delete(String path)
+   at Squirrel.Utility.<>c.<DeleteDirectory>b__22_0(String file)
+   at Squirrel.Utility.<>c__DisplayClass15_1`1.<ForEachAsync>b__1()
+   at System.Threading.Tasks.Task.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c__DisplayClass16_1`1.<<ForEachAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<DeleteDirectory>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c.<<DeleteDirectory>b__22_1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<>c__DisplayClass16_1`1.<<ForEachAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<DeleteDirectory>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<LogIfThrows>d__37.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Update.Program.<Install>d__5.MoveNext()<---
+
