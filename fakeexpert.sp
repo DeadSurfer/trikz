@@ -2625,9 +2625,62 @@ Action SDKStartTouch(int entity, int other)
 						//	gF_ServerRecord = gF_Time[other]
 						//if(gF_haveRecord[other] > gF_Time[other])
 						//{
-						//	gF_haveRecord[other] = gF_Time[other]
-						//	gF_haveRecord[gI_partner[other]] = gF_Time[other]
+						gF_haveRecord[other] = gF_Time[other]
+						gF_haveRecord[gI_partner[other]] = gF_Time[other]
 						//}
+					}
+					//if(gF_haveRecord[other] == 0.0 || gF_haveRecord[gI_partner] == 0.0)
+					if(gF_ServerRecord > gF_Time[other] && gF_haveRecord[other] == 0.0)
+					{
+						float timeDiff = gF_ServerRecord - gF_Time[other]
+						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+						int personalSecond = RoundToFloor(gF_Time[other]) % 60
+						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+						int srSecond = RoundToFloor(timeDiff) % 60
+						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+						Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+						gD_mysql.Query(SQLInsertRecord, sQuery)
+					}
+					if((gF_ServerRecord < gF_Time[other]) && gF_haveRecord[other] == 0.0)
+					{
+						float timeDiff = gF_ServerRecord - gF_Time[other]
+						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+						int personalSecond = RoundToFloor(gF_Time[other]) % 60
+						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+						int srSecond = RoundToFloor(timeDiff) % 60
+						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+						Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+						gD_mysql.Query(SQLInsertRecord, sQuery)
+					}
+					if(gF_ServerRecord > gF_Time[gI_partner] && gF_haveRecord[gI_partner] == 0.0)
+					{
+						float timeDiff = gF_ServerRecord - gF_Time[other]
+						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+						int personalSecond = RoundToFloor(gF_Time[other]) % 60
+						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+						int srSecond = RoundToFloor(timeDiff) % 60
+						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+						Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+						gD_mysql.Query(SQLInsertRecord, sQuery)
+					}
+					if(gF_ServerRecord < gF_Time[gI_partner] && gF_haveRecord[gI_partner] == 0.0)
+					{
+						float timeDiff = gF_ServerRecord - gF_Time[other]
+						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+						int personalSecond = RoundToFloor(gF_Time[other]) % 60
+						int srHour = (RoundToFloor(timeDiff) / 3600) % 24
+						int srMinute = (RoundToFloor(timeDiff) / 60) % 60
+						int srSecond = RoundToFloor(timeDiff) % 60
+						PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+						Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+						gD_mysql.Query(SQLInsertRecord, sQuery)
 					}
 					for(int i = 1; i <= 10; i++)
 					{
