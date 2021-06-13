@@ -64,28 +64,28 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<tr>
 		<td><?php
 		//Step2
-		$queryx = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
+		$queryx = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $queryx) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
 		$resultx = mysqli_query($db, $queryx);
-		$rowx = mysqli_fetch_array($resultx);
+		//$rowx = mysqli_fetch_assoc($resultx);
 		$countx = 1;
-		while($row = mysqli_fetch_array($resultx))
+		while($rowx = mysqli_fetch_assoc($resultx))
 		{
-			$query2x = "SELECT username FROM users WHERE steamid = ".$rowx['playerid']."";
-			mysqli_query($db, $query2x) or die('Error querying in table.');
-			$result2x = mysqli_query($db, $query2x);
-			$row2x = mysqli_fetch_array($result2x);
+			//$query2x = "SELECT username FROM users WHERE steamid = ".$rowx['playerid']."";
+			//mysqli_query($db, $query2x) or die('Error querying in table.');
+			//$result2x = mysqli_query($db, $query2x);
+			//$row2x = mysqli_fetch_array($result2x);
 			//echo $row2['username'] . ' ';
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
-				$query3x = "SELECT username FROM users WHERE steamid = ".$rowx['partnerid']."";
-				mysqli_query($db, $query3x) or die('Error querying in table.');
-				$result3x = mysqli_query($db, $query3x);
-				$row3x = mysqli_fetch_array($result3x);
+				//$query3x = "SELECT username FROM users WHERE steamid = ".$rowx['partnerid']."";
+				//mysqli_query($db, $query3x) or die('Error querying in table.');
+				//$result3x = mysqli_query($db, $query3x);
+				//$row3x = mysqli_fetch_array($result3x);
 				//echo $row3['username'] . ' ';
 				//$row3 = mysqli_fetch_field($result3);
 				//while($row3 = mysqli_fetch_array($result3))
@@ -97,7 +97,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			}
 			
 			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			$formatedDate = date("Y-m-d H:i:s", (int)$rowx['date']);
+			//$formatedDate = date("Y-m-d H:i:s", (int)$rowx['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//$countx = 1;
@@ -152,13 +152,13 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	?></td>
 		<td><?php
 		//Step2
-		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
+		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
 		$result = mysqli_query($db, $query);
-		$row = mysqli_fetch_array($result);
+		//$row = mysqli_fetch_array($result);
 		//$countx = 1;
 		while($row = mysqli_fetch_array($result))
 		{
@@ -170,10 +170,10 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
-				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
-				mysqli_query($db, $query3) or die('Error querying in table.');
-				$result3 = mysqli_query($db, $query3);
-				$row3 = mysqli_fetch_array($result3);
+				//$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
+				//mysqli_query($db, $query3) or die('Error querying in table.');
+				//$result3 = mysqli_query($db, $query3);
+				//$row3 = mysqli_fetch_array($result3);
 				//echo $row3['username'] . ' ';
 				//$row3 = mysqli_fetch_field($result3);
 				//while($row3 = mysqli_fetch_array($result3))
@@ -185,7 +185,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			}
 			
 			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
+			//$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//$countx = 1;
@@ -240,20 +240,20 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	?></td>
 		<td><?php
 		//Step2
-		$query2 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
+		$query2 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query2) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
 		$result2 = mysqli_query($db, $query2);
-		$row2 = mysqli_fetch_array($result2);
+		//$row2 = mysqli_fetch_array($result2);
 
 		while($row2 = mysqli_fetch_array($result2))
 		{
-			$query22 = "SELECT username FROM users WHERE steamid = ".$row2['playerid']."";
-			mysqli_query($db, $query22) or die('Error querying in table.');
-			$result22 = mysqli_query($db, $query22);
-			$row22 = mysqli_fetch_array($result22);
+			//$query22 = "SELECT username FROM users WHERE steamid = ".$row2['playerid']."";
+			//mysqli_query($db, $query22) or die('Error querying in table.');
+			//$result22 = mysqli_query($db, $query22);
+			//$row22 = mysqli_fetch_array($result22);
 			//echo $row2['username'] . ' ';
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
@@ -273,7 +273,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 			}
 			
 			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			$formatedDate = date("Y-m-d H:i:s", (int)$row2['date']);
+			//$formatedDate = date("Y-m-d H:i:s", (int)$row2['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//echo $row32['username'] . '<br>';
@@ -284,28 +284,28 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	?></td>
 		<td><?php
 		//Step2
-		$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
+		$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query3) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
 		$result3 = mysqli_query($db, $query3);
-		$row3 = mysqli_fetch_array($result3);
+		//$row3 = mysqli_fetch_array($result3);
 
 		while($row3 = mysqli_fetch_array($result3))
 		{
-			$query23 = "SELECT username FROM users WHERE steamid = ".$row3['playerid']."";
-			mysqli_query($db, $query23) or die('Error querying in table.');
-			$result23 = mysqli_query($db, $query23);
-			$row23 = mysqli_fetch_array($result23);
+			//$query23 = "SELECT username FROM users WHERE steamid = ".$row3['playerid']."";
+			//mysqli_query($db, $query23) or die('Error querying in table.');
+			//$result23 = mysqli_query($db, $query23);
+			//$row23 = mysqli_fetch_array($result23);
 			//echo $row2['username'] . ' ';
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
-				$query33 = "SELECT username FROM users WHERE steamid = ".$row3['partnerid']."";
-				mysqli_query($db, $query33) or die('Error querying in table.');
-				$result33 = mysqli_query($db, $query33);
-				$row33 = mysqli_fetch_array($result33);
+				//$query33 = "SELECT username FROM users WHERE steamid = ".$row3['partnerid']."";
+				//mysqli_query($db, $query33) or die('Error querying in table.');
+				//$result33 = mysqli_query($db, $query33);
+				//$row33 = mysqli_fetch_array($result33);
 				//echo $row3['username'] . ' ';
 				//$row3 = mysqli_fetch_field($result3);
 				//while($row3 = mysqli_fetch_array($result3))
@@ -332,13 +332,13 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	?></td>
 		<td><?php
 		//Step2
-		$query4 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
+		$query4 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query4) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
 		$result4 = mysqli_query($db, $query4);
-		$row4 = mysqli_fetch_array($result4);
+		//$row4 = mysqli_fetch_array($result4);
 
 		while($row4 = mysqli_fetch_array($result4))
 		{
@@ -375,13 +375,13 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	?></td>
 		<td><?php
 		//Step2
-		$query5 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
+		$query5 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query5) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
 		$result5 = mysqli_query($db, $query5);
-		$row5 = mysqli_fetch_array($result5);
+		//$row5 = mysqli_fetch_array($result5);
 
 		while($row5 = mysqli_fetch_array($result5))
 		{
