@@ -3,7 +3,10 @@
 	$db = mysqli_connect('localhost','root','','fakeexpert')
 	or die('Error connecting to MySQL server.');
 ?>
-
+	<form method="post">
+	Enter map name : <input type="text" name="submit"><br/>
+	<input type="submit" value="SELECT" name="Submit1"> <br/>
+	</form>
 <?php
 $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
 //$name = $_POST
@@ -48,7 +51,42 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	<br><br>
 	<input name="form" type="submit" value="Submit"/><br><br> //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html
 	</form> //https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D.
-	-->
+	
+	<form method="post">
+	Enter Map name : <input type="text" name="id"><br/>
+	<input type="submit" value="SELECT" name="Submit1"> <br/>-->
+
+
+	
+	<?php
+	//if(isset($_POST['Submit1']))
+	//{ 
+	//$username = "root";
+	//$password = "";
+	//$hostname = "localhost"; 
+	//$database="fakexpert";
+
+	//connection to the mysql database,
+	//$dbhandle = mysqli_connect($hostname, $username, $password,$database);
+
+	//if(!empty($_POST["id"]))
+	//{
+	//$result = mysqli_query($db, "SELECT * FROM records where ORDER BY map ASC map=".$_POST["id"]);
+	//}
+	//else
+	//{ 
+	//$result = mysqli_query($dbhandle, "SELECT ID, Name, City FROM StudentMst" );
+	//}
+
+
+	//fetch tha data from the database 
+	//while ($row = mysqli_fetch_array($result)) {
+	//echo "ID:" .$row{'ID'}." Name:".$row{'Name'}." City: ". $row{'City'}."<br>";
+	//}
+	//close the connection
+	//mysqli_close($dbhandle);
+	//}
+	?>
 	<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
 		<thead>
 			<tr>
@@ -65,6 +103,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<td><?php
 		//Step2
 		$queryx = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
 		mysqli_query($db, $queryx) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
@@ -153,6 +192,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<td><?php
 		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		//$query = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
@@ -241,6 +281,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<td><?php
 		//Step2
 		$query2 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		//$query2 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
 		mysqli_query($db, $query2) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
@@ -285,6 +326,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<td><?php
 		//Step2
 		$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		//$query3 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
 		mysqli_query($db, $query3) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
@@ -333,6 +375,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<td><?php
 		//Step2
 		$query4 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		//$query4 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
 		mysqli_query($db, $query4) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
@@ -376,6 +419,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		<td><?php
 		//Step2
 		$query5 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		//$query5 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
 		mysqli_query($db, $query5) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
@@ -462,7 +506,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp*/
 	?>
-
+	<!--</form>-->
 	</body>
 </html>
 
