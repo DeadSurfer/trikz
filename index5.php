@@ -1,18 +1,5 @@
-<?php
-	//Step1
-	$db = mysqli_connect('localhost','root','','fakeexpert')
-	or die('Error connecting to MySQL server.');
-?>
-	<form method="post">
-	Enter map name : <input type="text" name="submit"><br/>
-	<input type="submit" value="SELECT" name="Submit1"> <br/>
-	</form>
-<?php
-$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
-//$name = $_POST
-?>
 <html>
-<head>Trikz Timer</head>
+<!--<head>Trikz Timer</head>-->
 <style>
 .styled-table {
     border-collapse: collapse;
@@ -44,7 +31,7 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 }
 </style>
 <body>
-	<h1>PHP connect to MySQL</h1> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. -->
+	<h1>Trikz Timer</h1> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. -->
 	<!--<form action="" method="post">
 	<label>Please enter your Name:</label>
 	<input type="text" name="Name" value='<?php echo $name; ?>'/>
@@ -86,6 +73,19 @@ $name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-
 	//close the connection
 	//mysqli_close($dbhandle);
 	//}
+	?>
+	<?php
+		//Step1
+		$db = mysqli_connect('localhost','root','','fakeexpert')
+		or die('Error connecting to MySQL server.');
+	?>
+		<form method="post">
+		Enter map name : <input type="text" name="submit"><br/>
+		<input type="submit" value="SELECT" name="Submit1"> <br/>
+		</form>
+	<?php
+	$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
+	//$name = $_POST
 	?>
 	<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
 		<thead>
