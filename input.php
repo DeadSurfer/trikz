@@ -53,7 +53,7 @@
 		//echo $row2['username'] . ' ' . $row3['username'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $formatedDate . '<br>';
 	}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 	//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-	mysqli_close($db);
+	//mysqli_close($db);
 ?>
 </option>
 		</select>
@@ -67,25 +67,30 @@
 <?php 
 
 ?>
-<label for="country">Paese</label><br/>
-		<form method = "post" action = "index5.php">
-			<select id="country" name="country_name">
+<label for="submit">Please choose map</label><br/>
+		<form method = "post" action = "">
+			<select id="submit" name="submit">
 				<option value="">Select Country</option>
-				<?php $sql = "select * from zones where type = 0 order by map ASC"; $rs = mysqli_query($db, $sql);
+				<?php $sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+						$rs = mysqli_query($db, $sql);
 					while($rows = mysqli_fetch_assoc($rs))
 					{
-						echo '<option value="'.$rows['id'].'">'.$rows['map'].'</option>';
+						echo '<option value="'.$rows['map'].'">'.$rows['map'].'</option>';
 					}
 				?>
 			</select>
-<input type=text name=submit>
 <input type=submit value=Submit ></form>
 https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
 
 <br>
+<?php
+$name1 = $_POST['submit'];
+echo $name1 . ' ';
+echo $name;
+?>
 
 <?php 
-	$host 		= "localhost";
+	/*$host 		= "localhost";
 	$user		= "root";
 	$password	= "";
 	$database	= "demo";
@@ -95,9 +100,123 @@ https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
 	if(!$conn)
 	{
 		die(mysqli_error());
-	}
+	}*/
  
 ?>
+//https://stackoverflow.com/questions/14372860/display-mysql-table-field-values-in-select-box
+<?php //$con = mysql_connect("localhost","root","root");
+//$db = mysql_select_db("Time_sheet",$con);
+//$get=mysql_query($db, "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC");
+?>
+<html>
+<body>
+<form>
+    <select> 
+    <option value="0">Please Select</option>
+        <?php
+            while($row = mysql_fetch_assoc($get))
+            {
+            ?>
+            <option value = "<?php echo($row['map'])?>" >
+                <?php echo($row['map']) ?>
+            </option>
+            <?php
+            }               
+        ?>
+    </select>
+</form>
+</body>
+</html>
+//https://stackoverflow.com/questions/16244228/php-submit-on-select
+<form method="post" action="index5.php" >
+
+    <table class="form">
+
+            <select name="category" class="formfield" id="category">
+                <option value="-1"> Category </option>
+                <?php
+                    $sql_contry = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+                    $rs_c = mysql_query($db, $sql_contry);
+                    while ($row_c = mysql_fetch_array($rs_c)) {
+                        echo '<option value="'.$row_c['map'].'">'.$row_c['map'].'</option>';  
+                    }
+					//mysqli_close($db);
+                ?>
+             </select>
+
+    </table>
+
+</form>
+
+<?php
+if(isset($_POST['gejala1'])) {
+    $gejala1 = $_POST['gejala1'];
+        //$sql = "INSERT INTO pucuk (gejala1) VALUES ({$gejala2})";
+    $dbLink = mysql_connect('localhost', 'root', '') or die(mysql_error());
+              mysql_select_db('fakeexpert', $dbLink) or die(mysql_errno());
+
+   // $result = mysql_query($sql);
+    if($result) {
+        echo "Record successfully inserted!";
+    }
+    else {
+        echo "Record not inserted! (". mysql_error() .")";
+    }
+}
+if(isset($_POST['gejala2'])) {
+    $gejala2 = $_POST['gejala2'];
+       // $sql = "INSERT INTO pucuk (gejala2) VALUES ({$gejala2})";
+    $dbLink = mysql_connect('localhost', 'root', '') or die(mysql_error());
+              mysql_select_db('fakeexpert', $dbLink) or die(mysql_errno());
+
+    //$result = mysql_query($sql);
+    if($result) {
+        echo "Record successfully inserted!";
+    }
+    else {
+        echo "Record not inserted! (". mysql_error() .")";
+    }
+}
+
+?>
+<form action="" method="POST"><!-- add this -->
+
+<?php
+$query = "SELECT map FROM zones where type =0 ORDER BY map ASC";
+$result = mysql_query($db, $query) or die(mysql_error()."[".$query."]");
+?>
+<select name="gejala1">
+<?php 
+while ($row = mysql_fetch_array($result)) {
+    echo "<option value='".$row['map']."'>".$row['map']."</option>";
+}
+?>  
+</select>
+
+
+<p>Subatribut2
+<?php
+$query = "SELECT map FROM zones where type =0 ORDER BY map ASC";
+$result = mysql_query($db, $query) or die(mysql_error()."[".$query."]");
+?>
+<select name="gejala2">
+<?php 
+while ($row = mysql_fetch_array($result)) {
+    echo "<option value='".$row['map']."'>".$row['map']."</option>";
+}
+?>
+</select>          
+
+
+<p>
+    <label>value
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          
+      <input type="text" name="textfield">
+    </label>  
+<p>
+<input name="submit" type="submit" value="submit">    <!-- changed from type="button" to type="submit"> -->
+<p>
+</form>
 2021-2021
 //https://www.php.net/license/index.php
 //https://htmlcodex.com/license/#:~:text=All%20of%20the%20creative%20works%20by%20HTML%20Codex,under%20a%20Creative%20Commons%20Attribution%204.0%20International%20License.
