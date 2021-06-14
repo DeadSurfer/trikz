@@ -784,6 +784,7 @@ Action cmd_trikz(int client, int args)
 void Trikz(int client)
 {
 	gB_menuIsOpen[client] = true
+	gB_menuIsTrikz[client] = true
 	Menu menu = new Menu(trikz_handler)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
@@ -817,8 +818,15 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 		case MenuAction_Cancel:
 		{
-			gB_menuIsOpen[param1] = false
-			PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
+			if(param2 == 3)
+			{
+				gB_menuIsOpen[param1] = false
+				PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
+			}
+		}
+		case MenuAction_End:
+		{
+			PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 		}
 	}
 }
