@@ -2890,6 +2890,8 @@ Action SDKStartTouch(int entity, int other)
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
 			}
+			gB_state[other] = false
+			gB_state[gI_partner[other]] = false
 		}
 		if(StrEqual(sTrigger, "fakeexpert_cp1"))
 		{
