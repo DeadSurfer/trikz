@@ -777,12 +777,13 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 Action cmd_trikz(int client, int args)
 {
-	gB_menuIsOpen[client] = true
+	//gB_menuIsOpen[client] = true
 	Trikz(client)
 }
 
 void Trikz(int client)
 {
+	gB_menuIsOpen[client] = true
 	Menu menu = new Menu(trikz_handler)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
