@@ -91,6 +91,8 @@ ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 int gI_type
 int gI_cpnum
 
+bool gB_menuIsOpen[MAXPLAYERS + 1]
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -775,6 +777,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 Action cmd_trikz(int client, int args)
 {
+	gB_menuIsOpen[client] = true
 	Trikz(client)
 }
 
@@ -813,6 +816,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 		case MenuAction_Cancel:
 		{
+			gB_menuIsOpen[param1] = false
 			PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 		}
 	}
@@ -822,7 +826,13 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_block(int client, int args)
 {
-	Block(client)
+	if(gB_menuIsOpen[client])
+	{
+		Trikz(client)
+		Block(client)
+	}
+	else
+		Block(client)
 }
 
 Action Block(int client)
