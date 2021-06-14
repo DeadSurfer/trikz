@@ -42,8 +42,13 @@
 	<form method="post">
 	Enter Map name : <input type="text" name="id"><br/>
 	<input type="submit" value="SELECT" name="Submit1"> <br/>-->
-
-
+	<!--<a href = "index.php?page=<?= $page + 20 ?>">Next</a><br>--> <!--https://stackoverflow.com/questions/10436017/previous-next-buttons-->
+	<!--<? if ($page > 1) : ?>
+	   <a href="index.php?page=<?= $page - 25 ?>">Prev</a>
+	<? endif ?>
+	<? if ($page != $maxPages) : ?>
+	   <a href="index.php?page=<?= $page + 25 ?>">Next</a>
+	<? endif ?>-->
 	
 	<?php
 	//if(isset($_POST['Submit1']))
@@ -73,6 +78,7 @@
 	//close the connection
 	//mysqli_close($dbhandle);
 	//}
+	//<a href = 
 	?>
 	<?php
 		//Step1
@@ -101,7 +107,11 @@
 	//$next = $_POST['next'];
 	//$next = 0;
 	//$prev = $_POST['prev'];
-	$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
+	//if($_POST['submit'] != NULL)
+	if(isset($_POST['submit']))
+		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
+	else
+		$name = NULL;
 	//$name = $_POST
 	?>
 	<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
