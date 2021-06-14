@@ -51,6 +51,15 @@
 	<? //endif ?>-->
 	<!--<a <?php //$next = $next + 25; echo $next; ?> class = "next">Next</a>-->
 	<?php
+	//session_start();
+	//$url = basename($_SERVER['PHP_SELF']);
+	//$query = $_SERVER['QUERY_STRING'];
+	//$queryurl = 1
+	//if($queryurl)
+	//{
+		//$url .= "?".$queryurl;
+	//}
+	//$_SESSION['current_page'] = $url;
 	//if(isset($_POST['Submit1']))
 	//{ 
 	//$username = "root";
@@ -79,7 +88,10 @@
 	//mysqli_close($dbhandle);
 	//}
 	//<a href = 
+	//https://codetyrant.wordpress.com/2015/07/22/go-back-to-the-previous-page-in-php/
 	?>
+	<!--<a href="<?php //echo $current_page;?>"><button>Next</button></a>
+	<a href="<?php //echo $previous_page;?>"><button>BACK</button></a>-->
 	<?php
 		//Step1
 		$db = mysqli_connect('78.84.184.120','root','SaulesStars292mysql','fakeexpert')
