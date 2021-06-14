@@ -92,6 +92,7 @@ int gI_type
 int gI_cpnum
 
 bool gB_menuIsOpen[MAXPLAYERS + 1]
+bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
