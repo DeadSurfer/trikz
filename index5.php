@@ -34,7 +34,7 @@
 	<h1>Trikz Timer</h1> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. -->
 	<!--<form action="" method="post">
 	<label>Please enter your Name:</label>
-	<input type="text" name="Name" value='<?php echo $name; ?>'/>
+	<input type="text" name="Name" value='<?php// echo $name; ?>'/>
 	<br><br>
 	<input name="form" type="submit" value="Submit"/><br><br> //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html
 	</form> //https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D.
@@ -42,14 +42,14 @@
 	<form method="post">
 	Enter Map name : <input type="text" name="id"><br/>
 	<input type="submit" value="SELECT" name="Submit1"> <br/>-->
-	<!--<a href = "index.php?page=<?= $page + 20 ?>">Next</a><br>--> <!--https://stackoverflow.com/questions/10436017/previous-next-buttons-->
-	<!--<? if ($page > 1) : ?>
-	   <a href="index.php?page=<?= $page - 25 ?>">Prev</a>
-	<? endif ?>
-	<? if ($page != $maxPages) : ?>
-	   <a href="index.php?page=<?= $page + 25 ?>">Next</a>
-	<? endif ?>-->
-	
+	<!--<a href = "index.php?page=<?//= $page + 20 ?>">Next</a><br>--> <!--https://stackoverflow.com/questions/10436017/previous-next-buttons-->
+	<!--<?// if ($page > 1) : ?>
+	   <a href="index.php?page=<?//= $page - 25 ?>">Prev</a>
+	<? //endif ?>
+	<?// if (//$page != $maxPages) : ?>
+	   <a href="index.php?page=<?//= $page + 25 ?>">Next</a>
+	<? //endif ?>-->
+	<!--<a <?php //$next = $next + 25; echo $next; ?> class = "next">Next</a>-->
 	<?php
 	//if(isset($_POST['Submit1']))
 	//{ 
