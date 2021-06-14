@@ -76,7 +76,7 @@
 	?>
 	<?php
 		//Step1
-		$db = mysqli_connect('localhost','root','','fakeexpert')
+		$db = mysqli_connect('78.84.184.120','root','SaulesStars292mysql','fakeexpert')
 		or die('Error connecting to MySQL server.');
 	?>
 		<!--<form method="post">
@@ -95,9 +95,12 @@
 							}
 						?>
 					</select>
-		<input type=submit value=Submit ></form>
+		<input type = submit value = Submit></form>
 		https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/<br>
 	<?php
+	//$next = $_POST['next'];
+	//$next = 0;
+	//$prev = $_POST['prev'];
 	$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
 	//$name = $_POST
 	?>
@@ -521,6 +524,20 @@
 		mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp*/
 	?>
 	<!--</form>-->
+		<!--<label for="submit">Please choose map</label><br/>-->
+				<!--<form method = "post" action = "">-->
+					<!--<select id="submit" name="submit">-->
+						<!--<option value="">Select map</option>-->
+						<?php //$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+								//$rs = mysqli_query($db, $sql);
+							//while($rows = mysqli_fetch_assoc($rs))
+							//{
+								//echo '<option value="'.$rows['map'].'">'.$rows['map'].'</option>';
+							//}
+							//echo $next;
+						?>
+					<!--</select>-->
+		<!--<input type = submit value = submit name = next></form>-->
 	</body>
 </html>
 
