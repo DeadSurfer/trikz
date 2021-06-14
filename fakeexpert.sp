@@ -811,6 +811,10 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Restart(param1)
 			}
 		}
+		case MenuAction_Cancel:
+		{
+			PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
+		}
 	}
 }
 
