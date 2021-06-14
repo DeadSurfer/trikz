@@ -108,7 +108,7 @@
 	//$next = 0;
 	//$prev = $_POST['prev'];
 	//if($_POST['submit'] != NULL)
-	if(isset($_POST['submit']))
+	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
 	else
 		$name = NULL;
