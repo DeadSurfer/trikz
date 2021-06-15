@@ -829,7 +829,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.GetItem(param2, sGetItem, 32)
 				PrintToServer("sGetItem: %s", sGetItem)
 			}
-			if(param2 == -3 || param2 == -5)
+			//if(param2 == -3 || param2 == -5)
 			{
 				char sItem[32]
 				menu.GetItem(param2, sItem, 32)
@@ -839,6 +839,10 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				gB_menuIsOpen[param1] = false //idea from expert zone.
 				PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			}
+		}
+		case MenuAction_Start:
+		{
+			gB_menuIsOpen[param1] = true
 		}
 		case MenuAction_End:
 		{
