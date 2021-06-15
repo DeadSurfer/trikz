@@ -787,7 +787,7 @@ void Trikz(int client)
 {
 	gB_menuIsOpen[client] = true
 	gB_menuIsTrikz[client] = true
-	Menu menu = new Menu(trikz_handler)
+	Menu menu = new Menu(trikz_handler, MENU_ACTIONS_ALL)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
 	//Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
