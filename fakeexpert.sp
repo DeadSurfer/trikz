@@ -844,10 +844,10 @@ Action cmd_block(int client, int args)
 	//if(gB_menuIsOpen[client])
 	//{
 		//Trikz(client)
-		Block(client)
+		//Block(client)
 	//}
 	//else
-		Block(client)
+	Block(client)
 }
 
 Action Block(int client)
