@@ -843,7 +843,7 @@ Action cmd_block(int client, int args)
 {
 	if(gB_menuIsOpen[client])
 	{
-		Trikz(client)
+		//Trikz(client)
 		Block(client)
 	}
 	else
@@ -858,6 +858,7 @@ Action Block(int client)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 75)
 		//gB_block[client] = false
+		Trikz(client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
@@ -866,6 +867,7 @@ Action Block(int client)
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		//gB_block[client] = true
+		Trikz(client)
 		PrintToChat(client, "Block enabled.")
 		return Plugin_Handled
 	}
