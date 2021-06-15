@@ -821,6 +821,11 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Restart(param1)
 			}
 		}
+		case MenuAction_Start:
+		{
+			PrintToServer("menu start trikz.")
+			gB_menuIsOpen[param1] = true
+		}
 		case MenuAction_Cancel:
 		{
 			if(param2 == -2)
@@ -839,11 +844,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				gB_menuIsOpen[param1] = false //idea from expert zone.
 				PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			}
-		}
-		case MenuAction_Start:
-		{
-			PrintToServer("menu start trikz.")
-			gB_menuIsOpen[param1] = true
 		}
 		case MenuAction_Display:
 		{
