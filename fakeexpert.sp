@@ -819,7 +819,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 		case MenuAction_Cancel:
 		{
-			//if(param2 == -3)
+			if(param2 == -3 || param2 == -5)
 			{
 				char sItem[32]
 				menu.GetItem(param2, sItem, 32)
