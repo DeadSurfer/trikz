@@ -823,6 +823,9 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 		case MenuAction_Cancel:
 		{
+			char sGetItem[32]
+			menu.GetItem(-2, sGetItem, 32)
+			PrintToServer("sGetItem: %s", sGetItem)
 			if(param2 == -3 || param2 == -5)
 			{
 				char sItem[32]
