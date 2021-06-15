@@ -803,6 +803,11 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
+		case MenuAction_Start:
+		{
+			PrintToServer("menu start trikz.")
+			gB_menuIsOpen[param1] = true
+		}
 		case MenuAction_Select:
 		{
 			switch(param2)
@@ -820,11 +825,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 2:
 					Restart(param1)
 			}
-		}
-		case MenuAction_Start:
-		{
-			PrintToServer("menu start trikz.")
-			gB_menuIsOpen[param1] = true
 		}
 		case MenuAction_Cancel:
 		{
