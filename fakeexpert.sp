@@ -813,7 +813,10 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Trikz(param1)
 				}
 				case 1:
+				{
 					Partner(param1)
+					gB_menuIsOpen[param1] = false
+				}
 				case 2:
 					Restart(param1)
 			}
