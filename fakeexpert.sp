@@ -625,6 +625,7 @@ public void OnClientDisconnect(int client)
 	//gI_partner[client] = 0
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
+	gB_menuIsOpen[client] = false
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 }
 
