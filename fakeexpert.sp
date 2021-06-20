@@ -4336,10 +4336,10 @@ Action ProjectileBoostFix(int entity, int other)
 				else if(vecVelEntity[i] < 0.0)
 					vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
 			//for(int i = 0; i <= 2; i++)
-			if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2])
-			else if(vecVelClient[2] < 0.0)
-				vecVelClient[2] = -vecVelEntity[2]
+			//if(vecVelClient[2] >= 0.0)
+			vecVelClient[2] = FloatAbs(vecVelEntity[2])
+			//else if(vecVelClient[2] < 0.0)
+				//vecVelClient[2] = -vecVelEntity[2]
 			PrintToChatAll("success boost fix")
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 		}
