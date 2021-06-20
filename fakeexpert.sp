@@ -4189,7 +4189,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
 				}
-				if(groundEntity = 0)
+				if(groundEntity == 0)
 					gB_onGround[client] = false
 				if(groundEntity > 0)
 					gB_onGround[client] = true
