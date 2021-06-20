@@ -4327,12 +4327,12 @@ Action ProjectileBoostFix(int entity, int other)
 		for(int i = 0; i <= 1; i++)
 			if(vecVelClient[i] >= 0.0)
 				vecVelClient[i] = FloatAbs(vecVelEntity[i]) + vecVelClient[i]
-			else
+			else if(vecVelClient[i] < 0.0)
 				vecVelClient[i] = -vecVelEntity[i] - vecVelClient[i]
 		//for(int i = 0; i <= 2; i++)
 		if(vecVelClient[2] >= 0.0)
 			vecVelClient[2] = FloatAbs(vecVelEntity[2])
-		else
+		else if(vecVelClient[2] < 0.0)
 			vecVelClient[2] = -vecVelEntity[2]
 		
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
