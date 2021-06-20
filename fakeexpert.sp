@@ -4152,7 +4152,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				fallVel[2] = 800.0
 			if(fallVel[2] <= 800.0 && !(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
 			{
-				if(gB_onGround[client] && gF_fallVelBooster[2] > 0.0)
+				float vecVelBooster[3]
+				GetEntPropVector(groundEntity, Prop_Data, "m_vecVelocity", vecVelBooster)
+				if(gB_onGround[client] && vecVelBooster[2] > 0.0)
 				{
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
