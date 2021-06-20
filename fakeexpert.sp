@@ -4175,8 +4175,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[groundEntity][2]
 		if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
-		else if(gF_fallVel[client][2] < 700.0)
-			gF_fallVel[client][2] = 700.0
+		else if(gF_fallVel[client][2] < 750.0)
+			gF_fallVel[client][2] = 750.0
 		if(buttons & IN_JUMP)
 		{
 			if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
