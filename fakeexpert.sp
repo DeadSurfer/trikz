@@ -4273,76 +4273,80 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 Action ProjectileBoostFix(int entity, int other)
 {
 	gB_isEndTouchBoost[other][entity] = true
-	float vecOriginOther[3]
-	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
-	float vecOriginEntity[3]
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
-	float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
-	float vecMins[3]
-	GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins)
-	PrintToServer("%f", deltaOrigin - vecMins[2])
-	//if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
-	if(-2.0 <= deltaOrigin - vecMins[2] <= 6.0)
+	if(gB_isEndTouchBoost[other][entity])
 	{
-		float vecVelClient[3]
-		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
-		float vecVelEntity[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
-		PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
-		PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-		/*if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
-			vecVelClient[0] = vecVelClient[0] - vecVelEntity[0]
-		if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
-			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
-		if(vecVelClient[0] < 0.0 && vecVelEntity[0] > 0.0)
-			vecVelClient[0] = vecVelClient[0] - vecVelEntity[0] * -1.0
-		if(vecVelClient[0] > 0.0 && vecVelEntity[0] < 0.0)
-			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0] * -1.0
-
-		if(vecVelClient[1] < 0.0 && vecVelEntity[1] < 0.0)
-			vecVelClient[1] = vecVelClient[1] - vecVelEntity[1]
-		if(vecVelClient[1] > 0.0 && vecVelEntity[1] > 0.0)
-			vecVelClient[1] = vecVelClient[1] + vecVelEntity[1]
-		if(vecVelClient[1] < 0.0 && vecVelEntity[1] > 0.0)
-			vecVelClient[1] = vecVelClient[1] - vecVelEntity[1] * -1.0
-		if(vecVelClient[1] > 0.0 && vecVelEntity[1] < 0.0)
-			vecVelClient[1] = vecVelClient[1] + vecVelEntity[1] * -1.0
-		
-		//if(vecVelEntity[2] < 0.0)
-		//	vecVelClient[2] = vecVelEntity[2] * -1.0
-		//else
-		//	vecVelClient[2] = vecVelEntity[2]
-		if(vecVelClient[2] < 0.0 && vecVelEntity[2] < 0.0)
-			vecVelClient[2] = vecVelEntity[2]
-		if(vecVelClient[2] > 0.0 && vecVelEntity[2] > 0.0)
-			vecVelClient[2] = vecVelEntity[2]
-		if(vecVelClient[2] < 0.0 && vecVelEntity[2] > 0.0)
-			vecVelClient[2] = vecVelEntity[2] * -1.0
-		if(vecVelClient[2] > 0.0 && vecVelEntity[2] < 0.0)
-			vecVelClient[2] = vecVelEntity[2] * -1.0
-			
-		if(vecVelClient[0] == 0.0 && vecVelClient[1] == 0.0 && vecVelClient[2] == 0.0)
+		float vecOriginOther[3]
+		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
+		float vecOriginEntity[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
+		float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
+		float vecMins[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins)
+		PrintToServer("%f", deltaOrigin - vecMins[2])
+		//if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
+		if(-2.0 <= deltaOrigin - vecMins[2] <= 6.0)
 		{
-			vecVelClient[0] = vecVelEntity[0] * -1.0
-			vecVelClient[1] = vecVelEntity[1] * -1.0
-			vecVelClient[2] = vecVelEntity[2]
-		}*/
-		if(gB_isEndTouchBoost[other][entity])
-			return Plugin_Handled
-		for(int i = 0; i <= 1; i++)
-			if(vecVelClient[i] >= 0.0)
-				vecVelClient[i] = FloatAbs(vecVelEntity[i]) + vecVelClient[i]
-			else if(vecVelClient[i] < 0.0)
-				vecVelClient[i] = -vecVelEntity[i] - vecVelClient[i]
-		//for(int i = 0; i <= 2; i++)
-		if(vecVelClient[2] >= 0.0)
-			vecVelClient[2] = FloatAbs(vecVelEntity[2])
-		else if(vecVelClient[2] < 0.0)
-			vecVelClient[2] = -vecVelEntity[2]
-		
-		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
-		return Plugin_Continue
+			float vecVelClient[3]
+			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
+			float vecVelEntity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
+			PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
+			PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
+			/*if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
+				vecVelClient[0] = vecVelClient[0] - vecVelEntity[0]
+			if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
+				vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
+			if(vecVelClient[0] < 0.0 && vecVelEntity[0] > 0.0)
+				vecVelClient[0] = vecVelClient[0] - vecVelEntity[0] * -1.0
+			if(vecVelClient[0] > 0.0 && vecVelEntity[0] < 0.0)
+				vecVelClient[0] = vecVelClient[0] + vecVelEntity[0] * -1.0
+
+			if(vecVelClient[1] < 0.0 && vecVelEntity[1] < 0.0)
+				vecVelClient[1] = vecVelClient[1] - vecVelEntity[1]
+			if(vecVelClient[1] > 0.0 && vecVelEntity[1] > 0.0)
+				vecVelClient[1] = vecVelClient[1] + vecVelEntity[1]
+			if(vecVelClient[1] < 0.0 && vecVelEntity[1] > 0.0)
+				vecVelClient[1] = vecVelClient[1] - vecVelEntity[1] * -1.0
+			if(vecVelClient[1] > 0.0 && vecVelEntity[1] < 0.0)
+				vecVelClient[1] = vecVelClient[1] + vecVelEntity[1] * -1.0
+			
+			//if(vecVelEntity[2] < 0.0)
+			//	vecVelClient[2] = vecVelEntity[2] * -1.0
+			//else
+			//	vecVelClient[2] = vecVelEntity[2]
+			if(vecVelClient[2] < 0.0 && vecVelEntity[2] < 0.0)
+				vecVelClient[2] = vecVelEntity[2]
+			if(vecVelClient[2] > 0.0 && vecVelEntity[2] > 0.0)
+				vecVelClient[2] = vecVelEntity[2]
+			if(vecVelClient[2] < 0.0 && vecVelEntity[2] > 0.0)
+				vecVelClient[2] = vecVelEntity[2] * -1.0
+			if(vecVelClient[2] > 0.0 && vecVelEntity[2] < 0.0)
+				vecVelClient[2] = vecVelEntity[2] * -1.0
+				
+			if(vecVelClient[0] == 0.0 && vecVelClient[1] == 0.0 && vecVelClient[2] == 0.0)
+			{
+				vecVelClient[0] = vecVelEntity[0] * -1.0
+				vecVelClient[1] = vecVelEntity[1] * -1.0
+				vecVelClient[2] = vecVelEntity[2]
+			}*/
+
+			//return Plugin_Handled
+			for(int i = 0; i <= 1; i++)
+				if(vecVelClient[i] >= 0.0)
+					vecVelClient[i] = FloatAbs(vecVelEntity[i]) + vecVelClient[i]
+				else if(vecVelClient[i] < 0.0)
+					vecVelClient[i] = -vecVelEntity[i] - vecVelClient[i]
+			//for(int i = 0; i <= 2; i++)
+			if(vecVelClient[2] >= 0.0)
+				vecVelClient[2] = FloatAbs(vecVelEntity[2])
+			else if(vecVelClient[2] < 0.0)
+				vecVelClient[2] = -vecVelEntity[2]
+			
+			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
+		}
+			//return Plugin_Continue
 	}
+	//return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
