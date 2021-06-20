@@ -4135,7 +4135,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
 	{
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
-		float fallVel[3]
+		/*float fallVel[3]
 		fallVel[0] = gF_fallVel[client][0]
 		fallVel[1] = gF_fallVel[client][1]
 		//fallVel[2] = gF_fallVel[client][2] * 4.0
@@ -4165,6 +4165,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gB_onGround[client] = false
 				if(groundEntity > 0) // expert zone idea.
 					gB_onGround[client] = true
+			}
+		}*/
+		//float fallVel[3]
+		gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[groundEntity][2]
+		if(buttons & IN_JUMP)
+		{
+			if(!(GetEntityFlags(groundEntity)) && !(buttons & IN_DUCK))
+			{
+				if(groundEntity == 0)
+					gB_onGround[client] = false
+				if(groundEntity > 0)
+					gB_onGorund[client] = true //thanks for this idea expert-zone (ed, maru)
+				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
+				{
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+				}
+				//if(g
 			}
 		}
 	}
