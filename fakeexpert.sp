@@ -4176,7 +4176,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(groundEntity == 0)
 					gB_onGround[client] = false
 				if(groundEntity > 0)
-					gB_onGorund[client] = true //thanks for this idea expert-zone (ed, maru)
+					gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
 				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
