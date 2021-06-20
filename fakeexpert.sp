@@ -765,7 +765,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float vecMins[3]
 		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
 		float delta = vecAbsFlyer[2] - vecAbsBooster[2] + vecMins[2]
-		PrintToServer("delta: %f", delta)
+		//PrintToServer("delta: %f", delta)
 		//if(-62.031250 <= delta <= 62.031250)
 		//if(-64.0 <= delta <= -64.0)
 		if(delta)
