@@ -817,11 +817,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				}*/
 				
 				float vecVelFlyer[3]
-				GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
-				int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
+				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelFlyer)
+				int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 				if(0 < groundEntity <= MaxClients)
 				{
-					TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelFlyer)
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVelFlyer)
 				}
 			}
 		}
