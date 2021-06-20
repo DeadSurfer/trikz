@@ -96,6 +96,8 @@ bool gB_menuIsOpen[MAXPLAYERS + 1]
 bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
 bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
+float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
+bool gB_boost[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -4187,6 +4189,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 	}
+	if(gB_boost[client])
+	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gB_boost[client] = false
+	}
 }
 
 /*Action cmd_gent(int client, int args)
@@ -4345,6 +4352,9 @@ Action ProjectileBoostFix(int entity, int other)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
 				//else if(vecVelClient[2] < 0.0)
 					//vecVelClient[2] = -vecVelEntity[2]
+				if(int i = 0; i <= 2; i++)
+					gF_vecVelBoostFix[other][i] = vecVelClient[i]
+				gB_boost[other] = true
 				PrintToChatAll("success boost fix")
 				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
