@@ -4156,6 +4156,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetEntPropVector(groundEntity, Prop_Data, "m_vecVelocity", vecVelBooster)
 				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
+					PrintToServer("gF_fallVelBooster runcmd: %f", gF_fallVelBooster[groundEntity[2]])
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
 					//PrintToServer("%f", fallVel[2])
