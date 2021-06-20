@@ -4174,16 +4174,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}*/
 		//float fallVel[3]
 		//gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[groundEntity][2]
-		if(gF_fallVelBooster[groundEntity][2] <= 96.664459) //289.993377
+		/*if(gF_fallVelBooster[groundEntity][2] <= 96.664459) //289.993377
 			gF_fallVel[client][2] = 266.6666666666667
 		else if(gF_fallVelBooster[groundEntity][2] <= 144.9966885)
 			gF_fallVel[client][2] = 400.0
 		else if(gF_fallVelBooster[groundEntity][2] <= 289.993377)
-			gF_fallVel[client][2] = 800.0
-		/*if(gF_fallVel[client][2] > 800.0)
+			gF_fallVel[client][2] = 800.0*/
+		if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
 		else if(gF_fallVel[client][2] < 750.0)
-			gF_fallVel[client][2] = 750.0*/
+			gF_fallVel[client][2] = 750.0
 		if(buttons & IN_JUMP)
 		{
 			PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
