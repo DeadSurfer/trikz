@@ -4171,9 +4171,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[groundEntity][2]
 		if(buttons & IN_JUMP)
 		{
-			if(!(GetEntityFlags(groundEntity)) && !(buttons & IN_DUCK))
+			if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
 			{
-				if(groundEntity == 0)
+				if(groundEntity == 0) //groundentity 0 = onground, ground entity > 0 = on player, groundentity -1 = in air.
 					gB_onGround[client] = false
 				if(groundEntity > 0)
 					gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
