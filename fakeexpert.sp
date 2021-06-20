@@ -4189,6 +4189,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 	}
+	if(GetEntityFlags(client) & FL_ONGROUND)
+		gB_boost[client] = false
 	if(gB_boost[client] && !(GetEntityFlags(client) & FL_ONGROUND))
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
