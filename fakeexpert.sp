@@ -4331,16 +4331,16 @@ Action ProjectileBoostFix(int entity, int other)
 		{
 			//return Plugin_Handled
 			for(int i = 0; i <= 1; i++)
-				if(vecVelClient[i] >= 0.0)
-					vecVelClient[i] = FloatAbs(vecVelEntity[i]) + vecVelClient[i]
-				else if(vecVelClient[i] < 0.0)
-					vecVelClient[i] = -vecVelEntity[i] - vecVelClient[i]
+				if(vecVelEntity[i] >= 0.0)
+					vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0
+				else if(vecVelEntity[i] < 0.0)
+					vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
 			//for(int i = 0; i <= 2; i++)
 			if(vecVelClient[2] >= 0.0)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
 			else if(vecVelClient[2] < 0.0)
 				vecVelClient[2] = -vecVelEntity[2]
-			
+			PrintToChatAll("success boost fix")
 			TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 		}
 		//return Plugin_Continue
