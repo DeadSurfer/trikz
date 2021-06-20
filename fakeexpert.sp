@@ -768,7 +768,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//PrintToServer("delta: %f", delta)
 		//if(-62.031250 <= delta <= 62.031250)
 		//if(-64.0 <= delta <= -64.0)
-		if(delta)
+		//if(delta)
 		{
 			float vecVelBooster[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
@@ -4287,7 +4287,7 @@ Action ProjectileBoostFix(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
 		PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
 		PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-		if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
+		/*if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
 			vecVelClient[0] = vecVelClient[0] - vecVelEntity[0]
 		if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
 			vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
@@ -4323,7 +4323,18 @@ Action ProjectileBoostFix(int entity, int other)
 			vecVelClient[0] = vecVelEntity[0] * -1.0
 			vecVelClient[1] = vecVelEntity[1] * -1.0
 			vecVelClient[2] = vecVelEntity[2]
-		}
+		}*/
+		for(int i = 0; i <= 1; i++)
+			if(vecVelClient[i] > 0.0)
+				vecVelClient[i] = FloatAbs(vecVelEntity[i]) + vecVelClient[i]
+			else
+				vecVelClient[i] = -vecVelEntity[i] - vecVelClient[i]
+		//for(int i = 0; i <= 2; i++)
+		if(vecVelClient[2] > 0.0)
+			vecVelClient[2] = FloatAbs(vecVelEntity[2])
+		else
+			vecVelClient[2] = -vecVelEntity[2]
+		
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 	}
 }
