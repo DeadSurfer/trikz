@@ -4179,6 +4179,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 750.0
 		if(buttons & IN_JUMP)
 		{
+			PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Data, "m_flElasticity"))
 			if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
 			{
 				//if(groundEntity == 0) //groundentity 0 = onground, ground entity > 0 = on player, groundentity -1 = in air.
