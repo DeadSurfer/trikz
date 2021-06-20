@@ -4277,7 +4277,7 @@ Action ProjectileBoostFix(int entity, int other)
 	float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 	float vecMins[3]
 	GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
-	//PrintToServer("%f", deltaOrigin - vecMins[2])
+	PrintToServer("%f", deltaOrigin - vecMins[2])
 	//if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
 	if(deltaOrigin - vecMins[2])
 	{
