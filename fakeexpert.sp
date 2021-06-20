@@ -95,6 +95,8 @@ int gI_cpnum
 bool gB_menuIsOpen[MAXPLAYERS + 1]
 bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
+bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -4270,6 +4272,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 Action ProjectileBoostFix(int entity, int other)
 {
+	gB_isEndTouchBoost[other][entity] = true
 	float vecOriginOther[3]
 	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
 	float vecOriginEntity[3]
@@ -4324,6 +4327,8 @@ Action ProjectileBoostFix(int entity, int other)
 			vecVelClient[1] = vecVelEntity[1] * -1.0
 			vecVelClient[2] = vecVelEntity[2]
 		}*/
+		if(gB_isEndTouchBoost[other][entity])
+			return Plugin_Handled
 		for(int i = 0; i <= 1; i++)
 			if(vecVelClient[i] >= 0.0)
 				vecVelClient[i] = FloatAbs(vecVelEntity[i]) + vecVelClient[i]
@@ -4336,7 +4341,13 @@ Action ProjectileBoostFix(int entity, int other)
 			vecVelClient[2] = -vecVelEntity[2]
 		
 		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
+		return Plugin_Continue
 	}
+}
+
+Action ProjectileBoostFixEndTouch(int entity, int other)
+{
+	gB_isEndTouchBoost[other][entity] = false
 }
 
 /*Action cmd_vectest2(int client, int args)
@@ -4366,6 +4377,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
+		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 	}
 }
 
