@@ -4352,11 +4352,11 @@ Action ProjectileBoostFix(int entity, int other)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
 				//else if(vecVelClient[2] < 0.0)
 					//vecVelClient[2] = -vecVelEntity[2]
-				if(int i = 0; i <= 2; i++)
+				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gB_boost[other] = true
 				PrintToChatAll("success boost fix")
-				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
+				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
 			//return Plugin_Continue
 		}
