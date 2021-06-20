@@ -771,15 +771,58 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		{
 			float vecVelBooster[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
+			PrintToServer("vecVelBooster: %f", vecVelBooster[2])
 			if(vecVelBooster[2] > 0.0)
 			{
-				float vecVelFlyer[3]
+				/*float vecVelFlyer[3]
 				GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
 				gF_fallVel[other][0] = vecVelFlyer[0]
 				gF_fallVel[other][1] = vecVelFlyer[1]
 				gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
 				//PrintToServer("x: %f y: %f z: %f", vecVelFlyer[0], vecVelFlyer[1], vecVelFlyer[2])
 				//PrintToServer("%f", delta)
+				int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
+				if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
+				{
+					//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
+					float fallVel[3]
+					fallVel[0] = gF_fallVel[client][0]
+					fallVel[1] = gF_fallVel[client][1]
+					//fallVel[2] = gF_fallVel[client][2] * 4.0
+					//gF_fallVel[client][2] += gF_fallVel[client][2]
+					//fallVel[2] = gF_fallVel[client][2] / 4.0
+					//fallVel[2] = fallVel[2] += gF_fallVel[client][2]
+					//if(gF_fallVel[client][2] < 500.0)
+					gF_fallVel[client][2] += 300.0
+					//PrintToServer("JumpTime: %f", GetEntPropFloat(client, Prop_Data, "m_flJumpTime")) //https://forums.alliedmods.net/showthread.php?t=249353
+					fallVel[2] = gF_fallVel[client][2]
+					if(buttons & IN_JUMP)
+					{
+						if(fallVel[2] > 800.0)
+							fallVel[2] = 800.0
+						if(fallVel[2] <= 800.0 && !(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
+						{
+							if(gB_onGround[client])
+							{
+								//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
+								TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
+								//PrintToServer("%f", fallVel[2])
+							}
+							if(groundEntity == 0)
+								gB_onGround[client] = false
+							if(groundEntity > 0) // expert zone idea.
+								gB_onGround[client] = true
+						}
+					}
+				}*/
+				
+				float vecVelFlyer[3]
+				GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
+				int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
+				if(0 < groundEntity <= MaxClients)
+				{
+					TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelFlyer)
+				}
 			}
 		}
 	}
@@ -4110,7 +4153,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(gB_onGround[client])
 				{
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
+					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
 					//PrintToServer("%f", fallVel[2])
 				}
 				if(groundEntity == 0)
