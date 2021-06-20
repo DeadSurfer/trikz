@@ -4309,7 +4309,7 @@ Action ProjectileBoostFix(int entity, int other)
 			vecVelClient[2] = vecVelEntity[2] * -1.0
 		else
 			vecVelClient[2] = vecVelEntity[2]
-		//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
+		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 	}
 }
 
