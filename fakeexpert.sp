@@ -61,7 +61,7 @@ float gF_vecStart[3]
 //float gF_vecAbs[MAXPLAYERS + 1][3]
 //int gI_sky[MAXPLAYERS + 1]
 //int gI_frame[MAXPLAYERS + 1]
-float gF_fallVelBooster[3]
+float gF_fallVelBooster[MAXPLAYERS + 1][3]
 float gF_fallVel[MAXPLAYERS + 1][3]
 bool gB_onGround[MAXPLAYERS + 1]
 bool gB_readyToStart[MAXPLAYERS + 1]
@@ -772,7 +772,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		{
 			float vecVelBooster[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
-			gF_fallVelBooster[2] = vecVelBooster[2]
+			gF_fallVelBooster[client][2] = vecVelBooster[2]
 			//PrintToServer("vecVelBooster: %f", vecVelBooster[2])
 			//if(vecVelBooster[2] > 0.0)
 			{
@@ -4154,7 +4154,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				float vecVelBooster[3]
 				GetEntPropVector(groundEntity, Prop_Data, "m_vecVelocity", vecVelBooster)
-				if(gB_onGround[client] && vecVelBooster[2] > 0.0)
+				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
 					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
