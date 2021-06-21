@@ -842,6 +842,7 @@ void SDKBoostFix(int client)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 2
+		PrintToChatAll("boost step 1 -> 2")
 	}
 }
 
@@ -4232,12 +4233,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 	}
-	if(GetEntityFlags(client) & FL_ONGROUND)
+	//if(GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
+	if(groundEntity == 0 && GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
+	{
 		gI_boost[client] = 0
-	if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
+		PrintToChatAll("boost step: 0")
+	}
+	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
+	if(gI_boost[client] == 2 && groundEntity == -1 && !(GetEntityFlags(client) & FL_ONGROUND))
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
+		PrintToChatAll("boost step 2 -> 0")
 	}
 }
 
@@ -4390,9 +4397,9 @@ Action ProjectileBoostFix(int entity, int other)
 				//return Plugin_Handled
 				for(int i = 0; i <= 1; i++)
 					if(vecVelEntity[i] >= 0.0)
-						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0 / 2.0
+						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i]) * -1.0
 					else if(vecVelEntity[i] < 0.0)
-						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) / 2.0
+						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
@@ -4401,6 +4408,7 @@ Action ProjectileBoostFix(int entity, int other)
 				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
+				PrintToChatAll("boost step 0 -> 1")
 				PrintToChatAll("success boost fix")
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
