@@ -4490,7 +4490,7 @@ Action ProjectileBoostFix(int entity, int other)
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
-	other = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity")
+	other = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 	//gB_isEndTouchBoost[other][entity] = false
 	PrintToServer("%i %i", entity, other)
 	if(0 < other <= MaxClients)
