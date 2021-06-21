@@ -4417,9 +4417,9 @@ Action ProjectileBoostFix(int entity, int other)
 				//return Plugin_Handled
 				for(int i = 0; i <= 1; i++)
 					if(vecVelEntity[i] >= 0.0)
-						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0
+						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * GetEntPropFloat(entity, Prop_Data, "m_flElasticity") + FloatAbs(vecVelClient[i])) * -1.0
 					else if(vecVelEntity[i] < 0.0)
-						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
+						vecVelClient[i] = FloatAbs(vecVelEntity[i]) * GetEntPropFloat(entity, Prop_Data, "m_flElasticity") + FloatAbs(vecVelClient[i])
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
@@ -4433,6 +4433,7 @@ Action ProjectileBoostFix(int entity, int other)
 				PrintToChatAll("boost step 0 -> 1")
 				PrintToChatAll("success boost fix")
 				PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
+				PrintToChatAll("player elasticity: %f", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
 			//return Plugin_Continue
