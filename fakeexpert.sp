@@ -792,7 +792,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
 				gI_skyStep[other] = 1
 				gF_boostTime[client] = GetGameTime()
-				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//PrintToServer("x: %f y: %f z: %f", vecVelFlyer[0], vecVelFlyer[1], vecVelFlyer[2])
 				//PrintToServer("%f", delta)
 				/*int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
