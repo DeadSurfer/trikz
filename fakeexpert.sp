@@ -789,7 +789,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				//gF_fallVelBooster[client][2] = vecVelBooster[2]
 				gF_fallVelBooster[other][2] = vecVelBooster[2]
 				PrintToServer("vecVelBooster: %f", vecVelBooster[2])
-				//if(vecVelBooster[2] > 0.0)
+				if(vecVelBooster[2] > 0.0)
 				{
 					float vecVelFlyer[3]
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
