@@ -4459,7 +4459,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//gI_boost[other] = 1
 				gF_boostTime[other] = GetGameTime()
 				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
 				PrintToChatAll("boost step 0 -> 1")
 				PrintToChatAll("success boost fix")
 				PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
