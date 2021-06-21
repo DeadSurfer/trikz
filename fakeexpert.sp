@@ -782,11 +782,12 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
 		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			if(!(GetEntityFlags(client) & FL_ONGROUND))
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			{
 				float vecVelBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
-				gF_fallVelBooster[client][2] = vecVelBooster[2]
+				//gF_fallVelBooster[client][2] = vecVelBooster[2]
+				gF_fallVelBooster[other][2] = vecVelBooster[2]
 				PrintToServer("vecVelBooster: %f", vecVelBooster[2])
 				//if(vecVelBooster[2] > 0.0)
 				{
@@ -4240,15 +4241,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0
 		else if(gF_fallVel[client][2] < 750.0)
 			gF_fallVel[client][2] = 750.0*/
-		if(gF_fallVelBooster[groundEntity][2] >= 5.0) //289.993377
+		if(gF_fallVelBooster[client][2] >= 5.0) //289.993377
 			gF_fallVel[client][2] = 600.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 50.0)
+		else if(gF_fallVelBooster[client][2] >= 50.0)
 			gF_fallVel[client][2] = 650.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 100.0)
+		else if(gF_fallVelBooster[client][2] >= 100.0)
 			gF_fallVel[client][2] = 700.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 150.0) //289.993377
+		else if(gF_fallVelBooster[client][2] >= 150.0) //289.993377
 			gF_fallVel[client][2] = 750.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 200.0)
+		else if(gF_fallVelBooster[client][2] >= 200.0)
 			gF_fallVel[client][2] = 800.0
 		if(buttons & IN_JUMP)
 		{
