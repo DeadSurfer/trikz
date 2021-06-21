@@ -95,7 +95,7 @@ int gI_cpnum
 bool gB_menuIsOpen[MAXPLAYERS + 1]
 bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
-bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
+//bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 int gI_boost[MAXPLAYERS + 1]
 //float gF_boostTime[MAXPLAYERS + 1]
@@ -4456,8 +4456,8 @@ Action ProjectileBoostFix(int entity, int other)
 				vecVelClient[1] = vecVelEntity[1] * -1.0
 				vecVelClient[2] = vecVelEntity[2]
 			}*/
-			gB_isEndTouchBoost[other][entity] = true
-			int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
+			//gB_isEndTouchBoost[other][entity] = true
+			//int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
 			//PrintToChatAll("groundEntity: %i", groundEntity)
 			//if(gB_isEndTouchBoost[other][entity] && gI_boost[other] == 0 && groundEntity == entity)
 			if(gI_boost[other] == 0)
