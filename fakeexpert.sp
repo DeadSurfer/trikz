@@ -99,7 +99,7 @@ bool gB_menuIsTrikz[MAXPLAYERS + 1]
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 int gI_boost[MAXPLAYERS + 1]
 //float gF_boostTime[MAXPLAYERS + 1]
-//int gI_skyStep[MAXPLAYERS + 1]
+int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 
@@ -779,7 +779,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(-64.0 <= delta <= -64.0)
 		//if(delta)
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && GetGameTime() - gF_boostTime[other] < 0.15 && gI_skyStep[other] == 0)
-		if(vecAbsFlyer[2] >= vecAbsBooster[2])
+		if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
 		{
 			float vecVelBooster[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
@@ -792,9 +792,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				gF_fallVel[other][0] = vecVelFlyer[0]
 				gF_fallVel[other][1] = vecVelFlyer[1]
 				gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
-				//gI_skyStep[other] = 1
+				gI_skyStep[other] = 1
+				//gI_skyBooster[
 				//gF_boostTime[client] = GetGameTime()
-				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//PrintToServer("x: %f y: %f z: %f", vecVelFlyer[0], vecVelFlyer[1], vecVelFlyer[2])
 				//PrintToServer("%f", delta)
 				/*int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
@@ -4167,9 +4168,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	//if(gI_skyStep[client] >= 1)
 		//gI_skyStep[client]++
-	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
-	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
-	{
+	//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
+	//if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
+	//{
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
 		/*float fallVel[3]
 		fallVel[0] = gF_fallVel[client][0]
@@ -4229,31 +4230,34 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0*/
 		//else if(gF_fallVelBooster[groundEntity][2] <= 250.0)
 			//gF_fallVel[client][2] = 800.0
-		if(gF_fallVel[client][2] > 800.0)
-			gF_fallVel[client][2] = 800.0
-		else if(gF_fallVel[client][2] < 750.0)
-			gF_fallVel[client][2] = 750.0
-		if(buttons & IN_JUMP)
+		if(skyStep[client] = 1)
 		{
-			PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
-			if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
+			if(gF_fallVel[client][2] > 800.0)
+				gF_fallVel[client][2] = 800.0
+			else if(gF_fallVel[client][2] < 750.0)
+				gF_fallVel[client][2] = 750.0
+			if(buttons & IN_JUMP)
 			{
-				//if(groundEntity == 0) //groundentity 0 = onground, ground entity > 0 = on player, groundentity -1 = in air.
-					//gB_onGround[client] = false
-				//if(groundEntity > 0)
-					//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
-				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
+				//PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
+				//if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
 				{
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
-					//if(gI_skyStep[client] == 10)
+					//if(groundEntity == 0) //groundentity 0 = onground, ground entity > 0 = on player, groundentity -1 = in air.
+						//gB_onGround[client] = false
+					//if(groundEntity > 0)
+						//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
+					//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
+					{
+						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+						//if(gI_skyStep[client] == 10)
+							//gI_skyStep[client] = 0
+					}
+					//if(groundEntity == 0)
+					//	gB_onGround[client] = false
+					//if(groundEntity > 0)
+					//	gB_onGround[client] = true
+					//if(groundEntity == -1)
 						//gI_skyStep[client] = 0
 				}
-				if(groundEntity == 0)
-					gB_onGround[client] = false
-				if(groundEntity > 0)
-					gB_onGround[client] = true
-				//if(groundEntity == -1)
-					//gI_skyStep[client] = 0
 			}
 		}
 	}
@@ -4305,10 +4309,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//if(gB_groundBoost[client])
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
 	//}
-	if(2 >= gI_boost[client] >= 1)
+	if(gI_boost[client] == 1)
 	{
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		gI_boost[client]++
+		gI_boost[client] = 2
 	}
 	if(gI_boost[client] == 2)
 	{
@@ -4492,7 +4496,7 @@ Action ProjectileBoostFix(int entity, int other)
 				gI_boost[other] = 1
 				//gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
-				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
