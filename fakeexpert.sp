@@ -4297,6 +4297,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_boost[client] == 4)
 	{
+		if(gB_groundBoost[client])
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 	}
@@ -4474,7 +4476,7 @@ Action ProjectileBoostFix(int entity, int other)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
 				gF_boostTime[other] = GetGameTime()
-				gB_groundboost[other] = gB_bouncedOff[entity]
+				gB_groundBoost[other] = gB_bouncedOff[entity]
 				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
