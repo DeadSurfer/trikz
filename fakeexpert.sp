@@ -603,6 +603,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	char sQuery[512]
 	//int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
@@ -833,6 +834,12 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			}
 		}
 	}
+}
+
+void SDKBoostFix(int client)
+{
+	if(gB_boost[client])
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVel[client])
 }
 
 Action cmd_trikz(int client, int args)
