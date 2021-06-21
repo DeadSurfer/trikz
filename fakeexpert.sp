@@ -57,7 +57,7 @@ float gF_vecStart[3]
 //bool gB_newpass
 //bool gB_runcmd[MAXPLAYERS + 1]
 //int gI_other[MAXPLAYERS + 1]
-//float gI_boostTime[MAXPLAYERS + 1]
+//float gF_boostTime[MAXPLAYERS + 1]
 //float gF_vecAbs[MAXPLAYERS + 1][3]
 //int gI_sky[MAXPLAYERS + 1]
 //int gI_frame[MAXPLAYERS + 1]
@@ -98,6 +98,8 @@ bool gB_menuIsTrikz[MAXPLAYERS + 1]
 bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 int gI_boost[MAXPLAYERS + 1]
+float gF_boostTime[MAXPLAYERS + 1]
+int gI_skyStep[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -774,7 +776,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(-62.031250 <= delta <= 62.031250)
 		//if(-64.0 <= delta <= -64.0)
 		//if(delta)
-		if(vecAbsFlyer[2] >= vecAbsBooster[2])
+		if(vecAbsFlyer[2] >= vecAbsBooster[2] && GetGameTime() - gF_boostTime[other] < 0.15 && gI_skyStep[other] == 0)
 		{
 			float vecVelBooster[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
@@ -787,6 +789,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				gF_fallVel[other][0] = vecVelFlyer[0]
 				gF_fallVel[other][1] = vecVelFlyer[1]
 				gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
+				gI_skyStep[other] = 1
 				//PrintToServer("x: %f y: %f z: %f", vecVelFlyer[0], vecVelFlyer[1], vecVelFlyer[2])
 				//PrintToServer("%f", delta)
 				/*int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
@@ -838,11 +841,16 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	if(gI_boost[client] == 1)
+	if(gI_boost[client] == 1 || 0 < gI_boost[client] <= 6)
+	{
+		
+		gI_boost[client]++
+		PrintToChatAll("boost step 1 -> 2")
+	}
+	if(gI_boost[client] == 7)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client] = 2
-		PrintToChatAll("boost step 1 -> 2")
+		gI_boost[client] = 8
 	}
 }
 
@@ -4148,7 +4156,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//gB_state[client] = false
 	}
 	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
-	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
+	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity) && gI_skyStep[client] == 1) //client - flyer, booster - groundEntity
 	{
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
 		/*float fallVel[3]
@@ -4225,6 +4233,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+					gI_skyStep[client] = 0
 				}
 				if(groundEntity == 0)
 					gB_onGround[client] = false
@@ -4242,7 +4251,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
 	//if(gI_boost[client] == 2 && groundEntity > MAXPLAYERS && !(GetEntityFlags(client) & FL_ONGROUND))
 	//if(gI_boost[client] == 2 && groundEntity > MaxClients)
-	if(gI_boost[client] == 2)
+	if(gI_boost[client] == 8)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
@@ -4357,7 +4366,7 @@ Action ProjectileBoostFix(int entity, int other)
 		//if(-6.0 > (deltaOrigin - vecMaxs[2]) <= -4.031250)
 		//if(deltaOrigin - vecMaxs[2] > -6.0 && deltaOrigin - vecMaxs[2] <= -2.0)
 		//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
-		if(vecOriginOther - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
+		if(vecOriginOther[2] - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
@@ -4419,8 +4428,11 @@ Action ProjectileBoostFix(int entity, int other)
 				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
+				gF_boostTime[other] = GetGameTime()
+				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				PrintToChatAll("boost step 0 -> 1")
 				PrintToChatAll("success boost fix")
+				PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
 			//return Plugin_Continue
