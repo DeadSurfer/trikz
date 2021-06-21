@@ -100,6 +100,8 @@ float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 int gI_boost[MAXPLAYERS + 1]
 float gF_boostTime[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
+bool gB_bouncedOff[2048 + 1]
+bool gB_groundBoost[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -4472,6 +4474,7 @@ Action ProjectileBoostFix(int entity, int other)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
 				gF_boostTime[other] = GetGameTime()
+				gB_groundboost[other] = gB_bouncedOff[entity]
 				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
@@ -4490,112 +4493,8 @@ Action ProjectileBoostFix(int entity, int other)
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
-	other = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-	//gB_isEndTouchBoost[other][entity] = false
-	PrintToServer("%i %i", entity, other)
-	if(0 < other <= MaxClients)
-	{
-		float vecOriginOther[3]
-		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
-		float vecOriginEntity[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
-		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
-		float deltaOrigin = vecOriginEntity[2] - vecOriginOther[2]
-		float vecMaxs[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
-		PrintToServer("%f %i %i %N", deltaOrigin - vecMaxs[2], entity, other, other)
-		//if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
-		//if(-2.0 <= (deltaOrigin - vecMaxs[2]) <= 6.0)
-		//if(-6.0 > (deltaOrigin - vecMaxs[2]) <= -4.031250)
-		//if(deltaOrigin - vecMaxs[2] > -6.0 && deltaOrigin - vecMaxs[2] <= -2.0)
-		//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
-		if(vecOriginOther[2] - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
-		{
-			float vecVelClient[3]
-			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
-			float vecVelEntity[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
-			PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
-			PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-			/*if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
-				vecVelClient[0] = vecVelClient[0] - vecVelEntity[0]
-			if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
-				vecVelClient[0] = vecVelClient[0] + vecVelEntity[0]
-			if(vecVelClient[0] < 0.0 && vecVelEntity[0] > 0.0)
-				vecVelClient[0] = vecVelClient[0] - vecVelEntity[0] * -1.0
-			if(vecVelClient[0] > 0.0 && vecVelEntity[0] < 0.0)
-				vecVelClient[0] = vecVelClient[0] + vecVelEntity[0] * -1.0
-
-			if(vecVelClient[1] < 0.0 && vecVelEntity[1] < 0.0)
-				vecVelClient[1] = vecVelClient[1] - vecVelEntity[1]
-			if(vecVelClient[1] > 0.0 && vecVelEntity[1] > 0.0)
-				vecVelClient[1] = vecVelClient[1] + vecVelEntity[1]
-			if(vecVelClient[1] < 0.0 && vecVelEntity[1] > 0.0)
-				vecVelClient[1] = vecVelClient[1] - vecVelEntity[1] * -1.0
-			if(vecVelClient[1] > 0.0 && vecVelEntity[1] < 0.0)
-				vecVelClient[1] = vecVelClient[1] + vecVelEntity[1] * -1.0
-			
-			//if(vecVelEntity[2] < 0.0)
-			//	vecVelClient[2] = vecVelEntity[2] * -1.0
-			//else
-			//	vecVelClient[2] = vecVelEntity[2]
-			if(vecVelClient[2] < 0.0 && vecVelEntity[2] < 0.0)
-				vecVelClient[2] = vecVelEntity[2]
-			if(vecVelClient[2] > 0.0 && vecVelEntity[2] > 0.0)
-				vecVelClient[2] = vecVelEntity[2]
-			if(vecVelClient[2] < 0.0 && vecVelEntity[2] > 0.0)
-				vecVelClient[2] = vecVelEntity[2] * -1.0
-			if(vecVelClient[2] > 0.0 && vecVelEntity[2] < 0.0)
-				vecVelClient[2] = vecVelEntity[2] * -1.0
-				
-			if(vecVelClient[0] == 0.0 && vecVelClient[1] == 0.0 && vecVelClient[2] == 0.0)
-			{
-				vecVelClient[0] = vecVelEntity[0] * -1.0
-				vecVelClient[1] = vecVelEntity[1] * -1.0
-				vecVelClient[2] = vecVelEntity[2]
-			}*/
-			gB_isEndTouchBoost[other][entity] = true
-			int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
-			PrintToChatAll("groundEntity: %i", groundEntity)
-			//if(gB_isEndTouchBoost[other][entity] && gI_boost[other] == 0 && groundEntity == entity)
-			if(gI_boost[other] == 0)
-			{
-				//return Plugin_Handled
-				for(int i = 0; i <= 1; i++)
-					if(vecVelEntity[i] >= 0.0)
-						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8) * -1.0
-					else if(vecVelEntity[i] < 0.0)
-						vecVelClient[i] = FloatAbs(vecVelEntity[i]) * 0.8
-				//for(int i = 0; i <= 2; i++)
-				//if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2])
-				/*for(int i = 0; i <= 1; i++)
-					if(vecVelClient[i] >= 0.0)
-						vecVelClient[i] = FloatAbs(vecVelClient[i]) * -0.135
-					else if(vecVelClient[i] < 0.0)
-						vecVelClient[i] = FloatAbs(vecVelClient[i]) * 0.135
-				//else if(vecVelClient[2] < 0.0)
-					//vecVelClient[2] = -vecVelEntity[2]
-				//for()
-				vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135*/
-				for(int i = 0; i <= 2; i++)
-					gF_vecVelBoostFix[other][i] = vecVelClient[i]
-				gI_boost[other] = 1
-				gF_boostTime[other] = GetGameTime()
-				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
-				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
-				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
-				PrintToChatAll("boost step 0 -> 1")
-				PrintToChatAll("success boost fix")
-				PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
-				PrintToChatAll("player elasticity: %f", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
-				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
-			}
-			//return Plugin_Continue
-		}
-	}
-	//return Plugin_Continue
+	if(!other)
+		gB_bouncedOff[entity] = true
 }
 
 /*Action cmd_vectest2(int client, int args)
@@ -4623,6 +4522,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
+		gB_bouncedOff[entity] = false
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
