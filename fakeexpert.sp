@@ -777,7 +777,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(-64.0 <= delta <= -64.0)
 		//if(delta)
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && GetGameTime() - gF_boostTime[other] < 0.15 && gI_skyStep[other] == 0)
-		if(vecAbsFlyer[2] >= vecAbsBooster[2])
+		if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
 		{
 			float vecVelBooster[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
