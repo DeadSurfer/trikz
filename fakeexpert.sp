@@ -771,15 +771,16 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
 		float vecAbsFlyer[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsFlyer)
-		//float vecMins[3]
-		//GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
-		//float delta = vecAbsFlyer[2] - vecAbsBooster[2] + vecMins[2]
-		//PrintToServer("delta: %f", delta)
+		float vecMins[3]
+		GetEntPropVector(other, Prop_Data, "m_vecMins", vecMins)
+		float delta = vecAbsFlyer[2] - vecAbsBooster[2] + vecMins[2]
+		PrintToServer("delta: %f", delta)
 		//if(-62.031250 <= delta <= 62.031250)
 		//if(-64.0 <= delta <= -64.0)
 		//if(delta)
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && GetGameTime() - gF_boostTime[other] < 0.15 && gI_skyStep[other] == 0)
-		if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
+		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
+		if(-62.031250 <= delta <= 62.031250)
 		{
 			float vecVelBooster[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
@@ -4230,7 +4231,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0*/
 		//else if(gF_fallVelBooster[groundEntity][2] <= 250.0)
 			//gF_fallVel[client][2] = 800.0
-	if(gI_skyStep[client] == 1)
+	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
