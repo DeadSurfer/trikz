@@ -838,12 +838,12 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	//if(gI_boost[client] == 1)
-	//{
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//gI_boost[client] = 2
-		//PrintToChatAll("boost step 1 -> 2")
-	//}
+	if(gI_boost[client] == 1)
+	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 2
+		PrintToChatAll("boost step 1 -> 2")
+	}
 }
 
 Action cmd_trikz(int client, int args)
@@ -4242,20 +4242,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
 	//if(gI_boost[client] == 2 && groundEntity > MAXPLAYERS && !(GetEntityFlags(client) & FL_ONGROUND))
 	//if(gI_boost[client] == 2 && groundEntity > MaxClients)
-	//if(gI_boost[client] == 2)
-	//{
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//gI_boost[client] = 0
-		//PrintToChatAll("boost step 2 -> 0")
-	//}
-	if(gI_boost[client] == 1 || gI_boost[client] == 2 || gI_boost[client] == 3)
+	if(gI_boost[client] == 2)
+	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 0
+		PrintToChatAll("boost step 2 -> 0")
+	}
+	/*if(gI_boost[client] == 1 || gI_boost[client] == 2 || gI_boost[client] == 3)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client]++
 		//gI_boost[client] = 0
 	}
 	if(gI_boost[client] == 3)
-		gI_boost[client] = 0
+		gI_boost[client] = 0*/
 }
 
 /*Action cmd_gent(int client, int args)
@@ -4407,9 +4407,9 @@ Action ProjectileBoostFix(int entity, int other)
 				//return Plugin_Handled
 				for(int i = 0; i <= 1; i++)
 					if(vecVelEntity[i] >= 0.0)
-						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0 / 2.0
+						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0
 					else if(vecVelEntity[i] < 0.0)
-						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i]) / 2.0
+						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
