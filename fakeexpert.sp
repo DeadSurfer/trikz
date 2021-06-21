@@ -4248,13 +4248,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client] = 0
 		//PrintToChatAll("boost step 2 -> 0")
 	//}
-	if(gI_boost[client] == 1 || gI_boost[client] == 2)
+	if(gI_boost[client] == 1 || gI_boost[client] == 2 || gI_boost[client] == 3)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client]++
 		//gI_boost[client] = 0
 	}
-	if(gI_boost[client] == 2)
+	if(gI_boost[client] == 3)
 		gI_boost[client] = 0
 }
 
@@ -4407,7 +4407,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//return Plugin_Handled
 				for(int i = 0; i <= 1; i++)
 					if(vecVelEntity[i] >= 0.0)
-						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i]) * -1.0
+						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0
 					else if(vecVelEntity[i] < 0.0)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
 				//for(int i = 0; i <= 2; i++)
