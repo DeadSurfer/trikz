@@ -4230,37 +4230,37 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0*/
 		//else if(gF_fallVelBooster[groundEntity][2] <= 250.0)
 			//gF_fallVel[client][2] = 800.0
-		if(gI_skyStep[client] == 1)
+	if(gI_skyStep[client] == 1)
+	{
+		if(gF_fallVel[client][2] > 800.0)
+			gF_fallVel[client][2] = 800.0
+		else if(gF_fallVel[client][2] < 750.0)
+			gF_fallVel[client][2] = 750.0
+		if(buttons & IN_JUMP)
 		{
-			if(gF_fallVel[client][2] > 800.0)
-				gF_fallVel[client][2] = 800.0
-			else if(gF_fallVel[client][2] < 750.0)
-				gF_fallVel[client][2] = 750.0
-			if(buttons & IN_JUMP)
+			//PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
+			//if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
 			{
-				//PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
-				//if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
+				//if(groundEntity == 0) //groundentity 0 = onground, ground entity > 0 = on player, groundentity -1 = in air.
+					//gB_onGround[client] = false
+				//if(groundEntity > 0)
+					//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
+				//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
-					//if(groundEntity == 0) //groundentity 0 = onground, ground entity > 0 = on player, groundentity -1 = in air.
-						//gB_onGround[client] = false
-					//if(groundEntity > 0)
-						//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
-					//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
-					{
-						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
-						//if(gI_skyStep[client] == 10)
-							//gI_skyStep[client] = 0
-					}
-					//if(groundEntity == 0)
-					//	gB_onGround[client] = false
-					//if(groundEntity > 0)
-					//	gB_onGround[client] = true
-					//if(groundEntity == -1)
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+					//if(gI_skyStep[client] == 10)
 						//gI_skyStep[client] = 0
 				}
+				//if(groundEntity == 0)
+				//	gB_onGround[client] = false
+				//if(groundEntity > 0)
+				//	gB_onGround[client] = true
+				//if(groundEntity == -1)
+					//gI_skyStep[client] = 0
 			}
 		}
 	}
+	//}
 	//if(GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
 	/*if(groundEntity == 0 && GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
 	{
