@@ -4283,6 +4283,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}*/
 	if(gI_boost[client] == 1)
 	{
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 2
+	}
+	if(gI_boost[client] == 2)
+	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 	}
