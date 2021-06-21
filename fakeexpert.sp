@@ -4293,8 +4293,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(1 <= gI_boost[client] <= 3)
 	{
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		SetEntPropVector(client, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
+		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+		//SetEntPropVector(client, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
 		gI_boost[client]++
 	}
 	if(gI_boost[client] == 4)
