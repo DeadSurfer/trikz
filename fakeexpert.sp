@@ -4161,8 +4161,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//if(!gB_mapfinished[client])
 			//gB_state[client] = false
 	}
+	if(gI_skyStep[client] >= 1)
+		gI_skyStep[client]++
 	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
-	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity) && gI_skyStep[client] == 1) //client - flyer, booster - groundEntity
+	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity) && gI_skyStep[client] == 2) //client - flyer, booster - groundEntity
 	{
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
 		/*float fallVel[3]
