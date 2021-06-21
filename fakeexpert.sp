@@ -4458,7 +4458,8 @@ Action ProjectileBoostFix(int entity, int other)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				//gI_boost[other] = 1
 				gF_boostTime[other] = GetGameTime()
-				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+				SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
 				PrintToChatAll("boost step 0 -> 1")
 				PrintToChatAll("success boost fix")
