@@ -4444,15 +4444,15 @@ Action ProjectileBoostFix(int entity, int other)
 			if(gI_boost[other] == 0)
 			{
 				//return Plugin_Handled
-				/*for(int i = 0; i <= 1; i++)
+				for(int i = 0; i <= 1; i++)
 					if(vecVelEntity[i] >= 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0
 					else if(vecVelEntity[i] < 0.0)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2])*/
-				for(int i = 0; i <= 1; i++)
+				vecVelClient[2] = FloatAbs(vecVelEntity[2])
+				/*for(int i = 0; i <= 1; i++)
 					if(vecVelClient[i] >= 0.0)
 						vecVelClient[i] = FloatAbs(vecVelClient[i]) * -0.135
 					else if(vecVelClient[i] < 0.0)
@@ -4460,7 +4460,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//else if(vecVelClient[2] < 0.0)
 					//vecVelClient[2] = -vecVelEntity[2]
 				//for()
-				vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135
+				vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135*/
 				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
