@@ -4451,7 +4451,7 @@ Action ProjectileBoostFix(int entity, int other)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i] * 0.8) + FloatAbs(vecVelClient[i])
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2]) * 0.8
+				vecVelClient[2] = FloatAbs(vecVelEntity[2])
 				/*for(int i = 0; i <= 1; i++)
 					if(vecVelClient[i] >= 0.0)
 						vecVelClient[i] = FloatAbs(vecVelClient[i]) * -0.135
