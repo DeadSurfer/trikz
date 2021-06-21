@@ -839,7 +839,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 void SDKBoostFix(int client)
 {
 	if(gB_boost[client])
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVel[client])
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 }
 
 Action cmd_trikz(int client, int args)
