@@ -4305,9 +4305,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//if(gB_groundBoost[client])
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
 	//}
-	if(gI_boost[client] == 1)
+	if(7 >= gI_boost[client] >= 1)
+	{
+		gI_boost[client]++
+	}
+	if(gI_boost[client] == 8)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		if(gB_groundBoost[client])
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 	}
 }
@@ -4495,8 +4501,8 @@ Action ProjectileBoostFix(int entity, int other)
 					//GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
 					//float vecVelEntity[3]
 					//GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
-					//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
-					TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
+					TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
+					//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 				}
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 				//PrintToChatAll("boost step 0 -> 1")
