@@ -772,8 +772,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float vecAbsFlyer[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsFlyer)
 		float vecMaxs[3]
-		GetEntPropVector(other, Prop_Data, "m_vecMaxs", vecMaxs)
-		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMaxs[2]
+		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs)
+		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMaxs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 		PrintToServer("delta: %f", delta)
 		//if(-62.031250 <= delta <= 62.031250)
 		//if(-64.0 <= delta <= -64.0)
