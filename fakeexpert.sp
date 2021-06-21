@@ -97,7 +97,7 @@ bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
 bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
-bool gB_boost[MAXPLAYERS + 1]
+int gI_boost[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -838,8 +838,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	if(gB_boost[client])
+	if(gI_boost[client] == 1)
+	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 2
+	}
 }
 
 Action cmd_trikz(int client, int args)
@@ -4230,11 +4233,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND)
-		gB_boost[client] = false
-	if(gB_boost[client] && !(GetEntityFlags(client) & FL_ONGROUND))
+		gI_boost[client] = 0
+	if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gB_boost[client] = false
+		gI_boost[client] = 0
 	}
 }
 
@@ -4382,7 +4385,7 @@ Action ProjectileBoostFix(int entity, int other)
 				vecVelClient[2] = vecVelEntity[2]
 			}*/
 			gB_isEndTouchBoost[other][entity] = true
-			if(gB_isEndTouchBoost[other][entity])
+			if(gB_isEndTouchBoost[other][entity] && gI_boost[other] == 0)
 			{
 				//return Plugin_Handled
 				for(int i = 0; i <= 1; i++)
@@ -4397,7 +4400,7 @@ Action ProjectileBoostFix(int entity, int other)
 					//vecVelClient[2] = -vecVelEntity[2]
 				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
-				gB_boost[other] = true
+				gI_boost[other] = 1
 				PrintToChatAll("success boost fix")
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
