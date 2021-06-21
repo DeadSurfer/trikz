@@ -98,8 +98,8 @@ bool gB_menuIsTrikz[MAXPLAYERS + 1]
 bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 int gI_boost[MAXPLAYERS + 1]
-float gF_boostTime[MAXPLAYERS + 1]
-int gI_skyStep[MAXPLAYERS + 1]
+//float gF_boostTime[MAXPLAYERS + 1]
+//int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 
@@ -792,8 +792,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				gF_fallVel[other][0] = vecVelFlyer[0]
 				gF_fallVel[other][1] = vecVelFlyer[1]
 				gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
-				gI_skyStep[other] = 1
-				gF_boostTime[client] = GetGameTime()
+				//gI_skyStep[other] = 1
+				//gF_boostTime[client] = GetGameTime()
 				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//PrintToServer("x: %f y: %f z: %f", vecVelFlyer[0], vecVelFlyer[1], vecVelFlyer[2])
 				//PrintToServer("%f", delta)
@@ -4252,8 +4252,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gB_onGround[client] = false
 				if(groundEntity > 0)
 					gB_onGround[client] = true
-				if(groundEntity == -1)
-					gI_skyStep[client] = 0
+				//if(groundEntity == -1)
+					//gI_skyStep[client] = 0
 			}
 		}
 	}
@@ -4417,8 +4417,8 @@ Action ProjectileBoostFix(int entity, int other)
 			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
 			float vecVelEntity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
-			PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
-			PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
+			//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
+			//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
 			/*if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
 				vecVelClient[0] = vecVelClient[0] - vecVelEntity[0]
 			if(vecVelClient[0] > 0.0 && vecVelEntity[0] > 0.0)
@@ -4483,19 +4483,26 @@ Action ProjectileBoostFix(int entity, int other)
 				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
-				gF_boostTime[other] = GetGameTime()
+				//gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
 				if(gB_groundBoost[other])
-					TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
+				{
+					//float vecVelClient[3]
+					//GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
+					//float vecVelEntity[3]
+					//GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
+					//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
+					TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
+				}
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
-				PrintToChatAll("boost step 0 -> 1")
-				PrintToChatAll("success boost fix")
-				PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
-				PrintToChatAll("player elasticity: %f", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
+				//PrintToChatAll("boost step 0 -> 1")
+				//PrintToChatAll("success boost fix")
+				//PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
+				//PrintToChatAll("player elasticity: %f", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
 			//return Plugin_Continue
