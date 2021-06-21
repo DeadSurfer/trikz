@@ -4356,7 +4356,8 @@ Action ProjectileBoostFix(int entity, int other)
 		//if(-2.0 <= (deltaOrigin - vecMaxs[2]) <= 6.0)
 		//if(-6.0 > (deltaOrigin - vecMaxs[2]) <= -4.031250)
 		//if(deltaOrigin - vecMaxs[2] > -6.0 && deltaOrigin - vecMaxs[2] <= -2.0)
-		if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
+		//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
+		if(vecOriginOther - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
