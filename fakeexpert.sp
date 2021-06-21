@@ -4444,28 +4444,31 @@ Action ProjectileBoostFix(int entity, int other)
 			if(gI_boost[other] == 0)
 			{
 				//return Plugin_Handled
-				/*for(int i = 0; i <= 1; i++)
+				for(int i = 0; i <= 1; i++)
 					if(vecVelEntity[i] >= 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])) * -1.0
 					else if(vecVelEntity[i] < 0.0)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) + FloatAbs(vecVelClient[i])
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2])*/
-				for(int i = 0; i <= 1; i++)
+				vecVelClient[2] = FloatAbs(vecVelEntity[2])
+				/*for(int i = 0; i <= 1; i++)
 					if(vecVelClient[i] >= 0.0)
 						vecVelClient[i] = FloatAbs(vecVelClient[i]) * -0.135
 					else if(vecVelClient[i] < 0.0)
 						vecVelClient[i] = FloatAbs(vecVelClient[i]) * 0.135
 				//else if(vecVelClient[2] < 0.0)
 					//vecVelClient[2] = -vecVelEntity[2]
+				//for()
+				vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135
 				for(int i = 0; i <= 2; i++)
-					gF_vecVelBoostFix[other][i] = vecVelClient[i]
-				gI_boost[other] = 1
+					gF_vecVelBoostFix[other][i] = vecVelClient[i]*/
+				//gI_boost[other] = 1
 				gF_boostTime[other] = GetGameTime()
-				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+				SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
-				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
+				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
+				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 				PrintToChatAll("boost step 0 -> 1")
 				PrintToChatAll("success boost fix")
 				PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
