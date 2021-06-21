@@ -4236,10 +4236,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//gF_fallVel[client][2] = 800.0
 	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	{
-		if(gF_fallVel[client][2] > 800.0)
+		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
 		else if(gF_fallVel[client][2] < 750.0)
+			gF_fallVel[client][2] = 750.0*/
+		if(gF_fallVelBooster[groundEntity][2] >= 5.0) //289.993377
+			gF_fallVel[client][2] = 600.0
+		else if(gF_fallVelBooster[groundEntity][2] >= 50.0)
+			gF_fallVel[client][2] = 650.0
+		else if(gF_fallVelBooster[groundEntity][2] >= 100.0)
+			gF_fallVel[client][2] = 700.0
+		else if(gF_fallVelBooster[groundEntity][2] >= 150.0) //289.993377
 			gF_fallVel[client][2] = 750.0
+		else if(gF_fallVelBooster[groundEntity][2] >= 200.0)
+			gF_fallVel[client][2] = 800.0
 		if(buttons & IN_JUMP)
 		{
 			//PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
