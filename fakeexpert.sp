@@ -4165,7 +4165,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gI_skyStep[client] >= 1)
 		gI_skyStep[client]++
 	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
-	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity) && gI_skyStep[client] == 5) //client - flyer, booster - groundEntity
+	if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity) && 10 >= gI_skyStep[client] >= 5) //client - flyer, booster - groundEntity
 	{
 		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
 		/*float fallVel[3]
@@ -4242,7 +4242,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
-					gI_skyStep[client] = 0
+					if(gI_skyStep[client] == 10)
+						gI_skyStep[client] = 0
 				}
 				if(groundEntity == 0)
 					gB_onGround[client] = false
