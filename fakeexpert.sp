@@ -841,7 +841,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	if(gI_boost[client] == 1 || 0 < gI_boost[client] <= 6)
+	/*if(gI_boost[client] == 1 || 0 < gI_boost[client] <= 6)
 	{
 		
 		gI_boost[client]++
@@ -851,7 +851,12 @@ void SDKBoostFix(int client)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 8
-	}
+	}*/
+	/*if(gI_boost[client] == 1)
+	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 2
+	}*/
 }
 
 Action cmd_trikz(int client, int args)
@@ -4243,20 +4248,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 	//if(GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
-	if(groundEntity == 0 && GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
+	/*if(groundEntity == 0 && GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
 	{
 		gI_boost[client] = 0
 		PrintToChatAll("boost step: 0")
-	}
+	}*/
 	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
 	//if(gI_boost[client] == 2 && groundEntity > MAXPLAYERS && !(GetEntityFlags(client) & FL_ONGROUND))
 	//if(gI_boost[client] == 2 && groundEntity > MaxClients)
-	if(gI_boost[client] == 8)
+	/*if(gI_boost[client] == 8)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 		PrintToChatAll("boost step 2 -> 0")
-	}
+	}*/
 	/*if(gI_boost[client] == 1 || gI_boost[client] == 2 || gI_boost[client] == 3)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
@@ -4265,6 +4270,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_boost[client] == 3)
 		gI_boost[client] = 0*/
+	if(1 <= gI_boost[client] <= 5)
+	{
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client]++
+	}
+	if(gI_boost[client] == 6)
+	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 0
+	}
 }
 
 /*Action cmd_gent(int client, int args)
@@ -4412,7 +4427,8 @@ Action ProjectileBoostFix(int entity, int other)
 				vecVelClient[2] = vecVelEntity[2]
 			}*/
 			gB_isEndTouchBoost[other][entity] = true
-			if(gB_isEndTouchBoost[other][entity] && gI_boost[other] == 0)
+			int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
+			if(gB_isEndTouchBoost[other][entity] && gI_boost[other] == 0 && groundEntity == entity)
 			{
 				//return Plugin_Handled
 				for(int i = 0; i <= 1; i++)
