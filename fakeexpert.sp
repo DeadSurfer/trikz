@@ -876,11 +876,11 @@ void SDKBoostFix(int client)
 		gI_boost[client] = 8
 		//gI_boost[client] = 0
 	}*/
-	if(gI_boost[client] == 1)
-	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client] = 2
-	}
+	//if(gI_boost[client] == 1)
+	//{
+	//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+	//	gI_boost[client] = 2
+	//}
 }
 
 Action cmd_trikz(int client, int args)
@@ -4255,13 +4255,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_skyStep[client] = 2
 	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
-	if(gI_boost[client] == 1)
+	if(gI_boost[client] >= 15)
 	{
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		gI_boost[client] = 2
+		gI_boost[client]++
 		gI_skyStep[client] = 0
 	}
-	if(gI_boost[client] == 2)
+	if(gI_boost[client] == 15)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
@@ -4453,8 +4453,8 @@ Action ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients)
 	{
-		if(gI_boost[other])
-			return Plugin_Continue
+		//if(gI_boost[other])
+		//	return Plugin_Continue
 		float vecOriginOther[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
 		float vecOriginEntity[3]
