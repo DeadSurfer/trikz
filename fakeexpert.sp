@@ -4257,13 +4257,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	float baseVel[3]
 	SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	if(gI_boost[client] >= 1)
-	{
+	//if(gI_boost[client] >= 1)
+	//{
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		gI_boost[client]++
-		gI_skyStep[client] = 0
-	}
-	if(gI_boost[client] == 15)
+		//gI_boost[client]++
+		//gI_skyStep[client] = 0
+	//}
+	if(gI_boost[client] == 1)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
