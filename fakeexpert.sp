@@ -57,7 +57,7 @@ float gF_vecStart[3]
 //bool gB_newpass
 //bool gB_runcmd[MAXPLAYERS + 1]
 //int gI_other[MAXPLAYERS + 1]
-//float gF_boostTime[MAXPLAYERS + 1]
+float gF_boostTime[MAXPLAYERS + 1]
 //float gF_vecAbs[MAXPLAYERS + 1][3]
 //int gI_sky[MAXPLAYERS + 1]
 //int gI_frame[MAXPLAYERS + 1]
@@ -4256,6 +4256,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	float baseVel[3]
+	if(!gB_boostStep[client])
+	{
+		if(GetGameTime() - gF_boostTime[client] < 0.15)
+			SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
+		return Plugin_Continue
+	}
 	SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 	//if(gI_boost[client] >= 1)
 	//{
@@ -4544,7 +4550,7 @@ Action ProjectileBoostFix(int entity, int other)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
 				//gI_skyStep[other] = 0
-				//gF_boostTime[other] = GetGameTime()
+				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
