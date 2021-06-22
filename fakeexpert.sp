@@ -4235,9 +4235,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0*/
 		//else if(gF_fallVelBooster[groundEntity][2] <= 250.0)
 			//gF_fallVel[client][2] = 800.0
-	if(2 >= gI_skyStep[client] >= 1)
-		gI_skyStep[client] ++
-	if(gI_skyStep[client] == 3 && GetEntityFlags(client) & FL_ONGROUND)
+	//if(2 >= gI_skyStep[client] >= 1)
+	//	gI_skyStep[client] ++
+	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
@@ -4514,6 +4514,7 @@ Action ProjectileBoostFix(int entity, int other)
 				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
 				gI_boost[other] = 1
+				gI_skyStep[other] = 0
 				//gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
