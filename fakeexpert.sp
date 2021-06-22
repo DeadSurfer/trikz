@@ -783,7 +783,9 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
 		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", gF_curretVelBooster[other])
+			float getCurrentVel[3]
+			GetEntPropVector(client, Prop_Data, "m_vecVelocity", getCurrentVel)
+			gF_currecntVelBooster[other] = getCurrentVel[2]
 			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
