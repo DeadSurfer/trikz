@@ -738,7 +738,8 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	return
+	if(0 < other <= MaxClients)
+		return
 	if(0 < other <= MaxClients)
 	{
 		/*float vecAbsClient[3]
