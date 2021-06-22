@@ -785,7 +785,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		{
 			float getCurrentVel[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", getCurrentVel)
-			gF_currecntVelBooster[other] = getCurrentVel[2]
+			gF_currentVelBooster[other] = getCurrentVel[2]
 			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
