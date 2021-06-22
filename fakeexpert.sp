@@ -102,7 +102,7 @@ int gI_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
-float gF_curretVelBooster[MAXPLAYERS + 1][3]
+float gF_currentVelBooster[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -785,7 +785,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		{
 			float getCurrentVel[3]
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", getCurrentVel)
-			gF_currentVelBooster[other] = getCurrentVel[2]
+			gF_currentVelBooster[other][2] = getCurrentVel[2]
 			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
@@ -4249,7 +4249,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 	//if(0 < groundEntity <= MaxClients && gF_curretVelBooster[groundEntity][2] > 0.0 && gI_skyStep[client] == 1)
 		//gI_skyStep[client] = 2
-	if(gF_curretVelBooster[client][2] > 0.0 && gI_skyStep[client] == 2 && GetEntityFlags(client) & FL_ONGROUND)
+	if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 2 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
