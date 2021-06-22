@@ -4249,7 +4249,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 	//if(0 < groundEntity <= MaxClients && gF_curretVelBooster[groundEntity][2] > 0.0 && gI_skyStep[client] == 1)
 		//gI_skyStep[client] = 2
-	if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
+	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
+	if(!(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
