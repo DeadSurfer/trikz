@@ -102,6 +102,7 @@ int gI_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
+float gF_gF_curretVelBooster[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -782,6 +783,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
 		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
+			GetEntPropVector(client, Prop_Data, "m_vecVelocity", gF_curretVelBooster[other])
 			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
@@ -4243,9 +4245,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(2 >= gI_skyStep[client] >= 1)
 	//	gI_skyStep[client] ++
 	//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-	//if(0 < groundEntity <= MaxClients && gF_fallVelBooster[groundEntity][2] > 0.0 && gI_skyStep[client] == 1)
+	//if(0 < groundEntity <= MaxClients && gF_curretVelBooster[groundEntity][2] > 0.0 && gI_skyStep[client] == 1)
 		//gI_skyStep[client] = 2
-	if(gF_fallVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
+	if(gF_curretVelBooster[client][2] > 0.0 && gI_skyStep[client] == 2 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
