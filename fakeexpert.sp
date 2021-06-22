@@ -4261,7 +4261,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_boost[client]++
 		gI_skyStep[client] = 0
 	}
-	if(gI_boost[client] == 30)
+	if(gI_boost[client] == 300)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
