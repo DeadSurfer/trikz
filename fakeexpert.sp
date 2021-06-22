@@ -738,8 +738,8 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < other <= MaxClients)
-		return
+	//if(0 < other <= MaxClients)
+		//return
 	if(0 < other <= MaxClients)
 	{
 		/*float vecAbsClient[3]
@@ -876,11 +876,11 @@ void SDKBoostFix(int client)
 		gI_boost[client] = 8
 		//gI_boost[client] = 0
 	}*/
-	/*if(gI_boost[client] == 1)
+	if(gI_boost[client] == 1)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 2
-	}*/
+	}
 }
 
 Action cmd_trikz(int client, int args)
