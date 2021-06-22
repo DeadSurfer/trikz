@@ -738,6 +738,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
+	return
 	if(0 < other <= MaxClients)
 	{
 		/*float vecAbsClient[3]
@@ -4266,12 +4267,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 	}
-	if(gI_skyStep[client] >= 1)
-	{
-		gI_skyStep[client]++
-		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-	}
-	if(gI_skyStep[client] == 3 && GetEntityFlags(client) & FL_ONGROUND)
+	//if(gI_skyStep[client] >= 1)
+	//{
+		//gI_skyStep[client]++
+		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+	//}
+	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
