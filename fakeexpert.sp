@@ -4567,7 +4567,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//return Plugin_Continue
 		}
 	}
-	//return Plugin_Continue
+	return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
