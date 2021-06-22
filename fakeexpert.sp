@@ -786,6 +786,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			float getCurrentVel[3]
 			GetEntPropVector(other, Prop_Data, "m_vecVelocity", getCurrentVel)
 			gF_currentVelBooster[other][2] = getCurrentVel[2]
+			if(GetEntityFlags(client) & FL_ONGROUND && GetEntityFlags(other) & FL_ONGROUND)
+				gI_skyStep[other] = 0
 			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
@@ -4251,7 +4253,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_skyStep[client] = 2
 	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
-	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
+	if(gI_skyStep[client] >= 1)
+		gI_skyStep[client]++
+		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
+	if(gI_skyStep[client] == 3 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
