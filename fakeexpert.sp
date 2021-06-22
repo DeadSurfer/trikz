@@ -783,9 +783,9 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
 		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			//float getCurrentVel[3]
-			//GetEntPropVector(client, Prop_Data, "m_vecVelocity", getCurrentVel)
-			//gF_currentVelBooster[other][2] = getCurrentVel[2]
+			float getCurrentVel[3]
+			GetEntPropVector(other, Prop_Data, "m_vecVelocity", getCurrentVel)
+			gF_currentVelBooster[other][2] = getCurrentVel[2]
 			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
@@ -4250,7 +4250,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(0 < groundEntity <= MaxClients && gF_curretVelBooster[groundEntity][2] > 0.0 && gI_skyStep[client] == 1)
 		//gI_skyStep[client] = 2
 	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
-	if(gF_currecntVelBooster[client][2] < 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
+	if(gF_currentVelBooster[client][2] < 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
