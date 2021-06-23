@@ -103,6 +103,7 @@ int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 float gF_currentVelBooster[MAXPLAYERS + 1][3]
+int gI_flash[other]
 
 public Plugin myinfo =
 {
@@ -883,7 +884,7 @@ void SDKBoostFix(int client)
 	//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 	//	gI_boost[client] = 2
 	//}
-	if(gI_boost[client] == 1)
+	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		float vecZero[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecZero)
@@ -4728,6 +4729,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
+				gI_flash[other] = EntIndexToEntRef(entity)
 				PrintToChatAll("start touch %i", count)
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
