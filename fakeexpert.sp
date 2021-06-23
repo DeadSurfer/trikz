@@ -4494,7 +4494,8 @@ void SDKOnTakeDamagePost(int victim, int attacker, int inflictor, float damage, 
 		float baseVel[3]
 		PrintToServer("yes2")
 		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
-		return Plugin_Continue
+		//return Plugin_Continue
+		return
 	}
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
 	//{
@@ -4620,7 +4621,7 @@ void SDKOnTakeDamagePost(int victim, int attacker, int inflictor, float damage, 
 		float vecBase[3]
 		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 	}
-	return Plugin_Continue
+	//return Plugin_Continue
 }
 Action ProjectileBoostFix(int entity, int other)
 {
