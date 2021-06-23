@@ -4271,10 +4271,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//}
 	if(gI_boost[client] == 1)
 	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
+	}
+	if(gI_boost[client] == 2)
+	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client] = 0
+		gI_boost[client] = 2
 		PrintToServer("debug")
 	}
 	//if(gI_skyStep[client] >= 1)
