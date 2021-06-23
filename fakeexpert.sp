@@ -607,6 +607,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
+	//SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	char sQuery[512]
@@ -4476,6 +4477,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }*/
 int count
+public void SDKHooks_TakeDamage(int entity, int inflictor, int attacker, float damage, int damageType, const float damageForce[3], const float damagePosition[3])
+{
+	PrintToServer("%i %i %i", entity, inflictor, attacker)
+}
 Action ProjectileBoostFix(int entity, int other)
 {
 	//int count
