@@ -4475,10 +4475,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//PrintToServer("feet collide.")
 	}
 }*/
-
+int count
 Action ProjectileBoostFix(int entity, int other)
 {
-	int count
+	//int count
 	PrintToServer("starttocuh1 %i %i %i", entity, other, count)
 	count++
 	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
@@ -4601,6 +4601,11 @@ Action ProjectileBoostFix(int entity, int other)
 			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 		}
 		//return Plugin_Continue
+	}
+	else
+	{
+		float vecBase[3]
+		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 	}
 	return Plugin_Continue
 }
