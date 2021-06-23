@@ -881,6 +881,14 @@ void SDKBoostFix(int client)
 	//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 	//	gI_boost[client] = 2
 	//}
+	if(gI_boost[client] == 1)
+	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		//if(gB_groundBoost[client])
+		//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 2
+		PrintToServer("debug")
+	}
 }
 
 Action cmd_trikz(int client, int args)
@@ -4269,12 +4277,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client]++
 		//gI_skyStep[client] = 0
 	//}
-	if(gI_boost[client] == 1)
+	if(gI_boost[client] == 2)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
-		gI_boost[client] = 2
+		gI_boost[client] = 3
 	}
-	else if(gI_boost[client] == 2)
+	else if(gI_boost[client] == 3)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
@@ -4485,7 +4493,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(-6.0 > (deltaOrigin - vecMaxs[2]) <= -4.031250)
 	//if(deltaOrigin - vecMaxs[2] > -6.0 && deltaOrigin - vecMaxs[2] <= -2.0)
 	//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
-	if(vecOriginOther[2] - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
+	//if(vecOriginOther[2] - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
+	if(vecOriginOther[2] >= vecOriginEntity[2])
 	{
 		float vecVelClient[3]
 		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
