@@ -4519,7 +4519,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//PrintToServer("feet collide.")
 	}
 }*/
-int count
+//int count
 //void SDKHooks_TakeDamage(int entity, int inflictor, int attacker, float damage, int damageType, int weapon, const float damageForce[3], const float damagePosition[3])
 //{
 	//PrintToServer("%i %i %i", entity, inflictor, attacker)
