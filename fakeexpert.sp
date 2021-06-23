@@ -607,7 +607,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	//SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
+	SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	char sQuery[512]
@@ -4477,7 +4477,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }*/
 int count
-public void SDKHooks_TakeDamage(int entity, int inflictor, int attacker, float damage, int weapon, int damageType, const float damageForce[3], const float damagePosition[3])
+void SDKHooksTakeDamage(int entity, int inflictor, int attacker, float damage, int weapon, int damageType, const float damageForce[3], const float damagePosition[3])
 {
 	PrintToServer("%i %i %i", entity, inflictor, attacker)
 }
@@ -4490,7 +4490,7 @@ Action ProjectileBoostFix(int entity, int other)
 	{
 		float baseVel[3]
 		PrintToServer("yes2")
-		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
+		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
 		return Plugin_Continue
 	}
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
@@ -4584,7 +4584,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//for()
 			vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135*/
 			for(int i = 0; i <= 2; i++)
-				gF_vecVelBoostFix[other][i] = vecVelClient[i]
+				//gF_vecVelBoostFix[other][i] = vecVelClient[i]
 			gI_boost[other] = 1
 			//gI_skyStep[other] = 0
 			gF_boostTime[other] = GetGameTime()
@@ -4615,7 +4615,7 @@ Action ProjectileBoostFix(int entity, int other)
 	else
 	{
 		float vecBase[3]
-		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
+		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 	}
 	return Plugin_Continue
 }
