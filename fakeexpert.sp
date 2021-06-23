@@ -103,7 +103,7 @@ int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 float gF_currentVelBooster[MAXPLAYERS + 1][3]
-int gI_flash[MAXPLAYERS + 1]
+//int gI_flash[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -884,16 +884,16 @@ void SDKBoostFix(int client)
 	//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 	//	gI_boost[client] = 2
 	//}
-	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	//if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		//float vecZero[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecZero)
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		//if(gB_groundBoost[client])
 		//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client] = 2
+		//gI_boost[client] = 2
 		//gI_skyStep[client] = 0
-		PrintToServer("debug1")
+		//PrintToServer("debug1")
 	}
 }
 
@@ -4328,7 +4328,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client] = 3
 	//}
 	//else if(gI_boost[client] == 3)
-	if(gI_boost[client] == 2)
+	if(gI_boost[client] == 1)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
@@ -4349,15 +4349,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0
 		else if(gF_fallVel[client][2] < 750.0)
 			gF_fallVel[client][2] = 750.0*/
-		if(gF_fallVelBooster[client][2] >= 5.0) //289.993377
+		if(gF_fallVelBooster[client][2] >= 50.0) //289.993377
 			gF_fallVel[client][2] = 600.0
-		if(gF_fallVelBooster[client][2] >= 50.0)
-			gF_fallVel[client][2] = 650.0
 		if(gF_fallVelBooster[client][2] >= 100.0)
+			gF_fallVel[client][2] = 650.0
+		if(gF_fallVelBooster[client][2] >= 150.0)
 			gF_fallVel[client][2] = 700.0
-		if(gF_fallVelBooster[client][2] >= 150.0) //289.993377
+		if(gF_fallVelBooster[client][2] >= 200.0) //289.993377
 			gF_fallVel[client][2] = 750.0
-		if(gF_fallVelBooster[client][2] >= 200.0)
+		if(gF_fallVelBooster[client][2] >= 250.0)
 		{
 			gF_fallVel[client][2] = 800.0
 			PrintToServer("success")
@@ -4771,7 +4771,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
-				gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
+				//gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
