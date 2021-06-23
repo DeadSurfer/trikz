@@ -3552,7 +3552,7 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	}
 }
 
-void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data)
+/*void SQLCPSelect2(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
 	char sQuery[512]
@@ -4090,7 +4090,7 @@ void SQLCPSelect10_2(Database db, DBResultSet results, const char[] error, any d
 		PrintToChat(gI_partner[other], "10. Checkpoint: +00:00:00")
 		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
-}
+}*/
 
 /*Action cmd_sum(int client, int args)
 {
