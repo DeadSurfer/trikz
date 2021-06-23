@@ -4486,7 +4486,7 @@ Action ProjectileBoostFix(int entity, int other)
 	float vecOriginEntity[3]
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
 	//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
-	float deltaOrigin = vecOriginEntity[2] - vecOriginOther[2]
+	float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 	float vecMaxs[3]
 	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
 	PrintToServer("%f %i %i %N", deltaOrigin - vecMaxs[2], entity, other, other)
