@@ -884,7 +884,7 @@ void SDKBoostFix(int client)
 	if(gI_boost[client] == 1)
 	{
 		float vecZero[3]
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecZero)
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecZero)
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		//if(gB_groundBoost[client])
 		//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
@@ -4281,14 +4281,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//}
 	if(gI_boost[client] == 2)
 	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
 		gI_boost[client] = 3
 	}
 	else if(gI_boost[client] == 3)
 	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 		PrintToServer("debug")
 	}
@@ -4328,7 +4328,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
 				//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
 					//if(gI_skyStep[client] == 10)
 					gI_skyStep[client] = 0
 					PrintToServer("yes")
