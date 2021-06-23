@@ -4480,7 +4480,7 @@ Action ProjectileBoostFix(int entity, int other)
 {
 	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
 		return Plugin_Continue
-	if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
+	if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
 		return Plugin_Continue
 	float vecOriginOther[3]
 	GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
