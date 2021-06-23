@@ -4482,7 +4482,10 @@ Action ProjectileBoostFix(int entity, int other)
 	PrintToServer("starttocuh1 %i %i %i", entity, other, count)
 	count++
 	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
+	{
+		PrintToServer("yes2")
 		return Plugin_Continue
+	}
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
 	//{
 		//PrintToServer("yes1")
