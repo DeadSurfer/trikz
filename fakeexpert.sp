@@ -4467,10 +4467,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 >= other > MaxClients)
-	{
+	if(!(0 < other <= MaxClients))
 		return Plugin_Continue
-	}
 	if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
 		return Plugin_Continue
 	float vecOriginOther[3]
@@ -4562,6 +4560,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//gI_skyStep[other] = 0
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
+			PrintToChat("start touch")
 			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 			//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
