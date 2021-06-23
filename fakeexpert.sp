@@ -886,13 +886,13 @@ void SDKBoostFix(int client)
 	//}
 	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
-		float vecZero[3]
+		//float vecZero[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecZero)
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		//if(gB_groundBoost[client])
 		//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 2
-		gI_skyStep[client] = 0
+		//gI_skyStep[client] = 0
 		PrintToServer("debug1")
 	}
 }
@@ -4283,17 +4283,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client]++
 		//gI_skyStep[client] = 0
 	//}
+	//if(gI_boost[client] == 2)
+	//{
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
+		//gI_boost[client] = 3
+	//}
+	//else if(gI_boost[client] == 3)
 	if(gI_boost[client] == 2)
-	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
-		gI_boost[client] = 3
-	}
-	else if(gI_boost[client] == 3)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
+		gI_skyStep[client] = 0
 		PrintToServer("debug")
 	}
 	//if(gI_skyStep[client] >= 1)
@@ -4485,19 +4487,19 @@ int count
 //}
 void SDKOnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype)
 {
-	int entity = inflictor
-	int other = victim
+	//int entity = inflictor
+	//int other = victim
 	//int count
-	PrintToServer("starttocuh1 %i %i %i", entity, other, count)
-	count++
-	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
-	{
-		float baseVel[3]
-		PrintToServer("yes2")
-		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
+	//PrintToServer("starttocuh1 %i %i %i", entity, other, count)
+	//count++
+	//if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
+	//{
+		//float baseVel[3]
+		//PrintToServer("yes2")
+		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
 		//return Plugin_Continue
-		return
-	}
+		//return
+	//}
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
 	//{
 		//PrintToServer("yes1")
@@ -4519,7 +4521,7 @@ void SDKOnTakeDamagePost(int victim, int attacker, int inflictor, float damage, 
 	//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
 	//if(vecOriginOther[2] - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
 	//if(vecOriginOther[2] >= vecOriginEntity[2])
-	if(0.0 < (deltaOrigin - vecMaxs[2]) < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+	if(0.0 < deltaOrigin - vecMaxs[2] < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 	{
 		float vecVelClient[3]
 		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
@@ -4594,7 +4596,7 @@ void SDKOnTakeDamagePost(int victim, int attacker, int inflictor, float damage, 
 			//gI_skyStep[other] = 0
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
-			PrintToChatAll("start touch %i", count)
+			//PrintToChatAll("start touch %i", count)
 			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 			//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 			//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
@@ -4617,18 +4619,18 @@ void SDKOnTakeDamagePost(int victim, int attacker, int inflictor, float damage, 
 		}
 		//return Plugin_Continue
 	}
-	else
-	{
-		float vecBase[3]
-		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
-	}
+	//else
+	//{
+		//float vecBase[3]
+		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
+	//}
 	//return Plugin_Continue
 }
 Action ProjectileBoostFix(int entity, int other)
 {
 	//int count
-	PrintToServer("starttocuh1 %i %i %i", entity, other, count)
-	count++
+	//PrintToServer("starttocuh1 %i %i %i", entity, other, count)
+	//count++
 	//if(other == 0)
 	//	return Plugin_Handled
 	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
@@ -4643,10 +4645,10 @@ Action ProjectileBoostFix(int entity, int other)
 		float vecOriginEntity[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vecOriginEntity)
 		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
-		float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
-		float vecMaxs[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
-		PrintToServer("%f %i %i %N", deltaOrigin - vecMaxs[2], entity, other, other)
+		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
+		//float vecMaxs[3]
+		//GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+		//PrintToServer("%f %i %i %N", deltaOrigin - vecMaxs[2], entity, other, other)
 		//if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
 		//if(-2.0 <= (deltaOrigin - vecMaxs[2]) <= 6.0)
 		//if(-6.0 > (deltaOrigin - vecMaxs[2]) <= -4.031250)
@@ -4654,7 +4656,8 @@ Action ProjectileBoostFix(int entity, int other)
 		//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
 		//if(vecOriginOther[2] - 5 <= vecOriginEntity[2] <= vecOriginOther[2])
 		//if(vecOriginOther[2] >= vecOriginEntity[2])
-		if(0.0 < (deltaOrigin - vecMaxs[2]) < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		//if(0.0 < (deltaOrigin - vecMaxs[2]) < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		if(vecOriginOther[2] >= vecOriginEntity[2])
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
@@ -4730,7 +4733,7 @@ Action ProjectileBoostFix(int entity, int other)
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
 				gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
-				PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
+				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
@@ -4759,13 +4762,13 @@ Action ProjectileBoostFix(int entity, int other)
 	//	float vecBase[3]
 		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 	//}
-	return Plugin_Continue
+	//return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(!other)
-		gB_bouncedOff[entity] = true
+		gB_bouncedOff[entity] = true //get from tengu github tengulawl scriptig boost-fix.sp
 }
 
 /*Action cmd_vectest2(int client, int args)
@@ -4793,7 +4796,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
-		gB_bouncedOff[entity] = false
+		gB_bouncedOff[entity] = false //tengu lawl boost fix .sp
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
