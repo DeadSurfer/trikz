@@ -103,7 +103,7 @@ int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 float gF_currentVelBooster[MAXPLAYERS + 1][3]
-int gI_flash[other]
+int gI_flash[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -4729,7 +4729,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
-				gI_flash[other] = EntIndexToEntRef(entity)
+				gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed.
 				PrintToChatAll("start touch %i", count)
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
