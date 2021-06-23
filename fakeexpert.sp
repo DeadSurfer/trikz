@@ -887,7 +887,7 @@ void SDKBoostFix(int client)
 		//if(gB_groundBoost[client])
 		//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 2
-		PrintToServer("debug")
+		PrintToServer("debug1")
 	}
 }
 
