@@ -4463,8 +4463,8 @@ Action ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients)
 	{
-		//if(gI_boost[other])
-		//	return Plugin_Continue
+		if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
+			return Plugin_Continue
 		float vecOriginOther[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
 		float vecOriginEntity[3]
