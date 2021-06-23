@@ -4483,7 +4483,9 @@ Action ProjectileBoostFix(int entity, int other)
 	count++
 	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
+		float baseVel[3]
 		PrintToServer("yes2")
+		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
 		return Plugin_Continue
 	}
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
