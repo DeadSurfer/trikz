@@ -607,7 +607,7 @@ public void OnClientPutInServer(int client)
 	gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_OnTakeDamagePost, SDKOnTakeDamagePost)
+	//SDKHook(client, SDKHook_OnTakeDamagePost, SDKOnTakeDamagePost)
 	//SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
@@ -4628,11 +4628,13 @@ Action ProjectileBoostFix(int entity, int other)
 	//int count
 	PrintToServer("starttocuh1 %i %i %i", entity, other, count)
 	count++
+	if(other == 0)
+		return Plugin_Handled
 	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
 		float baseVel[3]
 		PrintToServer("yes2")
-		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
+		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
 		return Plugin_Continue
 	}
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
@@ -4726,7 +4728,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//for()
 			vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135*/
 			for(int i = 0; i <= 2; i++)
-				//gF_vecVelBoostFix[other][i] = vecVelClient[i]
+				gF_vecVelBoostFix[other][i] = vecVelClient[i]
 			gI_boost[other] = 1
 			//gI_skyStep[other] = 0
 			gF_boostTime[other] = GetGameTime()
