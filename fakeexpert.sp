@@ -4479,7 +4479,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 Action ProjectileBoostFix(int entity, int other)
 {
 	int count
-	PrintToServer("starttocuh1 %i %i %i", entity, other)
+	PrintToServer("starttocuh1 %i %i %i", entity, other, count)
 	count++
 	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
 		return Plugin_Continue
