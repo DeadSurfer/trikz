@@ -4478,6 +4478,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 Action ProjectileBoostFix(int entity, int other)
 {
+	PrintToServer("starttocuh1")
 	if(!(0 < other <= MaxClients)) //if 0 < other <= MaxClients continue code. If false stop code.
 		return Plugin_Continue
 	if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
