@@ -948,32 +948,32 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 		case MenuAction_Cancel:
 		{
-			if(param2 == -2)
-			{
-				char sGetItem[32]
-				menu.GetItem(param2, sGetItem, 32)
-				PrintToServer("sGetItem: %s", sGetItem)
-			}
+			//if(param2 == -2)
+			//{
+				//char sGetItem[32]
+				//menu.GetItem(param2, sGetItem, 32)
+				//PrintToServer("sGetItem: %s", sGetItem)
+			//}
 			//if(param2 == -3 || param2 == -5)
-			{
-				char sItem[32]
-				menu.GetItem(param2, sItem, 32)
-				char sTitle[32]
-				menu.GetTitle(sTitle, 32)
-				PrintToServer("sItem: %s sTitle: %s", sItem, sTitle)
+			//{
+				//char sItem[32]
+				//menu.GetItem(param2, sItem, 32)
+				//char sTitle[32]
+				//menu.GetTitle(sTitle, 32)
+				//PrintToServer("sItem: %s sTitle: %s", sItem, sTitle)
 				gB_menuIsOpen[param1] = false //idea from expert zone.
 				PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
-			}
+			//}
 		}
-		case MenuAction_Display:
-		{
-			PrintToServer("menu display trikz.")
-			gB_menuIsOpen[param1] = true
-		}
-		case MenuAction_End:
-		{
-			PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
-		}
+		//case MenuAction_Display:
+		//{
+			//PrintToServer("menu display trikz.")
+			//gB_menuIsOpen[param1] = true
+		//}
+		//case MenuAction_End:
+		//{
+			//PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
+		//}
 	}
 }
 
@@ -3094,7 +3094,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s' HAVING MIN(time)", gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause. //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm
 				//Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)  //log help me alot with this stuff
 				Format(sQuery, 512, "SELECT cp1 FROM records")
-				gD_mysql.Query(SQLCPSelect, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(1)
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 				PrintToServer("cp1")
 			}
 			PrintToServer("cp1pre")
@@ -3124,7 +3127,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp2 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp2 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp2 FROM records")
-				gD_mysql.Query(SQLCPSelect2, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(2)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[2][other] = true
 			//gB_cp[2][gI_partner[other]] = true
@@ -3151,7 +3157,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp3 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp3 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp3 FROM records")
-				gD_mysql.Query(SQLCPSelect3, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(3)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[3][other] = true
 			//gB_cp[3][gI_partner[other]] = true
@@ -3178,7 +3187,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp4 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp4 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp4 FROM records")
-				gD_mysql.Query(SQLCPSelect4, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(4)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[4][other] = true
 			//gB_cp[4][gI_partner[other]] = true
@@ -3205,7 +3217,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp5 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp5 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp5 FROM records")
-				gD_mysql.Query(SQLCPSelect5, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(5)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[5][other] = true
 			//gB_cp[5][gI_partner[other]] = true
@@ -3232,7 +3247,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp6 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp6 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp6 FROM records")
-				gD_mysql.Query(SQLCPSelect6, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(6)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[6][other] = true
 			//gB_cp[6][gI_partner[other]] = true
@@ -3259,7 +3277,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp7 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp7 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp7 FROM records")
-				gD_mysql.Query(SQLCPSelect7, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(7)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[7][other] = true
 			//gB_cp[7][gI_partner[other]] = true
@@ -3286,7 +3307,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp8 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp8 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp8 FROM records")
-				gD_mysql.Query(SQLCPSelect8, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(8)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[8][other] = true
 			//gB_cp[8][gI_partner[other]] = true
@@ -3313,7 +3337,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp9 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp9 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp9 FROM records")
-				gD_mysql.Query(SQLCPSelect9, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(9)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[9][other] = true
 			//gB_cp[9][gI_partner[other]] = true
@@ -3340,7 +3367,10 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT MIN(time), cp10 FROM records WHERE map = '%s'", gS_map)
 				//Format(sQuery, 512, "SELECT cp10 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp10 FROM records")
-				gD_mysql.Query(SQLCPSelect10, sQuery, GetClientSerial(other))
+				DataPack dp = new DataPack()
+				dp.WriteCell(10)
+				dp.WriteCell(GetClientSerial(other))
+				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[10][other] = true
 			//gB_cp[10][gI_partner[other]] = true
@@ -3449,66 +3479,75 @@ void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any d
 {
 }
 
-void SQLCPSelect(Database db, DBResultSet results, const char[] error, any data)
+void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
 {
-	int other = GetClientFromSerial(data)
+	//int other = GetClientFromSerial(data)
+	data.Reset()
+	int other = GetClientFromSerial(data.ReadCell())
+	int cpnum = data.ReadCell()
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
-		gD_mysql.Query(SQLCPSelect_2, sQuery, GetClientSerial(other))
+		Format(sQuery, 512, "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, gS_map)
+		DataPack dp = new DataPack()
+		dp.WriteCell(GetClientSerial(other))
+		dp.WriteCell(cpnum)
+		gD_mysql.Query(SQLCPSelect_2, sQuery, dp)
 	}
 	else
 	{
-		PrintToChat(other, "1. Checkpoint: +00:00:00")
-		PrintToChat(gI_partner[other], "1. Checkpoint: +00:00:00")
+		PrintToChat(other, "%i. Checkpoint: +00:00:00", cpnum)
+		PrintToChat(gI_partner[other], "%i. Checkpoint: +00:00:00", cpnum)
 	}
 }
 
-void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, any data)
+void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPack data)
 {
-	int other = GetClientFromSerial(data)
+	//int other = GetClientFromSerial(data)
+	data.Reset()
+	int other = GetClientFromSerial(data.ReadCell())
+	int cpnum = data.ReadCell()
 	if(results.FetchRow())
 	{
 		//float srTime = results.FetchFloat(0)
-		gF_srCPTime[1][other] = results.FetchFloat(0)
+		gF_srCPTime[cpnum][other] = results.FetchFloat(0)
 		//PrintToServer("srCPTime: %f srTime: %f", gF_srCPTime[1][other], srTime)
-		PrintToServer("srCPTime 1: %f", gF_srCPTime[1][other])
-		if(gF_TimeCP[1][other] < gF_srCPTime[1][other])
+		PrintToServer("srCPTime %i: %f", cpnum, gF_srCPTime[cpnum][other])
+		if(gF_TimeCP[cpnum][other] < gF_srCPTime[cpnum][other])
 		{
-			gF_timeDiffCPWin[1][other] = gF_srCPTime[1][other] - gF_TimeCP[1][other]
-			gF_timeDiffCPWin[1][gI_partner[other]] = gF_srCPTime[1][other] - gF_TimeCP[1][other]
+			gF_timeDiffCPWin[cpnum][other] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
+			gF_timeDiffCPWin[cpnum][gI_partner[other]] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
 			//gF_timeDiffCPWin[1][other] = gF_Time[other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
-			int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
-			int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
-			PrintToChat(other, "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-			PrintToChat(gI_partner[other], "1. Checkpoint: -%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			int srCPHour = (RoundToFloor(gF_timeDiffCPWin[cpnum][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[cpnum][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(gF_timeDiffCPWin[cpnum][other]) % 60
+			PrintToChat(other, "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			//char sQuery[512]
 			//Format(sQuery, 512, "
 		}
 		else
 		{
-			gF_timeDiffCPWin[1][other] = gF_TimeCP[1][other] - gF_srCPTime[1][other]
-			gF_timeDiffCPWin[1][gI_partner[other]] = gF_TimeCP[1][other] - gF_srCPTime[1][other]
+			gF_timeDiffCPWin[cpnum][other] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
+			gF_timeDiffCPWin[cpnum][gI_partner[other]] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
 			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
 			//int personalSecond = RoundToFloor(timeClient) % 60
-			int srCPHour = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 3600) % 24
-			int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[1][other]) / 60) % 60
-			int srCPSecond = RoundToFloor(gF_timeDiffCPWin[1][other]) % 60
-			PrintToChat(other, "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
-			PrintToChat(gI_partner[other], "1. Checkpoint: +%02.i:%02.i:%02.i", srCPHour, srCPMinute, srCPSecond)
+			int srCPHour = (RoundToFloor(gF_timeDiffCPWin[cpnum][other]) / 3600) % 24
+			int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[cpnum][other]) / 60) % 60
+			int srCPSecond = RoundToFloor(gF_timeDiffCPWin[cpnum][other]) % 60
+			PrintToChat(other, "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 		}
 		//gB_cp[1] = true
 	}
 	else
 	{
-		PrintToChat(other, "1. Checkpoint: +00:00:00")
-		PrintToChat(gI_partner[other], "1. Checkpoint: +00:00:00")
+		PrintToChat(other, "%i. Checkpoint: +00:00:00", cpnum)
+		PrintToChat(gI_partner[other], "%i. Checkpoint: +00:00:00", cpnum)
 		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
 }
