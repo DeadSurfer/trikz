@@ -897,7 +897,7 @@ void SDKBoostFix(int client)
 		//PrintToServer("debug1")
 	}
 	if(gI_boost[client] == 1)
-		gI_boost[client] == 2
+		gI_boost[client] = 2
 }
 
 Action cmd_trikz(int client, int args)
@@ -4331,7 +4331,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client] = 3
 	//}
 	//else if(gI_boost[client] == 3)
-	if(gI_boost[client] == 1)
+	if(gI_boost[client] == 2)
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
@@ -4758,10 +4758,10 @@ Action ProjectileBoostFix(int entity, int other)
 			{
 				//return Plugin_Handled
 				for(int i = 0; i <= 1; i++)
-					if(vecVelEntity[i] >= 0.0)
-						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0
-					else if(vecVelEntity[i] < 0.0)
+					if(vecVelClient[i] >= 0.0)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])
+					else if(vecVelClient[i] < 0.0)
+						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
