@@ -4861,8 +4861,9 @@ Action SDKProjectile(int entity)
 	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity))
 }
 
-Action timer_delete(Handle timer, int entity = EntRefToEntIndex(entity))
+Action timer_delete(Handle timer, int entity)
 {
+	entity = EntRefToEntIndex(entity)
 	if(IsValidEntity(entity))
 		RemoveEntity(entity)
 }
