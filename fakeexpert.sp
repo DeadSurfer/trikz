@@ -4757,11 +4757,13 @@ Action ProjectileBoostFix(int entity, int other)
 			if(gI_boost[other] == 0)
 			{
 				//return Plugin_Handled
-				for(int i = 0; i <= 1; i++)
+				/*for(int i = 0; i <= 1; i++)
 					if(vecVelClient[i] >= 0.0)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])
 					else if(vecVelClient[i] < 0.0)
-						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0
+						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
+				vecVelClient[0] -= vecVelEntity[0] * 0.8
+				vecVelClient[1] -= vecVelEntity[1] * 0.8
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				vecVelClient[2] = FloatAbs(vecVelEntity[2])
