@@ -3131,8 +3131,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp2 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp2 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(2)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(2)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[2][other] = true
@@ -3161,8 +3161,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp3 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp3 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(3)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(3)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[3][other] = true
@@ -3191,8 +3191,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp4 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp4 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(4)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(4)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[4][other] = true
@@ -3221,8 +3221,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp5 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp5 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(5)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(5)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[5][other] = true
@@ -3251,8 +3251,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp6 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp6 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(6)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(6)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[6][other] = true
@@ -3281,8 +3281,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp7 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp7 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(7)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(7)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[7][other] = true
@@ -3311,8 +3311,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp8 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp8 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(8)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(8)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[8][other] = true
@@ -3341,8 +3341,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp9 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp9 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(9)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(9)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[9][other] = true
@@ -3371,8 +3371,8 @@ Action SDKStartTouch(int entity, int other)
 				//Format(sQuery, 512, "SELECT cp10 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 				Format(sQuery, 512, "SELECT cp10 FROM records")
 				DataPack dp = new DataPack()
-				dp.WriteCell(10)
 				dp.WriteCell(GetClientSerial(other))
+				dp.WriteCell(10)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
 			}
 			//gB_cp[10][other] = true
