@@ -4310,7 +4310,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	float baseVel[3]
-	if((!gI_boost[client] && !gI_skyStep[client]) || (!gI_boost[client] || !gI_skyStep[client]))
+	if((gI_boost[client] && gI_skyStep[client]) || (gI_boost[client] || gI_skyStep[client]))
 	{
 		//if(GetGameTime() - gF_boostTime[client] < 0.15)
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
@@ -4350,19 +4350,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0
 		else if(gF_fallVel[client][2] < 750.0)
 			gF_fallVel[client][2] = 750.0*/
-		if(gF_fallVelBooster[client][2] >= 50.0) //289.993377
+		if(gF_fallVelBooster[client][2] >= 5.0) //289.993377
 			gF_fallVel[client][2] = 600.0
-		if(gF_fallVelBooster[client][2] >= 100.0)
+		if(gF_fallVelBooster[client][2] >= 50.0)
 			gF_fallVel[client][2] = 650.0
-		if(gF_fallVelBooster[client][2] >= 150.0)
+		if(gF_fallVelBooster[client][2] >= 100.0)
 			gF_fallVel[client][2] = 700.0
-		if(gF_fallVelBooster[client][2] >= 200.0) //289.993377
+		if(gF_fallVelBooster[client][2] >= 150.0) //289.993377
 			gF_fallVel[client][2] = 750.0
-		if(gF_fallVelBooster[client][2] >= 250.0)
+		if(gF_fallVelBooster[client][2] >= 200.0)
 		{
 			gF_fallVel[client][2] = 800.0
 			PrintToServer("success")
 		}
+		//gF_fallVelBooster[client][2] = gF_fallVelBooster[client][2] * 3.0
+		//gF_fallVel[client][2] = gF_fallVelBooster[client][2]
+		//if(gF_fallVelBooster[client][2] > 800.0)
+			//gF_fallVel[client][2] = 800.0
 		if(buttons & IN_JUMP)
 		{
 			//PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
