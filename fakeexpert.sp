@@ -4858,10 +4858,10 @@ Action SDKProjectile(int entity)
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-	CreateTimer(1.5, timer_delete, entity)
+	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity))
 }
 
-Action timer_delete(Handle timer, int entity)
+Action timer_delete(Handle timer, int entity = EntRefToEntIndex(entity))
 {
 	if(IsValidEntity(entity))
 		RemoveEntity(entity)
