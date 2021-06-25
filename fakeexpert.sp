@@ -162,7 +162,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	//RegServerCmd("sm_manualinsert", cmd_manualinsert)
-	RegConsoleCmd("sm_manualinsert", cmd_manualinsert)
+	//RegConsoleCmd("sm_manualinsert", cmd_manualinsert)
 	//RegConsoleCmd("sm_gent", cmd_gent)
 	//RegConsoleCmd("sm_vectest", cmd_vectest)
 	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
@@ -4137,7 +4137,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
 
-Action cmd_manualinsert(int client, int args)
+/*Action cmd_manualinsert(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
 	if(steamid == GetConVarInt(gCV_steamid))
@@ -4149,7 +4149,7 @@ Action cmd_manualinsert(int client, int args)
 		gD_mysql.Query(SQLManualInsert, sQuery)
 	}
 	return Plugin_Handled
-}
+}*/
 
 void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -4457,7 +4457,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//if(gB_groundBoost[client])
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
 	//}
-	return Plugin_Continue
+	//return Plugin_Continue
 }
 
 /*Action cmd_gent(int client, int args)
