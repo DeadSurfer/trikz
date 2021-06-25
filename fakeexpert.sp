@@ -4681,7 +4681,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//count++
 	if(other == 0)
 	{
-		SetEntProp(entity, Prop_Data, "m_nSolidType", 2)
+		//SetEntProp(entity, Prop_Data, "m_nSolidType", 2)
 		//return Plugin_Handled
 	}
 	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
@@ -4787,7 +4787,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
-				SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
+				SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
 				//gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
