@@ -4151,9 +4151,9 @@ void SQLConnect(Database db, const char[] error, any data)
 	return Plugin_Handled
 }*/
 
-void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
-{
-}
+//void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
+//{
+//}
 
 //void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 void ForceZonesSetup()
