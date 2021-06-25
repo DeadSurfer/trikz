@@ -563,7 +563,7 @@ public void OnMapStart()
 	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	//gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	GetCurrentMap(gS_map, 192)
-	gI_cpCount = 0
+	//gI_cpCount = 0
 	Database.Connect(SQLConnect, "fakeexpert")
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
