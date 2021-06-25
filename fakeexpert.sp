@@ -4235,8 +4235,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gB_state[client] && gB_mapfinished[client] && gB_mapfinished[gI_partner[client]])
 	if(gB_state[client])
 	{
-		gF_Time[client] = GetEngineTime()
-		gF_Time[client] = gF_Time[client] - gF_TimeStart[client]
+		//gF_Time[client] = GetEngineTime()
+		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
 		//if(!gB_mapfinished[client])
 			//gB_state[client] = false
 	}
@@ -4679,8 +4679,11 @@ Action ProjectileBoostFix(int entity, int other)
 	//int count
 	//PrintToServer("starttocuh1 %i %i %i", entity, other, count)
 	//count++
-	//if(other == 0)
-	//	return Plugin_Handled
+	if(other == 0)
+	{
+	
+		//return Plugin_Handled
+	}
 	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
 		//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
