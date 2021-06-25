@@ -4881,6 +4881,7 @@ Action timer_delete(Handle timer, int entity)
 	entity = EntRefToEntIndex(entity)
 	if(IsValidEntity(entity))
 		RemoveEntity(entity)
+	return Plugin_Stop
 }
 
 void SDKPlayerSpawn(int client)
