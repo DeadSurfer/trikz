@@ -4331,7 +4331,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client] = 3
 	//}
 	//else if(gI_boost[client] == 3)
-	if(gI_boost[client] == 2)
+	if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(gB_groundBoost[client])
@@ -4685,7 +4685,7 @@ Action ProjectileBoostFix(int entity, int other)
 		//SetEntProp(entity, Prop_Data, "m_nSolidType", 2)
 		//return Plugin_Handled
 	}
-	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
+	if(0 < other <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND)) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
 		//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
 		//{
