@@ -1674,7 +1674,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gI_cpCount++
 		if(gI_cpCount == 1)
 		{
-			createcp1()
+			createcp("fakeexpert_cp1", 1)
 			PrintToServer("123x123cp1")
 		}
 		char sQuery[512]
@@ -1702,7 +1702,7 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 		PrintToServer("SQLCPSetup2: %f %f %f %f %f %f", gF_vec1cp[2][0], gF_vec1cp[2][1], gF_vec1cp[2][2], gF_vec2cp[2][0], gF_vec2cp[2][1], gF_vec2cp[2][2])
 		gI_cpCount++
 		if(gI_cpCount == 2)
-			createcp2()
+			createcp("fakeexpert_cp2", 2)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 3 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup3, sQuery)
@@ -1727,7 +1727,7 @@ void SQLCPSetup3(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[3][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 3)
-			createcp3()
+			createcp("fakeexpert_cp3", 3)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 4 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup4, sQuery)
@@ -1752,7 +1752,7 @@ void SQLCPSetup4(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[4][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 4)
-			createcp4()
+			createcp("fakeexpert_cp4", 4)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 5 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup5, sQuery)
@@ -1777,7 +1777,7 @@ void SQLCPSetup5(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[5][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 5)
-			createcp5()
+			createcp("fakeexpert_cp5", 5)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 6 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup6, sQuery)
@@ -1802,7 +1802,7 @@ void SQLCPSetup6(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[6][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 6)
-			createcp6()
+			createcp("fakeexpert_cp6", 6)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 7 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup7, sQuery)
@@ -1827,7 +1827,7 @@ void SQLCPSetup7(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[7][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 7)
-			createcp7()
+			createcp("fakeexpert_cp7", 7)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 8 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup8, sQuery)
@@ -1852,7 +1852,7 @@ void SQLCPSetup8(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[8][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 8)
-			createcp8()
+			createcp("fakeexpert_cp8", 8)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 9 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup9, sQuery)
@@ -1877,7 +1877,7 @@ void SQLCPSetup9(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[9][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 9)
-			createcp9()
+			createcp("fakeexpert_cp9", 9)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 10 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup10, sQuery)
@@ -1902,11 +1902,11 @@ void SQLCPSetup10(Database db, DBResultSet results, const char[] error, any data
 		gF_vec2cp[10][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 10)
-			createcp10()
+			createcp("fakeexpert_cp10", 10)
 	}
 }
 
-void createcp1()
+/*void createcp1()
 {
 	char sTriggerName2[64]
 	int index
@@ -2525,9 +2525,9 @@ void createcp9()
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//PrintToServer("entity end: %i created", entity)
 	//return Plugin_Handled
-}
+}*/
 
-void createcp10()
+void createcp(char[] sTriggerName, int cpnum)
 {
 	char sTriggerName2[64]
 	int index
@@ -2535,13 +2535,13 @@ void createcp10()
 	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
 	{
 		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
-		if(StrEqual(sTriggerName2, "fakeexpert_cp10"))
+		if(StrEqual(sTriggerName2, sTriggerName))
 			return
 	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
-	DispatchKeyValue(entity, "targetname", "fakeexpert_cp10")
+	DispatchKeyValue(entity, "targetname", sTriggerName)
 	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
@@ -2550,9 +2550,9 @@ void createcp10()
 	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vec2cp[10][0] + gF_vec1cp[10][0]) / 2.0
-	center[1] = (gF_vec2cp[10][1] + gF_vec1cp[10][1]) / 2.0
-	center[2] = (gF_vec2cp[10][2] + gF_vec1cp[10][2]) / 2.0
+	center[0] = (gF_vec2cp[cpnum][0] + gF_vec1cp[cpnum][0]) / 2.0
+	center[1] = (gF_vec2cp[cpnum][1] + gF_vec1cp[cpnum][1]) / 2.0
+	center[2] = (gF_vec2cp[cpnum][2] + gF_vec1cp[cpnum][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
@@ -2565,11 +2565,11 @@ void createcp10()
 	//mins[1] = -mins[1]
 	//mins[2] = -128.0
 	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	mins[0] = (gF_vec1cp[10][0] - gF_vec2cp[10][0]) / 2.0
+	mins[0] = (gF_vec1cp[cpnum][0] - gF_vec2cp[cpnum][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1cp[10][1] - gF_vec2cp[10][1]) / 2.0
+	mins[1] = (gF_vec1cp[cpnum][1] - gF_vec2cp[cpnum][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
@@ -2580,10 +2580,10 @@ void createcp10()
 	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[10][0] - gF_vec2cp[10][0]) / 2.0
+	maxs[0] = (gF_vec1cp[cpnum][0] - gF_vec2cp[cpnum][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[10][1] - gF_vec2cp[10][1]) / 2.0
+	maxs[1] = (gF_vec1cp[cpnum][1] - gF_vec2cp[cpnum][1]) / 2.0
 	if(maxs[1] < 0.0)
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
