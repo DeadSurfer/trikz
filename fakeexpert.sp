@@ -76,7 +76,7 @@ float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 
 float gF_vec1cp[11][3]
 float gF_vec2cp[11][3]
-int gI_cpCount
+//int gI_cpCount
 bool gB_cp[11][MAXPLAYERS + 1]
 bool gB_cpLock[11][MAXPLAYERS + 1]
 float gF_TimeCP[11][MAXPLAYERS + 1]
@@ -1677,8 +1677,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		//gI_cpCount++
 		//if(gI_cpCount == 1)
 		//{
-			createcp(data)
-			PrintToServer("123x123cp1")
+		createcp(data)
+		//PrintToServer("123x123cp1")
 		//}
 		//char sQuery[512]
 		//Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 2 AND map = '%s'", gS_map)
