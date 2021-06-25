@@ -104,6 +104,7 @@ bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 float gF_currentVelBooster[MAXPLAYERS + 1][3]
 //int gI_flash[MAXPLAYERS + 1]
+int gI_skyFrame[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -786,6 +787,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(delta)
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && GetGameTime() - gF_boostTime[other] < 0.15 && gI_skyStep[other] == 0)
 		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
+		//gI_skyStep[other] 
 		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			float getCurrentVel[3]
@@ -814,6 +816,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					gF_fallVel[other][1] = vecVelFlyer[1]
 					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
 					gI_skyStep[other] = 1
+					gI_skyFrame[other] = 1
 					//gI_skyBooster[
 					//gF_boostTime[client] = GetGameTime()
 					//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
@@ -4346,6 +4349,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 	//}
 	//if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && !(GetEntityFlags(client) & IN_DUCK))
+	if(1 <= gI_skyFrame[client] <= 5)
+		gI_skyFrame[client]++
+	if(gI_skyFrame[client] >= 5)
+	{
+		gI_skyFrame[client] = 0
+		gI_skyStep[client] = 0
+	}
 	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	{
 		PrintToServer("skyboost")
