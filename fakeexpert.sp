@@ -1674,7 +1674,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gI_cpCount++
 		if(gI_cpCount == 1)
 		{
-			createcp("fakeexpert_cp1", 1)
+			createcp(1)
 			PrintToServer("123x123cp1")
 		}
 		char sQuery[512]
@@ -1702,7 +1702,7 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 		PrintToServer("SQLCPSetup2: %f %f %f %f %f %f", gF_vec1cp[2][0], gF_vec1cp[2][1], gF_vec1cp[2][2], gF_vec2cp[2][0], gF_vec2cp[2][1], gF_vec2cp[2][2])
 		gI_cpCount++
 		if(gI_cpCount == 2)
-			createcp("fakeexpert_cp2", 2)
+			createcp(2)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 3 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup3, sQuery)
@@ -1727,7 +1727,7 @@ void SQLCPSetup3(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[3][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 3)
-			createcp("fakeexpert_cp3", 3)
+			createcp(3)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 4 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup4, sQuery)
@@ -1752,7 +1752,7 @@ void SQLCPSetup4(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[4][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 4)
-			createcp("fakeexpert_cp4", 4)
+			createcp(4)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 5 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup5, sQuery)
@@ -1777,7 +1777,7 @@ void SQLCPSetup5(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[5][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 5)
-			createcp("fakeexpert_cp5", 5)
+			createcp(5)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 6 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup6, sQuery)
@@ -1802,7 +1802,7 @@ void SQLCPSetup6(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[6][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 6)
-			createcp("fakeexpert_cp6", 6)
+			createcp(6)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 7 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup7, sQuery)
@@ -1827,7 +1827,7 @@ void SQLCPSetup7(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[7][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 7)
-			createcp("fakeexpert_cp7", 7)
+			createcp(7)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 8 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup8, sQuery)
@@ -1852,7 +1852,7 @@ void SQLCPSetup8(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[8][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 8)
-			createcp("fakeexpert_cp8", 8)
+			createcp(8)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 9 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup9, sQuery)
@@ -1877,7 +1877,7 @@ void SQLCPSetup9(Database db, DBResultSet results, const char[] error, any data)
 		gF_vec2cp[9][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 9)
-			createcp("fakeexpert_cp9", 9)
+			createcp(9)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 10 AND map = '%s'", gS_map)
 		gD_mysql.Query(SQLCPSetup10, sQuery)
@@ -1902,7 +1902,7 @@ void SQLCPSetup10(Database db, DBResultSet results, const char[] error, any data
 		gF_vec2cp[10][2] = results.FetchFloat(5)
 		gI_cpCount++
 		if(gI_cpCount == 10)
-			createcp("fakeexpert_cp10", 10)
+			createcp(10)
 	}
 }
 
@@ -2527,8 +2527,10 @@ void createcp9()
 	//return Plugin_Handled
 }*/
 
-void createcp(char[] sTriggerName, int cpnum)
+void createcp(int cpnum)
 {
+	char sTriggerName[64]
+	Format(sTriggerName, 64, "fakeexpert_cp%i", cpnum)
 	char sTriggerName2[64]
 	int index
 	//int gI_cpCount
