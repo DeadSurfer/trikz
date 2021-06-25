@@ -1650,9 +1650,12 @@ void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any 
 
 void CPSetup()
 {
-	char sQuery[512]
-	Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 1 AND map = '%s'", gS_map)
-	gD_mysql.Query(SQLCPSetup, sQuery)
+	for(int i = 1; i <= 10; i++)
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s'", i, gS_map)
+		gD_mysql.Query(SQLCPSetup, sQuery, i)
+	}
 }
 
 void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
@@ -1665,34 +1668,34 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
 		float cpz2 = results.FetchFloat(5)*/
-		gF_vec1cp[1][0] = results.FetchFloat(0)
-		gF_vec1cp[1][1] = results.FetchFloat(1)
-		gF_vec1cp[1][2] = results.FetchFloat(2)
-		gF_vec2cp[1][0] = results.FetchFloat(3)
-		gF_vec2cp[1][1] = results.FetchFloat(4)
-		gF_vec2cp[1][2] = results.FetchFloat(5)
-		gI_cpCount++
-		if(gI_cpCount == 1)
-		{
-			createcp(1)
+		gF_vec1cp[data][0] = results.FetchFloat(0)
+		gF_vec1cp[data][1] = results.FetchFloat(1)
+		gF_vec1cp[data][2] = results.FetchFloat(2)
+		gF_vec2cp[data][0] = results.FetchFloat(3)
+		gF_vec2cp[data][1] = results.FetchFloat(4)
+		gF_vec2cp[data][2] = results.FetchFloat(5)
+		//gI_cpCount++
+		//if(gI_cpCount == 1)
+		//{
+			createcp(data)
 			PrintToServer("123x123cp1")
-		}
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 2 AND map = '%s'", gS_map)
-		gD_mysql.Query(SQLCPSetup2, sQuery)
+		//}
+		//char sQuery[512]
+		//Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 2 AND map = '%s'", gS_map)
+		//gD_mysql.Query(SQLCPSetup2, sQuery)
 	}
 }
 
-void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
+/*void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		//float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[2][0] = results.FetchFloat(0)
 		gF_vec1cp[2][1] = results.FetchFloat(1)
 		gF_vec1cp[2][2] = results.FetchFloat(2)
@@ -1713,12 +1716,12 @@ void SQLCPSetup3(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[3][0] = results.FetchFloat(0)
 		gF_vec1cp[3][1] = results.FetchFloat(1)
 		gF_vec1cp[3][2] = results.FetchFloat(2)
@@ -1738,12 +1741,12 @@ void SQLCPSetup4(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[4][0] = results.FetchFloat(0)
 		gF_vec1cp[4][1] = results.FetchFloat(1)
 		gF_vec1cp[4][2] = results.FetchFloat(2)
@@ -1763,12 +1766,12 @@ void SQLCPSetup5(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[5][0] = results.FetchFloat(0)
 		gF_vec1cp[5][1] = results.FetchFloat(1)
 		gF_vec1cp[5][2] = results.FetchFloat(2)
@@ -1788,12 +1791,12 @@ void SQLCPSetup6(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[6][0] = results.FetchFloat(0)
 		gF_vec1cp[6][1] = results.FetchFloat(1)
 		gF_vec1cp[6][2] = results.FetchFloat(2)
@@ -1813,12 +1816,12 @@ void SQLCPSetup7(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[7][0] = results.FetchFloat(0)
 		gF_vec1cp[7][1] = results.FetchFloat(1)
 		gF_vec1cp[7][2] = results.FetchFloat(2)
@@ -1838,12 +1841,12 @@ void SQLCPSetup8(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[8][0] = results.FetchFloat(0)
 		gF_vec1cp[8][1] = results.FetchFloat(1)
 		gF_vec1cp[8][2] = results.FetchFloat(2)
@@ -1863,12 +1866,12 @@ void SQLCPSetup9(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[9][0] = results.FetchFloat(0)
 		gF_vec1cp[9][1] = results.FetchFloat(1)
 		gF_vec1cp[9][2] = results.FetchFloat(2)
@@ -1888,12 +1891,12 @@ void SQLCPSetup10(Database db, DBResultSet results, const char[] error, any data
 {
 	if(results.FetchRow())
 	{
-		/*float cpx = results.FetchFloat(0)
+		float cpx = results.FetchFloat(0)
 		float cpy = results.FetchFloat(1)
 		float cpz = results.FetchFloat(2)
 		float cpx2 = results.FetchFloat(3)
 		float cpy2 = results.FetchFloat(4)
-		float cpz2 = results.FetchFloat(5)*/
+		float cpz2 = results.FetchFloat(5)
 		gF_vec1cp[10][0] = results.FetchFloat(0)
 		gF_vec1cp[10][1] = results.FetchFloat(1)
 		gF_vec1cp[10][2] = results.FetchFloat(2)
@@ -1904,7 +1907,7 @@ void SQLCPSetup10(Database db, DBResultSet results, const char[] error, any data
 		if(gI_cpCount == 10)
 			createcp(10)
 	}
-}
+}*/
 
 /*void createcp1()
 {
