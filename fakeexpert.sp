@@ -4363,7 +4363,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gI_skyStep[client] = 0
 	}
-	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
+	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && gI_skyFrame[client] == 4)
 	{
 		PrintToServer("skyboost")
 		/*if(gF_fallVel[client][2] > 800.0)
