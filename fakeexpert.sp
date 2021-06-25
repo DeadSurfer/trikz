@@ -4681,7 +4681,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//count++
 	if(other == 0)
 	{
-	
+		SetEntProp(entity, Prop_Data, "m_nSolidType", 2)
 		//return Plugin_Handled
 	}
 	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
