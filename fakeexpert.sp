@@ -896,7 +896,7 @@ void SDKBoostFix(int client)
 		//gI_skyStep[client] = 0
 		//PrintToServer("debug1")
 	}
-	if(gI_boost[client] == 1)
+	if(gI_boost[client] == 1 && GetGameTime() - gF_boostTime[client] > 0.15)
 		gI_boost[client] = 2
 }
 
