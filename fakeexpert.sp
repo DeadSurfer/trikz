@@ -4674,6 +4674,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//}
 	//return Plugin_Continue
 //}
+int count
 Action ProjectileBoostFix(int entity, int other)
 {
 	//int count
@@ -4691,6 +4692,8 @@ Action ProjectileBoostFix(int entity, int other)
 			//PrintToServer("yes1")
 			//return Plugin_Continue
 		//}
+		PrintToServer("%i %N [%i]", other, other, count)
+		count++
 		float vecOriginOther[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecOriginOther)
 		float vecOriginEntity[3]
