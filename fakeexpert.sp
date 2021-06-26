@@ -588,7 +588,9 @@ Action specchat(int client, const char[] command, int argc)
 		GetClientName(client, sName, MAX_NAME_LENGTH)
 		char sChat[256]
 		GetCmdArgString(sChat, 256)
-		PrintToChatAll("(Spectator) %s: %s", sName,sChat) //sourcemod.net arg
+		GetCmdArg(argc, sChat, 256)
+		PrintToChatAll("%s", sChat)
+		PrintToChatAll("(Spectator) %s: %s", sName, sChat) //sourcemod.net arg
 		return Plugin_Handled
 	}
 	return Plugin_Continue
