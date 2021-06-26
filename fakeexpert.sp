@@ -580,7 +580,7 @@ Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
 	//PrintToServer("autobuy")
 }
 
-Action(int client, const char[] command, int argc)
+Action specchat(int client, const char[] command, int argc)
 {
 	if(GetTeamName(client) == 1)
 		PrintToChatAll("%s", command)
