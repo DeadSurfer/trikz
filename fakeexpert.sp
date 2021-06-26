@@ -756,9 +756,9 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 	}*/
 }
 
-void SQLUserAdded2(Database db, DBResultSet results, const char[] error, any data)
-{
-}
+//void SQLUserAdded2(Database db, DBResultSet results, const char[] error, any data)
+//{
+//}
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
