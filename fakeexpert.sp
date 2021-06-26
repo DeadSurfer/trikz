@@ -691,6 +691,8 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
 {
+	if(data == 0)
+		return
 	int client = GetClientFromSerial(data)
 	if(IsClientInGame(client))
 	{
