@@ -691,16 +691,24 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
 {
-	/*int client = GetClientFromSerial(data)
-	if(results.FetchRow())
+	int client = GetClientFromSerial(data)
+	if(IsClientInGame(client))
 	{
-		//char sName[64]
-		//GetClientName(client, sName, 64)
-		PrintToServer("%s", sName)
-		Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-		//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
-		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
-	}*/
+		char sName[64]
+		GetClientName(client, sName, 64)
+		if(results.FetchRow())
+		{
+			PrintToServer("%s", sName)
+			Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
+			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
+		}
+		else
+		{
+			Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			gD_mysql.Query(SQLUserAdded, sQuery)
+		}
+	}
 }
 
 //void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] error, any data)
@@ -730,11 +738,11 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		else
 		{
 			//char sName[64]
-			GetClientName(client, sName, 64)
+			//GetClientName(client, sName, 64)
 			PrintToServer("%s", sName)
-			Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-			//Format(sQuery, 512, "UPDATE steamid FROM users WHERE steamid = %i")
-			gD_mysql.Query(SQLUpdateUsername, sQuery)
+			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
+			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
 		}
 	}
 	//gB_newpass = true
