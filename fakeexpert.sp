@@ -697,6 +697,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		char sName[64]
 		GetClientName(client, sName, 64)
 		char sQuery[512]
+		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
 		{
 			PrintToServer("%s", sName)
