@@ -4786,11 +4786,11 @@ Action ProjectileBoostFix(int entity, int other)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])
 					else if(vecVelClient[i] < 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
-				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //player elasticity always is 1.0
-				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //player elasticity always is 1.0
+				vecVelClient[0] -= vecVelEntity[0] * 0.97) //player elasticity always is 1.0
+				vecVelClient[1] -= vecVelEntity[1] * 0.97) //player elasticity always is 1.0
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //player elasticity always is 1.0
+				vecVelClient[2] = FloatAbs(vecVelEntity[2]) * 0.97) //player elasticity always is 1.0
 				//vecVelClient[2] += vecVelEntity[2] * 0.97
 				//vecVelClient[2] -= vecVelEntity[2] * 0.9
 				/*for(int i = 0; i <= 1; i++)
