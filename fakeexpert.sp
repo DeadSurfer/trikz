@@ -582,7 +582,7 @@ Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
 
 Action specchat(int client, const char[] command, int argc)
 {
-	if(GetClientTeam(client) == 1)
+	if(MaxClients >= client > 0 && GetClientTeam(client) == 1)
 	{
 		char sName[MAX_NAME_LENGTH]
 		GetClientName(client, sName, MAX_NAME_LENGTH)
