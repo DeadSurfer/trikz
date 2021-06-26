@@ -619,8 +619,9 @@ public void OnClientPutInServer(int client)
 	if(IsClientInGame(client) && gB_pass)
 	{
 		int steamid = GetSteamAccountID(client)
-		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-		gD_mysql.Query(SQLAddUser, sQuery, client)
+		//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+		Format(sQuery, 512, "SELECT * FROM users")
+		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 		//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		//gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
@@ -690,7 +691,21 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
 {
+	/*int client = GetClientFromSerial(data)
+	if(results.FetchRow())
+	{
+		//char sName[64]
+		//GetClientName(client, sName, 64)
+		PrintToServer("%s", sName)
+		Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+		//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
+		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
+	}*/
 }
+
+//void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] error, any data)
+//{
+//}
 
 //void Updateusername(int client)
 //{
@@ -698,27 +713,28 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
-	int client = data
+	int client = GetClientFromSerial(data)
 	if(client == 0)
 		return
+	int steamid = GetSteamAccountID(client)
 	if(IsClientInGame(client))
 	{
-		int steamid = GetSteamAccountID(client)
 		char sName[64]
 		GetClientName(client, sName, 64)
 		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
 		if(!results.FetchRow())
 		{
 			Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			gD_mysql.Query(SQLUserAdded, sQuery, GetClientSerial(data))
+			gD_mysql.Query(SQLUserAdded, sQuery)
 		}
 		else
 		{
 			//char sName[64]
-			//GetClientName(client, sName, 64)
+			GetClientName(client, sName, 64)
 			PrintToServer("%s", sName)
 			Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-			gD_mysql.Query(SQLUpdateUsername, sQuery)
+			//Format(sQuery, 512, "UPDATE steamid FROM users WHERE steamid = %i")
+			gD_mysql.Query(SQLUpdateUsername, sQuery, )
 		}
 	}
 	//gB_newpass = true
@@ -738,6 +754,10 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 		Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 		gD_mysql.Query(SQLUpdateUsername, sQuery)
 	}*/
+}
+
+void SQLUserAdded2(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
