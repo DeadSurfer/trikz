@@ -583,8 +583,11 @@ Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
 Action specchat(int client, const char[] command, int argc)
 {
 	if(GetClientTeam(client) == 1)
+	{
 		PrintToChatAll("%s", command)
-	return Plugin_Handled
+		return Plugin_Handled
+	}
+	return Plugin_Continue
 }
 
 //Action cmd_setup(int args)
