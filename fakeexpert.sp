@@ -584,7 +584,9 @@ Action specchat(int client, const char[] command, int argc)
 {
 	if(GetClientTeam(client) == 1)
 	{
-		PrintToChatAll("%s", command)
+		char sChat[256]
+		GetCmdArgString(sChat, 256)
+		PrintToChatAll("%s", sChat) //sourcemod.net arg
 		return Plugin_Handled
 	}
 	return Plugin_Continue
