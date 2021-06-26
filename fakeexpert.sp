@@ -176,6 +176,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
+	AddCommandListener(specchat, "say")
 	//Database.Connect(SQLConnect, "fakeexpert")
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
@@ -577,6 +578,13 @@ Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
 {
 	//Trikz(client)
 	//PrintToServer("autobuy")
+}
+
+Action(int client, const char[] command, int argc)
+{
+	if(GetTeamName(client) == 1)
+		PrintToChatAll("%s", command)
+	return Plugin_Handled
 }
 
 //Action cmd_setup(int args)
