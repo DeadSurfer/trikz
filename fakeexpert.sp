@@ -734,7 +734,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 			PrintToServer("%s", sName)
 			Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			//Format(sQuery, 512, "UPDATE steamid FROM users WHERE steamid = %i")
-			gD_mysql.Query(SQLUpdateUsername, sQuery, )
+			gD_mysql.Query(SQLUpdateUsername, sQuery)
 		}
 	}
 	//gB_newpass = true
