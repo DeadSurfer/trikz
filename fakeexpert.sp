@@ -705,7 +705,8 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		if(results.FetchRow())
 		{
 			PrintToServer("%s %i", sName, steamid)
-			Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
