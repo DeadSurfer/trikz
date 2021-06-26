@@ -842,8 +842,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				{
 					float vecVelFlyer[3]
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
-					gF_fallVel[other][0] += vecVelFlyer[0]
-					gF_fallVel[other][1] += vecVelFlyer[1]				
+					gF_fallVel[other][0] = vecVelFlyer[0]
+					gF_fallVel[other][1] = vecVelFlyer[1]				
 					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
 					gI_skyStep[other] = 1
 					gI_skyFrame[other] = 1
