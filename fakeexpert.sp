@@ -712,7 +712,8 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		}
 		else
 		{
-			Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 	}
@@ -739,7 +740,8 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
 		if(!results.FetchRow())
 		{
-			Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			gD_mysql.Query(SQLUserAdded, sQuery)
 		}
 		else
