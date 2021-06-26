@@ -812,9 +812,9 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				{
 					float vecVelFlyer[3]
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
-					gF_fallVel[other][0] += vecVelFlyer[0] * 0.97
-					gF_fallVel[other][1] += vecVelFlyer[1] * 0.97					
-					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2]) * 0.97
+					gF_fallVel[other][0] += vecVelFlyer[0]
+					gF_fallVel[other][1] += vecVelFlyer[1]				
+					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
 					gI_skyStep[other] = 1
 					gI_skyFrame[other] = 1
 					//gI_skyBooster[
@@ -4786,11 +4786,11 @@ Action ProjectileBoostFix(int entity, int other)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])
 					else if(vecVelClient[i] < 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
-				vecVelClient[0] -= vecVelEntity[0] * 0.97
-				vecVelClient[1] -= vecVelEntity[1] * 0.97
+				vecVelClient[0] -= vecVelEntity[0] * (100.0 - GetEntProp(entity, Prop_Data, "m_flElasticity"))
+				vecVelClient[1] -= vecVelEntity[1] * (100.0 - GetEntProp(entity, Prop_Data, "m_flElasticity"))
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2]) * 0.97
+				vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (100.0 - GetEntProp(entity, Prop_Data, "m_flElasticity"))
 				//vecVelClient[2] += vecVelEntity[2] * 0.97
 				//vecVelClient[2] -= vecVelEntity[2] * 0.9
 				/*for(int i = 0; i <= 1; i++)
