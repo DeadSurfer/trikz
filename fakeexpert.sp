@@ -694,6 +694,8 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 	if(data == 0)
 		return
 	int client = GetClientFromSerial(data)
+	if(client == 0)
+		return
 	if(IsClientInGame(client))
 	{
 		char sName[64]
