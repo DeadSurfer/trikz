@@ -706,14 +706,14 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		else
 		{
 			Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			gD_mysql.Query(SQLUserAdded, sQuery)
+			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 	}
 }
 
-//void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] error, any data)
-//{
-//}
+void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] error, any data)
+{
+}
 
 //void Updateusername(int client)
 //{
