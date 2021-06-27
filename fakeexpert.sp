@@ -4398,7 +4398,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client] = 3
 	//}
 	//else if(gI_boost[client] == 3)
-	if(gI_boost[client] == 1 && !(GetEntityFlags(client) & FL_ONGROUND))
+	if(gI_boost[client] == 1 && !(GetEntityFlags(client) & FL_ONGROUND) && gI_flash[client] != INVALID_ENT_REFERENCE)
 	{
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
@@ -4869,7 +4869,7 @@ Action ProjectileBoostFix(int entity, int other)
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
 				SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
-				//gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
+				gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
