@@ -955,7 +955,7 @@ void SDKBoostFix(int client)
 		//gI_skyStep[client] = 0
 		//PrintToServer("debug1")
 	}
-	if(gI_boost[client] == 1)
+	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetEntityFlags(client) & FL_ONGROUND)
 		gI_boost[client] = 2
 }
 
