@@ -955,8 +955,8 @@ void SDKBoostFix(int client)
 		//gI_skyStep[client] = 0
 		//PrintToServer("debug1")
 	}
-	//if(gI_boost[client] == 1)
-	//	gI_boost[client] = 2
+	if(gI_boost[client] == 1)
+		gI_boost[client] = 2
 }
 
 Action cmd_trikz(int client, int args)
@@ -4398,7 +4398,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client] = 3
 	//}
 	//else if(gI_boost[client] == 3)
-	if(gI_boost[client] == 1 && !(GetEntityFlags(client) & FL_ONGROUND) && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetGameTime() - gF_boostTime[client] < 0.15)
+	if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND) && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetGameTime() - gF_boostTime[client] < 0.15)
 	{
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
