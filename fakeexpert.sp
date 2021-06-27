@@ -4385,7 +4385,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_skyStep[client])
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	if(GetGameTime() - gF_boostTime[client] > 0.15 && gI_boost[client])
+	//if(GetGameTime() - gF_boostTime[client] > 0.15 && gI_boost[client])
+	if(GetGameTime() - gF_boostTime[client] > 0.15)
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 	//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 	//if(gI_boost[client] >= 1)
