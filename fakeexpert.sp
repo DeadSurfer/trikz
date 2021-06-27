@@ -4766,6 +4766,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	//if(GetGameTime() - gF_boostTime[other] < 0.15)
 		//return Plugin_Handled
+	if(other == 0)
+		return Plugin_Continue
 	if(0 < other <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND) && GetGameTime() - gF_boostTime[other] > 0.15) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
 		//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
@@ -4908,7 +4910,7 @@ Action ProjectileBoostFix(int entity, int other)
 		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 		//return Plugin_Handled
 	}
-	//return Plugin_Continue
+	return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
