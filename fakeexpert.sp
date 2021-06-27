@@ -103,7 +103,7 @@ int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 float gF_currentVelBooster[MAXPLAYERS + 1][3]
-//int gI_flash[MAXPLAYERS + 1]
+int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
 
 public Plugin myinfo =
