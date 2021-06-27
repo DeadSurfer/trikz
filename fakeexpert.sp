@@ -4773,6 +4773,10 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	//if(GetGameTime() - gF_boostTime[other] < 0.15)
 		//return Plugin_Handled
+	if(!IsClientInGame(other) && !IsPlayerAlive(other))
+		return Plugin_Continue
+	if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
+		return Plugin_Continue
 	if(other == 0)
 		return Plugin_Continue
 	if(0 < other <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND) && GetGameTime() - gF_boostTime[other] > 0.15) //if 0 < other <= MaxClients continue code. If false stop code.
