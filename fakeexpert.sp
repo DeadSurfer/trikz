@@ -4815,9 +4815,9 @@ Action ProjectileBoostFix(int entity, int other)
 		if(0.0 < delta && delta < 2.0)
 		{
 			float vecVelClient[3]
-			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelClient)
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
 			float vecVelEntity[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vecVelEntity)
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 			//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
 			//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
 			/*if(vecVelClient[0] < 0.0 && vecVelEntity[0] < 0.0)
