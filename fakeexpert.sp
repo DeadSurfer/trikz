@@ -4790,13 +4790,13 @@ Action ProjectileBoostFix(int entity, int other)
 		PrintToServer("%i %N [%i]", other, other, count)
 		count++
 		float vecOriginOther[3]
-		GetEntPropVector(other, Prop_Data, "m_vecOriginAbs", vecOriginOther)
+		GetEntPropVector(other, Prop_Send, "m_vecOrigin", vecOriginOther)
 		float vecOriginEntity[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecOriginAbs", vecOriginEntity)
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
 		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 		float vecMaxs[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs)
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxs)
 		//PrintToServer("%f %i %i %N", deltaOrigin - vecMaxs[2], entity, other, other)
 		//if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
 		//if(-2.0 <= (deltaOrigin - vecMaxs[2]) <= 6.0)
@@ -4858,7 +4858,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
 			//PrintToChatAll("groundEntity: %i", groundEntity)
 			//if(gB_isEndTouchBoost[other][entity] && gI_boost[other] == 0 && groundEntity == entity)
-			if(gI_boost[other] == 0)
+			//if(gI_boost[other] == 0)
 			{
 				//return Plugin_Handled
 				/*for(int i = 0; i <= 1; i++)
