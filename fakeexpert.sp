@@ -985,11 +985,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
-		case MenuAction_Start:
-		{
-			PrintToServer("menu start trikz.")
-			gB_menuIsOpen[param1] = true
-		}
 		case MenuAction_Select:
 		{
 			switch(param2)
@@ -1027,11 +1022,16 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			//}
 		}
-		case MenuAction_Display:
+		case MenuAction_Start:
 		{
-			PrintToServer("menu display trikz.")
+			PrintToServer("menu start trikz.")
 			gB_menuIsOpen[param1] = true
 		}
+		//case MenuAction_Display:
+		//{
+			//PrintToServer("menu display trikz.")
+			//gB_menuIsOpen[param1] = true
+		//}
 		//case MenuAction_End:
 		//{
 			//PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
