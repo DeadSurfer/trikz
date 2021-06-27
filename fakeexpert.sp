@@ -4869,6 +4869,7 @@ Action ProjectileBoostFix(int entity, int other)
 						vecVelClient[i] = FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])
 					else if(vecVelClient[i] < 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
+				gI_boost[other] = 1
 				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0
 				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0
 				//for(int i = 0; i <= 2; i++)
@@ -4887,7 +4888,7 @@ Action ProjectileBoostFix(int entity, int other)
 				vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135*/
 				for(int i = 0; i <= 2; i++)
 					gF_vecVelBoostFix[other][i] = vecVelClient[i]
-				gI_boost[other] = 1
+				
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
