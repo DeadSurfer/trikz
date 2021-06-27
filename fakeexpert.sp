@@ -955,7 +955,7 @@ void SDKBoostFix(int client)
 		//gI_skyStep[client] = 0
 		//PrintToServer("debug1")
 	}
-	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetEntityFlags(client) & FL_ONGROUND)
+	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && !(GetEntityFlags(client) & FL_ONGROUND))
 		gI_boost[client] = 2
 }
 
@@ -4398,7 +4398,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client] = 3
 	//}
 	//else if(gI_boost[client] == 3)
-	if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND) && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetGameTime() - gF_boostTime[client] < 0.15)
+	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND) && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetGameTime() - gF_boostTime[client] < 0.15)
+	if(gI_boost[client] == 2)
 	{
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
@@ -4901,6 +4902,11 @@ Action ProjectileBoostFix(int entity, int other)
 	//	float vecBase[3]
 		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 	//}
+	if(GetGameTime() - gF_boostTime[other] < 0.15)
+	{
+		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
+		return Plugin_Handled
+	}
 	return Plugin_Continue
 }
 
