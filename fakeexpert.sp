@@ -4901,7 +4901,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//	float vecBase[3]
 		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 	//}
-	//return Plugin_Continue
+	return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
