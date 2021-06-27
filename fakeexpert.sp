@@ -4779,7 +4779,7 @@ Action ProjectileBoostFix(int entity, int other)
 		return Plugin_Continue
 	if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
 		return Plugin_Continue
-	if(0 < other <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND) && GetGameTime() - gF_boostTime[other] > 0.15) //if 0 < other <= MaxClients continue code. If false stop code.
+	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
 		//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
 		//{
