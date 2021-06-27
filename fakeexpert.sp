@@ -4861,7 +4861,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity")
 			//PrintToChatAll("groundEntity: %i", groundEntity)
 			//if(gB_isEndTouchBoost[other][entity] && gI_boost[other] == 0 && groundEntity == entity)
-			//if(gI_boost[other] == 0)
+			if(gI_boost[other] == 0)
 			{
 				//return Plugin_Handled
 				/*for(int i = 0; i <= 1; i++)
