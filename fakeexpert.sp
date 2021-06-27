@@ -4761,7 +4761,7 @@ Action ProjectileBoostFix(int entity, int other)
 	if(other == 0)
 	{
 		//SetEntProp(entity, Prop_Data, "m_nSolidType", 2)
-		//return Plugin_Handled
+		return Plugin_Handled
 	}
 	if(GetGameTime() - gF_boostTime[other] < 0.15)
 		return Plugin_Handled
