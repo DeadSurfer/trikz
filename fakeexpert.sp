@@ -4904,6 +4904,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	if(GetGameTime() - gF_boostTime[other] < 0.15)
 	{
+		float vecBase[3]
 		SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 		return Plugin_Handled
 	}
