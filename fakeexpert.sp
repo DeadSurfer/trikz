@@ -4961,7 +4961,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		gB_bouncedOff[entity] = false //tengu lawl boost fix .sp
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
-		SDKHook(entity, SDKHook_StartTouchPost, ProjectileBoostFix)
+		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 	}
 }
