@@ -800,7 +800,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	//if(0 < other <= MaxClients)
 		//return
-	if(0 < other <= MaxClients)
+	if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	{
 		/*float vecAbsClient[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsClient)
