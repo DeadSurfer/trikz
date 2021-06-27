@@ -2805,7 +2805,7 @@ Action SDKStartTouch(int entity, int other)
 				//gD_mysql.Query(SQLSR, sQuery, dp)
 				int playerid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
-				char sPlace[32]
+				char sCPnum[32]
 				if(gF_ServerRecord > 0.0)
 				{
 					if(gF_haveRecord[other] > 0.0 && gF_haveRecord[gI_partner[other]] > 0.0)
@@ -3011,7 +3011,7 @@ Action SDKStartTouch(int entity, int other)
 					}*/
 					for(int i = 1; i <= 10; i++)
 					{
-						IntToString(i, sPlace, 32)
+						IntToString(i, sCPnum, 32)
 						if(gB_cp[i][other])
 						{
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
@@ -3027,7 +3027,7 @@ Action SDKStartTouch(int entity, int other)
 								int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 								//IntToString(i, sPlace, 32)
 								//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-								PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sCPnum, srCPHour, srCPMinute, srCPSecond)
 								//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 							}
 							else
@@ -3044,7 +3044,7 @@ Action SDKStartTouch(int entity, int other)
 								int srCPMinute = (RoundToFloor(gF_timeDiffCPWin[i][other]) / 60) % 60
 								int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 								//PrintToChat(other, "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-								PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sCPnum, srCPHour, srCPMinute, srCPSecond)
 								//PrintToChat(gI_partner[other], "%s. Checkpoint: +%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 							}
 						}
@@ -3063,7 +3063,7 @@ Action SDKStartTouch(int entity, int other)
 					for(int i = 1; i <= 10; i++)
 					{
 						//char sPlace[32]
-						IntToString(i, sPlace, 32)
+						IntToString(i, sCPnum, 32)
 						if(gB_cp[i][other])
 						{
 							//if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
@@ -3079,7 +3079,7 @@ Action SDKStartTouch(int entity, int other)
 								//int srCPSecond = RoundToFloor(gF_timeDiffCPWin[i][other]) % 60
 								//IntToString(i, sPlace, 32)
 								//PrintToChat(other, "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
-								PrintToChatAll("%s. Checkpoint: +00:00:00", sPlace)
+								PrintToChatAll("%s. Checkpoint: +00:00:00", sCPnum)
 								//PrintToChat(gI_partner[other], "%s. Checkpoint: -%02.i:%02.i:%02.i", sPlace, srCPHour, srCPMinute, srCPSecond)
 							}
 							/*else
