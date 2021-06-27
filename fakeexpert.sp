@@ -105,6 +105,7 @@ bool gB_groundBoost[MAXPLAYERS + 1]
 float gF_currentVelBooster[MAXPLAYERS + 1][3]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
+int gI_entityFlags[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -4292,6 +4293,7 @@ Action cmd_tp(int client, int args)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
+	gI_entityFlags[client] = GetEntityFlags(client)
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(client) & FL_INWATER) && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
@@ -4778,7 +4780,8 @@ Action ProjectileBoostFix(int entity, int other)
 		return Plugin_Continue
 	if(!IsClientInGame(other) && !IsPlayerAlive(other))
 		return Plugin_Continue
-	if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
+	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
+	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		return Plugin_Continue
 	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
