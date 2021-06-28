@@ -804,7 +804,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	//if(0 < other <= MaxClients)
 		//return
-	if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boostStep[client] || GetGameTime() - gF_boostTime[client] < 0.15)
+	if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
 		return
 	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	{
