@@ -4403,7 +4403,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_skyStep[client] = 2
 	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
-	float baseVel[3]
+	//float baseVel[3]
 	//if((gI_boost[client] && gI_skyStep[client]) || (gI_boost[client] || gI_skyStep[client]))
 	if(gI_boost[client])
 	{
@@ -4451,7 +4451,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		//if(!gB_groundBoost[client])
 		//{
-			float zVelMinus[3]
+			//float zVelMinus[3]
 			//for(int i = 0; i <= 2; i++)
 			//zVelMinus[0] = gF_vecVelBoostFix[client][0]
 			//zVelMinus[1] = gF_vecVelBoostFix[client][1]
