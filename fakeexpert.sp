@@ -4450,6 +4450,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gI_skyStep[client] = 0
 	}
+	if(gI_boost[client] && gI_skyStep[client])
+	{
+		gI_skyFrame[client] = 0
+		gI_skyStep[client] = 0
+	}
 	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
 		PrintToServer("skyboost")
