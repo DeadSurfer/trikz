@@ -4408,11 +4408,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gI_boost[client])
 	{
 		//if(GetGameTime() - gF_boostTime[client] < 0.15)
-		//gI_boost[client]++
+		gI_boost[client]++
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 		//return Plugin_Continue
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
-		gI_boost[client] = 0
+		//gI_boost[client] = 0
 	}
 	if(gI_skyStep[client])
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
@@ -4426,11 +4426,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client]++
 		//gI_skyStep[client] = 0
 	}
-	//if(gI_boost[client] == 2)
-	//{
+	if(9 >= gI_boost[client] >= 1)
+	{
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
+		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 		//gI_boost[client] = 3
-	//}
+	}
+	if(gI_boost[client] == 10)
+	{
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
+		gI_boost[client] = 0
+	}
 	//else if(gI_boost[client] == 3)
 	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND) && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetGameTime() - gF_boostTime[client] < 0.15)
 	//if(gI_boost[client] == 2 && GetGameTime() - gF_boostTime[client] > 0.15)
@@ -4975,7 +4981,7 @@ Action ProjectileBoostFix(int entity, int other)
 				gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-				SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
+				//SetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//zVelMinus[2] = vecVelClient[2] * -1.0
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
 				//if(gB_groundBoost[other])
