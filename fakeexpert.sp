@@ -4915,8 +4915,8 @@ Action ProjectileBoostFix(int entity, int other)
 				//PrintToChatAll("player elasticity: %f", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, vecVelClient)
 			}
-			float baseVel[3]
-			SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
+			//float baseVel[3]
+			//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", baseVel)
 			//return Plugin_Continue
 		}
 	}
