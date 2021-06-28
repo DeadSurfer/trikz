@@ -975,7 +975,7 @@ void SDKBoostFix(int client)
 			nullVel[1] = gF_vecVelBoostFix[client][1]
 			nullVel[2] = gF_vecVelBoostFix[client][2] * -1.0
 			//nullVel[2] = gF_vecVelBoostFix[client][2] * -1000000000.0
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
+			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
