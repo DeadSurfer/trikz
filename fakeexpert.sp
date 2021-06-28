@@ -4765,7 +4765,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 int count
 void IsClientValid(int client)
 {
-	return client > 0 && client <= MaxClients && IsClientInGame(client)
+	return (client > 0 && client <= MaxClients && IsClientInGame(client))
 }
 Action ProjectileBoostFix(int entity, int other)
 {
