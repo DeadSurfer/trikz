@@ -967,13 +967,13 @@ void SDKBoostFix(int client)
 	{
 		if(!gB_groundBoost[client])
 		{
-			float nullVel[3]
+			//float nullVel[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
 		//else
-			for(int i = 0; i <= 2; i++)
-				nullVel[i] = gF_vecVelBoostFix[client][i] * -1.0
+			//for(int i = 0; i <= 2; i++)
+				//nullVel[i] = gF_vecVelBoostFix[client][i] * -1.0
 			//nullVel[2] = gF_vecVelBoostFix[client][2]
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
+			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
@@ -4406,7 +4406,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(1 <= gI_boost[client])
 	{
 		//if(GetGameTime() - gF_boostTime[client] < 0.15)
-		gI_boost[client]++
+		//gI_boost[client]++
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 		//return Plugin_Continue
 	}
@@ -4443,7 +4443,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 	}
-	if(gI_boost[client] == 14 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
