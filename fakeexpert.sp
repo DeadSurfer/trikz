@@ -4778,8 +4778,8 @@ Action ProjectileBoostFix(int entity, int other)
 	PrintToServer("%i other", other)
 	if(other == 0)
 		return Plugin_Continue
-	if(!IsClientInGame(other) && !IsPlayerAlive(other))
-		return Plugin_Continue
+	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
+	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
 	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		return Plugin_Continue
