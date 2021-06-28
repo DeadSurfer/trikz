@@ -4997,8 +4997,8 @@ Action ProjectileBoostFix(int entity, int other)
 			//return Plugin_Continue
 		}
 	}
-	float zVelMinus[3]
-	TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, zVelMinus)
+	//float zVelMinus[3]
+	//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, zVelMinus)
 	//else
 	//{
 	//float vecBase[3]
