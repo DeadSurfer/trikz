@@ -4763,7 +4763,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//return Plugin_Continue
 //}
 int count
-void IsClientValid(int client)
+bool IsClientValid(int client)
 {
 	return (client > 0 && client <= MaxClients && IsClientInGame(client))
 }
