@@ -4418,12 +4418,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(GetGameTime() - gF_boostTime[client] < 0.15)
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 	SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	//if(gI_boost[client] >= 1)
-	//{
+	if(gI_boost[client] >= 1)
+	{
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		//gI_boost[client]++
+		gI_boost[client]++
 		//gI_skyStep[client] = 0
-	//}
+	}
 	//if(gI_boost[client] == 2)
 	//{
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
@@ -4445,7 +4445,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 	}
-	if(gI_boost[client] == 3 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 8 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
@@ -4465,7 +4465,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
-	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 7 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		//if(gB_groundBoost[client])
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
