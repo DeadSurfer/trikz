@@ -4481,7 +4481,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
-		gI_boost[client] = 3
+		gI_boost[client] = 8
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 		//gI_boost[client] = 2
