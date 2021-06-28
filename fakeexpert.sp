@@ -4472,9 +4472,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(!gB_groundBoost[client])
 		{
 			float zVelMinus[3]
-			zVelMinus[0] = gF_vecVelBoostFix[client][0] * -1.0
-			zVelMinus[1] = gF_vecVelBoostFix[client][1] * -1.0
-			zVelMinus[2] = gF_vecVelBoostFix[client][1] * -1.0
+			for(int i = 0; i <= 2; i++)
+				zVelMinus[i] = gF_vecVelBoostFix[client][i] * -1.0
+			//zVelMinus[1] = gF_vecVelBoostFix[client][1] * -1.0
+			//zVelMinus[2] = gF_vecVelBoostFix[client][1] * -1.0
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, zVelMinus)
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		}
