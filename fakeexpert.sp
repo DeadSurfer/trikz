@@ -4417,7 +4417,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(GetGameTime() - gF_boostTime[client] > 0.15 && gI_boost[client])
 	//if(GetGameTime() - gF_boostTime[client] < 0.15)
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
+	//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 	if(gI_boost[client] >= 1)
 	{
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
@@ -4447,8 +4447,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(7 >= gI_boost[client] >= 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
-		//if(gB_groundBoost[client])
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		if(gB_groundBoost[client])
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		if(!gB_groundBoost[client])
 		{
 			float zVelMinus[3]
