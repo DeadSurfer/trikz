@@ -967,13 +967,13 @@ void SDKBoostFix(int client)
 	{
 		if(!gB_groundBoost[client])
 		{
-			//float nullVel[3]
+			float nullVel[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
 		//else
 			//for(int i = 0; i <= 2; i++)
 				//nullVel[i] = gF_vecVelBoostFix[client][i] * -1.0
-			//nullVel[2] = gF_vecVelBoostFix[client][2]
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
+			nullVel[2] = gF_vecVelBoostFix[client][2] * -1.0
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
