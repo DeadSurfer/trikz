@@ -4769,7 +4769,7 @@ void IsClientValid(int client)
 }
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(!IsClientValid(client))
+	if(!IsClientValid(other))
 		return Plugin_Continue
 	//int count
 	//PrintToServer("starttocuh1 %i %i %i", entity, other, count)
