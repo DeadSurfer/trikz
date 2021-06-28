@@ -4411,6 +4411,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_boost[client]++
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 		//return Plugin_Continue
+		TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
+		gI_boost[client] = 0
 	}
 	if(gI_skyStep[client])
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
@@ -4421,7 +4423,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gI_boost[client] >= 1)
 	{
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		gI_boost[client]++
+		//gI_boost[client]++
 		//gI_skyStep[client] = 0
 	}
 	//if(gI_boost[client] == 2)
@@ -4463,7 +4465,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//}
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
-		gI_boost[client] = 8
+		//gI_boost[client] = 8
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 		//gI_boost[client] = 2
