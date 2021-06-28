@@ -4977,7 +4977,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//zVelMinus[2] = vecVelClient[2] * -1.0
-				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
+				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
 				//if(gB_groundBoost[other])
 				//{
 					//float vecVelClient[3]
