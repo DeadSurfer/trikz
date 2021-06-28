@@ -4465,9 +4465,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
-		if(gB_groundBoost[client])
+		//if(gB_groundBoost[client])
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		else
+		if(!gB_groundBoost[client])
 		{
 			float zVelMinus[3]
 			zVelMinus[0] = gF_vecVelBoostFix[client][0] * -1.0
