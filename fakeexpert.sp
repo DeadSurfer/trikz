@@ -4974,9 +4974,9 @@ Action ProjectileBoostFix(int entity, int other)
 				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
-				//float zVelMinus[3]
+				float zVelMinus[3]
 				//zVelMinus[2] = vecVelClient[2] * -1.0
-				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, zVelMinus)
+				TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, zVelMinus)
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
 				//if(gB_groundBoost[other])
 				//{
