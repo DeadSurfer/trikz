@@ -966,6 +966,25 @@ void SDKBoostFix(int client)
 	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		if(gB_groundBoost[client])
+		{
+			float nullVec[3]
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
+		//else
+		for(int i = 0; i <= 1; i++)
+			nullVec[i] = gF_vecVelBoosterFix[client][i] * -1.0
+		nullVec[2] = gF_vecVelBoosterFix[client][2]
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
+		//for(int i = 0; i <= 2; i++)
+			//gF_vecVelBoostFix[client][i] = 0.0
+		}
+		gI_boost[client] = 2
+		gI_skyStep[client] = 0
+		PrintToServer("debug")
+		//gI_boost[client] = 2
+	}
+	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	{
+		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		else
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
