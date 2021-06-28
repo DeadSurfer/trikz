@@ -4763,8 +4763,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//return Plugin_Continue
 //}
 int count
+void IsClientValid(int client)
+{
+	return client > 0 && client <= MaxClients && IsClientInGame(client)
+}
 Action ProjectileBoostFix(int entity, int other)
 {
+	if(!IsClientValid(client))
+		return Plugin_Continue
 	//int count
 	//PrintToServer("starttocuh1 %i %i %i", entity, other, count)
 	//count++
@@ -4775,15 +4781,15 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	//if(GetGameTime() - gF_boostTime[other] < 0.15)
 		//return Plugin_Handled
-	PrintToServer("%i other", other)
-	if(other == 0)
-		return Plugin_Continue
+	//PrintToServer("%i other", other)
+	//if(other == 0)
+		//return Plugin_Continue
 	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
 	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
 	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		return Plugin_Continue
-	if(0 < other <= MaxClients) //if 0 < other <= MaxClients continue code. If false stop code.
+	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
 	{
 		//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND || GetGameTime() - gF_boostTime[other] < 0.15)
 		//{
