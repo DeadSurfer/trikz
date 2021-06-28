@@ -4812,9 +4812,11 @@ Action ProjectileBoostFix(int entity, int other)
 		PrintToServer("%i %N [%i]", other, other, count)
 		count++
 		float vecOriginOther[3]
-		GetEntPropVector(other, Prop_Send, "m_vecOrigin", vecOriginOther)
+		//GetEntPropVector(other, Prop_Send, "m_vecOrigin", vecOriginOther)
+		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
+		//GetEntityAbsOrigin
 		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 		float vecMaxs[3]
