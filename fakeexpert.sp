@@ -5001,8 +5001,8 @@ Action ProjectileBoostFix(int entity, int other)
 	}
 	//else
 	//{
-	//	float vecBase[3]
-		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
+	float vecBase[3]
+	SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecBase)
 	//}
 	//if(GetGameTime() - gF_boostTime[other] < 0.15)
 	//{
