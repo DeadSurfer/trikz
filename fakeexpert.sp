@@ -973,11 +973,11 @@ void SDKBoostFix(int client)
 			//for(int i = 0; i <= 2; i++)
 				//nullVel[i] = gF_vecVelBoostFix[client][i] * -1.0
 			nullVel[2] = gF_vecVelBoostFix[client][2] * -1.0
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
+			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
-		gI_boost[client] = 2
+		//gI_boost[client] = 2
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 		//gI_boost[client] = 2
@@ -4443,12 +4443,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 	}
-	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		if(gB_groundBoost[client])
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		else
+		{
+			float zVelMinus[3]
+			zVelMinus[2] = gF_vecVelBoostFix[client][2]
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, zVelMinus)
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		}
 		for(int i = 0; i <= 2; i++)
 			gF_vecVelBoostFix[client][i] = 0.0
 		gI_boost[client] = 0
@@ -4942,7 +4947,9 @@ Action ProjectileBoostFix(int entity, int other)
 				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 				//SetEntPropVector(other, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
-				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
+				//float zVelMinus[3]
+				//zVelMinus[2] = vecVelClient[2] * -1.0
+				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, zVelMinus)
 				//TeleportEntity(other, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[other])
 				//if(gB_groundBoost[other])
 				//{
