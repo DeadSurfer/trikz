@@ -796,12 +796,17 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 //void SQLUserAdded2(Database db, DBResultSet results, const char[] error, any data)
 //{
 //}
-
+bool IsClientValid(int client)
+{
+	return (client > 0 && client <= MaxClients && IsClientInGame(client))
+}
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	//if(0 < other <= MaxClients)
 		//return
-	if(0 < other <= MaxClients && 0 < client <= MaxClients)
+	if(!IsValidClient(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boostStep[client] || GetGameTime() - gF_boostTime[client] < 0.15)
+		return
+	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	{
 		/*float vecAbsClient[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsClient)
@@ -4774,10 +4779,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//return Plugin_Continue
 //}
 int count
-bool IsClientValid(int client)
-{
-	return (client > 0 && client <= MaxClients && IsClientInGame(client))
-}
 Action ProjectileBoostFix(int entity, int other)
 {
 	if(!IsClientValid(other))
