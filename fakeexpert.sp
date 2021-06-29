@@ -804,7 +804,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	//if(0 < other <= MaxClients)
 		//return
-	PrintToServer("SDKSkyFix: %i %i", client, other)
+	//PrintToServer("SDKSkyFix: %i %i", client, other)
 	if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
 		return
 	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
@@ -979,16 +979,16 @@ void SDKBoostFix(int client)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
-		gI_boost[client] = 2
+		//gI_boost[client] = 2
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
-	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		if(!gB_groundBoost[client])
 		{
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 			//float nullVel[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
 		//else
@@ -1001,8 +1001,8 @@ void SDKBoostFix(int client)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
-		//else
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		else
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
@@ -4558,9 +4558,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0
 			PrintToServer("success")
 		}*/
-		gF_fallVelBooster[client][2] = gF_fallVelBooster[client][2] * 4.0
+		PrintToServer("flyer: %f booster: %f", gF_fallVel[client][2], gF_fallVelBooster[client][2])
+		/*gF_fallVelBooster[client][2] = gF_fallVelBooster[client][2] * 4.0
 		gF_fallVel[client][2] = gF_fallVelBooster[client][2]
 		if(gF_fallVelBooster[client][2] > 800.0)
+			gF_fallVel[client][2] = 800.0*/
+		gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[client][2]
+		if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
 		if(buttons & IN_JUMP)
 		{
@@ -4995,8 +4999,10 @@ Action ProjectileBoostFix(int entity, int other)
 					//vecVelClient[2] = -vecVelEntity[2]
 				//for()
 				vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135*/
-				for(int i = 0; i <= 2; i++)
-					gF_vecVelBoostFix[other][i] = vecVelClient[i]
+				//for(int i = 0; i <= 2; i++)
+				gF_vecVelBoostFix[other][0] = vecVelClient[0]
+				gF_vecVelBoostFix[other][1] = vecVelClient[1]
+				gF_vecVelBoostFix[other][2] = vecVelClient[2]
 				
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
