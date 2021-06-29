@@ -995,12 +995,13 @@ void SDKBoostFix(int client)
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 				if(vecVelEntity[2] > 0.0)
 				{
-					gF_vecVelBoostFix[client][0] -= vecVelEntity[0] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
-					gF_vecVelBoostFix[client][1] -= vecVelEntity[1] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+					//gF_vecVelBoostFix[client][0] -= vecVelEntity[0] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+					//gF_vecVelBoostFix[client][1] -= vecVelEntity[1] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
 					//for(int i = 0; i <= 2; i++)
 					//if(vecVelClient[2] >= 0.0)
-					gF_vecVelBoostFix[client][2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
+					//gF_vecVelBoostFix[client][2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
 					//TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+					//TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 				}
 			}
 			//float nullVel[3]
@@ -5015,9 +5016,10 @@ Action ProjectileBoostFix(int entity, int other)
 				//for()
 				vecVelClient[2] = FloatAbs(vecVelClient[2]) * 0.135*/
 				//for(int i = 0; i <= 2; i++)
-				gF_vecVelBoostFix[other][0] = vecVelClient[0]
-				gF_vecVelBoostFix[other][1] = vecVelClient[1]
-				gF_vecVelBoostFix[other][2] = vecVelClient[2]
+				gF_vecVelBoostFix[other][0] = vecVelEntity[0]
+				gF_vecVelBoostFix[other][1] = vecVelEntity[1]
+				gF_vecVelBoostFix[other][2] = vecVelEntity[2]
+				
 				
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
