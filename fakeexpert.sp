@@ -5052,10 +5052,10 @@ Action ProjectileBoostFix(int entity, int other)
 	return Plugin_Continue
 }
 
-Action Timer_removeflashbangonhit(Handle timer, int entity)
+Action Timer_removeflashbangonhit(Handle timer, int entityref)
 {
-	entity = EntRefToEntIndex(entity)
-	if(IsValidEntity(entity))
+	int entity = EntRefToEntIndex(entityref)
+	if(entity != INVALID_ENT_REFERENCE)
 		AcceptEntityInput(entity, "Kill")
 }
 
