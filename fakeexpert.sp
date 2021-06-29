@@ -993,12 +993,15 @@ void SDKBoostFix(int client)
 			{
 				float vecVelEntity[3]
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-				gF_vecVelBoostFix[client][0] -= vecVelEntity[0] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
-				gF_vecVelBoostFix[client][1] -= vecVelEntity[1] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
-				//for(int i = 0; i <= 2; i++)
-				//if(vecVelClient[2] >= 0.0)
-				gF_vecVelBoostFix[client][2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				if(vecVelEntity[2] > 0.0)
+				{
+					gF_vecVelBoostFix[client][0] -= vecVelEntity[0] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+					gF_vecVelBoostFix[client][1] -= vecVelEntity[1] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+					//for(int i = 0; i <= 2; i++)
+					//if(vecVelClient[2] >= 0.0)
+					gF_vecVelBoostFix[client][2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				}
 			}
 			//float nullVel[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
