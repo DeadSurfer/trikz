@@ -967,7 +967,7 @@ void SDKBoostFix(int client)
 	{
 		if(!gB_groundBoost[client])
 		{
-			//float nullVel[3]
+			float nullVel[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
 		//else
 			//for(int i = 0; i <= 2; i++)
@@ -979,16 +979,16 @@ void SDKBoostFix(int client)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
-		gI_boost[client] = 2
+		//gI_boost[client] = 2
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
-	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
 		if(!gB_groundBoost[client])
 		{
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 			//float nullVel[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
 		//else
@@ -1001,8 +1001,8 @@ void SDKBoostFix(int client)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
-		//else
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		else
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
@@ -4577,7 +4577,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
 				//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
-					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
 					//if(gI_skyStep[client] == 10)
 					gI_skyStep[client] = 0
 					gF_fallVel[client][2] = 0.0
@@ -5103,7 +5103,7 @@ Action SDKProjectile(int entity)
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity)) //sometimes flashbang going to flash, entindextoentref must fix it.
+	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
 }
 
 Action timer_delete(Handle timer, int entity)
