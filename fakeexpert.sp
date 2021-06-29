@@ -4558,14 +4558,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_fallVel[client][2] = 800.0
 			PrintToServer("success")
 		}*/
-		PrintToServer("flyer: %f booster: %f", gF_fallVel[client][2], gF_fallVelBooster[client][2])
-		//gF_fallVelBooster[client][2] = gF_fallVelBooster[client][2] * 4.0
-		//gF_fallVel[client][2] = gF_fallVelBooster[client][2]
-		//if(gF_fallVelBooster[client][2] > 800.0)
-		//	gF_fallVel[client][2] = 800.0
-		gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[client][2]
-		if(gF_fallVel[client][2] > 800.0)
+		//PrintToServer("flyer: %f booster: %f", gF_fallVel[client][2], gF_fallVelBooster[client][2])
+		gF_fallVelBooster[client][2] = gF_fallVelBooster[client][2] * 4.0
+		gF_fallVel[client][2] = gF_fallVelBooster[client][2]
+		if(gF_fallVelBooster[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
+		//gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[client][2]
+		//if(gF_fallVel[client][2] > 800.0)
+		//	gF_fallVel[client][2] = 800.0
 		if(buttons & IN_JUMP)
 		{
 			//PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
