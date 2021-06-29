@@ -1015,8 +1015,8 @@ void SDKBoostFix(int client)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
-		else
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		//else
+			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
@@ -4441,7 +4441,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gI_skyStep[client] = 2
 	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
 	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
-	//float baseVel[3]
+	float baseVel[3]
 	//if((gI_boost[client] && gI_skyStep[client]) || (gI_boost[client] || gI_skyStep[client]))
 	if(gI_boost[client])
 	{
@@ -4457,7 +4457,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(GetGameTime() - gF_boostTime[client] > 0.15 && gI_boost[client])
 	//if(GetGameTime() - gF_boostTime[client] < 0.15)
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
+	SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 	if(gI_boost[client] >= 1)
 	{
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
@@ -4591,7 +4591,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
 				//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
-					//sTeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
 					//if(gI_skyStep[client] == 10)
 					gI_skyStep[client] = 0
 					gF_fallVel[client][2] = 0.0
