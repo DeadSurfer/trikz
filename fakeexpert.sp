@@ -988,7 +988,18 @@ void SDKBoostFix(int client)
 	{
 		if(!gB_groundBoost[client])
 		{
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			int entity = EntRefToEntIndex(gI_flash[client])
+			if(entity != INVALID_ENT_REFERENCE)
+			{
+				float vecVelEntity[3]
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
+				gF_vecVelBoostFix[client][0] -= vecVelEntity[0] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+				gF_vecVelBoostFix[client][1] -= vecVelEntity[1] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+				//for(int i = 0; i <= 2; i++)
+				//if(vecVelClient[2] >= 0.0)
+				gF_vecVelBoostFix[client][2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			}
 			//float nullVel[3]
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
 		//else
@@ -4984,11 +4995,11 @@ Action ProjectileBoostFix(int entity, int other)
 					else if(vecVelClient[i] < 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
 				gI_boost[other] = 1
-				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
-				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+				//vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
+				//vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
-				vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
+				//vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
 				//vecVelClient[2] += vecVelEntity[2] * 0.97
 				//vecVelClient[2] -= vecVelEntity[2] * 0.9
 				/*for(int i = 0; i <= 1; i++)
