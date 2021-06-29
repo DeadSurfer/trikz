@@ -4892,6 +4892,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
 	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
+	CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		return Plugin_Continue
 	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
@@ -5049,6 +5050,13 @@ Action ProjectileBoostFix(int entity, int other)
 		//return Plugin_Handled
 	//}
 	return Plugin_Continue
+}
+
+Action Timer_removeflashbangonhit(Handle timer, int entity)
+{
+	entity = EntRefToEntIndex(entity)
+	if(IsValidEntity(entity))
+		AcceptEntityInput(entity, "Kill")
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
