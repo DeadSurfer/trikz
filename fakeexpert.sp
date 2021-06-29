@@ -975,11 +975,35 @@ void SDKBoostFix(int client)
 			nullVel[1] = gF_vecVelBoostFix[client][1]
 			nullVel[2] = gF_vecVelBoostFix[client][2] * -1.0
 			//nullVel[2] = gF_vecVelBoostFix[client][2] * -1000000000.0
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
+		//for(int i = 0; i <= 2; i++)
+			//gF_vecVelBoostFix[client][i] = 0.0
+		}
+		gI_boost[client] = 2
+		gI_skyStep[client] = 0
+		PrintToServer("debug")
+		//gI_boost[client] = 2
+	}
+	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	{
+		if(!gB_groundBoost[client])
+		{
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client]
+			//float nullVel[3]
+		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVec)
+		//else
+			//for(int i = 0; i <= 2; i++)
+			//nullVel[0] = gF_vecVelBoostFix[client][1]
+			//nullVel[1] = gF_vecVelBoostFix[client][1]
+			//nullVel[2] = gF_vecVelBoostFix[client][2] * -1.0
+			//nullVel[2] = gF_vecVelBoostFix[client][2] * -1000000000.0
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		}
-		//gI_boost[client] = 2
+		else
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		gI_boost[client] = 0
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 		//gI_boost[client] = 2
@@ -4408,7 +4432,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gI_boost[client])
 	{
 		//if(GetGameTime() - gF_boostTime[client] < 0.15)
-		gI_boost[client]++
+		//gI_boost[client]++
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
 		//return Plugin_Continue
 		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
