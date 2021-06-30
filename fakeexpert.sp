@@ -177,7 +177,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
-	AddCommandListener(specchat, "say")
+	AddCommandListener(specchat, "say") //thanks to VerMon idea.
 	//Database.Connect(SQLConnect, "fakeexpert")
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
