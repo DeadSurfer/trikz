@@ -1070,7 +1070,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	switch(action)
 	{
 		case MenuAction_Start:
-		{
+		{//expert-zone idea. thank to ed, maru.
 			PrintToServer("menu start trikz.")
 			gB_menuIsOpen[param1] = true
 		}
