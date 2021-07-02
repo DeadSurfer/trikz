@@ -963,7 +963,7 @@ void SDKBoostFix(int client)
 		//PrintToServer("debug1")
 	}
 	//if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && !(GetEntityFlags(client) & FL_ONGROUND))
-	if(gI_boost[client] == 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 1)
 	{
 		if(!gB_groundBoost[client])
 		{
@@ -988,10 +988,13 @@ void SDKBoostFix(int client)
 					//vecVelEntity[0] *= -1.0
 					//vecVelEntity[1] *= -1.0
 					//vecVelEntity[2] *= -1.0
-					//vecVelEntity[0] = vecVelEntity[0] * -1.0
-					//vecVelEntity[1] = vecVelEntity[1] * -1.0
-					vecVelEntity[2] = vecVelEntity[2] * -1.0
-					//TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
+					vecVelEntity[0] = vecVelEntity[0] * 0.135
+					vecVelEntity[1] = vecVelEntity[1] * 0.135
+					vecVelEntity[2] = vecVelEntity[2] * -0.135
+					//vecVelEntity[0] = vecVelEntity[0] * 1.0
+					//vecVelEntity[1] = vecVelEntity[1] * 1.0
+					//vecVelEntity[2] = vecVelEntity[2] * -1.0
+					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 				}
 			}
 		}
@@ -1000,26 +1003,27 @@ void SDKBoostFix(int client)
 		PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
-	if(gI_boost[client] == 2 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
+	if(gI_boost[client] == 2)
 	{
 		if(!gB_groundBoost[client])
 		{
 			//int entity = EntRefToEntIndex(gI_flash[client])
 			//if(entity != INVALID_ENT_REFERENCE)
-			{
+			//{
 				//float vecVelEntity[3]
 				//GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 				//if(vecVelEntity[2] > 0.0)
-				{
+				//{
 					//gF_vecVelBoostFix[client][0] -= vecVelEntity[0] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
 					//gF_vecVelBoostFix[client][1] -= vecVelEntity[1] * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0, other is player.
 					//for(int i = 0; i <= 2; i++)
 					//if(vecVelClient[2] >= 0.0)
 					//gF_vecVelBoostFix[client][2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(client, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.1)) //player elasticity always is 1.0 , other is player.
-					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 					//TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
-				}
-			}
+				//}
+			//}
+		//}
 		//else
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 			//float nullVel[3]
@@ -4610,7 +4614,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
 				//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
 				{
-					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
 					//if(gI_skyStep[client] == 10)
 					gI_skyStep[client] = 0
 					gF_fallVel[client][2] = 0.0
