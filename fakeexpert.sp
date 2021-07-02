@@ -5041,7 +5041,7 @@ Action ProjectileBoostFix(int entity, int other)
 				gF_vecVelBoostFix[other][0] = vecVelClient[0]
 				gF_vecVelBoostFix[other][1] = vecVelClient[1]
 				//gF_vecVelBoostFix[other][2] = vecVelClient[2]
-				gF_vecVelBoostFix[client][2] = FloatAbs(vecVelEntity[2])
+				gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
 				
 				
 				//gI_skyStep[other] = 0
