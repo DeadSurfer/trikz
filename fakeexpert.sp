@@ -4563,8 +4563,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 	//}
 	//if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && !(GetEntityFlags(client) & IN_DUCK))
-	if(1 <= gI_skyFrame[client] <= 5)
-		gI_skyFrame[client]++
+	//if(1 <= gI_skyFrame[client] <= 5)
+		//gI_skyFrame[client]++
 	if(gI_skyFrame[client] >= 5)
 	{
 		gI_skyFrame[client] = 0
