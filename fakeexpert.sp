@@ -853,14 +853,14 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//gI_skyStep[other] 
 		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			float getCurrentVel[3]
-			GetEntPropVector(other, Prop_Data, "m_vecVelocity", getCurrentVel)
-			gF_currentVelBooster[other][2] = getCurrentVel[2]
-			if(GetEntityFlags(client) & FL_ONGROUND && GetEntityFlags(other) & FL_ONGROUND)
-				gI_skyStep[other] = 0
+			//float getCurrentVel[3]
+			//GetEntPropVector(other, Prop_Data, "m_vecVelocity", getCurrentVel)
+			//gF_currentVelBooster[other][2] = getCurrentVel[2]
+			//if(GetEntityFlags(client) & FL_ONGROUND && GetEntityFlags(other) & FL_ONGROUND)
+				//gI_skyStep[other] = 0
 			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0 && GetGameTime() - gF_boostTime[other] < 0.15) //gF_boostTime[other] < 0.15 and GetGameTime() is from tengu lawl github.com scripting boost-fix.sp https://www.github.com/tengulawl/scripting/main/blob/boost-fix.sp
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && GetClientButtons(client) & IN_JUMP && GetClientButtons(other) & IN_JUMP && gI_skyStep[other] == 0)
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
 				//if(GetEntityFlags(client) & IN_JUMP)
 				//	PrintToServer("c: %i", GetEntityFlags(client))
@@ -4563,8 +4563,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
 	//}
 	//if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && !(GetEntityFlags(client) & IN_DUCK))
-	//if(1 <= gI_skyFrame[client] <= 5)
-		//gI_skyFrame[client]++
+	if(1 <= gI_skyFrame[client] <= 5)
+		gI_skyFrame[client]++
 	if(gI_skyFrame[client] >= 5)
 	{
 		gI_skyFrame[client] = 0
