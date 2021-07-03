@@ -653,7 +653,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 1:
 				{
-					if(gB_toggledTeleport[param1])
+					if(gB_toggledTeleport[param1][0])
 					{
 						TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
 						Teleport(param1)
