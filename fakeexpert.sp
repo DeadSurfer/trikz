@@ -5292,7 +5292,7 @@ Action timer_devmap(Handle timer)
 	GetCurrentMap(sMap, 192)
 	gB_nospamvote = false
 	PrintToServer("%i", gI_devmap)
-	if((gI_devmap > 0) && !gB_isDevmap)
+	if(gI_devmap > 0 && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
@@ -5300,7 +5300,8 @@ Action timer_devmap(Handle timer)
 		gI_devmap = 0
 		ForceChangeLevel(sMap, "Dev map is enabled.")
 	}
-	else
+	//else
+	if(gI_devmap < 0 && gB_isDevmap)
 	{
 		gI_devmap = 0
 		gB_isDevmap = false
