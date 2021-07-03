@@ -157,6 +157,7 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_sum", cmd_sum)
 	//RegConsoleCmd("sm_getid", cmd_getid)
 	RegConsoleCmd("sm_tptrigger", cmd_tp)
+	RegConsoleCmd("sm_tp", cmd_teleport)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	RegConsoleCmd("sm_time", cmd_time)
 	RegServerCmd("sm_createusertable", cmd_createuser)
@@ -609,6 +610,16 @@ Action specchat(int client, const char[] command, int argc)
 		return Plugin_Handled
 	}
 	return Plugin_Continue
+}
+
+Action cmd_teleport(int client, int args)
+{
+	Teleport(client)
+	return Plugin_Handled
+}
+
+void Teleport(int client)
+{
 }
 
 //Action cmd_setup(int args)
