@@ -635,6 +635,7 @@ float gF_velocity[MAXPLAYERS +1][2][3]
 int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
+	{
 		case MenuAction_Select:
 		{
 			case 0:
@@ -646,6 +647,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 			case 1:
 				TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
 		}
+	}
 }
 
 //Action cmd_setup(int args)
@@ -5247,11 +5249,15 @@ Action cmd_devmap(int client, int args)
 int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
+	{
 		case MenuAction_Select:
+		{
 			case 0:
 				gI_devmap++
 			case 1:
 				gI_devmap--
+		}
+	}
 }
 
 Action timer_devmap(Handle timer)
