@@ -176,6 +176,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_tp1", cmd_tp1)
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
+	RegConsoleCmd("sm_eye66", cmd_eye66)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
@@ -4692,6 +4693,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_testvec[client] = 0
 	}
 	//return Plugin_Continue
+}
+
+Action cmd_eye66(int client, int args)
+{
+	int steamid = GetSteamAccountID(client)
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
+	{
+		TeleportEntity(client, NULL_VECTOR, view_as<float>({-65.097122, 0.0, 0.0}), NULL_VECTOR)
+	}
+	return Plugin_Handled
 }
 
 /*Action cmd_gent(int client, int args)
