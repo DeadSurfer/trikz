@@ -93,7 +93,7 @@ int gI_type
 int gI_cpnum
 
 bool gB_menuIsOpen[MAXPLAYERS + 1]
-bool gB_menuIsTrikz[MAXPLAYERS + 1]
+//bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
 //bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
@@ -1164,7 +1164,7 @@ Action cmd_trikz(int client, int args)
 void Trikz(int client)
 {
 	gB_menuIsOpen[client] = true
-	gB_menuIsTrikz[client] = true
+	//gB_menuIsTrikz[client] = true
 	Menu menu = new Menu(trikz_handler, MENU_ACTIONS_ALL) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
@@ -1174,7 +1174,8 @@ void Trikz(int client)
 	Format(sDisplay, 32, gI_partner[client] ? "Cancel partnership" : "Select partner")
 	menu.AddItem("partner", sDisplay)
 	//if(gI_partner[client] == 0)
-	menu.AddItem("restart", "Restart", (gI_partner[client] != 0) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
+	//Format()
+	menu.AddItem("restart", "Restart", gI_partner[client] != 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
 	//if(gI_partner[client] != 0)
 		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	menu.Display(client, 20)
