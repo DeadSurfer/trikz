@@ -4943,7 +4943,7 @@ Action cmd_eye66(int client, int args)
 Action cmd_findyifxandzexist(int args)
 {
 	int i
-	while(i<1000)
+	while(i<100000)
 	{
 		char sFormat[32]
 		Format(sFormat, 32, "0.0%i", i)
