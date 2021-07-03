@@ -629,15 +629,15 @@ void Teleport(int client)
 	Menu menu = new Menu(teleport_handler)
 	menu.SetTitle("Teleport")
 	menu.AddItem("Save", "Save")
-	if(!gB_toggledTeleport[client][0])
-		menu.AddItem("Teleport", "Teleport", ITEMDRAW_DISABLED)
-	else
-		menu.AddItem("Teleport", "Teleport", ITEMDRAW_DEFAULT)
+	//if(!)
+	menu.AddItem("Teleport", "Teleport", gB_toggledTeleport[client][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
+	//else
+	//menu.AddItem("Teleport", "Teleport", ITEMDRAW_DEFAULT)
 	menu.AddItem("Save second", "Save second")
-	if(!gB_toggledTeleport[client][1])
-		menu.AddItem("Teleport second", "Teleport second", ITEMDRAW_DISABLED)
-	else
-		menu.AddItem("Teleport second", "Teleport second", ITEMDRAW_DEFAULT)
+	//if(!)
+	menu.AddItem("Teleport second", "Teleport second", gB_toggledTeleport[client][1] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
+	//else
+	//menu.AddItem("Teleport second", "Teleport second", )
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
