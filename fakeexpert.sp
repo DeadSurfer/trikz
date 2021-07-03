@@ -4687,7 +4687,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float vectest[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vectest)
 		PrintToServer("%f %f", vectest[0], vectest[1]) //-340.697296 -1.455074 by tengu boost. -328.707794 -0.779926 by smesh292 nick jurevich boost fix. second time -340.981445 -0.323044 tengu boost fix. right corner. -330.161163 1.097039 by smesh nick jurevich boostfix. third time -281.430755 -0.935560 boost fix by tengu. -272.891448 -0.258201 by smesh292 nick jurevich boost fix. -272.375030 0.000143 by smesh292 tengu boost fix nick jurevich boost fix. -272.669219 -0.776694 smesh292 nick jurevich boost fix. -273.259918 -1.685742 nick jurevich smesh292 boost fix. -273.549072 -0.129200 by smersh292 boost fix tengu bosot fix. smesh292 boostfix. -273.273681 -0.259195 boost fix by nick jurevich smesh292. -272.974426 -0.906334 nick jurevich smesh292 tengu boost fiux tryubng to make same -281 by x coordinate. ] getpossetpos -4592.999023 -496.987518 704.031311;setang -65.097122 0.108658 0.000000
-		//i will use x eye coordinate 66
+		//i will use x eye coordinate 66. !eye66 get -282.637115 0.000000 on tengu boost fix. (-282.637115 0.000000 tengu boost fix).
 
 		if(gI_testvec[client] == 10)
 			gI_testvec[client] = 0
