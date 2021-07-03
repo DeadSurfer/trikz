@@ -5258,7 +5258,7 @@ Action cmd_devmap(int client, int args)
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			Menu menu = new Menu(devmap_handler)
-			menu.SetTitle("Dev map")
+			menu.SetTitle("Turn on dev map?")
 			menu.AddItem("yes", "Yes")
 			menu.AddItem("no", "No")
 			menu.Display(client, 20)
@@ -5291,14 +5291,13 @@ Action timer_devmap(Handle timer)
 	char sMap[192]
 	GetCurrentMap(sMap, 192)
 	gB_nospamvote = false
-	if(gI_devmap > 0 && !gB_isDevmap)
+	if((gI_devmap > 0) && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
 		gB_isDevmap = true
 		gI_devmap = 0
 		ForceChangeLevel(sMap, "Dev map is enabled.")
-		
 	}
 	else
 	{
