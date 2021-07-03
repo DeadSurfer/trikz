@@ -113,6 +113,7 @@ bool gB_isDevmap
 float gF_vec[MAXPLAYERS + 1][2][3]
 float gF_angles[MAXPLAYERS + 1][2][3]
 float gF_velocity[MAXPLAYERS +1][2][3]
+bool gB_toggledTeleport[MAXPLAYERS + 1][2]
 
 public Plugin myinfo =
 {
@@ -648,11 +649,15 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsAngles(param1, gF_angles[param1][0])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
 					Teleport(param1)
+					gB_toggledTeleport[param1][0] = true
 				}
 				case 1:
 				{
-					TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
-					Teleport(param1)
+					if(gB_toggledTeleport[param1])
+					{
+						TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
+						Teleport(param1)
+					}
 				}
 				case 2:
 				{
@@ -660,11 +665,15 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsAngles(param1, gF_angles[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1])
 					Teleport(param1)
+					gB_toggledTeleport[param1][0] = true
 				}
 				case 3:
 				{
-					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
-					Teleport(param1)
+					if(gB_toggledTeleport[param1][1])
+					{
+						TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
+						Teleport(param1)
+					}
 				}
 			}
 		}
@@ -728,11 +737,12 @@ public void OnClientPutInServer(int client)
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	for(int i = 0; i <= 1; i++)
 	{
+		gB_toggledTeleport[i] = false
 		for(int j = 0; j <= 2; j++)
 		{
-			gF_vec[client][i][j]
-			gF_angles[client][i][j]
-			gF_velocity[client][i][j]
+			gF_vec[client][i][j] = 0.0
+			gF_angles[client][i][j] = 0.0
+			gF_velocity[client][i][j] = 0.0
 		}
 	}
 }
