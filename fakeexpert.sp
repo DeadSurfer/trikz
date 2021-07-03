@@ -643,7 +643,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					GetClientAbsOrigin(param1, gF_vec[param1][0])
-					GetClientAbsAngles(param1, gF_angles[param1[0])
+					GetClientAbsAngles(param1, gF_angles[param1][0])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
 				}
 				case 1:
