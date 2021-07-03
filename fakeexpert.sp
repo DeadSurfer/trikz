@@ -724,15 +724,6 @@ public void OnClientPutInServer(int client)
 		gB_stateDisabled[client][i] = gB_stateDisabled[0][i]
 		gF_buttonReady[client][i] = 0.0
 	}*/
-}
-
-//public void OnDissconnectClient(
-public void OnClientDisconnect(int client)
-{
-	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
-	//gI_partner[client] = 0
-	gI_partner[gI_partner[client]] = 0
-	gI_partner[client] = 0
 	gB_menuIsOpen[client] = false
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	for(int i = 0; i <= 1; i++)
@@ -744,6 +735,26 @@ public void OnClientDisconnect(int client)
 			gF_velocity[client][i][j]
 		}
 	}
+}
+
+//public void OnDissconnectClient(
+public void OnClientDisconnect(int client)
+{
+	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
+	//gI_partner[client] = 0
+	//gI_partner[gI_partner[client]] = 0
+	//gI_partner[client] = 0
+	//gB_menuIsOpen[client] = false
+	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
+	//for(int i = 0; i <= 1; i++)
+	//{
+		//for(int j = 0; j <= 2; j++)
+		//{
+			//gF_vec[client][i][j]
+			//gF_angles[client][i][j]
+			//gF_velocity[client][i][j]
+		//}
+	//}
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
