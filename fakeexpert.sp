@@ -5109,8 +5109,11 @@ Action ProjectileBoostFix(int entity, int other)
 				gI_boost[other] = 1
 				//vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
 				//vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
-				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
-				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
+				//vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
+				//vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
+				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.0078625)) //player elasticity always is 1.0, other is player.
+				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.0078625)) //player elasticity always is 1.0, other is player.
+								
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				//vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 12.0)) //player elasticity always is 1.0 , other is player.
