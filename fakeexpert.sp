@@ -5287,7 +5287,7 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 }
 
 Action timer_devmap(Handle timer)
-{
+{//devmap idea by expert zone. thanks to ed and maru.
 	char sMap[192]
 	GetCurrentMap(sMap, 192)
 	gB_nospamvote = false
