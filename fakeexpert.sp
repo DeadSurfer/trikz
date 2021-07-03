@@ -631,13 +631,19 @@ void Teleport(int client)
 }
 float gF_vec[MAXPLAYERS + 1][2][3]
 float gF_angles[MAXPLAYERS + 1][2][3]
+float gF_velocity[MAXPLAYERS +1][2][3]
 int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 		case MenuAction_Select:
 			case 0:
+			{
 				GetClientAbsOrigin(param1, gF_vec[param1][0]
 				GetClientAbsAngles(param1, gF_angles[param1[0]
+				GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
+			}
+			case 1:
+				TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
 }
 
 //Action cmd_setup(int args)
