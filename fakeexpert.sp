@@ -5290,18 +5290,19 @@ Action timer_devmap(Handle timer)
 {
 	char sMap[192]
 	GetCurrentMap(sMap, 192)
-	gI_devmap = 0
 	nospam = false
 	if(gI_devmap > 0 && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
 		gB_isDevmap = true
+		gI_devmap = 0
 		ForceChangeLevel(sMap, "Dev map is enabled.")
 		
 	}
 	else
 	{
+		gI_devmap = 0
 		gB_isDevmap = false
 		ForceChangeLevel(sMap, "Dev map is disabled.")
 		
