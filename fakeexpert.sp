@@ -4946,10 +4946,13 @@ Action cmd_findyifxandzexist(int args)
 	while(i<1000000)
 	{
 		char sFormat[32]
-		Format(sFormat, 32, "0.0%i", i)
+		//Format(sFormat, 32, "0.0%i", i)
+		Format(sFormat, 32, "0.%i", i)
 		float formatedY = StringToFloat(sFormat)
-		float result = 0.45 * formatedY
-		if(result == 0.0035381530846401)
+		//float result = 0.45 * formatedY
+		float results = 1.0 * formatedY
+		//if(result == 0.0035381530846401)
+		if(result == 0.35381530846401)
 			PrintToServer("%f", formatedY)
 		i++
 	}
