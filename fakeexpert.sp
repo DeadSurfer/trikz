@@ -1217,7 +1217,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			if(StrEqual(sInfo, "Restart")
 			{
 				char sDisplay[32]
-				Format(sDisplay, 32, "Restart", gI_partner[param1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+				Format(sDisplay, 32, "Restart", gI_partner[param1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //https://forums.alliedmods.net/showthread.php?p=2051806
 				return RedrawMenuItem(sDisplay)
 			}
 		}
