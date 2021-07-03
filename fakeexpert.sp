@@ -655,7 +655,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1]
 				}
 				case 3:
-					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1]
+					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
 			}
 		}
 	}
