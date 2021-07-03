@@ -737,7 +737,7 @@ public void OnClientPutInServer(int client)
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	for(int i = 0; i <= 1; i++)
 	{
-		gB_toggledTeleport[i] = false
+		gB_toggledTeleport[client][i] = false
 		for(int j = 0; j <= 2; j++)
 		{
 			gF_vec[client][i][j] = 0.0
