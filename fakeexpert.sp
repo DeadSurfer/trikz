@@ -614,12 +614,28 @@ Action specchat(int client, const char[] command, int argc)
 
 Action cmd_teleport(int client, int args)
 {
-	Teleport(client)
+	if(gB_isDevmap)
+		Teleport(client)
 	return Plugin_Handled
 }
 
 void Teleport(int client)
 {
+	Menu menu = new Menu(teleport_handler)
+	menu.SetTitle("Teleport")
+	menu.AddItem("Save", "Save")
+	menu.AddItem("Teleport", "Teleport")
+	menu.AddItem("Save second", "Save second")
+	menu.AddItem("Teleport second", "Teleport second")
+	Display(client, MENU_TIME_FOREVER)
+}
+float gF_vec[2][3]
+int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+		case MenuAction_Select:
+			case 0:
+				GetClientAbsOrigin(param1, gF_vec[0]
 }
 
 //Action cmd_setup(int args)
