@@ -627,7 +627,7 @@ void Teleport(int client)
 	menu.AddItem("Teleport", "Teleport")
 	menu.AddItem("Save second", "Save second")
 	menu.AddItem("Teleport second", "Teleport second")
-	Display(client, MENU_TIME_FOREVER)
+	menu.Display(client, MENU_TIME_FOREVER)
 }
 float gF_vec[MAXPLAYERS + 1][2][3]
 float gF_angles[MAXPLAYERS + 1][2][3]
