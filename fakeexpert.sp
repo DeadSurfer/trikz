@@ -1167,7 +1167,7 @@ void Trikz(int client)
 	//gB_menuIsTrikz[client] = true
 	Menu menu = new Menu(trikz_handler, MENU_ACTIONS_ALL) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//Menu menu = new Menu(trikz_handler) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
-	menu.SetTitle("Trikz")
+	menu.SetTitle("Trikz", client)
 	char sDisplay[32]
 	//Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
 	Format(sDisplay, 32, GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5 ? "Block [v]" : "Block [x]")
@@ -1176,8 +1176,8 @@ void Trikz(int client)
 	menu.AddItem("partner", sDisplay)
 	//if(gI_partner[client] == 0)
 	//Format()
-	//menu.AddItem("restart", "Restart", gI_partner[client] != 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
-	menu.AddItem("restart", "Restart")
+	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
+	//menu.AddItem("restart", "Restart")
 	//if(gI_partner[client] != 0)
 		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	menu.Display(client, 20)
