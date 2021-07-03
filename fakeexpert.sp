@@ -5291,6 +5291,7 @@ Action timer_devmap(Handle timer)
 	char sMap[192]
 	GetCurrentMap(sMap, 192)
 	gB_nospamvote = false
+	PrintToServer("%i", gI_devmap)
 	if((gI_devmap > 0) && !gB_isDevmap)
 	{
 		//char sMap[192]
