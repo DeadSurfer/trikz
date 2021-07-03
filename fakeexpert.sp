@@ -5261,7 +5261,7 @@ Action cmd_devmap(int client, int args)
 			menu.SetTitle("Turn on dev map?")
 			menu.AddItem("yes", "Yes")
 			menu.AddItem("no", "No")
-			menu.Display(client, 20)
+			menu.Display(i, 20)
 		}
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
 		gB_nospamvote = true
