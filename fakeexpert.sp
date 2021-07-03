@@ -4685,7 +4685,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_testvec[client]++
 		float vectest[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vectest)
-		PrintToServer("%f %f", vectest[0], vectest[1]) //-340.697296 -1.455074 by tengu boost. -328.707794 -0.779926 by smesh292 nick jurevich boost fix. second time -340.981445 -0.323044 tengu boost fix.
+		PrintToServer("%f %f", vectest[0], vectest[1]) //-340.697296 -1.455074 by tengu boost. -328.707794 -0.779926 by smesh292 nick jurevich boost fix. second time -340.981445 -0.323044 tengu boost fix. right corner. -330.161163 1.097039 by smesh nick jurevich boostfix. third time -281.430755 -0.935560 boost fix by tengu. -272.891448 -0.258201 by smesh292 nick jurevich boost fix.
 		if(gI_testvec[client] == 10)
 			gI_testvec[client] = 0
 	}
