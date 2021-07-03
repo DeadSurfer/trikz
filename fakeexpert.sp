@@ -107,6 +107,7 @@ int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
+int gI_devmap
 
 public Plugin myinfo =
 {
@@ -577,6 +578,7 @@ public void OnMapStart()
 	Database.Connect(SQLConnect, "fakeexpert")
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
+	gI_devmap = 0
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
@@ -5184,6 +5186,48 @@ Action ProjectileBoostFix(int entity, int other)
 		//return Plugin_Handled
 	//}
 	return Plugin_Continue
+}
+
+Action devmap(int client, int args)
+{
+	for(for i = 1; i <= MaxClients; i++)
+	{
+		Menu menu = new Menu(devmap_handler)
+		menu.SetTitle("Dev map")
+		menu.Additem("yes", "Yes")
+		menu.AddItem("no", "No")
+		menu.Display(client, 20)
+	}
+	CreateTimer(20.0, timer_devmap)
+}
+
+int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+		case MenuAction_Select:
+			case 0:
+				gI_devmap++
+			case 1:
+				gI_devmap--
+}
+
+Action timer_devmap(Handle timer)
+{
+	char sMap[192]
+	GetCurrentMap(sMap, 192)
+	if(gI_devmap > 0 && !gB_isDevmap)
+	{
+		//char sMap[192]
+		//GetCurrentMap(sMap, 192)
+		ForceChangeLevel(sMap, "Dev map is enabled.")
+		gB_isDevmap = true
+	}
+	else
+	{
+		ForceChangeLevel(sMap, "Dev map is disabled.")
+		gB_isDevmap = false
+	}
+	gI_devmap = 0
 }
 
 Action Timer_removeflashbangonhit(Handle timer, int entityref)
