@@ -629,9 +629,15 @@ void Teleport(int client)
 	Menu menu = new Menu(teleport_handler)
 	menu.SetTitle("Teleport")
 	menu.AddItem("Save", "Save")
-	menu.AddItem("Teleport", "Teleport")
+	if(!gB_toggledTeleport[client][0])
+		menu.AddItem("Teleport", "Teleport", ITEMDRAW_DISABLED)
+	else
+		menu.AddItem("Teleport", "Teleport", ITEMDRAW_DEFAULT)
 	menu.AddItem("Save second", "Save second")
-	menu.AddItem("Teleport second", "Teleport second")
+	if(!gB_toggledTeleport[client][1])
+		menu.AddItem("Teleport second", "Teleport second", ITEMDRAW_DISABLED)
+	else
+		menu.AddItem("Teleport second", "Teleport second", ITEMDRAW_DEFAULT)
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
@@ -653,10 +659,10 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 1:
 				{
-					if(gB_toggledTeleport[param1][0])
-					{
-						TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
-					}
+					//if(gB_toggledTeleport[param1][0])
+					//{
+					TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
+					//}
 					Teleport(param1)
 				}
 				case 2:
@@ -669,10 +675,10 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 3:
 				{
-					if(gB_toggledTeleport[param1][1])
-					{
-						TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
-					}
+					//if(gB_toggledTeleport[param1][1])
+					//{
+					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
+					//}
 					Teleport(param1)
 				}
 			}
