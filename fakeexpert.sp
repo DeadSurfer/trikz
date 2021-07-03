@@ -1111,8 +1111,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				//char sTitle[32]
 				//menu.GetTitle(sTitle, 32)
 				//PrintToServer("sItem: %s sTitle: %s", sItem, sTitle)
-				gB_menuIsOpen[param1] = false //idea from expert zone.
-				PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
+			gB_menuIsOpen[param1] = false //idea from expert zone.
+			PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			//}
 		}
 		case MenuAction_Display:
@@ -1163,7 +1163,7 @@ Action Block(int client)
 		PrintToChat(client, "Block enabled.")
 		return Plugin_Handled
 	}
-	return Plugin_Continue
+	return Plugin_Handled
 }
 
 Action cmd_partner(int client, int args)
