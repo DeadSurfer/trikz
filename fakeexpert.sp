@@ -1165,7 +1165,7 @@ void Trikz(int client)
 {
 	gB_menuIsOpen[client] = true
 	//gB_menuIsTrikz[client] = true
-	Menu menu = new Menu(trikz_handler, MENU_ACTIONS_ALL) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
+	Menu menu = new Menu(trikz_handler, MENU_ACTIONS_DEFAULT) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//Menu menu = new Menu(trikz_handler) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//menu.SetTitle("Trikz", client) //https://forums.alliedmods.net/showthread.php?p=2051806
 	menu.SetTitle("trikz")
