@@ -5290,20 +5290,22 @@ Action timer_devmap(Handle timer)
 {
 	char sMap[192]
 	GetCurrentMap(sMap, 192)
+	gI_devmap = 0
+	nospam = false
 	if(gI_devmap > 0 && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		ForceChangeLevel(sMap, "Dev map is enabled.")
 		gB_isDevmap = true
+		ForceChangeLevel(sMap, "Dev map is enabled.")
+		
 	}
 	else
 	{
-		ForceChangeLevel(sMap, "Dev map is disabled.")
 		gB_isDevmap = false
+		ForceChangeLevel(sMap, "Dev map is disabled.")
+		
 	}
-	gI_devmap = 0
-	nospam = false
 }
 
 Action Timer_removeflashbangonhit(Handle timer, int entityref)
