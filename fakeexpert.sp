@@ -5241,7 +5241,7 @@ Action cmd_devmap(int client, int args)
 	{
 		Menu menu = new Menu(devmap_handler)
 		menu.SetTitle("Dev map")
-		menu.Additem("yes", "Yes")
+		menu.AddItem("yes", "Yes")
 		menu.AddItem("no", "No")
 		menu.Display(client, 20)
 	}
