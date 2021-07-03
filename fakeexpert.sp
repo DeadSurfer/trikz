@@ -1173,10 +1173,10 @@ void Trikz(int client)
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gI_partner[client] ? "Cancel partnership" : "Select partner")
 	menu.AddItem("partner", sDisplay)
-	if(gI_partner[client] == 0)
-		menu.AddItem("restart", "Restart", ITEMDRAW_DISABLED)
-	if(gI_partner[client] != 0)
-		menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
+	//if(gI_partner[client] == 0)
+	menu.AddItem("restart", "Restart", gI_partner[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT) //shavit trikz githgub alliedmods net
+	//if(gI_partner[client] != 0)
+		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	menu.Display(client, 20)
 }
 
