@@ -1250,7 +1250,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			//PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 		//}
 	}
-	return Plugin_Continue
+	return view_as<int>(Plugin_Continue)
 }
 
 //https://forums.alliedmods.net/showthread.php?t=302374
