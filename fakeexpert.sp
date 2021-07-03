@@ -106,6 +106,7 @@ bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
+int gI_testvec[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -4679,6 +4680,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//if(gB_groundBoost[client])
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
 	//}
+	if(gI_testvec[client])
+	{
+		gI_testvec[client]++
+		float vectest[3]
+		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vectest)
+		PrintToServer("%f %f", vectest[0], vectest[1]) //-340.697296 -1.455074 by tengu boost. -328.707794 -0.779926 by smesh292 nick jurevich boost fix. second time -340.981445 -0.323044 tengu boost fix.
+		if(gI_testvec[client] == 10)
+			gI_testvec[client] = 0
+	}
 	//return Plugin_Continue
 }
 
@@ -4929,6 +4939,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
 	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
+	if(!gI_testvec[other])
+		gI_testvec[other] = 1
 	CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		return Plugin_Continue
@@ -5021,8 +5033,8 @@ Action ProjectileBoostFix(int entity, int other)
 					else if(vecVelClient[i] < 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
 				gI_boost[other] = 1
-				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 12.5)) //player elasticity always is 1.0, other is player.
-				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 12.5)) //player elasticity always is 1.0, other is player.
+				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 13.5)) //player elasticity always is 1.0, other is player.
+				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 13.5)) //player elasticity always is 1.0, other is player.
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				//vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 12.0)) //player elasticity always is 1.0 , other is player.
