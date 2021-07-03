@@ -5237,7 +5237,7 @@ Action ProjectileBoostFix(int entity, int other)
 
 Action cmd_devmap(int client, int args)
 {
-	for(for i = 1; i <= MaxClients; i++)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		Menu menu = new Menu(devmap_handler)
 		menu.SetTitle("Dev map")
