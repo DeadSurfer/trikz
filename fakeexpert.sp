@@ -1176,7 +1176,7 @@ void Trikz(int client)
 	Format(sDisplay, 32, gI_partner[client] ? "Cancel partnership" : "Select partner")
 	menu.AddItem("partner", sDisplay)
 	//if(gI_partner[client] == 0)
-	//Format()
+	//Format() //https://forums.alliedmods.net/showthread.php?p=2552601
 	menu.AddItem("restart", "Restart2", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
 	//menu.AddItem("restart", "Restart")
 	//if(gI_partner[client] != 0)
@@ -1210,7 +1210,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 2:
 					Restart(param1)
 			}
-		}
+		}//https://forums.alliedmods.net/showthread.php?t=288351
 		case MenuAction_DisplayItem:
 		{
 			char sInfo[32]
@@ -1220,6 +1220,18 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				char sDisplay[32]
 				Format(sDisplay, 32, "Restart1", param1, gI_partner[param1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //https://forums.alliedmods.net/showthread.php?p=2051806
 				return RedrawMenuItem(sDisplay)
+			}
+		}
+		case MenuAction_DrawItem:
+		{
+			char sInfo[32]
+			menu.GetItem(param2, sInfo, 32)
+			if(StrEqual(sInfo, "Restart"))
+			{
+				char sDisplay[32]
+				Format(sDisplay, 32, "Restart3", gI_partner[param1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+				return RedrawMenuItem(sDisplay)
+				//return sDisplay
 			}
 		}
 		case MenuAction_Cancel:
