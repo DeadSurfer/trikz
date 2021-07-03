@@ -4965,6 +4965,28 @@ Action cmd_findyifxandzexist(int args)
 	}
 	return Plugin_Handled
 }
+float gF_getGud
+
+Action cmd_getgud(int client, int args)
+{
+	int steamid = GetSteamAccountID(client)
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
+	{
+		char sGet[32]
+		GetCmdArg(args, sGet, 32)
+		float result = StringToFloat(sGet)
+		gF_getGud = result
+		PrintToServer("get gud: %f", gF_getGud)
+	}
+	return Plugin_Handled
+} 
 int count
 Action ProjectileBoostFix(int entity, int other)
 {
@@ -5080,8 +5102,10 @@ Action ProjectileBoostFix(int entity, int other)
 					else if(vecVelClient[i] < 0.0)
 						vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
 				gI_boost[other] = 1
-				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
-				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
+				//vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
+				//vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
+				vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
+				vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
 				//vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 12.0)) //player elasticity always is 1.0 , other is player.
