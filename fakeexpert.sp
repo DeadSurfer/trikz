@@ -5255,10 +5255,13 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			case 0:
-				gI_devmap++
-			case 1:
-				gI_devmap--
+			switch(param2)
+			{
+				case 0:
+					gI_devmap++
+				case 1:
+					gI_devmap--
+			}
 		}
 	}
 }
