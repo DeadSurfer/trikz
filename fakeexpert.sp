@@ -178,6 +178,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_eye66", cmd_eye66)
 	RegConsoleCmd("sm_getgud", cmd_getgud) //get gud by atx. !getgud 0.1 = -263.559112 0.000000, !getgud 0.05 = -276.277801 0.000000. !getgud 0.025 = -279.457427 0.000000. !getgud 0.015 = -280.729309 0.000000. !getgud 0.007 = -281.746826 0.000000.
+	//!getgud 0.0075 = -281.683227 0.000000. !getgud 0.00725 = -281.714996 0.000000. !getgud 0.0076 = -281.670501 0.000000 !getgud 0.0078 = -281.645050 0.000000.
 	RegServerCmd("sm_y", cmd_findyifxandzexist)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
