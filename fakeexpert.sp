@@ -5250,10 +5250,10 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	return Plugin_Continue
 }
-bool nospam
+bool gB_nospamvote
 Action cmd_devmap(int client, int args)
 {
-	if(!nospam)
+	if(!gB_nospamvote)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -5264,7 +5264,7 @@ Action cmd_devmap(int client, int args)
 			menu.Display(client, 20)
 		}
 		CreateTimer(20.0, timer_devmap)
-		nospam = true
+		gB_nospamvote = true
 	}
 	return Plugin_Handled
 }
@@ -5290,7 +5290,7 @@ Action timer_devmap(Handle timer)
 {
 	char sMap[192]
 	GetCurrentMap(sMap, 192)
-	nospam = false
+	gB_nospamvote = false
 	if(gI_devmap > 0 && !gB_isDevmap)
 	{
 		//char sMap[192]
