@@ -108,6 +108,7 @@ int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
 int gI_devmap
+int gB_isDevmap
 
 public Plugin myinfo =
 {
