@@ -5305,8 +5305,8 @@ Action timer_devmap(Handle timer)
 		gI_devmap = 0
 		gB_isDevmap = false
 		ForceChangeLevel(sMap, "Dev map is disabled.")
-		
 	}
+	gI_devmap = 0
 }
 
 Action Timer_removeflashbangonhit(Handle timer, int entityref)
