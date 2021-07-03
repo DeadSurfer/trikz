@@ -1175,7 +1175,7 @@ void Trikz(int client)
 	menu.AddItem("partner", sDisplay)
 	if(gI_partner[client] == 0)
 		menu.AddItem("restart", "Restart", ITEMDRAW_DISABLED)
-	else
+	if(gI_partner[client] != 0)
 		menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	menu.Display(client, 20)
 }
