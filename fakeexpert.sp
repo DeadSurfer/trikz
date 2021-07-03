@@ -177,6 +177,7 @@ public void OnPluginStart()
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_eye66", cmd_eye66)
+	RegConsoleCmd("sm_getgud", cmd_getgud) //get gud by atx.
 	RegServerCmd("sm_y", cmd_findyifxandzexist)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
