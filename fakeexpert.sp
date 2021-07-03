@@ -4949,10 +4949,10 @@ Action cmd_findyifxandzexist(int args)
 		//Format(sFormat, 32, "0.0%i", i)
 		Format(sFormat, 32, "0.%i", i)
 		float formatedY = StringToFloat(sFormat)
-		//float result = 0.45 * formatedY
-		float results = 1.0 * formatedY
+		float result = 0.45 * (formatedY * 0.1)
+		//float results = 1.0 * formatedY
 		//if(result == 0.0035381530846401)
-		if(result == 0.35381530846401)
+		if(result == 0.00353)
 			PrintToServer("%f", formatedY)
 		i++
 	}
