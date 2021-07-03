@@ -110,6 +110,10 @@ int gI_testvec[MAXPLAYERS + 1]
 int gI_devmap
 bool gB_isDevmap
 
+float gF_vec[MAXPLAYERS + 1][2][3]
+float gF_angles[MAXPLAYERS + 1][2][3]
+float gF_velocity[MAXPLAYERS +1][2][3]
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -629,9 +633,7 @@ void Teleport(int client)
 	menu.AddItem("Teleport second", "Teleport second")
 	menu.Display(client, MENU_TIME_FOREVER)
 }
-float gF_vec[MAXPLAYERS + 1][2][3]
-float gF_angles[MAXPLAYERS + 1][2][3]
-float gF_velocity[MAXPLAYERS +1][2][3]
+
 int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
@@ -733,6 +735,15 @@ public void OnClientDisconnect(int client)
 	gI_partner[client] = 0
 	gB_menuIsOpen[client] = false
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
+	for(int i = 0; i <= 1; i++)
+	{
+		for(int j = 0; j <= 2; j++)
+		{
+			gF_vec[client][i][j]
+			gF_angles[client][i][j]
+			gF_velocity[client][i][j]
+		}
+	}
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
