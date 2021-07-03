@@ -4959,7 +4959,7 @@ Action cmd_findyifxandzexist(int args)
 	while(i < 1000000)
 	{
 		char sFormat1[32]
-		Format(sFormat, 32, "%i", i)
+		Format(sFormat1, 32, "%i", i)
 		
 		//float results = 0.45 *
 	}
