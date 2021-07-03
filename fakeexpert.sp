@@ -177,6 +177,7 @@ public void OnPluginStart()
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_eye66", cmd_eye66)
+	RegServerCmd("sm_y", cmd_findyifxandzexist)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
@@ -4939,6 +4940,21 @@ Action cmd_eye66(int client, int args)
 	//}
 	//return Plugin_Continue
 //}
+Action cmd_findyifxandzexist(int args)
+{
+	int i
+	while(i<1000)
+	{
+		char sFormat[32]
+		Format(sFormat, 32, "0.0%i", i)
+		float formatedY = StringToFloat(sFormat)
+		float result = 0.45 * formatedY
+		if(result == 0.0035381530846401)
+			PrintToServer("%f", formatedY)
+		i++
+	}
+	return Plugin_Handled
+}
 int count
 Action ProjectileBoostFix(int entity, int other)
 {
