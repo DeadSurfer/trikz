@@ -629,13 +629,15 @@ void Teleport(int client)
 	menu.AddItem("Teleport second", "Teleport second")
 	Display(client, MENU_TIME_FOREVER)
 }
-float gF_vec[2][3]
+float gF_vec[MAXPLAYERS + 1][2][3]
+float gF_angles[MAXPLAYERS + 1][2][3]
 int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 		case MenuAction_Select:
 			case 0:
-				GetClientAbsOrigin(param1, gF_vec[0]
+				GetClientAbsOrigin(param1, gF_vec[param1][0]
+				GetClientAbsAngles(param1, gF_angles[param1[0]
 }
 
 //Action cmd_setup(int args)
