@@ -5263,7 +5263,7 @@ Action cmd_devmap(int client, int args)
 			menu.AddItem("no", "No")
 			menu.Display(client, 20)
 		}
-		CreateTimer(20.0, timer_devmap)
+		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
 		gB_nospamvote = true
 	}
 	return Plugin_Handled
@@ -5306,6 +5306,7 @@ Action timer_devmap(Handle timer)
 		ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
 	gI_devmap = 0
+	return Plugin_Stop
 }
 
 Action Timer_removeflashbangonhit(Handle timer, int entityref)
