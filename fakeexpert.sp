@@ -5250,18 +5250,22 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	return Plugin_Continue
 }
-
+bool nospam
 Action cmd_devmap(int client, int args)
 {
-	for(int i = 1; i <= MaxClients; i++)
+	if(!nospam)
 	{
-		Menu menu = new Menu(devmap_handler)
-		menu.SetTitle("Dev map")
-		menu.AddItem("yes", "Yes")
-		menu.AddItem("no", "No")
-		menu.Display(client, 20)
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			Menu menu = new Menu(devmap_handler)
+			menu.SetTitle("Dev map")
+			menu.AddItem("yes", "Yes")
+			menu.AddItem("no", "No")
+			menu.Display(client, 20)
+		}
+		CreateTimer(20.0, timer_devmap)
+		nospam = true
 	}
-	CreateTimer(20.0, timer_devmap)
 	return Plugin_Handled
 }
 
@@ -5299,6 +5303,7 @@ Action timer_devmap(Handle timer)
 		gB_isDevmap = false
 	}
 	gI_devmap = 0
+	nospam = false
 }
 
 Action Timer_removeflashbangonhit(Handle timer, int entityref)
