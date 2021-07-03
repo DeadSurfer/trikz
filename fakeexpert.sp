@@ -1165,7 +1165,7 @@ void Trikz(int client)
 {
 	gB_menuIsOpen[client] = true
 	//gB_menuIsTrikz[client] = true
-	Menu menu = new Menu(trikz_handler, MENU_ACTIONS_DEFAULT) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
+	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//Menu menu = new Menu(trikz_handler) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//menu.SetTitle("Trikz", client) //https://forums.alliedmods.net/showthread.php?p=2051806
 	menu.SetTitle("trikz")
@@ -1177,7 +1177,7 @@ void Trikz(int client)
 	menu.AddItem("partner", sDisplay)
 	//if(gI_partner[client] == 0)
 	//Format() //https://forums.alliedmods.net/showthread.php?p=2552601
-	menu.AddItem("restart", "Restart2", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
+	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
 	//menu.AddItem("restart", "Restart")
 	//if(gI_partner[client] != 0)
 		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
@@ -1211,7 +1211,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Restart(param1)
 			}
 		}//https://forums.alliedmods.net/showthread.php?t=288351
-		case MenuAction_DisplayItem:
+		/*case MenuAction_DisplayItem:
 		{
 			char sInfo[32]
 			menu.GetItem(param2, sInfo, 32)
@@ -1233,7 +1233,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				return RedrawMenuItem(sDisplay)
 				//return sDisplay
 			}
-		}
+		}*/
 		case MenuAction_Cancel:
 		{
 			//if(param2 == -2)
