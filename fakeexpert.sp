@@ -4956,6 +4956,13 @@ Action cmd_findyifxandzexist(int args)
 			PrintToServer("%f", formatedY)
 		i++
 	}
+	while(i < 1000000)
+	{
+		char sFormat1[32]
+		Format(sFormat, 32, "%i", i)
+		
+		//float results = 0.45 *
+	}
 	return Plugin_Handled
 }
 int count
