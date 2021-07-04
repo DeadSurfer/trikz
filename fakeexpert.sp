@@ -1108,14 +1108,15 @@ void SDKBoostFix(int client)
 					vecVelEntity[0] = vecVelEntity[0] * 0.135
 					vecVelEntity[1] = vecVelEntity[1] * 0.135
 					vecVelEntity[2] = vecVelEntity[2] * -0.135
-					//vecVelEntity[0] = vecVelEntity[0] * 1.0
-					//vecVelEntity[1] = vecVelEntity[1] * 1.0
-					//vecVelEntity[2] = vecVelEntity[2] * -1.0
+					//vecVelEntity[0] = vecVelEntity[0] * 0.01
+					//vecVelEntity[1] = vecVelEntity[1] * 0.01
+					//vecVelEntity[2] = vecVelEntity[2] * -0.01
 					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 				}
 			}
 		}
 		gI_boost[client] = 2
+		//gI_boost[client] = 0
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
 		//gI_boost[client] = 2
