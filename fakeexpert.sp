@@ -1166,6 +1166,7 @@ Action cmd_trikz(int client, int args)
 {
 	//gB_menuIsOpen[client] = true
 	Trikz(client)
+	return Plugin_Handled
 }
 
 void Trikz(int client)
