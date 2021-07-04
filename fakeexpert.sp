@@ -684,8 +684,10 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		case MenuAction_End: // trikz redux menuaction end
-			Trikz(param1)
+		case MenuAction_Cancel: // trikz redux menuaction end
+			switch(param2)
+				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
+					Trikz(param1)
 	}
 }
 
