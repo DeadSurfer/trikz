@@ -5271,7 +5271,7 @@ Action ProjectileBoostFix(int entity, int other)
 				vecVelClient[0] -= vecVelEntity[0] * 0.9964619
 				vecVelClient[1] -= vecVelEntity[1] * 0.9964619
 				//!getgud 0.996462 = -281.637145 0.000000 !getgud 0.996460 = -281.636596 0.000000 !getgud 0.996462 = -281.637145 0.000000
-				//!getgud 0.9964619 = -281.637115 0.000000
+				//!getgud 0.9964619 = -281.637115 0.000000 code bugging by nick jurevich smesh292
 				//0.97 = -281.637115 0.000000
 				//for(int i = 0; i <= 2; i++)
 				//if(vecVelClient[2] >= 0.0)
