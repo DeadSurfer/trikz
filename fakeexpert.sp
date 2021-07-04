@@ -1168,7 +1168,7 @@ void Trikz(int client)
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//Menu menu = new Menu(trikz_handler) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//menu.SetTitle("Trikz", client) //https://forums.alliedmods.net/showthread.php?p=2051806
-	menu.SetTitle("trikz")
+	menu.SetTitle("Trikz")
 	char sDisplay[32]
 	//Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
 	Format(sDisplay, 32, GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5 ? "Block [v]" : "Block [x]")
