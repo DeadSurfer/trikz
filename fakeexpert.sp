@@ -638,7 +638,7 @@ void Teleport(int client)
 	menu.AddItem("Teleport second", "Teleport second", gB_toggledTeleport[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	//else
 	//menu.AddItem("Teleport second", "Teleport second", )
-	menu.ExitBackButton(true)
+	menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
