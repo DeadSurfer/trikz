@@ -1174,8 +1174,10 @@ void Trikz(int client)
 	Format(sDisplay, 32, GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5 ? "Block [v]" : "Block [x]")
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gI_partner[client] ? "Cancel partnership" : "Select partner")
-		//menu.AddItem("partner", "Select partner", ITEMDRAW_DISABLED)
-	menu.AddItem("partner", sDisplay)
+	if(gB_isDevmap)
+		menu.AddItem("partner", "Select partner", ITEMDRAW_DISABLED)
+	else
+		menu.AddItem("partner", sDisplay)
 	//if(gI_partner[client] == 0)
 	//Format() //https://forums.alliedmods.net/showthread.php?p=2552601
 	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
