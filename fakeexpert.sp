@@ -109,6 +109,7 @@ int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
 int gI_devmap
 bool gB_isDevmap
+bool gB_nospamvote
 
 float gF_vec[MAXPLAYERS + 1][2][3]
 float gF_angles[MAXPLAYERS + 1][2][3]
@@ -5335,7 +5336,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	return Plugin_Continue
 }
-bool gB_nospamvote
+
 Action cmd_devmap(int client, int args)
 {
 	if(!gB_nospamvote)
