@@ -587,7 +587,7 @@ public void OnMapStart()
 	Database.Connect(SQLConnect, "fakeexpert")
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
-	//gI_devmap = 0
+	gI_devmap = 0
 	gB_nospamvote = false
 }
 
