@@ -638,6 +638,7 @@ void Teleport(int client)
 	menu.AddItem("Teleport second", "Teleport second", gB_toggledTeleport[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	//else
 	//menu.AddItem("Teleport second", "Teleport second", )
+	menu.ExitBackButton(true)
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
@@ -683,6 +684,8 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
+		case MenuAction_End: // trikz redux menuaction end
+			Trikz(param1)
 	}
 }
 
@@ -1184,6 +1187,8 @@ void Trikz(int client)
 	//menu.AddItem("restart", "Restart")
 	//if(gI_partner[client] != 0)
 		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
+	if(gB_isDevmap)
+		menu.AddItem("Teleport", "Teleport")
 	menu.Display(client, 20)
 }
 
@@ -1212,6 +1217,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 2:
 					Restart(param1)
+				case 3:
+					Teleport(param1)
 			}
 		}//https://forums.alliedmods.net/showthread.php?t=288351
 		/*case MenuAction_DisplayItem:
