@@ -587,6 +587,7 @@ public void OnMapStart()
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
 	//gI_devmap = 0
+	gB_nospamvote = false
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
