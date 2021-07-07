@@ -760,6 +760,7 @@ public void OnClientPutInServer(int client)
 			gF_velocity[client][i][j] = 0.0
 		}
 	}
+	gF_boostTime[client] = 0.0
 }
 
 //public void OnDissconnectClient(
@@ -922,8 +923,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	//if(0 < other <= MaxClients)
 		//return
 	//PrintToServer("SDKSkyFix: %i %i", client, other)
-	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
-	//	return
+	if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
+		return
 	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	{
 		/*float vecAbsClient[3]
