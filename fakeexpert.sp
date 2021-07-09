@@ -1113,6 +1113,7 @@ void SDKBoostFix(int client)
 					//vecVelEntity[1] = vecVelEntity[1] * 0.01
 					//vecVelEntity[2] = vecVelEntity[2] * -0.01
 					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
+					PrintToServer("groundboost")
 				}
 			}
 		}
