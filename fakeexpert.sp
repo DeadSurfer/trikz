@@ -1157,9 +1157,13 @@ void SDKBoostFix(int client)
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
+			PrintToServer("flashboost")
 		}
 		else
+		{
+			PrintToServer("groundboost 2")
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+		}
 		gI_boost[client] = 0
 		gI_skyStep[client] = 0
 		PrintToServer("debug")
