@@ -5197,8 +5197,8 @@ Action ProjectileBoostFix(int entity, int other)
 		//GetEntityAbsOrigin
 		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
 		//float deltaOrigin = vecOriginOther[2] - vecOriginEntity[2]
-		float vecMaxs[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxs)
+		//float vecMaxs[3]
+		//GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxs)
 		//PrintToServer("%f %i %i %N", deltaOrigin - vecMaxs[2], entity, other, other)
 		//if(4.031250 >= (deltaOrigin - vecMins[2]) >= 2.031250)
 		//if(-2.0 <= (deltaOrigin - vecMaxs[2]) <= 6.0)
@@ -5209,7 +5209,7 @@ Action ProjectileBoostFix(int entity, int other)
 		//if(vecOriginOther[2] >= vecOriginEntity[2])
 		//if(0.0 < (deltaOrigin - vecMaxs[2]) < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		//if(vecOriginOther[2] >= vecOriginEntity[2])
-		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxs[2]
+		//float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxs[2]
 		//if(0.0 < (vecOriginOther[2] - vecOriginEntity[2] - vecMaxs[2]) < 2.0)
 		//if(0.0 < delta && delta < 2.0)
 		if(vecOriginOther[2] >= vecOriginEntity[2])
