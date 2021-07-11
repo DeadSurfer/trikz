@@ -1204,7 +1204,8 @@ void Trikz(int client)
 		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	if(gB_isDevmap)
 		menu.AddItem("Teleport", "Teleport")
-	menu.Display(client, 20)
+	//menu.Display(client, 20)
+	menu.Display(client, MENU_TIME_FOREVER)
 }
 
 int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
