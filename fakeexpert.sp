@@ -5211,7 +5211,8 @@ Action ProjectileBoostFix(int entity, int other)
 		//if(vecOriginOther[2] >= vecOriginEntity[2])
 		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxs[2]
 		//if(0.0 < (vecOriginOther[2] - vecOriginEntity[2] - vecMaxs[2]) < 2.0)
-		if(0.0 < delta && delta < 2.0)
+		//if(0.0 < delta && delta < 2.0)
+		if(vecOriginOther[2] >= vecOriginEntity[2])
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
