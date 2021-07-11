@@ -116,6 +116,8 @@ float gF_angles[MAXPLAYERS + 1][2][3]
 float gF_velocity[MAXPLAYERS +1][2][3]
 bool gB_toggledTeleport[MAXPLAYERS + 1][2]
 
+bool gB_haveZone
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
