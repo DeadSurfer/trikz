@@ -589,6 +589,7 @@ public void OnMapStart()
 	//GetCurrentMap(gS_map, 192)
 	gI_devmap = 0
 	gB_nospamvote = false
+	gB_haveZone = false
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
@@ -1469,7 +1470,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void Restart(int client)
 {
-	if(!gB_isDevmap)
+	if(!gB_isDevmap && gB_haveZone)
 	{
 		if(gI_partner[client] != 0)
 		{
@@ -1995,6 +1996,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		//char sQuery[512]
 		//Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = 2 AND map = '%s'", gS_map)
 		//gD_mysql.Query(SQLCPSetup2, sQuery)
+		gB_haveZone = true
 	}
 }
 
