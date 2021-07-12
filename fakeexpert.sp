@@ -5153,7 +5153,7 @@ Action cmd_getgud(int client, int args)
 		float result = StringToFloat(sGet)
 		gF_getGud = result
 		PrintToServer("get gud: %f", gF_getGud)
-		PrintToChat(client, "\0x04text")
+		PrintToChat(client, "\0x03text") //https://wiki.alliedmods.net/Scripting_FAQ_(SourceMod) https://forums.alliedmods.net/showthread.php?t=307595 https://www.bing.com/search?q=default+color+sourcemod&cvid=be0df2495cd74ba489d75d72194aca7e&aqs=edge..69i57j0l6.3136j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	}
 	return Plugin_Handled
 } 
