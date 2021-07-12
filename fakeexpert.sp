@@ -5153,8 +5153,10 @@ Action cmd_getgud(int client, int args)
 		float result = StringToFloat(sGet)
 		gF_getGud = result
 		PrintToServer("get gud: %f", gF_getGud)
-		PrintToChat(client, "\x07a71919text") //https://wiki.alliedmods.net/Scripting_FAQ_(SourceMod) https://forums.alliedmods.net/showthread.php?t=307595 https://www.bing.com/search?q=default+color+sourcemod&cvid=be0df2495cd74ba489d75d72194aca7e&aqs=edge..69i57j0l6.3136j0j1&pglt=299&FORM=ANNTA1&PC=U531
+		//PrintToChat(client, "\x07a71919text") //https://wiki.alliedmods.net/Scripting_FAQ_(SourceMod) https://forums.alliedmods.net/showthread.php?t=307595 https://www.bing.com/search?q=default+color+sourcemod&cvid=be0df2495cd74ba489d75d72194aca7e&aqs=edge..69i57j0l6.3136j0j1&pglt=299&FORM=ANNTA1&PC=U531
+		PrintToChat(client, "\x03text2")
 		//https://www.color-hex.com/
+		//https://forums.alliedmods.net/showthread.php?t=96831?t=96831
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
 } 
