@@ -5153,6 +5153,7 @@ Action cmd_getgud(int client, int args)
 		float result = StringToFloat(sGet)
 		gF_getGud = result
 		PrintToServer("get gud: %f", gF_getGud)
+		PrintToChat(client, "\0x04text")
 	}
 	return Plugin_Handled
 } 
