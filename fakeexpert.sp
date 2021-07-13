@@ -5181,6 +5181,7 @@ Action cmd_getgud(int client, int args)
 		//PrintToChat(client, "\0x04text2")
 		PrintToChat(client, "\x07FF4040text21") //red - terrorist
 		PrintToChat(client, "\x0799CCFFtext2") //blue - counter-terrorist
+		PrintToChat(client, "m_GroupCollision = %i", GetEntProp(client, Prop_Data, "m_CollisionGroup"))
 		//https://forums.alliedmods.net/showthread.php?p=1398702?p=1398702#post1398702
 		//https://forums.alliedmods.net/showthread.php?t=185016?t=185016
 		//https://www.color-hex.com/
