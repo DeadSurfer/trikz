@@ -5434,10 +5434,10 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action timer_devmap(Handle timer)
 {//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	char sMap[192]
-	GetCurrentMap(sMap, 192)
+	//char sMap[192]
+	//GetCurrentMap(sMap, 192)
 	gB_nospamvote = false
-	PrintToServer("%i", gI_devmap)
+	//PrintToServer("%i", gI_devmap)
 	//if(gI_devmap > 0 && !gB_isDevmap)
 	if(gI_devmap_yes >= gI_devmap_no && !gB_isDevmap)
 	{
@@ -5449,7 +5449,7 @@ Action timer_devmap(Handle timer)
 		gI_devmap_yes = 0
 		gI_devmap_no = 0
 		gI_totalPlayers = 0
-		CreateTimer(5.0, timer_changelevel, sMap)
+		CreateTimer(5.0, timer_changelevel)
 		//CreateTimer(
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
 	}
@@ -5499,7 +5499,7 @@ Action timer_devmap(Handle timer)
 
 Action timer_changelevel(Handle timer, char[] map)
 {
-	ForceChangeLevel(map)
+	ForceChangeLevel(gS_map)
 }
 
 /*Action Timer_removeflashbangonhit(Handle timer, int entityref)
