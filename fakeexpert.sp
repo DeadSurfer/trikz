@@ -5401,7 +5401,8 @@ Action cmd_devmap(int client, int args)
 			menu.AddItem("yes", "Yes")
 			menu.AddItem("no", "No")
 			menu.Display(i, 20)
-			gI_totalPlayers += i
+			if(IsClientInGame(i))
+				gI_totalPlayers += i
 		}
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
 		gB_nospamvote = true
