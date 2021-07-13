@@ -619,8 +619,9 @@ Action specchat(int client, const char[] command, int argc)
 		//PrintToChat(client, "\x07FF4040text21") //red - terrorist
 		//PrintToChat(client, "\x0799CCFFtext2") //blue - counter-terrorist
 		//if(Get)
-		PrintToChatAll("(Spectator) %s: %s", sName, sChat) //sourcemod.net arg
-		//return Plugin_Handled
+		//PrintToChatAll("(Spectator) %s: %s", sName, sChat) //sourcemod.net arg
+		PrintToChatAll("*SPEC* \x07CCCCCC%s \x01:  %s", sName, sChat) //   SetTrieValue(hTrie, "grey", 0xCCCCCC);
+		return Plugin_Handled
 	}
 	return Plugin_Continue
 }
