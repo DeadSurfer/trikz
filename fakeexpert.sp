@@ -5499,7 +5499,7 @@ Action timer_devmap(Handle timer)
 
 Action timer_changelevel(Handle timer)
 {
-	ForceChangeLevel(gS_map)
+	ForceChangeLevel(gS_map, "Reason: Devmap")
 }
 
 /*Action Timer_removeflashbangonhit(Handle timer, int entityref)
