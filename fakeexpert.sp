@@ -1259,12 +1259,12 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					if(!(GetEntityMoveType(param1) & MOVETYPE_NOCLIP))
 					{
 						SetEntityMoveType(param1, MOVETYPE_NOCLIP)
-						PrintToChat(client, "Noclip enabled.")
+						PrintToChat(param1, "Noclip enabled.")
 					}
 					else
 					{
 						SetEntityMoveType(param1, MOVETYPE_WALK)
-						PrintToChat(client, "Noclip disabled.")
+						PrintToChat(param1, "Noclip disabled.")
 					}
 				}
 			}
