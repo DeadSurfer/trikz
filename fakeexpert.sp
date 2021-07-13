@@ -620,8 +620,13 @@ Action specchat(int client, const char[] command, int argc)
 		//PrintToChat(client, "\x0799CCFFtext2") //blue - counter-terrorist
 		//if(Get)
 		//PrintToChatAll("(Spectator) %s: %s", sName, sChat) //sourcemod.net arg
+		//char sColor[][] = {"0xCCCCCC"}
+		Handle hTrie = CreateTrie()
+		SetTrieValue(hTrie, "gray", 0xCCCCCC)
+		int value
+		GetTrieValue(hTrie, "gray", value)
 		char sFormat[256]
-		Format(sFormat, 256, "*SPEC* \x07CCCCCC%s \x01:  %s", sName, sChat)
+		Format(sFormat, 256, "*SPEC* \x07%06X %s \x01:  %s", value, sName, sChat) //https://wiki.alliedmods.net/Format_Class_Functions_(SourceMod_Scripting)#:~:text=Format-class%20functions%20are%20variable%20argument%20functions%20in%20SourceMod,will%20then%20be%3A%20%22%20Your%20name%20is%3A%20Mark.%22
 		//PrintToChatAll("*SPEC*\x08CCCCCC %s \x01:  %s", sName, sChat) //   SetTrieValue(hTrie, "grey", 0xCCCCCC);
 		PrintToChatAll("%s", sFormat)
 		return Plugin_Handled
