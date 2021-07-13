@@ -1220,7 +1220,7 @@ void Trikz(int client)
 	if(gB_isDevmap)
 	{
 		menu.AddItem("Teleport", "Teleport")
-		Format(sDisplay, 32, GetEntityFlags(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
+		Format(sDisplay, 32, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
 		menu.AddItem("Noclip", "Noclip")
 	}
 	//menu.Display(client, 20)
@@ -1256,6 +1256,10 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Teleport(param1)
 				case 4:
 				{
+					if(!(GetEntityMoveType(param1) & MOVETYPE_NOCLIP))
+						SetEntityMoveType(param1, MOVETYPE_NOCLIP)
+					else
+						SetEntityMoveType(param1, MOVETYPE_WALK)
 				}
 			}
 		}//https://forums.alliedmods.net/showthread.php?t=288351
