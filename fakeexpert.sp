@@ -5212,7 +5212,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
 	if(!gI_testvec[other])
 		gI_testvec[other] = 1
-	CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
+	//CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		return Plugin_Continue
 	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
@@ -5344,7 +5344,7 @@ Action ProjectileBoostFix(int entity, int other)
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
-				//SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
+				SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 				gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 				//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
 				//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
@@ -5448,12 +5448,12 @@ Action timer_devmap(Handle timer)
 	return Plugin_Stop
 }
 
-Action Timer_removeflashbangonhit(Handle timer, int entityref)
+/*Action Timer_removeflashbangonhit(Handle timer, int entityref)
 {
 	int entity = EntRefToEntIndex(entityref)
 	if(entity != INVALID_ENT_REFERENCE)
 		AcceptEntityInput(entity, "Kill")
-}
+}*/
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
