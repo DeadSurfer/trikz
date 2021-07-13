@@ -1255,7 +1255,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 3:
 					Teleport(param1)
 				case 4:
-					
+				{
+				}
 			}
 		}//https://forums.alliedmods.net/showthread.php?t=288351
 		/*case MenuAction_DisplayItem:
