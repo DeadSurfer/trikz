@@ -5439,7 +5439,7 @@ Action timer_devmap(Handle timer)
 	gB_nospamvote = false
 	//PrintToServer("%i", gI_devmap)
 	//if(gI_devmap > 0 && !gB_isDevmap)
-	if(gI_devmap_yes >= gI_devmap_no && !gB_isDevmap)
+	if(gI_devmap_yes && gI_devmap_yes >= gI_devmap_no && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
@@ -5453,7 +5453,7 @@ Action timer_devmap(Handle timer)
 		//CreateTimer(
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
 	}
-	if(gI_devmap_yes >= gI_devmap_no && gB_isDevmap)
+	if(gI_devmap_yes && gI_devmap_yes >= gI_devmap_no && gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
@@ -5469,7 +5469,7 @@ Action timer_devmap(Handle timer)
 	}
 	//else
 	//if(gI_devmap < 0 && gB_isDevmap)
-	if(gI_devmap_yes <= gI_devmap_no && gB_isDevmap)
+	if(gI_devmap_yes && gI_devmap_yes <= gI_devmap_no && gB_isDevmap)
 	{
 		PrintToChatAll("Devmap will be disabled. No chose %i (%i/%i).", (gI_devmap_no * gI_totalPlayers) / 100, gI_devmap_no, gI_totalPlayers)
 		gI_devmap = 0
@@ -5480,7 +5480,7 @@ Action timer_devmap(Handle timer)
 		CreateTimer(5.0, timer_changelevel)
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
-	if(gI_devmap_yes <= gI_devmap_no && !gB_isDevmap)
+	if(gI_devmap_yes && gI_devmap_yes <= gI_devmap_no && !gB_isDevmap)
 	{
 		PrintToChatAll("Devmap will not enabled. No chose %i (%i/%i).", (gI_devmap_no * gI_totalPlayers) / 100, gI_devmap_no, gI_totalPlayers)
 		gI_devmap = 0
