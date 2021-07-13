@@ -5486,7 +5486,7 @@ Action timer_devmap(Handle timer)
 	}
 	if((gI_devmap_yes || gI_devmap_no) && gI_devmap_yes <= gI_devmap_no && !gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will not enabled. \"No\" chose %.0f%%% or %i of %i players.", float((gI_devmap_no / gI_totalPlayers) * 100), gI_devmap_no, gI_totalPlayers)
+		PrintToChatAll("Devmap will not be enabled. \"No\" chose %.0f%%% or %i of %i players.", float((gI_devmap_no / gI_totalPlayers) * 100), gI_devmap_no, gI_totalPlayers)
 		gI_devmap = 0
 		gB_isDevmap = false
 		gI_devmap_yes = 0
