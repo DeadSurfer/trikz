@@ -5477,7 +5477,7 @@ Action timer_devmap(Handle timer)
 		gI_devmap_yes = 0
 		gI_devmap_no = 0
 		gI_totalPlayers = 0
-		CreateTimer(5.0, timer_changelevel, sMap)
+		CreateTimer(5.0, timer_changelevel)
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
 	if(gI_devmap_yes <= gI_devmap_no && !gB_isDevmap)
@@ -5497,7 +5497,7 @@ Action timer_devmap(Handle timer)
 	return Plugin_Stop
 }
 
-Action timer_changelevel(Handle timer, char[] map)
+Action timer_changelevel(Handle timer)
 {
 	ForceChangeLevel(gS_map)
 }
