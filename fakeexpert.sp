@@ -1257,9 +1257,15 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 4:
 				{
 					if(!(GetEntityMoveType(param1) & MOVETYPE_NOCLIP))
+					{
 						SetEntityMoveType(param1, MOVETYPE_NOCLIP)
+						PrintToChat(client, "Noclip enabled.")
+					}
 					else
+					{
 						SetEntityMoveType(param1, MOVETYPE_WALK)
+						PrintToChat(client, "Noclip disabled.")
+					}
 				}
 			}
 		}//https://forums.alliedmods.net/showthread.php?t=288351
