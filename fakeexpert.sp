@@ -5387,7 +5387,9 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	return Plugin_Continue
 }
-
+int gI_totalPlayers
+int gI_devmap_yes
+int gI_devmap_no
 Action cmd_devmap(int client, int args)
 {
 	if(!gB_nospamvote)
@@ -5399,6 +5401,7 @@ Action cmd_devmap(int client, int args)
 			menu.AddItem("yes", "Yes")
 			menu.AddItem("no", "No")
 			menu.Display(i, 20)
+			gI_totalPlayers += i
 		}
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
 		gB_nospamvote = true
@@ -5415,9 +5418,15 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case 0:
+				{
 					gI_devmap++
+					gI_devmap_yes++
+				}
 				case 1:
+				{
 					gI_devmap--
+					gI_devmap_no++
+				}
 			}
 		}
 	}
@@ -5429,23 +5438,68 @@ Action timer_devmap(Handle timer)
 	GetCurrentMap(sMap, 192)
 	gB_nospamvote = false
 	PrintToServer("%i", gI_devmap)
-	if(gI_devmap > 0 && !gB_isDevmap)
+	//if(gI_devmap > 0 && !gB_isDevmap)
+	if(gI_devmap_yes >= gI_devmap_no && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
+		PrintToChatAll("Devmap will be enabled. Yes chose %i (%i/%i).", (gI_devmap_yes * gI_totalPlayers) / 100, gI_devmap_yes, gI_totalPlayers)
 		gB_isDevmap = true
 		gI_devmap = 0
-		ForceChangeLevel(sMap, "Dev map is enabled.")
+		gI_devmap_yes = 0
+		gI_devmap_no = 0
+		gI_totalPlayers = 0
+		CreateTimer(5.0, timer_changelevel, sMap)
+		//CreateTimer(
+		//ForceChangeLevel(sMap, "Dev map is enabled.")
+	}
+	if(gI_devmap_yes >= gI_devmap_no && gB_isDevmap)
+	{
+		//char sMap[192]
+		//GetCurrentMap(sMap, 192)
+		PrintToChatAll("Devmap will be continue. Yes chose %i (%i/%i).", (gI_devmap_yes * gI_totalPlayers) / 100, gI_devmap_yes, gI_totalPlayers)
+		//google translate russian to english.
+		gB_isDevmap = true
+		gI_devmap = 0
+		gI_devmap_yes = 0
+		gI_devmap_no = 0
+		gI_totalPlayers = 0
+		//ForceChangeLevel(sMap, "Dev map is enabled.")
+		//PrintToChatAll("%i", )
 	}
 	//else
-	if(gI_devmap < 0 && gB_isDevmap)
+	//if(gI_devmap < 0 && gB_isDevmap)
+	if(gI_devmap_yes <= gI_devmap_no && gB_isDevmap)
 	{
+		PrintToChatAll("Devmap will be disabled. No chose %i (%i/%i).", (gI_devmap_no * gI_totalPlayers) / 100, gI_devmap_no, gI_totalPlayers)
 		gI_devmap = 0
 		gB_isDevmap = false
-		ForceChangeLevel(sMap, "Dev map is disabled.")
+		gI_devmap_yes = 0
+		gI_devmap_no = 0
+		gI_totalPlayers = 0
+		CreateTimer(5.0, timer_changelevel, sMap)
+		//ForceChangeLevel(sMap, "Dev map is disabled.")
+	}
+	if(gI_devmap_yes <= gI_devmap_no && !gB_isDevmap)
+	{
+		PrintToChatAll("Devmap will not enabled. No chose %i (%i/%i).", (gI_devmap_no * gI_totalPlayers) / 100, gI_devmap_no, gI_totalPlayers)
+		gI_devmap = 0
+		gB_isDevmap = false
+		gI_devmap_yes = 0
+		gI_devmap_no = 0
+		gI_totalPlayers = 0
+		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
 	gI_devmap = 0
+	gI_devmap_yes = 0
+	gI_devmap_no = 0
+	gI_totalPlayers = 0
 	return Plugin_Stop
+}
+
+Action timer_changelevel(Handle timer, char[] map)
+{
+	ForceChangeLevel(map)
 }
 
 /*Action Timer_removeflashbangonhit(Handle timer, int entityref)
