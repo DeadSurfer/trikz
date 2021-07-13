@@ -109,7 +109,7 @@ int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
 int gI_devmap
 bool gB_isDevmap
-bool gB_nospamvote
+//bool gB_nospamvote
 
 float gF_vec[MAXPLAYERS + 1][2][3]
 float gF_angles[MAXPLAYERS + 1][2][3]
@@ -590,7 +590,7 @@ public void OnMapStart()
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
 	gI_devmap = 0
-	gB_nospamvote = false
+	//gB_nospamvote = false
 	gB_haveZone = false
 }
 
@@ -5390,9 +5390,11 @@ Action ProjectileBoostFix(int entity, int other)
 int gI_totalPlayers
 int gI_devmap_yes
 int gI_devmap_no
+float gF_devmaptime
 Action cmd_devmap(int client, int args)
 {
-	if(!gB_nospamvote)
+	//if(!gB_nospamvote)
+	if(GetEngineTime() - gF_devmaptime > 25.0 )
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -5404,8 +5406,9 @@ Action cmd_devmap(int client, int args)
 			if(IsClientInGame(i))
 				gI_totalPlayers += i
 		}
+		gF_devmaptime = GetEngineTime()
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
-		gB_nospamvote = true
+		//gB_nospamvote = true
 	}
 	return Plugin_Handled
 }
@@ -5437,7 +5440,7 @@ Action timer_devmap(Handle timer)
 {//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	//char sMap[192]
 	//GetCurrentMap(sMap, 192)
-	gB_nospamvote = false
+	//gB_nospamvote = false
 	//PrintToServer("%i", gI_devmap)
 	//if(gI_devmap > 0 && !gB_isDevmap)
 	if(gI_devmap_yes && gI_devmap_yes >= gI_devmap_no && !gB_isDevmap)
