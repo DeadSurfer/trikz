@@ -1177,7 +1177,7 @@ void SDKBoostFix(int client)
 		else
 		{
 			PrintToServer("groundboost 2")
-			gF_vecVelBoostFix[client][2] *= 2.75
+			gF_vecVelBoostFix[client][2] *= 3.0
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		}
 		gI_boost[client] = 0
@@ -1218,7 +1218,11 @@ void Trikz(int client)
 	//if(gI_partner[client] != 0)
 		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	if(gB_isDevmap)
+	{
 		menu.AddItem("Teleport", "Teleport")
+		Format(sDisplay, 32, GetEntityFlags(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
+		menu.AddItem("Noclip", "Noclip")
+	}
 	//menu.Display(client, 20)
 	menu.Display(client, MENU_TIME_FOREVER)
 }
@@ -1250,6 +1254,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Restart(param1)
 				case 3:
 					Teleport(param1)
+				case 4:
+					
 			}
 		}//https://forums.alliedmods.net/showthread.php?t=288351
 		/*case MenuAction_DisplayItem:
