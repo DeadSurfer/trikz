@@ -1221,7 +1221,7 @@ void Trikz(int client)
 	{
 		menu.AddItem("Teleport", "Teleport")
 		Format(sDisplay, 32, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
-		menu.AddItem("Noclip", "Noclip")
+		menu.AddItem("Noclip", sDisplay)
 	}
 	//menu.Display(client, 20)
 	menu.Display(client, MENU_TIME_FOREVER)
@@ -1266,6 +1266,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 						SetEntityMoveType(param1, MOVETYPE_WALK)
 						PrintToChat(param1, "Noclip disabled.")
 					}
+					Trikz(param1)
 				}
 			}
 		}//https://forums.alliedmods.net/showthread.php?t=288351
@@ -1525,6 +1526,8 @@ void Restart(int client)
 			SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 2)
 			SetEntityRenderColor(gI_partner[client], 255, 255, 255, 100)
 			SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
+			if(gB_menuIsOpen[client])
+				Trikz(client)
 			CreateTimer(3.0, Timer_BlockToggle, client)
 		}
 		else
@@ -1541,6 +1544,8 @@ Action Timer_BlockToggle(Handle timer, int client)
 		SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
 		//SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
 		SetEntityRenderMode(gI_partner[client], RENDER_NORMAL)
+		if(gB_menuIsOpen[client])
+			Trikz(client)
 	}
 	return Plugin_Stop
 }
