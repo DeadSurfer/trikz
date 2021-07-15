@@ -5442,7 +5442,10 @@ Action cmd_devmap(int client, int args)
 			menu.AddItem("no", "No")
 			menu.Display(i, 20)
 			if(IsClientInGame(i) && !IsFakeClient(i))
+			{
 				gI_totalPlayers += i
+				PrintToServer("%i %N", i, i)
+			}
 		}
 		gF_devmaptime = GetEngineTime()
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
