@@ -5485,7 +5485,7 @@ Action timer_devmap(Handle timer)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %.0f%%% or %i of %i players.", float((gI_devmap_yes / gI_totalPlayers) * 100), gI_devmap_yes, gI_totalPlayers)
+		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap_yes / gI_totalPlayers) * 100, gI_devmap_yes, gI_totalPlayers)
 		gB_isDevmap = true
 		gI_devmap = 0
 		gI_devmap_yes = 0
