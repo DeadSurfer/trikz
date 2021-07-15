@@ -5441,7 +5441,7 @@ Action cmd_devmap(int client, int args)
 			menu.AddItem("yes", "Yes")
 			menu.AddItem("no", "No")
 			menu.Display(i, 20)
-			if(IsClientInGame(i))
+			if(IsClientInGame(i) && !IsFakeClient(i))
 				gI_totalPlayers += i
 		}
 		gF_devmaptime = GetEngineTime()
