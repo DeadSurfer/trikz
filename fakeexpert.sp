@@ -673,6 +673,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsAngles(param1, gF_angles[param1][0])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
 					gB_toggledTeleport[param1][0] = true
+					delete menu
 					Teleport(param1)
 				}
 				case 1:
@@ -681,6 +682,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					//{
 					TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
 					//}
+					delete menu
 					Teleport(param1)
 				}
 				case 2:
@@ -689,6 +691,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsAngles(param1, gF_angles[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1])
 					gB_toggledTeleport[param1][1] = true
+					delete menu
 					Teleport(param1)
 				}
 				case 3:
@@ -697,6 +700,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					//{
 					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
 					//}
+					delete menu
 					Teleport(param1)
 				}
 			}
@@ -705,7 +709,10 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
+				{
+					delete menu
 					Trikz(param1)
+				}
 			}
 	}
 }
@@ -1243,6 +1250,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					Block(param1)
+					delete menu
 					Trikz(param1)
 				}
 				case 1:
@@ -1266,6 +1274,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 						SetEntityMoveType(param1, MOVETYPE_WALK)
 						PrintToChat(param1, "Noclip disabled.")
 					}
+					delete menu
 					Trikz(param1)
 				}
 			}
@@ -1311,6 +1320,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			gB_menuIsOpen[param1] = false //idea from expert zone.
 			PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			//}
+			delete menu
 		}
 		case MenuAction_Display:
 		{
