@@ -1522,29 +1522,32 @@ void Restart(int client)
 	{
 		if(gI_partner[client] != 0)
 		{
-			//gB_insideZone[client] = true
-			//gB_insideZone[gI_partner[client]] = true
-			gB_readyToStart[client] = true
-			gB_readyToStart[gI_partner[client]] = true
-			gF_Time[client] = 0.0
-			gF_Time[gI_partner[client]] = 0.0
-			gB_state[client] = false
-			gB_state[gI_partner[client]] = false
-			float vecVel[3]
-			//vecVel[0] = 30.0
-			//vecVel[1] = 30.0
-			//vecVel[2] = 0.0
-			TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
-			TeleportEntity(gI_partner[client], gF_vecStart, NULL_VECTOR, vecVel)
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-			SetEntityRenderMode(client, RENDER_TRANSALPHA)
-			SetEntityRenderColor(client, 255, 255, 255, 100)
-			SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 2)
-			SetEntityRenderColor(gI_partner[client], 255, 255, 255, 100)
-			SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
-			if(gB_menuIsOpen[client])
-				Trikz(client)
-			CreateTimer(3.0, Timer_BlockToggle, client)
+			if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
+			{
+				//gB_insideZone[client] = true
+				//gB_insideZone[gI_partner[client]] = true
+				gB_readyToStart[client] = true
+				gB_readyToStart[gI_partner[client]] = true
+				gF_Time[client] = 0.0
+				gF_Time[gI_partner[client]] = 0.0
+				gB_state[client] = false
+				gB_state[gI_partner[client]] = false
+				float vecVel[3]
+				//vecVel[0] = 30.0
+				//vecVel[1] = 30.0
+				//vecVel[2] = 0.0
+				TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
+				TeleportEntity(gI_partner[client], gF_vecStart, NULL_VECTOR, vecVel)
+				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+				SetEntityRenderMode(client, RENDER_TRANSALPHA)
+				SetEntityRenderColor(client, 255, 255, 255, 100)
+				SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 2)
+				SetEntityRenderColor(gI_partner[client], 255, 255, 255, 100)
+				SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
+				if(gB_menuIsOpen[client])
+					Trikz(client)
+				CreateTimer(3.0, Timer_BlockToggle, client)
+			}
 		}
 		else
 			PrintToChat(client, "You must have a partner.")
@@ -4616,6 +4619,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//gB_state[client] = false
 		if(!IsPlayerAlive(client))
 		{
+			gB_readyToStart[client] = true
+			gB_readyToStart[gI_partner[client]] = true
+			gF_Time[client] = 0.0
+			gF_Time[gI_partner[client]] = 0.0
 			gB_state[client] = false
 			gB_state[gI_partner[client]] = false
 		}
