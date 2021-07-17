@@ -5474,10 +5474,11 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 			//switch(param2)
 			{
 				char sItem[32]
+				menu.GetItem(param2, sItem, 32)
 				if(gB_isDevmap)
 				{
 					//char sItem[32]
-					menu.GetItem(param2, sItem, 32)
+					//menu.GetItem(param2, sItem, 32)
 					//case 0:
 					if(StrEqual(sItem, "no"))
 					{
