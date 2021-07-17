@@ -5436,11 +5436,22 @@ Action cmd_devmap(int client, int args)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			Menu menu = new Menu(devmap_handler)
-			menu.SetTitle("Turn on dev map?")
-			menu.AddItem("yes", "Yes")
-			menu.AddItem("no", "No")
-			menu.Display(i, 20)
+			if(gB_isDevmap)
+			{
+				Menu menu = new Menu(devmap_handler)
+				menu.SetTitle("Turn on dev map?")
+				menu.AddItem("yes", "Yes")
+				menu.AddItem("no", "No")
+				menu.Display(i, 20)
+			}
+			else
+			{
+				Menu menu = new Menu(devmap_handler)
+				menu.SetTitle("Turn off dev map?")
+				menu.AddItem("yes", "Yes")
+				menu.AddItem("no", "No")
+				menu.Display(i, 20)
+			}
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				gI_totalPlayers++
@@ -5462,15 +5473,31 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			switch(param2)
 			{
-				case 0:
+				if(gB_isDevmap)
 				{
-					gI_devmap++
-					gI_devmap_yes++
+					case 0:
+					{
+						gI_devmap++
+						gI_devmap_yes++
+					}
+					case 1:
+					{
+						gI_devmap--
+						gI_devmap_no++
+					}
 				}
-				case 1:
+				else
 				{
-					gI_devmap--
-					gI_devmap_no++
+					case 0:
+					{
+						gI_devmap++
+						gI_devmap_no++
+					}
+					case 1:
+					{
+						gI_devmap--
+						gI_devmap_yes++
+					}
 				}
 			}
 		}
@@ -5502,7 +5529,7 @@ Action timer_devmap(Handle timer)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be continue. \"Yes\" chose %.0f%%% or %i of %i players.", float((gI_devmap_yes / gI_totalPlayers) * 100), gI_devmap_yes, gI_totalPlayers)
+		PrintToChatAll("Devmap will be continue. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap_yes / gI_totalPlayers) * 100, gI_devmap_yes, gI_totalPlayers)
 		//google translate russian to english.
 		gB_isDevmap = true
 		gI_devmap = 0
@@ -5516,7 +5543,7 @@ Action timer_devmap(Handle timer)
 	//if(gI_devmap < 0 && gB_isDevmap)
 	if((gI_devmap_yes || gI_devmap_no) && gI_devmap_yes <= gI_devmap_no && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be disabled. \"No\" chose %.0f%%% or %i of %i players.", float((gI_devmap_no / gI_totalPlayers) * 100), gI_devmap_no, gI_totalPlayers)
+		PrintToChatAll("Devmap will be disabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap_no / gI_totalPlayers) * 100, gI_devmap_no, gI_totalPlayers)
 		gI_devmap = 0
 		gB_isDevmap = false
 		gI_devmap_yes = 0
@@ -5527,7 +5554,7 @@ Action timer_devmap(Handle timer)
 	}
 	if((gI_devmap_yes || gI_devmap_no) && gI_devmap_yes <= gI_devmap_no && !gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will not be enabled. \"No\" chose %.0f%%% or %i of %i players.", float((gI_devmap_no / gI_totalPlayers) * 100), gI_devmap_no, gI_totalPlayers)
+		PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap_no / gI_totalPlayers) * 100, gI_devmap_no, gI_totalPlayers)
 		gI_devmap = 0
 		gB_isDevmap = false
 		gI_devmap_yes = 0
