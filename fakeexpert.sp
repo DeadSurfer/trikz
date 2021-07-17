@@ -1464,8 +1464,8 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						Restart(param1)
 						Restart(partner) //Expert-Zone idea.
 						PrintToServer("partner1: %i %N, partner2: %i %N", gI_partner[param1], gI_partner[param1], gI_partner[partner], gI_partner[partner])
-						if(gB_menuIsOpen[client])
-							Trikz(client)
+						if(gB_menuIsOpen[partner])
+							Trikz(partner)
 						/*for(int i = 1; i <= 2048; i++)
 						{
 							gB_stateDisabled[param1][i] = gB_stateDefaultDisabled[i]
