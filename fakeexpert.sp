@@ -5484,42 +5484,51 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			//switch(param2)
+			switch(param2)
 			{
-				char sItem[32]
-				menu.GetItem(param2, sItem, 32)
-				if(gB_isDevmap)
-				{
+				//char sItem[32]
+				//menu.GetItem(param2, sItem, 32)
+				//if(gB_isDevmap)
+				//{
 					//char sItem[32]
 					//menu.GetItem(param2, sItem, 32)
 					//case 0:
-					if(StrEqual(sItem, "no"))
-					{
-						gI_devmap++
-						gI_devmap_yes++
-					}
-					//case 1:
-					if(StrEqual(sItem, "yes"))
-					{
-						gI_devmap--
-						gI_devmap_no++
-					}
-				}
-				else
+					//if(StrEqual(sItem, "no"))
+				case 0:
 				{
-					//case 0:
-					if(StrEqual(sItem, "yes"))
-					{
-						gI_devmap++
+					//if(gB_isDevmap)
+					//gI_devmap++
+					if(gB_isDevmap)
 						gI_devmap_no++
-					}
-					//case 1:
-					if(StrEqual(sItem, "no"))
-					{
-						gI_devmap--
+					else
 						gI_devmap_yes++
-					}
 				}
+				//case 1:
+				//if(StrEqual(sItem, "yes"))
+				case 1:
+				{
+					//gI_devmap--
+					if(gB_isDevmap)
+						gI_devmap_yes++
+					else
+						gI_devmap_no++
+				}
+				//}
+				//else
+				//{
+					//case 0:
+					//if(StrEqual(sItem, "yes"))
+					//{
+						//gI_devmap++
+						//gI_devmap_no++
+					//}
+					//case 1:
+					//if(StrEqual(sItem, "no"))
+					//{
+						//gI_devmap--
+						//gI_devmap_yes++
+					//}
+				//}
 			}
 		}
 	}
