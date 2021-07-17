@@ -1442,6 +1442,8 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			menu2.AddItem(sItem, "No")
 			menu2.Display(partner, 20)
 		}
+		case MenuAction_End:
+			delete menu
 	}
 }
 
@@ -1490,6 +1492,8 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				}
 			}
 		}
+		case MenuAction_End:
+			delete menu
 	}
 }
 
@@ -1521,6 +1525,8 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
+		case MenuAction_End:
+		delete menu
 	}
 }
 
@@ -5535,6 +5541,8 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				//}
 			}
 		}
+		case MenuAction_End:
+			delete menu
 	}
 }
 
