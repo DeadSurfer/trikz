@@ -1269,15 +1269,15 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Teleport(param1)
 				case 4:
 				{
-					if(!(GetEntityMoveType(param1) & MOVETYPE_NOCLIP))
-					{
-						SetEntityMoveType(param1, MOVETYPE_NOCLIP)
-						PrintToChat(param1, "Noclip enabled.")
-					}
-					else
+					if(GetEntityMoveType(param1) & MOVETYPE_NOCLIP)
 					{
 						SetEntityMoveType(param1, MOVETYPE_WALK)
 						PrintToChat(param1, "Noclip disabled.")
+					}
+					else
+					{
+						SetEntityMoveType(param1, MOVETYPE_NOCLIP)
+						PrintToChat(param1, "Noclip enabled.")
 					}
 					//delete menu
 					Trikz(param1)
