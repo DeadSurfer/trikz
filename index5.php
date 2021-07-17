@@ -560,12 +560,12 @@
 						?>
 					<!--</select>-->
 		<!--<input type = submit value = submit name = next></form>-->
-	<?php $year = "2021 -"; echo $year . ' ' . date("Y") . '<br>';?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
+	<?php $year = "Copyleft 2021 -"; echo $year . ' ' . date("Y") . ' year.<br>';?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
 	</body>
 </html>
 
 //https://stackoverflow.com/questions/9494209/how-to-link-mysql-to-html
-2021-2021
+<html><!--Copyleft 2021-2021 year.--></html>
 //https://www.php.net/license/index.php
 //https://htmlcodex.com/license/#:~:text=All%20of%20the%20creative%20works%20by%20HTML%20Codex,under%20a%20Creative%20Commons%20Attribution%204.0%20International%20License.
 License
