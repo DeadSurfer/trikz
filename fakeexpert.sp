@@ -110,6 +110,10 @@ int gI_testvec[MAXPLAYERS + 1]
 int gI_devmap[2]
 bool gB_isDevmap
 //bool gB_nospamvote
+int gI_totalPlayers
+//int gI_devmap_yes
+//int gI_devmap_no
+float gF_devmapTime
 
 float gF_vec[MAXPLAYERS + 1][2][3]
 float gF_angles[MAXPLAYERS + 1][2][3]
@@ -5439,14 +5443,11 @@ Action ProjectileBoostFix(int entity, int other)
 	//}
 	return Plugin_Continue
 }
-int gI_totalPlayers
-//int gI_devmap_yes
-//int gI_devmap_no
-float gF_devmaptime
+
 Action cmd_devmap(int client, int args)
 {
 	//if(!gB_nospamvote)
-	if(GetEngineTime() - gF_devmaptime > 25.0 )
+	if(GetEngineTime() - gF_devmapTime > 25.0 )
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -5472,7 +5473,7 @@ Action cmd_devmap(int client, int args)
 				//PrintToServer("%i %N", i, i)
 			}
 		}
-		gF_devmaptime = GetEngineTime()
+		gF_devmapTime = GetEngineTime()
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
 		//gB_nospamvote = true
 	}
