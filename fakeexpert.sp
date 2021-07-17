@@ -1357,6 +1357,7 @@ Action cmd_block(int client, int args)
 	//}
 	//else
 	Block(client)
+	return Plugin_Handled
 }
 
 Action Block(int client)
