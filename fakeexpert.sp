@@ -107,7 +107,7 @@ int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
-int gI_devmap
+int gI_devmap[2]
 bool gB_isDevmap
 //bool gB_nospamvote
 
