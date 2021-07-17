@@ -560,7 +560,7 @@
 						?>
 					<!--</select>-->
 		<!--<input type = submit value = submit name = next></form>-->
-	<?php echo printtf("2021") - date("Y");?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
+	<?php $year = "2021 -"; echo $year . ' ' . date("Y") . '<br>';?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
 	</body>
 </html>
 
