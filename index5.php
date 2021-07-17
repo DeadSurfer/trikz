@@ -560,8 +560,8 @@
 						?>
 					<!--</select>-->
 		<!--<input type = submit value = submit name = next></form>-->
+	<?php echo printtf("2021") - date("Y");?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
 	</body>
-	<?php echo 2021 - date("Y");?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
 </html>
 
 //https://stackoverflow.com/questions/9494209/how-to-link-mysql-to-html
