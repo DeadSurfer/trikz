@@ -1388,6 +1388,7 @@ Action Block(int client)
 Action cmd_partner(int client, int args)
 {
 	Partner(client)
+	return Plugin_Handled
 }
 
 void Partner(int client)
