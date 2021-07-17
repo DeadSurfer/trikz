@@ -589,7 +589,8 @@ public void OnMapStart()
 	Database.Connect(SQLConnect, "fakeexpert")
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
-	gI_devmap = 0
+	for(int i = 0; i <= 1; i++)
+		gI_devmap[i] = 0
 	//gB_nospamvote = false
 	gB_haveZone = false
 }
@@ -5439,8 +5440,8 @@ Action ProjectileBoostFix(int entity, int other)
 	return Plugin_Continue
 }
 int gI_totalPlayers
-int gI_devmap_yes
-int gI_devmap_no
+//int gI_devmap_yes
+//int gI_devmap_no
 float gF_devmaptime
 Action cmd_devmap(int client, int args)
 {
@@ -5499,9 +5500,9 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 					//if(gB_isDevmap)
 					//gI_devmap++
 					if(gB_isDevmap)
-						gI_devmap_no++
+						gI_devmap[0]++
 					else
-						gI_devmap_yes++
+						gI_devmap[1]++
 				}
 				//case 1:
 				//if(StrEqual(sItem, "yes"))
@@ -5509,9 +5510,9 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					//gI_devmap--
 					if(gB_isDevmap)
-						gI_devmap_yes++
+						gI_devmap[1]++
 					else
-						gI_devmap_no++
+						gI_devmap[0]++
 				}
 				//}
 				//else
@@ -5541,60 +5542,65 @@ Action timer_devmap(Handle timer)
 	//gB_nospamvote = false
 	//PrintToServer("%i", gI_devmap)
 	//if(gI_devmap > 0 && !gB_isDevmap)
-	if((gI_devmap_yes || gI_devmap_no) && gI_devmap_yes >= gI_devmap_no && !gB_isDevmap)
+	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] >= gI_devmap[0] && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap_yes / gI_totalPlayers) * 100, gI_devmap_yes, gI_totalPlayers)
+		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap[1] / gI_totalPlayers) * 100, gI_devmap[1], gI_totalPlayers)
 		gB_isDevmap = true
-		gI_devmap = 0
-		gI_devmap_yes = 0
-		gI_devmap_no = 0
+		for(int i = 0; i <= 1; i++)
+			gI_devmap[i] = 0
+		//gI_devmap_yes = 0
+		//gI_devmap_no = 0
 		gI_totalPlayers = 0
 		CreateTimer(5.0, timer_changelevel)
 		//CreateTimer(
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
 	}
-	if((gI_devmap_yes || gI_devmap_no) && gI_devmap_yes >= gI_devmap_no && gB_isDevmap)
+	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] >= gI_devmap[0] && gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be continue. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap_yes / gI_totalPlayers) * 100, gI_devmap_yes, gI_totalPlayers)
+		PrintToChatAll("Devmap will be continue. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap[1] / gI_totalPlayers) * 100, gI_devmap[1], gI_totalPlayers)
 		//google translate russian to english.
 		gB_isDevmap = true
-		gI_devmap = 0
-		gI_devmap_yes = 0
-		gI_devmap_no = 0
+		for(int i = 0; i <= 1; i++)
+			gI_devmap[i] = 0
+		//gI_devmap_yes = 0
+		//gI_devmap_no = 0
 		gI_totalPlayers = 0
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
 		//PrintToChatAll("%i", )
 	}
 	//else
 	//if(gI_devmap < 0 && gB_isDevmap)
-	if((gI_devmap_yes || gI_devmap_no) && gI_devmap_yes <= gI_devmap_no && gB_isDevmap)
+	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] <= gI_devmap[0] && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be disabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap_no / gI_totalPlayers) * 100, gI_devmap_no, gI_totalPlayers)
-		gI_devmap = 0
+		PrintToChatAll("Devmap will be disabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap[0] / gI_totalPlayers) * 100, gI_devmap[0], gI_totalPlayers)
+		for(int i = 0; i <= 1; i++)
+			gI_devmap[i] = 0
 		gB_isDevmap = false
-		gI_devmap_yes = 0
-		gI_devmap_no = 0
+		//gI_devmap_yes = 0
+		//gI_devmap_no = 0
 		gI_totalPlayers = 0
 		CreateTimer(5.0, timer_changelevel)
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
-	if((gI_devmap_yes || gI_devmap_no) && gI_devmap_yes <= gI_devmap_no && !gB_isDevmap)
+	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] <= gI_devmap[0] && !gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap_no / gI_totalPlayers) * 100, gI_devmap_no, gI_totalPlayers)
-		gI_devmap = 0
+		PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap[0] / gI_totalPlayers) * 100, gI_devmap[0], gI_totalPlayers)
+		for(int i = 0; i <= 1; i++)
+			gI_devmap[i] = 0
 		gB_isDevmap = false
-		gI_devmap_yes = 0
-		gI_devmap_no = 0
+		//gI_devmap_yes = 0
+		//gI_devmap_no = 0
 		gI_totalPlayers = 0
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
-	gI_devmap = 0
-	gI_devmap_yes = 0
-	gI_devmap_no = 0
+	for(int i = 0; i <= 1; i++)
+		gI_devmap[i] = 0
+	//gI_devmap_yes = 0
+	//gI_devmap_no = 0
 	gI_totalPlayers = 0
 	return Plugin_Stop
 }
