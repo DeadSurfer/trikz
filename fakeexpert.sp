@@ -4614,6 +4614,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
 		//if(!gB_mapfinished[client])
 			//gB_state[client] = false
+		if(!IsPlayerAlive(client))
+		{
+			gB_state[client] = false
+			gB_state[gI_partner[client]] = false
+		}
 	}
 	//if(gI_skyStep[client] >= 1)
 		//gI_skyStep[client]++
