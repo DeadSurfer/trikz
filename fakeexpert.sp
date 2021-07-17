@@ -5572,7 +5572,7 @@ Action timer_devmap(Handle timer)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be continue. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap[1] / gI_totalPlayers) * 100, gI_devmap[1], gI_totalPlayers)
+		PrintToChatAll("Devmap will be continue. \"No\" chose %i%%% or %i of %i players.", (gI_devmap[1] / gI_totalPlayers) * 100, gI_devmap[1], gI_totalPlayers)
 		//google translate russian to english.
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
@@ -5587,7 +5587,7 @@ Action timer_devmap(Handle timer)
 	//if(gI_devmap < 0 && gB_isDevmap)
 	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] <= gI_devmap[0] && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be disabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap[0] / gI_totalPlayers) * 100, gI_devmap[0], gI_totalPlayers)
+		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap[0] / gI_totalPlayers) * 100, gI_devmap[0], gI_totalPlayers)
 		for(int i = 0; i <= 1; i++)
 			gI_devmap[i] = 0
 		gB_isDevmap = false
