@@ -5439,7 +5439,7 @@ Action cmd_devmap(int client, int args)
 			if(gB_isDevmap)
 			{
 				Menu menu = new Menu(devmap_handler)
-				menu.SetTitle("Turn on dev map?")
+				menu.SetTitle("Turn off dev map?")
 				menu.AddItem("yes", "Yes")
 				menu.AddItem("no", "No")
 				menu.Display(i, 20)
@@ -5447,7 +5447,7 @@ Action cmd_devmap(int client, int args)
 			else
 			{
 				Menu menu = new Menu(devmap_handler)
-				menu.SetTitle("Turn off dev map?")
+				menu.SetTitle("Turn on dev map?")
 				menu.AddItem("yes", "Yes")
 				menu.AddItem("no", "No")
 				menu.Display(i, 20)
