@@ -168,7 +168,7 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_4", cmd_starttouch)
 	//RegConsoleCmd("sm_sum", cmd_sum)
 	//RegConsoleCmd("sm_getid", cmd_getid)
-	RegConsoleCmd("sm_tptrigger", cmd_tp)
+	//RegConsoleCmd("sm_tptrigger", cmd_tp)
 	RegConsoleCmd("sm_tp", cmd_teleport)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	RegConsoleCmd("sm_time", cmd_time)
@@ -188,7 +188,7 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_testtext", cmd_testtext)
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
-	RegConsoleCmd("sm_tp1", cmd_tp1)
+	//RegConsoleCmd("sm_tp1", cmd_tp1)
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_eye66", cmd_eye66)
@@ -721,7 +721,7 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		case MenuAction_End:
 		{
-			PrintToServer("menu is ended (teleport)")
+			//PrintToServer("menu is ended (teleport)")
 			delete menu
 		}
 	}
@@ -874,7 +874,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
 		{
-			PrintToServer("%s %i", sName, steamid)
+			//PrintToServer("%s %i", sName, steamid)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
@@ -908,20 +908,20 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		char sName[64]
 		GetClientName(client, sName, 64)
 		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
-		if(!results.FetchRow())
+		if(results.FetchRow())
+		{
+			//char sName[64]
+			//GetClientName(client, sName, 64)
+			//PrintToServer("%s", sName)
+			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
+		}
+		else
 		{
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			gD_mysql.Query(SQLUserAdded, sQuery)
-		}
-		else
-		{
-			//char sName[64]
-			//GetClientName(client, sName, 64)
-			PrintToServer("%s", sName)
-			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
 		}
 	}
 	//gB_newpass = true
@@ -1020,7 +1020,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
 				//gF_fallVelBooster[client][2] = vecVelBooster[2]
 				gF_fallVelBooster[other][2] = vecVelBooster[2]
-				PrintToServer("vecVelBooster: %f", vecVelBooster[2])
+				//PrintToServer("vecVelBooster: %f", vecVelBooster[2])
 				if(vecVelBooster[2] > 0.0)
 				{
 					float vecVelFlyer[3]
@@ -1145,14 +1145,14 @@ void SDKBoostFix(int client)
 					//vecVelEntity[1] = vecVelEntity[1] * 0.01
 					//vecVelEntity[2] = vecVelEntity[2] * -0.01
 					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
-					PrintToServer("groundboost")
+					//PrintToServer("groundboost")
 				}
 			}
 		}
 		gI_boost[client] = 2
 		//gI_boost[client] = 0
 		gI_skyStep[client] = 0
-		PrintToServer("debug")
+		//PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
 	if(gI_boost[client] == 2)
@@ -1189,17 +1189,17 @@ void SDKBoostFix(int client)
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
-			PrintToServer("flashboost")
+			//PrintToServer("flashboost")
 		}
 		else
 		{
-			PrintToServer("groundboost 2")
+			//PrintToServer("groundboost 2")
 			gF_vecVelBoostFix[client][2] *= 3.0
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		}
 		gI_boost[client] = 0
 		gI_skyStep[client] = 0
-		PrintToServer("debug")
+		//PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
 }
@@ -1250,7 +1250,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Start:
 		{//expert-zone idea. thank to ed, maru.
-			PrintToServer("menu start trikz.")
+			//PrintToServer("menu start trikz.")
 			gB_TrikzMenuIsOpen[param1] = true
 		}
 		case MenuAction_Select:
@@ -1328,18 +1328,18 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				//menu.GetTitle(sTitle, 32)
 				//PrintToServer("sItem: %s sTitle: %s", sItem, sTitle)
 			gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
-			PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
+			//PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			//}
 			//delete menu
 		}
 		case MenuAction_Display:
 		{
-			PrintToServer("menu display trikz.")
+			//PrintToServer("menu display trikz.")
 			gB_TrikzMenuIsOpen[param1] = true
 		}
 		case MenuAction_End:
 		{
-			PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
+			//PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			delete menu
 		}
 	}
@@ -1467,12 +1467,12 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						gI_partner[param1] = partner
 						gI_partner[partner] = param1
 						//PrintToServer("p1: %i %N p2: %i %N", partner, partner, param1, param1)
-						PrintToChat(param1, "Partnersheep agreed with %N.", partner)
-						PrintToChat(partner, "You have %N as partner.", param1)
+						PrintToChat(param1, "Partnersheep agreed with %N.", partner) //reciever
+						PrintToChat(partner, "You have %N as partner.", param1) //sender
 						//Reseta
 						Restart(param1)
 						Restart(partner) //Expert-Zone idea.
-						PrintToServer("partner1: %i %N, partner2: %i %N", gI_partner[param1], gI_partner[param1], gI_partner[partner], gI_partner[partner])
+						//PrintToServer("partner1: %i %N, partner2: %i %N", gI_partner[param1], gI_partner[param1], gI_partner[partner], gI_partner[partner])
 						if(gB_TrikzMenuIsOpen[partner])
 							Trikz(partner)
 						/*for(int i = 1; i <= 2048; i++)
@@ -1637,7 +1637,7 @@ void createstart()
 	//mins[2] = mins[2] += 128.0
 	//mins[2] = mins[2] += 128.0
 	mins[2] = -128.0
-	PrintToServer("Mins: %f %f %f", mins[0], mins[1], mins[2])
+	//PrintToServer("Mins: %f %f %f", mins[0], mins[1], mins[2])
 	//SetEntPropVector(entity, Prop_Send, "m_vecMins", maxs) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	//mins[0] = mins[0] * -1.0
@@ -1661,7 +1661,7 @@ void createstart()
 	//maxs[2] = maxs[2] -= 128.0
 	//maxs[2] = maxs[2] -= -128.0
 	maxs[2] = 128.0
-	PrintToServer("Maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
+	//PrintToServer("Maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
 	//SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
@@ -1674,7 +1674,7 @@ void createstart()
 	//return Plugin_Handled
 }
 
-Action cmd_tp1(int client, int args)
+/*Action cmd_tp1(int client, int args)
 {
 	float maxs[3]
 	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
@@ -1692,7 +1692,7 @@ Action cmd_tp1(int client, int args)
 	PrintToServer("%f %f %f", maxs[0], maxs[1], maxs[2])
 	TeleportEntity(client, maxs, NULL_VECTOR, NULL_VECTOR)
 	return Plugin_Handled
-}
+}*/
 
 //Action cmd_createend(int client, int args)
 void createend()
@@ -3092,8 +3092,8 @@ Action SDKStartTouch(int entity, int other)
 		//gB_insideZone[other] = true //Expert-Zone idea.
 		//gB_passzone[other] = false
 		//PrintToServer("%i", other)
-		PrintToServer("SDKStartTouch %i %i", entity, other)
-		PrintToServer("ifcp1_startTouch")
+		//PrintToServer("SDKStartTouch %i %i", entity, other)
+		//PrintToServer("ifcp1_startTouch")
 		char sTrigger[32]
 		
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
@@ -3344,7 +3344,7 @@ Action SDKStartTouch(int entity, int other)
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 							{
 								//gF_timeDiffCP[i][other] = gF_srCPTime[i][other] - gF_TimeCP[i][other]
-								PrintToServer("%f", gF_timeDiffCP[i][other])
+								//PrintToServer("%f", gF_timeDiffCP[i][other])
 								//gF_timeDiffCP[i][gI_partner[other]] = gF_srCPTime[i][gI_partner[other]] - gF_TimeCP[gI_partner[other]][i]
 								//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
 								//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
@@ -3379,7 +3379,7 @@ Action SDKStartTouch(int entity, int other)
 				}
 				else if(gF_ServerRecord == 0.0)
 				{
-					PrintToServer("x123x")
+					//PrintToServer("x123x")
 					gF_ServerRecord = gF_Time[other]
 					gF_haveRecord[other] = gF_Time[other]
 					gF_haveRecord[gI_partner[other]] = gF_Time[other]
@@ -3483,7 +3483,7 @@ Action SDKStartTouch(int entity, int other)
 				gF_TimeCP[1][other] = gF_Time[other]
 				//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
 				gF_TimeCP[1][gI_partner[other]] = gF_Time[other]
-				PrintToServer("%f 2x2", gF_Time[other])
+				//PrintToServer("%f 2x2", gF_Time[other])
 				char sQuery[512] //https://stackoverflow.com/questions/9617453 //https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
 				//Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s' HAVING MIN(time)", gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause. //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm
 				//Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)  //log help me alot with this stuff
@@ -3492,15 +3492,15 @@ Action SDKStartTouch(int entity, int other)
 				dp.WriteCell(GetClientSerial(other))
 				dp.WriteCell(1)
 				gD_mysql.Query(SQLCPSelect, sQuery, dp)
-				PrintToServer("cp1")
+				//PrintToServer("cp1")
 			}
-			PrintToServer("cp1pre")
+			//PrintToServer("cp1pre")
 			//gB_cp[1][other] = true
 			//gB_cp[1][gI_partner[other]] = true
 		}
 		if(StrEqual(sTrigger, "fakeexpert_cp2"))
 		{
-			PrintToServer("cp2pre")
+			//PrintToServer("cp2pre")
 			gB_cp[2][other] = true
 			if(gB_cp[2][other] && gB_cp[2][gI_partner[other]] && !gB_cpLock[2][other])
 			{
@@ -3906,7 +3906,7 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[cpnum][other] = results.FetchFloat(0)
 		//PrintToServer("srCPTime: %f srTime: %f", gF_srCPTime[1][other], srTime)
-		PrintToServer("srCPTime %i: %f", cpnum, gF_srCPTime[cpnum][other])
+		//PrintToServer("srCPTime %i: %f", cpnum, gF_srCPTime[cpnum][other])
 		if(gF_TimeCP[cpnum][other] < gF_srCPTime[cpnum][other])
 		{
 			gF_timeDiffCP[cpnum][other] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
@@ -4554,10 +4554,10 @@ void ForceZonesSetup()
 	//}
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
-	gD_mysql.Query(SQLSetZonesEntity, sQuery)
+	gD_mysql.Query(SQLSetZoneStart, sQuery)
 }
 
-void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
@@ -4579,7 +4579,8 @@ void SQLSetZonesEntity(Database db, DBResultSet results, const char[] error, any
 		gF_vecStart[0] = center[0]
 		gF_vecStart[1] = center[1]
 		gF_vecStart[2] = center[2]
-		PrintToServer("SQLSetZonesEntity successfuly.")
+		//PrintToServer("SQLSetZoneStart successfuly.")
+		PrintToServer("Start zone is successfuly setup.")
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
 		gD_mysql.Query(SQLSetZoneEnd, sQuery)
@@ -4596,25 +4597,26 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 		gF_vec2[1][0] = results.FetchFloat(3)
 		gF_vec2[1][1] = results.FetchFloat(4)
 		gF_vec2[1][2] = results.FetchFloat(5)
-		PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[1][0], gF_vec2[1][1], gF_vec2[1][2])
+		//PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[1][0], gF_vec2[1][1], gF_vec2[1][2])
+		PrintToServer("End zone is successfuly setup.")
 		//cmd_createend(0, 0)
 		createend()
 	}
 }
 
-public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
+void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("Success")
+	PrintToServer("Zones table is successfuly created.")
 }
 
-Action cmd_tp(int client, int args)
+/*Action cmd_tp(int client, int args)
 {
 	//TeleportEntity(client, gI_trigger, NULL_VECTOR, NULL_VECTOR)
 	float vecBase[3]
 	GetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecBase)
 	PrintToServer("cmd_tp: vecbase: %f %f %f", vecBase[0], vecBase[1], vecBase[2])
 	return Plugin_Handled
-}
+}*/
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -4760,7 +4762,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_vecVelBoostFix[client][i] = 0.0
 		gI_boost[client] = 0
 		gI_skyStep[client] = 0
-		PrintToServer("debug")
+		//PrintToServer("debug")
 	}
 	if(7 >= gI_boost[client] >= 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
 	{
@@ -4781,8 +4783,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
 		//gI_boost[client] = 8
-		gI_skyStep[client] = 0
-		PrintToServer("debug")
+		//gI_skyStep[client] = 0
+		//PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
 	if(gI_boost[client] == 8 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
@@ -4802,7 +4804,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_vecVelBoostFix[client][i] = 0.0
 		gI_boost[client] = 0
 		gI_skyStep[client] = 0
-		PrintToServer("debug")
+		//PrintToServer("debug")
 		//gI_boost[client] = 2
 	}
 	//if(gI_skyStep[client] >= 1)
@@ -4825,7 +4827,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
-		PrintToServer("skyboost")
+		//PrintToServer("skyboost")
 		/*if(gF_fallVel[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
 		else if(gF_fallVel[client][2] < 750.0)
@@ -4867,7 +4869,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_skyStep[client] = 0
 					gF_fallVel[client][2] = 0.0
 					gI_skyFrame[client] = 0
-					PrintToServer("yes")
+					//PrintToServer("yes")
 				}
 				//if(groundEntity == 0)
 				//	gB_onGround[client] = false
@@ -5185,7 +5187,7 @@ Action cmd_eye66(int client, int args)
 	//}
 	//return Plugin_Continue
 //}
-Action cmd_findyifxandzexist(int args)
+/*Action cmd_findyifxandzexist(int args)
 {
 	int i
 	while(i<1000000)
@@ -5209,7 +5211,8 @@ Action cmd_findyifxandzexist(int args)
 		//float results = 0.45 *
 	}
 	return Plugin_Handled
-}
+}*/
+
 float gF_getGud
 
 Action cmd_getgud(int client, int args)
@@ -5286,7 +5289,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//PrintToServer("yes1")
 			//return Plugin_Continue
 		//}
-		PrintToServer("%i %N [%i]", other, other, count)
+		//PrintToServer("%i %N [%i]", other, other, count)
 		count++
 		float vecOriginOther[3]
 		//GetEntPropVector(other, Prop_Send, "m_vecOrigin", vecOriginOther)
