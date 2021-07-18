@@ -607,8 +607,8 @@ public void OnMapStart()
 		char sDate[64]
 		FormatTime(sDate, 64, "%Y-%m-%d", GetTime())
 		char sTime[64]
-		FormatTime(sTime, 64, "%H:%M:%S", GetTime())
-		ServerCommand("tv_record \"%s %s %s\"", sDate, sTime, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
+		FormatTime(sTime, 64, "%H-%M-%S", GetTime())
+		ServerCommand("tv_record %s-%s-%s", sDate, sTime, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
 }
 
