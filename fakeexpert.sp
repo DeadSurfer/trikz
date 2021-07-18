@@ -3112,12 +3112,12 @@ Action SDKStartTouch(int entity, int other)
 			//gB_zonepass[other
 			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 			{
-				int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				int hour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+				//hour = (hour / 3600) % 24
+				int minute = (RoundToFloor(gF_Time[other]) / 60) % 60
+				//minute = (minute / 60) % 60
+				int second = RoundToFloor(gF_Time[other]) % 60
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
