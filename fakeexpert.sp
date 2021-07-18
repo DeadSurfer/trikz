@@ -1029,9 +1029,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					gF_fallVel[other][0] = vecVelFlyer[0]
 					gF_fallVel[other][1] = vecVelFlyer[1]				
 					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
-					PrintToServer("fallvel flyer %f", gF_fallVel[other][2])
-					if(FloatAbs(vecVelFlyer[2]) > 250.0)
+					//PrintToServer("fallvel flyer %f", gF_fallVel[other][2])
+					if(FloatAbs(vecVelFlyer[2]) > 220.0)
 					{
+						PrintToServer("fallvel flyer %f", gF_fallVel[other][2])
 						gI_skyStep[other] = 1
 						gI_skyFrame[other] = 1
 					}
