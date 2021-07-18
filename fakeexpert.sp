@@ -80,7 +80,7 @@ float gF_vec2cp[11][3]
 bool gB_cp[11][MAXPLAYERS + 1]
 bool gB_cpLock[11][MAXPLAYERS + 1]
 float gF_TimeCP[11][MAXPLAYERS + 1]
-float gF_timeDiffCPWin[11][MAXPLAYERS + 1]
+float gF_timeDiffCP[11][MAXPLAYERS + 1]
 float gF_srCPTime[11][MAXPLAYERS + 1]
 //bool gB_CPprint[10]
 
@@ -92,7 +92,7 @@ ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 int gI_type
 int gI_cpnum
 
-bool gB_menuIsOpen[MAXPLAYERS + 1]
+bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 //bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
 //bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
