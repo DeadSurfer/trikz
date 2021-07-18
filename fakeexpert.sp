@@ -604,7 +604,9 @@ public void OnMapStart()
 	if(isSourceTV)
 	{
 		PrintToServer("sourcetv work.")
-		ServerCommand("tv_record %i", GetTime()) //https://www.youtube.com/watch?v=GeGd4KOXNb8
+		char sTime[32]
+		FormatTime(sTime, 32, "%Y-%m-%d %H:%M:%S", GetTime())
+		ServerCommand("tv_record %s", sTime) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
 }
 
