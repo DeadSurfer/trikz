@@ -198,7 +198,7 @@ public void OnPluginStart()
 	//!getgud 0.00794 = -281.627258 0.000000. !getgud 0.00793 = -281.628540 0.000000. !getgud 0.00789 = -281.633605 0.000000 !getgud 0.00787 = -281.636138 0.000000. !getgud 0.00786 = -281.637420 0.000000
 	//!getgud 0.007865 = -281.636779 0.000000. !getgud 0.007866 = -281.636657 0.000000. !getgud 0.007862 = -281.637176 0.000000. !getgud 0.0078625 = -281.637115 0.000000
 	//
-	RegServerCmd("sm_y", cmd_findyifxandzexist)
+	//RegServerCmd("sm_y", cmd_findyifxandzexist)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
