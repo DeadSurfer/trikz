@@ -597,6 +597,20 @@ public void OnMapStart()
 		gI_devmap[i] = 0
 	//gB_nospamvote = false
 	gB_haveZone = false
+	ConVar CV_sourcetv
+	CV_sourcetv = FindConVar("tv_enable")
+	int isSourceTV = CV_sourcetv.BoolValue()
+	if(isSourceTV)
+		ServerCommand("tv_record %i", GetTime()) //https://www.youtube.com/watch?v=GeGd4KOXNb8
+}
+
+public void OnMapEnd()
+{
+	ConVar CV_sourcetv
+	CV_sourcetv = FindConVar("tv_enable")
+	int isSourceTV = CV_sourcetv.BoolValue()
+	if(isSourceTV)
+		ServerCommand("tv_stoprecord")
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
