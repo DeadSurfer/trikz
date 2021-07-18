@@ -2982,6 +2982,7 @@ void createcp(int cpnum)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//PrintToServer("entity end: %i created", entity)
 	//return Plugin_Handled
+	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
 }
 
 /*Action cmd_starttouch(int client, int args)
