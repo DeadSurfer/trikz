@@ -122,6 +122,8 @@ bool gB_toggledTeleport[MAXPLAYERS + 1][2]
 
 bool gB_haveZone
 
+float gF_getGud
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -5248,8 +5250,6 @@ Action cmd_eye66(int client, int args)
 	return Plugin_Handled
 }*/
 
-float gF_getGud
-
 Action cmd_getgud(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
@@ -5312,7 +5312,7 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
 	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
-	if(!gI_testvec[other])
+	if(!gI_testvec[other] && gF_getGud != 0.0)
 		gI_testvec[other] = 1
 	//CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
