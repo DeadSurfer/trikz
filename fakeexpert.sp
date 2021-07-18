@@ -602,7 +602,10 @@ public void OnMapStart()
 	//int isSourceTV = CV_sourcetv.BoolValue()
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
+	{
+		PrintToServer("sourcetv work.")
 		ServerCommand("tv_record %i", GetTime()) //https://www.youtube.com/watch?v=GeGd4KOXNb8
+	}
 }
 
 public void OnMapEnd()
