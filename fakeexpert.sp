@@ -1610,6 +1610,9 @@ void createstart()
 	center[1] = (gF_vec2[0][1] + gF_vec1[0][1]) / 2.0
 	center[2] = (gF_vec2[0][2] + gF_vec1[0][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	gF_vecStart[0] = center[0]
+	gF_vecStart[1] = center[1]
+	gF_vecStart[2] = center[2]
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	//mins[0] = gF_vec[0]
@@ -4571,15 +4574,15 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 		//cmd_createstart(0, 0)
 		createstart()
 		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-		float center[3]
-		center[0] = (gF_vec2[0][0] + gF_vec1[0][0]) / 2.0
-		center[1] = (gF_vec2[0][1] + gF_vec1[0][1]) / 2.0
-		center[2] = (gF_vec2[0][2] + gF_vec1[0][2]) / 2.0
+		//float center[3]
+		//center[0] = (gF_vec2[0][0] + gF_vec1[0][0]) / 2.0
+		//center[1] = (gF_vec2[0][1] + gF_vec1[0][1]) / 2.0
+		//center[2] = (gF_vec2[0][2] + gF_vec1[0][2]) / 2.0
 		//gF_vecStart[0] = gF_vec1[0]
 		//gF_vecStart[1] = gF_vec1[1]
-		gF_vecStart[0] = center[0]
-		gF_vecStart[1] = center[1]
-		gF_vecStart[2] = center[2]
+		//gF_vecStart[0] = center[0]
+		//gF_vecStart[1] = center[1]
+		//gF_vecStart[2] = center[2]
 		//PrintToServer("SQLSetZoneStart successfuly.")
 		PrintToServer("Start zone is successfuly setup.")
 		char sQuery[512]
