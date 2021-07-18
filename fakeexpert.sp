@@ -1003,9 +1003,9 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//gI_skyStep[other] 
 		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			float getCurrentVel[3]
-			GetEntPropVector(other, Prop_Data, "m_vecVelocity", getCurrentVel)
-			PrintToServer("%f", getCurrentVel[2])
+			//float getCurrentVel[3]
+			//GetEntPropVector(other, Prop_Data, "m_vecVelocity", getCurrentVel)
+			//PrintToServer("%f", getCurrentVel[2]) // -118.006614 in couch, in normal -106.006614
 			//gF_currentVelBooster[other][2] = getCurrentVel[2]
 			//if(GetEntityFlags(client) & FL_ONGROUND && GetEntityFlags(other) & FL_ONGROUND)
 				//gI_skyStep[other] = 0
@@ -1031,9 +1031,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					gF_fallVel[other][1] = vecVelFlyer[1]				
 					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
 					//PrintToServer("fallvel flyer %f", gF_fallVel[other][2])
-					if(FloatAbs(vecVelFlyer[2]) > 220.0)
+					//if(FloatAbs(vecVelFlyer[2]) > 220.0)
+					if(FloatAbs(vecVelFlyer[2]) > 118.006614)
 					{
-						PrintToServer("fallvel flyer %f", gF_fallVel[other][2])
+						//PrintToServer("fallvel flyer %f", gF_fallVel[other][2])
 						gI_skyStep[other] = 1
 						gI_skyFrame[other] = 1
 					}
