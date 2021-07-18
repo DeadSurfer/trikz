@@ -1012,7 +1012,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0 && GetGameTime() - gF_boostTime[other] < 0.15) //gF_boostTime[other] < 0.15 and GetGameTime() is from tengu lawl github.com scripting boost-fix.sp https://www.github.com/tengulawl/scripting/main/blob/boost-fix.sp
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
-				PrintToServer("fl ducktime %f", GetEntPropFloat(client, Prop_Data, "m_flDucktime"))
+				//PrintToServer("fl ducktime %f", GetEntPropFloat(client, Prop_Data, "m_flDucktime"))
 				//if(GetEntityFlags(client) & IN_JUMP)
 				//	PrintToServer("c: %i", GetEntityFlags(client))
 				//if(GetEntityFlags(client) & IN_JUMP)
@@ -1030,8 +1030,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					gF_fallVel[other][1] = vecVelFlyer[1]				
 					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
 					PrintToServer("fallvel flyer %f", vecVelFlyer[2])
-					gI_skyStep[other] = 1
-					gI_skyFrame[other] = 1
+					if(vecVelFlyer[2] > 250.0)
+					{
+						gI_skyStep[other] = 1
+						gI_skyFrame[other] = 1
+					}
 					//gI_skyBooster[
 					//gF_boostTime[client] = GetGameTime()
 					//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
