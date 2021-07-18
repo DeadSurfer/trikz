@@ -599,7 +599,8 @@ public void OnMapStart()
 	gB_haveZone = false
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
-	int isSourceTV = CV_sourcetv.BoolValue()
+	//int isSourceTV = CV_sourcetv.BoolValue()
+	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 		ServerCommand("tv_record %i", GetTime()) //https://www.youtube.com/watch?v=GeGd4KOXNb8
 }
@@ -608,7 +609,8 @@ public void OnMapEnd()
 {
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
-	int isSourceTV = CV_sourcetv.BoolValue()
+	//int isSourceTV = CV_sourcetv.BoolValue()
+	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 		ServerCommand("tv_stoprecord")
 }
