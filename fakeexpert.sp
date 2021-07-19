@@ -5818,6 +5818,7 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 	//for(int i = 1; i <= MaxClients; i++)
 	if(0 < clients[numClients] <= MaxClients && gB_silentKnife[clients[numClients]])
 	{
+		PrintToServer("%i %N %s", clients[numClients], clients[numClients], sample)
 		if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 		{
 			PrintToServer("%i %N", clients[numClients], clients[numClients])
