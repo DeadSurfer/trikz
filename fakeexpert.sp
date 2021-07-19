@@ -5770,6 +5770,8 @@ Action timer_delete(Handle timer, int entity)
 void SDKPlayerSpawn(int client)
 {
 	//if(GetEntProp(client, Prop_Data, "m_iAmmo", 
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
+		GivePlayerItem(client, "weapon_flashbang")
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
@@ -5780,8 +5782,6 @@ void SDKPlayerSpawn(int client)
 		//https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	}
-	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
-		GivePlayerItem(client, "weapon_flashbang") 
 	//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//GivePlayerAmmo(client, 2, 48, true)
 }
@@ -5800,15 +5800,13 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
+		GivePlayerItem(client, "weapon_flashbang")
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 		//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
-	}
-	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
-	{
-		GivePlayerItem(client, "weapon_flashbang")
 	}
 }
 
