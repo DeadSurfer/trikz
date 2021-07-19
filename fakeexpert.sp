@@ -5773,9 +5773,11 @@ void SDKPlayerSpawn(int client)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		GivePlayerItem(client, "weapon_flashbang")
+		//GivePlayerItem(client, "weapon_flashbang")
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		GivePlayerItem(client, "weapon_flashbang")
+		//GivePlayerItem(client, "weapon_flashbang") 
+		EquipPlayerWeapon(client, 26) //26 = weapon_flashbang
+		//https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	}
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
