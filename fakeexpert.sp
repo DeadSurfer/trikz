@@ -5821,7 +5821,7 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 		//PrintToServer("%i %N", clients[i], clients[i])
 		if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 		{
-			gB_silentKnife[clients[numClients]
+			gB_silentKnife[clients[numClients]]
 			return Plugin_Handled
 		}
 	}
