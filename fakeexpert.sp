@@ -160,8 +160,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partn", cmd_partner)
 	RegConsoleCmd("sm_partne", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
-	RegConsoleCmd("sm_flash", cmd_giveflashbang)
-	RegConsoleCmd("sm_flashbang", cmd_giveflashbang)
+	//RegConsoleCmd("sm_flash", cmd_giveflashbang)
+	//RegConsoleCmd("sm_flashbang", cmd_giveflashbang)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -1583,7 +1583,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-Action cmd_giveflashbang(int client, int args)
+/*Action cmd_giveflashbang(int client, int args)
 {
 	if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
@@ -1591,7 +1591,7 @@ Action cmd_giveflashbang(int client, int args)
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	}
 	return Plugin_Handled
-}
+}*/
 
 void Restart(int client)
 {
@@ -5791,7 +5791,12 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 Action SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
-	PrintToServer("equip %i %N", weapon, client)
+	//PrintToServer("equip %i %N", weapon, client)
+	if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
+		GivePlayerItem(client, "weapon_flashbang")
+		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+	}
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
