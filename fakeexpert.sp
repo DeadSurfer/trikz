@@ -160,6 +160,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partn", cmd_partner)
 	RegConsoleCmd("sm_partne", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
+	RegConsoleCmd("sm_flash", cmd_giveflashbang)
+	RegConsoleCmd("sm_flashbang", cmd_giveflashbang)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -1578,6 +1580,16 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_End:
 			delete menu
 	}
+}
+
+Action cmd_giveflashbang(int client, int args)
+{
+	if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
+		GivePlayerItem(client, "weapon_flashbang")
+		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+	}
+	return Plugin_Handled
 }
 
 void Restart(int client)
