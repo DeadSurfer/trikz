@@ -5313,7 +5313,7 @@ Action cmd_getgud(int client, int args)
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
 } 
-int count
+//int count
 Action ProjectileBoostFix(int entity, int other)
 {
 	if(!IsClientValid(other))
@@ -5347,7 +5347,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//return Plugin_Continue
 		//}
 		//PrintToServer("%i %N [%i]", other, other, count)
-		count++
+		//count++
 		float vecOriginOther[3]
 		//GetEntPropVector(other, Prop_Send, "m_vecOrigin", vecOriginOther)
 		GetClientAbsOrigin(other, vecOriginOther)
@@ -5463,8 +5463,6 @@ Action ProjectileBoostFix(int entity, int other)
 				gF_vecVelBoostFix[other][1] = vecVelClient[1]
 				//gF_vecVelBoostFix[other][2] = vecVelClient[2]
 				gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
-				
-				
 				//gI_skyStep[other] = 0
 				gF_boostTime[other] = GetGameTime()
 				gB_groundBoost[other] = gB_bouncedOff[entity]
