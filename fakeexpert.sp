@@ -125,6 +125,8 @@ bool gB_haveZone
 float gF_getGud
 
 bool isServerRecord
+char gS_date[64]
+char gS_time[64]
 
 public Plugin myinfo =
 {
@@ -586,9 +588,6 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }*/
-
-char gS_date[64]
-char gS_time[64]
 
 public void OnMapStart()
 {
@@ -1313,7 +1312,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					Block(param1)
 					//delete menu
-					Trikz(param1)
+					//Trikz(param1)
 				}
 				case 1:
 				{
