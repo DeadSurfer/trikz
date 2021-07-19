@@ -5773,18 +5773,18 @@ Action timer_delete(Handle timer, int entity)
 void SDKPlayerSpawn(int client)
 {
 	//if(GetEntProp(client, Prop_Data, "m_iAmmo", 
-	//if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	//{
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		//GivePlayerItem(client, "weapon_flashbang")
+		GivePlayerItem(client, "weapon_flashbang")
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		//GivePlayerItem(client, "weapon_flashbang") 
+		GivePlayerItem(client, "weapon_flashbang") 
 		//EquipPlayerWeapon(client, 26) //26 = weapon_flashbang
 		//https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-	//}
-	//if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
-		//GivePlayerItem(client, "weapon_flashbang")
+	}
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
+		GivePlayerItem(client, "weapon_flashbang")
 	//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//GivePlayerAmmo(client, 2, 48, true)
 }
@@ -5816,14 +5816,14 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
 	//for(int i = 1; i <= MaxClients; i++)
-	if(0 < clients[numClients] <= MaxClients && gB_silentKnife[clients[numClients]])
+	/*if(0 < clients[numClients] <= MaxClients && gB_silentKnife[clients[numClients]])
 	{
 		if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 		{
 			PrintToServer("%i %N", clients[numClients], clients[numClients])
 			gB_silentKnife[clients[numClients]] = false
-			//return Plugin_Handled
+			return Plugin_Handled
 		}
 	}
-	return Plugin_Continue
+	return Plugin_Continue*/
 }
