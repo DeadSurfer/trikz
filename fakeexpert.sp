@@ -124,7 +124,7 @@ bool gB_haveZone
 
 float gF_getGud
 
-bool isServerRecord
+bool gB_isServerRecord
 char gS_date[64]
 char gS_time[64]
 
@@ -616,7 +616,7 @@ public void OnMapStart()
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
-	isServerRecord = false
+	gB_isServerRecord = false
 }
 
 public void OnMapEnd()
@@ -631,7 +631,7 @@ public void OnMapEnd()
 		ServerCommand("tv_stoprecord")
 		char sOldFileName[64]
 		Format(sOldFileName, 64, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
-		if(isServerRecord)
+		if(gB_isServerRecord)
 		{
 			char sNewFileName[64]
 			Format(sNewFileName, 64, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
@@ -3205,7 +3205,7 @@ Action SDKStartTouch(int entity, int other)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
-							isServerRecord = true
+							gB_isServerRecord = true
 						}
 						else
 						{
@@ -3244,7 +3244,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
 							//if(gF_haveRecord[gI_partner[other]] == 0.0)
-							isServerRecord = true
+							gB_isServerRecord = true
 						}
 						else
 						{
@@ -3480,6 +3480,7 @@ Action SDKStartTouch(int entity, int other)
 							}*/
 						}
 					}
+					gB_isServerRecord = true
 					//PrintToServer("2")
 					//DataPack dp2 = new DataPack()
 					//dp2.WriteCell(GetClientSerial(other))
