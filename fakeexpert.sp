@@ -5792,7 +5792,7 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
 	char sWeapon[32]
-	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon)
+	GetEntPropString(client, Prop_Data, "m_iClassname", sWeapon)
 	PrintToServer("equip %i %N %s", weapon, client, sWeapon)
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
