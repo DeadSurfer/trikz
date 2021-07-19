@@ -806,6 +806,7 @@ public void OnClientPutInServer(int client)
 	//SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
+	SDKHook(client, SDKHook_WeaponEquip, SDKWeaponEquip)
 	char sQuery[512]
 	//int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
@@ -5786,6 +5787,11 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
 	return Plugin_Handled
+}
+
+Action SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
+{
+	PrintToServer("equip %i %N", weapon, client)
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
