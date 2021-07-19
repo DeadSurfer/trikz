@@ -5780,7 +5780,9 @@ void SDKPlayerSpawn(int client)
 		//https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	}
-	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
+		GivePlayerItem(client, "weapon_flashbang") 
+	//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 	//GivePlayerAmmo(client, 2, 48, true)
 }
 
