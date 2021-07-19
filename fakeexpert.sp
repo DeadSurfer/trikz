@@ -5773,10 +5773,10 @@ void SDKPlayerSpawn(int client)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		//GivePlayerItem(client, "weapon_flashbang")
+		GivePlayerItem(client, "weapon_flashbang")
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		//GivePlayerItem(client, "weapon_flashbang") 
-		EquipPlayerWeapon(client, 26) //26 = weapon_flashbang
+		GivePlayerItem(client, "weapon_flashbang") 
+		//EquipPlayerWeapon(client, 26) //26 = weapon_flashbang
 		//https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
 		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	}
@@ -5793,15 +5793,16 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
-	char sWeapon[32]
-	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
+	//char sWeapon[32]
+	//GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
 	//GetEdictClassname(wea
-	PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
+	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
-		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+		GivePlayerItem(client, "weapon_flashbang")
+		//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	}
 }
 
