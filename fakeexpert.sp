@@ -128,6 +128,8 @@ bool gB_isServerRecord
 char gS_date[64]
 char gS_time[64]
 
+bool gB_silentKnife[MAXPLAYERS + 1]
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -5749,6 +5751,7 @@ Action SDKProjectile(int entity)
 	//GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	//GivePlayerAmmo(client, 2, 48, true)
+	gB_silentKnife[client] = true
 	FakeClientCommand(client, "use weapon_knife")
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
@@ -5812,7 +5815,9 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	PrintToServer("%i", clients[numClients])
+	for(int i = 1; i <= MaxClients; i++)
+		if(gB_silentKnife[clients[i])
+			PrintToServer("%i %N", clients[i], clients[i])
 	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 		return Plugin_Handled
 	return Plugin_Continue
