@@ -806,7 +806,7 @@ public void OnClientPutInServer(int client)
 	//SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
-	SDKHook(client, SDKHook_WeaponEquip, SDKWeaponEquip)
+	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip)
 	char sQuery[512]
 	//int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
@@ -5789,7 +5789,7 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 	return Plugin_Handled
 }
 
-Action SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
+void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
 	//PrintToServer("equip %i %N", weapon, client)
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
