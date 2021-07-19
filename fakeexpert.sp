@@ -5816,15 +5816,15 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
 	PrintToServer("%i %N %s", clients[numClients], clients[numClients], sample)
-	for(int i = 1; i <= MaxClients; i++)
+	//for(int i = 1; i <= MaxClients; i++)
 	{
-		if(0 < clients[i] <= MaxClients && gB_silentKnife[clients[i]])
+		if(0 < clients[numClients] <= MaxClients && gB_silentKnife[clients[numClients]])
 		{
-			PrintToServer("%i %N %s", clients[i], clients[i], sample)
+			PrintToServer("%i %N %s", clients[numClients], clients[numClients], sample)
 			if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 			{
-				PrintToServer("%i %N", clients[i], clients[i])
-				gB_silentKnife[clients[i]] = false
+				PrintToServer("%i %N", clients[numClients], clients[numClients])
+				gB_silentKnife[clients[numClients]] = false
 				return Plugin_Handled
 			}
 		}
