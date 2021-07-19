@@ -5803,14 +5803,14 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
-		GivePlayerItem(client, "weapon_flashbang")
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 		//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	}
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
+		GivePlayerItem(client, "weapon_flashbang")
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
@@ -5822,7 +5822,7 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 		{
 			PrintToServer("%i %N", clients[numClients], clients[numClients])
 			gB_silentKnife[clients[numClients]] = false
-			return Plugin_Handled
+			//return Plugin_Handled
 		}
 	}
 	return Plugin_Continue
