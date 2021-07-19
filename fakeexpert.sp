@@ -3514,13 +3514,54 @@ Action SDKStartTouch(int entity, int other)
 			gB_state[other] = false
 			gB_state[gI_partner[other]] = false
 		}
-		if(StrEqual(sTrigger, "fakeexpert_cp1"))
+		for(int i = 1; i <= 10; i++)
 		{
-			//gB_cp[1][other] = true
-			//if(gB_cp[1][other] && gB_cp[1][gI_partner[other]] && !gB_cpLock[1][other])
-			//if(!gB_cpLock[1][other])
-			gB_cp[1][other] = true
-			if(gB_cp[1][other] && gB_cp[1][gI_partner[other]] && !gB_cpLock[1][other])
+			char sTrigger2[64]
+			Format(sTrigger2, 64, "fakeexpert_cp%i", i)
+			if(StrEqual(sTrigger, sTrigger2))
+			{
+				//gB_cp[i][other] = true
+				//if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
+				//if(!gB_cpLock[i][other])
+				gB_cp[i][other] = true
+				if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
+				{
+					//int hour = RoundToFloor(gF_Time[other])
+					//hour = (hour / 3600) % 24
+					//int minute = RoundToFloor(gF_Time[other])
+					//minute = (minute / 60) % 60
+					//int second = RoundToFloor(gF_Time[other])
+					//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+					//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+					//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+					//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
+					//gB_cp[i][other] = true
+					gB_cpLock[i][other] = true
+					gB_cpLock[i][gI_partner[other]] = true
+					gF_TimeCP[i][other] = gF_Time[other]
+					//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
+					gF_TimeCP[i][gI_partner[other]] = gF_Time[other]
+					//PrintToServer("%f 2x2", gF_Time[other])
+					char sQuery[512] //https://stackoverflow.com/questions/9617453 //https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
+					//Format(sQuery, 512, "SELECT MIN(time), cp%i FROM records WHERE map = '%s' HAVING MIN(time)", i, gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause. //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm
+					//Format(sQuery, 512, "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", i, gS_map)  //log help me alot with this stuff
+					Format(sQuery, 512, "SELECT cp%i FROM records", i)
+					DataPack dp = new DataPack()
+					dp.WriteCell(GetClientSerial(other))
+					dp.WriteCell(i)
+					gD_mysql.Query(SQLCPSelect, sQuery, dp)
+					//PrintToServer("cp1")
+				}
+				//PrintToServer("cp1pre")
+				//gB_cp[1][other] = true
+				//gB_cp[1][gI_partner[other]] = true
+			}
+		}
+		/*if(StrEqual(sTrigger, "fakeexpert_cp2"))
+		{
+			//PrintToServer("cp2pre")
+			gB_cp[2][other] = true
+			if(gB_cp[2][other] && gB_cp[2][gI_partner[other]] && !gB_cpLock[2][other])
 			{
 				//int hour = RoundToFloor(gF_Time[other])
 				//hour = (hour / 3600) % 24
@@ -3531,42 +3572,6 @@ Action SDKStartTouch(int entity, int other)
 				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
 				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
-				//gB_cp[1][other] = true
-				gB_cpLock[1][other] = true
-				gB_cpLock[1][gI_partner[other]] = true
-				gF_TimeCP[1][other] = gF_Time[other]
-				//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
-				gF_TimeCP[1][gI_partner[other]] = gF_Time[other]
-				//PrintToServer("%f 2x2", gF_Time[other])
-				char sQuery[512] //https://stackoverflow.com/questions/9617453 //https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
-				//Format(sQuery, 512, "SELECT MIN(time), cp1 FROM records WHERE map = '%s' HAVING MIN(time)", gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause. //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm
-				//Format(sQuery, 512, "SELECT cp1 FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)  //log help me alot with this stuff
-				Format(sQuery, 512, "SELECT cp1 FROM records")
-				DataPack dp = new DataPack()
-				dp.WriteCell(GetClientSerial(other))
-				dp.WriteCell(1)
-				gD_mysql.Query(SQLCPSelect, sQuery, dp)
-				//PrintToServer("cp1")
-			}
-			//PrintToServer("cp1pre")
-			//gB_cp[1][other] = true
-			//gB_cp[1][gI_partner[other]] = true
-		}
-		if(StrEqual(sTrigger, "fakeexpert_cp2"))
-		{
-			//PrintToServer("cp2pre")
-			gB_cp[2][other] = true
-			if(gB_cp[2][other] && gB_cp[2][gI_partner[other]] && !gB_cpLock[2][other])
-			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
 				gB_cpLock[2][other] = true
 				gB_cpLock[2][gI_partner[other]] = true
 				gF_TimeCP[2][other] = gF_Time[other]
@@ -3588,15 +3593,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[3][other] = true
 			if(gB_cp[3][other] && gB_cp[3][gI_partner[other]] && !gB_cpLock[3][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[3][other] = true
 				gB_cpLock[3][gI_partner[other]] = true
 				gF_TimeCP[3][other] = gF_Time[other]
@@ -3618,15 +3623,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[4][other] = true
 			if(gB_cp[4][other] && gB_cp[4][gI_partner[other]] && !gB_cpLock[4][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[4][other] = true
 				gB_cpLock[4][gI_partner[other]] = true
 				gF_TimeCP[4][other] = gF_Time[other]
@@ -3648,15 +3653,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[5][other] = true
 			if(gB_cp[5][other] && gB_cp[5][gI_partner[other]] && !gB_cpLock[5][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[5][other] = true
 				gB_cpLock[5][gI_partner[other]] = true
 				gF_TimeCP[5][other] = gF_Time[other]
@@ -3678,15 +3683,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[6][other] = true
 			if(gB_cp[6][other] && gB_cp[6][gI_partner[other]] && !gB_cpLock[6][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[6][other] = true
 				gB_cpLock[6][gI_partner[other]] = true
 				gF_TimeCP[6][other] = gF_Time[other]
@@ -3708,15 +3713,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[7][other] = true
 			if(gB_cp[7][other] && gB_cp[7][gI_partner[other]] && !gB_cpLock[7][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[7][other] = true
 				gB_cpLock[7][gI_partner[other]] = true
 				gF_TimeCP[7][other] = gF_Time[other]
@@ -3738,15 +3743,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[8][other] = true
 			if(gB_cp[8][other] && gB_cp[8][gI_partner[other]] && !gB_cpLock[8][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[8][other] = true
 				gB_cpLock[8][gI_partner[other]] = true
 				gF_TimeCP[8][other] = gF_Time[other]
@@ -3768,15 +3773,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[9][other] = true
 			if(gB_cp[9][other] && gB_cp[9][gI_partner[other]] && !gB_cpLock[9][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[9][other] = true
 				gB_cpLock[9][gI_partner[other]] = true
 				gF_TimeCP[9][other] = gF_Time[other]
@@ -3798,15 +3803,15 @@ Action SDKStartTouch(int entity, int other)
 			gB_cp[10][other] = true
 			if(gB_cp[10][other] && gB_cp[10][gI_partner[other]] && !gB_cpLock[10][other])
 			{
-				/*int hour = RoundToFloor(gF_Time[other])
-				hour = (hour / 3600) % 24
-				int minute = RoundToFloor(gF_Time[other])
-				minute = (minute / 60) % 60
-				int second = RoundToFloor(gF_Time[other])
-				second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])*/
+				//int hour = RoundToFloor(gF_Time[other])
+				//hour = (hour / 3600) % 24
+				//int minute = RoundToFloor(gF_Time[other])
+				//minute = (minute / 60) % 60
+				//int second = RoundToFloor(gF_Time[other])
+				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
+				//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
 				gB_cpLock[10][other] = true
 				gB_cpLock[10][gI_partner[other]] = true
 				gF_TimeCP[10][other] = gF_Time[other]
@@ -3822,7 +3827,7 @@ Action SDKStartTouch(int entity, int other)
 			}
 			//gB_cp[10][other] = true
 			//gB_cp[10][gI_partner[other]] = true
-		}
+		}*/
 	}
 	//gB_passzone[other] = false
 }
