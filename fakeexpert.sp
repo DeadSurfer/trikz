@@ -5792,7 +5792,8 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 Action SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
 	//PrintToServer("equip %i %N", weapon, client)
-	if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
