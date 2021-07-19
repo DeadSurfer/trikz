@@ -5815,6 +5815,7 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
+	PrintToServer("%i entity", entity)
 	PrintToServer("%i %N %s", clients[numClients], clients[numClients], sample)
 	//for(int i = 1; i <= MaxClients; i++)
 	{
