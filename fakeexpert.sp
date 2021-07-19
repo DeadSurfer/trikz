@@ -5819,7 +5819,7 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 	char sKnife[32]
 	GetEntityClassname(entity, sKnife, 32)
 	PrintToServer("entity name: %s", sKnife)
-	PrintToServer("%i %N %s", clients[numClients], clients[numClients], sample)
+	//PrintToServer("%i %N %s", clients[numClients], clients[numClients], sample)
 	//for(int i = 1; i <= MaxClients; i++)
 	{
 		if(0 < clients[numClients] <= MaxClients && gB_silentKnife[clients[numClients]])
