@@ -1393,7 +1393,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			delete menu
 		}
 	}
-	return view_as<int>(Plugin_Continue)
+	//return view_as<int>(Plugin_Continue)
 }
 
 //https://forums.alliedmods.net/showthread.php?t=302374
