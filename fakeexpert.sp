@@ -5809,8 +5809,8 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 		GivePlayerItem(client, "weapon_flashbang")
 		//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	}
-	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
-		GivePlayerItem(client, "weapon_flashbang")
+	//if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
+		//GivePlayerItem(client, "weapon_flashbang")
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
