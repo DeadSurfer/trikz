@@ -630,6 +630,8 @@ public void OnMapEnd()
 	if(isSourceTV)
 	{
 		ServerCommand("tv_stoprecord")
+		char oldFileName[64]
+		Format(oldFileName, 64, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
 		if(isServerRecord)
 		{
 			char newFileName[64]
@@ -637,11 +639,7 @@ public void OnMapEnd()
 			RenameFile(newFileName, oldFileName)
 		}
 		else
-		{
-			char oldFileName[64]
-			Format(oldFileName, 64, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
 			DeleteFile(oldFileName)
-		}
 	}
 }
 
