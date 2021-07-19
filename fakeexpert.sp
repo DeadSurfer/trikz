@@ -1564,7 +1564,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
-
 					/*for(int i = 1; i <= 2048; i++)
 					{
 						gB_stateDisabled[gI_partner[param1]][i] = gB_stateDefaultDisabled[i]
@@ -1576,7 +1575,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 		case MenuAction_End:
-		delete menu
+			delete menu
 	}
 }
 
