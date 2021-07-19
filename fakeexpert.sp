@@ -124,6 +124,8 @@ bool gB_haveZone
 
 float gF_getGud
 
+bool isServerRecord
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -585,6 +587,9 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	return MRES_Supercede
 }*/
 
+char gS_date[64]
+char gS_time[64]
+
 public void OnMapStart()
 {
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
@@ -606,22 +611,34 @@ public void OnMapStart()
 	if(isSourceTV)
 	{
 		PrintToServer("sourcetv work.")
-		char sDate[64]
-		FormatTime(sDate, 64, "%Y-%m-%d", GetTime())
-		char sTime[64]
-		FormatTime(sTime, 64, "%H-%M-%S", GetTime())
-		ServerCommand("tv_record %s-%s-%s", sDate, sTime, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
+		//char sDate[64]
+		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
+		//char sTime[64]
+		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
+		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
+	isServerRecord = false
 }
 
 public void OnMapEnd()
 {
+	//RenameFile(
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
 	//int isSourceTV = CV_sourcetv.BoolValue()
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
+	{
 		ServerCommand("tv_stoprecord")
+		if(isServerRecord)
+		{
+			char oldFileName[64]
+			Format(oldFileName, 64, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+			char newFileName[64]
+			Format(newFileName, 64, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+			RenameFile(newFileName, oldFileName)
+		}
+	}
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
@@ -3188,6 +3205,7 @@ Action SDKStartTouch(int entity, int other)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
+							isServerRecord = true
 						}
 						else
 						{
@@ -3226,7 +3244,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
 							//if(gF_haveRecord[gI_partner[other]] == 0.0)
-								
+							isServerRecord = true
 						}
 						else
 						{
