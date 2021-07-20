@@ -807,8 +807,10 @@ void SQLSetupZones(Database db, DBResultSet results, const char[] error, any dat
 
 public void OnClientPutInServer(int client)
 {
-	gI_partner[client] = 0
-	gI_partner[gI_partner[client]] = 0
+	//gI_partner[client] = 0
+	//if(gB_TrikzMenuIsOpen[gI_partner[client]])
+	//	Trikz(gI_partner[client])
+	//gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	//SDKHook(client, SDKHook_OnTakeDamagePost, SDKOnTakeDamagePost)
@@ -855,6 +857,8 @@ public void OnClientDisconnect(int client)
 {
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	//gI_partner[client] = 0
+	if(gB_TrikzMenuIsOpen[gI_partner[client]])
+		Trikz(gI_partner[client])
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
 	//gB_TrikzMenuIsOpen[client] = false
