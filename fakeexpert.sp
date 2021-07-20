@@ -130,6 +130,7 @@ char gS_time[64]
 
 bool gB_silentKnife
 float gF_mateRecord[MAXPLAYERS + 1]
+bool gB_isTurnedOnSourceTV
 
 public Plugin myinfo =
 {
@@ -622,6 +623,11 @@ public void OnMapStart()
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
 	gB_isServerRecord = false
+	if(!gB_isTurnedOnSourceTV)
+	{
+		gB_isTurnedOnSourceTV = true
+		ForceChangeLevel(gS_map, "Turn on SourceTV")
+	}
 }
 
 public void OnMapEnd()
