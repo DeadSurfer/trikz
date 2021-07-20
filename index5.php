@@ -133,6 +133,7 @@
 				<th>Player 1</th>
 				<th>Player 2</th>
 				<th>Time</th>
+				<th>Completions</th>
 				<th>Map</th>
 				<th>Date</th>
 			</tr>
@@ -407,6 +408,55 @@
 			$row3x = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 			
 			echo $row3x . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
+		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
+		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
+		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
+	?></td>
+		<td><?php
+		//Step2
+		$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		//$query3 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
+		mysqli_query($db, $query3) or die('Error querying database.');
+		//if(strlen($name) > 0)
+			//echo $name . ' ';
+		//Step3
+		$result3 = mysqli_query($db, $query3);
+		//$row3 = mysqli_fetch_array($result3);
+
+		while($row3 = mysqli_fetch_array($result3))
+		{
+			//$query23 = "SELECT username FROM users WHERE steamid = ".$row3['playerid']."";
+			//mysqli_query($db, $query23) or die('Error querying in table.');
+			//$result23 = mysqli_query($db, $query23);
+			//$row23 = mysqli_fetch_array($result23);
+			//echo $row2['username'] . ' ';
+			//$row2 = mysqli_fetch_field($result2);
+			//while ($row2 = mysqli_fetch_array($result2))
+			{
+				//$query33 = "SELECT username FROM users WHERE steamid = ".$row3['partnerid']."";
+				//mysqli_query($db, $query33) or die('Error querying in table.');
+				//$result33 = mysqli_query($db, $query33);
+				//$row33 = mysqli_fetch_array($result33);
+				//echo $row3['username'] . ' ';
+				//$row3 = mysqli_fetch_field($result3);
+				//while($row3 = mysqli_fetch_array($result3))
+				{
+					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
+					//printf("%s %s" $row2, $row3);
+					//printf("%s", mysqli_fetch_field($result2));
+				}
+			}
+			
+			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
+			//$formatedDate = date("Y-m-d H:i:s", (int)$row3['date']);
+			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
+			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
+			//$hours = floor($row3['time'] / 3600);
+			//$mins = floor($row3['time'] / 60 % 60);
+			//$secs = floor($row3['time'] % 60);
+			//$row3x = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+			$completions = $row3['completions']
+			echo $completions . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
