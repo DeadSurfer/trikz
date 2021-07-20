@@ -1429,10 +1429,12 @@ Action cmd_block(int client, int args)
 
 Action Block(int client)
 {
-	if((GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5) || (GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2))
+	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
 	{
 		PrintToServer("block = %i", GetEntProp(client, Prop_Data, "m_CollisionGroup"))
 	}
+	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+		PrintToServer("block = %i", GetEntProp(client, Prop_Data, "m_CollisionGroup"))
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
