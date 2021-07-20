@@ -455,7 +455,7 @@
 			//$mins = floor($row3['time'] / 60 % 60);
 			//$secs = floor($row3['time'] % 60);
 			//$row3x = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-			$completions = $row3['completions'];
+			$completions = $row3['completions']; //https://www.bing.com/search?q=set+where+is+null+sql&cvid=3134695c3d564421aec72036422c503c&aqs=edge..69i57j0l3.7648j0j1&pglt=299&FORM=ANNTA1&PC=U531
 			echo $completions . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
