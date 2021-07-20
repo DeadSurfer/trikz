@@ -1435,7 +1435,7 @@ Action Block(int client)
 	}
 	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 2)
 		PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client) //https://github.com/shanapu/MyJailbreak/commit/9e7480a
-	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 5)
+	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 5) //https://developer.valvesoftware.com/wiki/Collision_groups
 	{
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
