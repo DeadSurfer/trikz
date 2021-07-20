@@ -129,7 +129,7 @@ char gS_date[64]
 char gS_time[64]
 
 //bool gB_silentKnife[MAXPLAYERS + 1]
-float gB_mateRecord[MAXPLAYERS + 1]
+float gF_mateRecord[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
