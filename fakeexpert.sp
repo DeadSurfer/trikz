@@ -3086,7 +3086,7 @@ void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any 
 Action cmd_createrecords(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, `cp1` FLOAT, `cp2` FLOAT, `cp3` FLOAT, `cp4` FLOAT, `cp5` FLOAT, `cp6` FLOAT, `cp7` FLOAT, `cp8` FLOAT, `cp9` FLOAT, `cp10` FLOAT, `map` VARCHAR(192), `date` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, `completions` INT, `cp1` FLOAT, `cp2` FLOAT, `cp3` FLOAT, `cp4` FLOAT, `cp5` FLOAT, `cp6` FLOAT, `cp7` FLOAT, `cp8` FLOAT, `cp9` FLOAT, `cp10` FLOAT, `map` VARCHAR(192), `date` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
@@ -3216,7 +3216,7 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
@@ -3232,12 +3232,13 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+							//Format(sQuery, 512, "UPDATE records SET time = %f, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET completions = completions + 1 WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, playerid, partnerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
-							if(gF_haveRecord[other] > gF_Time[other])
-								gF_haveRecord[other] = gF_Time[other]
-							if(gF_haveRecord[gI_partner[other]] > gF_Time[other])
-								gF_haveRecord[gI_partner[other]] = gF_Time[other]
+							//if(gF_haveRecord[other] > gF_Time[other])
+							//	gF_haveRecord[other] = gF_Time[other]
+							//if(gF_haveRecord[gI_partner[other]] > gF_Time[other])
+							//	gF_haveRecord[gI_partner[other]] = gF_Time[other]
 						}
 					}
 					if(gF_haveRecord[other] == 0.0 || gF_haveRecord[gI_partner[other]] == 0.0)
@@ -3253,7 +3254,7 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 							gD_mysql.Query(SQLInsertRecord, sQuery)
 							//if(gF_haveRecord[other] == 0.0)
 							gF_haveRecord[other] = gF_Time[other]
@@ -3271,7 +3272,7 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 							gD_mysql.Query(SQLInsertRecord, sQuery)
 							if(gF_haveRecord[other] == 0.0)
 								gF_haveRecord[other] = gF_Time[other]
