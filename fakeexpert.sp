@@ -1594,6 +1594,8 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 	int client = GetClientFromSerial(data)
 	if(results.FetchRow())
 		gF_mateRecord[client] = results.FetchFloat(0)
+	else
+		gF_mateRecord[client] = 0.0
 }
 
 /*Action cmd_giveflashbang(int client, int args)
