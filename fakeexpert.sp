@@ -128,7 +128,7 @@ bool gB_isServerRecord
 char gS_date[64]
 char gS_time[64]
 
-//bool gB_silentKnife[MAXPLAYERS + 1]
+bool gB_silentKnife
 float gF_mateRecord[MAXPLAYERS + 1]
 
 public Plugin myinfo =
@@ -5789,7 +5789,7 @@ Action SDKProjectile(int entity)
 	//GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	//GivePlayerAmmo(client, 2, 48, true)
-	//gB_silentKnife[client] = true
+	gB_silentKnife = true
 	FakeClientCommand(client, "use weapon_knife")
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
@@ -5875,10 +5875,11 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 	}*/
 	//if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
 	//if(StrEqual(sKnife, "weapon_knife"))
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav"))
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && gB_silentKnife)
 	{
 		//PrintToServer("%i %N", clients[numClients], clients[numClients])
 		//gB_silentKnife[clients[numClients]] = false
+		gB_silentKnife = false
 		return Plugin_Handled
 	}
 	return Plugin_Continue
