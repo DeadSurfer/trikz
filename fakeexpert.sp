@@ -1431,10 +1431,10 @@ Action Block(int client)
 {
 	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 5)
 	{
-		PrintToServer("block = %i", GetEntProp(client, Prop_Send, "m_CollisionGroup"))
+		PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client)
 	}
 	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 2)
-		PrintToServer("block = %i", GetEntProp(client, Prop_Send, "m_CollisionGroup")) //https://github.com/shanapu/MyJailbreak/commit/9e7480a
+		PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client) //https://github.com/shanapu/MyJailbreak/commit/9e7480a
 	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 5)
 	{
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 2)
