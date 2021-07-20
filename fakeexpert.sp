@@ -1429,6 +1429,7 @@ Action cmd_block(int client, int args)
 
 Action Block(int client)
 {
+	PrintToServer("block = %i", GetEntProp(client, Prop_Data, "m_CollisionGroup"))
 	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
