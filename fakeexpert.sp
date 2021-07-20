@@ -1429,15 +1429,15 @@ Action cmd_block(int client, int args)
 
 Action Block(int client)
 {
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
+	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 5)
 	{
-		PrintToServer("block = %i", GetEntProp(client, Prop_Data, "m_CollisionGroup"))
+		PrintToServer("block = %i", GetEntProp(client, Prop_Send, "m_CollisionGroup"))
 	}
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
-		PrintToServer("block = %i", GetEntProp(client, Prop_Data, "m_CollisionGroup"))
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5)
+	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 2)
+		PrintToServer("block = %i", GetEntProp(client, Prop_Send, "m_CollisionGroup")) //https://github.com/shanapu/MyJailbreak/commit/9e7480a
+	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 5)
 	{
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		SetEntProp(client, Prop_Send, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 100)
 		//gB_block[client] = false
@@ -1446,9 +1446,9 @@ Action Block(int client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
-	if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 2)
 	{
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+		SetEntProp(client, Prop_Send, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		//gB_block[client] = true
 		if(gB_TrikzMenuIsOpen[client])
