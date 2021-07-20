@@ -615,6 +615,11 @@ public void OnMapStart()
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
+		if(!gB_isTurnedOnSourceTV)
+		{
+			gB_isTurnedOnSourceTV = true
+			ForceChangeLevel(gS_map, "Turn on SourceTV")
+		}
 		PrintToServer("sourcetv work.")
 		//char sDate[64]
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
@@ -623,11 +628,6 @@ public void OnMapStart()
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
 	gB_isServerRecord = false
-	if(!gB_isTurnedOnSourceTV)
-	{
-		gB_isTurnedOnSourceTV = true
-		ForceChangeLevel(gS_map, "Turn on SourceTV")
-	}
 }
 
 public void OnMapEnd()
