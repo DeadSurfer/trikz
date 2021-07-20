@@ -1550,7 +1550,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 							gF_buttonReady[partner][i] = 0.0
 						}*/
 						char sQuery[512]
-						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", GetSteamAccountID(partner), GetSteamAccountID(param1))
+						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", GetSteamAccountID(partner), GetSteamAccountID(param1), GetSteamAccountID(param1), GetSteamAccountID(partner))
 						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(partner))
 					}
 					else
