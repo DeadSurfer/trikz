@@ -108,7 +108,7 @@ int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
 int gI_devmap[2]
-bool gB_isDevmap = true
+bool gB_isDevmap
 //bool gB_nospamvote
 int gI_totalPlayers
 //int gI_devmap_yes
@@ -130,7 +130,7 @@ char gS_time[64]
 
 bool gB_silentKnife
 float gF_mateRecord[MAXPLAYERS + 1]
-//bool gB_isTurnedOnSourceTV
+bool gB_isTurnedOnSourceTV
 
 public Plugin myinfo =
 {
@@ -615,11 +615,6 @@ public void OnMapStart()
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
-		//if(!gB_isTurnedOnSourceTV)
-		//{
-			//gB_isTurnedOnSourceTV = true
-			//ForceChangeLevel(gS_map, "Turn on SourceTV")
-		//}
 		PrintToServer("sourcetv work.")
 		//char sDate[64]
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
@@ -628,6 +623,11 @@ public void OnMapStart()
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
 	gB_isServerRecord = false
+	if(!gB_isTurnedOnSourceTV)
+	{
+		gB_isTurnedOnSourceTV = true
+		ForceChangeLevel(gS_map, "Turn on SourceTV")
+	}
 }
 
 public void OnMapEnd()
