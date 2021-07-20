@@ -1541,7 +1541,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						}*/
 						char sQuery[512]
 						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", GetSteamAccountID(partner), GetSteamAccountID(param1))
-						gD_mysql(SQLGetPartnerRecord, sQuery, GetClientSerial(partner))
+						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(partner))
 					}
 					else
 						PrintToChat(param1, "A player already have a partner.")
