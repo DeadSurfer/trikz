@@ -400,7 +400,7 @@
 			// it into a PHP variable
 			$ipdat = @json_decode(file_get_contents(
 			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
-			echo $row32['username'] . '[U:1:' . $row2['partnerid'] . ' ]' . $ipdat->geoplugin_countryCode . '<br>';
+			echo $row32['username'] . '[U:1:' . $row2['partnerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>';
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
