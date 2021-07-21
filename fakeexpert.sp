@@ -872,6 +872,7 @@ public void OnClientDisconnect(int client)
 			//gF_velocity[client][i][j]
 		//}
 	//}
+	CancelClientMenu(client)
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
