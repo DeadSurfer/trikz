@@ -651,6 +651,7 @@ public void OnMapEnd()
 		else
 			DeleteFile(sOldFileName)
 	}
+	CancelClientMenu(client)
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
