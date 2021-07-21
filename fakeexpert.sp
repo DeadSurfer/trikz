@@ -943,14 +943,14 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			//char sIP[32]
 			//GetClientIP(client, sIP, 32)
-			Format(sQuery, 512, "UPDATE users SET username = '%s', ip = '%s' WHERE steamid = %i", sName, sIP, steamid)
+			Format(sQuery, 512, "UPDATE users SET username = '%s', ip = '%s', lastjoin = %i WHERE steamid = %i", sName, sIP, GetTime(), steamid)
 			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 		else
 		{
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip) VALUES ('%s', %i, '%s')", sName, steamid, sIP)
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sIP, GetTime(), GetTime())
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 	}
@@ -989,7 +989,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 			char sIP[32]
 			GetClientIP(client, sIP, 32)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip) VALUES ('%s', %i, '%s')", sName, steamid, sIP)
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sIP, GetTime(), GetTime())
 			gD_mysql.Query(SQLUserAdded, sQuery)
 		}
 	}
@@ -3106,7 +3106,7 @@ void createcp(int cpnum)
 Action cmd_createuser(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `ip` VARCHAR(64), `points` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `ip` VARCHAR(64), `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
