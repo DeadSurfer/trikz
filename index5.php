@@ -380,7 +380,7 @@
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?></td>
-		<td><img width="20px" src="country-flags-main/country-flags-main/svg/<?php
+		<td><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
 		$result = mysqli_query($db, $query);
@@ -396,8 +396,9 @@
 			$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
 			echo strtolower($ipdat->geoplugin_countryCode);
 		}
-		?>.svg">
+		?>.svg">-->
 		<?php
+		//<img width="20px" src="country-flags-main/country-flags-main/svg/de.svn">
 		//Step2
 		$query2 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query2 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -437,13 +438,14 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//echo $row32['username'] . '<br>';
-			//$ip = $row32['ip'];
+			$ip = $row32['ip'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			//$ipdat = @json_decode(file_get_contents(
-			//    "http://www.geoplugin.net/json.gp?ip=" . $ip));
-			echo $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
+			$ipdat = @json_decode(file_get_contents(
+			    "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
+			//https://stackoverflow.com/questions/26065495/php-echo-to-display-image-html
+			echo '<img src="country-flags-main/country-flags-main/svg/'.$strtolower($ipdat->geoplugin_countryCode).'.svg">'; $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
 			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
