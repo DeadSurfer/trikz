@@ -938,10 +938,10 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		GetClientName(client, sName, 64)
 		char sQuery[512]
 		int steamid = GetSteamAccountID(client)
-		char sIP[32]
-		GetClientIP(client, sIP, 32)
-		char sCode2[3]
-		GeoipCode2(sIP, sCode2) //https://pastebin.com/AEwTXWV9
+		//char sIP[32]
+		//GetClientIP(client, sIP, 32)
+		//char sCode2[3]
+		//GeoipCode2(sIP, sCode2) //https://pastebin.com/AEwTXWV9
 		//GeoipCode2(
 		if(results.FetchRow())
 		{
@@ -949,14 +949,16 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			//char sIP[32]
 			//GetClientIP(client, sIP, 32)
-			Format(sQuery, 512, "UPDATE users SET username = '%s', geoipcode2 = '%s', lastjoin = %i WHERE steamid = %i", sName, sCode2, GetTime(), steamid)
+			//Format(sQuery, 512, "UPDATE users SET username = '%s', geoipcode2 = '%s', lastjoin = %i WHERE steamid = %i", sName, sCode2, GetTime(), steamid)
+			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
 			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 		else
 		{
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
+			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 	}
@@ -992,12 +994,13 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		}
 		else
 		{
-			char sIP[32]
-			GetClientIP(client, sIP, 32)
-			char sCode2[3]
-			GeoipCode2(sIP, sCode2)
+			//char sIP[32]
+			//GetClientIP(client, sIP, 32)
+			//char sCode2[3]
+			//GeoipCode2(sIP, sCode2)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
+			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUserAdded, sQuery)
 		}
 	}
@@ -3117,7 +3120,8 @@ void createcp(int cpnum)
 Action cmd_createuser(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `geoipcode2` VARCHAR(64), `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
+	//Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `geoipcode2` VARCHAR(64), `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
