@@ -935,18 +935,22 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		GetClientName(client, sName, 64)
 		char sQuery[512]
 		int steamid = GetSteamAccountID(client)
+		char sIP[32]
+		GetClientIP(client, sIP, 32)
 		if(results.FetchRow())
 		{
 			//PrintToServer("%s %i", sName, steamid)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-			Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
+			//char sIP[32]
+			//GetClientIP(client, sIP, 32)
+			Format(sQuery, 512, "UPDATE users SET username = '%s', ip = '%s' WHERE steamid = %i", sName, sIP, steamid)
 			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 		else
 		{
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip) VALUES ('%s', %i, '%s')", sName, steamid, sIP)
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 	}
@@ -982,8 +986,10 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		}
 		else
 		{
+			char sIP[32]
+			GetClientIP(client, sIP, 32)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip) VALUES ('%s', %i, '%s')", sName, steamid, sIP)
 			gD_mysql.Query(SQLUserAdded, sQuery)
 		}
 	}
@@ -3100,7 +3106,7 @@ void createcp(int cpnum)
 Action cmd_createuser(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `points` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `ip` VARCHAR(64), `points` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
