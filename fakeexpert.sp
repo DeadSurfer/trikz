@@ -1446,7 +1446,7 @@ Action Block(int client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
-	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 2)
+	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
 	{
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
