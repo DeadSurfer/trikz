@@ -940,8 +940,9 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		int steamid = GetSteamAccountID(client)
 		char sIP[32]
 		GetClientIP(client, sIP, 32)
-		char sCode2[32]
-		GeoipCode2(sIP, sCode2)
+		char sCode2[3]
+		GeoipCode2(sIP, sCode2) //https://pastebin.com/AEwTXWV9
+		//GeoipCode2(
 		if(results.FetchRow())
 		{
 			//PrintToServer("%s %i", sName, steamid)
@@ -993,7 +994,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		{
 			char sIP[32]
 			GetClientIP(client, sIP, 32)
-			char sCode2[32]
+			char sCode2[3]
 			GeoipCode2(sIP, sCode2)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
@@ -5404,7 +5405,7 @@ Action cmd_getgud(int client, int args)
 		CancelClientMenu(client, true)
 		char sIP[32]
 		GetClientIP(client, sIP, 32)
-		char sCode2[32]
+		char sCode2[3]
 		GeoipCode2(sIP, sCode2)
 		PrintToChat(client, "%s", sCode2)
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
