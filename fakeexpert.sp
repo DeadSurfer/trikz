@@ -5721,7 +5721,7 @@ Action timer_devmap(Handle timer)
 	//if(gF_devmap < 0 && gB_isDevmap)
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %i of %i players.", (gF_devmap[0] / gF_totalPlayers) * 100., gF_devmap[0], gF_totalPlayers)
+		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %i of %i players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0
 		gB_isDevmap = false
