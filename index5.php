@@ -271,7 +271,7 @@
 			//$countx = 1;
 			//https://ourcodeworld.com/articles/read/51/how-to-detect-the-country-of-a-visitor-in-php-or-javascript-for-free-with-the-request-ip
 			//$ip = $_SERVER['REMOTE_ADDR']; // This will contain the ip of the request
-			$ip = $row2['ip];
+			$ip = $row2['ip'];
 			// You can use a more sophisticated method to retrieve the content of a webpage with php using a library or something
 			// We will retrieve quickly with the file_get_contents
 			$dataArray = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
