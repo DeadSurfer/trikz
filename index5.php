@@ -307,12 +307,12 @@
 			// continent, etc using IP Address
 
 			//$ip = '52.25.109.230';
-			$ip = $row2['ip'];
+			$geoipcode2 = $row2['geoipcode2'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			$ipdat = @json_decode(file_get_contents(
-			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
+			//$ipdat = @json_decode(file_get_contents(
+			//    "http://www.geoplugin.net/json.gp?ip=" . $ip));
 
 			//echo 'Country Name: ' . $ipdat->geoplugin_countryName . "\n";
 			//echo 'City Name: ' . $ipdat->geoplugin_city . "\n";
@@ -330,7 +330,7 @@
 			//echo ;
 			//echo 
 			//$test = "de";
-			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($geoipcode2).".svg>" . ' ' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//https://github.com/hampusborgos/country-flags
 			//.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
@@ -439,14 +439,14 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//echo $row32['username'] . '<br>';
-			$ip = $row32['ip'];
+			$geoipcode2 = $row32['geoipcode2'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			$ipdat = @json_decode(file_get_contents(
-			    "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
+			//$ipdat = @json_decode(file_get_contents(
+			 //   "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
 			//https://stackoverflow.com/questions/26065495/php-echo-to-display-image-html
-			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
+			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($geoipcode2).".svg>" . ' ' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
 			//https://github.com/hampusborgos/country-flags
 			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
