@@ -229,7 +229,24 @@
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?></td>
-		<td><?php
+		<td><img width="55px" src="country-flags-main/country-flags-main/svg/<?php
+		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		mysqli_query($db, $query) or die('Error querying database.');
+		$result = mysqli_query($db, $query);
+		while($row = mysqli_fetch_array($result))
+		{
+			$query2 = "SELECT * FROM users WHERE steamid = ".$row['playerid']."";
+			mysqli_query($db, $query2) or die('Error querying in table.');
+			$result2 = mysqli_query($db, $query2);
+			$row2 = mysqli_fetch_array($result2);
+			$ip = $row2['ip'];
+			// Use JSON encoded string and converts
+			// it into a PHP variable
+			$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
+			echo strtolower($ipdat->geoplugin_countryCode);
+		}
+		?>.svg">
+		<?php
 		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -310,23 +327,11 @@
 			//$dir = strtolower($ipdat->geoplugin_countryCode) . '.svg';
 			//echo $dir . '';
 			//$test;
-			echo $flag . '<img width="110px" src="country-flags-main/country-flags-main/svg/
-			<?php
-			$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-			mysqli_query($db, $query) or die('Error querying database.');
-			$result = mysqli_query($db, $query);
-			while($row = mysqli_fetch_array($result))
-			{
-				$query2 = "SELECT * FROM users WHERE steamid = ".$row['playerid']."";
-				mysqli_query($db, $query2) or die('Error querying in table.');
-				$result2 = mysqli_query($db, $query2);
-				$row2 = mysqli_fetch_array($result2);
-				$ip = $row2['ip'];
-				$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
-				echo strtolower($ipdat->geoplugin_countryCode) . '';
-			}
-			?>
-			.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//echo ;
+			//echo 
+			//$test = "de";
+			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
 			//$someVar="value";
 			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
