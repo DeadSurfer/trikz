@@ -229,7 +229,7 @@
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?></td>
-		<td><img width="55px" src="country-flags-main/country-flags-main/svg/<?php
+		<td><img width="20px" src="country-flags-main/country-flags-main/svg/<?php
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
 		$result = mysqli_query($db, $query);
@@ -307,12 +307,12 @@
 			// continent, etc using IP Address
 
 			//$ip = '52.25.109.230';
-			$ip = $row2['ip'];
+			//$ip = $row2['ip'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			$ipdat = @json_decode(file_get_contents(
-			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
+			//$ipdat = @json_decode(file_get_contents(
+			 //   "http://www.geoplugin.net/json.gp?ip=" . $ip));
 
 			//echo 'Country Name: ' . $ipdat->geoplugin_countryName . "\n";
 			//echo 'City Name: ' . $ipdat->geoplugin_city . "\n";
@@ -323,7 +323,7 @@
 			//echo 'Currency Code: ' . $ipdat->geoplugin_currencyCode . "\n";
 			//echo 'Timezone: ' . $ipdat->geoplugin_timezone;
 			//https://www.bing.com/search?q=small+latters+php&cvid=7365f1771b474dfd8b5a19044ad9e1f3&aqs=edge..69i57.2719j0j1&pglt=43&FORM=ANNTA1&PC=U531
-			$flag;
+			//$flag;
 			//$dir = strtolower($ipdat->geoplugin_countryCode) . '.svg';
 			//echo $dir . '';
 			//$test;
@@ -380,7 +380,24 @@
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?></td>
-		<td><?php
+		<td><img width="20px" src="country-flags-main/country-flags-main/svg/<?php
+		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		mysqli_query($db, $query) or die('Error querying database.');
+		$result = mysqli_query($db, $query);
+		while($row = mysqli_fetch_array($result))
+		{
+			$query2 = "SELECT * FROM users WHERE steamid = ".$row['playerid']."";
+			mysqli_query($db, $query2) or die('Error querying in table.');
+			$result2 = mysqli_query($db, $query2);
+			$row2 = mysqli_fetch_array($result2);
+			$ip = $row2['ip'];
+			// Use JSON encoded string and converts
+			// it into a PHP variable
+			$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
+			echo strtolower($ipdat->geoplugin_countryCode);
+		}
+		?>.svg">
+		<?php
 		//Step2
 		$query2 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query2 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -420,13 +437,13 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//echo $row32['username'] . '<br>';
-			$ip = $row32['ip'];
+			//$ip = $row32['ip'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			$ipdat = @json_decode(file_get_contents(
-			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
-			echo $row32['username'] . ' [U:1:' . $row2['partnerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>';
+			//$ipdat = @json_decode(file_get_contents(
+			//    "http://www.geoplugin.net/json.gp?ip=" . $ip));
+			echo $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
 			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
