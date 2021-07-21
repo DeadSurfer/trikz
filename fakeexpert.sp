@@ -858,7 +858,7 @@ public void OnClientDisconnect(int client)
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	//gI_partner[client] = 0
 	if(gB_TrikzMenuIsOpen[gI_partner[client]])
-		Trikz(gI_partner[client])
+		Trikz(gI_partner[gI_partner[client]])
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
 	//gB_TrikzMenuIsOpen[client] = false
