@@ -606,7 +606,7 @@ public void OnMapStart()
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
 	for(int i = 0; i <= 1; i++)
-		gF_devmap[i] = 0
+		gF_devmap[i] = 0.0
 	//gB_nospamvote = false
 	gB_haveZone = false
 	ConVar CV_sourcetv
@@ -5694,10 +5694,10 @@ Action timer_devmap(Handle timer)
 		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
-			gF_devmap[i] = 0
+			gF_devmap[i] = 0.0
 		//gF_devmap_yes = 0
 		//gF_devmap_no = 0
-		gF_totalPlayers = 0
+		gF_totalPlayers = 0.0
 		CreateTimer(5.0, timer_changelevel)
 		//CreateTimer(
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
@@ -5710,10 +5710,10 @@ Action timer_devmap(Handle timer)
 		//google translate russian to english.
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
-			gF_devmap[i] = 0
+			gF_devmap[i] = 0.0
 		//gF_devmap_yes = 0
 		//gF_devmap_no = 0
-		gF_totalPlayers = 0
+		gF_totalPlayers = 0.0
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
 		//PrintToChatAll("%i", )
 	}
@@ -5723,11 +5723,11 @@ Action timer_devmap(Handle timer)
 	{
 		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
 		for(int i = 0; i <= 1; i++)
-			gF_devmap[i] = 0
+			gF_devmap[i] = 0.0
 		gB_isDevmap = false
 		//gF_devmap_yes = 0
 		//gF_devmap_no = 0
-		gF_totalPlayers = 0
+		gF_totalPlayers = 0.0
 		CreateTimer(5.0, timer_changelevel)
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
@@ -5735,18 +5735,18 @@ Action timer_devmap(Handle timer)
 	{
 		PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
 		for(int i = 0; i <= 1; i++)
-			gF_devmap[i] = 0
+			gF_devmap[i] = 0.0
 		gB_isDevmap = false
 		//gF_devmap_yes = 0
 		//gF_devmap_no = 0
-		gF_totalPlayers = 0
+		gF_totalPlayers = 0.0
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
 	for(int i = 0; i <= 1; i++)
-		gF_devmap[i] = 0
+		gF_devmap[i] = 0.0
 	//gF_devmap_yes = 0
 	//gF_devmap_no = 0
-	gF_totalPlayers = 0
+	gF_totalPlayers = 0.0
 	return Plugin_Stop
 }
 
