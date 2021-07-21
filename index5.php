@@ -242,7 +242,7 @@
 		//$countx = 1;
 		while($row = mysqli_fetch_array($result))
 		{
-			$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
+			$query2 = "SELECT * FROM users WHERE steamid = ".$row['playerid']."";
 			mysqli_query($db, $query2) or die('Error querying in table.');
 			$result2 = mysqli_query($db, $query2);
 			$row2 = mysqli_fetch_array($result2);
