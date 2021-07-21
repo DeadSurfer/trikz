@@ -5691,7 +5691,7 @@ Action timer_devmap(Handle timer)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %i of %i players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
+		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0
@@ -5706,7 +5706,7 @@ Action timer_devmap(Handle timer)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %i of %i players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
+		PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
 		//google translate russian to english.
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
@@ -5721,7 +5721,7 @@ Action timer_devmap(Handle timer)
 	//if(gF_devmap < 0 && gB_isDevmap)
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %i of %i players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
+		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0
 		gB_isDevmap = false
@@ -5733,7 +5733,7 @@ Action timer_devmap(Handle timer)
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && !gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %i of %i players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
+		PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0
 		gB_isDevmap = false
