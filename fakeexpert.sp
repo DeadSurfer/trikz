@@ -5381,7 +5381,7 @@ Action cmd_getgud(int client, int args)
 		//https://forums.alliedmods.net/showthread.php?t=185016?t=185016
 		//https://www.color-hex.com/
 		//https://forums.alliedmods.net/showthread.php?t=96831?t=96831
-		CancelClientMenu(client)
+		CancelClientMenu(client, true)
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
 } 
