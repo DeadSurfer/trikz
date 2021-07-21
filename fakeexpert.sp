@@ -131,6 +131,7 @@ char gS_time[64]
 bool gB_silentKnife
 float gF_mateRecord[MAXPLAYERS + 1]
 bool gB_isTurnedOnSourceTV
+bool gB_block[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -853,6 +854,7 @@ public void OnClientPutInServer(int client)
 	}
 	gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
+	gB_block[client] = true
 }
 
 //public void OnDissconnectClient(
@@ -1298,7 +1300,8 @@ void Trikz(int client)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
 	//Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
-	Format(sDisplay, 32, GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5 ? "Block [v]" : "Block [x]")
+	//Format(sDisplay, 32, GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5 ? "Block [v]" : "Block [x]")
+	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
 	if(gB_isDevmap)
@@ -1439,13 +1442,15 @@ Action cmd_block(int client, int args)
 
 Action Block(int client)
 {
-	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 5)
-	{
-		PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client)
-	}
-	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 2)
-		PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client) //https://github.com/shanapu/MyJailbreak/commit/9e7480a
-	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 5) //https://developer.valvesoftware.com/wiki/Collision_groups
+	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 5)
+	//{
+		//PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client)
+	//}
+	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 2)
+		//PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client) //https://github.com/shanapu/MyJailbreak/commit/9e7480a
+	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 5) //https://developer.valvesoftware.com/wiki/Collision_groups
+	gB_block[client] = !gB_block[client]
+	if(gB_block[client])
 	{
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
@@ -1455,8 +1460,8 @@ Action Block(int client)
 			Trikz(client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
-	}
-	if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
+	}//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
+	else
 	{
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
