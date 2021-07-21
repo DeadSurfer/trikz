@@ -20,7 +20,7 @@
 <?Php
 require "config.php";           // All database details will be included here 
 
-$page_name="index.php"; //  If you use this code with a different page ( or file ) name then change this 
+$page_name="php_paging.php"; //  If you use this code with a different page ( or file ) name then change this 
 
 $start=$_GET['start'];								// To take care global variable if OFF
 if(!($start > 0))
@@ -47,7 +47,7 @@ $bgcolor="#f1f1f1";
 echo "<TABLE width=50% align=center cellpadding=0 cellspacing=0> <tr>";
 echo "<td align=center bgcolor='dfdfdf' >&nbsp;<font face='arial, verdana, helvetica' color='#000000' size='4'>ID</font></td>";
 
-echo "<td align=center bgcolor='dfdfdf'>&nbsp;<font face='arial, verdana, helvetica' color='#000000' size='4'>Name</font></td>";
+echo "<td align=left bgcolor='dfdfdf'>&nbsp;<font face='arial, verdana, helvetica' color='#000000' size='4'>Name</font></td>";
 echo "<td align=center bgcolor='dfdfdf'>&nbsp;<font face='arial, verdana, helvetica' color='#000000' size='4'>Class</font></td>";
 echo "<td align=center bgcolor='dfdfdf'>&nbsp;<font face='arial, verdana, helvetica' color='#000000' size='4'>Mark</font></td></tr>";
 
@@ -72,7 +72,7 @@ foreach ($dbo->query($sql) as $noticia)
 	//$num + 1;
 	$num++;
 	//echo "12x"; //https://www.wikihow.com/Insert-Spaces-in-HTML
-	echo "<td align=center bgcolor=$bgcolor id='title'>&nbsp;<font face='Verdana' size='2'>$noticia[playerid]<br>&nbsp;$noticia[partnerid]</font></td>"; 
+	echo "<td align=left bgcolor=$bgcolor id='title'>&nbsp;<font face='Verdana' size='2'>$noticia[playerid]<br>&nbsp;$noticia[partnerid]</font></td>"; 
 	echo "<td align=center bgcolor=$bgcolor id='title'>&nbsp;<font face='Verdana' size='2'>$noticia[playerid]</font></td>"; 
 	echo "<td align=center bgcolor=$bgcolor id='title'>&nbsp;<font face='Verdana' size='2'>$noticia[time]</font></td>"; 
 
