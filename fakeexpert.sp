@@ -939,20 +939,22 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		int steamid = GetSteamAccountID(client)
 		char sIP[32]
 		GetClientIP(client, sIP, 32)
+		char sCode2[32]
+		GeoipCode2(sIP, sCode2)
 		if(results.FetchRow())
 		{
 			//PrintToServer("%s %i", sName, steamid)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			//char sIP[32]
 			//GetClientIP(client, sIP, 32)
-			Format(sQuery, 512, "UPDATE users SET username = '%s', ip = '%s', lastjoin = %i WHERE steamid = %i", sName, sIP, GetTime(), steamid)
+			Format(sQuery, 512, "UPDATE users SET username = '%s', geoipcode2 = '%s', lastjoin = %i WHERE steamid = %i", sName, sCode2, GetTime(), steamid)
 			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 		else
 		{
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sIP, GetTime(), GetTime())
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 	}
@@ -990,8 +992,10 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		{
 			char sIP[32]
 			GetClientIP(client, sIP, 32)
+			char sCode2[32]
+			GeoipCode2(sIP, sCode2)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
-			Format(sQuery, 512, "INSERT INTO users (username, steamid, ip, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sIP, GetTime(), GetTime())
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			gD_mysql.Query(SQLUserAdded, sQuery)
 		}
 	}
@@ -3111,7 +3115,7 @@ void createcp(int cpnum)
 Action cmd_createuser(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `ip` VARCHAR(64), `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `geoipcode2` VARCHAR(64), `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
@@ -5398,8 +5402,8 @@ Action cmd_getgud(int client, int args)
 		//https://forums.alliedmods.net/showthread.php?t=96831?t=96831
 		CancelClientMenu(client, true)
 		char sIP[32]
-		GetClientIP(client, sIP, 32)
-		PrintToChat(client, "%s", sIP)
+		//GetClientIP(client, sIP, 32)
+		//PrintToChat(client, "%s", sIP)
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
 } 
