@@ -305,7 +305,28 @@
 			//echo 'Currency Symbol: ' . $ipdat->geoplugin_currencySymbol . "\n";
 			//echo 'Currency Code: ' . $ipdat->geoplugin_currencyCode . "\n";
 			//echo 'Timezone: ' . $ipdat->geoplugin_timezone;
-			echo $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//https://www.bing.com/search?q=small+latters+php&cvid=7365f1771b474dfd8b5a19044ad9e1f3&aqs=edge..69i57.2719j0j1&pglt=43&FORM=ANNTA1&PC=U531
+			$flag;
+			//$dir = strtolower($ipdat->geoplugin_countryCode) . '.svg';
+			//echo $dir . '';
+			//$test;
+			echo $flag . '<img width="110px" src="country-flags-main/country-flags-main/svg/
+			<?php
+			$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+			mysqli_query($db, $query) or die('Error querying database.');
+			$result = mysqli_query($db, $query);
+			while($row = mysqli_fetch_array($result))
+			{
+				$query2 = "SELECT * FROM users WHERE steamid = ".$row['playerid']."";
+				mysqli_query($db, $query2) or die('Error querying in table.');
+				$result2 = mysqli_query($db, $query2);
+				$row2 = mysqli_fetch_array($result2);
+				$ip = $row2['ip'];
+				$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
+				echo strtolower($ipdat->geoplugin_countryCode) . '';
+			}
+			?>
+			.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
 			//$someVar="value";
 			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
@@ -401,6 +422,7 @@
 			$ipdat = @json_decode(file_get_contents(
 			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
 			echo $row32['username'] . ' [U:1:' . $row2['partnerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>';
+			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
