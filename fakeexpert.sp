@@ -1471,7 +1471,7 @@ Action Block(int client)
 		PrintToChat(client, "Block enabled.")
 		return Plugin_Handled
 	}
-	return Plugin_Handled
+	//return Plugin_Handled
 }
 
 Action cmd_partner(int client, int args)
