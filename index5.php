@@ -269,7 +269,23 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//$countx = 1;
-			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//https://ourcodeworld.com/articles/read/51/how-to-detect-the-country-of-a-visitor-in-php-or-javascript-for-free-with-the-request-ip
+			//$ip = $_SERVER['REMOTE_ADDR']; // This will contain the ip of the request
+			$ip = $row2['ip];
+			// You can use a more sophisticated method to retrieve the content of a webpage with php using a library or something
+			// We will retrieve quickly with the file_get_contents
+			$dataArray = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
+
+			var_dump($dataArray);
+
+			// outputs something like (obviously with the data of your IP) :
+
+			// geoplugin_countryCode => "DE",
+			// geoplugin_countryName => "Germany"
+			// geoplugin_continentCode => "EU"
+
+			//echo "Hello visitor from: ".$dataArray["geoplugin_countryName"];
+			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']' . $dataArray["geoplugin_countryName"] . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
 			//$someVar="value";
 			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
