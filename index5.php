@@ -271,12 +271,12 @@
 			//$countx = 1;
 			//https://ourcodeworld.com/articles/read/51/how-to-detect-the-country-of-a-visitor-in-php-or-javascript-for-free-with-the-request-ip
 			//$ip = $_SERVER['REMOTE_ADDR']; // This will contain the ip of the request
-			$ip = $row2['ip'];
+			//$ip = $row2['ip'];
 			// You can use a more sophisticated method to retrieve the content of a webpage with php using a library or something
 			// We will retrieve quickly with the file_get_contents
-			$dataArray = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
+			//$dataArray = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
 
-			var_dump($dataArray);
+			//var_dump($dataArray);
 
 			// outputs something like (obviously with the data of your IP) :
 
@@ -284,8 +284,28 @@
 			// geoplugin_countryName => "Germany"
 			// geoplugin_continentCode => "EU"
 
-			echo "Hello visitor from: ".$dataArray["geoplugin_countryCode"];
-			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']' . $dataArray["geoplugin_countryCode"] . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//echo "Hello visitor from: ".$dataArray["geoplugin_countryCode"];
+			//https://www.geeksforgeeks.org/how-to-get-visitors-country-from-their-ip-in-php/
+			// PHP code to obtain country, city, 
+			// continent, etc using IP Address
+
+			//$ip = '52.25.109.230';
+			$ip = $row2['ip'];
+
+			// Use JSON encoded string and converts
+			// it into a PHP variable
+			$ipdat = @json_decode(file_get_contents(
+			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
+
+			//echo 'Country Name: ' . $ipdat->geoplugin_countryName . "\n";
+			//echo 'City Name: ' . $ipdat->geoplugin_city . "\n";
+			//echo 'Continent Name: ' . $ipdat->geoplugin_continentName . "\n";
+			//echo 'Latitude: ' . $ipdat->geoplugin_latitude . "\n";
+			//echo 'Longitude: ' . $ipdat->geoplugin_longitude . "\n";
+			//echo 'Currency Symbol: ' . $ipdat->geoplugin_currencySymbol . "\n";
+			//echo 'Currency Code: ' . $ipdat->geoplugin_currencyCode . "\n";
+			//echo 'Timezone: ' . $ipdat->geoplugin_timezone;
+			echo $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
 			//$someVar="value";
 			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
@@ -347,7 +367,7 @@
 
 		while($row2 = mysqli_fetch_array($result2))
 		{
-			//$query22 = "SELECT username FROM users WHERE steamid = ".$row2['playerid']."";
+			//$query22 = "SELECT * FROM users WHERE steamid = ".$row2['playerid']."";
 			//mysqli_query($db, $query22) or die('Error querying in table.');
 			//$result22 = mysqli_query($db, $query22);
 			//$row22 = mysqli_fetch_array($result22);
@@ -355,7 +375,7 @@
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
-				$query32 = "SELECT username FROM users WHERE steamid = ".$row2['partnerid']."";
+				$query32 = "SELECT * FROM users WHERE steamid = ".$row2['partnerid']."";
 				mysqli_query($db, $query32) or die('Error querying in table.');
 				$result32 = mysqli_query($db, $query32);
 				$row32 = mysqli_fetch_array($result32);
@@ -374,7 +394,13 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//echo $row32['username'] . '<br>';
-			echo $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
+			$ip = $row32['ip'];
+
+			// Use JSON encoded string and converts
+			// it into a PHP variable
+			$ipdat = @json_decode(file_get_contents(
+			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
+			echo $row32['username'] . '[U:1:' . $row2['partnerid'] . ' ]' . $ipdat->geoplugin_countryCode . '<br>';
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
