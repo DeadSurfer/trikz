@@ -229,7 +229,7 @@
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?></td>
-		<td><img width="20px" src="country-flags-main/country-flags-main/svg/<?php
+		<td><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
 		$result = mysqli_query($db, $query);
@@ -245,7 +245,7 @@
 			$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
 			echo strtolower($ipdat->geoplugin_countryCode);
 		}
-		?>.svg">
+		?>.svg">-->
 		<?php
 		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
@@ -330,7 +330,7 @@
 			//echo ;
 			//echo 
 			//$test = "de";
-			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . '' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
 			//$someVar="value";
@@ -445,7 +445,7 @@
 			$ipdat = @json_decode(file_get_contents(
 			    "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
 			//https://stackoverflow.com/questions/26065495/php-echo-to-display-image-html
-			echo "<img width="20px" src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . '' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
+			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . '' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
 			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
