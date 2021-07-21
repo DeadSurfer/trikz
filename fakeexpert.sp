@@ -651,8 +651,8 @@ public void OnMapEnd()
 		else
 			DeleteFile(sOldFileName)
 	}
-	for(int i = 1; i <= MaxClients; i++)
-		CancelClientMenu(i)
+	//for(int i = 1; i <= MaxClients; i++)
+		//CancelClientMenu(i)
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
@@ -852,6 +852,7 @@ public void OnClientPutInServer(int client)
 		}
 	}
 	gF_boostTime[client] = 0.0
+	CancelClientMenu(client)
 }
 
 //public void OnDissconnectClient(
