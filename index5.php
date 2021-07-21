@@ -140,7 +140,7 @@
 		</thead>
 		<tbody>
 		<tr>
-		<td><?php
+		<td><center><?php
 		//Step2
 		$queryx = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
@@ -228,7 +228,7 @@
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></td>
+	?></center></td>
 		<td><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
@@ -502,7 +502,7 @@
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?></td>
-		<td><?php
+		<td><center><?php
 		//Step2
 		$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query3 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -550,7 +550,7 @@
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></td>
+	?></center></td>
 		<td><?php
 		//Step2
 		$query4 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
