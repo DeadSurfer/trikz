@@ -29,6 +29,7 @@ software and other kinds of works.
 #include <sdktools>
 #include <sdkhooks>
 //#include <dhooks>
+#include <geoip>
 
 //bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
@@ -5402,8 +5403,10 @@ Action cmd_getgud(int client, int args)
 		//https://forums.alliedmods.net/showthread.php?t=96831?t=96831
 		CancelClientMenu(client, true)
 		char sIP[32]
-		//GetClientIP(client, sIP, 32)
-		//PrintToChat(client, "%s", sIP)
+		GetClientIP(client, sIP, 32)
+		char sCode2[32]
+		GeoipCode2(sIP, sCode2)
+		PrintToChat(client, "%s", sCode2)
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
 } 
