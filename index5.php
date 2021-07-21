@@ -284,8 +284,8 @@
 			// geoplugin_countryName => "Germany"
 			// geoplugin_continentCode => "EU"
 
-			//echo "Hello visitor from: ".$dataArray["geoplugin_countryName"];
-			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']' . $dataArray["geoplugin_countryName"] . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			echo "Hello visitor from: ".$dataArray["geoplugin_countryCode"];
+			echo $row2['username'] . ' [U:1:' . $row['playerid'] . ']' . $dataArray["geoplugin_countryCode"] . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
 			//$someVar="value";
 			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
