@@ -107,12 +107,12 @@ int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
-int gI_devmap[2]
+float gF_devmap[2]
 bool gB_isDevmap
 //bool gB_nospamvote
-int gI_totalPlayers
-//int gI_devmap_yes
-//int gI_devmap_no
+float gF_totalPlayers
+//int gF_devmap_yes
+//int gF_devmap_no
 float gF_devmapTime
 
 float gF_vec[MAXPLAYERS + 1][2][3]
@@ -606,7 +606,7 @@ public void OnMapStart()
 	//gI_cpCount = 0
 	//GetCurrentMap(gS_map, 192)
 	for(int i = 0; i <= 1; i++)
-		gI_devmap[i] = 0
+		gF_devmap[i] = 0
 	//gB_nospamvote = false
 	gB_haveZone = false
 	ConVar CV_sourcetv
@@ -5611,7 +5611,7 @@ Action cmd_devmap(int client, int args)
 			}
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
-				gI_totalPlayers++
+				gF_totalPlayers++
 				//PrintToServer("%i %N", i, i)
 			}
 		}
@@ -5641,21 +5641,21 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					//if(gB_isDevmap)
-					//gI_devmap++
+					//gF_devmap++
 					if(gB_isDevmap)
-						gI_devmap[0]++
+						gF_devmap[0]++
 					else
-						gI_devmap[1]++
+						gF_devmap[1]++
 				}
 				//case 1:
 				//if(StrEqual(sItem, "yes"))
 				case 1:
 				{
-					//gI_devmap--
+					//gF_devmap--
 					if(gB_isDevmap)
-						gI_devmap[1]++
+						gF_devmap[1]++
 					else
-						gI_devmap[0]++
+						gF_devmap[0]++
 				}
 				//}
 				//else
@@ -5663,14 +5663,14 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 					//case 0:
 					//if(StrEqual(sItem, "yes"))
 					//{
-						//gI_devmap++
-						//gI_devmap_no++
+						//gF_devmap++
+						//gF_devmap_no++
 					//}
 					//case 1:
 					//if(StrEqual(sItem, "no"))
 					//{
-						//gI_devmap--
-						//gI_devmap_yes++
+						//gF_devmap--
+						//gF_devmap_yes++
 					//}
 				//}
 			}
@@ -5685,68 +5685,68 @@ Action timer_devmap(Handle timer)
 	//char sMap[192]
 	//GetCurrentMap(sMap, 192)
 	//gB_nospamvote = false
-	//PrintToServer("%i", gI_devmap)
-	//if(gI_devmap > 0 && !gB_isDevmap)
-	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] >= gI_devmap[0] && !gB_isDevmap)
+	//PrintToServer("%i", gF_devmap)
+	//if(gF_devmap > 0 && !gB_isDevmap)
+	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0] && !gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %i of %i players.", float((gI_devmap[1] / gI_totalPlayers) * 100), gI_devmap[1], gI_totalPlayers)
+		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %i of %i players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
-			gI_devmap[i] = 0
-		//gI_devmap_yes = 0
-		//gI_devmap_no = 0
-		gI_totalPlayers = 0
+			gF_devmap[i] = 0
+		//gF_devmap_yes = 0
+		//gF_devmap_no = 0
+		gF_totalPlayers = 0
 		CreateTimer(5.0, timer_changelevel)
 		//CreateTimer(
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
 	}
-	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] >= gI_devmap[0] && gB_isDevmap)
+	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0] && gB_isDevmap)
 	{
 		//char sMap[192]
 		//GetCurrentMap(sMap, 192)
-		PrintToChatAll("Devmap will be continue. \"No\" chose %i%%% or %i of %i players.", (gI_devmap[1] / gI_totalPlayers) * 100, gI_devmap[1], gI_totalPlayers)
+		PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %i of %i players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
 		//google translate russian to english.
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
-			gI_devmap[i] = 0
-		//gI_devmap_yes = 0
-		//gI_devmap_no = 0
-		gI_totalPlayers = 0
+			gF_devmap[i] = 0
+		//gF_devmap_yes = 0
+		//gF_devmap_no = 0
+		gF_totalPlayers = 0
 		//ForceChangeLevel(sMap, "Dev map is enabled.")
 		//PrintToChatAll("%i", )
 	}
 	//else
-	//if(gI_devmap < 0 && gB_isDevmap)
-	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] <= gI_devmap[0] && gB_isDevmap)
+	//if(gF_devmap < 0 && gB_isDevmap)
+	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %i%%% or %i of %i players.", (gI_devmap[0] / gI_totalPlayers) * 100, gI_devmap[0], gI_totalPlayers)
+		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %i of %i players.", (gF_devmap[0] / gF_totalPlayers) * 100., gF_devmap[0], gF_totalPlayers)
 		for(int i = 0; i <= 1; i++)
-			gI_devmap[i] = 0
+			gF_devmap[i] = 0
 		gB_isDevmap = false
-		//gI_devmap_yes = 0
-		//gI_devmap_no = 0
-		gI_totalPlayers = 0
+		//gF_devmap_yes = 0
+		//gF_devmap_no = 0
+		gF_totalPlayers = 0
 		CreateTimer(5.0, timer_changelevel)
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
-	if((gI_devmap[1] || gI_devmap[0]) && gI_devmap[1] <= gI_devmap[0] && !gB_isDevmap)
+	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && !gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (gI_devmap[0] / gI_totalPlayers) * 100, gI_devmap[0], gI_totalPlayers)
+		PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %i of %i players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
 		for(int i = 0; i <= 1; i++)
-			gI_devmap[i] = 0
+			gF_devmap[i] = 0
 		gB_isDevmap = false
-		//gI_devmap_yes = 0
-		//gI_devmap_no = 0
-		gI_totalPlayers = 0
+		//gF_devmap_yes = 0
+		//gF_devmap_no = 0
+		gF_totalPlayers = 0
 		//ForceChangeLevel(sMap, "Dev map is disabled.")
 	}
 	for(int i = 0; i <= 1; i++)
-		gI_devmap[i] = 0
-	//gI_devmap_yes = 0
-	//gI_devmap_no = 0
-	gI_totalPlayers = 0
+		gF_devmap[i] = 0
+	//gF_devmap_yes = 0
+	//gF_devmap_no = 0
+	gF_totalPlayers = 0
 	return Plugin_Stop
 }
 
