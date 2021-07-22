@@ -145,12 +145,12 @@
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
 			<tr>
-				<th>Place</th>
+				<th><center>Place</center></th>
 				<th>Team</th>
 				<th><center>Time</center></th>
-				<th>Completions</th>
+				<th><center>Completions</center></th>
 				<!--<th>Map</th>-->
-				<th>Date</th>
+				<th><center>Date</center></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -209,7 +209,8 @@
 					$mins = floor($row['time'] / 60 % 60);
 					$secs = floor($row['time'] % 60);
 					$time = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$row[date]</center></td></tr>";
+					$formatedDate = date("Y-m-d<br>H:i:s", (int)$row[date]);
+					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDate</center></td></tr>";
 					//$countx = $countx + 1;
 					$count++;
 					//echo "<td>$row2x[username]</td>";
