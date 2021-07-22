@@ -1,32 +1,39 @@
 <html>
 <!--<head>Trikz Timer</head>-->
 <style>
-.styled-table {
+.styled-table
+{
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	background-color: rgba(0,0,0,.5); // Sets to 50% transparent <!--https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
 }
-.styled-table thead tr {
+.styled-table thead tr
+{
     background-color: #009879;
     color: #ffffff;
     text-align: left;
 }
 .styled-table th,
-.styled-table td {
+.styled-table td
+{
     padding: 12px 15px;
 }
-.styled-table tbody tr {
+.styled-table tbody tr
+{
     border-bottom: 1px solid #dddddd;
 }
 
-.styled-table tbody tr:nth-of-type(even) {
+.styled-table tbody tr:nth-of-type(even)
+{
     background-color: #f3f3f3;
 }
 
-.styled-table tbody tr:last-of-type {
+.styled-table tbody tr:last-of-type
+{
     border-bottom: 2px solid #009879;
 }
 </style>
@@ -307,12 +314,12 @@
 			// continent, etc using IP Address
 
 			//$ip = '52.25.109.230';
-			$geoipcode2 = $row2['geoipcode2'];
+			$ip = $row2['ip'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			//$ipdat = @json_decode(file_get_contents(
-			//    "http://www.geoplugin.net/json.gp?ip=" . $ip));
+			$ipdat = @json_decode(file_get_contents(
+			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
 
 			//echo 'Country Name: ' . $ipdat->geoplugin_countryName . "\n";
 			//echo 'City Name: ' . $ipdat->geoplugin_city . "\n";
@@ -330,7 +337,7 @@
 			//echo ;
 			//echo 
 			//$test = "de";
-			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($geoipcode2).".svg>" . ' ' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//https://github.com/hampusborgos/country-flags
 			//.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
@@ -439,14 +446,14 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//echo $row32['username'] . '<br>';
-			$geoipcode2 = $row32['geoipcode2'];
+			$ip = $row32['ip'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			//$ipdat = @json_decode(file_get_contents(
-			 //   "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
+			$ipdat = @json_decode(file_get_contents(
+			    "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
 			//https://stackoverflow.com/questions/26065495/php-echo-to-display-image-html
-			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($geoipcode2).".svg>" . ' ' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
+			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
 			//https://github.com/hampusborgos/country-flags
 			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
