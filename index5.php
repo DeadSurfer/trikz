@@ -4,12 +4,18 @@
 .styled-table
 {
     border-collapse: collapse;
+	<!--border-collapse: seperate;-->
     margin: 25px 0;
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-	background-color: rgba(0,0,0,.5); <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
+	<!--background-color: rgba(0,0,0,.5);--> <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
+	<!--border-radius: 25px;-->
+	<!--border: 2px solid #73AD21;-->
+	<!--padding: 20px;-->
+	<!--width: 200px;-->
+	<!--height: 150px;-->
 }
 .styled-table thead tr
 {
@@ -25,6 +31,9 @@
 .styled-table tbody tr
 {
     border-bottom: 1px solid #dddddd;
+	background-color: #00CCA2;
+	<!--background-color: rgba(0.0,204.0,162.0,0.5);
+	background-color: transparent-->
 }
 
 .styled-table tbody tr:nth-of-type(even)
@@ -133,7 +142,7 @@
 		$name = NULL;
 	//$name = $_POST
 	?>
-	<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
+	<!--<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
 		<thead>
 			<tr>
 				<th>Place</th>
@@ -147,7 +156,7 @@
 		</thead>
 		<tbody>
 		<tr>
-		<td><center><?php
+		<td><center>--><?php
 		//Step2
 		$queryx = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
@@ -158,19 +167,32 @@
 		$resultx = mysqli_query($db, $queryx);
 		//$rowx = mysqli_fetch_assoc($resultx);
 		$countx = 1;
+		echo "<table class='styled-table'>";
+		echo "<thead><tr>";
+		echo "<th>Place</th>";
+		echo "<th>Team</th>";
+		echo "<th>Time</th>";
+		echo "<th>Completions</th>";
+		echo "<th>Date</th>";
+		echo "</tr></thead>";
+		//echo "<tbody><tr>";
+		//echo "<td>$countx</td>";
+		echo "<tbody><tr><td>$countx</td></tr></tbody>";
+		//$countx = $countx + 1;
+		$countx++;
 		while($rowx = mysqli_fetch_assoc($resultx))
 		{
-			//$query2x = "SELECT username FROM users WHERE steamid = ".$rowx['playerid']."";
-			//mysqli_query($db, $query2x) or die('Error querying in table.');
-			//$result2x = mysqli_query($db, $query2x);
-			//$row2x = mysqli_fetch_array($result2x);
+			$query2x = "SELECT username FROM users WHERE steamid = ".$rowx['playerid']."";
+			mysqli_query($db, $query2x) or die('Error querying in table.');
+			$result2x = mysqli_query($db, $query2x);
+			$row2x = mysqli_fetch_array($result2x);
 			//echo $row2['username'] . ' ';
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
-				//$query3x = "SELECT username FROM users WHERE steamid = ".$rowx['partnerid']."";
-				//mysqli_query($db, $query3x) or die('Error querying in table.');
-				//$result3x = mysqli_query($db, $query3x);
+				$query3x = "SELECT username FROM users WHERE steamid = ".$rowx['partnerid']."";
+				mysqli_query($db, $query3x) or die('Error querying in table.');
+				$result3x = mysqli_query($db, $query3x);
 				//$row3x = mysqli_fetch_array($result3x);
 				//echo $row3['username'] . ' ';
 				//$row3 = mysqli_fetch_field($result3);
@@ -179,6 +201,13 @@
 					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
 					//printf("%s %s" $row2, $row3);
 					//printf("%s", mysqli_fetch_field($result2));
+					//echo "<td>$countx</td>";
+					//$countx = $countx + 1;
+					echo "<tbody><tr><td>$countx</td></tr></tbody>";
+					//$countx = $countx + 1;
+					$countx++;
+					//echo "<td>$row2x[username]</td>";
+					echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
 				}
 			}
 			
@@ -187,8 +216,10 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//$countx = 1;
-			echo $countx . '.<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
-			$countx = $countx + 1;
+			//echo $countx . '.<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//echo "<td>$countx</td>";
+			//$countx = $countx + 1;
+			//$countx++;
 			//$someVar="value";
 			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
 			/*function clipboard_copy($text) //https://stackoverflow.com/questions/33926038/copy-to-clipboard-from-php-command-line-script-in-windows-7 //bugs.php.net/bug.php?id=19545
@@ -235,8 +266,8 @@
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></center></td>
-		<td><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
+	?><!--</center></td>-->
+		<!--<td>--><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
 		$result = mysqli_query($db, $query);
@@ -250,7 +281,7 @@
 			// Use JSON encoded string and converts
 			// it into a PHP variable
 			$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
-			echo strtolower($ipdat->geoplugin_countryCode);
+			//echo strtolower($ipdat->geoplugin_countryCode);
 		}
 		?>.svg">-->
 		<?php
@@ -314,12 +345,12 @@
 			// continent, etc using IP Address
 
 			//$ip = '52.25.109.230';
-			$ip = $row2['ip'];
+			//$ip = $row2['ip'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			$ipdat = @json_decode(file_get_contents(
-			    "http://www.geoplugin.net/json.gp?ip=" . $ip));
+			//$ipdat = @json_decode(file_get_contents(
+			//    "http://www.geoplugin.net/json.gp?ip=" . $ip));
 
 			//echo 'Country Name: ' . $ipdat->geoplugin_countryName . "\n";
 			//echo 'City Name: ' . $ipdat->geoplugin_city . "\n";
@@ -337,7 +368,7 @@
 			//echo ;
 			//echo 
 			//$test = "de";
-			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
+			//echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//https://github.com/hampusborgos/country-flags
 			//.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
 			//$countx = $countx + 1;
@@ -387,8 +418,8 @@
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></td>
-		<td><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
+	?><!--</td>
+		<td>--><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		mysqli_query($db, $query) or die('Error querying database.');
 		$result = mysqli_query($db, $query);
@@ -402,7 +433,7 @@
 			// Use JSON encoded string and converts
 			// it into a PHP variable
 			$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
-			echo strtolower($ipdat->geoplugin_countryCode);
+			//echo strtolower($ipdat->geoplugin_countryCode);
 		}
 		?>.svg">-->
 		<?php
@@ -446,21 +477,21 @@
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
 			//echo $row32['username'] . '<br>';
-			$ip = $row32['ip'];
+			//$ip = $row32['ip'];
 
 			// Use JSON encoded string and converts
 			// it into a PHP variable
-			$ipdat = @json_decode(file_get_contents(
-			    "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
+			//$ipdat = @json_decode(file_get_contents(
+			//    "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
 			//https://stackoverflow.com/questions/26065495/php-echo-to-display-image-html
-			echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
+			//echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
 			//https://github.com/hampusborgos/country-flags
 			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></td>
-		<td><?php
+	?><!--</td>
+		<td>--><?php
 		//Step2
 		$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query3 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -504,12 +535,12 @@
 			$secs = floor($row3['time'] % 60);
 			$row3x = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 			
-			echo $row3x . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
+			//echo $row3x . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></td>
-		<td><center><?php
+	?><!--</td>
+		<td><center>--><?php
 		//Step2
 		$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query3 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -553,12 +584,12 @@
 			//$secs = floor($row3['time'] % 60);
 			//$row3x = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 			$completions = $row3['completions']; //https://www.bing.com/search?q=set+where+is+null+sql&cvid=3134695c3d564421aec72036422c503c&aqs=edge..69i57j0l3.7648j0j1&pglt=299&FORM=ANNTA1&PC=U531
-			echo $completions . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
+			//echo $completions . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></center></td>
-		<td><?php
+	?><!--</center></td>
+		<td>--><?php
 		//Step2
 		$query4 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query4 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -597,12 +628,12 @@
 			//$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			echo $row4['map'] . '<br>';
+			//echo $row4['map'] . '<br>';
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></td>
-		<td><?php
+	?><!--</td>
+		<td>--><?php
 		//Step2
 		$query5 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$query5 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
@@ -641,13 +672,13 @@
 			$formatedDate = date("Y-m-d H:i:s", (int)$row5['date']);
 			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
 			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			echo $formatedDate . '<br>';
+			//echo $formatedDate . '<br>';
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?></td>
+	?><!--</td>
 	  </tr>
-	</tbody>
+	</tbody>-->
 	</table>
 	<?php
 		/*//Step2
