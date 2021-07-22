@@ -142,58 +142,60 @@
 		$name = NULL;
 	//$name = $_POST
 	?>
-	<!--<table class="styled-table"> //https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
+	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
 			<tr>
 				<th>Place</th>
-				<th>Player 1</th>
-				<th>Player 2</th>
+				<th>Team</th>
 				<th>Time</th>
 				<th>Completions</th>
-				<th>Map</th>
+				<!--<th>Map</th>-->
 				<th>Date</th>
 			</tr>
 		</thead>
 		<tbody>
-		<tr>
-		<td><center>--><?php
+		<!--<tr>-->
+		<!--<td>-->
+		<!--<td>--><?php
 		//Step2
-		$queryx = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
-		mysqli_query($db, $queryx) or die('Error querying database.');
+		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
-		$resultx = mysqli_query($db, $queryx);
+		$result = mysqli_query($db, $query);
 		//$rowx = mysqli_fetch_assoc($resultx);
-		$countx = 1;
-		echo "<table class='styled-table'>";
-		echo "<thead><tr>";
-		echo "<th>Place</th>";
-		echo "<th>Team</th>";
-		echo "<th>Time</th>";
-		echo "<th>Completions</th>";
-		echo "<th>Date</th>";
-		echo "</tr></thead>";
+		$count = 1;
+		//echo "<table class='styled-table'>";
+		//echo "<thead><tr>";
+		//echo "<th>Place</th>";
+		//echo "<th>Team</th>";
+		//echo "<th>Time</th>";
+		//echo "<th>Completions</th>";
+		//echo "<th>Date</th>";
+		//echo "</tr></thead>";
 		//echo "<tbody><tr>";
 		//echo "<td>$countx</td>";
-		echo "<tbody><tr><td>$countx</td></tr></tbody>";
+		//echo "<tbody><tr><td>$countx</td></tr></tbody>";
+		//echo "<tbody><tr>";
+		//echo "<td>";
 		//$countx = $countx + 1;
-		$countx++;
-		while($rowx = mysqli_fetch_assoc($resultx))
+		//$countx++;
+		while($row = mysqli_fetch_assoc($result))
 		{
-			$query2x = "SELECT username FROM users WHERE steamid = ".$rowx['playerid']."";
-			mysqli_query($db, $query2x) or die('Error querying in table.');
-			$result2x = mysqli_query($db, $query2x);
-			$row2x = mysqli_fetch_array($result2x);
+			$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
+			mysqli_query($db, $query2) or die('Error querying in table.');
+			$result2 = mysqli_query($db, $query2);
+			$row2 = mysqli_fetch_array($result2);
 			//echo $row2['username'] . ' ';
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
-				$query3x = "SELECT username FROM users WHERE steamid = ".$rowx['partnerid']."";
-				mysqli_query($db, $query3x) or die('Error querying in table.');
-				$result3x = mysqli_query($db, $query3x);
-				//$row3x = mysqli_fetch_array($result3x);
+				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
+				mysqli_query($db, $query3) or die('Error querying in table.');
+				$result3 = mysqli_query($db, $query3);
+				$row3 = mysqli_fetch_array($result3);
 				//echo $row3['username'] . ' ';
 				//$row3 = mysqli_fetch_field($result3);
 				//while($row3 = mysqli_fetch_array($result3))
@@ -203,11 +205,15 @@
 					//printf("%s", mysqli_fetch_field($result2));
 					//echo "<td>$countx</td>";
 					//$countx = $countx + 1;
-					echo "<tbody><tr><td>$countx</td></tr></tbody>";
+					$hours = floor($row['time'] / 3600);
+					$mins = floor($row['time'] / 60 % 60);
+					$secs = floor($row['time'] % 60);
+					$time = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+					echo "<tr><td><center>$countx</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td>$time</td></tr>";
 					//$countx = $countx + 1;
-					$countx++;
+					$count++;
 					//echo "<td>$row2x[username]</td>";
-					echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
+					//echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
 				}
 			}
 			
@@ -676,9 +682,9 @@
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</td>
-	  </tr>
-	</tbody>-->
+	?><!--</td>-->
+	  <!--</tr>-->
+	</tbody>
 	</table>
 	<?php
 		/*//Step2
