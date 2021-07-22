@@ -31,7 +31,7 @@
 .styled-table tbody tr
 {
     border-bottom: 1px solid #dddddd;
-	background-color: #00CCA2;
+	<!--background-color: #00CCA2;-->
 	<!--background-color: rgba(0.0,204.0,162.0,0.5);
 	background-color: transparent-->
 }
@@ -142,7 +142,7 @@
 		$name = NULL;
 	//$name = $_POST
 	?>
-	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
+	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
 		<thead>
 			<tr>
 				<th><center>Place</center></th>
