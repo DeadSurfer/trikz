@@ -147,7 +147,7 @@
 			<tr>
 				<th>Place</th>
 				<th>Team</th>
-				<th>Time</th>
+				<th><center>Time</center></th>
 				<th>Completions</th>
 				<!--<th>Map</th>-->
 				<th>Date</th>
