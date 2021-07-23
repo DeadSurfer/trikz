@@ -148,7 +148,7 @@
 	//$name = $_POST
 	?>
 	<?php
-	echo $name;
+	echo "Map: $name";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
