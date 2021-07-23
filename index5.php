@@ -144,7 +144,7 @@
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
 	else
-		$name = NULL;
+		$name = "trikz_adventure";
 	//$name = $_POST
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
