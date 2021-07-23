@@ -5429,11 +5429,11 @@ Action cmd_getgud(int client, int args)
 		//https://www.color-hex.com/
 		//https://forums.alliedmods.net/showthread.php?t=96831?t=96831
 		CancelClientMenu(client, true)
-		char sIP[32]
-		GetClientIP(client, sIP, 32)
-		char sCode2[3]
-		GeoipCode2(sIP, sCode2)
-		PrintToChat(client, "%s", sCode2)
+		//char sIP[32]
+		//GetClientIP(client, sIP, 32)
+		//char sCode2[3]
+		//GeoipCode2(sIP, sCode2)
+		//PrintToChat(client, "%s", sCode2)
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
@@ -5896,13 +5896,13 @@ void SDKProjectilePost(int entity)
 		//SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
 		//SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_vModel)
-		SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_wModelThrown)
+		SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
 		//SetEntProp(entity, Prop_Send, "m_nModelIndex", d_wModelThrown)
-		char sGetGud[32]
-		IntToString(gI_getGud, sGetGud, 32)
-		//SetEntPropString(entity, Prop_Send, "m_nSkin", sGetGud)
-		PrintToServer("%s flash", sGetGud)
-		DispatchKeyValue(entity, "skin", sGetGud)
+		//char sGetGud[32]
+		//IntToString(gI_getGud, sGetGud, 32)
+		SetEntPropString(entity, Prop_Data, "m_nSkin", sGetGud)
+		//PrintToServer("%s flash", sGetGud)
+		//DispatchKeyValue(entity, "skin", sGetGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
 }
@@ -5958,12 +5958,12 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_vModel)
-	SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_wModel)
-	//SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
-	char sGetGud[32]
-	IntToString(gI_getGud, sGetGud, 32)
-	DispatchKeyValue(weapon, "skin", sGetGud)
+	SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
+	//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
+	SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
+	//char sGetGud[32]
+	//IntToString(gI_getGud, sGetGud, 32)
+	//DispatchKeyValue(weapon, "skin", sGetGud)
 	SetEntityRenderColor(weapon, 255, 0, 0, 255)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
