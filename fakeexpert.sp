@@ -5900,7 +5900,7 @@ void SDKProjectilePost(int entity)
 		//SetEntProp(entity, Prop_Send, "m_nModelIndex", d_wModelThrown)
 		//char sGetGud[32]
 		//IntToString(gI_getGud, sGetGud, 32)
-		SetEntPropString(entity, Prop_Data, "m_nSkin", sGetGud)
+		SetEntProp(entity, Prop_Data, "m_nSkin", gI_getGud)
 		//PrintToServer("%s flash", sGetGud)
 		//DispatchKeyValue(entity, "skin", sGetGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
