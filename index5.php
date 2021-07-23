@@ -100,6 +100,11 @@
     font-weight: bold;
     color: #009879;
 }
+.styled-table tbody td.active-row
+{
+    font-weight: bold;
+    color: #009879;
+}
 </style>
 <body>
 	<h1>Trikz Timer</h1> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. -->
@@ -205,7 +210,7 @@
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
 			<tr>
-				<th role="row"><center>Place</center></th>
+				<th><center>Place</center></th>
 				<th>Team</th>
 				<th><center>Time</center></th>
 				<th><center>Completions</center></th>
@@ -272,10 +277,10 @@
 					$time = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 					$formatedDateYmd = date("Y-m-d", (int)$row[date]);
 					$formatedDateHis = date("H:i:s", (int)$row[date]);
-					if($count == 1)
-						echo "<tr class='sorting_asc'><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
-					else
-						echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+					//if($count == 1)
+						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+					//else
+					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//$countx = $countx + 1;
 					$count++;
 					//echo "<td>$row2x[username]</td>";
