@@ -164,7 +164,8 @@
 		<tbody>
 		<!--<tr>-->
 		<!--<td>-->
-		<!--<td>--><?php
+		<!--<td>-->
+		<?php
 		//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
@@ -434,7 +435,7 @@
 			//<script type="text/javascript" language="JavaScript">
 			//document.forms['myform'].elements['mytextfield'].focus();
 			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
-		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
+		//}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?><!--</td>
