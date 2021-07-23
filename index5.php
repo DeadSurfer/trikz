@@ -147,6 +147,9 @@
 		$name = "trikz_adventure";
 	//$name = $_POST
 	?>
+	<?php
+	echo $name;
+	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
 		<thead>
 			<tr>
