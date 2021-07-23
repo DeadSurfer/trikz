@@ -21,7 +21,7 @@
 {
     background-color: #009879;
     color: #ffffff;
-    text-align: right;
+    text-align: center;
 }
 .styled-table2 th,
 .styled-table2 td
@@ -172,10 +172,10 @@
 		Enter map name : <input type="text" name="submit"><br/>
 		<input type="submit" value="SELECT" name="Submit1"> <br/>
 		</form>-->
-		<label for="submit">Please choose map</label><br/>
+		<!--<label for="submit">Please choose map</label><br/>-->
 				<form method = "post" action = "">
 					<select id="submit" name="submit">
-						<!--<option value="">Select map</option>-->
+						<option value="">Select a map</option>
 						<?php
 							$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
 							$rs = mysqli_query($db, $sql);
