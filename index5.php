@@ -149,7 +149,7 @@
 	?>
 	<?php
 	//echo "Map: $name";
-	echo "<table class='styled-table'><thead><tr><th><left>Map: $name</left></th></tr></thead></table>";
+	echo "<table class='styled-table'><thead><tr><th><right>Map: $name</right></th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
