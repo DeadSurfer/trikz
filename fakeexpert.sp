@@ -5968,7 +5968,7 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 		//DispatchKeyValue(weapon, "skin", sGetGud)
 		SetEntityRenderColor(weapon, 255, 0, 0, 255)
 	}
-	CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
+	//CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
