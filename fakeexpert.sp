@@ -5842,7 +5842,7 @@ Action SDKProjectile(int entity)
 	FakeClientCommand(client, "use weapon_knife")
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
-	CreateTimer(0.1, timer_draw, client, TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(0.2, timer_draw, client, TIMER_FLAG_NO_MAPCHANGE)
 	//SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
 }
