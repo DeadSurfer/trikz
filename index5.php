@@ -150,7 +150,7 @@
 	<?php
 	echo $name;
 	?>
-	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
+	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
 			<tr>
 				<th><center>Place</center></th>
@@ -760,11 +760,12 @@
 	<?php $year = "Copyleft fakeexpert 2021 -"; echo $year . ' ' . date("Y") . ' year.<br>';?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
 	</body>
 </html>
-
-//https://stackoverflow.com/questions/9494209/how-to-link-mysql-to-html
+https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
+https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
+https://stackoverflow.com/questions/9494209/how-to-link-mysql-to-html
 <html><!--Copyleft 2021-2021 year.--></html>
-//https://www.php.net/license/index.php
-//https://htmlcodex.com/license/#:~:text=All%20of%20the%20creative%20works%20by%20HTML%20Codex,under%20a%20Creative%20Commons%20Attribution%204.0%20International%20License.
+https://www.php.net/license/index.php
+https://htmlcodex.com/license/#:~:text=All%20of%20the%20creative%20works%20by%20HTML%20Codex,under%20a%20Creative%20Commons%20Attribution%204.0%20International%20License.
 License
 Creative Commons License
 All of the creative works by HTML Codex are licensed under a Creative Commons Attribution 4.0 International License.
