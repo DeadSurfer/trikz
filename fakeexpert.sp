@@ -5953,18 +5953,21 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
-	//char sWeapon[32]
-	//GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
+	char sWeapon[32]
+	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
-	//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
-	SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
-	//char sGetGud[32]
-	//IntToString(gI_getGud, sGetGud, 32)
-	//DispatchKeyValue(weapon, "skin", sGetGud)
-	SetEntityRenderColor(weapon, 255, 0, 0, 255)
+	if(StrEqual(sWeapon, "weapon_flashbang"))
+	{
+		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
+		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
+		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
+		//char sGetGud[32]
+		//IntToString(gI_getGud, sGetGud, 32)
+		//DispatchKeyValue(weapon, "skin", sGetGud)
+		SetEntityRenderColor(weapon, 255, 0, 0, 255)
+	}
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
