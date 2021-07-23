@@ -124,6 +124,7 @@ bool gB_toggledTeleport[MAXPLAYERS + 1][2]
 bool gB_haveZone
 
 float gF_getGud
+int gI_getGud
 
 bool gB_isServerRecord
 char gS_date[64]
@@ -5392,6 +5393,7 @@ Action cmd_getgud(int client, int args)
 		GetCmdArg(args, sGet, 32)
 		float result = StringToFloat(sGet)
 		gF_getGud = result
+		gI_getGud = args
 		PrintToServer("get gud: %f", gF_getGud)
 		//PrintToChat(client, "\x07a71919text") //https://wiki.alliedmods.net/Scripting_FAQ_(SourceMod) https://forums.alliedmods.net/showthread.php?t=307595 https://www.bing.com/search?q=default+color+sourcemod&cvid=be0df2495cd74ba489d75d72194aca7e&aqs=edge..69i57j0l6.3136j0j1&pglt=299&FORM=ANNTA1&PC=U531
 		//PrintToChat(client, "\x01text2")
@@ -5423,7 +5425,7 @@ Action cmd_getgud(int client, int args)
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
-		SetEntProp(client, Prop_Data, "m_nSkin", 2)
+		SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
 		SetEntityRenderColor(client, 255, 0, 0, 255)
 		//gI_skin[client] = true
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
@@ -5869,7 +5871,7 @@ Action SDKProjectile(int entity)
 	{
 		//SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
-		SetEntProp(entity, Prop_Data, "m_nSkin", 2)
+		SetEntProp(entity, Prop_Data, "m_nSkin", gI_getGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
 }
