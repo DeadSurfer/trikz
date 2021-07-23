@@ -227,9 +227,13 @@
 		//https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531
 		$page = basename($_SERVER[PHP_SELF]);
 		$start = $_GET[start];
-		echo $page;
-		
-		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
+		//echo $page;
+		$eu = $start;
+		$limit = 10;
+		$thisp = $eu + $limit;
+		$back = $eu - $limit;
+		$next = $eu + $limit;
+		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
 		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
@@ -254,6 +258,11 @@
 		//$countx = $countx + 1;
 		//$countx++;
 		$serverRecord = 0;
+		$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
+		mysqli_query($db, $query0) or die('Error querying in table.');
+		$result2 = mysqli_query($db, $query0);
+		$row0 = mysqli_fetch_array($result0);
+		//$num = 
 		while($row = mysqli_fetch_assoc($result))
 		{
 			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
@@ -357,6 +366,10 @@
 			//document.forms['myform'].elements['mytextfield'].focus();
 			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
+		if($back >= 0)
+			print "<a href='$page?start=$back'>Previous</a>";
+		if($thisp < $row0)
+			print "<a href='$page?start=$next'>Next</a>";
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?><!--</center></td>-->
