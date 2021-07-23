@@ -597,8 +597,8 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }*/
-int gI_vModel
-int gI_wModel
+//int gI_vModel
+//int gI_wModel
 int gI_wModelThrown
 public void OnMapStart()
 {
@@ -633,10 +633,11 @@ public void OnMapStart()
 		gB_isTurnedOnSourceTV = true
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
-	gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	//gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
 	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
+	//PrecacheModel(
 	//PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
 }
@@ -5434,10 +5435,10 @@ Action cmd_getgud(int client, int args)
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
-		SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
+		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
 		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModel)
-		SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
-		SetEntityRenderColor(client, 255, 0, 0, 255)
+		//SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
+		//SetEntityRenderColor(client, 255, 0, 0, 255)
 		//gI_skin[client] = true
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
@@ -5887,6 +5888,7 @@ Action SDKProjectile(int entity)
 		char sGetGud[32]
 		IntToString(gI_getGud, sGetGud, 32)
 		//SetEntPropString(entity, Prop_Send, "m_nSkin", sGetGud)
+		PrintToServer("%s flash", sGetGud)
 		DispatchKeyValue(entity, "skin", sGetGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
