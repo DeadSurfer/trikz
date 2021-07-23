@@ -945,7 +945,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		//GeoipCode2(
 		if(results.FetchRow())
 		{
-			//PrintToServer("%s %i", sName, steamid)
+			PrintToServer("%s %i [3]", sName, steamid)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			//char sIP[32]
 			//GetClientIP(client, sIP, 32)
@@ -960,6 +960,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
+			PrintToServer("%s %i [4]", sName, steamid)
 		}
 	}
 }
@@ -987,7 +988,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		{
 			//char sName[64]
 			//GetClientName(client, sName, 64)
-			//PrintToServer("%s", sName)
+			PrintToServer("%s %i [1]", sName, steamid)
 			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
@@ -1002,6 +1003,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUserAdded, sQuery)
+			PrintToServer("%s %i [1]", sName, steamid)
 		}
 	}
 	//gB_newpass = true
