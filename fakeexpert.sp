@@ -5853,6 +5853,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
+		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
 }
 
@@ -5873,6 +5874,10 @@ Action SDKProjectile(int entity)
 	CreateTimer(0.2, timer_draw, client, TIMER_FLAG_NO_MAPCHANGE)
 	//SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+}
+
+void SDKProjectilePost(int entity)
+{
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
