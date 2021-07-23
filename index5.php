@@ -224,7 +224,7 @@
 		<!--<td>-->
 		<?php
 		//Step2
-		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
+		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
 		mysqli_query($db, $query) or die('Error querying database.');
 		//if(strlen($name) > 0)
@@ -248,9 +248,10 @@
 		//echo "<td>";
 		//$countx = $countx + 1;
 		//$countx++;
+		$serverRecord = 0;
 		while($row = mysqli_fetch_assoc($result))
 		{
-			$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
+			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
 			mysqli_query($db, $query2) or die('Error querying in table.');
 			$result2 = mysqli_query($db, $query2);
 			$row2 = mysqli_fetch_array($result2);
@@ -258,7 +259,7 @@
 			//$row2 = mysqli_fetch_field($result2);
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
-				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
+				$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
 				mysqli_query($db, $query3) or die('Error querying in table.');
 				$result3 = mysqli_query($db, $query3);
 				$row3 = mysqli_fetch_array($result3);
@@ -271,10 +272,15 @@
 					//printf("%s", mysqli_fetch_field($result2));
 					//echo "<td>$countx</td>";
 					//$countx = $countx + 1;
-					$hours = floor($row['time'] / 3600);
-					$mins = floor($row['time'] / 60 % 60);
-					$secs = floor($row['time'] % 60);
+					$hours = floor($row[time] / 3600);
+					$mins = floor($row[time] / 60 % 60);
+					$secs = floor($row[time] % 60);
 					$time = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+					
+					if($serverRecord == 0)
+					{
+						$serverRecord = $row[time];
+					}
 					$formatedDateYmd = date("Y-m-d", (int)$row[date]);
 					$formatedDateHis = date("H:i:s", (int)$row[date]);
 					//if($count == 1)
