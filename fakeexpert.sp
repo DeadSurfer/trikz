@@ -5878,6 +5878,10 @@ Action SDKProjectile(int entity)
 
 void SDKProjectilePost(int entity)
 {
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
+	
+	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
+		return
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
