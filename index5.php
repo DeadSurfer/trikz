@@ -8,9 +8,9 @@
     margin: 25px 0;
     font-size: 0.9em;
     font-family: sans-serif;
-    min-width: 40px;
+    min-width: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-	aligin: right;
+	aligin: center;
 	<!--background-color: rgba(0,0,0,.5);--> <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
 	<!--border-radius: 25px;-->
 	<!--border: 2px solid #73AD21;-->
@@ -200,7 +200,7 @@
 	?>
 	<?php
 	//echo "Map: $name";
-	echo "<table class='styled-table2'><thead><tr><th><right>Map: $name</right></th></tr></thead></table>";
+	echo "<table class='styled-table2'><thead><tr><th>Map: $name</th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
