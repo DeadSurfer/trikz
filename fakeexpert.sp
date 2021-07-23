@@ -5865,8 +5865,8 @@ Action SDKProjectile(int entity)
 	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
-		//SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
+		SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
 		SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntityRenderColor(client, 255, 0, 0, 255)
 	}
