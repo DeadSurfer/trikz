@@ -227,6 +227,7 @@
 		//https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531
 		$page = basename($_SERVER[PHP_self]);
 		$start = $_GET[start];
+		echo $page;
 		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
 		mysqli_query($db, $query) or die('Error querying database.');
