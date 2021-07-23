@@ -634,6 +634,8 @@ public void OnMapStart()
 	}
 	gI_vModel = PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	gI_wModel = PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	//PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	//PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
 }
 
 public void OnMapEnd()
@@ -5424,7 +5426,9 @@ Action cmd_getgud(int client, int args)
 		PrintToChat(client, "%s", sCode2)
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
-		SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModel)
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModel)
 		SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
 		SetEntityRenderColor(client, 255, 0, 0, 255)
 		//gI_skin[client] = true
@@ -5869,8 +5873,10 @@ Action SDKProjectile(int entity)
 	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
+		//SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModel)
+		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModel)
 		SetEntProp(entity, Prop_Data, "m_nSkin", gI_getGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
