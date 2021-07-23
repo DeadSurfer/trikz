@@ -265,7 +265,7 @@
 		//$row0 = mysqli_fetch_array($result0);
 		//$row0 = mysqli_fet
 		//$num = 
-		$row0 = $db->query0("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
+		//$row0 = $db->query0("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
 		while($row = mysqli_fetch_assoc($result))
 		{
 			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
