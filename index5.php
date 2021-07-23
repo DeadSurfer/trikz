@@ -235,7 +235,7 @@
 		$next = $eu + $limit;
 		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
-		mysqli_query($db, $query) or die('Error querying database.');
+		mysqli_query($db, $query) or die('Error querying database. [1]');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
@@ -259,14 +259,14 @@
 		//$countx++;
 		$serverRecord = 0;
 		$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
-		mysqli_query($db, $query0) or die('Error querying in table.');
+		mysqli_query($db, $query0) or die('Error querying in table. [2]');
 		$result2 = mysqli_query($db, $query0);
 		$row0 = mysqli_fetch_array($result0);
 		//$num = 
 		while($row = mysqli_fetch_assoc($result))
 		{
 			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
-			mysqli_query($db, $query2) or die('Error querying in table.');
+			mysqli_query($db, $query2) or die('Error querying in table. [3]');
 			$result2 = mysqli_query($db, $query2);
 			$row2 = mysqli_fetch_array($result2);
 			//echo $row2['username'] . ' ';
@@ -274,7 +274,7 @@
 			//while ($row2 = mysqli_fetch_array($result2))
 			{
 				$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
-				mysqli_query($db, $query3) or die('Error querying in table.');
+				mysqli_query($db, $query3) or die('Error querying in table. [4]');
 				$result3 = mysqli_query($db, $query3);
 				$row3 = mysqli_fetch_array($result3);
 				//echo $row3['username'] . ' ';
