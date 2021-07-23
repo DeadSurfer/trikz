@@ -599,6 +599,7 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 }*/
 int gI_vModel
 int gI_wModel
+int gI_wModelThrown
 public void OnMapStart()
 {
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
