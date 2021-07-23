@@ -635,7 +635,8 @@ public void OnMapStart()
 	}
 	gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
+	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
+	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
 	//PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
 }
