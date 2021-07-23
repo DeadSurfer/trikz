@@ -5438,7 +5438,7 @@ Action cmd_getgud(int client, int args)
 		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
 		SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
-		SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModel)
+		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModel)
 		//SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
 		DispatchKeyValue(client, "skin", sArg)
 		SetEntityRenderColor(client, 255, 0, 0, 255)
@@ -5958,6 +5958,10 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_wModel)
+	//SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
+	DispatchKeyValue(weapon, "skin", "2")
+	SetEntityRenderColor(weapon, 255, 0, 0, 255)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
