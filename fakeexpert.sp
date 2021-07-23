@@ -5865,8 +5865,8 @@ Action SDKProjectile(int entity)
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
 	//if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo"),
-	GivePlayerItem(client, "weapon_flashbang")
-	//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+	//GivePlayerItem(client, "weapon_flashbang")
+	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	//GivePlayerAmmo(client, 2, 48, true)
 	gB_silentKnife = true
 	FakeClientCommand(client, "use weapon_knife")
