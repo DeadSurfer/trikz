@@ -1461,6 +1461,17 @@ Action Block(int client)
 	gB_block[client] = !gB_block[client]
 	if(gB_block[client])
 	{
+		SetEntProp(client, Prop_Send, "m_CollisionGroup", 5)
+		SetEntityRenderMode(client, RENDER_NORMAL)
+		//gB_block[client] = true
+		if(gB_TrikzMenuIsOpen[client])
+			Trikz(client)
+		PrintToChat(client, "Block enabled.")
+		return Plugin_Handled
+	}//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
+	else
+	{
+
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 100)
@@ -1468,16 +1479,6 @@ Action Block(int client)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block disabled.")
-		return Plugin_Handled
-	}//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
-	else
-	{
-		SetEntProp(client, Prop_Send, "m_CollisionGroup", 5)
-		SetEntityRenderMode(client, RENDER_NORMAL)
-		//gB_block[client] = true
-		if(gB_TrikzMenuIsOpen[client])
-			Trikz(client)
-		PrintToChat(client, "Block enabled.")
 		return Plugin_Handled
 	}
 	//return Plugin_Handled
