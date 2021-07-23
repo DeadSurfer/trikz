@@ -205,7 +205,7 @@
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
 			<tr>
-				<th><center>Place</center></th>
+				<th role="row"><center>Place</center></th>
 				<th>Team</th>
 				<th><center>Time</center></th>
 				<th><center>Completions</center></th>
@@ -273,7 +273,7 @@
 					$formatedDateYmd = date("Y-m-d", (int)$row[date]);
 					$formatedDateHis = date("H:i:s", (int)$row[date]);
 					if($count == 1)
-						echo "<tr class='active-row'><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+						echo "<tr class='sorting_asc'><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					else
 						echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//$countx = $countx + 1;
