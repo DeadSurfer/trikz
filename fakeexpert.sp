@@ -599,6 +599,7 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 }*/
 //int gI_vModel
 //int gI_wModel
+#define d_wModelThrown "models/fakeexpert/models/weapons/flashbang.mdl"
 int gI_wModelThrown
 public void OnMapStart()
 {
@@ -636,7 +637,8 @@ public void OnMapStart()
 	//gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
 	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
+	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
+	gI_wModelThrown = PrecacheModel(d_wModelThrown)
 	//PrecacheModel(
 	//PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
@@ -5884,7 +5886,8 @@ Action SDKProjectile(int entity)
 		//SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
 		//SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_vModel)
-		SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_wModelThrown)
+		//SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_wModelThrown)
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", d_wModelThrown)
 		char sGetGud[32]
 		IntToString(gI_getGud, sGetGud, 32)
 		//SetEntPropString(entity, Prop_Send, "m_nSkin", sGetGud)
