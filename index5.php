@@ -1,6 +1,56 @@
 <html>
 <!--<head>Trikz Timer</head>-->
 <style>
+.styled-table2
+{
+    border-collapse: collapse;
+	<!--border-collapse: seperate;-->
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	aligin: right;
+	<!--background-color: rgba(0,0,0,.5);--> <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
+	<!--border-radius: 25px;-->
+	<!--border: 2px solid #73AD21;-->
+	<!--padding: 20px;-->
+	<!--width: 200px;-->
+	<!--height: 150px;-->
+}
+.styled-table2 thead tr
+{
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+.styled-table2 th,
+.styled-table2 td
+{
+    padding: 12px 15px;
+}
+.styled-table2 tbody tr
+{
+    border-bottom: 1px solid #dddddd;
+	<!--background-color: #00CCA2;-->
+	<!--background-color: rgba(0.0,204.0,162.0,0.5);
+	background-color: transparent-->
+}
+
+.styled-table2 tbody tr:nth-of-type(even)
+{
+    background-color: #f3f3f3;
+}
+
+.styled-table2 tbody tr:last-of-type
+{
+    border-bottom: 2px solid #009879;
+}
+.styled-table2 tbody tr.active-row
+{
+    font-weight: bold;
+    color: #009879;
+}
 .styled-table
 {
     border-collapse: collapse;
@@ -126,8 +176,9 @@
 				<form method = "post" action = "">
 					<select id="submit" name="submit">
 						<option value="">Select map</option>
-						<?php $sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
-								$rs = mysqli_query($db, $sql);
+						<?php
+							$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+							$rs = mysqli_query($db, $sql);
 							while($rows = mysqli_fetch_assoc($rs))
 							{
 								echo '<option value="'.$rows['map'].'">'.$rows['map'].'</option>';
@@ -149,7 +200,7 @@
 	?>
 	<?php
 	//echo "Map: $name";
-	echo "<table class='styled-table'><thead><tr><th><right>Map: $name</right></th></tr></thead></table>";
+	echo "<table class='styled-table2'><thead><tr><th><right>Map: $name</right></th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
