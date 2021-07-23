@@ -5421,8 +5421,10 @@ Action cmd_getgud(int client, int args)
 		GeoipCode2(sIP, sCode2)
 		PrintToChat(client, "%s", sCode2)
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
-		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
+		SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		SetEntProp(client, Prop_Data, "m_nSkin", 1)
+		SetEntityRenderColor(client, 255, 0, 0, 255)
 		//gI_skin[client] = true
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
@@ -5866,9 +5868,9 @@ Action SDKProjectile(int entity)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
-		SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
-		SetEntProp(client, Prop_Data, "m_nSkin", 1)
-		SetEntityRenderColor(client, 255, 0, 0, 255)
+		SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
+		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
 }
 
