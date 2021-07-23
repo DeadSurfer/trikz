@@ -5879,7 +5879,8 @@ Action SDKProjectile(int entity)
 		SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_wModel)
 		char sGetGud[32]
 		IntToString(gI_getGud, sGetGud, 32)
-		SetEntPropString(entity, Prop_Send, "m_nSkin", sGetGud)
+		//SetEntPropString(entity, Prop_Send, "m_nSkin", sGetGud)
+		DispatchKeyValue(entity, "skin", sGetGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
 }
