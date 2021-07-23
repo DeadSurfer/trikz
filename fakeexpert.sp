@@ -596,7 +596,8 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }*/
-
+int gI_vModel
+int gI_wModel
 public void OnMapStart()
 {
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
@@ -630,6 +631,8 @@ public void OnMapStart()
 		gB_isTurnedOnSourceTV = true
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
+	gI_vModel = PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	gI_wModel = PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
 }
 
 public void OnMapEnd()
@@ -5417,6 +5420,10 @@ Action cmd_getgud(int client, int args)
 		char sCode2[3]
 		GeoipCode2(sIP, sCode2)
 		PrintToChat(client, "%s", sCode2)
+		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
+		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
+		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		//gI_skin[client] = true
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
 } 
@@ -5848,6 +5855,21 @@ Action SDKProjectile(int entity)
 	CreateTimer(0.2, timer_draw, client, TIMER_FLAG_NO_MAPCHANGE)
 	//SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+	int steamid = GetSteamAccountID(client)
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	PrintToServer("%i", GetConVarInt(gCV_steamid))
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	PrintToServer("string: %s", sSteamID)
+	//if(steamid == GetConVarInt(gCV_steamid))
+	if(StrEqual(sSteamID, sCurrentSteamID))
+	{
+		SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
+		SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
+		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
+		SetEntityRenderColor(entity, 255, 0, 0, 255)
+	}
 }
 
 Action timer_draw(Handle timer, int client)
