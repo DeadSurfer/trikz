@@ -228,7 +228,7 @@
 		$page = basename($_SERVER[PHP_SELF]);
 		$start = $_GET[start];
 		//echo $page;
-		$eu = $start;
+		$eu = $start - 0;
 		$limit = 10;
 		$thisp = $eu + $limit;
 		$back = $eu - $limit;
