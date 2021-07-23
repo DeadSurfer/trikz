@@ -633,9 +633,9 @@ public void OnMapStart()
 		gB_isTurnedOnSourceTV = true
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
-	gI_vModel = PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	gI_wModel = PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	gI_wModelThrown = PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
+	gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	//PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
 }
