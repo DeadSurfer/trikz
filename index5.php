@@ -199,8 +199,8 @@
 	//if($_POST['submit'] != NULL)
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
-	//else
-		//$name = "trikz_adventure";
+	else
+		$name = "trikz_adventure";
 	//$name = $_POST
 	?>
 	<?php
@@ -225,16 +225,17 @@
 		<?php
 		//Step2
 		//https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531
-		$page = basename($_SERVER[PHP_SELF]);
-		$start = $_GET[start];
+		//$page = basename($_SERVER[PHP_SELF]);
+		//$start = $_GET[start];
 		//echo $page;
-		$eu = $start - 0;
-		$limit = 10;
-		$thisp = $eu + $limit;
-		$back = $eu - $limit;
-		$next = $eu + $limit;
+		//$eu = $start - 0;
+		//$limit = 10;
+		//$thisp = $eu + $limit;
+		//$back = $eu - $limit;
+		//$next = $eu + $limit;
 		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC")->fetchColumn();
-		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
+		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
+		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
 		mysqli_query($db, $query) or die('Error querying database. [1]');
 		//if(strlen($name) > 0)
@@ -259,10 +260,10 @@
 		//$countx = $countx + 1;
 		//$countx++;
 		$serverRecord = 0;
-		$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
-		mysqli_query($db, $query0) or die('Error querying in table. [2]');
-		$result0 = mysqli_query($db, $query0);
-		$row0 = mysqli_fetch_array($result0);
+		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
+		//mysqli_query($db, $query0) or die('Error querying in table. [2]');
+		//$result0 = mysqli_query($db, $query0);
+		//$row0 = mysqli_fetch_array($result0);
 		//$row0 = mysqli_fet
 		//$num = 
 		//$row0 = $db->query0("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
@@ -369,11 +370,11 @@
 			//document.forms['myform'].elements['mytextfield'].focus();
 			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		if($back >= 0)
-			print "<a href='$page?start=$back'>Previous</a>";
+		//if($back >= 0)
+		//	print "<a href='$page?start=$back'>Previous</a>";
 			//print "test";
-		if($thisp < $row0)
-			print "<a href='$page?start=$next'>Next</a>";
+		//if($thisp < $row0)
+		//	print "<a href='$page?start=$next'>Next</a>";
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?><!--</center></td>-->
