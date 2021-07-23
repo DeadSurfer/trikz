@@ -5437,11 +5437,11 @@ Action cmd_getgud(int client, int args)
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
-		SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
+		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
 		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModel)
 		//SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
-		DispatchKeyValue(client, "skin", sArg)
-		SetEntityRenderColor(client, 255, 0, 0, 255)
+		//DispatchKeyValue(client, "skin", sArg)
+		//SetEntityRenderColor(client, 255, 0, 0, 255)
 		//gI_skin[client] = true
 	}//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
 	return Plugin_Handled
@@ -5958,9 +5958,12 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
 	SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_wModel)
 	//SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
-	DispatchKeyValue(weapon, "skin", "2")
+	char sGetGud[32]
+	IntToString(gI_getGud, sGetGud, 32)
+	DispatchKeyValue(weapon, "skin", sGetGud)
 	SetEntityRenderColor(weapon, 255, 0, 0, 255)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
