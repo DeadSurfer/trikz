@@ -5877,7 +5877,9 @@ Action SDKProjectile(int entity)
 		//SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
 		//SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_vModel)
 		SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_wModel)
-		SetEntProp(entity, Prop_Send, "m_nSkin", gI_getGud)
+		char sGetGud[32]
+		IntToString(gI_geGud, sGetGud, 32)
+		SetEntPropString(entity, Prop_Send, "m_nSkin", sGetGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
 }
