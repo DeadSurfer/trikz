@@ -8,7 +8,7 @@
     margin: 25px 0;
     font-size: 0.9em;
     font-family: sans-serif;
-    min-width: 400px;
+    min-width: 40px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 	aligin: right;
 	<!--background-color: rgba(0,0,0,.5);--> <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
