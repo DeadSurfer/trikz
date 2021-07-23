@@ -278,9 +278,7 @@
 					$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
 					$timeDiff;
 					if($serverRecord == 0)
-					{
 						$serverRecord = $row[time];
-					}
 					$timeDiff = $row[time] - $serverRecord;
 					$timeDiffHours = floor($timeDiff / 3600);
 					$timeDiffMins = floor($timeDiff / 60 % 60);
