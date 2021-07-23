@@ -200,7 +200,7 @@
 	?>
 	<?php
 	//echo "Map: $name";
-	echo "<table class='styled-table2'><thead><tr><th>Map: $name</th></tr></thead></table>";
+	echo "<table class='styled-table2'><thead><tr><th>Map: </th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
