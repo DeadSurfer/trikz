@@ -135,7 +135,7 @@
 						?>
 					</select>
 		<input type = submit value = Submit></form>
-		https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/<br>
+		<!--https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/<br>-->
 	<?php
 	//$next = $_POST['next'];
 	//$next = 0;
