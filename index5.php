@@ -233,7 +233,7 @@
 		$thisp = $eu + $limit;
 		$back = $eu - $limit;
 		$next = $eu + $limit;
-		$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC")->fetchColumn();
+		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC")->fetchColumn();
 		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
 		mysqli_query($db, $query) or die('Error querying database. [1]');
@@ -259,10 +259,10 @@
 		//$countx = $countx + 1;
 		//$countx++;
 		$serverRecord = 0;
-		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
-		//mysqli_query($db, $query0) or die('Error querying in table. [2]');
-		//$result2 = mysqli_query($db, $query0);
-		//$row0 = mysqli_fetch_array($result0);
+		$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
+		mysqli_query($db, $query0) or die('Error querying in table. [2]');
+		$result0 = mysqli_query($db, $query0);
+		$row0 = mysqli_fetch_array($result0);
 		//$row0 = mysqli_fet
 		//$num = 
 		//$row0 = $db->query0("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
