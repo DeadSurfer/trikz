@@ -827,13 +827,13 @@ public void OnClientPutInServer(int client)
 	//if(gB_TrikzMenuIsOpen[gI_partner[client]])
 	//	Trikz(gI_partner[client])
 	//gI_partner[gI_partner[client]] = 0
-	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawn)
+	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	//SDKHook(client, SDKHook_OnTakeDamagePost, SDKOnTakeDamagePost)
 	//SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
-	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip)
+	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	char sQuery[512]
 	//int steamid = GetSteamAccountID(client)
 	//PrintToServer("%i", steamid)
@@ -1185,7 +1185,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	}
 }
 
-void SDKBoostFix(int client)
+void SDKBoostFixPostThinkPost(int client)
 {
 	/*if(gI_boost[client] == 1 || 0 < gI_boost[client] <= 6)
 	{
@@ -5925,7 +5925,7 @@ Action timer_delete(Handle timer, int entity)
 	return Plugin_Stop
 }
 
-void SDKPlayerSpawn(int client)
+void SDKPlayerSpawnPost(int client)
 {
 	//if(GetEntProp(client, Prop_Data, "m_iAmmo", 
 	//if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
@@ -5951,7 +5951,7 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 	return Plugin_Handled
 }
 
-void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
+void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
 	char sWeapon[32]
 	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
