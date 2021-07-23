@@ -292,7 +292,7 @@
 						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//else
 					//https://www.w3schools.com/html/html_colors.asp
-					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time <p style='background-color:#980000;'>(+$timeDiffFormated)</p></center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time <p style='color:#980000;'>(+$timeDiffFormated)</p></center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//$countx = $countx + 1;
 					$count++;
 					//echo "<td>$row2x[username]</td>";
