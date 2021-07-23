@@ -21,13 +21,13 @@
 {
     background-color: #009879;
     color: #ffffff;
-    text-align: left;
+    text-align: right;
 }
 .styled-table2 th,
 .styled-table2 td
 {
     padding: 12px 15px;
-	aligin: center;
+	<!--aligin: center;-->
 }
 .styled-table2 tbody tr
 {
@@ -175,7 +175,7 @@
 		<label for="submit">Please choose map</label><br/>
 				<form method = "post" action = "">
 					<select id="submit" name="submit">
-						<option value="">Select map</option>
+						<!--<option value="">Select map</option>-->
 						<?php
 							$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
 							$rs = mysqli_query($db, $sql);
