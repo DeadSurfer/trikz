@@ -5875,8 +5875,8 @@ Action SDKProjectile(int entity)
 	{
 		//SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
-		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
-		SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModel)
+		//SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_vModel)
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_wModel)
 		SetEntProp(entity, Prop_Data, "m_nSkin", gI_getGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
 	}
