@@ -730,7 +730,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	char sModel[64]
 	GetClientModel(client, sModel, 64)
-	PrintToServer("%s")
+	PrintToServer("%s", sModel)
 }
 
 Action cmd_checkpoint(int client, int args)
