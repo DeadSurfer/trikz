@@ -1239,7 +1239,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				float vecVelBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
 				//gF_fallVelBooster[client][2] = vecVelBooster[2]
-				gF_fallVelBooster[other][2] = vecVelBooster[2]
+				//gF_fallVelBooster[other][2] = vecVelBooster[2]
+				//vecVelBooster[client][2] *= 3.0
+				//gF_fallVel[client][2] = gF_fallVelBooster[client][2]
+				//if(vecVelBooster[client][2] > 800.0)
+				//	gF_fallVel[client][2] = 800.0
 				//PrintToServer("vecVelBooster: %f", vecVelBooster[2])
 				if(vecVelBooster[2] > 0.0)
 				{
@@ -1247,7 +1251,12 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
 					gF_fallVel[other][0] = vecVelFlyer[0]
 					gF_fallVel[other][1] = vecVelFlyer[1]				
-					gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
+					//gF_fallVel[other][2] = FloatAbs(vecVelFlyer[2])
+					vecVelBooster[2] *= 3.0
+					gF_fallVel[other][2] = vecVelBooster[2]
+					//vecVelFlyer[2] = vecVelBooster[2]
+					if(vecVelBooster[2] > 800.0)
+						gF_fallVel[other][2] = 800.0
 					//PrintToServer("fallvel flyer %f", gF_fallVel[other][2])
 					//if(FloatAbs(vecVelFlyer[2]) > 220.0)
 					if(FloatAbs(vecVelFlyer[2]) > 118.006614)
@@ -4936,16 +4945,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
-		gF_fallVelBooster[client][2] *= 3.0
-		gF_fallVel[client][2] = gF_fallVelBooster[client][2]
-		if(gF_fallVelBooster[client][2] > 800.0)
-			gF_fallVel[client][2] = 800.0
+		//gF_fallVelBooster[client][2] *= 3.0
+		//gF_fallVel[client][2] = gF_fallVelBooster[client][2]
+		//if(gF_fallVelBooster[client][2] > 800.0)
+		//	gF_fallVel[client][2] = 800.0
 		if(buttons & IN_JUMP)
 		{
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
 			gI_skyStep[client] = 0
 			//gF_fallVel[client][2] = 0.0
-			//gI_skyFrame[client] = 0
+			gI_skyFrame[client] = 0
 		}
 	}
 	if(gI_testvec[client])
