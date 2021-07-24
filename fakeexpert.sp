@@ -137,6 +137,7 @@ bool gB_block[MAXPLAYERS + 1]
 int gI_wModelThrown
 int gI_wModelThrowDef
 int gI_class[MAXPLAYERS + 1]
+bool gB_color[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -881,6 +882,7 @@ public void OnClientPutInServer(int client)
 	gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
+	gB_color[client] = false
 }
 
 //public void OnDissconnectClient(
@@ -1658,6 +1660,8 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
+					gB_color[param1] = false
+					gB_color[partner] = false
 					/*for(int i = 1; i <= 2048; i++)
 					{
 						gB_stateDisabled[gI_partner[param1]][i] = gB_stateDefaultDisabled[i]
