@@ -201,13 +201,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
-	//RegServerCmd("sm_manualinsert", cmd_manualinsert)
-	//RegConsoleCmd("sm_manualinsert", cmd_manualinsert)
-	//RegConsoleCmd("sm_gent", cmd_gent)
 	//RegConsoleCmd("sm_vectest", cmd_vectest)
-	//RegConsoleCmd("sm_vectest2", cmd_vectest2)
-	//RegConsoleCmd("sm_getenginetime", cmd_getenginetime)
-	//RegServerCmd("sm_fakerecord", cmd_fakerecord)
 	//RegConsoleCmd("sm_testtext", cmd_testtext)
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
@@ -825,9 +819,6 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 		gI_class[client] = 3
 	if(StrEqual(sModel, "models/player/ct_gign.mdl"))
 		gI_class[client] = 4
-//models/player/.mdl
-//models/player/.mdl
-//models/player/.mdl
 }
 
 Action cmd_checkpoint(int client, int args)
@@ -842,15 +833,9 @@ void Checkpoint(int client)
 	Menu menu = new Menu(checkpoint_handler)
 	menu.SetTitle("Checkpoint")
 	menu.AddItem("Save", "Save")
-	//if(!)
 	menu.AddItem("Teleport", "Teleport", gB_toggledCheckpoint[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	//else
-	//menu.AddItem("Teleport", "Teleport", ITEMDRAW_DEFAULT)
 	menu.AddItem("Save second", "Save second")
-	//if(!)
 	menu.AddItem("Teleport second", "Teleport second", gB_toggledCheckpoint[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	//else
-	//menu.AddItem("Teleport second", "Teleport second", )
 	menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER)
 }
@@ -869,16 +854,11 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsAngles(param1, gF_angles[param1][0])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
 					gB_toggledCheckpoint[param1][0] = true
-					//delete menu
 					Checkpoint(param1)
 				}
 				case 1:
 				{
-					//if(gB_toggledCheckpoint[param1][0])
-					//{
 					TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
-					//}
-					//delete menu
 					Checkpoint(param1)
 				}
 				case 2:
@@ -887,16 +867,11 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsAngles(param1, gF_angles[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1])
 					gB_toggledCheckpoint[param1][1] = true
-					//delete menu
 					Checkpoint(param1)
 				}
 				case 3:
 				{
-					//if(gB_toggledCheckpoint[param1][1])
-					//{
 					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
-					//}
-					//delete menu
 					Checkpoint(param1)
 				}
 			}
@@ -906,41 +881,13 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
 				{
-					//delete menu
 					Trikz(param1)
 				}
 			}
 		case MenuAction_End:
-		{
-			//PrintToServer("menu is ended (teleport)")
 			delete menu
-		}
 	}
 }
-
-//Action cmd_setup(int args)
-/*void setup()
-{
-	char sQuery[512]
-	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, type, possition_x2, possition_y2, possition_z2 WHERE map = %s", gS_map)
-	gD_mysql.Query(SQLSetupZones, sQuery)
-}
-
-void SQLSetupZones(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.FetchRow())
-	{
-		gF_vec1[0] = results.FetchFloat(0)
-		gF_vec1[1] = results.FetchFloat(0)
-		gF_vec1[2] = results.FetchFloat(0)
-		gI_zonetype = results.FetchInt(0)
-		gF_vec2[0] = results.FetchFloat(0)
-		gF_vec2[1] = results.FetchFloat(0)
-		gF_vec2[2] = results.FetchFloat(0)
-	}
-	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec1[0], gF_vec1[1], gF_vec1[2], gI_zonetype)
-	PrintToServer("[%f] [%f] [%f] [%i]", gF_vec2[0], gF_vec2[1], gF_vec2[2], gI_zonetype)
-}*/
 
 public void OnClientPutInServer(int client)
 {
@@ -950,22 +897,15 @@ public void OnClientPutInServer(int client)
 	//gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	//SDKHook(client, SDKHook_OnTakeDamagePost, SDKOnTakeDamagePost)
-	//SDKHook(client, SDKHooks_TakeDamage, SDKHooksTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	char sQuery[512]
-	//int steamid = GetSteamAccountID(client)
-	//PrintToServer("%i", steamid)
 	if(IsClientInGame(client) && gB_pass)
 	{
 		int steamid = GetSteamAccountID(client)
-		//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 		Format(sQuery, 512, "SELECT * FROM users")
 		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
-		//Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
-		//gD_mysql.Query(SQLGetRecord, sQuery, GetClientSerial(client))
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
@@ -993,7 +933,6 @@ public void OnClientPutInServer(int client)
 	gB_color[client] = false
 }
 
-//public void OnDissconnectClient(
 public void OnClientDisconnect(int client)
 {
 	if(gB_TrikzMenuIsOpen[gI_partner[client]])
@@ -1001,16 +940,14 @@ public void OnClientDisconnect(int client)
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
 	CancelClientMenu(client)
-	PrintToServer("%i %N disconnected.", client, client)
+	//PrintToServer("%i %N disconnected.", client, client)
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	gF_ServerRecord = 0.0
 	if(results.FetchRow())
-	{
 		gF_ServerRecord = results.FetchFloat(0)
-	}
 }
 
 void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -1018,9 +955,7 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 	int client = GetClientFromSerial(data)
 	gF_haveRecord[client] = 0.0
 	if(results.FetchRow())
-	{
 		gF_haveRecord[client] = results.FetchFloat(0)
-	}
 }
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
@@ -1040,21 +975,15 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		//GetClientIP(client, sIP, 32)
 		//char sCode2[3]
 		//GeoipCode2(sIP, sCode2) //https://pastebin.com/AEwTXWV9
-		//GeoipCode2(
 		if(results.FetchRow())
 		{
 			PrintToServer("%s %i [3 - update]", sName, steamid)
-			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-			//char sIP[32]
-			//GetClientIP(client, sIP, 32)
 			//Format(sQuery, 512, "UPDATE users SET username = '%s', geoipcode2 = '%s', lastjoin = %i WHERE steamid = %i", sName, sCode2, GetTime(), steamid)
 			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
-			//Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i")
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 		else
 		{
-			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
@@ -1066,10 +995,6 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] error, any data)
 {
 }
-
-//void Updateusername(int client)
-//{
-//}
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -1084,10 +1009,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
 		if(results.FetchRow())
 		{
-			//char sName[64]
-			//GetClientName(client, sName, 64)
 			PrintToServer("%s %i [1 - select]", sName, steamid)
-			//Format(sQuery, 512, "SET NAMES 'utf8'; UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
 			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
 		}
@@ -1097,35 +1019,18 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 			//GetClientIP(client, sIP, 32)
 			//char sCode2[3]
 			//GeoipCode2(sIP, sCode2)
-			//Format(sQuery, 512, "SET NAMES 'utf8'; INSERT INTO users (username, steamid) VALUES ('%s', %i)", sName, steamid)
 			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUserAdded, sQuery)
 			PrintToServer("%s %i [2 - insert]", sName, steamid)
 		}
 	}
-	//gB_newpass = true
 }
 
 void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
 {
-	//int steamid = GetSteamAccountID(GetClientFromSerial(data))
-	/*int client = GetClientFromSerial(data)
-	int steamid = GetSteamAccountID(client)
-	if(IsClientInGame(client))
-	{
-		char sName[64]
-		GetClientName(client, sName, 64)
-		char sQuery[512]
-		int steamid = GetSteamAccountID(client)
-		Format(sQuery, 512, "UPDATE users SET username = '%s' WHERE steamid = %i", sName, steamid)
-		gD_mysql.Query(SQLUpdateUsername, sQuery)
-	}*/
 }
 
-//void SQLUserAdded2(Database db, DBResultSet results, const char[] error, any data)
-//{
-//}
 bool IsClientValid(int client)
 {
 	return (client > 0 && client <= MaxClients && IsClientInGame(client))
@@ -1140,26 +1045,9 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	{
 		/*float vecAbsClient[3]
-		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsClient)
-		float vecAbsOther[3]
-		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsOther)
-		float vecClientMaxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecClientMaxs)
-		//PrintToServer("delta1: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
-		//PrintToServer("vecMaxs: %f %f %f", vecClientMaxs[0], vecClientMaxs[1], vecClientMaxs[2])
-		float delta = vecAbsOther[2] - vecAbsClient[2] - vecClientMaxs[2]
-		//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", vecAbsOther)
-		//PrintToServer("delta: %f", delta)
-		//PrintToServer("delta2: %f %f %f", vecAbsClient[2], vecAbsOther[2], vecClientMaxs[2])
 		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		if(delta > 0.0 && delta < 2.0)
 		{
-			//PrintToServer("%i %i ..", client, other)
-			//PrintToServer("SDKSkyFix")
-			float vecAbs[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecAbs)
-			gF_skyVel[other][0] = vecAbs[0]
-			gF_skyVel[other][1] = vecAbs[1]
 			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
 			//if(vecAbs[2] > 0.0)
 			gF_skyVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
@@ -1175,105 +1063,29 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs)
 		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMaxs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 		//PrintToServer("delta: %f", delta)
-		//if(-62.031250 <= delta <= 62.031250)
-		//if(-64.0 <= delta <= -64.0)
-		//if(delta)
-		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && GetGameTime() - gF_boostTime[other] < 0.15 && gI_skyStep[other] == 0)
-		//if(vecAbsFlyer[2] >= vecAbsBooster[2] && gI_skyStep[other] == 0)
-		//gI_skyStep[other] 
-		if(0.0 <= delta <= 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			//float getCurrentVel[3]
-			//GetEntPropVector(other, Prop_Data, "m_vecVelocity", getCurrentVel)
 			//PrintToServer("%f", getCurrentVel[2]) // -118.006614 in couch, in normal -106.006614
-			//gF_currentVelBooster[other][2] = getCurrentVel[2]
-			//if(GetEntityFlags(client) & FL_ONGROUND && GetEntityFlags(other) & FL_ONGROUND)
-				//gI_skyStep[other] = 0
-			//if(GetClientButtons(other) & IN_JUMP && !(GetEntityFlags(other) & IN_DUCK) && !(GetEntityFlags(client) & FL_ONGROUND) && gI_skyStep[other] == 0)
 			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0 && GetGameTime() - gF_boostTime[other] < 0.15) //gF_boostTime[other] < 0.15 and GetGameTime() is from tengu lawl github.com scripting boost-fix.sp https://www.github.com/tengulawl/scripting/main/blob/boost-fix.sp
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
-				//PrintToServer("fl ducktime %f", GetEntPropFloat(client, Prop_Data, "m_flDucktime"))
-				//if(GetEntityFlags(client) & IN_JUMP)
-				//	PrintToServer("c: %i", GetEntityFlags(client))
-				//if(GetEntityFlags(client) & IN_JUMP)
-				//	PrintToServer("o: %i", GetEntityFlags(other))
 				float vecVelBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
-				//gF_skyVelBooster[client][2] = vecVelBooster[2]
-				//gF_skyVelBooster[other][2] = vecVelBooster[2]
-				//vecVelBooster[client][2] *= 3.0
-				//gF_skyVel[client][2] = gF_skyVelBooster[client][2]
-				//if(vecVelBooster[client][2] > 800.0)
-				//	gF_skyVel[client][2] = 800.0
-				//PrintToServer("vecVelBooster: %f", vecVelBooster[2])
 				if(vecVelBooster[2] > 0.0)
 				{
 					float vecVelFlyer[3]
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
 					gF_skyVel[other][0] = vecVelFlyer[0]
 					gF_skyVel[other][1] = vecVelFlyer[1]				
-					//gF_skyVel[other][2] = FloatAbs(vecVelFlyer[2])
 					vecVelBooster[2] *= 3.0
 					gF_skyVel[other][2] = vecVelBooster[2]
-					//vecVelFlyer[2] = vecVelBooster[2]
 					if(vecVelBooster[2] > 800.0)
 						gF_skyVel[other][2] = 800.0
-					//PrintToServer("fallvel flyer %f", gF_skyVel[other][2])
-					//if(FloatAbs(vecVelFlyer[2]) > 220.0)
 					if(FloatAbs(vecVelFlyer[2]) > 118.006614)
 					{
-						//PrintToServer("fallvel flyer %f", gF_skyVel[other][2])
 						gI_skyStep[other] = 1
 						gI_skyFrame[other] = 1
 					}
-					//gI_skyBooster[
-					//gF_boostTime[client] = GetGameTime()
-					//SetEntPropVector(other, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-					//PrintToServer("x: %f y: %f z: %f", vecVelFlyer[0], vecVelFlyer[1], vecVelFlyer[2])
-					//PrintToServer("%f", delta)
-					/*int groundEntity = GetEntPropEnt(other, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
-					if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
-					{
-						//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
-						float fallVel[3]
-						fallVel[0] = gF_skyVel[client][0]
-						fallVel[1] = gF_skyVel[client][1]
-						//fallVel[2] = gF_skyVel[client][2] * 4.0
-						//gF_skyVel[client][2] += gF_skyVel[client][2]
-						//fallVel[2] = gF_skyVel[client][2] / 4.0
-						//fallVel[2] = fallVel[2] += gF_skyVel[client][2]
-						//if(gF_skyVel[client][2] < 500.0)
-						gF_skyVel[client][2] += 300.0
-						//PrintToServer("JumpTime: %f", GetEntPropFloat(client, Prop_Data, "m_flJumpTime")) //https://forums.alliedmods.net/showthread.php?t=249353
-						fallVel[2] = gF_skyVel[client][2]
-						if(buttons & IN_JUMP)
-						{
-							if(fallVel[2] > 800.0)
-								fallVel[2] = 800.0
-							if(fallVel[2] <= 800.0 && !(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
-							{
-								if(gB_onGround[client])
-								{
-									//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
-									TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
-									//PrintToServer("%f", fallVel[2])
-								}
-								if(groundEntity == 0)
-									gB_onGround[client] = false
-								if(groundEntity > 0) // expert zone idea.
-									gB_onGround[client] = true
-							}
-						}
-					}*/
-					
-					//float vecVelFlyer[3]
-					//GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelFlyer)
-					//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-					//if(0 < groundEntity <= MaxClients)
-					//{
-					//	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVelFlyer)
-					//}
 				}
 			}
 		}
@@ -2649,28 +2461,13 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Record inserted.")
 }
 
-/*void SQLUpdateRecordCompelete(Database db, DBResultSet results, const char[] error, DataPack dp)
-{
-}*/
-
-/*Action cmd_testtext(int client, int args)
-{
-	PrintToChat(client, "%N and %N finished map in 05:04:22. (SR -00:00:00)", client, client)
-	PrintToChat(client, "%N and %N finished map in 05:04:22. (SR +00:00:00)", client, client)
-	return Plugin_Handled
-}*/
-
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
 {
-	//dp.Reset()
-	//int clientid = dp.ReadCell()
-	//int partnerid = dp.ReadCell()
-	//int other = dp.ReadCell()
 	if(data == 0)
 		return
 	int other = GetClientFromSerial(data)
 	int clientid = GetSteamAccountID(other)
-	int partnerid = GetSteamAccountID(other)
+	int partnerid = GetSteamAccountID(gI_partner[other])
 	if(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
@@ -2692,12 +2489,9 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any dat
 
 void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp2)
 {
-	//PrintToServer("Debug")
 	dp2.Reset()
 	int earnedpoints = dp2.ReadCell()
 	int clientid = dp2.ReadCell()
-	//int other = GetClientFromSerial(dp2.ReadCell())
-	//PrintToServer("SQLGetPoints: %i [%N]", other, other)
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
@@ -2729,7 +2523,6 @@ void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any d
 
 void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
 {
-	//int other = GetClientFromSerial(data)
 	data.Reset()
 	int other = GetClientFromSerial(data.ReadCell())
 	int cpnum = data.ReadCell()
@@ -2751,46 +2544,32 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 
 void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPack data)
 {
-	//int other = GetClientFromSerial(data)
 	data.Reset()
 	int other = GetClientFromSerial(data.ReadCell())
 	int cpnum = data.ReadCell()
 	if(results.FetchRow())
 	{
-		//float srTime = results.FetchFloat(0)
 		gF_srCPTime[cpnum][other] = results.FetchFloat(0)
-		//PrintToServer("srCPTime: %f srTime: %f", gF_srCPTime[1][other], srTime)
-		//PrintToServer("srCPTime %i: %f", cpnum, gF_srCPTime[cpnum][other])
 		if(gF_TimeCP[cpnum][other] < gF_srCPTime[cpnum][other])
 		{
 			gF_timeDiffCP[cpnum][other] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
 			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
-			//gF_timeDiffCP[1][other] = gF_Time[other]
-			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-			//int personalSecond = RoundToFloor(timeClient) % 60
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
 			PrintToChat(other, "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
-			//char sQuery[512]
-			//Format(sQuery, 512, "
 		}
 		else
 		{
 			gF_timeDiffCP[cpnum][other] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
 			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
-			//int personalHour = (RoundToFloor(timeClient) / 3600) % 24
-			//int personalMinute = (RoundToFloor(timeClient) / 60) % 60
-			//int personalSecond = RoundToFloor(timeClient) % 60
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
 			PrintToChat(other, "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 		}
-		//gB_cp[1] = true
 	}
 	else
 	{
@@ -2838,25 +2617,6 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
 
-/*Action cmd_manualinsert(int client, int args)
-{
-	int steamid = GetSteamAccountID(client)
-	if(steamid == GetConVarInt(gCV_steamid))
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 0)", gS_map)
-		gD_mysql.Query(SQLManualInsert, sQuery)
-		Format(sQuery, 512, "INSERT INTO zones (map, type) VALUES ('%s', 1)", gS_map)
-		gD_mysql.Query(SQLManualInsert, sQuery)
-	}
-	return Plugin_Handled
-}*/
-
-//void SQLManualInsert(Database db, DBResultSet results, const char[] error, any data)
-//{
-//}
-
-//void SQLForceZonesSetup(Database db, DBResultSet results, const char[] error, any data)
 void ForceZonesSetup()
 {
 	//shavit results null
@@ -2880,18 +2640,8 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 		gF_vec2[0][0] = results.FetchFloat(3)
 		gF_vec2[0][1] = results.FetchFloat(4)
 		gF_vec2[0][2] = results.FetchFloat(5)
-		//cmd_createstart(0, 0)
 		createstart()
 		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-		//float center[3]
-		//center[0] = (gF_vec2[0][0] + gF_vec1[0][0]) / 2.0
-		//center[1] = (gF_vec2[0][1] + gF_vec1[0][1]) / 2.0
-		//center[2] = (gF_vec2[0][2] + gF_vec1[0][2]) / 2.0
-		//gF_vecStart[0] = gF_vec1[0]
-		//gF_vecStart[1] = gF_vec1[1]
-		//gF_vecStart[0] = center[0]
-		//gF_vecStart[1] = center[1]
-		//gF_vecStart[2] = center[2]
 		//PrintToServer("SQLSetZoneStart successfuly.")
 		PrintToServer("Start zone is successfuly setup.")
 		char sQuery[512]
@@ -2992,24 +2742,13 @@ Action cmd_eye66(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
-	{
 		TeleportEntity(client, NULL_VECTOR, view_as<float>({-65.097122, 0.0, 0.0}), NULL_VECTOR)
-	}
 	return Plugin_Handled
 }
 
-/*Action cmd_gent(int client, int args)
-{
-	int gEnt = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-	PrintToServer("%i", gEnt)
-	return Plugin_Handled
-}*/
 //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231//https://forums.alliedmods.net/showthread.php?t=146241
 
 Action cmd_getgud(int client, int args)
@@ -3017,11 +2756,8 @@ Action cmd_getgud(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sGet[32]
@@ -3103,37 +2839,15 @@ Action ProjectileBoostFix(int entity, int other)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 			//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
 			//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-			//return Plugin_Handled
-			/*for(int i = 0; i <= 1; i++)
-				if(vecVelClient[i] >= 0.0)
-					vecVelClient[i] = FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])
-				else if(vecVelClient[i] < 0.0)
-					vecVelClient[i] = (FloatAbs(vecVelEntity[i]) * 0.8 + FloatAbs(vecVelClient[i])) * -1.0*/
 			gI_boost[other] = 1
-			//vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
-			//vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 127.185)) //player elasticity always is 1.0, other is player.
-			//vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
-			//vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * gF_getGud)) //player elasticity always is 1.0, other is player.
-			//vecVelClient[0] -= vecVelEntity[0] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.0078625)) //player elasticity always is 1.0, other is player.
-			//vecVelClient[1] -= vecVelEntity[1] * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") * 0.0078625)) //player elasticity always is 1.0, other is player.
-			//vecVelClient[0] -= vecVelEntity[0] * gF_getGud //player elasticity always is 1.0, other is player.
-			//vecVelClient[1] -= vecVelEntity[1] * gF_getGud //player elasticity always is 1.0, other is player.
-			//vecVelClient[0] -= vecVelEntity[0] * 0.97
 			//vecVelClient[1] -= vecVelEntity[1] * 0.97 //!getgud 0.995 !getgud 0.997 !getgud 0.9965 = -281.647888 0.000000 !getgud 0.99645 = -281.633758 0.000000 !getgud 0.99646 = -281.636596 0.000000
 			vecVelClient[0] -= vecVelEntity[0] * 0.9964619
 			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
 			//!getgud 0.996462 = -281.637145 0.000000 !getgud 0.996460 = -281.636596 0.000000 !getgud 0.996462 = -281.637145 0.000000
 			//!getgud 0.9964619 = -281.637115 0.000000 code bugging by nick jurevich smesh292
-			//0.97 = -281.637115 0.000000
-			//for(int i = 0; i <= 2; i++)
-			//if(vecVelClient[2] >= 0.0)
-			//vecVelClient[2] = FloatAbs(vecVelEntity[2]) * (GetEntPropFloat(other, Prop_Data, "m_flElasticity") - (GetEntPropFloat(entity, Prop_Data, "m_flElasticity") / 12.0)) //player elasticity always is 1.0 , other is player.
-			//vecVelClient[2] += vecVelEntity[2] * 0.97
 			gF_vecVelBoostFix[other][0] = vecVelClient[0]
 			gF_vecVelBoostFix[other][1] = vecVelClient[1]
-			//gF_vecVelBoostFix[other][2] = vecVelClient[2]
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
-			//gI_skyStep[other] = 0
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
@@ -3195,7 +2909,6 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 1:
 				{
-					//gF_devmap--
 					if(gB_isDevmap)
 						gF_devmap[1]++
 					else
@@ -3269,12 +2982,6 @@ Action ProjectileBoostFixEndTouch(int entity, int other)
 	if(!other)
 		gB_bouncedOff[entity] = true //get from tengu github tengulawl scriptig boost-fix.sp
 }
-
-/*Action cmd_vectest2(int client, int args)
-{
-	PrintToServer("%f", 2.0 * -1.0 - 1.0)
-	return Plugin_Handled
-}*/
 
 Action cmd_time(int client, int args)
 {
