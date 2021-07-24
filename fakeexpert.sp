@@ -135,7 +135,7 @@ float gF_mateRecord[MAXPLAYERS + 1]
 bool gB_isTurnedOnSourceTV
 bool gB_block[MAXPLAYERS + 1]
 int gI_wModelThrown
-int gI_wModelThrowDef
+//int gI_wModelThrowDef
 int gI_class[MAXPLAYERS + 1]
 bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
@@ -646,7 +646,7 @@ public void OnMapStart()
 	}
 	//gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	gI_wModelThrowDef = PrecacheModel("models/weapons/w_eq_smokegrenade_thrown.mdl")
+	//gI_wModelThrowDef = PrecacheModel("models/weapons/w_eq_smokegrenade_thrown.mdl")
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
@@ -5983,7 +5983,7 @@ void SDKProjectilePost(int entity)
 	
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
-	int steamid = GetSteamAccountID(client)
+	//int steamid = GetSteamAccountID(client)
 	//char sCurrentSteamID[64]
 	//IntToString(steamid, sCurrentSteamID, 64)
 	//PrintToServer("%i", GetConVarInt(gCV_steamid))
