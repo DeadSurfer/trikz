@@ -223,7 +223,8 @@ public void OnPluginStart()
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	AddCommandListener(joinclass, "joinclass")
+	//AddCommandListener(joinclass, "joinclass")
+	HookEvent("player_spawn", event_playerspawn)
 	//Database.Connect(SQLConnect, "fakeexpert")
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
@@ -717,11 +718,19 @@ Action specchat(int client, const char[] command, int argc)
 	return Plugin_Continue
 }
 
-Action joinclass(int client, const char[] command, int argc)
+/*Action joinclass(int client, const char[] command, int argc)
 {
 	PrintToServer("%i %n %s %i", client, client, command, argc)
 	//GetCmdArg(argc, 
 	gI_class[client] = StringToInt(command)
+}*/
+
+Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	char sModel[64]
+	GetClientModel(client, sModel, 64)
+	PrintToServer("%s")
 }
 
 Action cmd_checkpoint(int client, int args)
