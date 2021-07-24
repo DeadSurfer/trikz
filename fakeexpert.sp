@@ -1355,35 +1355,35 @@ void SDKBoostFix(int client)
 			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, nullVel)
 		//for(int i = 0; i <= 2; i++)
 			//gF_vecVelBoostFix[client][i] = 0.0
-			int entity = EntRefToEntIndex(gI_flash[client])
-			if(entity != INVALID_ENT_REFERENCE)
+		int entity = EntRefToEntIndex(gI_flash[client])
+		if(entity != INVALID_ENT_REFERENCE)
+		{
+			float vecVelEntity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
+			if(vecVelEntity[2] > 0.0)
 			{
-				float vecVelEntity[3]
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-				if(vecVelEntity[2] > 0.0)
+				//vecVelEntity[0] *= -1.0
+				//vecVelEntity[1] *= -1.0
+				//vecVelEntity[2] *= -1.0
+				vecVelEntity[0] = vecVelEntity[0] * 0.135
+				vecVelEntity[1] = vecVelEntity[1] * 0.135
+				vecVelEntity[2] = vecVelEntity[2] * -0.135
+				//vecVelEntity[0] = vecVelEntity[0] * 0.01
+				//vecVelEntity[1] = vecVelEntity[1] * 0.01
+				//vecVelEntity[2] = vecVelEntity[2] * -0.01
+				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
+				//PrintToServer("groundboost")
+				if(!gB_groundBoost[client])
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				else
 				{
-					//vecVelEntity[0] *= -1.0
-					//vecVelEntity[1] *= -1.0
-					//vecVelEntity[2] *= -1.0
-					vecVelEntity[0] = vecVelEntity[0] * 0.135
-					vecVelEntity[1] = vecVelEntity[1] * 0.135
-					vecVelEntity[2] = vecVelEntity[2] * -0.135
-					//vecVelEntity[0] = vecVelEntity[0] * 0.01
-					//vecVelEntity[1] = vecVelEntity[1] * 0.01
-					//vecVelEntity[2] = vecVelEntity[2] * -0.01
-					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
-					//PrintToServer("groundboost")
-					if(!gB_groundBoost[client])
-						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-					else
-					{
-						//PrintToServer("groundboost 2")
-						gF_vecVelBoostFix[client][2] *= 3.0
-						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-					}
-					gI_boost[client] = 0
+					//PrintToServer("groundboost 2")
+					gF_vecVelBoostFix[client][2] *= 3.0
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 				}
+				gI_boost[client] = 0
 			}
+		}
 		//}
 		//gI_boost[client] = 2
 		//gI_boost[client] = 0
@@ -1816,8 +1816,8 @@ void Color(int client, bool customSkin)
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
 			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
 		}
-		SetEntProp(client, Prop_Data, "m_nSkin", 2)
-		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 2)
+		SetEntProp(client, Prop_Data, "m_nSkin", 1)
+		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
 		gI_randomInt[client][0] = GetRandomInt(0, 255)
 		gI_randomInt[client][1] = GetRandomInt(0, 255)
 		gI_randomInt[client][2] = GetRandomInt(0, 255)
