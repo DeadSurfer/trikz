@@ -990,6 +990,7 @@ public void OnClientPutInServer(int client)
 	gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
+	gB_color[gI_partner[client]] = false
 	gB_color[client] = false
 }
 
@@ -1507,7 +1508,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 2:
 				{
-					gB_color[param1] = true
+					//gB_color[param1] = true
 					Color(param1, true)
 					Trikz(param1)
 				}
