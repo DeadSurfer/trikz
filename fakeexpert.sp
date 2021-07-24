@@ -4909,13 +4909,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
 		KickClient(client, "Don't use joystick") //https://sm.alliedmods.net/new-api/clients/KickClient
 	//Timer
-	//if(gB_state[client] && gB_mapfinished[client] && gB_mapfinished[gI_partner[client]])
 	if(gB_state[client])
 	{
-		//gF_Time[client] = GetEngineTime()
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
-		//if(!gB_mapfinished[client])
-			//gB_state[client] = false
 		if(!IsPlayerAlive(client))
 		{
 			gB_readyToStart[client] = true
@@ -4926,176 +4922,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gB_state[gI_partner[client]] = false
 		}
 	}
-	//if(gI_skyStep[client] >= 1)
-		//gI_skyStep[client]++
-	//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity") //Skipper idea. 2020 (2019)
-	//if(0 < groundEntity <= MaxClients && IsPlayerAlive(groundEntity)) //client - flyer, booster - groundEntity
-	//{
-		//if(++gI_frame[client] >= 5) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L91
-		/*float fallVel[3]
-		fallVel[0] = gF_fallVel[client][0]
-		fallVel[1] = gF_fallVel[client][1]
-		//fallVel[2] = gF_fallVel[client][2] * 4.0
-		//gF_fallVel[client][2] += gF_fallVel[client][2]
-		//fallVel[2] = gF_fallVel[client][2] / 4.0
-		//fallVel[2] = fallVel[2] += gF_fallVel[client][2]
-		//if(gF_fallVel[client][2] < 500.0)
-		gF_fallVel[client][2] += 300.0
-		//PrintToServer("JumpTime: %f", GetEntPropFloat(client, Prop_Data, "m_flJumpTime")) //https://forums.alliedmods.net/showthread.php?t=249353
-		fallVel[2] = gF_fallVel[client][2]
-		if(buttons & IN_JUMP)
-		{
-			if(fallVel[2] > 800.0)
-				fallVel[2] = 800.0
-			if(fallVel[2] <= 800.0 && !(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
-			{
-				float vecVelBooster[3]
-				GetEntPropVector(groundEntity, Prop_Data, "m_vecVelocity", vecVelBooster)
-				if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
-				{
-					PrintToServer("gF_fallVelBooster runcmd: %f", gF_fallVelBooster[groundEntity][2])
-					//if(!(GetEntProp(client, Prop_Data, "m_bDucked", 4) > ||  //Log's idea.
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fallVel)
-					//PrintToServer("%f", fallVel[2])
-				}
-				if(groundEntity == 0)
-					gB_onGround[client] = false
-				if(groundEntity > 0) // expert zone idea.
-					gB_onGround[client] = true
-			}
-		}*/
-		//float fallVel[3]
-		//gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[groundEntity][2]
-		/*if(gF_fallVelBooster[groundEntity][2] <= 75.0) //289.993377
-			gF_fallVel[client][2] = 550.0
-		else if(gF_fallVelBooster[groundEntity][2] <= 100.0)
-			gF_fallVel[client][2] = 600.0
-		else if(gF_fallVelBooster[groundEntity][2] <= 150.0)
-			gF_fallVel[client][2] = 650.0*/
-		/*else if(gF_fallVelBooster[groundEntity][2] <= 200.0) //289.993377
-			gF_fallVel[client][2] = 700.0
-		else if(gF_fallVelBooster[groundEntity][2] <= 250.0)
-			gF_fallVel[client][2] = 750.0
-		else if(gF_fallVelBooster[groundEntity][2] <= 300.0)
-			gF_fallVel[client][2] = 800.0*/
-		/*if(gF_fallVelBooster[groundEntity][2] >= 5.0) //289.993377
-			gF_fallVel[client][2] = 600.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 50.0)
-			gF_fallVel[client][2] = 650.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 100.0)
-			gF_fallVel[client][2] = 700.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 150.0) //289.993377
-			gF_fallVel[client][2] = 750.0
-		else if(gF_fallVelBooster[groundEntity][2] >= 200.0)
-			gF_fallVel[client][2] = 800.0*/
-		//else if(gF_fallVelBooster[groundEntity][2] <= 250.0)
-			//gF_fallVel[client][2] = 800.0
-	//if(2 >= gI_skyStep[client] >= 1)
-	//	gI_skyStep[client] ++
-	//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-	//if(0 < groundEntity <= MaxClients && gF_curretVelBooster[groundEntity][2] > 0.0 && gI_skyStep[client] == 1)
-		//gI_skyStep[client] = 2
-	//if(gF_currentVelBooster[client][2] > 0.0 && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
-	//if(gF_currentVelBooster[client][2] > 0.0 && !(GetEntProp(client, Prop_Data, "m_nOldButtons") & IN_JUMP) && gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND)
-	//float baseVel[3]
-	//if((gI_boost[client] && gI_skyStep[client]) || (gI_boost[client] || gI_skyStep[client]))
-	//if(gI_boost[client])
-	//{
-		//if(GetGameTime() - gF_boostTime[client] < 0.15)
-		//gI_boost[client]++
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-		//return Plugin_Continue
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
-		//gI_boost[client] = 0
-	//}
-	//if(gI_skyStep[client])
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	//if(GetGameTime() - gF_boostTime[client] > 0.15 && gI_boost[client])
-	//if(GetGameTime() - gF_boostTime[client] < 0.15)
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", baseVel)
-	//if(gI_boost[client] >= 1)
-	//{
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		//gI_boost[client]++
-		//gI_skyStep[client] = 0
-	//}
-	//if(9 >= gI_boost[client] >= 1)
-	//{
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		//gI_boost[client] = 3
-	//}
-	//if(gI_boost[client] == 10)
-	//{
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, baseVel)
-		//gI_boost[client] = 0
-	//}
-	//else if(gI_boost[client] == 3)
-	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND) && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE && GetGameTime() - gF_boostTime[client] < 0.15)
-	//if(gI_boost[client] == 2 && GetGameTime() - gF_boostTime[client] > 0.15)
-	//if(gI_boost[client)
-	//if(gI_boost[client] == 15)
-	//{
-		//if(gB_groundBoost[client])
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//else
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//for(int i = 0; i <= 2; i++)
-			//gF_vecVelBoostFix[client][i] = 0.0
-		//gI_boost[client] = 0
-		//gI_skyStep[client] = 0
-		//PrintToServer("debug")
-	//}
-	//if(7 >= gI_boost[client] >= 1 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
-	//{
-		//if(gB_groundBoost[client])
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//if(!gB_groundBoost[client])
-		//{
-			//float zVelMinus[3]
-			//for(int i = 0; i <= 2; i++)
-			//zVelMinus[0] = gF_vecVelBoostFix[client][0]
-			//zVelMinus[1] = gF_vecVelBoostFix[client][1]
-			//zVelMinus[2] = gF_vecVelBoostFix[client][2] * -1.0
-			//zVelMinus[1] = gF_vecVelBoostFix[client][1] * -1.0
-			//zVelMinus[2] = gF_vecVelBoostFix[client][1] * -1.0
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, zVelMinus)
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//}
-		//for(int i = 0; i <= 2; i++)
-			//gF_vecVelBoostFix[client][i] = 0.0
-		//gI_boost[client] = 8
-		//gI_skyStep[client] = 0
-		//PrintToServer("debug")
-		//gI_boost[client] = 2
-	//}
-	//if(gI_boost[client] == 8 && EntRefToEntIndex(gI_flash[client]) != INVALID_ENT_REFERENCE)
-	//{
-		//if(gB_groundBoost[client])
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//else
-		//{
-			//float zVelMinus[3]
-			//zVelMinus[0] = gF_vecVelBoostFix[client][0] * -1.0
-			//zVelMinus[1] = gF_vecVelBoostFix[client][1] * -1.0
-			//zVelMinus[2] = -10000000000.0
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, zVelMinus)
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//}
-		//for(int i = 0; i <= 2; i++)
-			//gF_vecVelBoostFix[client][i] = 0.0
-		//gI_boost[client] = 0
-		//gI_skyStep[client] = 0
-		//PrintToServer("debug")
-		//gI_boost[client] = 2
-	//}
-	//if(gI_skyStep[client] >= 1)
-	//{
-		//gI_skyStep[client]++
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-	//}
-	//if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && !(GetEntityFlags(client) & IN_DUCK))
 	if(1 <= gI_skyFrame[client])
 		gI_skyFrame[client]++
 	if(gI_skyFrame[client] == 5)
@@ -5110,108 +4936,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
-		//PrintToServer("skyboost")
-		/*if(gF_fallVel[client][2] > 800.0)
-			gF_fallVel[client][2] = 800.0
-		else if(gF_fallVel[client][2] < 750.0)
-			gF_fallVel[client][2] = 750.0*/
-		/*if(gF_fallVelBooster[client][2] >= 5.0) //289.993377
-			gF_fallVel[client][2] = 600.0
-		if(gF_fallVelBooster[client][2] >= 50.0)
-			gF_fallVel[client][2] = 650.0
-		if(gF_fallVelBooster[client][2] >= 100.0)
-			gF_fallVel[client][2] = 700.0
-		if(gF_fallVelBooster[client][2] >= 150.0) //289.993377
-			gF_fallVel[client][2] = 750.0
-		if(gF_fallVelBooster[client][2] >= 200.0)
-		{
-			gF_fallVel[client][2] = 800.0
-			PrintToServer("success")
-		}*/
-		//PrintToServer("flyer: %f booster: %f", gF_fallVel[client][2], gF_fallVelBooster[client][2])
 		gF_fallVelBooster[client][2] *= 3.0
 		gF_fallVel[client][2] = gF_fallVelBooster[client][2]
 		if(gF_fallVelBooster[client][2] > 800.0)
 			gF_fallVel[client][2] = 800.0
-		//gF_fallVel[client][2] = gF_fallVel[client][2] + gF_fallVelBooster[client][2]
-		//if(gF_fallVel[client][2] > 800.0)
-		//	gF_fallVel[client][2] = 800.0
 		if(buttons & IN_JUMP)
 		{
-			//PrintToServer("elastisity: %f", GetEntPropFloat(client, Prop_Send, "m_flElasticity"))
-			//if(!(GetEntityFlags(groundEntity) & FL_ONGROUND) && !(buttons & IN_DUCK))
-			{
-				//if(groundEntity == 0) //groundentity 0 = onground, ground entity > 0 = on player, groundentity -1 = in air.
-					//gB_onGround[client] = false
-				//if(groundEntity > 0)
-					//gB_onGround[client] = true //thanks for this idea expert-zone (ed, maru)
-				//if(gB_onGround[client] && gF_fallVelBooster[groundEntity][2] >= 0.0)
-				{
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
-					//if(gI_skyStep[client] == 10)
-					gI_skyStep[client] = 0
-					gF_fallVel[client][2] = 0.0
-					gI_skyFrame[client] = 0
-					//PrintToServer("yes")
-				}
-				//if(groundEntity == 0)
-				//	gB_onGround[client] = false
-				//if(groundEntity > 0)
-				//	gB_onGround[client] = true
-				//if(groundEntity == -1)
-					//gI_skyStep[client] = 0
-			}
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_fallVel[client])
+			gI_skyStep[client] = 0
+			//gF_fallVel[client][2] = 0.0
+			//gI_skyFrame[client] = 0
 		}
 	}
-	//}
-	//if(GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
-	/*if(groundEntity == 0 && GetEntityFlags(client) & FL_ONGROUND && gI_boost[client] != 0)
-	{
-		gI_boost[client] = 0
-		PrintToChatAll("boost step: 0")
-	}*/
-	//if(gI_boost[client] == 2 && !(GetEntityFlags(client) & FL_ONGROUND))
-	//if(gI_boost[client] == 2 && groundEntity > MAXPLAYERS && !(GetEntityFlags(client) & FL_ONGROUND))
-	//if(gI_boost[client] == 2 && groundEntity > MaxClients)
-	/*if(gI_boost[client] == 8)
-	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client] = 0
-		//PrintToChatAll("boost step 2 -> 0")
-	}*/
-	/*if(gI_boost[client] == 1 || gI_boost[client] == 2 || gI_boost[client] == 3)
-	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client]++
-		//gI_boost[client] = 0
-	}
-	if(gI_boost[client] == 3)
-		gI_boost[client] = 0*/
-	/*if(1 <= gI_boost[client] <= 8)
-	{
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client]++
-	}
-	if(gI_boost[client] == 9)
-	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		gI_boost[client] = 0
-	}*/
-	//if(1 <= gI_boost[client] <= 3)
-	//{
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		//SetEntPropVector(client, Prop_Data, "m_vecVelocity", view_as<float>({0.0, 0.0, 0.0}))
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}))
-		//gI_boost[client]++
-	//}
-	//if(gI_boost[client] == 4)
-	//{
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-		//gI_boost[client] = 0
-		//if(gB_groundBoost[client])
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, view_as<float>({0.0, 0.0, 500.0}))
-	//}
 	if(gI_testvec[client])
 	{
 		gI_testvec[client]++
@@ -5220,7 +4956,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		PrintToServer("%f %f", vectest[0], vectest[1]) //-340.697296 -1.455074 by tengu boost. -328.707794 -0.779926 by smesh292 nick jurevich boost fix. second time -340.981445 -0.323044 tengu boost fix. right corner. -330.161163 1.097039 by smesh nick jurevich boostfix. third time -281.430755 -0.935560 boost fix by tengu. -272.891448 -0.258201 by smesh292 nick jurevich boost fix. -272.375030 0.000143 by smesh292 tengu boost fix nick jurevich boost fix. -272.669219 -0.776694 smesh292 nick jurevich boost fix. -273.259918 -1.685742 nick jurevich smesh292 boost fix. -273.549072 -0.129200 by smersh292 boost fix tengu bosot fix. smesh292 boostfix. -273.273681 -0.259195 boost fix by nick jurevich smesh292. -272.974426 -0.906334 nick jurevich smesh292 tengu boost fiux tryubng to make same -281 by x coordinate. ] getpossetpos -4592.999023 -496.987518 704.031311;setang -65.097122 0.108658 0.000000
 		//i will use x eye coordinate 66. !eye66 get -282.637115 0.000000 on tengu boost fix. (-282.637115 0.000000 tengu boost fix). -274.431518 0.000000 smesh boost fix by nick jurevich. -275.213897 0.000000 nick jureivch boost fix. -276.277801 0.000000 by nick jurevich boost fix. -279.457427 0.000000 on 40.0 boost fix by smesh nick jurevich. -280.093383 0.000000 nick jurevich boost fix. on 50.0. -280.517333 0.000000 on 60.0 nick jurevich. Smesh292. -280.820159 0.000000 on 70.0 by smesh nick jurevich. -281.047241 0.133382 on 80.0 nick jurevich smesh292. -281.047271 0.000000 on 80.0 by smesh292 nick jurevich. -281.223937 0.000000 on 90.0 by smesh292 nick jurevich. right bottom corner. -281.365264 0.000000 100.0 by smesh 292 nick jurevich. -281.789184 0.000000 on 150.0 by smesh292 nick jurevich. -281.728637 0.000000 on 140.0 by smesh292 nick jurevich. -281.658752 0.000000 on 130.0 nick jurevich smesh292. -281.619628 0.000000 on 125.0 nick jurevich Smesh292. -281.635650 0.000000 on 127.0 by nick jurevich smesh292. -281.639556 0.000000 on 127.5 by smesh292 nick jurevich. -281.637603 0.000000 on 127.25 by nick jurevich smesh292. -281.637542 0.000000 on 127.24 by nick jurevich smesh292. -281.637451 0.000000 on 127.23 by nick jurevich smesh922 smehs292. -281.637390 0.000000 on 127.22 by nick jurevich smesh292. -281.637298 0.000000 on 127.21 by nick jurevich smesh292. -281.637237 0.000000 on 127.2 by nick jurevich smesh292. -281.636810 0.000000 on 127.15 by nick jurevich smesh292. -281.636993 0.000000 on 127.17 by nick jurevich smesh292.
 		//-281.637145 0.000000 on 127.19 by nick jurevich smesh292. -281.637115 0.000000 on 127.85 by nick jurevich smesh292.
-
 		if(gI_testvec[client] == 10)
 			gI_testvec[client] = 0
 	}
