@@ -28,6 +28,8 @@
 {
     padding: 12px 15px;
 	<!--aligin: center;-->
+	<!--color: #ffffff;-->
+	<!--background-color: #ffffff;-->
 }
 .styled-table2 tbody tr
 {
@@ -77,6 +79,8 @@
 .styled-table td
 {
     padding: 12px 15px;
+	<!--background-color: #009879;-->
+	<!--background-color: #f30000;-->
 }
 .styled-table tbody tr
 {
@@ -84,6 +88,7 @@
 	<!--background-color: #00CCA2;-->
 	<!--background-color: rgba(0.0,204.0,162.0,0.5);
 	background-color: transparent-->
+	<!--background-color: #F30000;-->
 }
 
 .styled-table tbody tr:nth-of-type(even)
@@ -94,6 +99,7 @@
 .styled-table tbody tr:last-of-type
 {
     border-bottom: 2px solid #009879;
+	<!--background-color: #F30000;-->
 }
 .styled-table tbody tr.active-row
 {
