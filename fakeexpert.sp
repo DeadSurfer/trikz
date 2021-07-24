@@ -138,7 +138,9 @@ int gI_wModelThrown
 int gI_wModelThrowDef
 int gI_class[MAXPLAYERS + 1]
 bool gB_color[MAXPLAYERS + 1]
-int gI_wModel[MAXPLAYERS + 1]
+int gI_wModelPlayer[5]
+int gI_wModelPlayerDef[5]
+//int gI_wModel[MAXPLAYERS + 1][5]
 
 public Plugin myinfo =
 {
@@ -646,6 +648,14 @@ public void OnMapStart()
 	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
 	gI_wModelThrowDef = PrecacheModel("models/weapons/w_eq_smokegrenade_thrown.mdl")
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
+	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
+	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
+	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
+	gI_wModelPlayerDef[4] = PrecacheModel("models/player/ct_gign.mdl")
+	gI_wModelPlayer[1] = PrecacheModel("models/fakeexpert/player/ct_urban.mdl")
+	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl")
+	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl")
+	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
 	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
 	//gI_wModelThrown = PrecacheModel(d_wModelThrown)
 	//PrecacheModel(
@@ -730,7 +740,18 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	char sModel[64]
 	GetClientModel(client, sModel, 64)
-	PrintToServer("%s", sModel)
+	//PrintToServer("%s", sModel)
+	if(StrEqual(sModel, "models/player/ct_urban.mdl"))
+		gI_class[client] = 1
+	if(StrEqual(sModel, "models/player/ct_gsg9.mdl"))
+		gI_class[client] = 2
+	if(StrEqual(sModel, "models/player/ct_sas.mdl"))
+		gI_class[client] = 3
+	if(StrEqual(sModel, "models/player/ct_gign.mdl"))
+		gI_class[client] = 4
+//models/player/.mdl
+//models/player/.mdl
+//models/player/.mdl
 }
 
 Action cmd_checkpoint(int client, int args)
@@ -1410,7 +1431,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 2:
 				{
 					gB_color[param1] = true
-					Color(param1)
+					Color(param1, true)
 				}
 				case 3:
 					Restart(param1)
@@ -1670,8 +1691,10 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
-					gB_color[param1] = false
-					gB_color[partner] = false
+					//gB_color[param1] = false
+					//gB_color[partner] = false
+					Color(param1, false)
+					Color(partner, false)
 					/*for(int i = 1; i <= 2048; i++)
 					{
 						gB_stateDisabled[gI_partner[param1]][i] = gB_stateDefaultDisabled[i]
@@ -1687,13 +1710,38 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-void Color(int client)
+void Color(int client, bool customSkin)
 {
-	gB_color[client] = true
-	//gI_wModel[client] = gI_class[client]
-	SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModel[client])
-	SetEntProp(client, Prop_Data, "m_nSkin", 1)
-	SetEntityRenderColor(client, 255, 0, 0, 255)
+	if(customSkin)
+	{
+		gB_color[client] = true
+		//gI_wModel[client] = gI_class[client]
+		if(gI_class[client] == 1)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
+		if(gI_class[client] == 2)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
+		if(gI_class[client] == 3)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
+		if(gI_class[client] == 4)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
+		SetEntProp(client, Prop_Data, "m_nSkin", 1)
+		SetEntityRenderColor(client, 255, 0, 0, 255)
+	}
+	else
+	{
+		gB_color[client] = false
+		//gI_wModel[client] = gI_class[client]
+		if(gI_class[client] == 1)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
+		if(gI_class[client] == 2)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[2])
+		if(gI_class[client] == 3)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[3])
+		if(gI_class[client] == 4)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
+		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
+		SetEntityRenderColor(client, 255, 255, 255, 255)
+	}
 }
 
 void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
