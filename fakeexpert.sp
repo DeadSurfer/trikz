@@ -141,7 +141,7 @@ bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 //int gI_wModel[MAXPLAYERS + 1][5]
-int gI_randomInt[MAXPLAYERS + 1]
+int gI_randomInt[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
