@@ -5984,8 +5984,8 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
 		if(client == owner)
 		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModel)
-			SetEntityRenderColor(client, 255, 0, 0, 255)
+			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModel)
+			SetEntityRenderColor(index, 255, 0, 0, 255)
 			continue
 		}
 		
