@@ -5992,7 +5992,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		}
 		
 	}*/
-	//CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
@@ -6003,21 +6003,22 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		//GivePlayerItem(client, "weapon_flashbang")
 }
 
-/*Action timer_skin(Handle timer, int weapon)
+Action timer_skin(Handle timer, int weapon)
 {
 	char sWeapon[32]
 	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
+		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
 		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
 		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
 		//char sGetGud[32]
 		//IntToString(gI_getGud, sGetGud, 32)
 		//DispatchKeyValue(weapon, "skin", sGetGud)
 		SetEntityRenderColor(weapon, 255, 0, 0, 255)
+		PrintToServer("%s %i %i %N", sWeapon, weapon, client, client)
 	}
-}*/
+}
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
