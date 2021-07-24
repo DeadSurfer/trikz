@@ -6116,7 +6116,7 @@ void SDKProjectilePost(int entity)
 		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 		//PrintToServer("%s flash", sGetGud)
 		//DispatchKeyValue(entity, "skin", sGetGud)
-		SetEntityRenderColor(entity, gI_randomInt[client], gI_randomInt[client], gI_randomInt[client], 255)
+		SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
 	}
 }
 
