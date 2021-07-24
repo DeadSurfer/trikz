@@ -5986,7 +5986,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		{
 			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModel)
 			SetEntProp(index, Prop_Data, "m_nSkin", gI_getGud)
-			SetEntityRenderColor(index, 255, 0, 0, 255)
+			//SetEntityRenderColor(index, 255, 0, 0, 255)
 			continue
 		}
 		
