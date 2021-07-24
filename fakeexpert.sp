@@ -119,7 +119,7 @@ float gF_devmapTime
 float gF_vec[MAXPLAYERS + 1][2][3]
 float gF_angles[MAXPLAYERS + 1][2][3]
 float gF_velocity[MAXPLAYERS +1][2][3]
-bool gB_toggledTeleport[MAXPLAYERS + 1][2]
+bool gB_toggledCheckpoint[MAXPLAYERS + 1][2]
 
 bool gB_haveZone
 
@@ -134,6 +134,9 @@ bool gB_silentKnife
 float gF_mateRecord[MAXPLAYERS + 1]
 bool gB_isTurnedOnSourceTV
 bool gB_block[MAXPLAYERS + 1]
+int gI_wModelThrown
+int gI_wModelThrowDef
+int gI_class[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -184,7 +187,8 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_sum", cmd_sum)
 	//RegConsoleCmd("sm_getid", cmd_getid)
 	//RegConsoleCmd("sm_tptrigger", cmd_tp)
-	RegConsoleCmd("sm_tp", cmd_teleport)
+	//RegConsoleCmd("sm_tp", cmd_teleport)
+	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegServerCmd("sm_createtable", cmd_createtable)
 	RegConsoleCmd("sm_time", cmd_time)
 	RegServerCmd("sm_createusertable", cmd_createuser)
@@ -217,6 +221,7 @@ public void OnPluginStart()
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
+	AddCommandListener(joinclass, "joinclass")
 	//Database.Connect(SQLConnect, "fakeexpert")
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
@@ -597,10 +602,10 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }*/
-int gI_vModel
-int gI_wModel
+//int gI_vModel
+//int gI_wModel
 //#define d_wModelThrown "models/fakeexpert/models/weapons/flashbang.mdl"
-int gI_wModelThrown
+
 public void OnMapStart()
 {
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
@@ -634,8 +639,9 @@ public void OnMapStart()
 		gB_isTurnedOnSourceTV = true
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
-	gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	//gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	gI_wModelThrowDef = PrecacheModel("models/weapons/w_eq_smokegrenade_thrown.mdl")
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
 	//gI_wModelThrown = PrecacheModel(d_wModelThrown)
@@ -709,32 +715,39 @@ Action specchat(int client, const char[] command, int argc)
 	return Plugin_Continue
 }
 
-Action cmd_teleport(int client, int args)
+Action joinclass(int client, const char[] command, int argc)
+{
+	PrintToServer("%i %n %s %i", client, client, command, argc)
+	//GetCmdArg(argc, 
+	gI_class[client] = StringToInt(command)
+}
+
+Action cmd_checkpoint(int client, int args)
 {
 	if(gB_isDevmap)
-		Teleport(client)
+		Checkpoint(client)
 	return Plugin_Handled
 }
 
-void Teleport(int client)
+void Checkpoint(int client)
 {
-	Menu menu = new Menu(teleport_handler)
-	menu.SetTitle("Teleport")
+	Menu menu = new Menu(checkpoint_handler)
+	menu.SetTitle("Checkpoint")
 	menu.AddItem("Save", "Save")
 	//if(!)
-	menu.AddItem("Teleport", "Teleport", gB_toggledTeleport[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+	menu.AddItem("Teleport", "Teleport", gB_toggledCheckpoint[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	//else
 	//menu.AddItem("Teleport", "Teleport", ITEMDRAW_DEFAULT)
 	menu.AddItem("Save second", "Save second")
 	//if(!)
-	menu.AddItem("Teleport second", "Teleport second", gB_toggledTeleport[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+	menu.AddItem("Teleport second", "Teleport second", gB_toggledCheckpoint[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	//else
 	//menu.AddItem("Teleport second", "Teleport second", )
 	menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
-int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
+int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -747,36 +760,36 @@ int teleport_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsOrigin(param1, gF_vec[param1][0])
 					GetClientAbsAngles(param1, gF_angles[param1][0])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
-					gB_toggledTeleport[param1][0] = true
+					gB_toggledCheckpoint[param1][0] = true
 					//delete menu
-					Teleport(param1)
+					Checkpoint(param1)
 				}
 				case 1:
 				{
-					//if(gB_toggledTeleport[param1][0])
+					//if(gB_toggledCheckpoint[param1][0])
 					//{
 					TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
 					//}
 					//delete menu
-					Teleport(param1)
+					Checkpoint(param1)
 				}
 				case 2:
 				{
 					GetClientAbsOrigin(param1, gF_vec[param1][1])
 					GetClientAbsAngles(param1, gF_angles[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1])
-					gB_toggledTeleport[param1][1] = true
+					gB_toggledCheckpoint[param1][1] = true
 					//delete menu
-					Teleport(param1)
+					Checkpoint(param1)
 				}
 				case 3:
 				{
-					//if(gB_toggledTeleport[param1][1])
+					//if(gB_toggledCheckpoint[param1][1])
 					//{
 					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
 					//}
 					//delete menu
-					Teleport(param1)
+					Checkpoint(param1)
 				}
 			}
 		}
@@ -857,7 +870,7 @@ public void OnClientPutInServer(int client)
 	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	for(int i = 0; i <= 1; i++)
 	{
-		gB_toggledTeleport[client][i] = false
+		gB_toggledCheckpoint[client][i] = false
 		for(int j = 0; j <= 2; j++)
 		{
 			gF_vec[client][i][j] = 0.0
@@ -1337,10 +1350,11 @@ void Trikz(int client)
 	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
-	if(gB_isDevmap)
-		menu.AddItem("partner", "Partner", ITEMDRAW_DISABLED)
-	else
-		menu.AddItem("partner", sDisplay)
+	//if(gB_isDevmap)
+	//	menu.AddItem("partner", "Partner", ITEMDRAW_DISABLED)
+	//else
+	menu.AddItem("partner", sDisplay, gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
+	menu.AddItem("Color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	//if(gI_partner[client] == 0)
 	//Format() //https://forums.alliedmods.net/showthread.php?p=2552601
 	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
@@ -1349,7 +1363,7 @@ void Trikz(int client)
 		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	if(gB_isDevmap)
 	{
-		menu.AddItem("Teleport", "Teleport")
+		menu.AddItem("Checkpoint", "Checkpoint")
 		Format(sDisplay, 32, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
 		menu.AddItem("Noclip", sDisplay)
 	}
@@ -1382,10 +1396,15 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					gB_TrikzMenuIsOpen[param1] = false
 				}
 				case 2:
-					Restart(param1)
+				{
+					gB_color[param1] = true
+					Color(param1)
+				}
 				case 3:
-					Teleport(param1)
+					Restart(param1)
 				case 4:
+					Checkpoint(param1)
+				case 5:
 				{
 					if(GetEntityMoveType(param1) & MOVETYPE_NOCLIP)
 					{
@@ -1652,6 +1671,13 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_End:
 			delete menu
 	}
+}
+
+void Color(int client)
+{
+	gB_color[client] = true
+	SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModel[gI_class[client]])
+	SetEntityRenderColor(client, 255, 0, 0, 255)
 }
 
 void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -5894,14 +5920,15 @@ void SDKProjectilePost(int entity)
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
 	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
-	char sSteamID[64]
-	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
+	//char sCurrentSteamID[64]
+	//IntToString(steamid, sCurrentSteamID, 64)
+	//PrintToServer("%i", GetConVarInt(gCV_steamid))
+	//char sSteamID[64]
+	//GetConVarString(gCV_steamid, sSteamID, 64)
+	//PrintToServer("string: %s", sSteamID)
 	//if(steamid == GetConVarInt(gCV_steamid))
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	//if(StrEqual(sSteamID, sCurrentSteamID))
+	if(gB_color[client])
 	{
 		//SetEntityModel(entity, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
 		//SetEntityModel(entity, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
@@ -5910,7 +5937,7 @@ void SDKProjectilePost(int entity)
 		//SetEntProp(entity, Prop_Send, "m_nModelIndex", d_wModelThrown)
 		//char sGetGud[32]
 		//IntToString(gI_getGud, sGetGud, 32)
-		SetEntProp(entity, Prop_Data, "m_nSkin", gI_getGud)
+		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 		//PrintToServer("%s flash", sGetGud)
 		//DispatchKeyValue(entity, "skin", sGetGud)
 		SetEntityRenderColor(entity, 255, 0, 0, 255)
@@ -5963,12 +5990,12 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
 {
-	char sWeapon[32]
-	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
+	//char sWeapon[32]
+	//GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
+	/*if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
 		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
@@ -5978,7 +6005,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		//DispatchKeyValue(weapon, "skin", sGetGud)
 		SetEntityRenderColor(weapon, 255, 0, 0, 255)
 		PrintToServer("%s %i %i %N", sWeapon, weapon, client, client)
-	}
+	}*/
 	/*int index
 	while((index = FindEntityByClassname(index, "predicted_viewmodel")) != -1) //https://forums.alliedmods.net/showthread.php?t=273885
 	{
@@ -5992,10 +6019,10 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		}
 		
 	}*/
-	DataPack dp = new DataPack()
-	dp.WriteCell(client)
-	dp.WriteCell(weapon)
-	CreateTimer(1.0, timer_skin, dp, TIMER_FLAG_NO_MAPCHANGE)
+	//DataPack dp = new DataPack()
+	//dp.WriteCell(client)
+	//dp.WriteCell(weapon)
+	//CreateTimer(1.0, timer_skin, dp, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
@@ -6006,7 +6033,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		//GivePlayerItem(client, "weapon_flashbang")
 }
 
-Action timer_skin(Handle timer, DataPack dp)
+/*Action timer_skin(Handle timer, DataPack dp)
 {
 	dp.Reset()
 	int client = dp.ReadCell()
@@ -6024,7 +6051,8 @@ Action timer_skin(Handle timer, DataPack dp)
 		SetEntityRenderColor(weapon, 255, 0, 0, 255)
 		PrintToServer("%s %i %i %N", sWeapon, weapon, client, client)
 	}
-}
+	return Plugin_Stop
+}*/
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
