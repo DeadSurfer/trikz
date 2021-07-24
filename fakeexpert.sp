@@ -5971,13 +5971,26 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
-		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
+		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
 		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
 		//char sGetGud[32]
 		//IntToString(gI_getGud, sGetGud, 32)
 		//DispatchKeyValue(weapon, "skin", sGetGud)
 		SetEntityRenderColor(weapon, 255, 0, 0, 255)
 	}
+	int index
+	while((index = FindEntityByClassname(index, "predicted_viewmodel")) != -1) //https://forums.alliedmods.net/showthread.php?t=273885
+	{
+		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
+		if(client == owner)
+		{
+			SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
+			SetEntityRenderColor(weapon, 255, 0, 0, 255)
+			continue
+		}
+		
+	}
+		
 	//CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
