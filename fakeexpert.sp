@@ -141,6 +141,7 @@ bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 //int gI_wModel[MAXPLAYERS + 1][5]
+int gI_randomInt[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -1791,32 +1792,67 @@ void Color(int client, bool customSkin)
 	if(customSkin)
 	{
 		gB_color[client] = true
+		gB_color[gI_partner[client]] = true
 		//gI_wModel[client] = gI_class[client]
 		if(gI_class[client] == 1)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
+		}
 		if(gI_class[client] == 2)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
+		{
 		if(gI_class[client] == 3)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
+		}
 		if(gI_class[client] == 4)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
+		}
 		SetEntProp(client, Prop_Data, "m_nSkin", 1)
-		SetEntityRenderColor(client, 255, 0, 0, 255)
+		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
+		gI_randomInt[client][0] = GetRandomInt(0, 255)
+		gI_randomInt[client][1] = GetRandomInt(0, 255)
+		gI_randomInt[client][2] = GetRandomInt(0, 255)
+		gI_randomInt[gI_partner[client]][0] = gI_randomInt[client][0]
+		gI_randomInt[gI_partner[client]][1] = gI_randomInt[client][1]
+		gI_randomInt[gI_partner[client]][2] = gI_randomInt[client][2]
+		SetEntityRenderColor(client, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
+		SetEntityRenderColor(gI_partner[client], gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
 	}
 	else
 	{
 		gB_color[client] = false
+		gB_color[gI_partner[client]] = false
 		//gI_wModel[client] = gI_class[client]
 		if(gI_class[client] == 1)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
+		}
 		if(gI_class[client] == 2)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[2])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[2])
+		}
 		if(gI_class[client] == 3)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[3])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[3])
+		}
 		if(gI_class[client] == 4)
+		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
+		}
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntityRenderColor(client, 255, 255, 255, 255)
+		SetEntityRenderColor(gI_partner[client], 255, 255, 255, 255)
 	}
 }
 
@@ -6080,7 +6116,7 @@ void SDKProjectilePost(int entity)
 		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 		//PrintToServer("%s flash", sGetGud)
 		//DispatchKeyValue(entity, "skin", sGetGud)
-		SetEntityRenderColor(entity, 255, 0, 0, 255)
+		SetEntityRenderColor(entity, gI_randomInt[client], gI_randomInt[client], gI_randomInt[client], 255)
 	}
 }
 
