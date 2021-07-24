@@ -138,6 +138,7 @@ int gI_wModelThrown
 int gI_wModelThrowDef
 int gI_class[MAXPLAYERS + 1]
 bool gB_color[MAXPLAYERS + 1]
+int gI_wModel[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -1680,7 +1681,9 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 void Color(int client)
 {
 	gB_color[client] = true
-	SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModel[gI_class[client]])
+	//gI_wModel[client] = gI_class[client]
+	SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModel[client])
+	SetEntProp(client, Prop_Data, "m_nSkin", 1)
 	SetEntityRenderColor(client, 255, 0, 0, 255)
 }
 
