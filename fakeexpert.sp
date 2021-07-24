@@ -5968,7 +5968,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	//GetEdictClassname(wea
 	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
+	//if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
 		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
@@ -5978,7 +5978,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		//DispatchKeyValue(weapon, "skin", sGetGud)
 		SetEntityRenderColor(weapon, 255, 0, 0, 255)
 	}
-	int index
+	/*int index
 	while((index = FindEntityByClassname(index, "predicted_viewmodel")) != -1) //https://forums.alliedmods.net/showthread.php?t=273885
 	{
 		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
@@ -5990,7 +5990,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 			continue
 		}
 		
-	}
+	}*/
 	//CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
