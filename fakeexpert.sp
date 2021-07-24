@@ -996,24 +996,12 @@ public void OnClientPutInServer(int client)
 //public void OnDissconnectClient(
 public void OnClientDisconnect(int client)
 {
-	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
-	//gI_partner[client] = 0
 	if(gB_TrikzMenuIsOpen[gI_partner[client]])
 		Trikz(gI_partner[client])
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
-	//gB_TrikzMenuIsOpen[client] = false
-	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
-	//for(int i = 0; i <= 1; i++)
-	//{
-		//for(int j = 0; j <= 2; j++)
-		//{
-			//gF_vec[client][i][j]
-			//gF_angles[client][i][j]
-			//gF_velocity[client][i][j]
-		//}
-	//}
 	CancelClientMenu(client)
+	PrintToServer("%i %N disconnected.", client, client)
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -1034,31 +1022,6 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 		gF_haveRecord[client] = results.FetchFloat(0)
 	}
 }
-
-/*void SQLGetRecord(Database db, DBResultSet results, const char[] error, any data)
-{
-	int client = GetClientFromSerial(data)
-	if(results.FetchRow())
-	{
-		float time = results.FetchFloat(0)
-		gF_personalBest[client] = time
-	}
-	else
-	{
-		//gF_
-	}
-}*/
-
-/*public void OnClinetConnected(int client)
-{
-	char sQuery[512]
-	int steamid = GetSteamAccountID(client)
-	if(IsClientInGame(client) && gB_pass)
-	{
-		Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
-		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
-	}
-}*/
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
 {
