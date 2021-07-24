@@ -5970,7 +5970,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
+		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
 		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
 		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
 		//char sGetGud[32]
