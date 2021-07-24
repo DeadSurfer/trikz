@@ -5984,13 +5984,12 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
 		if(client == owner)
 		{
-			SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
-			SetEntityRenderColor(weapon, 255, 0, 0, 255)
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModel)
+			SetEntityRenderColor(client, 255, 0, 0, 255)
 			continue
 		}
 		
 	}
-		
 	//CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
