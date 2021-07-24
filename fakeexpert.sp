@@ -1803,7 +1803,7 @@ void Color(int client, bool customSkin)
 		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
 			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
-		{
+		}
 		if(gI_class[client] == 3)
 		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
