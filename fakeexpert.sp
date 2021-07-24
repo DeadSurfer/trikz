@@ -1509,6 +1509,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					gB_color[param1] = true
 					Color(param1, true)
+					Trikz(param1)
 				}
 				case 3:
 					Restart(param1)
