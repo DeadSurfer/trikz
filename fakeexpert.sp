@@ -5992,7 +5992,10 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		}
 		
 	}*/
-	CreateTimer(1.0, timer_skin, weapon, TIMER_FLAG_NO_MAPCHANGE)
+	DataPack dp = new DataPack()
+	dp.WriteCell(client)
+	dp.WriteCell(weapon)
+	CreateTimer(1.0, timer_skin, dp, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
@@ -6003,8 +6006,11 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		//GivePlayerItem(client, "weapon_flashbang")
 }
 
-Action timer_skin(Handle timer, int weapon)
+Action timer_skin(Handle timer, DataPack dp)
 {
+	dp.Reset()
+	int client = dp.ReadCell()
+	int weapon = dp.ReadCell()
 	char sWeapon[32]
 	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
