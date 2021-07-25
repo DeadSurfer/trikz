@@ -75,7 +75,6 @@ bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
-//int gI_entityFlags[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
 float gF_devmapTime
@@ -104,8 +103,6 @@ int gI_randomInt[MAXPLAYERS + 1][3]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
-
-//int gI_playerFlags[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -157,10 +154,10 @@ public void OnPluginStart()
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
-	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
+	//AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	HookEvent("player_spawn", event_playerspawn)
+	//HookEvent("player_spawn", event_playerspawn)
 	
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
@@ -679,16 +676,6 @@ public void OnMapEnd()
 	}
 }
 
-//Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
-//{
-//}
-
-Action listenerf1(int client, const char[] commnd, int argc) //extremix idea.
-{
-	//Trikz(client)
-	//PrintToServer("autobuy")
-}
-
 Action specchat(int client, const char[] command, int argc)
 {
 	if(MaxClients >= client > 0 && GetClientTeam(client) == 1)
@@ -697,18 +684,7 @@ Action specchat(int client, const char[] command, int argc)
 		GetClientName(client, sName, MAX_NAME_LENGTH)
 		char sChat[256]
 		GetCmdArg(argc, sChat, 256)
-		//PrintToChat(client, "\x07FF4040text21") //red - terrorist
-		//PrintToChat(client, "\x0799CCFFtext2") //blue - counter-terrorist
-		//if(Get)
-		//PrintToChatAll("(Spectator) %s: %s", sName, sChat) //sourcemod.net arg
-		//char sColor[][] = {"0xCCCCCC"}
-		//Handle hTrie = CreateTrie()
-		//SetTrieValue(hTrie, "gray", 0xCCCCCC)
-		//int value
-		//GetTrieValue(hTrie, "gray", value)
-		//char sFormat[256]
-		//Format(sFormat, 256, "*SPEC* \x07%06X %s \x01:  %s", value, sName, sChat) //https://wiki.alliedmods.net/Format_Class_Functions_(SourceMod_Scripting)#:~:text=Format-class%20functions%20are%20variable%20argument%20functions%20in%20SourceMod,will%20then%20be%3A%20%22%20Your%20name%20is%3A%20Mark.%22
-		PrintToChatAll("*SPEC* %s :  %s", sName, sChat) //   SetTrieValue(hTrie, "grey", 0xCCCCCC);
+		PrintToChatAll("*SPEC* %s :  %s", sName, sChat)
 		PrintToServer("*SPEC* %s :  %s", sName, sChat)
 		return Plugin_Handled
 	}
