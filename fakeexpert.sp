@@ -1003,6 +1003,7 @@ void SDKBoostFix(int client)
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 				}
 				gB_boost[client] = false
+				PrintToChatAll("test")
 			}
 		}
 	}
@@ -2328,11 +2329,6 @@ Action timer_removePing(Handle timer, int client)
 		gI_pingModel[client] = 0
 	}
 	return Plugin_Stop
-}
-
-bool IsValidClient(int client)
-{
-	return (0 < client <= MaxClients && IsClientInGame(client))
 }
 
 Action ProjectileBoostFix(int entity, int other)
