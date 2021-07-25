@@ -1051,13 +1051,14 @@ bool IsClientValid(int client)
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	//if(0 < other <= MaxClients)
-		//return
+	if(0 < other <= MaxClients)
+		return
 	//PrintToServer("SDKSkyFix: %i %i", client, other)
 	if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
 		return
 	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	//if(!(GetEntityFlags(other) & FL_ONGROUND))
+	if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	{
 		/*float vecAbsClient[3]
 		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
