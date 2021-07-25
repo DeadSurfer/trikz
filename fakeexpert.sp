@@ -75,7 +75,7 @@ bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
-int gI_entityFlags[MAXPLAYERS + 1]
+//int gI_entityFlags[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
 float gF_devmapTime
@@ -2214,7 +2214,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	gI_entityFlags[client] = GetEntityFlags(client)
+	//gI_entityFlags[client] = GetEntityFlags(client)
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(client) & FL_INWATER) && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
@@ -2337,36 +2337,30 @@ bool IsValidClient(int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	//if(0 < other <= MaxClients && (!gB_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
-	if(!IsValidClient(other))
-		return Plugin_Continue
-	//if(gB_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
-	if(gB_boost[other])
-		return Plugin_Continue
-	//if(0 < other <= MaxClients && !gB_boost[other])
-	float vecOriginOther[3]
-	//GetClientAbsOrigin(other, vecOriginOther)
-	GetEntPropVector(other, Prop_Send, "m_vecOrigin", vecOriginOther)
-	float vecOriginEntity[3]
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-	if(vecOriginOther[2] >= vecOriginEntity[2])
+	if(0 < other <= MaxClients && !gB_boost[other] && !(GetEntityFlags(other) & FL_ONGROUND))
 	{
-		float vecVelClient[3]
-		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
-		float vecVelEntity[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-		vecVelClient[0] -= vecVelEntity[0] * 0.9964619
-		vecVelClient[1] -= vecVelEntity[1] * 0.9964619
-		gF_vecVelBoostFix[other][0] = vecVelClient[0]
-		gF_vecVelBoostFix[other][1] = vecVelClient[1]
-		gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
-		gF_boostTime[other] = GetGameTime()
-		gB_groundBoost[other] = gB_bouncedOff[entity]
-		SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
-		gI_flash[other] = EntIndexToEntRef(entity)
-		gB_boost[other] = true
+		float vecOriginOther[3]
+		GetClientAbsOrigin(other, vecOriginOther)
+		float vecOriginEntity[3]
+		GetClientAbsOrigin(entity, vecOriginEntity)
+		if(vecOriginOther[2] >= vecOriginEntity[2])
+		{
+			float vecVelClient[3]
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
+			float vecVelEntity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
+			vecVelClient[0] -= vecVelEntity[0] * 0.9964619
+			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
+			gF_vecVelBoostFix[other][0] = vecVelClient[0]
+			gF_vecVelBoostFix[other][1] = vecVelClient[1]
+			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
+			gF_boostTime[other] = GetGameTime()
+			gB_groundBoost[other] = gB_bouncedOff[entity]
+			SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
+			gI_flash[other] = EntIndexToEntRef(entity)
+			gB_boost[other] = true
+		}
 	}
-	return Plugin_Continue
 }
 
 Action cmd_devmap(int client, int args)
