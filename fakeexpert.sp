@@ -1860,11 +1860,11 @@ Action SDKStartTouch(int entity, int other)
 				char sCPnum[32]
 				if(gF_ServerRecord != 0.0)
 				{
+					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+					int personalSecond = RoundToFloor(gF_Time[other]) % 60
 					if(gF_mateRecord[other] != 0.0)
 					{
-						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-						int personalSecond = RoundToFloor(gF_Time[other]) % 60
 						if(gF_ServerRecord > gF_Time[other])
 						{
 							float timeDiff = gF_ServerRecord - gF_Time[other]
