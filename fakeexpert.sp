@@ -2331,7 +2331,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
-			SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
+			//SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
 			gI_flash[other] = EntIndexToEntRef(entity)
 			gB_boost[other] = true
 			PrintToChatAll("%i %i", entity, other)
