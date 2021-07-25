@@ -2827,6 +2827,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//EmitSoundToClient(
 			//EmitGameSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
+			//EmitSoundToAll(
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
