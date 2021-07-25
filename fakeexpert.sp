@@ -577,8 +577,8 @@ public void OnMapStart()
 	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl")
 	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl")
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
-	//PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
-	//PrecacheSound("sound/fakeexpert/pingtool/click.wav")
+	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
+	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
@@ -2514,7 +2514,7 @@ Action SDKProjectile(int entity)
 
 void SDKProjectilePost(int entity)
 {
-	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
+	/*int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
 	if(gB_color[client])
@@ -2522,7 +2522,7 @@ void SDKProjectilePost(int entity)
 		SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
 		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 		SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
-	}
+	}*/
 }
 
 /*Action timer_draw(Handle timer, int client)
