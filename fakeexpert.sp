@@ -28,46 +28,22 @@ software and other kinds of works.
 	your programs, too.*/
 #include <sdktools>
 #include <sdkhooks>
-//#include <dhooks>
-//#include <geoip>
 
-//bool gB_block[MAXPLAYERS + 1]
 int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[2][3]
 float gF_vec2[2][3]
-//int gI_beam
-//int gI_halo
-//#pragma dynamic 3000000 //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L35
-//int gI_trigger
-//int gI_entity
-//Handle gH_mysql //https://forums.alliedmods.net/archive/index.php/t-260008.html
 Database gD_mysql
 float gF_TimeStart[MAXPLAYERS + 1]
 float gF_Time[MAXPLAYERS + 1]
-//int gI_hour
-//int gI_minute
-//int gI_second
 bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
-//int gI_zonetype
 bool gB_mapfinished[MAXPLAYERS + 1]
 bool gB_pass
 bool gB_passzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
-//bool gB_newpass
-//bool gB_runcmd[MAXPLAYERS + 1]
-//int gI_other[MAXPLAYERS + 1]
 float gF_boostTime[MAXPLAYERS + 1]
-//float gF_vecAbs[MAXPLAYERS + 1][3]
-//int gI_sky[MAXPLAYERS + 1]
-//int gI_frame[MAXPLAYERS + 1]
-//float gF_skyVelBooster[MAXPLAYERS + 1][3]
 float gF_skyVel[MAXPLAYERS + 1][3]
-//bool gB_onGround[MAXPLAYERS + 1]
 bool gB_readyToStart[MAXPLAYERS + 1]
-//float gF_bestTime
-//float gF_personalBest[MAXPLAYERS + 1]
-//bool gB_trigger[2048 + 1][MAXPLAYERS + 1]
 
 /*bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
@@ -76,43 +52,32 @@ float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 
 float gF_vec1cp[11][3]
 float gF_vec2cp[11][3]
-//int gI_cpCount
 bool gB_cp[11][MAXPLAYERS + 1]
 bool gB_cpLock[11][MAXPLAYERS + 1]
 float gF_TimeCP[11][MAXPLAYERS + 1]
 float gF_timeDiffCP[11][MAXPLAYERS + 1]
 float gF_srCPTime[11][MAXPLAYERS + 1]
-//bool gB_CPprint[10]
 
 float gF_haveRecord[MAXPLAYERS + 1]
 float gF_ServerRecord
 
-ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
+ConVar gCV_steamid
 
 int gI_type
 int gI_cpnum
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
-//bool gB_menuIsTrikz[MAXPLAYERS + 1]
 
-//bool gB_isEndTouchBoost[MAXPLAYERS + 1][2048 + 1]
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
-int gI_boost[MAXPLAYERS + 1]
-//float gF_boostTime[MAXPLAYERS + 1]
+int gB_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
-//float gF_currentVelBooster[MAXPLAYERS + 1][3]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
-//int gI_testvec[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
-//bool gB_nospamvote
-//float gF_totalPlayers
-//int gF_devmap_yes
-//int gF_devmap_no
 float gF_devmapTime
 
 float gF_vec[MAXPLAYERS + 1][2][3]
@@ -121,9 +86,6 @@ float gF_velocity[MAXPLAYERS +1][2][3]
 bool gB_toggledCheckpoint[MAXPLAYERS + 1][2]
 
 bool gB_haveZone
-
-//float gF_getGud
-//int gI_getGud
 
 bool gB_isServerRecord
 char gS_date[64]
@@ -134,14 +96,11 @@ float gF_mateRecord[MAXPLAYERS + 1]
 bool gB_isTurnedOnSourceTV
 bool gB_block[MAXPLAYERS + 1]
 int gI_wModelThrown
-//int gI_wModelThrowDef
 int gI_class[MAXPLAYERS + 1]
 bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
-//int gI_wModel[MAXPLAYERS + 1][5]
 int gI_randomInt[MAXPLAYERS + 1][3]
-//float gF_pingDelay[MAXPLAYERS + 1]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
@@ -158,9 +117,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
-	//https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 	AutoExecConfig(true)
-	//PrintToServer("%i", GetConVarInt(gCV_steamid))
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_tr", cmd_trikz)
 	RegConsoleCmd("sm_tri", cmd_trikz)
@@ -178,22 +135,11 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partn", cmd_partner)
 	RegConsoleCmd("sm_partne", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
-	//RegConsoleCmd("sm_flash", cmd_giveflashbang)
-	//RegConsoleCmd("sm_flashbang", cmd_giveflashbang)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
-	//RegConsoleCmd("sm_createstart", cmd_createstart)
-	//RegConsoleCmd("sm_createend", cmd_createend)
-	//RegConsoleCmd("sm_1", cmd_create)
 	RegConsoleCmd("sm_vecmins", cmd_vecmins)
-	//RegConsoleCmd("sm_2", cmd_vecmins)
 	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
-	//RegConsoleCmd("sm_3", cmd_vecmaxs)
-	//RegConsoleCmd("sm_starttouch", cmd_starttouch)
-	//RegConsoleCmd("sm_4", cmd_starttouch)
-	//RegConsoleCmd("sm_sum", cmd_sum)
-	//RegConsoleCmd("sm_getid", cmd_getid)
 	//RegConsoleCmd("sm_tptrigger", cmd_tp)
 	//RegConsoleCmd("sm_tp", cmd_teleport)
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
@@ -201,31 +147,19 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_time", cmd_time)
 	RegServerCmd("sm_createusertable", cmd_createuser)
 	RegServerCmd("sm_createrecordstable", cmd_createrecords)
-	//RegServerCmd("sm_setup", cmd_setup)
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
-	//RegConsoleCmd("sm_vectest", cmd_vectest)
-	//RegConsoleCmd("sm_testtext", cmd_testtext)
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
-	//RegConsoleCmd("sm_tp1", cmd_tp1)
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
-	//RegConsoleCmd("sm_eye66", cmd_eye66)
-	//RegConsoleCmd("sm_getgud", cmd_getgud) //get gud by atx. !getgud 0.1 = -263.559112 0.000000, !getgud 0.05 = -276.277801 0.000000. !getgud 0.025 = -279.457427 0.000000. !getgud 0.015 = -280.729309 0.000000. !getgud 0.007 = -281.746826 0.000000.
 	RegConsoleCmd("sm_devmap", cmd_devmap)
-	//!getgud 0.0075 = -281.683227 0.000000. !getgud 0.00725 = -281.714996 0.000000. !getgud 0.0076 = -281.670501 0.000000 !getgud 0.0078 = -281.645050 0.000000. !getgud 0.0079 = -281.632354 0.000000. !getgud 0.00795 = -281.625976 0.000000. koda povishaesh cifra umenshaetsa.
-	//!getgud 0.00794 = -281.627258 0.000000. !getgud 0.00793 = -281.628540 0.000000. !getgud 0.00789 = -281.633605 0.000000 !getgud 0.00787 = -281.636138 0.000000. !getgud 0.00786 = -281.637420 0.000000
-	//!getgud 0.007865 = -281.636779 0.000000. !getgud 0.007866 = -281.636657 0.000000. !getgud 0.007862 = -281.637176 0.000000. !getgud 0.0078625 = -281.637115 0.000000
-	//
-	//RegServerCmd("sm_y", cmd_findyifxandzexist)
 	AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	//AddCommandListener(joinclass, "joinclass")
 	HookEvent("player_spawn", event_playerspawn)
-	//Database.Connect(SQLConnect, "fakeexpert")
+	
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
 	if(hGamedata == null)
@@ -605,9 +539,6 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }*/
-//int gI_vModel
-//int gI_wModel
-//#define d_wModelThrown "models/fakeexpert/models/weapons/flashbang.mdl"
 
 public void OnMapStart()
 {
@@ -744,8 +675,6 @@ public void OnMapEnd()
 		else
 			DeleteFile(sOldFileName)
 	}
-	//for(int i = 1; i <= MaxClients; i++)
-		//CancelClientMenu(i)
 }
 
 //Action eventJump(Event event, const char[] name, bool dontBroadcast) //dontBroadcast = radit vair neradit.
@@ -1011,7 +940,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < other <= MaxClients && 0 < client <= MaxClients && (!(GetEntityFlags(other) & FL_ONGROUND) || GetGameTime() - gF_boostTime[client] > 0.15 || !gI_boost[client]))
+	if(0 < other <= MaxClients && 0 < client <= MaxClients && (!(GetEntityFlags(other) & FL_ONGROUND) || GetGameTime() - gF_boostTime[client] > 0.15 || !gB_boost[client]))
 	{		
 		float vecAbsBooster[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
@@ -1049,7 +978,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	if(gI_boost[client] == 1)
+	if(gB_boost[client])
 	{
 		int entity = EntRefToEntIndex(gI_flash[client])
 		if(entity != INVALID_ENT_REFERENCE)
@@ -1062,14 +991,16 @@ void SDKBoostFix(int client)
 				vecVelEntity[1] *= 0.135
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
-				if(gB_groundBoost[client])
+				if(!gB_groundBoost[client])
+				{
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				}
+				else
 				{
 					gF_vecVelBoostFix[client][2] *= 3.0
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 				}
-				else
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-				gI_boost[client] = 0
+				gB_boost[client] = 0
 			}
 		}
 	}
@@ -2360,7 +2291,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gI_skyStep[client] = 0
 	}
-	if(gI_boost[client] && gI_skyStep[client])
+	if(gB_boost[client] && gI_skyStep[client])
 	{
 		gI_skyFrame[client] = 0
 		gI_skyStep[client] = 0
@@ -2452,8 +2383,8 @@ Action timer_removePing(Handle timer, int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	//if(0 < other <= MaxClients && (!gI_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
-	if(0 < other <= MaxClients && !gI_boost[other])
+	//if(0 < other <= MaxClients && (!gB_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
+	if(0 < other <= MaxClients && !gB_boost[other])
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
@@ -2476,7 +2407,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 			gI_flash[other] = EntIndexToEntRef(entity)
-			gI_boost[other] = 1
+			gB_boost[other] = true
 		}
 	}
 }
