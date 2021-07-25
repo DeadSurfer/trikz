@@ -2752,7 +2752,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
 		DispatchSpawn(ping)
 		//GetClientAimTarget(
-		//https://forums.alliedmods.net/showthread.php?t=152726\
+		//https://forums.alliedmods.net/showthread.php?t=152726
 		float start[3]
 		float angle[3]
 		float end[3]
@@ -2764,7 +2764,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TR_GetEndPosition(end, INVALID_HANDLE)
 		TeleportEntity(ping, end, NULL_VECTOR, NULL_VECTOR)
 	}
-	
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
