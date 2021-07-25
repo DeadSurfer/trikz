@@ -2488,10 +2488,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		gB_bouncedOff[entity] = false //tengu lawl boost fix .sp
-		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
+		//SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
-		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
-		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
+		//SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
+		//SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
 }
 
@@ -2514,7 +2514,7 @@ Action SDKProjectile(int entity)
 
 void SDKProjectilePost(int entity)
 {
-	/*int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
 	if(gB_color[client])
@@ -2522,7 +2522,7 @@ void SDKProjectilePost(int entity)
 		SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
 		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 		SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
-	}*/
+	}
 }
 
 /*Action timer_draw(Handle timer, int client)
