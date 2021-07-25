@@ -141,9 +141,10 @@ int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 //int gI_wModel[MAXPLAYERS + 1][5]
 int gI_randomInt[MAXPLAYERS + 1][3]
-float gF_pingDelay[MAXPLAYERS + 1]
+//float gF_pingDelay[MAXPLAYERS + 1]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
+Handle gH_timerPing[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -2692,7 +2693,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("cmd_tp: vecbase: %f %f %f", vecBase[0], vecBase[1], vecBase[2])
 	return Plugin_Handled
 }*/
-Handle gH_timer[MAXPLAYERS + 1]
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	//gI_entityFlags[client] = GetEntityFlags(client)
@@ -2758,7 +2759,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 			//	gI_pingTick[client] = 1
 			//if(buttons & IN_USE && gI_pingTick[client] > 0)
-			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") == 32)
+			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed") == 32)
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 				gI_pingTick[client] = 1
 			if(gI_pingTick[client] > 0)
 				gI_pingTick[client]++
@@ -2774,7 +2776,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				RemoveEntity(gI_pingModel[client])
 				gI_pingModel[client] = 0
-				KillTimer(gH_timer[client])
+				KillTimer(gH_timerPing[client])
 			}
 			//gF_pingDelay[client] = GetGameTime()
 			gI_pingTick[client] = 0
@@ -2793,9 +2795,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			GetClientEyeAngles(client, angle)
 			TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
 			if(TR_DidHit(INVALID_HANDLE))
+			{
 				TR_GetEndPosition(end, INVALID_HANDLE)
+				float normal[3]
+				TR_GetPlaneNormal(INVALID_HANDLE, normal)
+				GetVectorAngles(normal, normal)
+				float vecAngle[3]
+				GetAngleVectors(normal, vecAngle, NULL_VECTOR, NULL_VECTOR)
+				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
+				
+			}
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-			gH_timer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
+			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
 }
