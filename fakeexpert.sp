@@ -2753,12 +2753,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(buttons & IN_USE)
 		{
-			if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
-				PrintToServer("%i", GetEntProp(client, Prop_Data, "m_afButtonPressed"))
+			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
+			PrintToServer("%i", GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 			//	gI_pingTick[client] = 1
 			//if(buttons & IN_USE && gI_pingTick[client] > 0)
-			gI_pingTick[client]++
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") == 32)
+				gI_pingTick[client] = 1
+			if(gI_pingTick[client] > 0)
+				gI_pingTick[client]++
 		}
 		else
 			if(gI_pingTick[client] > 0)
