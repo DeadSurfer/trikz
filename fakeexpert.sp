@@ -710,6 +710,7 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/pingtool/circle_point.vtf")
 	AddFileToDownloadsTable("materials/fakeexpert/pingtool/grad.vmt")
 	AddFileToDownloadsTable("materials/fakeexpert/pingtool/grad.vtf")
+	AddFileToDownloadsTable("sound/fakeexpert/pingtool/click.wav")
 	
 	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gign/skin1.vmt")
 	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gign/skin2.vmt")
@@ -2819,6 +2820,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_color[client])
 				SetEntityRenderColor(gI_pingModel[client], gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
+			//EmitSoundToClient(
+			//EmitGameSound(
+			//EmitSoundEntry(
+			//EmitSoundToClient(
+			EmitGameSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
