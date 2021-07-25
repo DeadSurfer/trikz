@@ -142,6 +142,7 @@ int gI_wModelPlayerDef[5]
 //int gI_wModel[MAXPLAYERS + 1][5]
 int gI_randomInt[MAXPLAYERS + 1][3]
 float gF_pingDelay[MAXPLAYERS + 1]
+int gI_pingModel
 
 public Plugin myinfo =
 {
@@ -2748,9 +2749,27 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		gF_pingDelay[client] = GetGameTime()
 		int ping = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
-		
+		SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
+		DispatchSpawn(ping)
+		//GetClientAimTarget(
+		//https://forums.alliedmods.net/showthread.php?t=152726\
+		float start[3]
+		float angle[3]
+		float end[3]
+		float normal[3]
+		GetClientEyePosition(client, start)
+		GetClientEyeAngles(client, angle)
+		TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
+		if(TR_DidHit(INVALID_HANDLE))
+			TR_GetEndPosition(end, INVALID_HANDLE)
+		TeleportEntity(ping, end, NULL_VECTOR, NULL_VECTOR)
 	}
 	
+}
+
+bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
+{
+	return entity > MaxClients
 }
 
 Action cmd_eye66(int client, int args)
