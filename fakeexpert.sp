@@ -141,6 +141,7 @@ int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 //int gI_wModel[MAXPLAYERS + 1][5]
 int gI_randomInt[MAXPLAYERS + 1][3]
+float gF_pingDelay[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -2721,6 +2722,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 			gI_skyStep[client] = 0
 			gI_skyFrame[client] = 0
+			PrintToServer("sky")
 		}
 	}
 	if(gI_testvec[client])
@@ -2735,6 +2737,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_testvec[client] = 0
 	}
 	//return Plugin_Continue
+	if(IsPlayerAlive(client) && button & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
+	{
+		gF_pingDelay[client] = GetGameTime()
+		int ping = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+		
+	}
+	
 }
 
 Action cmd_eye66(int client, int args)
