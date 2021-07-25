@@ -1098,7 +1098,7 @@ Action Block(int client)
 	gB_block[client] = !gB_block[client]
 	if(gB_block[client])
 	{
-		SetEntProp(client, Prop_Send, "m_CollisionGroup", 5)
+		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
@@ -1108,7 +1108,7 @@ Action Block(int client)
 	else
 	{
 
-		SetEntProp(client, Prop_Send, "m_CollisionGroup", 2)
+		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 125)
 		if(gB_TrikzMenuIsOpen[client])
