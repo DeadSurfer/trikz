@@ -1938,7 +1938,11 @@ Action ProjectileBoostFix(int entity, int other)
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-		if(vecOriginOther[2] >= vecOriginEntity[2])
+		float vecMaxsEntity[3]
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
+		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
+		//if(vecOriginOther[2] >= vecOriginEntity[2])
+		if(0.0 < delta < 2.0)
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
@@ -2061,13 +2065,6 @@ Action timer_changelevel(Handle timer)
 	ForceChangeLevel(gS_map, "Reason: Devmap")
 }
 
-/*Action Timer_removeflashbangonhit(Handle timer, int entityref)
-{
-	int entity = EntRefToEntIndex(entityref)
-	if(entity != INVALID_ENT_REFERENCE)
-		AcceptEntityInput(entity, "Kill")
-}*/
-
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(!other)
@@ -2099,14 +2096,11 @@ Action SDKProjectile(int entity)
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
-	//GivePlayerItem(client, "weapon_flashbang")
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
-	//GivePlayerAmmo(client, 2, 48, true)
 	gB_silentKnife = true
 	FakeClientCommand(client, "use weapon_knife")
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
-	//CreateTimer(0.2, timer_draw, client, TIMER_FLAG_NO_MAPCHANGE)
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
 }
@@ -2123,13 +2117,6 @@ void SDKProjectilePost(int entity)
 		SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
 	}
 }
-
-/*Action timer_draw(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-	return Plugin_Stop
-}*/
 
 Action timer_delete(Handle timer, int entity)
 {
