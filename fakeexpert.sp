@@ -2199,7 +2199,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
 		KickClient(client, "Don't use joystick") //https://sm.alliedmods.net/new-api/clients/KickClient
 	//Timer
-	if(gB_state[client])
+	/*if(gB_state[client])
 	{
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
 		if(!IsPlayerAlive(client))
@@ -2291,7 +2291,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
-	}
+	}*/
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
@@ -2331,7 +2331,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
-			//SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
+			SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
 			gI_flash[other] = EntIndexToEntRef(entity)
 			gB_boost[other] = true
 			PrintToChatAll("%i %i", entity, other)
