@@ -113,7 +113,7 @@ public Plugin myinfo =
 	url = "http://www.sourcemod.net/"
 }
 
-void OnPluginStart()
+public void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
 	AutoExecConfig(true)
@@ -811,7 +811,7 @@ public void OnClientPutInServer(int client)
 		}
 	}
 	gF_boostTime[client] = 0.0
-	CancelClientMenu(client)
+	//CancelClientMenu(client)
 	gB_block[client] = true
 	//gB_color[gI_partner[client]] = false
 	gB_color[client] = false
@@ -825,7 +825,7 @@ public void OnClientDisconnect(int client)
 	if(gB_TrikzMenuIsOpen[partner])
 		Trikz(partner)
 	gI_partner[client] = 0
-	CancelClientMenu(client)
+	//CancelClientMenu(client)
 	//PrintToServer("%i %N disconnected.", client, client)
 }
 
