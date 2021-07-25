@@ -2751,6 +2751,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int ping = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 		SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
 		DispatchSpawn(ping)
+		ActivateEntity(ping)
 		//GetClientAimTarget(
 		//https://forums.alliedmods.net/showthread.php?t=152726
 		float start[3]
