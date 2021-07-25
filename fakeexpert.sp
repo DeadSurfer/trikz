@@ -2944,9 +2944,9 @@ Action ProjectileBoostFix(int entity, int other)
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
 			float vecVelEntity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-			PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
-			PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-			gI_boost[other] = 1
+			//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
+			//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
+			//gI_boost[other] = 1
 			//vecVelClient[1] -= vecVelEntity[1] * 0.97 //!getgud 0.995 !getgud 0.997 !getgud 0.9965 = -281.647888 0.000000 !getgud 0.99645 = -281.633758 0.000000 !getgud 0.99646 = -281.636596 0.000000
 			vecVelClient[0] -= vecVelEntity[0] * 0.9964619
 			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
@@ -2960,9 +2960,10 @@ Action ProjectileBoostFix(int entity, int other)
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 			gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 			//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
+			gI_boost[other] = 1
 		}
 	}
-	return Plugin_Continue
+	//return Plugin_Continue
 }
 
 Action cmd_devmap(int client, int args)
