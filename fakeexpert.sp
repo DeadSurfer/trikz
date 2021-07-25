@@ -630,9 +630,7 @@ public void OnMapStart()
 	if(isSourceTV)
 	{
 		PrintToServer("sourcetv work.")
-		//char sDate[64]
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
-		//char sTime[64]
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
@@ -657,11 +655,6 @@ public void OnMapStart()
 	//gI_pingModel = PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
-	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
-	//gI_wModelThrown = PrecacheModel(d_wModelThrown)
-	//PrecacheModel(
-	//PrecacheModel("fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	//PrecacheModel("fakeexpert/models/weapons/w_eq_flashbang.mdl")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
@@ -944,11 +937,8 @@ public void OnClientPutInServer(int client)
 
 public void OnClientDisconnect(int client)
 {
-	//if(gB_TrikzMenuIsOpen[gI_partner[client]])
-	//	Trikz(gI_partner[client])
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
-	//int partner = gI_partner[client]
 	if(gB_TrikzMenuIsOpen[partner])
 		Trikz(partner)
 	gI_partner[client] = 0
@@ -1118,25 +1108,16 @@ void SDKBoostFix(int client)
 				vecVelEntity[1] *= 0.135
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
-				gI_boost[client] = 2
+				if(gB_groundBoost[client])
+				{
+					gF_vecVelBoostFix[client][2] *= 3.0
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				}
+				else
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				gI_boost[client] = 0
 			}
 		}
-	}
-	if(gI_boost[client] == 2)
-	{
-		if(gB_groundBoost[client])
-		{
-			gF_vecVelBoostFix[client][2] *= 3.0
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-			PrintToServer("test")
-		}
-		else
-		{
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-			PrintToServer("test2")
-		}
-		gI_boost[client] = 0
-		gI_skyStep[client] = 0
 	}
 }
 
@@ -1156,29 +1137,19 @@ void Trikz(int client)
 	//menu.SetTitle("Trikz", client) //https://forums.alliedmods.net/showthread.php?p=2051806
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
-	//Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
-	//Format(sDisplay, 32, GetEntProp(client, Prop_Data, "m_CollisionGroup") == 5 ? "Block [v]" : "Block [x]")
 	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
-	//if(gB_isDevmap)
-	//	menu.AddItem("partner", "Partner", ITEMDRAW_DISABLED)
-	//else
 	menu.AddItem("partner", sDisplay, gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
 	menu.AddItem("Color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	//if(gI_partner[client] == 0)
 	//Format() //https://forums.alliedmods.net/showthread.php?p=2552601
 	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
-	//menu.AddItem("restart", "Restart")
-	//if(gI_partner[client] != 0)
-		//menu.AddItem("restart", "Restart", ITEMDRAW_DEFAULT)
 	if(gB_isDevmap)
 	{
 		menu.AddItem("Checkpoint", "Checkpoint")
 		Format(sDisplay, 32, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
 		menu.AddItem("Noclip", sDisplay)
 	}
-	//menu.Display(client, 20)
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
@@ -1187,7 +1158,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	switch(action)
 	{
 		case MenuAction_Start:
-		{//expert-zone idea. thank to ed, maru.
+		{
+			//expert-zone idea. thank to ed, maru.
 			//PrintToServer("menu start trikz.")
 			gB_TrikzMenuIsOpen[param1] = true
 		}
@@ -1232,49 +1204,11 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Trikz(param1)
 				}
 			}
-		}//https://forums.alliedmods.net/showthread.php?t=288351
-		/*case MenuAction_DisplayItem:
-		{
-			char sInfo[32]
-			menu.GetItem(param2, sInfo, 32)
-			if(StrEqual(sInfo, "Restart"))
-			{
-				char sDisplay[32]
-				Format(sDisplay, 32, "Restart1", param1, gI_partner[param1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //https://forums.alliedmods.net/showthread.php?p=2051806
-				return RedrawMenuItem(sDisplay)
-			}
 		}
-		case MenuAction_DrawItem:
-		{
-			char sInfo[32]
-			menu.GetItem(param2, sInfo, 32)
-			if(StrEqual(sInfo, "Restart"))
-			{
-				char sDisplay[32]
-				Format(sDisplay, 32, "Restart3", gI_partner[param1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-				return RedrawMenuItem(sDisplay)
-				//return sDisplay
-			}
-		}*/
 		case MenuAction_Cancel:
 		{
-			//if(param2 == -2)
-			//{
-				//char sGetItem[32]
-				//menu.GetItem(param2, sGetItem, 32)
-				//PrintToServer("sGetItem: %s", sGetItem)
-			//}
-			//if(param2 == -3 || param2 == -5)
-			//{
-				//char sItem[32]
-				//menu.GetItem(param2, sItem, 32)
-				//char sTitle[32]
-				//menu.GetTitle(sTitle, 32)
-				//PrintToServer("sItem: %s sTitle: %s", sItem, sTitle)
 			gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
 			//PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
-			//}
-			//delete menu
 		}
 		case MenuAction_Display:
 		{
@@ -1287,6 +1221,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			delete menu
 		}
 	}
+	//https://forums.alliedmods.net/showthread.php?t=288351
 	//return view_as<int>(Plugin_Continue)
 }
 
@@ -1294,12 +1229,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_block(int client, int args)
 {
-	//if(gB_TrikzMenuIsOpen[client])
-	//{
-		//Trikz(client)
-		//Block(client)
-	//}
-	//else
 	Block(client)
 	return Plugin_Handled
 }
@@ -1323,7 +1252,7 @@ Action Block(int client)
 			Trikz(client)
 		PrintToChat(client, "Block enabled.")
 		return Plugin_Handled
-	}//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
+	}
 	else
 	{
 
@@ -1336,6 +1265,7 @@ Action Block(int client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
+	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
 	//return Plugin_Handled
 }
 
@@ -2934,7 +2864,7 @@ Action cmd_getgud(int client, int args)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && (!(GetEntityFlags(other) & FL_ONGROUND) || !gI_boost[other]))
+	if(0 < other <= MaxClients && (!gI_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
@@ -2948,24 +2878,18 @@ Action ProjectileBoostFix(int entity, int other)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 			//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
 			//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-			//gI_boost[other] = 1
-			//vecVelClient[1] -= vecVelEntity[1] * 0.97 //!getgud 0.995 !getgud 0.997 !getgud 0.9965 = -281.647888 0.000000 !getgud 0.99645 = -281.633758 0.000000 !getgud 0.99646 = -281.636596 0.000000
 			vecVelClient[0] -= vecVelEntity[0] * 0.9964619
 			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
-			//!getgud 0.996462 = -281.637145 0.000000 !getgud 0.996460 = -281.636596 0.000000 !getgud 0.996462 = -281.637145 0.000000
-			//!getgud 0.9964619 = -281.637115 0.000000 code bugging by nick jurevich smesh292
 			gF_vecVelBoostFix[other][0] = vecVelClient[0]
 			gF_vecVelBoostFix[other][1] = vecVelClient[1]
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
-			gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
-			//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
+			gI_flash[other] = EntIndexToEntRef(entity)
 			gI_boost[other] = 1
 		}
 	}
-	//return Plugin_Continue
 }
 
 Action cmd_devmap(int client, int args)
@@ -2990,10 +2914,6 @@ Action cmd_devmap(int client, int args)
 				menu.AddItem("no", "No")
 				menu.Display(i, 20)
 			}
-			/*if(IsClientInGame(i) && !IsFakeClient(i))
-			{
-				gF_totalPlayers++
-			}*/
 		}
 		gF_devmapTime = GetEngineTime()
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
@@ -3039,7 +2959,6 @@ Action timer_devmap(Handle timer)
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
-		//gF_totalPlayers = 0.0
 		CreateTimer(5.0, timer_changelevel)
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0] && gB_isDevmap)
@@ -3049,7 +2968,6 @@ Action timer_devmap(Handle timer)
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
-		//F_totalPlayers = 0.0
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && gB_isDevmap)
 	{
@@ -3057,7 +2975,6 @@ Action timer_devmap(Handle timer)
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
 		gB_isDevmap = false
-		//gF_totalPlayers = 0.0
 		CreateTimer(5.0, timer_changelevel)
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && !gB_isDevmap)
@@ -3066,11 +2983,9 @@ Action timer_devmap(Handle timer)
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
 		gB_isDevmap = false
-		//gF_totalPlayers = 0.0
 	}
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
-	//gF_totalPlayers = 0.0
 	return Plugin_Stop
 }
 
