@@ -105,6 +105,8 @@ int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
 
+//int gI_playerFlags[MAXPLAYERS + 1]
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -2379,10 +2381,19 @@ Action timer_removePing(Handle timer, int client)
 	return Plugin_Stop
 }
 
+bool IsValidClient(int client)
+{
+	return (0 < client <= MaxClients && IsClientInGame(client))
+}
+
 Action ProjectileBoostFix(int entity, int other)
 {
 	//if(0 < other <= MaxClients && (!gB_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
-	if(0 < other <= MaxClients && !gB_boost[other])
+	if(!IsValidClient(other))
+		return Plugin_Continue
+	if(gB_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
+		return Plugin_Continue
+	//if(0 < other <= MaxClients && !gB_boost[other])
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
@@ -2408,6 +2419,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gB_boost[other] = true
 		}
 	}
+	return Plugin_Continue
 }
 
 Action cmd_devmap(int client, int args)
