@@ -30,7 +30,6 @@
 */
 #include <sdktools>
 #include <sdkhooks>
-#pragma dynamic 420420
 
 int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[2][3]
@@ -117,45 +116,31 @@ public void OnPluginStart()
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
 	AutoExecConfig(true)
 	RegConsoleCmd("sm_t", cmd_trikz)
-	RegConsoleCmd("sm_tr", cmd_trikz)
-	RegConsoleCmd("sm_tri", cmd_trikz)
-	RegConsoleCmd("sm_trik", cmd_trikz)
 	RegConsoleCmd("sm_trikz", cmd_trikz)
-	RegConsoleCmd("sm_b", cmd_block)
 	RegConsoleCmd("sm_bl", cmd_block)
-	RegConsoleCmd("sm_blo", cmd_block)
-	RegConsoleCmd("sm_bloc", cmd_block)
 	RegConsoleCmd("sm_block", cmd_block)
 	RegConsoleCmd("sm_p", cmd_partner)
-	RegConsoleCmd("sm_pa", cmd_partner)
-	RegConsoleCmd("sm_par", cmd_partner)
-	RegConsoleCmd("sm_part", cmd_partner)
-	RegConsoleCmd("sm_partn", cmd_partner)
-	RegConsoleCmd("sm_partne", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_vecmins", cmd_vecmins)
 	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
-	//RegConsoleCmd("sm_tptrigger", cmd_tp)
-	//RegConsoleCmd("sm_tp", cmd_teleport)
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
-	RegServerCmd("sm_createtable", cmd_createtable)
+	RegServerCmd("sm_createzones", cmd_createzones)
+	RegServerCmd("sm_createusers", cmd_createusers)
+	RegServerCmd("sm_createrecords", cmd_createrecords)
+	RegServerCmd("sm_createcp", cmd_createcp)
 	RegConsoleCmd("sm_time", cmd_time)
-	RegServerCmd("sm_createusertable", cmd_createuser)
-	RegServerCmd("sm_createrecordstable", cmd_createrecords)
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
-	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
-	//AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
-	AddCommandListener(specchat, "say") //thanks to VerMon idea.
+	AddCommandListener(specchat, "say")
 	HookEvent("player_spawn", event_playerspawn)
 }
 
@@ -1283,7 +1268,7 @@ void SQLCPUpdate(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
-Action cmd_manualcp(int args)
+Action cmd_createcp(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `cp` (`id` INT AUTO_INCREMENT, `cpnum` INT, `cpx` FLOAT, `cpy` FLOAT, `cpz` FLOAT, `cpx2` FLOAT, `cpy2` FLOAT, `cpz2` FLOAT, `map` VARCHAR(192),  PRIMARY KEY(id))")
