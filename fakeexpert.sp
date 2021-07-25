@@ -557,7 +557,7 @@ public void OnMapStart()
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
-		PrintToServer("sourcetv work.")
+		PrintToServer("SourceTV start recording.")
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
@@ -568,7 +568,7 @@ public void OnMapStart()
 		gB_isTurnedOnSourceTV = true
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
-	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
+	/*gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -655,7 +655,7 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/player/ct_urban/vertex.vtf")
 	
 	AddFileToDownloadsTable("materials/fakeexpert/player/unlit_default.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
+	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")*/
 }
 
 public void OnMapEnd()
@@ -2488,10 +2488,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		gB_bouncedOff[entity] = false //tengu lawl boost fix .sp
-		//SDKHook(entity, SDKHook_Spawn, SDKProjectile)
+		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
-		//SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
-		//SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
+		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
+		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
 }
 
