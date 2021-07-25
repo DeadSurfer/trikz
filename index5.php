@@ -68,11 +68,13 @@
 	<!--padding: 20px;-->
 	<!--width: 200px;-->
 	<!--height: 150px;-->
+	<!--background-color: #009879;-->
 }
 .styled-table thead tr
 {
     background-color: #009879;
     color: #ffffff;
+	<!--color: #009879;-->
     text-align: left;
 }
 .styled-table th,
@@ -84,17 +86,46 @@
 }
 .styled-table tbody tr
 {
+	background-color: #ffffff;
     border-bottom: 1px solid #dddddd;
 	<!--background-color: #00CCA2;-->
 	<!--background-color: rgba(0.0,204.0,162.0,0.5);
 	background-color: transparent-->
 	<!--background-color: #F30000;-->
+	<!--background-color: #009879;-->
+	<!--background-color: #009879;-->
 }
+
+<!--.styled-table tbody tr:nth-of-type(even)
+{
+}-->
+<!--https://css-tricks.com/almanac/selectors/n/nth-of-type/-->
+<!--.styled-table tbody tr
+{
+	background-color: #009879;
+}-->
 
 .styled-table tbody tr:nth-of-type(even)
 {
     background-color: #f3f3f3;
 }
+
+<!--https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type#basic_example-->
+<!--.styled-table tbody tr:nth-child(odd)
+{
+    background-color: #009879;
+}-->
+
+<!--https://www.w3schools.com/cssref/sel_nth-of-type.asp-->
+<!--.styled-table tbody tr:nth-of-type(odd)
+{
+    background-color: #009879;
+}-->
+
+<!--.styled-table tbody tr:nth-of-type(an-plus-b)
+{
+    background-color: #009879;
+}-->
 
 .styled-table tbody tr:last-of-type
 {
