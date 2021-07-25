@@ -2750,7 +2750,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//return Plugin_Continue
 	if(IsPlayerAlive(client))
 	{
-		if(GetEntProp(client, Prop_Data, "m_afButtonReleased"))
+		if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 			gI_pingTick[client] = 1
 		if(buttons & IN_USE && gI_pingTick[client] > 0)
 			gI_pingTick[client]++
