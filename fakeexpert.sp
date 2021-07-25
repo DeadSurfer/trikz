@@ -110,7 +110,7 @@ int gI_testvec[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
 //bool gB_nospamvote
-float gF_totalPlayers
+//float gF_totalPlayers
 //int gF_devmap_yes
 //int gF_devmap_no
 float gF_devmapTime
@@ -3016,10 +3016,10 @@ Action cmd_devmap(int client, int args)
 				menu.AddItem("no", "No")
 				menu.Display(i, 20)
 			}
-			if(IsClientInGame(i) && !IsFakeClient(i))
+			/*if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				gF_totalPlayers++
-			}
+			}*/
 		}
 		gF_devmapTime = GetEngineTime()
 		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
@@ -3061,42 +3061,42 @@ Action timer_devmap(Handle timer)
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0] && !gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
+		PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / gF_devmap[0] + gF_devmap[1]) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
-		gF_totalPlayers = 0.0
+		//gF_totalPlayers = 0.0
 		CreateTimer(5.0, timer_changelevel)
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0] && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / gF_totalPlayers) * 100.0, gF_devmap[1], gF_totalPlayers)
+		PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / gF_devmap[0] + gF_devmap[1]) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
 		//google translate russian to english.
 		gB_isDevmap = true
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
-		gF_totalPlayers = 0.0
+		//F_totalPlayers = 0.0
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
+		PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_devmap[0] + gF_devmap[1]) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
 		gB_isDevmap = false
-		gF_totalPlayers = 0.0
+		//gF_totalPlayers = 0.0
 		CreateTimer(5.0, timer_changelevel)
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0] && !gB_isDevmap)
 	{
-		PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_totalPlayers) * 100.0, gF_devmap[0], gF_totalPlayers)
+		PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / gF_devmap[0] + gF_devmap[1]) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
 		gB_isDevmap = false
-		gF_totalPlayers = 0.0
+		//gF_totalPlayers = 0.0
 	}
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
-	gF_totalPlayers = 0.0
+	//gF_totalPlayers = 0.0
 	return Plugin_Stop
 }
 
