@@ -2794,7 +2794,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(TR_DidHit(INVALID_HANDLE))
 				TR_GetEndPosition(end, INVALID_HANDLE)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-			CreateTimer(3.0, timer_removePing, gI_pingModel[client], TIMER_FLAG_NO_MAPCHANGE)
+			CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
 }
@@ -2804,10 +2804,10 @@ bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
 	return entity > MaxClients
 }
 
-Action timer_removePing(Handle timer, int ping)
+Action timer_removePing(Handle timer, int client)
 {
-	if(ping)
-		RemoveEntity(ping)
+	if(gI_pingModel[client])
+		RemoveEntity(gI_pingModel[client])
 	return Plugin_Stop
 }
 
