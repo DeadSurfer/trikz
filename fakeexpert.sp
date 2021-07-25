@@ -2824,7 +2824,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//EmitGameSound(
 			//EmitSoundEntry(
 			//EmitSoundToClient(
-			EmitGameSoundToAll("sound/fakeexpert/pingtool/click.wav")
+			//EmitGameSoundToAll("sound/fakeexpert/pingtool/click.wav")
+			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
@@ -2933,7 +2934,7 @@ Action ProjectileBoostFix(int entity, int other)
 		//return Plugin_Continue
 	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
 	//if(!gI_boost[other] || !(gI_entityFlags[other] & FL_ONGROUND))
-	if(!(GetEntityFlags(other) & FL_ONGROUND))
+	if(0 < other <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
