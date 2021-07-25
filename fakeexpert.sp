@@ -658,7 +658,7 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
 }
 
-void OnMapEnd()
+public void OnMapEnd()
 {
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
@@ -709,6 +709,7 @@ Action specchat(int client, const char[] command, int argc)
 		//char sFormat[256]
 		//Format(sFormat, 256, "*SPEC* \x07%06X %s \x01:  %s", value, sName, sChat) //https://wiki.alliedmods.net/Format_Class_Functions_(SourceMod_Scripting)#:~:text=Format-class%20functions%20are%20variable%20argument%20functions%20in%20SourceMod,will%20then%20be%3A%20%22%20Your%20name%20is%3A%20Mark.%22
 		PrintToChatAll("*SPEC* %s :  %s", sName, sChat) //   SetTrieValue(hTrie, "grey", 0xCCCCCC);
+		PrintToServer("*SPEC* %s :  %s", sName, sChat)
 		return Plugin_Handled
 	}
 	return Plugin_Continue
