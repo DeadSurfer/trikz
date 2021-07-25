@@ -991,16 +991,14 @@ void SDKBoostFix(int client)
 				vecVelEntity[1] *= 0.135
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
-				//if(!gB_groundBoost[client])
-				//{
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-				//}
-				//else
-				//{
-					//gF_vecVelBoostFix[client][2] *= 3.0
-					//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-				//}
-				gB_boost[client] = 0
+				if(gB_groundBoost[client])
+				{
+					gF_vecVelBoostFix[client][2] *= 3.0
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				}
+				else
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				gB_boost[client] = false
 			}
 		}
 	}
@@ -2389,7 +2387,7 @@ Action ProjectileBoostFix(int entity, int other)
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
+		GetEntPropVector(entity, Prop_Send, "m_vecAbsOrigin", vecOriginEntity)
 		if(vecOriginOther[2] >= vecOriginEntity[2])
 		{
 			float vecVelClient[3]
