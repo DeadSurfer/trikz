@@ -2885,7 +2885,7 @@ Action ProjectileBoostFix(int entity, int other)
 			//vecVelClient[0] -= vecVelEntity[0] * 0.9964619
 			//vecVelClient[1] -= vecVelEntity[1] * 0.9964619
 			vecVelClient[0] = (vecVelClient[0] - vecVelEntity[0]) * 0.9964619
-			vecVelClient[1] = (vecVelClient[0] - vecVelEntity[1]) * 0.9964619
+			vecVelClient[1] = (vecVelClient[1] - vecVelEntity[1]) * 0.9964619
 			gF_vecVelBoostFix[other][0] = vecVelClient[0]
 			gF_vecVelBoostFix[other][1] = vecVelClient[1]
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
