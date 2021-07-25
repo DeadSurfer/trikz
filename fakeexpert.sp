@@ -1032,7 +1032,6 @@ void createend()
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
 	DispatchKeyValue(entity, "targetname", "fakeexpert_endzone")
-	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
@@ -1773,9 +1772,7 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 		gF_vec2[1][0] = results.FetchFloat(3)
 		gF_vec2[1][1] = results.FetchFloat(4)
 		gF_vec2[1][2] = results.FetchFloat(5)
-		//PrintToServer("SQLSetZoneEnd: %f %f %f", gF_vec2[1][0], gF_vec2[1][1], gF_vec2[1][2])
 		PrintToServer("End zone is successfuly setup.")
-		//cmd_createend(0, 0)
 		createend()
 	}
 }
@@ -1784,15 +1781,6 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 {
 	PrintToServer("Zones table is successfuly created.")
 }
-
-/*Action cmd_tp(int client, int args)
-{
-	//TeleportEntity(client, gI_trigger, NULL_VECTOR, NULL_VECTOR)
-	float vecBase[3]
-	GetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", vecBase)
-	PrintToServer("cmd_tp: vecbase: %f %f %f", vecBase[0], vecBase[1], vecBase[2])
-	return Plugin_Handled
-}*/
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -1861,11 +1849,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
 			DispatchSpawn(gI_pingModel[client])
-			//ActivateEntity(gI_pingModel[client])
 			float start[3]
 			float angle[3]
 			float end[3]
-			//float normal[3]
 			GetClientEyePosition(client, start)
 			GetClientEyeAngles(client, angle)
 			GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
