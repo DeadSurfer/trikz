@@ -1051,13 +1051,6 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	//if(0 < other <= MaxClients)
-	//	return
-	//PrintToServer("SDKSkyFix: %i %i", client, other)
-	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
-	//	return
-	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
-	//if(!(GetEntityFlags(other) & FL_ONGROUND))
 	if(0 < other <= MaxClients && 0 < client <= MaxClients && (!(GetEntityFlags(other) & FL_ONGROUND) || GetGameTime() - gF_boostTime[client] > 0.15 || !gI_boost[client]))
 	{
 		/*float vecAbsClient[3]
@@ -2939,32 +2932,12 @@ Action cmd_getgud(int client, int args)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	//if(!IsClientValid(other))
-	//	return Plugin_Continue
-	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
-	//	return Plugin_Continue
-	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
-	//if(!gI_testvec[other] && gF_getGud != 0.0)
-	//	gI_testvec[other] = 1
-	//CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
-	//if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
-	//	return Plugin_Continue
-	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
-	//if(!gI_boost[other] || !(gI_entityFlags[other] & FL_ONGROUND))
-	//if((0 < other <= MaxClients) && (!(GetEntityFlags(other) & FL_ONGROUND) || !gI_boost[other]))
-	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
-	//	return
-	//{
-	//if(!gI_testvec[other] && gF_getGud != 0.0)
-	//	gI_testvec[other] = 1
 	if(0 < other <= MaxClients && (!(GetEntityFlags(other) & FL_ONGROUND) || !gI_boost[other]))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-		//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
-		//if(0.0 < (deltaOrigin - vecMaxs[2]) < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		if(vecOriginOther[2] >= vecOriginEntity[2])
 		{
 			float vecVelClient[3]
@@ -2987,10 +2960,8 @@ Action ProjectileBoostFix(int entity, int other)
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 			gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 			//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
-			//PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
 		}
 	}
-	//}
 	return Plugin_Continue
 }
 
