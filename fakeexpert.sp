@@ -2793,7 +2793,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//float normal[3]
 			GetClientEyePosition(client, start)
 			GetClientEyeAngles(client, angle)
-			TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
+			GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
+			for(int i = 0; i <= 2; i++)
+			{
+				angle[i] *= 8192.0
+				end[i] = start[i] + angle[i]
+			}
+			//TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
 			if(TR_DidHit(INVALID_HANDLE))
 			{
 				TR_GetEndPosition(end, INVALID_HANDLE)
