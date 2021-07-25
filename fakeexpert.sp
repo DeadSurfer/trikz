@@ -784,13 +784,6 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2)
 						Restart(partner) //Expert-Zone idea.
 						if(gB_TrikzMenuIsOpen[partner])
 							Trikz(partner)
-						/*for(int i = 1; i <= 2048; i++)
-						{
-							gB_stateDisabled[param1][i] = gB_stateDefaultDisabled[i]
-							gB_stateDisabled[partner][i] = gB_stateDefaultDisabled[i]
-							gF_buttonReady[param1][i] = 0.0
-							gF_buttonReady[partner][i] = 0.0
-						}*/
 						char sQuery[512]
 						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", GetSteamAccountID(partner), GetSteamAccountID(param1), GetSteamAccountID(param1), GetSteamAccountID(partner))
 						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(partner))
@@ -821,18 +814,10 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					Color(param1, false)
-					//Color(partner, false)
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
-					/*for(int i = 1; i <= 2048; i++)
-					{
-						gB_stateDisabled[gI_partner[param1]][i] = gB_stateDefaultDisabled[i]
-						gB_stateDisabled[gI_partner[partner]][i] = gB_stateDefaultDisabled[i]
-						gF_buttonReady[gI_partner[param1]][i] = 0.0
-						gF_buttonReady[gI_partner[partner]][i] = 0.0
-					}*/
 				}
 			}
 		}
