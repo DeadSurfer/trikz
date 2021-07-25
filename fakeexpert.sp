@@ -2355,6 +2355,7 @@ Action ProjectileBoostFix(int entity, int other)
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
 			gI_flash[other] = EntIndexToEntRef(entity)
 			gB_boost[other] = true
+			PrintToChatAll("%i %i", entity, other)
 		}
 	}
 }
