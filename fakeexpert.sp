@@ -105,7 +105,7 @@ bool gB_groundBoost[MAXPLAYERS + 1]
 //float gF_currentVelBooster[MAXPLAYERS + 1][3]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
-//int gI_entityFlags[MAXPLAYERS + 1]
+int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
@@ -2698,7 +2698,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	//gI_entityFlags[client] = GetEntityFlags(client)
+	gI_entityFlags[client] = GetEntityFlags(client)
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(client) & FL_INWATER) && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
@@ -2922,21 +2922,28 @@ Action cmd_getgud(int client, int args)
 	return Plugin_Handled
 }
 
+bool IsClientValid(int client)
+{
+	return (client > 0 && client <= MaxClients && IsClientInGame(client))
+}
+
 Action ProjectileBoostFix(int entity, int other)
 {
-	//if(!IsClientValid(other))
-	//	return Plugin_Continue
+	if(!IsClientValid(other))
+		return Plugin_Continue
 	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
 	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
 	//if(!gI_testvec[other] && gF_getGud != 0.0)
 	//	gI_testvec[other] = 1
 	//CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
-	//if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
-		//return Plugin_Continue
+	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
+		return Plugin_Continue
 	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
 	//if(!gI_boost[other] || !(gI_entityFlags[other] & FL_ONGROUND))
-	if((0 < other <= MaxClients) && (!(GetEntityFlags(other) & FL_ONGROUND) || !gI_boost[other]))
+	//if((0 < other <= MaxClients) && (!(GetEntityFlags(other) & FL_ONGROUND) || !gI_boost[other]))
+	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
+	//	return
 	{
 		if(!gI_testvec[other] && gF_getGud != 0.0)
 			gI_testvec[other] = 1
