@@ -103,7 +103,7 @@ int gI_wModelPlayerDef[5]
 int gI_randomInt[MAXPLAYERS + 1][3]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
-Handle gH_timerPing[MAXPLAYERS + 1]
+Handle gH_timerPing[MAXPLAYERS + 1] = null
 
 public Plugin myinfo =
 {
@@ -114,7 +114,7 @@ public Plugin myinfo =
 	url = "http://www.sourcemod.net/"
 }
 
-public void OnPluginStart()
+void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
 	AutoExecConfig(true)
@@ -540,7 +540,7 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	return MRES_Supercede
 }*/
 
-public void OnMapStart()
+void OnMapStart()
 {
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
 	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
@@ -656,7 +656,7 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
 }
 
-public void OnMapEnd()
+void OnMapEnd()
 {
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
@@ -782,11 +782,11 @@ public void OnClientPutInServer(int client)
 	//	Trikz(gI_partner[client])
 	//gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
-	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	//SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
+	//SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
-	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
-	char sQuery[512]
+	//SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
+	/*char sQuery[512]
 	if(IsClientInGame(client) && gB_pass)
 	{
 		int steamid = GetSteamAccountID(client)
@@ -794,13 +794,13 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
-	}
+	}*/
 	/*for(int i = 1; i <= 2048; i++)
 	{
 		gB_stateDisabled[client][i] = gB_stateDisabled[0][i]
 		gF_buttonReady[client][i] = 0.0
 	}*/
-	gB_TrikzMenuIsOpen[client] = false
+	/*gB_TrikzMenuIsOpen[client] = false
 	for(int i = 0; i <= 1; i++)
 	{
 		gB_toggledCheckpoint[client][i] = false
@@ -816,10 +816,10 @@ public void OnClientPutInServer(int client)
 	gB_block[client] = true
 	//gB_color[gI_partner[client]] = false
 	gB_color[client] = false
-	gI_pingTick[client] = 0
+	gI_pingTick[client] = 0*/
 }
 
-public void OnClientDisconnect(int client)
+void OnClientDisconnect(int client)
 {
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
@@ -2467,10 +2467,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		gB_bouncedOff[entity] = false //tengu lawl boost fix .sp
-		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
+		//SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
-		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
-		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
+		//SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
+		//SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
 }
 
