@@ -2807,7 +2807,10 @@ bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
 Action timer_removePing(Handle timer, int client)
 {
 	if(gI_pingModel[client])
+	{
 		RemoveEntity(gI_pingModel[client])
+		gI_pingModel[client]
+	}
 	return Plugin_Stop
 }
 
