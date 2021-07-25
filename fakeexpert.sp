@@ -2756,7 +2756,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float start[3]
 		float angle[3]
 		float end[3]
-		float normal[3]
+		//float normal[3]
 		GetClientEyePosition(client, start)
 		GetClientEyeAngles(client, angle)
 		TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
