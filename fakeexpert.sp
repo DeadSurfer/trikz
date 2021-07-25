@@ -1340,7 +1340,7 @@ Action cmd_partner(int client, int args)
 
 void Partner(int client)
 {
-	if(gI_partner[client] == 0)
+	if(!gI_partner[client])
 	{
 		Menu menu = new Menu(partner_handler)
 		menu.SetTitle("Choose partner")
@@ -1407,7 +1407,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 			{
 				case 0:
 				{
-					if(gI_partner[partner] == 0)
+					if(!gI_partner[partner])
 					{
 						//PrintToServer("%i %N, %i %N", param1, param1, param2x, param2x)
 						gI_partner[param1] = partner
@@ -1574,7 +1574,7 @@ void Restart(int client)
 {
 	if(!gB_isDevmap && gB_haveZone)
 	{
-		if(gI_partner[client] != 0)
+		if(gI_partner[client])
 		{
 			if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
 			{
@@ -2750,7 +2750,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	//return Plugin_Continue
 	//if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
-	if(IsPlayerAlive(client))
+	if(IsPlayerAlive(client) && gI_partner[client])
 	{
 		if(buttons & IN_USE)
 		{
@@ -2816,6 +2816,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				normal[0] -= 270.0
 				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 			}
+			if(gB_color[client])
+				SetEntityRenderColor(gI_pingModel[client], gI_randomInt[0], gI_randomInt[1], gI_randomInt[2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
