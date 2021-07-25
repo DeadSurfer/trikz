@@ -656,6 +656,7 @@ public void OnMapStart()
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
 	//gI_pingModel = PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
+	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
 	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
 	//gI_wModelThrown = PrecacheModel(d_wModelThrown)
 	//PrecacheModel(
@@ -2927,8 +2928,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
 	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
-	if(!gI_testvec[other] && gF_getGud != 0.0)
-		gI_testvec[other] = 1
+	//if(!gI_testvec[other] && gF_getGud != 0.0)
+	//	gI_testvec[other] = 1
 	//CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 	//if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		//return Plugin_Continue
@@ -2936,6 +2937,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(!gI_boost[other] || !(gI_entityFlags[other] & FL_ONGROUND))
 	if(0 < other <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND))
 	{
+		if(!gI_testvec[other] && gF_getGud != 0.0)
+			gI_testvec[other] = 1
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
