@@ -2343,7 +2343,6 @@ Action ProjectileBoostFix(int entity, int other)
 	if(gB_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		return Plugin_Continue
 	//if(0 < other <= MaxClients && !gB_boost[other])
-	//{
 	float vecOriginOther[3]
 	//GetClientAbsOrigin(other, vecOriginOther)
 	GetEntPropVector(other, Prop_Send, "m_vecOrigin", vecOriginOther)
@@ -2355,8 +2354,6 @@ Action ProjectileBoostFix(int entity, int other)
 		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
 		float vecVelEntity[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-		//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
-		//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
 		vecVelClient[0] -= vecVelEntity[0] * 0.9964619
 		vecVelClient[1] -= vecVelEntity[1] * 0.9964619
 		gF_vecVelBoostFix[other][0] = vecVelClient[0]
@@ -2364,10 +2361,9 @@ Action ProjectileBoostFix(int entity, int other)
 		gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
 		gF_boostTime[other] = GetGameTime()
 		gB_groundBoost[other] = gB_bouncedOff[entity]
-		SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
+		SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
 		gI_flash[other] = EntIndexToEntRef(entity)
 		gB_boost[other] = true
-		//}
 	}
 	return Plugin_Continue
 }
