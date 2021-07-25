@@ -153,7 +153,7 @@ public void OnMapStart()
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
-	ConVar = CV_sourcetv = FindConVar("tv_enable")
+	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
