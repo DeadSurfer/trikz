@@ -141,8 +141,9 @@ int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 //int gI_wModel[MAXPLAYERS + 1][5]
 int gI_randomInt[MAXPLAYERS + 1][3]
-float gF_pingDelay[MAXPLAYERS + 1]
-int gI_pingModel
+//float gF_pingDelay[MAXPLAYERS + 1]
+int gI_pingModel[MAXPLAYERS + 1]
+int gI_pingTick[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -652,7 +653,8 @@ public void OnMapStart()
 	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl")
 	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl")
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
-	gI_pingModel = PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
+	//gI_pingModel = PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
+	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
 	//gI_wModelThrown = PrecacheModel(d_wModelThrown)
 	//PrecacheModel(
@@ -934,6 +936,7 @@ public void OnClientPutInServer(int client)
 	gB_block[client] = true
 	gB_color[gI_partner[client]] = false
 	gB_color[client] = false
+	gI_pingTick[client] = 0
 }
 
 public void OnClientDisconnect(int client)
@@ -2745,14 +2748,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_testvec[client] = 0
 	}
 	//return Plugin_Continue
-	if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
+	if(IsPlayerAlive(client))
 	{
-		gF_pingDelay[client] = GetGameTime()
-		int ping = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+		if(GetEntProp(client, Prop_Data, "m_afButtonReleased"))
+			gI_pingTick[client] = 1
+		if(buttons & IN_USE && gI_pingTick[client] > 0)
+			gI_pingTick[client]++
+	}
+	//if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
+	if(IsPlayerAlive(client) && buttons & IN_USE && gI_pingTick[client] == 50)
+	{
+		//gF_pingDelay[client] = GetGameTime()
+		gI_pingTick[client] = 0
+		gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 		//SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
-		SetEntityModel(ping, "models/fakeexpert/pingtool/pingtool.mdl")
-		DispatchSpawn(ping)
-		ActivateEntity(ping)
+		SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
+		DispatchSpawn(gI_pingModel[client])
+		ActivateEntity(gI_pingModel[client])
 		//GetClientAimTarget(
 		//https://forums.alliedmods.net/showthread.php?t=152726
 		float start[3]
@@ -2764,13 +2776,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
 		if(TR_DidHit(INVALID_HANDLE))
 			TR_GetEndPosition(end, INVALID_HANDLE)
-		TeleportEntity(ping, end, NULL_VECTOR, NULL_VECTOR)
+		TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
+		CreateTimer(3.0, timer_removePing, gI_pingModel[client], TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
 {
 	return entity > MaxClients
+}
+
+Action timer_removePing(Handle timer, int ping)
+{
+	RemoveEntity(ping)
+	return Plugin_Stop
 }
 
 Action cmd_eye66(int client, int args)
