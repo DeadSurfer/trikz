@@ -2830,9 +2830,10 @@ Action ProjectileBoostFix(int entity, int other)
 	if(!gI_testvec[other] && gF_getGud != 0.0)
 		gI_testvec[other] = 1
 	//CreateTimer(0.25, Timer_removeflashbangonhit, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
-	if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
-		return Plugin_Continue
+	//if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
+		//return Plugin_Continue
 	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
+	if(!gI_boost[other] || !(gI_entityFlags[other] & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
