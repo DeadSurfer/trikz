@@ -1155,7 +1155,7 @@ Action cmd_cpmins(int client, int args)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
-		GetCmdArgString(sCmd, 512)
+		GetCmdArg(argc, sCmd, 512)
 		int cpnum = StringToInt(sCmd)
 		PrintToChat(client, "CP: No.%i", cpnum)
 		GetClientAbsOrigin(client, gF_vec1cp[cpnum])
@@ -1180,7 +1180,7 @@ Action cmd_cpmaxs(int client, int args)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
-		GetCmdArg(sCmd, 512)
+		GetCmdArg(argc, sCmd, 512)
 		int cpnum = StringToInt(sCmd)
 		GetClientAbsOrigin(client, gF_vec2cp[cpnum])
 		char sQuery[512]
