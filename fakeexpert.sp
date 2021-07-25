@@ -1858,11 +1858,11 @@ Action SDKStartTouch(int entity, int other)
 				int playerid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
 				char sCPnum[32]
+				int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+				int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+				int personalSecond = RoundToFloor(gF_Time[other]) % 60
 				if(gF_ServerRecord != 0.0)
 				{
-					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-					int personalSecond = RoundToFloor(gF_Time[other]) % 60
 					if(gF_mateRecord[other] != 0.0)
 					{
 						if(gF_ServerRecord > gF_Time[other])
