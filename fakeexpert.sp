@@ -2953,8 +2953,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
 	//	return
 	//{
-	if(!gI_testvec[other] && gF_getGud != 0.0)
-		gI_testvec[other] = 1
+	//if(!gI_testvec[other] && gF_getGud != 0.0)
+	//	gI_testvec[other] = 1
 	float vecOriginOther[3]
 	GetClientAbsOrigin(other, vecOriginOther)
 	float vecOriginEntity[3]
