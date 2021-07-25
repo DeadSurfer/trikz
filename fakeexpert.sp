@@ -1044,18 +1044,18 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 {
 }
 
-//bool IsClientValid(int client)
-//{
-	//return (client > 0 && client <= MaxClients && IsClientInGame(client))
-//}
+bool IsClientValid(int client)
+{
+	return (client > 0 && client <= MaxClients && IsClientInGame(client))
+}
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	//if(0 < other <= MaxClients)
 		//return
 	//PrintToServer("SDKSkyFix: %i %i", client, other)
-	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
-	//	return
+	if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
+		return
 	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
 	//if(!(GetEntityFlags(other) & FL_ONGROUND))
 	{
@@ -1500,23 +1500,23 @@ void Color(int client, bool customSkin)
 		//gI_wModel[client] = gI_class[client]
 		if(gI_class[client] == 1)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayer[1])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayer[1])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
 		}
 		if(gI_class[client] == 2)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayer[2])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayer[2])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
 		}
 		if(gI_class[client] == 3)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayer[3])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayer[3])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
 		}
 		if(gI_class[client] == 4)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayer[4])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayer[4])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
 		}
 		SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
@@ -1536,23 +1536,23 @@ void Color(int client, bool customSkin)
 		//gI_wModel[client] = gI_class[client]
 		if(gI_class[client] == 1)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[1])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[1])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
 		}
 		if(gI_class[client] == 2)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[2])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[2])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[2])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[2])
 		}
 		if(gI_class[client] == 3)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[3])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[3])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[3])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[3])
 		}
 		if(gI_class[client] == 4)
 		{
-			SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[4])
-			SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayerDef[4])
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
 		}
 		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntityRenderColor(client, 255, 255, 255, 255)
@@ -2790,7 +2790,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//gF_pingDelay[client] = GetGameTime()
 			gI_pingTick[client] = 0
 			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
-			//SetEntProp(ping, Prop_Send, "m_nModelIndex", gI_pingModel)
+			//SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
 			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
 			DispatchSpawn(gI_pingModel[client])
 			ActivateEntity(gI_pingModel[client])
@@ -2929,10 +2929,10 @@ Action cmd_getgud(int client, int args)
 	return Plugin_Handled
 }
 
-bool IsClientValid(int client)
-{
-	return (client > 0 && client <= MaxClients && IsClientInGame(client))
-}
+//bool IsClientValid(int client)
+//{
+//	return (client > 0 && client <= MaxClients && IsClientInGame(client))
+//}
 
 Action ProjectileBoostFix(int entity, int other)
 {
@@ -3158,7 +3158,7 @@ void SDKProjectilePost(int entity)
 		return
 	if(gB_color[client])
 	{
-		SetEntProp(entity, Prop_Send, "m_nModelIndex", gI_wModelThrown)
+		SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
 		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 		SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
 	}
@@ -3217,8 +3217,8 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	/*if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		//SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_vModel)
-		SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_wModel)
+		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
+		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
 		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
 		//char sGetGud[32]
 		//IntToString(gI_getGud, sGetGud, 32)
@@ -3232,7 +3232,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
 		if(client == owner)
 		{
-			SetEntProp(index, Prop_Send, "m_nModelIndex", gI_vModel)
+			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModel)
 			SetEntProp(index, Prop_Data, "m_nSkin", gI_getGud)
 			//SetEntityRenderColor(index, 255, 0, 0, 255)
 			continue
@@ -3259,8 +3259,8 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		//SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_vModel)
-		SetEntProp(weapon, Prop_Send, "m_nModelIndex", gI_wModel)
+		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
+		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
 		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
 		//char sGetGud[32]
 		//IntToString(gI_getGud, sGetGud, 32)
