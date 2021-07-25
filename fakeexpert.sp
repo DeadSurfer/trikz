@@ -651,6 +651,7 @@ public void OnMapStart()
 	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl")
 	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl")
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
+	gI_pingModel = PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	//gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/flashbang.mdl")
 	//gI_wModelThrown = PrecacheModel(d_wModelThrown)
 	//PrecacheModel(
@@ -3025,7 +3026,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 Action SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
 	//GivePlayerItem(client, "weapon_flashbang")
@@ -3043,7 +3043,6 @@ Action SDKProjectile(int entity)
 void SDKProjectilePost(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
 		return
 	if(gB_color[client])
