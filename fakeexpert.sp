@@ -2342,7 +2342,7 @@ Action ProjectileBoostFix(int entity, int other)
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
-		GetClientAbsOrigin(entity, vecOriginEntity)
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
 		if(vecOriginOther[2] >= vecOriginEntity[2])
 		{
 			float vecVelClient[3]
