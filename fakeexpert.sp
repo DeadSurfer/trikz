@@ -2737,7 +2737,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_testvec[client] = 0
 	}
 	//return Plugin_Continue
-	if(IsPlayerAlive(client) && button & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
+	if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
 	{
 		gF_pingDelay[client] = GetGameTime()
 		int ping = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
