@@ -2864,7 +2864,8 @@ Action cmd_getgud(int client, int args)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && (!gI_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
+	//if(0 < other <= MaxClients && (!gI_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
+	if(0 < other <= MaxClients && !gI_boost[other])
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
