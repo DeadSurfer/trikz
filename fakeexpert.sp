@@ -1357,7 +1357,7 @@ void createcp(int cpnum)
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
 }
 
-Action cmd_createuser(int args)
+Action cmd_createusers(int args)
 {
 	char sQuery[512]
 	//Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `geoipcode2` VARCHAR(64), `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
@@ -1712,7 +1712,7 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	}
 }
 
-Action cmd_createtable(int args)
+Action cmd_createzones(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, `possition_x2` FLOAT, `possition_y2` FLOAT, `possition_z2` FLOAT, `tier` INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
