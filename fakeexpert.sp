@@ -61,7 +61,6 @@ float gF_ServerRecord
 ConVar gCV_steamid
 
 int gI_type
-int gI_cpnum
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
@@ -121,24 +120,24 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_block", cmd_block)
 	RegConsoleCmd("sm_p", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
+	RegConsoleCmd("sm_time", cmd_time)
+	RegConsoleCmd("sm_cp", cmd_checkpoint)
+	RegConsoleCmd("sm_devmap", cmd_devmap)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
-	RegConsoleCmd("sm_vecmins", cmd_vecmins)
-	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
-	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegServerCmd("sm_createzones", cmd_createzones)
 	RegServerCmd("sm_createusers", cmd_createusers)
 	RegServerCmd("sm_createrecords", cmd_createrecords)
 	RegServerCmd("sm_createcp", cmd_createcp)
-	RegConsoleCmd("sm_time", cmd_time)
+	RegConsoleCmd("sm_vecmins", cmd_vecmins)
+	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
 	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
 	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
-	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
+	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
-	RegConsoleCmd("sm_devmap", cmd_devmap)
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say")
 	HookEvent("player_spawn", event_playerspawn)
@@ -154,8 +153,7 @@ public void OnMapStart()
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
-	ConVar CV_sourcetv
-	CV_sourcetv = FindConVar("tv_enable")
+	ConVar = CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
@@ -262,8 +260,7 @@ public void OnMapStart()
 
 public void OnMapEnd()
 {
-	ConVar CV_sourcetv
-	CV_sourcetv = FindConVar("tv_enable")
+	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
@@ -370,9 +367,7 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case MenuCancel_ExitBack:
-				{
 					Trikz(param1)
-				}
 			}
 		case MenuAction_End:
 			delete menu
@@ -381,15 +376,10 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public void OnClientPutInServer(int client)
 {
-	//gI_partner[client] = 0
-	//if(gB_TrikzMenuIsOpen[gI_partner[client]])
-	//	Trikz(gI_partner[client])
-	//gI_partner[gI_partner[client]] = 0
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix)
-	//idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	char sQuery[512]
 	if(IsClientInGame(client) && gB_passDB)
@@ -414,7 +404,6 @@ public void OnClientPutInServer(int client)
 	gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
-	//gB_color[gI_partner[client]] = false
 	gB_color[client] = false
 	gI_pingTick[client] = 0
 }
@@ -427,7 +416,6 @@ public void OnClientDisconnect(int client)
 		Trikz(partner)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
-	//PrintToServer("%i %N disconnected.", client, client)
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -458,23 +446,15 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		GetClientName(client, sName, 64)
 		char sQuery[512]
 		int steamid = GetSteamAccountID(client)
-		//char sIP[32]
-		//GetClientIP(client, sIP, 32)
-		//char sCode2[3]
-		//GeoipCode2(sIP, sCode2) //https://pastebin.com/AEwTXWV9
 		if(results.FetchRow())
 		{
-			PrintToServer("%s %i [3 - update]", sName, steamid)
-			//Format(sQuery, 512, "UPDATE users SET username = '%s', geoipcode2 = '%s', lastjoin = %i WHERE steamid = %i", sName, sCode2, GetTime(), steamid)
 			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 		}
 		else
 		{
-			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
-			PrintToServer("%s %i [4 - insert]", sName, steamid)
 		}
 	}
 }
@@ -493,23 +473,16 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	{
 		char sName[64]
 		GetClientName(client, sName, 64)
-		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
+		char sQuery[512]
 		if(results.FetchRow())
 		{
-			PrintToServer("%s %i [1 - select]", sName, steamid)
 			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
 			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
 		}
 		else
 		{
-			//char sIP[32]
-			//GetClientIP(client, sIP, 32)
-			//char sCode2[3]
-			//GeoipCode2(sIP, sCode2)
-			//Format(sQuery, 512, "INSERT INTO users (username, steamid, geoipcode2, firstjoin, lastjoin) VALUES ('%s', %i, '%s', %i, %i)", sName, steamid, sCode2, GetTime(), GetTime())
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 			gD_mysql.Query(SQLUserAdded, sQuery)
-			PrintToServer("%s %i [2 - insert]", sName, steamid)
 		}
 	}
 }
@@ -577,11 +550,8 @@ void SDKBoostFix(int client)
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 				}
 				else
-				{
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-				}
 				gB_boost[client] = false
-				PrintToChatAll("test")
 			}
 		}
 	}
@@ -958,12 +928,9 @@ void createstart()
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
 	DispatchKeyValue(entity, "targetname", "fakeexpert_startzone")
-	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
-	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
-	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	center[0] = (gF_vec2[0][0] + gF_vec1[0][0]) / 2.0
@@ -973,7 +940,6 @@ void createstart()
 	gF_vecStart[0] = center[0]
 	gF_vecStart[1] = center[1]
 	gF_vecStart[2] = center[2]
-	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	for(int i = 0; i <= 1; i++)
 	{
@@ -981,8 +947,6 @@ void createstart()
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
 	}
-	//mins[2] = -128.0
-	//mins[2] = 0.0
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
@@ -996,7 +960,6 @@ void createstart()
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
-	//PrintToServer("entity start: %i created", entity)
 }
 
 void createend()
@@ -1016,15 +979,12 @@ void createend()
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
-	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
-	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	center[0] = (gF_vec2[1][0] + gF_vec1[1][0]) / 2
 	center[1] = (gF_vec2[1][1] + gF_vec1[1][1]) / 2
 	center[2] = (gF_vec2[1][2] + gF_vec1[1][2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	for(int i = 0; i <= 1; i++)
 	{
@@ -1032,11 +992,6 @@ void createend()
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
 	}
-	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	//mins[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
-	//if(mins[1] > 0.0)
-	//	mins[1] = mins[1] * -1.0
-	//mins[2] = -128.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
@@ -1045,14 +1000,10 @@ void createend()
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
-	//maxs[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
-	//if(maxs[1] < 0.0)
-	//	maxs[1] = maxs[1] * -1.0
 	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	//PrintToServer("entity end: %i created", entity)
 	CPSetup()
 }
 
@@ -1068,7 +1019,7 @@ Action cmd_vecmins(int client, int args)
 		GetClientAbsOrigin(client, gF_vec1[0])
 		PrintToServer("vec1: %f %f %f", gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2])
 		char sQuery[512]
-		args = 0 //https://www.w3schools.com/sql/sql_delete.asp
+		args = 0
 		gI_type = args
 		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = %i", gS_map, args)
 		gD_mysql.Query(SQLDeleteZone, sQuery)
@@ -1140,7 +1091,7 @@ Action cmd_maptier(int client, int args)
 		char sArgString[512]
 		GetCmdArgString(sArgString, 512)
 		int tier = StringToInt(sArgString)
-		PrintToServer("Args: %i", tier)
+		PrintToServer("[Args] Tier: %i", tier)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
 		gD_mysql.Query(SQLTier, sQuery)
@@ -1206,22 +1157,17 @@ Action cmd_cpmins(int client, int args)
 		char sCmd[512]
 		GetCmdArgString(sCmd, 512)
 		int cpnum = StringToInt(sCmd)
-		PrintToChat(client, "%i", cpnum)
+		PrintToChat(client, "CP: No.%i", cpnum)
 		GetClientAbsOrigin(client, gF_vec1cp[cpnum])
 		char sQuery[512]
-		gI_cpnum = cpnum
-		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", gI_cpnum, gS_map)
-		gD_mysql.Query(SQLCPRemove, sQuery)
+		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
+		gD_mysql.Query(SQLCPRemoved, sQuery)
 	}
 	return Plugin_Handled
 }
 
-void SQLCPRemove(Database db, DBResultSet results, const char[] error, any data)
+void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
-	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, map) VALUES (%i, %f, %f, %f, '%s')", gI_cpnum, gF_vec1cp[gI_cpnum][0], gF_vec1cp[gI_cpnum][1], gF_vec1cp[gI_cpnum][2], gS_map)
-	gD_mysql.Query(SQLCPUpdate, sQuery)
-	PrintToServer("CP is inserted.")
 }
 
 Action cmd_cpmaxs(int client, int args)
@@ -1234,17 +1180,17 @@ Action cmd_cpmaxs(int client, int args)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
-		GetCmdArgString(sCmd, 512)
+		GetCmdArg(sCmd, 512)
 		int cpnum = StringToInt(sCmd)
 		GetClientAbsOrigin(client, gF_vec2cp[cpnum])
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE cpnum = %i AND map = '%s'", gF_vec2cp[cpnum][0], gF_vec2cp[cpnum][1], gF_vec2cp[cpnum][2], cpnum, gS_map)
-		gD_mysql.Query(SQLCPUpdate, sQuery)
+		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vec1cp[cpnum][0], gF_vec1cp[cpnum][1], gF_vec1cp[cpnum][2], gF_vec2cp[cpnum][0], gF_vec2cp[cpnum][1], gF_vec2cp[cpnum][2], gS_map)
+		gD_mysql.Query(SQLCPInserted, sQuery)
 	}
 	return Plugin_Handled
 }
 
-void SQLCPUpdate(Database db, DBResultSet results, const char[] error, any data)
+void SQLCPInserted(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
