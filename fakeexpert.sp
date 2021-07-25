@@ -836,7 +836,7 @@ public void OnClientPutInServer(int client)
 	gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
-	gB_color[gI_partner[client]] = false
+	//gB_color[gI_partner[client]] = false
 	gB_color[client] = false
 	gI_pingTick[client] = 0
 }
@@ -1022,13 +1022,13 @@ void Trikz(int client)
 	menu.AddItem("block", sDisplay)
 	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
 	menu.AddItem("partner", sDisplay, gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
-	menu.AddItem("Color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+	menu.AddItem("color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	if(gB_isDevmap)
 	{
-		menu.AddItem("Checkpoint", "Checkpoint")
+		menu.AddItem("checkpoint", "Checkpoint")
 		Format(sDisplay, 32, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
-		menu.AddItem("Noclip", sDisplay)
+		menu.AddItem("noclip", sDisplay)
 	}
 	menu.Display(client, MENU_TIME_FOREVER)
 }
@@ -1038,17 +1038,13 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	switch(action)
 	{
 		case MenuAction_Start:
-		{
 			gB_TrikzMenuIsOpen[param1] = true
-		}
 		case MenuAction_Select:
 		{
 			switch(param2)
 			{
 				case 0:
-				{
 					Block(param1)
-				}
 				case 1:
 				{
 					Partner(param1)
@@ -1239,12 +1235,12 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 				{
+					Color(param1, false)
+					//Color(partner, false)
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
-					Color(param1, false)
-					Color(partner, false)
 					/*for(int i = 1; i <= 2048; i++)
 					{
 						gB_stateDisabled[gI_partner[param1]][i] = gB_stateDefaultDisabled[i]
@@ -1329,10 +1325,10 @@ void Color(int client, bool customSkin)
 void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
+	gF_mateRecord[client] = 0.0
 	if(results.FetchRow())
 		gF_mateRecord[client] = results.FetchFloat(0)
-	else
-		gF_mateRecord[client] = 0.0
+		
 }
 
 void Restart(int client)
@@ -1413,24 +1409,22 @@ void createstart()
 	gF_vecStart[2] = center[2]
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
-	mins[0] = (gF_vec1[0][0] - gF_vec2[0][0]) / 2.0
-	if(mins[0] > 0.0)
-		mins[0] = mins[0] * -1.0
-	mins[1] = (gF_vec1[0][1] - gF_vec2[0][1]) / 2.0
-	if(mins[1] > 0.0)
-		mins[1] = mins[1] * -1.0	
-	mins[2] = -128.0
+	for(int i = 0; i <= 1; i++)
+	{
+		mins[i] = (gF_vec1[0][i] - gF_vec2[0][i]) / 2.0
+		if(mins[i] > 0.0)
+			mins[i] *= -1.0
+	}
+	//mins[2] = -128.0
+	//mins[2] = 0.0
 	float maxs[3]
-	maxs[0] = (gF_vec1[0][0] - gF_vec2[0][0]) / 2.0
-	if(maxs[0] < 0.0)
-		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1[0][1] - gF_vec2[0][1]) / 2.0
-	if(maxs[1] < 0.0)
-		maxs[1] = maxs[1] * -1.0
-	maxs[2] = gF_vec1[0][2] - gF_vec2[0][2]
-	if(maxs[2] < 0.0)
-		maxs[2] = maxs[2] * -1.0
-	maxs[2] = 128.0
+	for(int i = 0; i <= 1; i++)
+	{
+		maxs[i] = (gF_vec1[0][i] - gF_vec2[0][i]) / 2.0
+		if(maxs[i] < 0.0)
+			maxs[i] *= -1.0
+	}
+	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
@@ -1467,23 +1461,29 @@ void createend()
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
-	mins[0] = (gF_vec1[1][0] - gF_vec2[1][0]) / 2.0
-	if(mins[0] > 0.0)
-		mins[0] = mins[0] * -1.0
+	for(int i = 0; i <= 1; i++)
+	{
+		mins[i] = (gF_vec1[1][i] - gF_vec2[1][i]) / 2.0
+		if(mins[i] > 0.0)
+			mins[i] *= -1.0
+	}
 	//if(mins[1] = gF_vec1[1] - gF_vec2[1])
-	mins[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
-	if(mins[1] > 0.0)
-		mins[1] = mins[1] * -1.0
-	mins[2] = -128.0
+	//mins[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
+	//if(mins[1] > 0.0)
+	//	mins[1] = mins[1] * -1.0
+	//mins[2] = -128.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	float maxs[3]
-	maxs[0] = (gF_vec1[1][0] - gF_vec2[1][0]) / 2.0
-	if(maxs[0] < 0.0)
-		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
-	if(maxs[1] < 0.0)
-		maxs[1] = maxs[1] * -1.0
-	maxs[2] = 128.0
+	for(int i = 0; i <= 1; i++)
+	{
+		maxs[i] = (gF_vec1[1][i] - gF_vec2[1][i]) / 2.0
+		if(maxs[i] < 0.0)
+			maxs[i] *= -1.0
+	}
+	//maxs[1] = (gF_vec1[1][1] - gF_vec2[1][1]) / 2.0
+	//if(maxs[1] < 0.0)
+	//	maxs[1] = maxs[1] * -1.0
+	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
@@ -1616,10 +1616,8 @@ Action cmd_vecmaxsend(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		GetClientAbsOrigin(client, gF_vec2[1])
@@ -1636,10 +1634,8 @@ Action cmd_cpmins(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
@@ -1668,10 +1664,8 @@ Action cmd_cpmaxs(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
@@ -1757,22 +1751,21 @@ void createcp(int cpnum)
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
-	mins[0] = (gF_vec1cp[cpnum][0] - gF_vec2cp[cpnum][0]) / 2.0
-	if(mins[0] > 0.0)
-		mins[0] = mins[0] * -1.0
-	mins[1] = (gF_vec1cp[cpnum][1] - gF_vec2cp[cpnum][1]) / 2.0
-	if(mins[1] > 0.0)
-		mins[1] = mins[1] * -1.0
-	mins[2] = -128.0
+	for(int i = 0; i <= 1; i++)
+	{
+		mins[i] = (gF_vec1cp[cpnum][i] - gF_vec2cp[cpnum][i]) / 2.0
+		if(mins[i] > 0.0)
+			mins[i] *= -1.0
+	}
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	float maxs[3]
-	maxs[0] = (gF_vec1cp[cpnum][0] - gF_vec2cp[cpnum][0]) / 2.0
-	if(maxs[0] < 0.0)
-		maxs[0] = maxs[0] * -1.0
-	maxs[1] = (gF_vec1cp[cpnum][1] - gF_vec2cp[cpnum][1]) / 2.0
-	if(maxs[1] < 0.0)
-		maxs[1] = maxs[1] * -1.0
-	maxs[2] = 128.0
+	for(int i = 0; i <= 1; i++)
+	{
+		maxs[i] = (gF_vec1cp[cpnum][i] - gF_vec2cp[cpnum][i]) / 2.0
+		if(maxs[i] < 0.0)
+			maxs[i] *= -1.0
+	}
+	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
@@ -1869,12 +1862,12 @@ Action SDKStartTouch(int entity, int other)
 				{
 					if(gF_mateRecord[other] != 0.0)
 					{
+						int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+						int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+						int personalSecond = RoundToFloor(gF_Time[other]) % 60
 						if(gF_ServerRecord > gF_Time[other])
 						{
 							float timeDiff = gF_ServerRecord - gF_Time[other]
-							int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-							int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-							int personalSecond = RoundToFloor(gF_Time[other]) % 60
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
@@ -1890,9 +1883,6 @@ Action SDKStartTouch(int entity, int other)
 						else if(gF_ServerRecord < gF_Time[other] > gF_mateRecord[other])
 						{
 							float timeDiff = gF_Time[other] - gF_ServerRecord
-							int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-							int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-							int personalSecond = RoundToFloor(gF_Time[other]) % 60
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
@@ -1903,9 +1893,6 @@ Action SDKStartTouch(int entity, int other)
 						else if(gF_ServerRecord < gF_Time[other] < gF_mateRecord[other])
 						{
 							float timeDiff = gF_Time[other] - gF_ServerRecord
-							int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-							int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-							int personalSecond = RoundToFloor(gF_Time[other]) % 60
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
@@ -1925,9 +1912,6 @@ Action SDKStartTouch(int entity, int other)
 						if(gF_ServerRecord > gF_Time[other])
 						{
 							float timeDiff = gF_ServerRecord - gF_Time[other]
-							int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-							int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-							int personalSecond = RoundToFloor(gF_Time[other]) % 60
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
@@ -1943,9 +1927,6 @@ Action SDKStartTouch(int entity, int other)
 						else
 						{
 							float timeDiff = gF_Time[other] - gF_ServerRecord
-							int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-							int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-							int personalSecond = RoundToFloor(gF_Time[other]) % 60
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
@@ -1965,20 +1946,13 @@ Action SDKStartTouch(int entity, int other)
 						IntToString(i, sCPnum, 32)
 						if(gB_cp[i][other])
 						{
+							int srCPHour = (RoundToFloor(gF_timeDiffCP[i][other]) / 3600) % 24
+							int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
+							int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
-							{
-								int srCPHour = (RoundToFloor(gF_timeDiffCP[i][other]) / 3600) % 24
-								int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
-								int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 								PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sCPnum, srCPHour, srCPMinute, srCPSecond)
-							}
 							else
-							{
-								int srCPHour = (RoundToFloor(gF_timeDiffCP[i][other]) / 3600) % 24
-								int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
-								int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 								PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sCPnum, srCPHour, srCPMinute, srCPSecond)
-							}
 						}
 					}
 				}
@@ -1987,9 +1961,6 @@ Action SDKStartTouch(int entity, int other)
 					gF_ServerRecord = gF_Time[other]
 					gF_haveRecord[other] = gF_Time[other]
 					gF_haveRecord[gI_partner[other]] = gF_Time[other]
-					int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-					int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-					int personalSecond = RoundToFloor(gF_Time[other]) % 60
 					PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 					for(int i = 1; i <= 10; i++)
 					{
@@ -2132,13 +2103,13 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	if(results.FetchRow())
 	{
 		gF_srCPTime[cpnum][other] = results.FetchFloat(0)
+		int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
+		int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
+		int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
 		if(gF_TimeCP[cpnum][other] < gF_srCPTime[cpnum][other])
 		{
 			gF_timeDiffCP[cpnum][other] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
 			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
-			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
-			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
-			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
 			PrintToChat(other, "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 		}
@@ -2146,9 +2117,6 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 		{
 			gF_timeDiffCP[cpnum][other] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
 			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
-			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
-			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
-			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
 			PrintToChat(other, "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 		}
@@ -2157,23 +2125,8 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	{
 		PrintToChat(other, "%i. Checkpoint: +00:00:00", cpnum)
 		PrintToChat(gI_partner[other], "%i. Checkpoint: +00:00:00", cpnum)
-		//PrintToServer("123j298bh3testcpfisrtt is goding uyp to tyhe sky and seek dontn make me cry.")
 	}
 }
-/*Action cmd_sum(int client, int args)
-{
-	float vec[3]
-	float vec2[3]
-	//DispatchKeyValueVector(trigger, "origin", vec) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	//DispatchSpawn(trigger)
-	//GetClientAbsOrigin
-	GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec)
-	GetEntPropVector(client, Prop_Data, "m_vecOrigin", vec2)
-	vec2[1] = vec2[1] += 256.0
-	TE_SetupBeamPoints(vec, vec2, gI_beam, gI_halo, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L2612 //Exception reported: Stack leak detected: sp:42876 should be 25228!
-	TE_SendToAll(0.0)
-	return Plugin_Handled
-}*/
 
 Action cmd_createtable(int args)
 {
@@ -2201,12 +2154,6 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void ForceZonesSetup()
 {
-	//shavit results null
-	//if(results == null)
-	//{
-		//PrintToServer("Error with mysql connection %s", error)
-		//return
-	//}
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
 	gD_mysql.Query(SQLSetZoneStart, sQuery)
