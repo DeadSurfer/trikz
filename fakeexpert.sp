@@ -2811,7 +2811,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetAngleVectors(normal, vecAngle, NULL_VECTOR, NULL_VECTOR)
 				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 				for(int i = 0; i <= 2; i++)
-					end[i] += normal[i] * 1.0
+					end[i] += vecAngle[i] * 1.0
 				end[0] -= 270.0
 			}
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
