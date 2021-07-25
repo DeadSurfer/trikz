@@ -2753,6 +2753,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(buttons & IN_USE)
 		{
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
+				PrintToServer("%i", GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 			//	gI_pingTick[client] = 1
 			//if(buttons & IN_USE && gI_pingTick[client] > 0)
@@ -2761,30 +2763,31 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		else
 			if(gI_pingTick[client] > 0)
 				gI_pingTick[client] = 0
-	}
-	//if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
-	if(IsPlayerAlive(client) && buttons & IN_USE && gI_pingTick[client] == 50)
-	{
-		//gF_pingDelay[client] = GetGameTime()
-		gI_pingTick[client] = 0
-		gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
-		//SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
-		SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
-		DispatchSpawn(gI_pingModel[client])
-		ActivateEntity(gI_pingModel[client])
-		//GetClientAimTarget(
-		//https://forums.alliedmods.net/showthread.php?t=152726
-		float start[3]
-		float angle[3]
-		float end[3]
-		//float normal[3]
-		GetClientEyePosition(client, start)
-		GetClientEyeAngles(client, angle)
-		TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
-		if(TR_DidHit(INVALID_HANDLE))
-			TR_GetEndPosition(end, INVALID_HANDLE)
-		TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-		CreateTimer(3.0, timer_removePing, gI_pingModel[client], TIMER_FLAG_NO_MAPCHANGE)
+		//if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
+		//if(IsPlayerAlive(client) && buttons & IN_USE && gI_pingTick[client] == 50)
+		if(gI_pingTick[client] == 50)
+		{
+			//gF_pingDelay[client] = GetGameTime()
+			gI_pingTick[client] = 0
+			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+			//SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
+			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
+			DispatchSpawn(gI_pingModel[client])
+			ActivateEntity(gI_pingModel[client])
+			//GetClientAimTarget(
+			//https://forums.alliedmods.net/showthread.php?t=152726
+			float start[3]
+			float angle[3]
+			float end[3]
+			//float normal[3]
+			GetClientEyePosition(client, start)
+			GetClientEyeAngles(client, angle)
+			TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
+			if(TR_DidHit(INVALID_HANDLE))
+				TR_GetEndPosition(end, INVALID_HANDLE)
+			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
+			CreateTimer(3.0, timer_removePing, gI_pingModel[client], TIMER_FLAG_NO_MAPCHANGE)
+		}
 	}
 }
 
