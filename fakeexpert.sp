@@ -141,7 +141,7 @@ int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 //int gI_wModel[MAXPLAYERS + 1][5]
 int gI_randomInt[MAXPLAYERS + 1][3]
-//float gF_pingDelay[MAXPLAYERS + 1]
+float gF_pingDelay[MAXPLAYERS + 1]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
 
@@ -2748,17 +2748,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_testvec[client] = 0
 	}
 	//return Plugin_Continue
-	if(IsPlayerAlive(client))
+	if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
 	{
-		if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
-			gI_pingTick[client] = 1
-		if(buttons & IN_USE && gI_pingTick[client] > 0)
-			gI_pingTick[client]++
+		//if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
+		//	gI_pingTick[client] = 1
+		//if(buttons & IN_USE && gI_pingTick[client] > 0)
+		gI_pingTick[client]++
 	}
 	//if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
 	if(IsPlayerAlive(client) && buttons & IN_USE && gI_pingTick[client] == 50)
 	{
-		//gF_pingDelay[client] = GetGameTime()
+		gF_pingDelay[client] = GetGameTime()
 		gI_pingTick[client] = 0
 		gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 		//SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
