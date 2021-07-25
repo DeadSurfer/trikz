@@ -785,7 +785,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
-	char sQuery[512]
+	/*char sQuery[512]
 	if(IsClientInGame(client) && gB_pass)
 	{
 		int steamid = GetSteamAccountID(client)
@@ -793,13 +793,13 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
-	}
+	}*/
 	/*for(int i = 1; i <= 2048; i++)
 	{
 		gB_stateDisabled[client][i] = gB_stateDisabled[0][i]
 		gF_buttonReady[client][i] = 0.0
 	}*/
-	gB_TrikzMenuIsOpen[client] = false
+	/*gB_TrikzMenuIsOpen[client] = false
 	for(int i = 0; i <= 1; i++)
 	{
 		gB_toggledCheckpoint[client][i] = false
@@ -811,21 +811,21 @@ public void OnClientPutInServer(int client)
 		}
 	}
 	gF_boostTime[client] = 0.0
-	//CancelClientMenu(client)
+	CancelClientMenu(client)
 	gB_block[client] = true
 	//gB_color[gI_partner[client]] = false
 	gB_color[client] = false
-	gI_pingTick[client] = 0
+	gI_pingTick[client] = 0*/
 }
 
-public void OnClientDisconnect(int client)
+void OnClientDisconnect(int client)
 {
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
 	if(gB_TrikzMenuIsOpen[partner])
 		Trikz(partner)
 	gI_partner[client] = 0
-	//CancelClientMenu(client)
+	CancelClientMenu(client)
 	//PrintToServer("%i %N disconnected.", client, client)
 }
 
