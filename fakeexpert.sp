@@ -105,7 +105,7 @@ bool gB_groundBoost[MAXPLAYERS + 1]
 //float gF_currentVelBooster[MAXPLAYERS + 1][3]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
-int gI_entityFlags[MAXPLAYERS + 1]
+//int gI_entityFlags[MAXPLAYERS + 1]
 int gI_testvec[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
@@ -1032,18 +1032,20 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 {
 }
 
-bool IsClientValid(int client)
-{
-	return (client > 0 && client <= MaxClients && IsClientInGame(client))
-}
+//bool IsClientValid(int client)
+//{
+	//return (client > 0 && client <= MaxClients && IsClientInGame(client))
+//}
+
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	//if(0 < other <= MaxClients)
 		//return
 	//PrintToServer("SDKSkyFix: %i %i", client, other)
-	if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
-		return
+	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
+	//	return
 	//if(0 < other <= MaxClients && 0 < client <= MaxClients)
+	//if(!(GetEntityFlags(other) & FL_ONGROUND))
 	{
 		/*float vecAbsClient[3]
 		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
@@ -2688,7 +2690,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	gI_entityFlags[client] = GetEntityFlags(client)
+	//gI_entityFlags[client] = GetEntityFlags(client)
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(client) & FL_INWATER) && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
@@ -2826,8 +2828,8 @@ Action cmd_getgud(int client, int args)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(!IsClientValid(other))
-		return Plugin_Continue
+	//if(!IsClientValid(other))
+	//	return Plugin_Continue
 	//if(!IsClientInGame(other) && !IsPlayerAlive(other))
 	//	return Plugin_Continue
 	//if(gI_boost[other] || GetEntityFlags(other) & FL_ONGROUND)
@@ -2837,7 +2839,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(gI_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
 		//return Plugin_Continue
 	//if(0 < other <= MaxClients && IsClientInGame(other) && IsPlayerAlive(other)) //if 0 < other <= MaxClients continue code. If false stop code.
-	if(!gI_boost[other] || !(gI_entityFlags[other] & FL_ONGROUND))
+	//if(!gI_boost[other] || !(gI_entityFlags[other] & FL_ONGROUND))
+	if(!(GetEntityFlags(other) & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
