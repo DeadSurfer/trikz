@@ -999,7 +999,9 @@ void SDKBoostFix(int client)
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 				}
 				else
+				{
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				}
 				gB_boost[client] = false
 			}
 		}
