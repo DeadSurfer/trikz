@@ -1132,6 +1132,7 @@ void SDKBoostFix(int client)
 		else
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 		gI_boost[client] = 0
+		gI_skyStep[client] = 0
 	}
 }
 
