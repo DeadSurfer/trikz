@@ -2800,7 +2800,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				end[i] = start[i] + angle[i] //thanks to rumour for pingtool original code.
 			}
 			//TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
-			TR_TraceRayFilter(start, angle, MASK_ALL, RayType_EndPoint, TraceEntityFilterPlayer, client)
+			TR_TraceRayFilter(start, end, MASK_ALL, RayType_EndPoint, TraceEntityFilterPlayer, client)
 			if(TR_DidHit(INVALID_HANDLE))
 			{
 				TR_GetEndPosition(end, INVALID_HANDLE)
