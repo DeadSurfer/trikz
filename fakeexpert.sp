@@ -106,7 +106,7 @@ bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
-int gI_testvec[MAXPLAYERS + 1]
+//int gI_testvec[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
 //bool gB_nospamvote
@@ -122,8 +122,8 @@ bool gB_toggledCheckpoint[MAXPLAYERS + 1][2]
 
 bool gB_haveZone
 
-float gF_getGud
-int gI_getGud
+//float gF_getGud
+//int gI_getGud
 
 bool gB_isServerRecord
 char gS_date[64]
@@ -212,8 +212,8 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_tp1", cmd_tp1)
 	RegServerCmd("sm_manualcp", cmd_manualcp)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
-	RegConsoleCmd("sm_eye66", cmd_eye66)
-	RegConsoleCmd("sm_getgud", cmd_getgud) //get gud by atx. !getgud 0.1 = -263.559112 0.000000, !getgud 0.05 = -276.277801 0.000000. !getgud 0.025 = -279.457427 0.000000. !getgud 0.015 = -280.729309 0.000000. !getgud 0.007 = -281.746826 0.000000.
+	//RegConsoleCmd("sm_eye66", cmd_eye66)
+	//RegConsoleCmd("sm_getgud", cmd_getgud) //get gud by atx. !getgud 0.1 = -263.559112 0.000000, !getgud 0.05 = -276.277801 0.000000. !getgud 0.025 = -279.457427 0.000000. !getgud 0.015 = -280.729309 0.000000. !getgud 0.007 = -281.746826 0.000000.
 	RegConsoleCmd("sm_devmap", cmd_devmap)
 	//!getgud 0.0075 = -281.683227 0.000000. !getgud 0.00725 = -281.714996 0.000000. !getgud 0.0076 = -281.670501 0.000000 !getgud 0.0078 = -281.645050 0.000000. !getgud 0.0079 = -281.632354 0.000000. !getgud 0.00795 = -281.625976 0.000000. koda povishaesh cifra umenshaetsa.
 	//!getgud 0.00794 = -281.627258 0.000000. !getgud 0.00793 = -281.628540 0.000000. !getgud 0.00789 = -281.633605 0.000000 !getgud 0.00787 = -281.636138 0.000000. !getgud 0.00786 = -281.637420 0.000000
