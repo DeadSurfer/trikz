@@ -2809,7 +2809,7 @@ Action timer_removePing(Handle timer, int client)
 	if(gI_pingModel[client])
 	{
 		RemoveEntity(gI_pingModel[client])
-		gI_pingModel[client]
+		gI_pingModel[client] = 0
 	}
 	return Plugin_Stop
 }
