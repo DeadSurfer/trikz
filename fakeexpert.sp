@@ -1896,7 +1896,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
-			//SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
+			SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
 			gI_flash[other] = EntIndexToEntRef(entity)
 			gB_boost[other] = true
 			PrintToChatAll("%i %i", entity, other)
@@ -2025,10 +2025,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		gB_bouncedOff[entity] = false //tengu lawl boost fix .sp
-		//SDKHook(entity, SDKHook_Spawn, SDKProjectile)
+		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
-		//SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
+		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
 }
 
