@@ -2809,10 +2809,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetVectorAngles(normal, normal)
 				float vecAngle[3]
 				GetAngleVectors(normal, vecAngle, NULL_VECTOR, NULL_VECTOR)
-				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
+				//SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 				for(int i = 0; i <= 2; i++)
 					end[i] += vecAngle[i] * 1.0
 				end[0] -= 270.0
+				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", end)
 			}
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
