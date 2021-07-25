@@ -2692,7 +2692,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("cmd_tp: vecbase: %f %f %f", vecBase[0], vecBase[1], vecBase[2])
 	return Plugin_Handled
 }*/
-
+Handle gH_timer[MAXPLAYERS + 1]
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	//gI_entityFlags[client] = GetEntityFlags(client)
@@ -2774,6 +2774,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				RemoveEntity(gI_pingModel[client])
 				gI_pingModel[client] = 0
+				KillTimer(gH_timer[client])
 			}
 			//gF_pingDelay[client] = GetGameTime()
 			gI_pingTick[client] = 0
@@ -2794,7 +2795,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(TR_DidHit(INVALID_HANDLE))
 				TR_GetEndPosition(end, INVALID_HANDLE)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-			CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
+			gH_timer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
 }
