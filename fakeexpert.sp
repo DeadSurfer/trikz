@@ -388,7 +388,8 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
-	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
+	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix)
+	//idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	char sQuery[512]
 	if(IsClientInGame(client) && gB_pass)
@@ -399,11 +400,6 @@ public void OnClientPutInServer(int client)
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
-	/*for(int i = 1; i <= 2048; i++)
-	{
-		gB_stateDisabled[client][i] = gB_stateDisabled[0][i]
-		gF_buttonReady[client][i] = 0.0
-	}*/
 	gB_TrikzMenuIsOpen[client] = false
 	for(int i = 0; i <= 1; i++)
 	{
