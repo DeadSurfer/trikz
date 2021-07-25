@@ -2817,7 +2817,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 			}
 			if(gB_color[client])
-				SetEntityRenderColor(gI_pingModel[client], gI_randomInt[0], gI_randomInt[1], gI_randomInt[2], 255)
+				SetEntityRenderColor(gI_pingModel[client], gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
