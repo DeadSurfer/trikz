@@ -542,7 +542,7 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 	return MRES_Supercede
 }*/
 
-void OnMapStart()
+public void OnMapStart()
 {
 	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
 	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
@@ -658,7 +658,7 @@ void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
 }
 
-public void OnMapEnd()
+void OnMapEnd()
 {
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
