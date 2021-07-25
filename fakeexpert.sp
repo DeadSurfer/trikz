@@ -69,6 +69,7 @@ int gI_cpnum
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
+int gI_entityFlags[MAXPLAYERS + 1]
 int gB_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
@@ -785,7 +786,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
-	/*char sQuery[512]
+	char sQuery[512]
 	if(IsClientInGame(client) && gB_pass)
 	{
 		int steamid = GetSteamAccountID(client)
@@ -793,13 +794,13 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
-	}*/
+	}
 	/*for(int i = 1; i <= 2048; i++)
 	{
 		gB_stateDisabled[client][i] = gB_stateDisabled[0][i]
 		gF_buttonReady[client][i] = 0.0
 	}*/
-	/*gB_TrikzMenuIsOpen[client] = false
+	gB_TrikzMenuIsOpen[client] = false
 	for(int i = 0; i <= 1; i++)
 	{
 		gB_toggledCheckpoint[client][i] = false
@@ -815,10 +816,10 @@ public void OnClientPutInServer(int client)
 	gB_block[client] = true
 	//gB_color[gI_partner[client]] = false
 	gB_color[client] = false
-	gI_pingTick[client] = 0*/
+	gI_pingTick[client] = 0
 }
 
-void OnClientDisconnect(int client)
+public void OnClientDisconnect(int client)
 {
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
@@ -2192,7 +2193,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	//gI_entityFlags[client] = GetEntityFlags(client)
+	gI_entityFlags[client] = GetEntityFlags(client)
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(client) & FL_INWATER) && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
@@ -2310,7 +2311,8 @@ Action timer_removePing(Handle timer, int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && !gB_boost[other] && !(GetEntityFlags(other) & FL_ONGROUND))
+	//if(0 < other <= MaxClients && !gB_boost[other] && !(GetEntityFlags(other) & FL_ONGROUND))
+	if(0 < other <= MaxClients && !gB_boost[other] && !(gI_entityFlags[other] & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
