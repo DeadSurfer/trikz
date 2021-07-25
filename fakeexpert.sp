@@ -113,7 +113,7 @@ public Plugin myinfo =
 	url = "http://www.sourcemod.net/"
 }
 
-public void OnPluginStart()
+void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
 	AutoExecConfig(true)
@@ -157,7 +157,7 @@ public void OnPluginStart()
 	//AddCommandListener(listenerf1, "autobuy") //https://sm.alliedmods.net/new-api/console/AddCommandListener
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	//HookEvent("player_spawn", event_playerspawn)
+	HookEvent("player_spawn", event_playerspawn)
 	
 	/*HookEvent("roundstart", roundstart)
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
