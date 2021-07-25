@@ -2340,7 +2340,8 @@ Action ProjectileBoostFix(int entity, int other)
 	//if(0 < other <= MaxClients && (!gB_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
 	if(!IsValidClient(other))
 		return Plugin_Continue
-	if(gB_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
+	//if(gB_boost[other] || gI_entityFlags[other] & FL_ONGROUND)
+	if(gB_boost[other])
 		return Plugin_Continue
 	//if(0 < other <= MaxClients && !gB_boost[other])
 	float vecOriginOther[3]
