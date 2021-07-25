@@ -615,24 +615,19 @@ public void OnMapStart()
 	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
 	//gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	GetCurrentMap(gS_map, 192)
-	//gI_cpCount = 0
 	Database.Connect(SQLConnect, "fakeexpert")
-	//gI_cpCount = 0
-	//GetCurrentMap(gS_map, 192)
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
-	//gB_nospamvote = false
 	gB_haveZone = false
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
-	//int isSourceTV = CV_sourcetv.BoolValue()
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
 		PrintToServer("sourcetv work.")
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
-		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
+		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
 	}
 	gB_isServerRecord = false
 	if(!gB_isTurnedOnSourceTV)
@@ -640,10 +635,7 @@ public void OnMapStart()
 		gB_isTurnedOnSourceTV = true
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
-	//gI_vModel = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	//gI_wModelThrowDef = PrecacheModel("models/weapons/w_eq_smokegrenade_thrown.mdl")
-	/*gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
+	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -651,9 +643,8 @@ public void OnMapStart()
 	gI_wModelPlayer[1] = PrecacheModel("models/fakeexpert/player/ct_urban.mdl")
 	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl")
 	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl")
-	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")*/
-	//gI_pingModel = PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
-	/*PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
+	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
+	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
@@ -731,15 +722,13 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/player/ct_urban/vertex.vtf")
 	
 	AddFileToDownloadsTable("materials/fakeexpert/player/unlit_default.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")*/
+	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
 }
 
 public void OnMapEnd()
 {
-	//RenameFile(
 	ConVar CV_sourcetv
 	CV_sourcetv = FindConVar("tv_enable")
-	//int isSourceTV = CV_sourcetv.BoolValue()
 	bool isSourceTV = GetConVarBool(CV_sourcetv)
 	if(isSourceTV)
 	{
@@ -776,11 +765,7 @@ Action specchat(int client, const char[] command, int argc)
 		char sName[MAX_NAME_LENGTH]
 		GetClientName(client, sName, MAX_NAME_LENGTH)
 		char sChat[256]
-		//GetCmdArgString(sChat, 256)
 		GetCmdArg(argc, sChat, 256)
-		//GetCmdArgs(
-		//GetCmdReplySource(
-		//PrintToChatAll("%s", sChat)
 		//PrintToChat(client, "\x07FF4040text21") //red - terrorist
 		//PrintToChat(client, "\x0799CCFFtext2") //blue - counter-terrorist
 		//if(Get)
@@ -793,25 +778,16 @@ Action specchat(int client, const char[] command, int argc)
 		//char sFormat[256]
 		//Format(sFormat, 256, "*SPEC* \x07%06X %s \x01:  %s", value, sName, sChat) //https://wiki.alliedmods.net/Format_Class_Functions_(SourceMod_Scripting)#:~:text=Format-class%20functions%20are%20variable%20argument%20functions%20in%20SourceMod,will%20then%20be%3A%20%22%20Your%20name%20is%3A%20Mark.%22
 		PrintToChatAll("*SPEC* %s :  %s", sName, sChat) //   SetTrieValue(hTrie, "grey", 0xCCCCCC);
-		//PrintToChatAll("%s", sFormat)
 		return Plugin_Handled
 	}
 	return Plugin_Continue
 }
-
-/*Action joinclass(int client, const char[] command, int argc)
-{
-	PrintToServer("%i %n %s %i", client, client, command, argc)
-	//GetCmdArg(argc, 
-	gI_class[client] = StringToInt(command)
-}*/
 
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	char sModel[64]
 	GetClientModel(client, sModel, 64)
-	//PrintToServer("%s", sModel)
 	if(StrEqual(sModel, "models/player/ct_urban.mdl"))
 		gI_class[client] = 1
 	if(StrEqual(sModel, "models/player/ct_gsg9.mdl"))
@@ -837,7 +813,7 @@ void Checkpoint(int client)
 	menu.AddItem("Teleport", "Teleport", gB_toggledCheckpoint[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	menu.AddItem("Save second", "Save second")
 	menu.AddItem("Teleport second", "Teleport second", gB_toggledCheckpoint[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+	menu.ExitBackButton = true
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
@@ -877,10 +853,10 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		case MenuAction_Cancel: // trikz redux menuaction end
+		case MenuAction_Cancel:
 			switch(param2)
 			{
-				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
+				case MenuCancel_ExitBack:
 				{
 					Trikz(param1)
 				}
@@ -916,7 +892,6 @@ public void OnClientPutInServer(int client)
 		gF_buttonReady[client][i] = 0.0
 	}*/
 	gB_TrikzMenuIsOpen[client] = false
-	//PrintToServer("%i %i", gI_partner[client], gI_partner[gI_partner[client]])
 	for(int i = 0; i <= 1; i++)
 	{
 		gB_toggledCheckpoint[client][i] = false
@@ -1034,38 +1009,19 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 {
 }
 
-//bool IsClientValid(int client)
-//{
-//	return (client > 0 && client <= MaxClients && IsClientInGame(client))
-//}
-
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < other <= MaxClients && 0 < client <= MaxClients && (!(GetEntityFlags(other) & FL_ONGROUND) || GetGameTime() - gF_boostTime[client] > 0.15 || !gI_boost[client]))
-	{
-		/*float vecAbsClient[3]
-		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
-		if(delta > 0.0 && delta < 2.0)
-		{
-			vecAbs[2] = FloatAbs(vecAbs[2]) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-			//if(vecAbs[2] > 0.0)
-			gF_skyVel[other][2] = vecAbs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L84
-			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-hud.sp#L918
-			//	gI_sky[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
-		}*/
-		
+	{		
 		float vecAbsBooster[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
 		float vecAbsFlyer[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsFlyer)
 		float vecMaxs[3]
 		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs)
-		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMaxs[2] //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-		//PrintToServer("delta: %f", delta)
-		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMaxs[2]
+		if(0.0 < delta < 2.0)
 		{
-			//PrintToServer("%f", getCurrentVel[2]) // -118.006614 in couch, in normal -106.006614
-			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityFlags(other) & IN_DUCK) && gI_skyStep[other] == 0 && GetGameTime() - gF_boostTime[other] < 0.15) //gF_boostTime[other] < 0.15 and GetGameTime() is from tengu lawl github.com scripting boost-fix.sp https://www.github.com/tengulawl/scripting/main/blob/boost-fix.sp
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
 				float vecVelBooster[3]
@@ -1079,9 +1035,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					vecVelBooster[2] *= 3.0
 					gF_skyVel[other][2] = vecVelBooster[2]
 					if(vecVelBooster[2] > 800.0)
-					{
 						gF_skyVel[other][2] = 800.0
-					}
 					if(FloatAbs(vecVelFlyer[2]) > 118.006614)
 					{
 						gI_skyStep[other] = 1
@@ -1104,12 +1058,9 @@ void SDKBoostFix(int client)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 			if(vecVelEntity[2] > 0.0)
 			{
-				//vecVelEntity[0] *= 0.135
-				//vecVelEntity[1] *= 0.135
-				//vecVelEntity[2] *= -0.135
-				vecVelEntity[0] = vecVelEntity[0] * 0.135
-				vecVelEntity[1] = vecVelEntity[1] * 0.135
-				vecVelEntity[2] = vecVelEntity[2] * -0.135
+				vecVelEntity[0] *= 0.135
+				vecVelEntity[1] *= 0.135
+				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 				if(gB_groundBoost[client])
 				{
@@ -1126,7 +1077,6 @@ void SDKBoostFix(int client)
 
 Action cmd_trikz(int client, int args)
 {
-	//gB_TrikzMenuIsOpen[client] = true
 	Trikz(client)
 	return Plugin_Handled
 }
@@ -1134,10 +1084,7 @@ Action cmd_trikz(int client, int args)
 void Trikz(int client)
 {
 	gB_TrikzMenuIsOpen[client] = true
-	//gB_menuIsTrikz[client] = true
-	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
-	//Menu menu = new Menu(trikz_handler) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
-	//menu.SetTitle("Trikz", client) //https://forums.alliedmods.net/showthread.php?p=2051806
+	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
 	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
@@ -1145,8 +1092,7 @@ void Trikz(int client)
 	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
 	menu.AddItem("partner", sDisplay, gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
 	menu.AddItem("Color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	//Format() //https://forums.alliedmods.net/showthread.php?p=2552601
-	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
+	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	if(gB_isDevmap)
 	{
 		menu.AddItem("Checkpoint", "Checkpoint")
@@ -1162,8 +1108,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Start:
 		{
-			//expert-zone idea. thank to ed, maru.
-			//PrintToServer("menu start trikz.")
 			gB_TrikzMenuIsOpen[param1] = true
 		}
 		case MenuAction_Select:
@@ -1173,8 +1117,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					Block(param1)
-					//delete menu
-					//Trikz(param1)
 				}
 				case 1:
 				{
@@ -1183,7 +1125,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 2:
 				{
-					//gB_color[param1] = true
 					Color(param1, true)
 					Trikz(param1)
 				}
@@ -1203,32 +1144,18 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 						SetEntityMoveType(param1, MOVETYPE_NOCLIP)
 						PrintToChat(param1, "Noclip enabled.")
 					}
-					//delete menu
 					Trikz(param1)
 				}
 			}
 		}
 		case MenuAction_Cancel:
-		{
-			gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
-			//PrintToServer("Client %d's menu was cancelled. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
-		}
+			gB_TrikzMenuIsOpen[param1] = false
 		case MenuAction_Display:
-		{
-			//PrintToServer("menu display trikz.")
 			gB_TrikzMenuIsOpen[param1] = true
-		}
 		case MenuAction_End:
-		{
-			//PrintToServer("Client %d's menu was end. Reason: %d", param1, param2) //https://wiki.alliedmods.net/Menu_API_(SourceMod)
 			delete menu
-		}
 	}
-	//https://forums.alliedmods.net/showthread.php?t=288351
-	//return view_as<int>(Plugin_Continue)
 }
-
-//https://forums.alliedmods.net/showthread.php?t=302374
 
 Action cmd_block(int client, int args)
 {
@@ -1238,19 +1165,11 @@ Action cmd_block(int client, int args)
 
 Action Block(int client)
 {
-	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 5)
-	//{
-		//PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client)
-	//}
-	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") != 2)
-		//PrintToServer("block = %i %N", GetEntProp(client, Prop_Send, "m_CollisionGroup"), client) //https://github.com/shanapu/MyJailbreak/commit/9e7480a
-	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") == 5) //https://developer.valvesoftware.com/wiki/Collision_groups
 	gB_block[client] = !gB_block[client]
 	if(gB_block[client])
 	{
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
-		//gB_block[client] = true
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block enabled.")
@@ -1262,14 +1181,11 @@ Action Block(int client)
 		SetEntProp(client, Prop_Send, "m_CollisionGroup", 2)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 100)
-		//gB_block[client] = false
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block disabled.")
 		return Plugin_Handled
 	}
-	//if(GetEntProp(client, Prop_Send, "m_CollisionGroup") <= 2)
-	//return Plugin_Handled
 }
 
 Action cmd_partner(int client, int args)
@@ -1287,7 +1203,7 @@ void Partner(int client)
 		char sName[MAX_NAME_LENGTH]
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
+			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i)
 			{
 				GetClientName(i, sName, MAX_NAME_LENGTH)
 				char sNameID[32]
@@ -1311,7 +1227,7 @@ void Partner(int client)
 	}
 }
 
-int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
+int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -1333,13 +1249,12 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 	}
 }
 
-int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
+int askpartner_handle(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
 		case MenuAction_Select:
 		{
-			//int param2x = param2
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
 			int partner = StringToInt(sItem)
@@ -1349,16 +1264,12 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				{
 					if(!gI_partner[partner])
 					{
-						//PrintToServer("%i %N, %i %N", param1, param1, param2x, param2x)
 						gI_partner[param1] = partner
 						gI_partner[partner] = param1
-						//PrintToServer("p1: %i %N p2: %i %N", partner, partner, param1, param1)
 						PrintToChat(param1, "Partnersheep agreed with %N.", partner) //reciever
 						PrintToChat(partner, "You have %N as partner.", param1) //sender
-						//Reseta
 						Restart(param1)
 						Restart(partner) //Expert-Zone idea.
-						//PrintToServer("partner1: %i %N, partner2: %i %N", gI_partner[param1], gI_partner[param1], gI_partner[partner], gI_partner[partner])
 						if(gB_TrikzMenuIsOpen[partner])
 							Trikz(partner)
 						/*for(int i = 1; i <= 2048; i++)
@@ -1376,9 +1287,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						PrintToChat(param1, "A player already have a partner.")
 				}
 				case 1:
-				{
 					PrintToChat(param1, "Partnersheep declined with %N.", partner)
-				}
 			}
 		}
 		case MenuAction_End:
@@ -1403,8 +1312,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
-					//gB_color[param1] = false
-					//gB_color[partner] = false
 					Color(param1, false)
 					Color(partner, false)
 					/*for(int i = 1; i <= 2048; i++)
@@ -1428,7 +1335,6 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		//gI_wModel[client] = gI_class[client]
 		if(gI_class[client] == 1)
 		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
@@ -1464,7 +1370,6 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = false
 		gB_color[gI_partner[client]] = false
-		//gI_wModel[client] = gI_class[client]
 		if(gI_class[client] == 1)
 		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
@@ -1485,7 +1390,6 @@ void Color(int client, bool customSkin)
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
 			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
 		}
-		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntityRenderColor(client, 255, 255, 255, 255)
 		SetEntityRenderColor(gI_partner[client], 255, 255, 255, 255)
 	}
@@ -1499,16 +1403,6 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 	else
 		gF_mateRecord[client] = 0.0
 }
-
-/*Action cmd_giveflashbang(int client, int args)
-{
-	if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	{
-		GivePlayerItem(client, "weapon_flashbang")
-		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
-	}
-	return Plugin_Handled
-}*/
 
 void Restart(int client)
 {
@@ -1525,9 +1419,6 @@ void Restart(int client)
 				gB_state[client] = false
 				gB_state[gI_partner[client]] = false
 				float vecVel[3]
-				//vecVel[0] = 30.0
-				//vecVel[1] = 30.0
-				//vecVel[2] = 0.0
 				TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
 				TeleportEntity(gI_partner[client], gF_vecStart, NULL_VECTOR, vecVel)
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
@@ -1553,7 +1444,6 @@ Action Timer_BlockToggle(Handle timer, int client)
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
-		//SetEntityRenderColor(gI_partner[client], 255, 255, 255, 75)
 		SetEntityRenderMode(gI_partner[client], RENDER_NORMAL)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
@@ -1561,7 +1451,6 @@ Action Timer_BlockToggle(Handle timer, int client)
 	return Plugin_Stop
 }
 
-//Action cmd_createstart(int client, int args)
 void createstart()
 {
 	char sTriggerName2[64]
@@ -1593,43 +1482,14 @@ void createstart()
 	gF_vecStart[2] = center[2]
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
-	//mins[0] = gF_vec[0]
-	//mins[1] = gF_vec[1]
-	//mins[2] = gF_vec[2]
-	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
-	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
-	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0 + 128.0)
-	//mins[0] = mins[0] * 2.0
-	//mins[0] = -mins[0]
-	//mins[1] = mins[1] * 2.0
-	//mins[1] = -mins[1]
-	//mins[2] = -128.0
-	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
-	//mins[0] = FloatAbs(gF_vec1[0] - gF_vec2[0])
 	mins[0] = (gF_vec1[0][0] - gF_vec2[0][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
-	//mins[1] = FloatAbs(gF_vec1[1] - gF_vec2[1])
 	mins[1] = (gF_vec1[0][1] - gF_vec2[0][1]) / 2.0
 	if(mins[1] > 0.0)
 		mins[1] = mins[1] * -1.0	
-	//mins[2] = FloatAbs(gF_vec1[2] - gF_vec2[2])
-	//if(mins[
-	//mins[2] = mins[2] += 128.0
-	//mins[2] = mins[2] += 128.0
 	mins[2] = -128.0
-	//PrintToServer("Mins: %f %f %f", mins[0], mins[1], mins[2])
-	//SetEntPropVector(entity, Prop_Send, "m_vecMins", maxs) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
-	//mins[0] = mins[0] * -1.0
-	//mins[1] = mins[1] * -1.0
-	//mins[2] = 128.0
-	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
-	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
-	//SetEntPropVector(entity, Prop_Data, "m_vecMaxs", gF_vec2)
-	//SetEntPropVector(entity, Prop_Data, "m_vecMins", gF_vec1)
 	float maxs[3]
-	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
 	maxs[0] = (gF_vec1[0][0] - gF_vec2[0][0]) / 2.0
 	if(maxs[0] < 0.0)
 		maxs[0] = maxs[0] * -1.0
@@ -1639,43 +1499,15 @@ void createstart()
 	maxs[2] = gF_vec1[0][2] - gF_vec2[0][2]
 	if(maxs[2] < 0.0)
 		maxs[2] = maxs[2] * -1.0
-	//maxs[2] = maxs[2] -= 128.0
-	//maxs[2] = maxs[2] -= -128.0
 	maxs[2] = 128.0
-	//PrintToServer("Maxs: %f %f %f", maxs[0], maxs[1], maxs[2])
-	//SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
-	//SetEntPropVector(entity, Prop_Send, "m_vecMins", maxs)
-	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
 	//PrintToServer("entity start: %i created", entity)
-	//return Plugin_Handled
 }
 
-/*Action cmd_tp1(int client, int args)
-{
-	float maxs[3]
-	//maxs[0] = FloatAbs(gF_vec1[0] - gF_vec2[0]) / 2.0
-	maxs[0] = gF_vec1[0][0] - gF_vec2[0][0]
-	if(maxs[0] > 0.0)
-		maxs[0] = maxs[0] * -1.0
-	maxs[1] = gF_vec1[0][1] - gF_vec2[0][1]
-	if(maxs[1] > 0.0)
-		maxs[1] = maxs[1] * -1.0
-	maxs[2] = gF_vec1[0][2] - gF_vec2[0][2]
-	if(maxs[2] > 0.0)
-		maxs[2] = maxs[2] * -1.0
-	//maxs[2] = maxs[2] -= 128.0
-	maxs[2] = maxs[2] -= -128.0
-	PrintToServer("%f %f %f", maxs[0], maxs[1], maxs[2])
-	TeleportEntity(client, maxs, NULL_VECTOR, NULL_VECTOR)
-	return Plugin_Handled
-}*/
-
-//Action cmd_createend(int client, int args)
 void createend()
 {
 	char sTriggerName2[64]
@@ -1704,15 +1536,6 @@ void createend()
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
-	//mins[0] = FloatAbs((gF_vec1[0] - gF_vec2[0]) / 2.0)
-	//mins[1] = FloatAbs((gF_vec1[1] - gF_vec2[1]) / 2.0)
-	//mins[2] = FloatAbs((gF_vec1[2] - gF_vec2[2]) / 2.0)
-	//mins[0] = mins[0] * 2.0
-	//mins[0] = -mins[0]
-	//mins[1] = mins[1] * 2.0
-	//mins[1] = -mins[1]
-	//mins[2] = -128.0
-	//PrintToServer("mins: %f %f %f", mins[0], mins[1], mins[2])
 	mins[0] = (gF_vec1[1][0] - gF_vec2[1][0]) / 2.0
 	if(mins[0] > 0.0)
 		mins[0] = mins[0] * -1.0
@@ -1722,11 +1545,6 @@ void createend()
 		mins[1] = mins[1] * -1.0
 	mins[2] = -128.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	//mins[0] = mins[0] * -1.0
-	//mins[1] = mins[1] * -1.0
-	//mins[2] = 128.0
-	//PrintToServer("maxs: %f %f %f", mins[0], mins[1], mins[2])
-	//SetEntPropVector(entity, Prop_Send, "m_vecMaxs", mins)
 	float maxs[3]
 	maxs[0] = (gF_vec1[1][0] - gF_vec2[1][0]) / 2.0
 	if(maxs[0] < 0.0)
@@ -1736,12 +1554,9 @@ void createend()
 		maxs[1] = maxs[1] * -1.0
 	maxs[2] = 128.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
-	//SetEntPropVector(entity, Prop_Data, "m_vecMins", maxs)
-	//SetEntPropVector(entity, Prop_Data, "m_vecMaxs", mins)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//PrintToServer("entity end: %i created", entity)
-	//return Plugin_Handled
 	CPSetup()
 }
 
@@ -1750,28 +1565,17 @@ Action cmd_vecmins(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[0])
-		//gF_vec1[0][0] = vec[0]
-		//gF_vec1[0][1] = vec[1]
-		//gF_vec1[0][2] = vec[2]
 		PrintToServer("vec1: %f %f %f", gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2])
 		char sQuery[512]
 		args = 0 //https://www.w3schools.com/sql/sql_delete.asp
 		gI_type = args
-		//gI_zonetype = 0
-		//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, args, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, args)
-		//gD_mysql.Query(SQLSetZones, sQuery)
 		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = %i", gS_map, args)
 		gD_mysql.Query(SQLDeleteZone, sQuery)
-		//Format(sQuery, 512, "SELECT
 	}
 	return Plugin_Handled
 }
@@ -1779,7 +1583,6 @@ Action cmd_vecmins(int client, int args)
 void SQLDeleteZone(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
-	//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x = '%f', possition_y = '%f', possition_z = '%f' WHERE map = '%s' AND type = '%i';", gS_map, gI_type, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2], gS_map, gI_type)
 	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUES ('%s', %i, %f, %f, %f)", gS_map, gI_type, gF_vec1[0][0], gF_vec1[0][1], gF_vec1[0][2])
 	gD_mysql.Query(SQLSetZones, sQuery)
 }
@@ -1789,11 +1592,8 @@ Action cmd_deleteallcp(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
 		char sQuery[512]
@@ -1811,24 +1611,14 @@ Action cmd_vecminsend(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec1[1])
-		//gF_vec1[1][0] = vec[0]
-		//gF_vec1[1][1] = vec[1]
-		//gF_vec1[1][2] = vec[2]
-		//PrintToServer("vec1: %f %f %f", gF_vec1[0], gF_vec1[1], gF_vec1[2])
 		char sQuery[512]
 		args = 1
 		gI_type = args
-		//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2], gS_map, args)
-		//gD_mysql.Query(SQLSetZones, sQuery)
 		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = %i", gS_map, args)
 		gD_mysql.Query(SQLDeleteZone2, sQuery)
 	}
@@ -1838,7 +1628,6 @@ Action cmd_vecminsend(int client, int args)
 void SQLDeleteZone2(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
-	//Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x = %f, possition_y = %f, possition_z = %f WHERE map = '%s' AND type = %i", gS_map, gI_type, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2], gS_map, gI_type)
 	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z) VALUES ('%s', %i, %f, %f, %f)", gS_map, gI_type, gF_vec1[1][0], gF_vec1[1][1], gF_vec1[1][2])
 	gD_mysql.Query(SQLSetZones, sQuery)
 }
@@ -1848,11 +1637,8 @@ Action cmd_maptier(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sArgString[512]
@@ -1880,36 +1666,19 @@ Action cmd_vecmaxs(int client, int args)
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
 	IntToString(steamid, sCurrentSteamID, 64)
-	PrintToServer("%i", GetConVarInt(gCV_steamid))
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[0])
-		//gF_vec2[0][0] = vec[0]
-		//gF_vec2[0][1] = vec[1]
-		//gF_vec2[0][2] = vec[2]
-		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
 		args = 0
 		gI_type = args
-		//PrintToServer("%s", gS_map)
 		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, args, gF_vec2[0][0], gF_vec2[0][1], gF_vec2[0][2], gS_map, args)
 		gD_mysql.Query(SQLSetZones, sQuery)
-		//Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = %i", gS_map, args)
-		//gD_mysql.Query(SQLDeleteZone3, sQuery)
 	}
 	return Plugin_Handled
 }
-
-/*void SQLDeleteZone3(Database db, DBResultSet results, const char[] error, any data)
-{
-	Format(sQuery, 512, "UPDATE zones SET map = '%s', type = '%i', possition_x2 = '%f', possition_y2 = '%f', possition_z2 = '%f' WHERE map = '%s' AND type = '%i'", gS_map, gI_type, gF_vec2[0][0], gF_vec2[0][1], gF_vec2[0][2], gS_map, gI_type)
-	gD_mysql.Query(SQLSetZones, sQuery)
-}*/
 
 Action cmd_vecmaxsend(int client, int args)
 {
@@ -1920,15 +1689,9 @@ Action cmd_vecmaxsend(int client, int args)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		//float vec[3]
 		GetClientAbsOrigin(client, gF_vec2[1])
-		//gF_vec2[1][0] = vec[0]
-		//gF_vec2[1][1] = vec[1]
-		//gF_vec2[1][2] = vec[2]
-		//PrintToServer("vec2: %f %f %f", gF_vec2[0], gF_vec2[1], gF_vec2[2])
 		char sQuery[512]
 		args = 1
 		Format(sQuery, 512, "UPDATE zones SET map = '%s', type = %i, possition_x2 = %f, possition_y2 = %f, possition_z2 = %f WHERE map = '%s' AND type = %i", gS_map, args, gF_vec2[1][0], gF_vec2[1][1], gF_vec2[1][2], gS_map, args)
@@ -1946,7 +1709,6 @@ Action cmd_cpmins(int client, int args)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
@@ -1955,7 +1717,6 @@ Action cmd_cpmins(int client, int args)
 		PrintToChat(client, "%i", cpnum)
 		GetClientAbsOrigin(client, gF_vec1cp[cpnum])
 		char sQuery[512]
-		//Format(sQuery, 512, "UPDATE cp SET cpx = %f, cpy = %f, cpz = %f WHERE map = '%s'", sCmd, gF_vec1cp[0], gF_vec1cp[1], gF_vec1cp[2], gS_map)
 		gI_cpnum = cpnum
 		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", gI_cpnum, gS_map)
 		gD_mysql.Query(SQLCPRemove, sQuery)
@@ -1980,7 +1741,6 @@ Action cmd_cpmaxs(int client, int args)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	PrintToServer("string: %s", sSteamID)
-	//if(steamid == GetConVarInt(gCV_steamid))
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		char sCmd[512]
@@ -1989,7 +1749,6 @@ Action cmd_cpmaxs(int client, int args)
 		GetClientAbsOrigin(client, gF_vec2cp[cpnum])
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE cp SET cpx2 = %f, cpy2 = %f, cpz2 = %f WHERE cpnum = %i AND map = '%s'", gF_vec2cp[cpnum][0], gF_vec2cp[cpnum][1], gF_vec2cp[cpnum][2], cpnum, gS_map)
-		//Format(sQuery, 512, "INSERT INTO cp (
 		gD_mysql.Query(SQLCPUpdate, sQuery)
 	}
 	return Plugin_Handled
@@ -1998,7 +1757,7 @@ Action cmd_cpmaxs(int client, int args)
 void SQLCPUpdate(Database db, DBResultSet results, const char[] error, any data)
 {
 }
-//https://forums.alliedmods.net/showthread.php?t=261378
+
 Action cmd_manualcp(int args)
 {
 	char sQuery[512]
@@ -2087,20 +1846,8 @@ void createcp(int cpnum)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	//PrintToServer("entity end: %i created", entity)
-	//return Plugin_Handled
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
 }
-
-/*Action cmd_starttouch(int client, int args)
-{
-	SDKHook(gI_trigger, SDKHook_StartTouch, SDKStartTouch)
-	SDKHook(gI_trigger, SDKHook_EndTouch, SDKEndTouch)
-	if(IsValidEntity(gI_trigger) && ActivateEntity(gI_trigger) && DispatchSpawn(gI_trigger))
-	{
-		PrintToServer("Trigger is valid.")
-	}
-	return Plugin_Handled
-}*/
 
 Action cmd_createuser(int args)
 {
@@ -2134,15 +1881,6 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Successfuly created records table.")
 }
 
-/*Action cmd_vectest(int client, int args)
-{
-	//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {-6843.03, 4143.97, 1808.03})
-	//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {-7471.97, 3241.55, 1408.03})
-	//TeleportEntity(client, {-6843.03, 4143.97, 1808.03}, NULL_VECTOR, NULL_VECTOR)
-	//TeleportEntity(client, {-7471.97, 3241.55, 1408.03}, NULL_VECTOR, NULL_VECTOR)
-	return Plugin_Handled
-}*/
-
 Action SDKEndTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && gB_readyToStart[other])
@@ -2157,7 +1895,6 @@ Action SDKEndTouch(int entity, int other)
 		gB_passzone[other] = true
 		gB_passzone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
-		//gB_readyToStart[gI_other[other
 		gB_readyToStart[gI_partner[other]] = false
 		for(int i = 1; i <= 10; i++)
 		{
@@ -2180,7 +1917,6 @@ Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && gB_passzone[other])
 	{
-		//gB_insideZone[other] = true //Expert-Zone idea.
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapfinished[other])
@@ -2192,10 +1928,8 @@ Action SDKStartTouch(int entity, int other)
 		{
 			gB_mapfinished[other] = true
 			gB_passzone[other] = false
-			//gB_zonepass[other
 			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 			{
-				//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				char sQuery[512]
 				int playerid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
@@ -2319,7 +2053,6 @@ Action SDKStartTouch(int entity, int other)
 				}
 				else
 				{
-					//PrintToServer("x123x")
 					gF_ServerRecord = gF_Time[other]
 					gF_haveRecord[other] = gF_Time[other]
 					gF_haveRecord[gI_partner[other]] = gF_Time[other]
@@ -2338,7 +2071,6 @@ Action SDKStartTouch(int entity, int other)
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
 				
-				//dp.WriteFloat(gF_Time[other]) //https://sm.alliedmods.net/new-api/datapack/DataPack
 				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
 			}
@@ -2351,58 +2083,24 @@ Action SDKStartTouch(int entity, int other)
 			Format(sTrigger2, 64, "fakeexpert_cp%i", i)
 			if(StrEqual(sTrigger, sTrigger2))
 			{
-				//gB_cp[i][other] = true
-				//if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
-				//if(!gB_cpLock[i][other])
 				gB_cp[i][other] = true
 				if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
 				{
-					//int hour = RoundToFloor(gF_Time[other])
-					//hour = (hour / 3600) % 24
-					//int minute = RoundToFloor(gF_Time[other])
-					//minute = (minute / 60) % 60
-					//int second = RoundToFloor(gF_Time[other])
-					//second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-					//PrintToChat(other, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-					//PrintToChat(gI_partner[other], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[other], hour, minute, second)
-					//PrintToChatAll("Time: %02.i:%02.i:%02.i %N and %N finished map.", hour, minute, second, other, gI_partner[other])
-					//gB_cp[i][other] = true
 					gB_cpLock[i][other] = true
 					gB_cpLock[i][gI_partner[other]] = true
 					gF_TimeCP[i][other] = gF_Time[other]
-					//gF_TimeCP[1][gI_partner[other]] = gF_Time[gI_partner[other]]
 					gF_TimeCP[i][gI_partner[other]] = gF_Time[other]
-					//PrintToServer("%f 2x2", gF_Time[other])
-					char sQuery[512] //https://stackoverflow.com/questions/9617453 //https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
-					//Format(sQuery, 512, "SELECT MIN(time), cp%i FROM records WHERE map = '%s' HAVING MIN(time)", i, gS_map) //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm#:~:text=How%20to%20use%20MIN%20function%20inside%20Where%20Clause,use%20the%20MIN%20function%20in%20a%20WHERE%20clause. //https://www.encodedna.com/sqlserver/using-sql-server-min-function-inside-where-clause.htm
-					//Format(sQuery, 512, "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", i, gS_map)  //log help me alot with this stuff
+					char sQuery[512]
 					Format(sQuery, 512, "SELECT cp%i FROM records", i)
 					DataPack dp = new DataPack()
 					dp.WriteCell(GetClientSerial(other))
 					dp.WriteCell(i)
 					gD_mysql.Query(SQLCPSelect, sQuery, dp)
-					//PrintToServer("cp1")
 				}
-				//PrintToServer("cp1pre")
-				//gB_cp[1][other] = true
-				//gB_cp[1][gI_partner[other]] = true
 			}
 		}
 	}
-	//gB_passzone[other] = false
 }
-
-/*void SQL123x(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.FetchRow())
-	{
-		PrintToServer("123x32maps is lol")
-	}
-	else
-	{
-		PrintToServer("paitisnaodsfjslndfkljsdbnflkjn")
-	}
-}*/
 
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
@@ -2677,29 +2375,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			PrintToServer("sky")
 		}
 	}
-	if(gI_testvec[client])
-	{
-		gI_testvec[client]++
-		float vectest[3]
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vectest)
-		PrintToServer("%f %f", vectest[0], vectest[1]) //-340.697296 -1.455074 by tengu boost. -328.707794 -0.779926 by smesh292 nick jurevich boost fix. second time -340.981445 -0.323044 tengu boost fix. right corner. -330.161163 1.097039 by smesh nick jurevich boostfix. third time -281.430755 -0.935560 boost fix by tengu. -272.891448 -0.258201 by smesh292 nick jurevich boost fix. -272.375030 0.000143 by smesh292 tengu boost fix nick jurevich boost fix. -272.669219 -0.776694 smesh292 nick jurevich boost fix. -273.259918 -1.685742 nick jurevich smesh292 boost fix. -273.549072 -0.129200 by smersh292 boost fix tengu bosot fix. smesh292 boostfix. -273.273681 -0.259195 boost fix by nick jurevich smesh292. -272.974426 -0.906334 nick jurevich smesh292 tengu boost fiux tryubng to make same -281 by x coordinate. ] getpossetpos -4592.999023 -496.987518 704.031311;setang -65.097122 0.108658 0.000000
-		//i will use x eye coordinate 66. !eye66 get -282.637115 0.000000 on tengu boost fix. (-282.637115 0.000000 tengu boost fix). -274.431518 0.000000 smesh boost fix by nick jurevich. -275.213897 0.000000 nick jureivch boost fix. -276.277801 0.000000 by nick jurevich boost fix. -279.457427 0.000000 on 40.0 boost fix by smesh nick jurevich. -280.093383 0.000000 nick jurevich boost fix. on 50.0. -280.517333 0.000000 on 60.0 nick jurevich. Smesh292. -280.820159 0.000000 on 70.0 by smesh nick jurevich. -281.047241 0.133382 on 80.0 nick jurevich smesh292. -281.047271 0.000000 on 80.0 by smesh292 nick jurevich. -281.223937 0.000000 on 90.0 by smesh292 nick jurevich. right bottom corner. -281.365264 0.000000 100.0 by smesh 292 nick jurevich. -281.789184 0.000000 on 150.0 by smesh292 nick jurevich. -281.728637 0.000000 on 140.0 by smesh292 nick jurevich. -281.658752 0.000000 on 130.0 nick jurevich smesh292. -281.619628 0.000000 on 125.0 nick jurevich Smesh292. -281.635650 0.000000 on 127.0 by nick jurevich smesh292. -281.639556 0.000000 on 127.5 by smesh292 nick jurevich. -281.637603 0.000000 on 127.25 by nick jurevich smesh292. -281.637542 0.000000 on 127.24 by nick jurevich smesh292. -281.637451 0.000000 on 127.23 by nick jurevich smesh922 smehs292. -281.637390 0.000000 on 127.22 by nick jurevich smesh292. -281.637298 0.000000 on 127.21 by nick jurevich smesh292. -281.637237 0.000000 on 127.2 by nick jurevich smesh292. -281.636810 0.000000 on 127.15 by nick jurevich smesh292. -281.636993 0.000000 on 127.17 by nick jurevich smesh292.
-		//-281.637145 0.000000 on 127.19 by nick jurevich smesh292. -281.637115 0.000000 on 127.85 by nick jurevich smesh292.
-		if(gI_testvec[client] == 10)
-			gI_testvec[client] = 0
-	}
-	//return Plugin_Continue
-	//if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
 	if(IsPlayerAlive(client) && gI_partner[client])
 	{
 		if(buttons & IN_USE)
 		{
-			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
-			//PrintToServer("%i", GetEntProp(client, Prop_Data, "m_afButtonPressed"))
-			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
-			//	gI_pingTick[client] = 1
-			//if(buttons & IN_USE && gI_pingTick[client] > 0)
-			//if(GetEntProp(client, Prop_Data, "m_afButtonPressed") == 32)
 			if(GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 				gI_pingTick[client] = 1
 			if(gI_pingTick[client] > 0)
@@ -2708,8 +2387,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		else
 			if(gI_pingTick[client] > 0)
 				gI_pingTick[client] = 0
-		//if(IsPlayerAlive(client) && buttons & IN_USE && GetGameTime() - gF_pingDelay[client] > 0.5)
-		//if(IsPlayerAlive(client) && buttons & IN_USE && gI_pingTick[client] == 50)
 		if(gI_pingTick[client] == 50)
 		{
 			if(gI_pingModel[client])
@@ -2718,15 +2395,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_pingModel[client] = 0
 				KillTimer(gH_timerPing[client])
 			}
-			//gF_pingDelay[client] = GetGameTime()
 			gI_pingTick[client] = 0
 			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
-			//SetEntProp(ping, Prop_Data, "m_nModelIndex", gI_pingModel)
 			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
 			DispatchSpawn(gI_pingModel[client])
 			ActivateEntity(gI_pingModel[client])
-			//GetClientAimTarget(
-			//https://forums.alliedmods.net/showthread.php?t=152726
 			float start[3]
 			float angle[3]
 			float end[3]
@@ -2739,8 +2412,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				angle[i] *= 8192.0
 				end[i] = start[i] + angle[i] //thanks to rumour for pingtool original code.
 			}
-			//TR_TraceRayFilter(start, angle, MASK_SOLID, RayType_Infinite, TraceEntityFilterPlayer, client)
-			//TR_TraceRayFilter(start, end, MASK_ALL, RayType_EndPoint, TraceEntityFilterPlayer, client)
 			TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
 			if(TR_DidHit(INVALID_HANDLE))
 			{
@@ -2750,7 +2421,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetVectorAngles(normal, normal)
 				float vecAngle[3]
 				GetAngleVectors(normal, vecAngle, NULL_VECTOR, NULL_VECTOR)
-				//SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 				for(int i = 0; i <= 2; i++)
 					end[i] += vecAngle[i] * 1.0
 				normal[0] -= 270.0
@@ -2759,13 +2429,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_color[client])
 				SetEntityRenderColor(gI_pingModel[client], gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-			//EmitSoundToClient(
-			//EmitGameSound(
-			//EmitSoundEntry(
-			//EmitSoundToClient(
-			//EmitGameSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
-			//EmitSoundToAll(
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
@@ -2786,85 +2450,6 @@ Action timer_removePing(Handle timer, int client)
 	return Plugin_Stop
 }
 
-Action cmd_eye66(int client, int args)
-{
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
-		TeleportEntity(client, NULL_VECTOR, view_as<float>({-65.097122, 0.0, 0.0}), NULL_VECTOR)
-	return Plugin_Handled
-}
-
-//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231//https://forums.alliedmods.net/showthread.php?t=146241
-
-Action cmd_getgud(int client, int args)
-{
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
-	{
-		char sGet[32]
-		GetCmdArg(args, sGet, 32)
-		float result = StringToFloat(sGet)
-		gF_getGud = result
-		char sArg[32]
-		GetCmdArg(args, sArg, 32)
-		PrintToServer("%s", sArg)
-		gI_getGud = StringToInt(sArg)
-		PrintToServer("ToInt: %i", gI_getGud)
-		PrintToServer("get gud: %f", gF_getGud)
-		//PrintToChat(client, "\x07a71919text") //https://wiki.alliedmods.net/Scripting_FAQ_(SourceMod) https://forums.alliedmods.net/showthread.php?t=307595 https://www.bing.com/search?q=default+color+sourcemod&cvid=be0df2495cd74ba489d75d72194aca7e&aqs=edge..69i57j0l6.3136j0j1&pglt=299&FORM=ANNTA1&PC=U531
-		//PrintToChat(client, "\x01text2")
-		//PrintToChat(client, "\x02text2")
-		//PrintToChat(client, "\x03text2")
-		//PrintToChat(client, "\x04text2")
-		//PrintToChat(client, "\x05text2")
-		//PrintToChat(client, "\x06text2")
-		//PrintToChat(client, "\x07text2")
-		//PrintToChat(client, "\x08text2")
-		//PrintToChat(client, "\x09text2")
-		//PrintToChat(client, "\0x01text2")
-		//PrintToChat(client, "\0x02text2")
-		//PrintToChat(client, "\0x03text2")
-		//PrintToChat(client, "\0x04text2")
-		PrintToChat(client, "\x07FF4040text21") //red - terrorist
-		PrintToChat(client, "\x0799CCFFtext2") //blue - counter-terrorist
-		PrintToChat(client, "m_GroupCollision = %i", GetEntProp(client, Prop_Data, "m_CollisionGroup"))
-		//https://forums.alliedmods.net/showthread.php?p=1398702?p=1398702#post1398702
-		//https://forums.alliedmods.net/showthread.php?t=185016?t=185016
-		//https://www.color-hex.com/
-		//https://forums.alliedmods.net/showthread.php?t=96831?t=96831
-		CancelClientMenu(client, true)
-		//char sIP[32]
-		//GetClientIP(client, sIP, 32)
-		//char sCode2[3]
-		//GeoipCode2(sIP, sCode2)
-		//PrintToChat(client, "%s", sCode2)
-		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
-		//SetEntityModel(client, "fakeexpert/models/weapons/v_eq_flashbang.mdl")
-		//SetEntityModel(client, "fakeexpert/models/weapons/w_eq_flashbang.mdl")
-		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_vModel)
-		//SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModel)
-		//SetEntProp(client, Prop_Data, "m_nSkin", gI_getGud)
-		//DispatchKeyValue(client, "skin", sArg)
-		//SetEntityRenderColor(client, 255, 0, 0, 255)
-		//gI_skin[client] = true
-		//https://www.bing.com/search?q=hex+color&cvid=11f4b6fc1a44492a93b6cf985212ee05&aqs=edge.0.0l7.1551j0j1&pglt=43&FORM=ANNTA1&PC=U531
-	}
-	return Plugin_Handled
-}
-
-//bool IsClientValid(int client)
-//{
-//	return (client > 0 && client <= MaxClients && IsClientInGame(client))
-//}
-
 Action ProjectileBoostFix(int entity, int other)
 {
 	//if(0 < other <= MaxClients && (!gI_boost[other] || !(GetEntityFlags(other) & FL_ONGROUND)))
@@ -2882,10 +2467,8 @@ Action ProjectileBoostFix(int entity, int other)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 			//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
 			//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-			//vecVelClient[0] -= vecVelEntity[0] * 0.9964619
-			//vecVelClient[1] -= vecVelEntity[1] * 0.9964619
-			vecVelClient[0] = (vecVelClient[0] - vecVelEntity[0]) * 0.9964619
-			vecVelClient[1] = (vecVelClient[1] - vecVelEntity[1]) * 0.9964619
+			vecVelClient[0] -= vecVelEntity[0] * 0.9964619
+			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
 			gF_vecVelBoostFix[other][0] = vecVelClient[0]
 			gF_vecVelBoostFix[other][1] = vecVelClient[1]
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
@@ -3015,11 +2598,9 @@ Action ProjectileBoostFixEndTouch(int entity, int other)
 
 Action cmd_time(int client, int args)
 {
-	//Format(sTime, 32, "" //https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
 	int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24
 	int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
 	int second = RoundToFloor(gF_Time[client]) % 60
-	//gI_second = second % 60 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 	PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
 }
 
@@ -3085,92 +2666,28 @@ Action timer_delete(Handle timer, int entity)
 
 void SDKPlayerSpawnPost(int client)
 {
-	//if(GetEntProp(client, Prop_Data, "m_iAmmo", 
-	//if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	//{
-		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		//GivePlayerItem(client, "weapon_flashbang")
-		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-		//GivePlayerItem(client, "weapon_flashbang") 
-		//EquipPlayerWeapon(client, 26) //26 = weapon_flashbang
-		//https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
-		//PrintToServer("%i", GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-	//}
-	//if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 1)
-		//GivePlayerItem(client, "weapon_flashbang")
-	//SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
-	//GivePlayerAmmo(client, 2, 48, true)
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
+		GivePlayerItem(client, "weapon_flashbang")
+		GivePlayerItem(client, "weapon_flashbang") 
+	}
 }
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR)
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
 	return Plugin_Handled
 }
 
-void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw
+void SDKWeaponEquipPost(int client, int weapon)
 {
-	//char sWeapon[32]
-	//GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
-	//GetEdictClassname(wea
-	//PrintToServer("equip %i %N %s", weapon, client, sWeapon) //https://www.bing.com/search?q=classname+sourcemod&cvid=5320ed13713b4484a18ef73e7e3f75f6&aqs=edge..69i57j0l6.2216j0j1&pglt=299&FORM=ANNTA1&PC=U531
-	//if(IsPlayerAlive(client) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	/*if(StrEqual(sWeapon, "weapon_flashbang"))
-	{
-		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
-		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
-		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
-		//char sGetGud[32]
-		//IntToString(gI_getGud, sGetGud, 32)
-		//DispatchKeyValue(weapon, "skin", sGetGud)
-		SetEntityRenderColor(weapon, 255, 0, 0, 255)
-		PrintToServer("%s %i %i %N", sWeapon, weapon, client, client)
-	}*/
-	/*int index
-	while((index = FindEntityByClassname(index, "predicted_viewmodel")) != -1) //https://forums.alliedmods.net/showthread.php?t=273885
-	{
-		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-		if(client == owner)
-		{
-			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModel)
-			SetEntProp(index, Prop_Data, "m_nSkin", gI_getGud)
-			//SetEntityRenderColor(index, 255, 0, 0, 255)
-			continue
-		}
-		
-	}*/
-	//DataPack dp = new DataPack()
-	//dp.WriteCell(client)
-	//dp.WriteCell(weapon)
-	//CreateTimer(1.0, timer_skin, dp, TIMER_FLAG_NO_MAPCHANGE)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
 }
-
-/*Action timer_skin(Handle timer, DataPack dp)
-{
-	dp.Reset()
-	int client = dp.ReadCell()
-	int weapon = dp.ReadCell()
-	char sWeapon[32]
-	GetEntPropString(weapon, Prop_Data, "m_iClassname", sWeapon, 32)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
-	{
-		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_vModel)
-		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
-		SetEntProp(weapon, Prop_Data, "m_nSkin", gI_getGud)
-		//char sGetGud[32]
-		//IntToString(gI_getGud, sGetGud, 32)
-		//DispatchKeyValue(weapon, "skin", sGetGud)
-		SetEntityRenderColor(weapon, 255, 0, 0, 255)
-		PrintToServer("%s %i %i %N", sWeapon, weapon, client, client)
-	}
-	return Plugin_Stop
-}*/
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
