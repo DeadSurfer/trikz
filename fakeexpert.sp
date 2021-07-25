@@ -2952,40 +2952,40 @@ Action ProjectileBoostFix(int entity, int other)
 	//if((0 < other <= MaxClients) && (!(GetEntityFlags(other) & FL_ONGROUND) || !gI_boost[other]))
 	//if(!IsClientValid(other) || gI_entityFlags[other] & FL_ONGROUND || gI_boost[client] || GetGameTime() - gF_boostTime[client] < 0.15)
 	//	return
+	//{
+	if(!gI_testvec[other] && gF_getGud != 0.0)
+		gI_testvec[other] = 1
+	float vecOriginOther[3]
+	GetClientAbsOrigin(other, vecOriginOther)
+	float vecOriginEntity[3]
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
+	//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
+	//if(0.0 < (deltaOrigin - vecMaxs[2]) < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+	if(vecOriginOther[2] >= vecOriginEntity[2])
 	{
-		if(!gI_testvec[other] && gF_getGud != 0.0)
-			gI_testvec[other] = 1
-		float vecOriginOther[3]
-		GetClientAbsOrigin(other, vecOriginOther)
-		float vecOriginEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-		//if(vecOriginOther[2] >= vecOriginEntity[2]) //Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)
-		//if(0.0 < (deltaOrigin - vecMaxs[2]) < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
-		if(vecOriginOther[2] >= vecOriginEntity[2])
-		{
-			float vecVelClient[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
-			float vecVelEntity[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-			//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
-			//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
-			gI_boost[other] = 1
-			//vecVelClient[1] -= vecVelEntity[1] * 0.97 //!getgud 0.995 !getgud 0.997 !getgud 0.9965 = -281.647888 0.000000 !getgud 0.99645 = -281.633758 0.000000 !getgud 0.99646 = -281.636596 0.000000
-			vecVelClient[0] -= vecVelEntity[0] * 0.9964619
-			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
-			//!getgud 0.996462 = -281.637145 0.000000 !getgud 0.996460 = -281.636596 0.000000 !getgud 0.996462 = -281.637145 0.000000
-			//!getgud 0.9964619 = -281.637115 0.000000 code bugging by nick jurevich smesh292
-			gF_vecVelBoostFix[other][0] = vecVelClient[0]
-			gF_vecVelBoostFix[other][1] = vecVelClient[1]
-			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
-			gF_boostTime[other] = GetGameTime()
-			gB_groundBoost[other] = gB_bouncedOff[entity]
-			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
-			gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
-			//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
-			//PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
-		}
+		float vecVelClient[3]
+		GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
+		float vecVelEntity[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
+		//PrintToChatAll("vecVelClient: x: %f, y: %f, z: %f", vecVelClient[0], vecVelClient[1], vecVelClient[2])
+		//PrintToChatAll("vecVelEntity: x: %f, y: %f, z: %f", vecVelEntity[0], vecVelEntity[1], vecVelEntity[2])
+		gI_boost[other] = 1
+		//vecVelClient[1] -= vecVelEntity[1] * 0.97 //!getgud 0.995 !getgud 0.997 !getgud 0.9965 = -281.647888 0.000000 !getgud 0.99645 = -281.633758 0.000000 !getgud 0.99646 = -281.636596 0.000000
+		vecVelClient[0] -= vecVelEntity[0] * 0.9964619
+		vecVelClient[1] -= vecVelEntity[1] * 0.9964619
+		//!getgud 0.996462 = -281.637145 0.000000 !getgud 0.996460 = -281.636596 0.000000 !getgud 0.996462 = -281.637145 0.000000
+		//!getgud 0.9964619 = -281.637115 0.000000 code bugging by nick jurevich smesh292
+		gF_vecVelBoostFix[other][0] = vecVelClient[0]
+		gF_vecVelBoostFix[other][1] = vecVelClient[1]
+		gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
+		gF_boostTime[other] = GetGameTime()
+		gB_groundBoost[other] = gB_bouncedOff[entity]
+		SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
+		gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
+		//PrintToChatAll("start touch %i", count)//Whe just make filter for 0 other id.
+		//PrintToChatAll("elastisity of nade: %f", GetEntPropFloat(entity, Prop_Data, "m_flElasticity")) //https://forums.alliedmods.net/showthread.php?t=146241
 	}
+	//}
 	return Plugin_Continue
 }
 
