@@ -944,8 +944,8 @@ public void OnClientPutInServer(int client)
 
 public void OnClientDisconnect(int client)
 {
-	if(gB_TrikzMenuIsOpen[gI_partner[client]])
-		Trikz(gI_partner[client])
+	//if(gB_TrikzMenuIsOpen[gI_partner[client]])
+		//Trikz(gI_partner[client])
 	gI_partner[gI_partner[client]] = 0
 	gI_partner[client] = 0
 	CancelClientMenu(client)
