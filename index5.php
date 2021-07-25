@@ -143,7 +143,8 @@
     color: #009879;
 }
 </style>
-<body>
+<!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
+<body style="background-color:#ffffff">
 	<h1>Trikz Timer</h1> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. -->
 	<!--<form action="" method="post">
 	<label>Please enter your Name:</label>
