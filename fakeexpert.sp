@@ -70,7 +70,7 @@ bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 int gI_entityFlags[MAXPLAYERS + 1]
-int gB_boost[MAXPLAYERS + 1]
+bool gB_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
@@ -2102,7 +2102,7 @@ Action SDKProjectile(int entity)
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-	CreateTimer(1.5, timer_delete, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+	CreateTimer(1.5, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
 }
 
 void SDKProjectilePost(int entity)
@@ -2118,14 +2118,11 @@ void SDKProjectilePost(int entity)
 	}
 }
 
-Action timer_delete(Handle timer, int entity)
+Action timer_deleteProjectile(Handle timer, int entRef)
 {
-	entity = EntRefToEntIndex(entity)
+	int entity = EntRefToEntIndex(entRef)
 	if(IsValidEntity(entity))
-	{
-		//RemoveEntity(entity)
-		AcceptEntityInput(entity, "Kill")
-	}
+		RemoveEntity(entity)
 	return Plugin_Stop
 }
 
