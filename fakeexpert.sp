@@ -1818,7 +1818,6 @@ Action timer_removePing(Handle timer, int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	//if(0 < other <= MaxClients && !gB_boost[other] && !(GetEntityFlags(other) & FL_ONGROUND))
 	if(0 < other <= MaxClients && IsClientInGame(other) && !gB_boost[other] && !(gI_entityFlags[other] & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
@@ -1828,7 +1827,6 @@ Action ProjectileBoostFix(int entity, int other)
 		float vecMaxsEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
 		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
-		//if(vecOriginOther[2] >= vecOriginEntity[2])
 		if(0.0 < delta < 2.0)
 		{
 			float vecVelClient[3]
@@ -1845,7 +1843,6 @@ Action ProjectileBoostFix(int entity, int other)
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
 			gI_flash[other] = EntIndexToEntRef(entity)
 			gB_boost[other] = true
-			PrintToChatAll("%i %i", entity, other)
 		}
 	}
 }
