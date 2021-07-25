@@ -40,8 +40,8 @@ float gF_Time[MAXPLAYERS + 1]
 bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
 bool gB_mapfinished[MAXPLAYERS + 1]
-bool gB_pass
-bool gB_passzone[MAXPLAYERS + 1]
+bool gB_passDB
+bool gB_passDBzone[MAXPLAYERS + 1]
 float gF_vecStart[3]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyVel[MAXPLAYERS + 1][3]
@@ -392,7 +392,7 @@ public void OnClientPutInServer(int client)
 	//idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	char sQuery[512]
-	if(IsClientInGame(client) && gB_pass)
+	if(IsClientInGame(client) && gB_passDB)
 	{
 		int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT * FROM users")
@@ -1251,7 +1251,7 @@ void SQLCPUpdate(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_createcp(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `cp` (`id` INT AUTO_INCREMENT, `cpnum` INT, `cpx` FLOAT, `cpy` FLOAT, `cpz` FLOAT, `cpx2` FLOAT, `cpy2` FLOAT, `cpz2` FLOAT, `map` VARCHAR(192),  PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx FLOAT, cpy FLOAT, cpz FLOAT, cpx2 FLOAT, cpy2 FLOAT, cpz2 FLOAT, map VARCHAR(192),  PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateCPTable, sQuery)
 }
 
@@ -1340,8 +1340,8 @@ void createcp(int cpnum)
 Action cmd_createusers(int args)
 {
 	char sQuery[512]
-	//Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `geoipcode2` VARCHAR(64), `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `users` (`id` INT AUTO_INCREMENT, `username` VARCHAR(64), `steamid` INT, `firstjoin` INT, `lastjoin` INT, `points` INT, PRIMARY KEY(id))")
+	//Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, geoipcode2 VARCHAR(64), firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
 
@@ -1360,7 +1360,7 @@ void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any 
 Action cmd_createrecords(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `records` (`id` INT AUTO_INCREMENT, `playerid` INT, `partnerid` INT, `time` FLOAT, `completions` INT, `cp1` FLOAT, `cp2` FLOAT, `cp3` FLOAT, `cp4` FLOAT, `cp5` FLOAT, `cp6` FLOAT, `cp7` FLOAT, `cp8` FLOAT, `cp9` FLOAT, `cp10` FLOAT, `map` VARCHAR(192), `date` INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, completions INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, map VARCHAR(192), date INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
@@ -1379,9 +1379,8 @@ Action SDKEndTouch(int entity, int other)
 		gB_mapfinished[gI_partner[other]] = false
 		gF_TimeStart[other] = GetEngineTime()
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
-		//PrintToServer("EndTouch")
-		gB_passzone[other] = true
-		gB_passzone[gI_partner[other]] = true
+		gB_passDBzone[other] = true
+		gB_passDBzone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
 		for(int i = 1; i <= 10; i++)
@@ -1391,19 +1390,12 @@ Action SDKEndTouch(int entity, int other)
 			gB_cpLock[i][other] = false
 			gB_cpLock[i][gI_partner[other]] = false
 		}
-		/*for(int i = 1; i <= 2048; i++)
-		{
-			gB_stateDisabled[other][i] = gB_stateDefaultDisabled[i]
-			gB_stateDisabled[gI_partner[other]][i] = gB_stateDefaultDisabled[i]
-			gF_buttonReady[other][i] = 0.0
-			gF_buttonReady[gI_partner[other]][i] = 0.0
-		}*/
 	}
 }
 
 Action SDKStartTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && gB_passzone[other])
+	if(0 < other <= MaxClients && gB_passDBzone[other])
 	{
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
@@ -1415,7 +1407,7 @@ Action SDKStartTouch(int entity, int other)
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
 			gB_mapfinished[other] = true
-			gB_passzone[other] = false
+			gB_passDBzone[other] = false
 			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 			{
 				char sQuery[512]
@@ -1695,7 +1687,7 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 Action cmd_createzones(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS `zones` (`id` INT AUTO_INCREMENT, `map` VARCHAR(128), `type` INT, `possition_x` FLOAT, `possition_y` FLOAT, `possition_z` FLOAT, `possition_x2` FLOAT, `possition_y2` FLOAT, `possition_z2` FLOAT, `tier` INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x FLOAT, possition_y FLOAT, possition_z FLOAT, possition_x2 FLOAT, possition_y2 FLOAT, possition_z2 FLOAT, tier INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
 	gD_mysql.Query(SQLCreateZonesTable, sQuery)
 }
 
@@ -1710,7 +1702,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	gD_mysql = db
 	gD_mysql.SetCharset("utf8") //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-core.sp#L2883
 	ForceZonesSetup() //https://sm.alliedmods.net/new-api/dbi/__raw
-	gB_pass = true //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
+	gB_passDB = true //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
@@ -1735,7 +1727,6 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 		gF_vec2[0][2] = results.FetchFloat(5)
 		createstart()
 		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-		//PrintToServer("SQLSetZoneStart successfuly.")
 		PrintToServer("Start zone is successfuly setup.")
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
