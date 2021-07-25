@@ -1104,9 +1104,12 @@ void SDKBoostFix(int client)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
 			if(vecVelEntity[2] > 0.0)
 			{
-				vecVelEntity[0] *= 0.135
-				vecVelEntity[1] *= 0.135
-				vecVelEntity[2] *= -0.135
+				//vecVelEntity[0] *= 0.135
+				//vecVelEntity[1] *= 0.135
+				//vecVelEntity[2] *= -0.135
+				vecVelEntity[0] = vecVelEntity[0] * 0.135
+				vecVelEntity[1] = vecVelEntity[1] * 0.135
+				vecVelEntity[2] = vecVelEntity[2] * -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 				if(gB_groundBoost[client])
 				{
