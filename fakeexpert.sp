@@ -1,22 +1,23 @@
-/*GNU GENERAL PUBLIC LICENSE
+/*
+	GNU GENERAL PUBLIC LICENSE
 
-VERSION 2, JUNE 1991
+	VERSION 2, JUNE 1991
 
-Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
+	Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+	51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
 
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.*/
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
 
-/*GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
-Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.
+	GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
+	Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
 
-						Preamble
+							Preamble
 
 	The GNU General Public License is a free, copyleft license for
-software and other kinds of works.
+	software and other kinds of works.
 
 	The licenses for most software and other practical works are designed
 	to take away your freedom to share and change the works. By contrast,
@@ -25,9 +26,11 @@ software and other kinds of works.
 	software for all its users. We, the Free Software Foundation, use the
 	GNU General Public license for most of our software; it applies also to
 	any other work released this way by its authors. You can apply it to
-	your programs, too.*/
+	your programs, too.
+*/
 #include <sdktools>
 #include <sdkhooks>
+#pragma dynamic 420420
 
 int gI_partner[MAXPLAYERS + 1]
 float gF_vec1[2][3]
@@ -44,11 +47,6 @@ float gF_vecStart[3]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyVel[MAXPLAYERS + 1][3]
 bool gB_readyToStart[MAXPLAYERS + 1]
-
-/*bool gB_stateDefaultDisabled[2048 + 1]
-bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
-float gF_buttonDefaultDelay[2048 + 1]
-float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]*/
 
 float gF_vec1cp[11][3]
 float gF_vec2cp[11][3]
