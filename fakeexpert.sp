@@ -2770,6 +2770,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//if(IsPlayerAlive(client) && buttons & IN_USE && gI_pingTick[client] == 50)
 		if(gI_pingTick[client] == 50)
 		{
+			RemoveEntity(gI_pingModel[client])
 			//gF_pingDelay[client] = GetGameTime()
 			gI_pingTick[client] = 0
 			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
