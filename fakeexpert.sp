@@ -1328,6 +1328,11 @@ Action SDKStartTouch(int entity, int other)
 								char sNewFileName[256]
 								Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
 								RenameFile(sNewFileName, sOldFileName)
+								PrintToServer("SourceTV start recording.")
+								FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
+								FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
+								ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
+								gB_isServerRecord = false
 							}
 						}
 						else if(gF_ServerRecord < gF_Time[other] > gF_mateRecord[other])
@@ -1383,6 +1388,11 @@ Action SDKStartTouch(int entity, int other)
 								char sNewFileName[256]
 								Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
 								RenameFile(sNewFileName, sOldFileName)
+								PrintToServer("SourceTV start recording.")
+								FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
+								FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
+								ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
+								gB_isServerRecord = false
 							}
 						}
 						else
