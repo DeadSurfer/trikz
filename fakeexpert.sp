@@ -265,12 +265,12 @@ public void OnMapEnd()
 	if(isSourceTV)
 	{
 		ServerCommand("tv_stoprecord")
-		char sOldFileName[64]
-		Format(sOldFileName, 64, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+		char sOldFileName[256]
+		Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
 		if(gB_isServerRecord)
 		{
-			char sNewFileName[64]
-			Format(sNewFileName, 64, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+			char sNewFileName[256]
+			Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
 			RenameFile(sNewFileName, sOldFileName)
 		}
 		else
@@ -296,8 +296,8 @@ Action specchat(int client, const char[] command, int argc)
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	char sModel[64]
-	GetClientModel(client, sModel, 64)
+	char sModel[32]
+	GetClientModel(client, sModel, 32)
 	if(StrEqual(sModel, "models/player/ct_urban.mdl"))
 		gI_class[client] = 1
 	if(StrEqual(sModel, "models/player/ct_gsg9.mdl"))
@@ -435,8 +435,6 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(data == 0)
-		return
 	int client = GetClientFromSerial(data)
 	if(client == 0)
 		return
