@@ -1685,7 +1685,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 			gI_skyStep[client] = 0
 			gI_skyFrame[client] = 0
-			PrintToServer("sky")
 		}
 	}
 	if(IsPlayerAlive(client) && gI_partner[client])
