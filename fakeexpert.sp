@@ -406,6 +406,7 @@ public void OnClientPutInServer(int client)
 	gB_block[client] = true
 	gB_color[client] = false
 	gI_pingTick[client] = 0
+	gI_colorCount[client] = 0
 }
 
 public void OnClientDisconnect(int client)
@@ -416,6 +417,8 @@ public void OnClientDisconnect(int client)
 		Trikz(partner)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
+	Color(partner, false)
+	gI_colorCount[partner] = 0
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
