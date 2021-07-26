@@ -1132,7 +1132,7 @@ Action cmd_cpmaxs(int client, int args)
 		GetClientAbsOrigin(client, gF_vecCP[1][cpnum])
 		char sQuery[512]
 		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
-		gD_mysql.Query(SQLCPInserted, sQuery, data)
+		gD_mysql.Query(SQLCPInserted, sQuery, cpnum)
 		gB_firstZoneCP = false
 	}
 	return Plugin_Handled
