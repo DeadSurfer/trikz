@@ -98,6 +98,8 @@ int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
 
+bool gB_zoneFirst[2]
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -952,7 +954,10 @@ Action cmd_vecmins(int client, int args)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
+	{
 		GetClientAbsOrigin(client, gF_vecStartZone[0])
+		gB_zoneFirst[0] = true
+	}
 	return Plugin_Handled
 }
 
@@ -993,7 +998,10 @@ Action cmd_vecminsend(int client, int args)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
+	{
 		GetClientAbsOrigin(client, gF_vecStartZone[1])
+		gB_firstZone[1] = true
+	}
 	return Plugin_Handled
 }
 
@@ -1050,12 +1058,13 @@ Action cmd_vecmaxs(int client, int args)
 	IntToString(steamid, sCurrentSteamID, 64)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	if(StrEqual(sSteamID, sCurrentSteamID) && gB_zoneFirst[0])
 	{
 		GetClientAbsOrigin(client, gF_vecStartZone[1])
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1", gS_map)
 		gD_mysql.Query(SQLDeleteStartZone, sQuery)
+		gB_zoneFirst[0] = false
 	}
 	return Plugin_Handled
 }
@@ -1067,12 +1076,13 @@ Action cmd_vecmaxsend(int client, int args)
 	IntToString(steamid, sCurrentSteamID, 64)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	if(StrEqual(sSteamID, sCurrentSteamID) && gB_zoneFirst[1])
 	{
 		GetClientAbsOrigin(client, gF_vecEndZone[1])
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1", gS_map)
 		gD_mysql.Query(SQLDeleteEndZone, sQuery)
+		gB_zoneFirst[1] = false
 	}
 	return Plugin_Handled
 }
@@ -1094,12 +1104,20 @@ Action cmd_cpmins(int client, int args)
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
 		gD_mysql.Query(SQLCPRemoved, sQuery)
+		gB_firstZoneCP = true
 	}
 	return Plugin_Handled
 }
 
 void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
+	if(results.FetchRow())
+	{
+		int cpnum = data
+		char sQuery[512]
+		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
+		gD_mysql.Query(SQLCPInserted, sQuery, data)
+	}
 }
 
 Action cmd_cpmaxs(int client, int args)
@@ -1109,21 +1127,23 @@ Action cmd_cpmaxs(int client, int args)
 	IntToString(steamid, sCurrentSteamID, 64)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	if(StrEqual(sSteamID, sCurrentSteamID) && gB_firstZoneCP)
 	{
 		char sCmd[512]
 		GetCmdArg(args, sCmd, 512)
 		int cpnum = StringToInt(sCmd)
 		GetClientAbsOrigin(client, gF_vecCP[1][cpnum])
-		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
-		gD_mysql.Query(SQLCPInserted, sQuery)
+		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
+		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
+		gB_firstZoneCP = false
 	}
 	return Plugin_Handled
 }
 
 void SQLCPInserted(Database db, DBResultSet results, const char[] error, any data)
 {
+	if(results.FetchRow())
+		PrintToServer("Checkpoint zone no. %i successfuly created.", data)
 }
 
 Action cmd_createcp(int args)
