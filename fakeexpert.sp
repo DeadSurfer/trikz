@@ -1075,7 +1075,7 @@ Action cmd_vecmaxs(int client, int args)
 	{
 		GetClientAbsOrigin(client, gF_vecStartZone[1])
 		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s'", gS_map)
+		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLDeleteStartZone, sQuery)
 		gB_zoneFirst[0] = false
 	}
@@ -1093,7 +1093,7 @@ Action cmd_vecmaxsend(int client, int args)
 	{
 		GetClientAbsOrigin(client, gF_vecEndZone[1])
 		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s'", gS_map)
+		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1", gS_map)
 		gD_mysql.Query(SQLDeleteEndZone, sQuery)
 		gB_zoneFirst[1] = false
 	}
