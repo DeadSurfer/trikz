@@ -59,8 +59,6 @@ float gF_ServerRecord
 
 ConVar gCV_steamid
 
-int gI_type
-
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
@@ -1056,8 +1054,8 @@ Action cmd_vecmaxs(int client, int args)
 	{
 		GetClientAbsOrigin(client, gF_vecStartZone[1])
 		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 0", gS_map)
-		gD_mysql.Query(SQLDeleteZone, sQuery)
+		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1", gS_map)
+		gD_mysql.Query(SQLDeleteStartZone, sQuery)
 	}
 	return Plugin_Handled
 }
