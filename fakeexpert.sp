@@ -798,7 +798,7 @@ void Color(int client, bool customSkin)
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		SetEntProp(client, Prop_Data, "m_nSkin", 1)
-		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1
+		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
 		//gI_colorCount[client]++
 		//for(; i < sizeof(gS_color), )
 		char gS_colorExploded[3][3]
