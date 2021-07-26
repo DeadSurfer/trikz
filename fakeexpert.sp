@@ -267,13 +267,7 @@ public void OnMapEnd()
 		ServerCommand("tv_stoprecord")
 		char sOldFileName[256]
 		Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
-		if(gB_isServerRecord)
-		{
-			char sNewFileName[256]
-			Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
-			RenameFile(sNewFileName, sOldFileName)
-		}
-		else
+		if(!gB_isServerRecord)
 			DeleteFile(sOldFileName)
 	}
 }
@@ -1324,6 +1318,17 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
+							ConVar CV_sourcetv = FindConVar("tv_enable")
+							bool isSourceTV = GetConVarBool(CV_sourcetv)
+							if(isSourceTV)
+							{
+								ServerCommand("tv_stoprecord")
+								char sOldFileName[256]
+								Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+								char sNewFileName[256]
+								Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+								RenameFile(sNewFileName, sOldFileName)
+							}
 						}
 						else if(gF_ServerRecord < gF_Time[other] > gF_mateRecord[other])
 						{
@@ -1368,6 +1373,17 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
+							ConVar CV_sourcetv = FindConVar("tv_enable")
+							bool isSourceTV = GetConVarBool(CV_sourcetv)
+							if(isSourceTV)
+							{
+								ServerCommand("tv_stoprecord")
+								char sOldFileName[256]
+								Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+								char sNewFileName[256]
+								Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+								RenameFile(sNewFileName, sOldFileName)
+							}
 						}
 						else
 						{
