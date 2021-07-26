@@ -967,12 +967,9 @@ Action cmd_vecmins(int client, int args)
 
 void SQLDeleteStartZone(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %f, %f, %f, %f, %f, %f)", gS_map, gF_vecStartZone[0][0], gF_vecStartZone[0][1], gF_vecStartZone[0][2], gF_vecStartZone[1][0], gF_vecStartZone[1][1], gF_vecStartZone[1][2])
-		gD_mysql.Query(SQLSetStartZones, sQuery)
-	}
+	char sQuery[512]
+	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %f, %f, %f, %f, %f, %f)", gS_map, gF_vecStartZone[0][0], gF_vecStartZone[0][1], gF_vecStartZone[0][2], gF_vecStartZone[1][0], gF_vecStartZone[1][1], gF_vecStartZone[1][2])
+	gD_mysql.Query(SQLSetStartZones, sQuery)
 }
 
 Action cmd_deleteallcp(int client, int args)
@@ -1021,12 +1018,9 @@ Action cmd_vecminsend(int client, int args)
 
 void SQLDeleteEndZone(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %f, %f, %f, %f, %f, %f)", gS_map, gF_vecEndZone[0][0], gF_vecEndZone[0][1], gF_vecEndZone[0][2], gF_vecEndZone[1][0], gF_vecEndZone[1][1], gF_vecEndZone[1][2])
-		gD_mysql.Query(SQLSetEndZones, sQuery)
-	}
+	char sQuery[512]
+	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %f, %f, %f, %f, %f, %f)", gS_map, gF_vecEndZone[0][0], gF_vecEndZone[0][1], gF_vecEndZone[0][2], gF_vecEndZone[1][0], gF_vecEndZone[1][1], gF_vecEndZone[1][2])
+	gD_mysql.Query(SQLSetEndZones, sQuery)
 }
 
 Action cmd_maptier(int client, int args)
