@@ -678,7 +678,7 @@ void Partner(int client)
 		char sName[MAX_NAME_LENGTH]
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i)
+			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i])
 			{
 				GetClientName(i, sName, MAX_NAME_LENGTH)
 				char sNameID[32]
