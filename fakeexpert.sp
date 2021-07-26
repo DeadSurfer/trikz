@@ -99,6 +99,7 @@ int gI_pingTick[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
 
 bool gB_zoneFirst[2]
+bool gB_firstZoneCP
 
 public Plugin myinfo =
 {
