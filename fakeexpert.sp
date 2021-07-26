@@ -955,8 +955,13 @@ Action cmd_vecmins(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		GetClientAbsOrigin(client, gF_vecStartZone[0])
-		gB_zoneFirst[0] = true
+		if(gB_isDevmap)
+		{
+			GetClientAbsOrigin(client, gF_vecStartZone[0])
+			gB_zoneFirst[0] = true
+		}
+		else
+			PrintToChat(client, "Turn on devmap.")
 	}
 	return Plugin_Handled
 }
@@ -980,9 +985,14 @@ Action cmd_deleteallcp(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM cp WHERE map = '%s'", gS_map)
-		gD_mysql.Query(SQLDeleteAllCP, sQuery)
+		if(gB_isDevmap)
+		{
+			char sQuery[512]
+			Format(sQuery, 512, "DELETE FROM cp WHERE map = '%s'", gS_map)
+			gD_mysql.Query(SQLDeleteAllCP, sQuery)
+		}
+		else
+			PrintToChat(client, "Turn on devmap.")
 	}
 }
 
@@ -999,8 +1009,13 @@ Action cmd_vecminsend(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		GetClientAbsOrigin(client, gF_vecStartZone[1])
-		gB_zoneFirst[1] = true
+		if(gB_isDevmap)
+		{
+			GetClientAbsOrigin(client, gF_vecStartZone[1])
+			gB_zoneFirst[1] = true
+		}
+		else
+			PrintToChat(client, "Turn on devmap.")
 	}
 	return Plugin_Handled
 }
@@ -1024,13 +1039,18 @@ Action cmd_maptier(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		char sArgString[512]
-		GetCmdArgString(sArgString, 512)
-		int tier = StringToInt(sArgString)
-		PrintToServer("[Args] Tier: %i", tier)
-		char sQuery[512]
-		Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
-		gD_mysql.Query(SQLTier, sQuery)
+		if(gB_isDevmap)
+		{
+			char sArgString[512]
+			GetCmdArgString(sArgString, 512)
+			int tier = StringToInt(sArgString)
+			PrintToServer("[Args] Tier: %i", tier)
+			char sQuery[512]
+			Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
+			gD_mysql.Query(SQLTier, sQuery)
+		}
+		else
+			PrintToChat(client, "Turn on devmap.")
 	}
 	return Plugin_Handled
 }
@@ -1096,15 +1116,20 @@ Action cmd_cpmins(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		char sCmd[512]
-		GetCmdArg(args, sCmd, 512)
-		int cpnum = StringToInt(sCmd)
-		PrintToChat(client, "CP: No.%i", cpnum)
-		GetClientAbsOrigin(client, gF_vecCP[0][cpnum])
-		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
-		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
-		gB_firstZoneCP = true
+		if(gB_isDevmap)
+		{
+			char sCmd[512]
+			GetCmdArg(args, sCmd, 512)
+			int cpnum = StringToInt(sCmd)
+			PrintToChat(client, "CP: No.%i", cpnum)
+			GetClientAbsOrigin(client, gF_vecCP[0][cpnum])
+			char sQuery[512]
+			Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
+			gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
+			gB_firstZoneCP = true
+		}
+		else
+			PrintToChat(client, "Turn on devmap.")
 	}
 	return Plugin_Handled
 }
@@ -1183,16 +1208,6 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 
 void createcp(int cpnum)
 {
-	char sTriggerName[64]
-	Format(sTriggerName, 64, "fakeexpert_cp%i", cpnum)
-	char sTriggerName2[64]
-	int index
-	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
-	{
-		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
-		if(StrEqual(sTriggerName2, sTriggerName))
-			return
-	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
@@ -1497,9 +1512,9 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(data == 0)
-		return
 	int other = GetClientFromSerial(data)
+	if(!other)
+		return
 	int clientid = GetSteamAccountID(other)
 	int partnerid = GetSteamAccountID(gI_partner[other])
 	if(results.FetchRow())
@@ -1956,28 +1971,29 @@ public void OnEntityCreated(int entity, const char[] classname)
 Action SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
-		return Plugin_Continue
-	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
-	gB_silentKnife = true
-	FakeClientCommand(client, "use weapon_knife")
-	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
-	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
-	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-	CreateTimer(1.5, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
-	return Plugin_Continue
+	if(IsValidEntity(entity) || IsPlayerAlive(client))
+	{
+		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+		gB_silentKnife = true
+		FakeClientCommand(client, "use weapon_knife")
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
+		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
+		CreateTimer(1.5, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+	}
 }
 
 void SDKProjectilePost(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
-		return
-	if(gB_color[client])
+	if(IsValidEntity(entity) || IsPlayerAlive(client))
 	{
-		SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
-		SetEntProp(entity, Prop_Data, "m_nSkin", 1)
-		SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
+		if(gB_color[client])
+		{
+			SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
+			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
+			SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
+		}
 	}
 }
 
