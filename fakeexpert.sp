@@ -530,7 +530,7 @@ void SDKBoostFix(int client)
 		{
 			float vecVelEntity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-			if(vecVelEntity[2] > 0.0)
+			//if(vecVelEntity[2] > 0.0)
 			{
 				vecVelEntity[0] *= 0.135
 				vecVelEntity[1] *= 0.135
