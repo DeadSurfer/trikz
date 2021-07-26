@@ -780,6 +780,8 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					Color(param1, false)
+					gI_colorCount[param1] = 0
+					gI_colorCount[partner] = 0
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
