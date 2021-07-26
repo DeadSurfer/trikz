@@ -814,7 +814,7 @@ void Color(int client, bool customSkin)
 		gI_color[gI_partner[client]][0] = StringToInt(gS_colorExploded[0])
 		gI_color[gI_partner[client]][1] = StringToInt(gS_colorExploded[1])
 		gI_color[gI_partner[client]][2] = StringToInt(gS_colorExploded[2])
-		//PrintToServer("%i %i %i", gI_color[client][0], gI_color[client][1], gI_color[client][2])
+		PrintToServer("%i %i %i", gI_color[client][0], gI_color[client][1], gI_color[client][2])
 		//ExplodeString(
 		//StringToInt(])
 		//gI_randomInt[client][0] = GetRandomInt(0, 255)
