@@ -406,7 +406,7 @@ public void OnClientDisconnect(int client)
 {
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
-	if(gB_TrikzMenuIsOpen[partner])
+	if(partner && gB_TrikzMenuIsOpen[partner])
 		Trikz(partner)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
@@ -591,7 +591,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 1:
 				{
 					Partner(param1)
-					gB_TrikzMenuIsOpen[param1] = false
 				}
 				case 2:
 				{
@@ -1104,7 +1103,7 @@ Action cmd_cpmins(int client, int args)
 		GetClientAbsOrigin(client, gF_vecCP[0][cpnum])
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
-		gD_mysql.Query(SQLCPRemoved, sQuery)
+		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
 		gB_firstZoneCP = true
 	}
 	return Plugin_Handled
@@ -1114,10 +1113,7 @@ void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data
 {
 	if(results.FetchRow())
 	{
-		int cpnum = data
-		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
-		gD_mysql.Query(SQLCPInserted, sQuery, data)
+		PrintToServer("Checkpoint zone no. %i successfuly deleted.")
 	}
 }
 
@@ -1135,8 +1131,8 @@ Action cmd_cpmaxs(int client, int args)
 		int cpnum = StringToInt(sCmd)
 		GetClientAbsOrigin(client, gF_vecCP[1][cpnum])
 		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
-		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
+		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
+		gD_mysql.Query(SQLCPInserted, sQuery, data)
 		gB_firstZoneCP = false
 	}
 	return Plugin_Handled
