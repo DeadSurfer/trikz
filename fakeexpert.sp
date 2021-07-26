@@ -92,21 +92,17 @@ int gI_class[MAXPLAYERS + 1]
 bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
-//int gI_randomInt[MAXPLAYERS + 1][3]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
 
 bool gB_zoneFirst[2]
 bool gB_firstZoneCP
-/*enum
-{
-	
-}*/
-//https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
-char gS_color[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,0", "0,255,255", "0,191,255", "0,0,255", "255,0,255"} //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
+
+char gS_color[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,0", "0,255,255", "0,191,255", "0,0,255", "255,0,255"} //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
 int gI_color[MAXPLAYERS + 1][3]
 int gI_colorCount[MAXPLAYERS + 1]
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -804,30 +800,19 @@ void Color(int client, bool customSkin)
 		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
-		//gI_colorCount[client]++
-		//for(; i < sizeof(gS_color), )
 		char gS_colorExploded[3][3]
 		if(gI_colorCount[client] == 9)
 		{
 			gI_colorCount[client] = 0
 			gI_colorCount[gI_partner[client]] = 0
 		}
-		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16) //https://forums.alliedmods.net/showthread.php?t=290529
+		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
 		gI_color[client][0] = StringToInt(gS_colorExploded[0])
 		gI_color[client][1] = StringToInt(gS_colorExploded[1])
 		gI_color[client][2] = StringToInt(gS_colorExploded[2])
 		gI_color[gI_partner[client]][0] = StringToInt(gS_colorExploded[0])
 		gI_color[gI_partner[client]][1] = StringToInt(gS_colorExploded[1])
 		gI_color[gI_partner[client]][2] = StringToInt(gS_colorExploded[2])
-		//PrintToServer("%i %i %i", gI_color[client][0], gI_color[client][1], gI_color[client][2])
-		//ExplodeString(
-		//StringToInt(])
-		//gI_randomInt[client][0] = GetRandomInt(0, 255)
-		//gI_randomInt[client][1] = GetRandomInt(0, 255)
-		//gI_randomInt[client][2] = GetRandomInt(0, 255)
-		//gI_randomInt[gI_partner[client]][0] = gI_randomInt[client][0]
-		//gI_randomInt[gI_partner[client]][1] = gI_randomInt[client][1]
-		//gI_randomInt[gI_partner[client]][2] = gI_randomInt[client][2]
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		gI_colorCount[client]++
@@ -876,8 +861,13 @@ void Restart(int client)
 				SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 2)
 				SetEntityRenderColor(gI_partner[client], 255, 255, 255, 125)
 				SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA)
+				gB_block[client] = false
+				gB_block[gI_partner[client]] = false
 				if(gB_TrikzMenuIsOpen[client])
+				{
+					gB_block[client] = false
 					Trikz(client)
+				}
 				CreateTimer(3.0, Timer_BlockToggle, client)
 			}
 		}
@@ -894,8 +884,13 @@ Action Timer_BlockToggle(Handle timer, int client)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		SetEntProp(gI_partner[client], Prop_Data, "m_CollisionGroup", 5)
 		SetEntityRenderMode(gI_partner[client], RENDER_NORMAL)
+		gB_block[client] = true
+		gB_block[gI_partner[client]] = true
 		if(gB_TrikzMenuIsOpen[client])
+		{
+			gB_block[client] = true
 			Trikz(client)
+		}
 	}
 	return Plugin_Stop
 }
