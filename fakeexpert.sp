@@ -41,7 +41,7 @@ bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
 bool gB_mapfinished[MAXPLAYERS + 1]
 bool gB_passDB
-bool gB_passDBzone[MAXPLAYERS + 1]
+bool gB_passZone[MAXPLAYERS + 1]
 float gF_vecStart[3]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyVel[MAXPLAYERS + 1][3]
@@ -1272,8 +1272,8 @@ Action SDKEndTouch(int entity, int other)
 		gB_mapfinished[gI_partner[other]] = false
 		gF_TimeStart[other] = GetEngineTime()
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
-		gB_passDBzone[other] = true
-		gB_passDBzone[gI_partner[other]] = true
+		gB_passZone[other] = true
+		gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
 		for(int i = 1; i <= 10; i++)
@@ -1288,7 +1288,7 @@ Action SDKEndTouch(int entity, int other)
 
 Action SDKStartTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && gB_passDBzone[other])
+	if(0 < other <= MaxClients && gB_passZone[other])
 	{
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
@@ -1300,7 +1300,7 @@ Action SDKStartTouch(int entity, int other)
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
 			gB_mapfinished[other] = true
-			gB_passDBzone[other] = false
+			gB_passZone[other] = false
 			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 			{
 				char sQuery[512]
