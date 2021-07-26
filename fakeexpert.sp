@@ -1134,6 +1134,7 @@ Action cmd_cpmaxs(int client, int args)
 		GetCmdArg(args, sCmd, 512)
 		int cpnum = StringToInt(sCmd)
 		GetClientAbsOrigin(client, gF_vecCP[1][cpnum])
+		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
 		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
 		gB_firstZoneCP = false
