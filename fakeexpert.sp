@@ -491,7 +491,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < other <= MaxClients && 0 < client <= MaxClients && (!(GetEntityFlags(other) & FL_ONGROUND) || GetGameTime() - gF_boostTime[client] > 0.15 || !gB_boost[client]))
+	if(0 < other <= MaxClients && 0 < client <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gB_boost[client])
 	{		
 		float vecAbsBooster[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
