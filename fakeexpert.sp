@@ -530,21 +530,21 @@ void SDKBoostFix(int client)
 		{
 			float vecVelEntity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-			//if(vecVelEntity[2] > 0.0)
+			if(vecVelEntity[2] > 0.0)
 			{
 				vecVelEntity[0] *= 0.135
 				vecVelEntity[1] *= 0.135
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
-				if(gB_groundBoost[client])
-				{
-					gF_vecVelBoostFix[client][2] *= 3.0
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-				}
-				else
-					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-				gB_boost[client] = false
 			}
+			if(gB_groundBoost[client])
+			{
+				gF_vecVelBoostFix[client][2] *= 3.0
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			}
+			else
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+			gB_boost[client] = false
 		}
 	}
 }
