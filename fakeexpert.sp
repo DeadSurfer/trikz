@@ -1554,7 +1554,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 	dp.Reset()
 	int earnedpoints = dp.ReadCell()
 	int clientid = dp.ReadCell()
-	int other = dp.ReadCell()
+	//int other = dp.ReadCell()
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
@@ -1570,7 +1570,7 @@ void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, D
 	dp.Reset()
 	int earnedpoints = dp.ReadCell()
 	int partnerid = dp.ReadCell()
-	int other = dp.ReadCell()
+	//int other = dp.ReadCell()
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
