@@ -1813,7 +1813,7 @@ Action timer_removePing(Handle timer, int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && IsClientInGame(other) && !gB_boost[other] && gI_entityFlags[other] != FL_ONGROUND)
+	if(0 < other <= MaxClients && IsClientInGame(other) && !gB_boost[other] && !(gI_entityFlags[other] & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
