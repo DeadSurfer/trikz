@@ -802,6 +802,11 @@ void Color(int client, bool customSkin)
 		//gI_colorCount[client]++
 		//for(; i < sizeof(gS_color), )
 		char gS_colorExploded[3][3]
+		if(gI_colorCount[client] == 9)
+		{
+			gI_colorCount[client] = 0
+			gI_colorCount[gI_partner[client]] = 0
+		}
 		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 2, 4) //https://forums.alliedmods.net/showthread.php?t=290529
 		gI_color[client][0] = StringToInt(gS_colorExploded[0])
 		gI_color[client][1] = StringToInt(gS_colorExploded[1])
