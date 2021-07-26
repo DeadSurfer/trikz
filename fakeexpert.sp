@@ -1208,6 +1208,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 
 void createcp(int cpnum)
 {
+	char sTriggerName[64]
+	Format(sTriggerName, 64, "fakeexpert_cp%i", cpnum)
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
