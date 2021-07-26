@@ -1365,22 +1365,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
-							ConVar CV_sourcetv = FindConVar("tv_enable")
-							bool isSourceTV = GetConVarBool(CV_sourcetv)
-							if(isSourceTV)
-							{
-								ServerCommand("tv_stoprecord")
-								char sOldFileName[256]
-								Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
-								char sNewFileName[256]
-								Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
-								RenameFile(sNewFileName, sOldFileName)
-								PrintToServer("SourceTV start recording.")
-								FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
-								FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
-								ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
-								gB_isServerRecord = false
-							}
+							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
 						}
 						else if(gF_ServerRecord < gF_Time[other] > gF_mateRecord[other])
 						{
@@ -1425,22 +1410,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
-							ConVar CV_sourcetv = FindConVar("tv_enable")
-							bool isSourceTV = GetConVarBool(CV_sourcetv)
-							if(isSourceTV)
-							{
-								ServerCommand("tv_stoprecord")
-								char sOldFileName[256]
-								Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
-								char sNewFileName[256]
-								Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
-								RenameFile(sNewFileName, sOldFileName)
-								PrintToServer("SourceTV start recording.")
-								FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
-								FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
-								ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
-								gB_isServerRecord = false
-							}
+							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
 						}
 						else
 						{
@@ -1532,6 +1502,26 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Record inserted.")
 }
 
+Action timer_sourcetv(Handle timer)
+{
+	ConVar CV_sourcetv = FindConVar("tv_enable")
+	bool isSourceTV = GetConVarBool(CV_sourcetv)
+	if(isSourceTV)
+	{
+		ServerCommand("tv_stoprecord")
+		char sOldFileName[256]
+		Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+		char sNewFileName[256]
+		Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+		RenameFile(sNewFileName, sOldFileName)
+		PrintToServer("SourceTV start recording.")
+		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
+		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
+		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
+		gB_isServerRecord = false
+	}
+}
+
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
@@ -1543,26 +1533,28 @@ void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any dat
 	{
 		int tier = results.FetchInt(0)
 		int points = tier * 20
-		DataPack dp2 = new DataPack()
-		dp2.WriteCell(points)
-		dp2.WriteCell(clientid)
-		dp2.WriteCell(other)
+		DataPack dp = new DataPack()
+		dp.WriteCell(points)
+		dp.WriteCell(clientid)
+		dp.WriteCell(other)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", clientid)
-		gD_mysql.Query(SQLGetPoints, sQuery, dp2)
-		DataPack dp3 = new DataPack()
-		dp3.WriteCell(points)
-		dp3.WriteCell(partnerid)
+		gD_mysql.Query(SQLGetPoints, sQuery, dp)
+		DataPack dp2 = new DataPack()
+		dp2.WriteCell(points)
+		dp2.WriteCell(partnerid)
+		dp2.WriteCell(other)
 		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partnerid)
 		gD_mysql.Query(SQLGetPointsPartner, sQuery, dp2)
 	}
 }
 
-void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp2)
+void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp2.Reset()
-	int earnedpoints = dp2.ReadCell()
-	int clientid = dp2.ReadCell()
+	dp.Reset()
+	int earnedpoints = dp.ReadCell()
+	int clientid = dp.ReadCell()
+	int other = dp.ReadCell()
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
@@ -1570,21 +1562,22 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack
 		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, clientid)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
 		//PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
-		//PrintToChat(gI_partner[other], "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
 	}
 }
 
-void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, DataPack dp3)
+void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp3.Reset()
-	int earnedpoints = dp3.ReadCell()
-	int partnerid = dp3.ReadCell()
+	dp.Reset()
+	int earnedpoints = dp.ReadCell()
+	int partnerid = dp.ReadCell()
+	int other = dp.ReadCell()
 	if(results.FetchRow())
 	{
 		int points = results.FetchInt(0)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, partnerid)
 		gD_mysql.Query(SQLEarnedPoints, sQuery)
+		//PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
 	}
 }
 
