@@ -798,26 +798,8 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		if(gI_class[client] == 1)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[1])
-		}
-		if(gI_class[client] == 2)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[2])
-		}
-		if(gI_class[client] == 3)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[3])
-		}
-		if(gI_class[client] == 4)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[4])
-		}
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		SetEntProp(client, Prop_Data, "m_nSkin", 1)
 		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
 		gI_randomInt[client][0] = GetRandomInt(0, 255)
@@ -833,26 +815,8 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = false
 		gB_color[gI_partner[client]] = false
-		if(gI_class[client] == 1)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[1])
-		}
-		if(gI_class[client] == 2)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[2])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[2])
-		}
-		if(gI_class[client] == 3)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[3])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[3])
-		}
-		if(gI_class[client] == 4)
-		{
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[4])
-		}
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
+		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 		SetEntityRenderColor(client, 255, 255, 255, 255)
 		SetEntityRenderColor(gI_partner[client], 255, 255, 255, 255)
 	}
@@ -916,14 +880,6 @@ Action Timer_BlockToggle(Handle timer, int client)
 
 void createstart()
 {
-	char sTriggerName2[64]
-	int index
-	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
-	{
-		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
-		if(StrEqual(sTriggerName2, "fakeexpert_startzone"))
-			return
-	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
@@ -964,14 +920,6 @@ void createstart()
 
 void createend()
 {
-	char sTriggerName2[64]
-	int index
-	while((index = FindEntityByClassname(index, "trigger_multiple")) != -1) //https://forums.alliedmods.net/showthread.php?t=290655
-	{
-		GetEntPropString(index, Prop_Data, "m_iName", sTriggerName2, 64)
-		if(StrEqual(sTriggerName2, "fakeexpert_endzone"))
-			return
-	}
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
@@ -1247,7 +1195,6 @@ void createcp(int cpnum)
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
 	DispatchKeyValue(entity, "targetname", sTriggerName)
-	//ActivateEntity(entity)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
@@ -1279,14 +1226,12 @@ void createcp(int cpnum)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	//PrintToServer("entity end: %i created", entity)
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
 }
 
 Action cmd_createusers(int args)
 {
 	char sQuery[512]
-	//Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, geoipcode2 VARCHAR(64), firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))")
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateUserTable, sQuery)
 }
