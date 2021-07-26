@@ -1921,7 +1921,7 @@ Action SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 	if(!IsValidEntity(entity) || !IsPlayerAlive(client))
-		return
+		return Plugin_Continue
 	SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
 	gB_silentKnife = true
 	FakeClientCommand(client, "use weapon_knife")
@@ -1929,6 +1929,7 @@ Action SDKProjectile(int entity)
 	ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
 	CreateTimer(1.5, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+	return Plugin_Continue
 }
 
 void SDKProjectilePost(int entity)
