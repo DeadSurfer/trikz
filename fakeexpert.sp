@@ -62,7 +62,6 @@ ConVar gCV_steamid
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
 float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
-int gI_entityFlags[MAXPLAYERS + 1]
 bool gB_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
@@ -1698,7 +1697,6 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	gI_entityFlags[client] = GetEntityFlags(client)
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
