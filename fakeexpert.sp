@@ -1001,7 +1001,7 @@ Action cmd_vecminsend(int client, int args)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		GetClientAbsOrigin(client, gF_vecStartZone[1])
-		gB_firstZone[1] = true
+		gB_zoneFirst[1] = true
 	}
 	return Plugin_Handled
 }
