@@ -815,8 +815,8 @@ void Color(int client, bool customSkin)
 		//gI_randomInt[gI_partner[client]][0] = gI_randomInt[client][0]
 		//gI_randomInt[gI_partner[client]][1] = gI_randomInt[client][1]
 		//gI_randomInt[gI_partner[client]][2] = gI_randomInt[client][2]
-		SetEntityRenderColor(client, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
-		SetEntityRenderColor(gI_partner[client], gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
+		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+		SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		gI_colorCount[client]++
 	}
 	else
@@ -1798,7 +1798,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 			}
 			if(gB_color[client])
-				SetEntityRenderColor(gI_pingModel[client], gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
+				SetEntityRenderColor(gI_pingModel[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
 			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
@@ -2004,7 +2004,7 @@ void SDKProjectilePost(int entity)
 		{
 			SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
 			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
-			SetEntityRenderColor(entity, gI_randomInt[client][0], gI_randomInt[client][1], gI_randomInt[client][2], 255)
+			SetEntityRenderColor(entity, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		}
 	}
 }
