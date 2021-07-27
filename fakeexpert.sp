@@ -1858,7 +1858,7 @@ Action timer_draw(Handle timer)
 	TE_SendToAll()
 	TE_SetupBeamPoints(corners[11][3], corners[11][0], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 	TE_SendToAll()
-	return Plugin_Stop
+	//return Plugin_Stop
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
