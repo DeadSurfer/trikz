@@ -1295,7 +1295,7 @@ void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any 
 Action cmd_createrecords(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, completions INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, map VARCHAR(192), date INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, completions INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, map VARCHAR(192), date INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
@@ -1481,6 +1481,11 @@ Action SDKStartTouch(int entity, int other)
 				gB_cp[i][other] = true
 				if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
 				{
+					if(!gB_cpLock[1][other] && gF_mateRecord[other])
+					{
+						Format(sQuery, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, playerid, partnerid, gS_map)
+						gD_mysql.Query(SQLSetTries, sQuery)
+					}
 					gB_cpLock[i][other] = true
 					gB_cpLock[i][gI_partner[other]] = true
 					gF_TimeCP[i][other] = gF_Time[other]
@@ -1645,6 +1650,10 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 		PrintToChat(other, "%i. Checkpoint: +00:00:00", cpnum)
 		PrintToChat(gI_partner[other], "%i. Checkpoint: +00:00:00", cpnum)
 	}
+}
+
+void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 Action cmd_createzones(int args)
