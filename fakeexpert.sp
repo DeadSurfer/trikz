@@ -499,7 +499,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < other <= MaxClients && 0 < client <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gB_boost[client])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetEntityFlags(other) & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gB_boost[client])
 	{		
 		float vecAbsBooster[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
@@ -665,8 +665,10 @@ Action Block(int client)
 	{
 
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-		SetEntityRenderMode(client, RENDER_TRANSALPHA)
-		SetEntityRenderColor(client, 255, 255, 255, 125)
+		if(gB_color[client])
+			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
+		else
+			SetEntityRenderColor(client, 255, 255, 255, 125)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block disabled.")
@@ -865,7 +867,10 @@ void Restart(int client)
 				TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 				SetEntityRenderMode(client, RENDER_TRANSALPHA)
-				SetEntityRenderColor(client, 255, 255, 255, 125)
+				if(gB_color[client])
+					SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
+				else
+					SetEntityRenderColor(client, 255, 255, 255, 125)
 				gB_block[client] = false
 				if(gB_TrikzMenuIsOpen[client])
 				{
@@ -1932,7 +1937,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 			SetEntityRenderMode(client, RENDER_TRANSALPHA)
-			SetEntityRenderColor(client, 255, 255, 255, 125)
+			if(gB_color[client])
+				SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
+			else
+				SetEntityRenderColor(client, 255, 255, 255, 125)
 			if(gB_TrikzMenuIsOpen[client])
 				Trikz(client)
 		}
