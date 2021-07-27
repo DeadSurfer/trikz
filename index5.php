@@ -252,6 +252,7 @@
 				<th>Team</th>
 				<th><center>Time</center></th>
 				<th><center>Completions</center></th>
+				<th><center>Tries</center></th>
 				<!--<th>Map</th>-->
 				<th><center>Date</center></th>
 			</tr>
@@ -343,7 +344,7 @@
 					$formatedDateYmd = date("Y-m-d", (int)$row[date]);
 					$formatedDateHis = date("H:i:s", (int)$row[date]);
 					//if($count == 1)
-						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//else
 					//https://www.w3schools.com/html/html_colors.asp
 					//https://www.tutorialspoint.com/html/html_colors.htm
