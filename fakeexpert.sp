@@ -1229,8 +1229,9 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gF_vecCP[1][data][1] = results.FetchFloat(4)
 		gF_vecCP[1][data][2] = results.FetchFloat(5)
 		createcp(data)
+		if(!gB_haveZone)
+			CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 		gB_haveZone = true
-		CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
 
