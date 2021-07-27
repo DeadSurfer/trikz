@@ -1728,7 +1728,7 @@ Action timer_draw(Handle timer)
 	end[1] = gF_vecStartZone[1][1]
 	end[2] = gF_vecStartZone[1][2]
 	end[2] += 5.0
-	TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
+	TE_SetupBeamPoints(start, end, 0, gI_zoneStart, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
 	TE_SendToAll()
 	//return Plugin_Stop
 }
