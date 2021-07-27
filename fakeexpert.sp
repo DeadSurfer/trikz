@@ -1756,12 +1756,12 @@ Action timer_draw(Handle timer)
 		//bottom right back
 		corners[i][2][0] = end[i][0]
 		corners[i][2][1] = end[i][1]
-		corners[i][2] = start[i][2] += 5.0
+		corners[i][2][2] = start[i][2] += 5.0
 		//corners[2][2]
 		//bottom left back
-		corners[i][0] = start[i][0]
-		corners[i][1] = start[i][1]
-		corners[i][2] = end[i][2] += 5.0
+		corners[i][0][0] = start[i][0]
+		corners[i][1][1] = start[i][1]
+		corners[i][2][2] = end[i][2] += 5.0
 		//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
 		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
