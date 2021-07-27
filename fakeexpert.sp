@@ -1845,17 +1845,33 @@ Action timer_draw(Handle timer)
 		TE_SendToAll()
 		TE_SetupBeamPoints(cornersEnd[3], cornersEnd[0], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)*/
 		//}
-		for(int j = 0; j <= 2; j++)
-		{
-			TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[j], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-			TE_SendToAll()
-			TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[j], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-			TE_SendToAll()
-			TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[j], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-			TE_SendToAll()
-			TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[j], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-			TE_SendToAll()
-		}
+		//for(int j = 0; j <= 2; j++)
+		//{
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		//}
 	}
 	//return Plugin_Stop
 }
