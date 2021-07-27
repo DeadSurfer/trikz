@@ -104,6 +104,7 @@ int gI_color[MAXPLAYERS + 1][3]
 int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneStart
+int gI_zoneEnd
 
 public Plugin myinfo =
 {
@@ -185,6 +186,7 @@ public void OnMapStart()
 	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
 	gI_zoneStart = PrecacheModel("materials/fakeexpert/zones/start.vmt")
+	gI_zoneEnd = PrecacheModel("materials/fakeexpert/zones/finish.vmt")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
