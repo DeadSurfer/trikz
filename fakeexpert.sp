@@ -1718,6 +1718,14 @@ Action cmd_draw(int client, int args)
 
 Action timer_draw(Handle timer)
 {
+	float start[3]
+	float end[3]
+	start[0] = gF_vecStartZone[0][0]
+	start[1] = gF_vecStartZone[0][1]
+	start[2] = gF_vecStartZone[0][2] += 5.0
+	end[0] = gF_vecStartZone[1][0]
+	end[1] = gF_vecStartZone[1][1]
+	end[2] = gF_vecStartZone[1][2] += 5.0
 	TE_SetupBeamPoints(gF_vecStartZone[0], gF_vecStartZone[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
 	TE_SendToAll()
 	//return Plugin_Stop
