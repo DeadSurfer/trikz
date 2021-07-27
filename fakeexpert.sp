@@ -1732,35 +1732,35 @@ Action timer_draw(Handle timer)
 	end[1] = gF_vecStartZone[1][1]
 	end[2] = gF_vecStartZone[1][2]
 	end[2] += 5.0*/
-	start[0][0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
-	start[0][1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	start[0][2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
-	start[0][2] += 5.0
-	end[0][0] = (gF_vecStartZone[0][0] > gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
-	end[0][1] = (gF_vecStartZone[0][1] > gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	end[0][2] = (gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
-	end[0][2] += 5.0
-	start[1][0] = (gF_vecEndZone[0][0] < gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
-	start[1][1] = (gF_vecEndZone[0][1] < gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
-	start[1][2] = (gF_vecEndZone[0][2] < gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
-	start[1][2] += 5.0
-	end[1][0] = (gF_vecEndZone[0][0] > gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
-	end[1][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
-	end[1][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
-	end[1][2] += 5.0
-	for(int i = 2; i <= 12; i++)
+	start[11][0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
+	start[11][1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
+	start[11][2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	start[11][2] += 5.0
+	end[11][0] = (gF_vecStartZone[0][0] > gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
+	end[11][1] = (gF_vecStartZone[0][1] > gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
+	end[11][2] = (gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	end[11][2] += 5.0
+	start[12][0] = (gF_vecEndZone[0][0] < gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
+	start[12][1] = (gF_vecEndZone[0][1] < gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
+	start[12][2] = (gF_vecEndZone[0][2] < gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	start[12][2] += 5.0
+	end[12][0] = (gF_vecEndZone[0][0] > gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
+	end[12][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
+	end[12][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	end[12][2] += 5.0
+	for(int i = 1; i <= 10; i++)
 	{
-		for(int j = 1; j <= 10; j++)
-		{
-			start[i][0] = (gF_vecCP[0][j][0] < gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
-			start[i][1] = (gF_vecCP[0][j][1] < gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
-			start[i][2] = (gF_vecCP[0][j][2] < gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
-			start[i][2] += 5.0
-			end[i][0] = (gF_vecCP[0][j][0] > gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
-			end[i][1] = (gF_vecCP[0][j][1] > gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
-			end[i][2] = (gF_vecCP[0][j][2] > gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
-			end[i][2] += 5.0
-		}
+		//for(int j = 1; j <= 10; j++)
+		//{
+		start[i][0] = (gF_vecCP[0][j][0] < gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
+		start[i][1] = (gF_vecCP[0][j][1] < gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
+		start[i][2] = (gF_vecCP[0][j][2] < gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
+		start[i][2] += 5.0
+		end[i][0] = (gF_vecCP[0][j][0] > gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
+		end[i][1] = (gF_vecCP[0][j][1] > gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
+		end[i][2] = (gF_vecCP[0][j][2] > gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
+		end[i][2] += 5.0
+		//}
 	}
 	/*float cornersStart[8][3]
 	//bottom left front
@@ -1809,7 +1809,7 @@ Action timer_draw(Handle timer)
 	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
 	float corners[13][8][3]
 	//bottom left front
-	for(int i = 0; i <= 12; i++)
+	for(int i = 1; i <= 10; i++)
 	{
 		corners[i][0][0] = start[i][0]
 		corners[i][0][1] = start[i][1]
@@ -1829,32 +1829,17 @@ Action timer_draw(Handle timer)
 		corners[i][3][0] = start[i][0]
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
-		/*TE_SetupBeamPoints(cornersStart[0], cornersStart[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(cornersStart[1], cornersStart[2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(cornersStart[2], cornersStart[3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(cornersStart[3], cornersStart[0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(cornersEnd[0], cornersEnd[1], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(cornersEnd[1], cornersEnd[2], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(cornersEnd[2], cornersEnd[3], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(cornersEnd[3], cornersEnd[0], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)*/
-		//}
-		//for(int j = 0; j <= 2; j++)
-		//{
-		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
+	}
+	for(int i = 11; i <= 12; i++)
+	{
 		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
 		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
@@ -1863,13 +1848,13 @@ Action timer_draw(Handle timer)
 		TE_SendToAll()
 		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
 		//}
 	}
