@@ -103,8 +103,6 @@ char gS_color[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,
 int gI_color[MAXPLAYERS + 1][3]
 int gI_colorCount[MAXPLAYERS + 1]
 
-//int gI_zoneStart
-//int gI_zoneEnd
 int gI_zoneModel[3]
 
 public Plugin myinfo =
@@ -129,7 +127,6 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_time", cmd_time)
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
-	//RegConsoleCmd("sm_draw", cmd_draw)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -152,9 +149,6 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
-	//gI_beam = PrecacheModel("materials/sprites/tp_beam001")
-	//gI_beam = PrecacheModel("sprites/laserbeam.vmt", true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L657-L658
-	//gI_halo = PrecacheModel("sprites/glow01.vmt", true)
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
 	for(int i = 0; i <= 1; i++)
@@ -660,8 +654,8 @@ Action Block(int client)
 	gB_block[client] = !gB_block[client]
 	if(gB_block[client])
 	{
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		SetEntityRenderMode(client, RENDER_NORMAL)
+		//SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+		//SetEntityRenderMode(client, RENDER_NORMAL)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block enabled.")
@@ -670,8 +664,8 @@ Action Block(int client)
 	else
 	{
 
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-		SetEntityRenderMode(client, RENDER_TRANSALPHA)
+		//SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		//SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, 255, 255, 255, 125)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
@@ -1164,9 +1158,7 @@ Action cmd_cpmins(int client, int args)
 void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
-	{
 		PrintToServer("Checkpoint zone no. %i successfuly deleted.")
-	}
 }
 
 Action cmd_cpmaxs(int client, int args)
@@ -1721,14 +1713,6 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("Zones table is successfuly created.")
 }
 
-//Action cmd_draw(int client, int args)
-//{
-	//CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
-	//GetClientsInRange(
-	//TE_SendToAllInRange(
-	//return Plugin_Handled
-//}
-
 Action timer_draw(Handle timer)
 {
 	float start[13][3]
@@ -1760,51 +1744,7 @@ Action timer_draw(Handle timer)
 		end[i][2] = (gF_vecCP[0][i][2] > gF_vecCP[1][i][2]) ? gF_vecCP[0][i][2] : gF_vecCP[1][i][2]
 		end[i][2] += 5.0
 	}
-	/*float cornersStart[8][3]
-	//bottom left front
-	for(int i = 0; i <= 2; i++)
-	{
-	cornersStart[0][0] = start[0][0]
-	cornersStart[0][1] = start[0][1]
-	cornersStart[0][2] = start[0][2]
-	//corners[0][2] += 5.0
-	//bottom right front
-	cornersStart[1][0] = end[0][0]
-	cornersStart[1][1] = start[0][1]
-	cornersStart[1][2] = start[0][2]
-	//corners[1][2] += 5.0
-	//bottom right back
-	cornersStart[2][0] = end[0][0]
-	cornersStart[2][1] = end[0][1]
-	cornersStart[2][2] = start[0][2]
-	//corners[2][2]
-	//bottom left back
-	cornersStart[3][0] = start[0][0]
-	cornersStart[3][1] = end[0][1]
-	cornersStart[3][2] = start[0][2]
-	float cornersEnd[8][3]
-	//bottom left front
-	//for(int i = 0; i <= 2; i++)
-	//{
-	cornersEnd[0][0] = start[1][0]
-	cornersEnd[0][1] = start[1][1]
-	cornersEnd[0][2] = start[1][2]
-	//corners[0][2] += 5.0
-	//bottom right front
-	cornersEnd[1][0] = end[1][0]
-	cornersEnd[1][1] = start[1][1]
-	cornersEnd[1][2] = start[1][2]
-	//corners[1][2] += 5.0
-	//bottom right back
-	cornersEnd[2][0] = end[1][0]
-	cornersEnd[2][1] = end[1][1]
-	cornersEnd[2][2] = start[1][2]
-	//corners[2][2]
-	//bottom left back
-	cornersEnd[3][0] = start[1][0]
-	cornersEnd[3][1] = end[1][1]
-	cornersEnd[3][2] = start[1][2]*/ //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
-	float corners[13][8][3]
+	float corners[13][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
 	for(int i = 1; i <= 10; i++)
 	{
 		//bottom left front
@@ -1851,14 +1791,6 @@ Action timer_draw(Handle timer)
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
 	}
-	TE_SetupBeamPoints(corners[12][0], corners[12][1], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[12][1], corners[12][2], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[12][2], corners[12][3], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[12][3], corners[12][0], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
 	TE_SetupBeamPoints(corners[11][0], corners[11][1], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 	TE_SendToAll()
 	TE_SetupBeamPoints(corners[11][1], corners[11][2], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
@@ -1867,7 +1799,14 @@ Action timer_draw(Handle timer)
 	TE_SendToAll()
 	TE_SetupBeamPoints(corners[11][3], corners[11][0], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 	TE_SendToAll()
-	//return Plugin_Stop
+	TE_SetupBeamPoints(corners[12][0], corners[12][1], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SendToAll()
+	TE_SetupBeamPoints(corners[12][1], corners[12][2], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SendToAll()
+	TE_SetupBeamPoints(corners[12][2], corners[12][3], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SendToAll()
+	TE_SetupBeamPoints(corners[12][3], corners[12][0], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SendToAll()
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -1965,6 +1904,24 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
 			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
+		}
+	}
+	if(IsPlayerAlive(client))
+	{
+		if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
+		{
+			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+			SetEntityRenderMode(client, RENDER_NORMAL)
+			if(gB_TrikzMenuIsOpen[client])
+				Trikz(client)
+		}
+		else if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+		{
+			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+			SetEntityRenderMode(client, RENDER_TRANSALPHA)
+			SetEntityRenderColor(client, 255, 255, 255, 125)
+			if(gB_TrikzMenuIsOpen[client])
+				Trikz(client)
 		}
 	}
 }
