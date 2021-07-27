@@ -1915,7 +1915,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_TrikzMenuIsOpen[client])
 				Trikz(client)
 		}
-		else if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+		else if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 		{
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 			SetEntityRenderMode(client, RENDER_TRANSALPHA)
