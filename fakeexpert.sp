@@ -1718,8 +1718,8 @@ Action cmd_draw(int client, int args)
 
 Action timer_draw(Handle timer)
 {
-	float start[3]
-	float end[3]
+	float start[3][3]
+	float end[3][3]
 	/*start[0] = gF_vecStartZone[0][0]
 	start[1] = gF_vecStartZone[0][1]
 	start[2] = gF_vecStartZone[0][2]
@@ -1728,23 +1728,46 @@ Action timer_draw(Handle timer)
 	end[1] = gF_vecStartZone[1][1]
 	end[2] = gF_vecStartZone[1][2]
 	end[2] += 5.0*/
-	start[0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
-	start[1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	start[2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
-	end[0] = (gF_vecStartZone[0][0] > gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
-	end[1] = (gF_vecStartZone[0][1] > gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	end[2] = (gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
-	float corners[8][3]
+	start[0][0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
+	start[0][1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
+	start[0][2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	end[0][0] = (gF_vecStartZone[0][0] > gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
+	end[0][1] = (gF_vecStartZone[0][1] > gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
+	end[0][2] = (gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	start[1][0] = (gF_vecEndZone[0][0] < gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
+	start[1][1] = (gF_vecEndZone[0][1] < gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
+	start[1][2] = (gF_vecEndZone[0][2] < gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	end[1][0] = (gF_vecEndZone[0][0] > gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
+	end[1][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
+	end[1][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	float corners[3][8][3]
 	//bottom left front
-	corners[0][0] = start[0]
-	corners[0][1] = start[1]
-	corners[0][2] = start[2]
-	//bottom right front
-	corners[1][0] = end[0]
-	corners[1][1] = start[1]
-	corners[1][2] = start[2]
-	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
-	TE_SetupBeamPoints(corners[0], corners[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	for(int i = 0; i <= 2; i++)
+	{
+		corners[i][0][0] = start[i][0]
+		corners[i][0][1] = start[i][1]
+		corners[i][0][2] = start[i][2] += 5.0
+		//corners[0][2] += 5.0
+		//bottom right front
+		corners[i][1][0] = end[i][0]
+		corners[i][1][1] = start[i][1]
+		corners[i][1][2] = start[i][2] += 5.0
+		//corners[1][2] += 5.0
+		//bottom right back
+		corners[i][2][0] = end[i][0]
+		corners[i][2][1] = end[i][1]
+		corners[i][2] = start[i][2] += 5.0
+		//corners[2][2]
+		//bottom left back
+		corners[i][0] = start[i][0]
+		corners[i][1] = start[i][1]
+		corners[i][2] = end[i][2] += 5.0
+		//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	}
 	TE_SendToAll()
 	//return Plugin_Stop
 }
