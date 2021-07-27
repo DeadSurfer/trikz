@@ -636,7 +636,10 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 		case MenuAction_Cancel:
+		{
+			PrintToServer("cancel")
 			gB_TrikzMenuIsOpen[param1] = false
+		}
 		case MenuAction_Display:
 			gB_TrikzMenuIsOpen[param1] = true
 		case MenuAction_End:
