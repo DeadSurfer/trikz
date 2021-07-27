@@ -1344,11 +1344,11 @@ Action SDKStartTouch(int entity, int other)
 		{
 			gB_mapfinished[other] = true
 			gB_passZone[other] = false
-			char sQuery[512]
-			int playerid = GetSteamAccountID(other)
-			int partnerid = GetSteamAccountID(gI_partner[other])
 			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
 			{
+				char sQuery[512]
+				int playerid = GetSteamAccountID(other)
+				int partnerid = GetSteamAccountID(gI_partner[other])
 				char sCPnum[32]
 				int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 				int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
@@ -1482,6 +1482,9 @@ Action SDKStartTouch(int entity, int other)
 				gB_cp[i][other] = true
 				if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
 				{
+					char sQuery[512]
+					int playerid = GetSteamAccountID(other)
+					int partnerid = GetSteamAccountID(gI_partner[other])
 					if(!gB_cpLock[1][other] && gF_mateRecord[other])
 					{
 						Format(sQuery, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, playerid, partnerid, gS_map)
