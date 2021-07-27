@@ -103,6 +103,8 @@ char gS_color[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,
 int gI_color[MAXPLAYERS + 1][3]
 int gI_colorCount[MAXPLAYERS + 1]
 
+int gI_zoneStart
+
 public Plugin myinfo =
 {
 	name = "trikz + timer",
@@ -125,6 +127,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_time", cmd_time)
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
+	RegConsoleCmd("sm_draw", cmd_draw)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -132,10 +135,10 @@ public void OnPluginStart()
 	RegServerCmd("sm_createusers", cmd_createusers)
 	RegServerCmd("sm_createrecords", cmd_createrecords)
 	RegServerCmd("sm_createcp", cmd_createcp)
-	RegConsoleCmd("sm_vecmins", cmd_vecmins)
-	RegConsoleCmd("sm_vecmaxs", cmd_vecmaxs)
-	RegConsoleCmd("sm_vecminsend", cmd_vecminsend)
-	RegConsoleCmd("sm_vecmaxsend", cmd_vecmaxsend)
+	RegConsoleCmd("sm_startmins", cmd_startmins)
+	RegConsoleCmd("sm_startmaxs", cmd_startmaxs)
+	RegConsoleCmd("sm_endmins", cmd_endmins)
+	RegConsoleCmd("sm_endmaxs", cmd_endmaxs)
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
@@ -181,6 +184,7 @@ public void OnMapStart()
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
 	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
+	gI_zoneStart = PrecacheModel("materials/fakeexpert/zones/start.vmt")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
@@ -898,9 +902,9 @@ void createstart()
 	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vecEndZone[0][0] + gF_vecStartZone[0][0]) / 2.0
-	center[1] = (gF_vecEndZone[0][1] + gF_vecStartZone[0][1]) / 2.0
-	center[2] = (gF_vecEndZone[0][2] + gF_vecStartZone[0][2]) / 2.0
+	center[0] = (gF_vecStartZone[0][0] + gF_vecStartZone[1][0]) / 2.0
+	center[1] = (gF_vecStartZone[0][1] + gF_vecStartZone[1][1]) / 2.0
+	center[2] = (gF_vecStartZone[0][2] + gF_vecStartZone[1][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	gF_vecStart[0] = center[0]
 	gF_vecStart[1] = center[1]
@@ -908,14 +912,14 @@ void createstart()
 	float mins[3]
 	for(int i = 0; i <= 1; i++)
 	{
-		mins[i] = (gF_vecStartZone[0][i] - gF_vecEndZone[0][i]) / 2.0
+		mins[i] = (gF_vecStartZone[0][i] - gF_vecStartZone[1][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
 	}
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
-		maxs[i] = (gF_vecStartZone[0][i] - gF_vecEndZone[0][i]) / 2.0
+		maxs[i] = (gF_vecStartZone[0][i] - gF_vecStartZone[1][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
@@ -938,14 +942,14 @@ void createend()
 	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vecEndZone[1][0] + gF_vecStartZone[1][0]) / 2
-	center[1] = (gF_vecEndZone[1][1] + gF_vecStartZone[1][1]) / 2
-	center[2] = (gF_vecEndZone[1][2] + gF_vecStartZone[1][2]) / 2
+	center[0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2
+	center[1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2
+	center[2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	for(int i = 0; i <= 1; i++)
 	{
-		mins[i] = (gF_vecStartZone[1][i] - gF_vecEndZone[1][i]) / 2.0
+		mins[i] = (gF_vecEndZone[0][i] - gF_vecEndZone[1][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
 	}
@@ -953,7 +957,7 @@ void createend()
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
-		maxs[i] = (gF_vecStartZone[1][i] - gF_vecEndZone[1][i]) / 2.0
+		maxs[i] = (gF_vecEndZone[0][i] - gF_vecEndZone[1][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
@@ -964,7 +968,7 @@ void createend()
 	CPSetup()
 }
 
-Action cmd_vecmins(int client, int args)
+Action cmd_startmins(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
@@ -1015,7 +1019,7 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 {
 }
 
-Action cmd_vecminsend(int client, int args)
+Action cmd_endmins(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
@@ -1026,7 +1030,7 @@ Action cmd_vecminsend(int client, int args)
 	{
 		if(gB_isDevmap)
 		{
-			GetClientAbsOrigin(client, gF_vecStartZone[1])
+			GetClientAbsOrigin(client, gF_vecEndZone[0])
 			gB_zoneFirst[1] = true
 		}
 		else
@@ -1083,7 +1087,7 @@ void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any da
 		PrintToServer("End zone successfuly created.")
 }
 
-Action cmd_vecmaxs(int client, int args)
+Action cmd_startmaxs(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
@@ -1101,7 +1105,7 @@ Action cmd_vecmaxs(int client, int args)
 	return Plugin_Handled
 }
 
-Action cmd_vecmaxsend(int client, int args)
+Action cmd_endmaxs(int client, int args)
 {
 	int steamid = GetSteamAccountID(client)
 	char sCurrentSteamID[64]
@@ -1672,9 +1676,9 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 		gF_vecStartZone[0][0] = results.FetchFloat(0)
 		gF_vecStartZone[0][1] = results.FetchFloat(1)
 		gF_vecStartZone[0][2] = results.FetchFloat(2)
-		gF_vecEndZone[0][0] = results.FetchFloat(3)
-		gF_vecEndZone[0][1] = results.FetchFloat(4)
-		gF_vecEndZone[0][2] = results.FetchFloat(5)
+		gF_vecStartZone[1][0] = results.FetchFloat(3)
+		gF_vecStartZone[1][1] = results.FetchFloat(4)
+		gF_vecStartZone[1][2] = results.FetchFloat(5)
 		createstart()
 		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 		PrintToServer("Start zone is successfuly setup.")
@@ -1688,9 +1692,9 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 {
 	if(results.FetchRow())
 	{
-		gF_vecStartZone[1][0] = results.FetchFloat(0)
-		gF_vecStartZone[1][1] = results.FetchFloat(1)
-		gF_vecStartZone[1][2] = results.FetchFloat(2)
+		gF_vecEndZone[0][0] = results.FetchFloat(0)
+		gF_vecEndZone[0][1] = results.FetchFloat(1)
+		gF_vecEndZone[0][2] = results.FetchFloat(2)
 		gF_vecEndZone[1][0] = results.FetchFloat(3)
 		gF_vecEndZone[1][1] = results.FetchFloat(4)
 		gF_vecEndZone[1][2] = results.FetchFloat(5)
@@ -1702,6 +1706,15 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("Zones table is successfuly created.")
+}
+
+Action cmd_draw(int client, int args)
+{
+	//GetClientsInRange(
+	//TE_SendToAllInRange(
+	TE_SetupBeamPoints(gF_vecStartZone[0], gF_vecStartZone[1], gI_zoneStart)
+	TE_SendToAll()
+	return Plugin_Handled
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
