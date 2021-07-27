@@ -266,6 +266,10 @@ public void OnMapStart()
 	
 	AddFileToDownloadsTable("materials/fakeexpert/player/unlit_default.vmt")
 	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
+	
+	AddFileToDownloadsTable("materials/fakeexpert/zones/start.vmt")
+	AddFileToDownloadsTable("materials/fakeexpert/zones/finish.vmt")
+	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vmt")
 }
 
 public void OnMapEnd()
@@ -1223,6 +1227,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gF_vecCP[1][data][2] = results.FetchFloat(5)
 		createcp(data)
 		gB_haveZone = true
+		CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
 
@@ -1712,13 +1717,13 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("Zones table is successfuly created.")
 }
 
-Action cmd_draw(int client, int args)
-{
-	CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+//Action cmd_draw(int client, int args)
+//{
+	//CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 	//GetClientsInRange(
 	//TE_SendToAllInRange(
-	return Plugin_Handled
-}
+	//return Plugin_Handled
+//}
 
 Action timer_draw(Handle timer)
 {
