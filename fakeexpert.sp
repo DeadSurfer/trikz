@@ -934,6 +934,7 @@ void createstart()
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
+	PrintToServer("Start zone is successfuly setup.")
 }
 
 void createend()
@@ -970,6 +971,7 @@ void createend()
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	PrintToServer("End zone is successfuly setup.")
 	CPSetup()
 }
 
@@ -1222,8 +1224,10 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gF_vecCP[1][data][2] = results.FetchFloat(5)
 		createcp(data)
 		if(!gB_haveZone)
+		{
 			CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
-		gB_haveZone = true
+			gB_haveZone = true
+		}
 	}
 }
 
@@ -1685,8 +1689,6 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 		gF_vecStartZone[1][1] = results.FetchFloat(4)
 		gF_vecStartZone[1][2] = results.FetchFloat(5)
 		createstart()
-		//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-		PrintToServer("Start zone is successfuly setup.")
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
 		gD_mysql.Query(SQLSetZoneEnd, sQuery)
@@ -1703,7 +1705,6 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 		gF_vecEndZone[1][0] = results.FetchFloat(3)
 		gF_vecEndZone[1][1] = results.FetchFloat(4)
 		gF_vecEndZone[1][2] = results.FetchFloat(5)
-		PrintToServer("End zone is successfuly setup.")
 		createend()
 	}
 }
