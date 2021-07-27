@@ -1724,14 +1724,6 @@ Action timer_draw(Handle timer)
 {
 	float start[13][3]
 	float end[13][3]
-	/*start[0] = gF_vecStartZone[0][0]
-	start[1] = gF_vecStartZone[0][1]
-	start[2] = gF_vecStartZone[0][2]
-	start[2] += 5.0
-	end[0] = gF_vecStartZone[1][0]
-	end[1] = gF_vecStartZone[1][1]
-	end[2] = gF_vecStartZone[1][2]
-	end[2] += 5.0*/
 	start[11][0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
 	start[11][1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
 	start[11][2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
@@ -1750,8 +1742,6 @@ Action timer_draw(Handle timer)
 	end[12][2] += 5.0
 	for(int i = 1; i <= 10; i++)
 	{
-		//for(int j = 1; j <= 10; j++)
-		//{
 		start[i][0] = (gF_vecCP[0][i][0] < gF_vecCP[1][i][0]) ? gF_vecCP[0][i][0] : gF_vecCP[1][i][0]
 		start[i][1] = (gF_vecCP[0][i][1] < gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
 		start[i][2] = (gF_vecCP[0][i][2] < gF_vecCP[1][i][2]) ? gF_vecCP[0][i][2] : gF_vecCP[1][i][2]
@@ -1760,7 +1750,6 @@ Action timer_draw(Handle timer)
 		end[i][1] = (gF_vecCP[0][i][1] > gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
 		end[i][2] = (gF_vecCP[0][i][2] > gF_vecCP[1][i][2]) ? gF_vecCP[0][i][2] : gF_vecCP[1][i][2]
 		end[i][2] += 5.0
-		//}
 	}
 	/*float cornersStart[8][3]
 	//bottom left front
@@ -1806,25 +1795,21 @@ Action timer_draw(Handle timer)
 	cornersEnd[3][0] = start[1][0]
 	cornersEnd[3][1] = end[1][1]
 	cornersEnd[3][2] = start[1][2]*/ //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
-	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
 	float corners[13][8][3]
-	//bottom left front
 	for(int i = 1; i <= 10; i++)
 	{
+		//bottom left front
 		corners[i][0][0] = start[i][0]
 		corners[i][0][1] = start[i][1]
 		corners[i][0][2] = start[i][2]
-		//corners[0][2] += 5.0
 		//bottom right front
 		corners[i][1][0] = end[i][0]
 		corners[i][1][1] = start[i][1]
 		corners[i][1][2] = start[i][2]
-		//corners[1][2] += 5.0
 		//bottom right back
 		corners[i][2][0] = end[i][0]
 		corners[i][2][1] = end[i][1]
 		corners[i][2][2] = start[i][2]
-		//corners[2][2]
 		//bottom left back
 		corners[i][3][0] = start[i][0]
 		corners[i][3][1] = end[i][1]
@@ -1838,8 +1823,6 @@ Action timer_draw(Handle timer)
 		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
 	}
-	//for(int i = 11; i <= 12; i++)
-	//{
 	TE_SetupBeamPoints(corners[12][0], corners[12][1], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 	TE_SendToAll()
 	TE_SetupBeamPoints(corners[12][1], corners[12][2], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
@@ -1856,8 +1839,6 @@ Action timer_draw(Handle timer)
 	TE_SendToAll()
 	TE_SetupBeamPoints(corners[11][3], corners[11][0], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 	TE_SendToAll()
-		//}
-	//}
 	//return Plugin_Stop
 }
 
