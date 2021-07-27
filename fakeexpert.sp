@@ -1722,8 +1722,8 @@ Action cmd_draw(int client, int args)
 
 Action timer_draw(Handle timer)
 {
-	float start[3][3]
-	float end[3][3]
+	float start[13][3]
+	float end[13][3]
 	/*start[0] = gF_vecStartZone[0][0]
 	start[1] = gF_vecStartZone[0][1]
 	start[2] = gF_vecStartZone[0][2]
@@ -1807,7 +1807,7 @@ Action timer_draw(Handle timer)
 	cornersEnd[3][1] = end[1][1]
 	cornersEnd[3][2] = start[1][2]*/ //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
 	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
-	float corners[12][8][3]
+	float corners[13][8][3]
 	//bottom left front
 	for(int i = 0; i <= 12; i++)
 	{
