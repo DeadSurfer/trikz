@@ -188,6 +188,7 @@ public void OnMapStart()
 	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
 	gI_zoneModel[0] = PrecacheModel("materials/fakeexpert/zones/start.vmt")
 	gI_zoneModel[1] = PrecacheModel("materials/fakeexpert/zones/finish.vmt")
+	gI_zoneModel[2] = PrecacheModel("materials/fakeexpert/zones/check_point.vmt")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
@@ -1747,6 +1748,20 @@ Action timer_draw(Handle timer)
 	end[1][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
 	end[1][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
 	end[1][2] += 5.0
+	for(int i = 2; i <= 12; i++)
+	{
+		for(int j = 1; j <= 10; j++)
+		{
+			start[i][0] = (gF_vecCP[0][j][0] < gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
+			start[i][1] = (gF_vecCP[0][j][1] < gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
+			start[i][2] = (gF_vecCP[0][j][2] < gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
+			start[i][2] += 5.0
+			end[i][0] = (gF_vecCP[0][j][0] > gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
+			end[i][1] = (gF_vecCP[0][j][1] > gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
+			end[i][2] = (gF_vecCP[0][j][2] > gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
+			end[i][2] += 5.0
+		}
+	}
 	/*float cornersStart[8][3]
 	//bottom left front
 	//for(int i = 0; i <= 2; i++)
@@ -1792,9 +1807,9 @@ Action timer_draw(Handle timer)
 	cornersEnd[3][1] = end[1][1]
 	cornersEnd[3][2] = start[1][2]*/ //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
 	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
-	float corners[3][8][3]
+	float corners[12][8][3]
 	//bottom left front
-	for(int i = 0; i <= 2; i++)
+	for(int i = 0; i <= 12; i++)
 	{
 		corners[i][0][0] = start[i][0]
 		corners[i][0][1] = start[i][1]
