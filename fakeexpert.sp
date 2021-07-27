@@ -1746,7 +1746,7 @@ Action timer_draw(Handle timer)
 	end[1][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
 	end[1][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
 	end[1][2] += 5.0
-	float cornersStart[8][3]
+	/*float cornersStart[8][3]
 	//bottom left front
 	//for(int i = 0; i <= 2; i++)
 	//{
@@ -1789,25 +1789,55 @@ Action timer_draw(Handle timer)
 	//bottom left back
 	cornersEnd[3][0] = start[1][0]
 	cornersEnd[3][1] = end[1][1]
-	cornersEnd[3][2] = start[1][2] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
+	cornersEnd[3][2] = start[1][2]*/ //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
 	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
-	TE_SetupBeamPoints(cornersStart[0], cornersStart[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(cornersStart[1], cornersStart[2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(cornersStart[2], cornersStart[3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(cornersStart[3], cornersStart[0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(cornersEnd[0], cornersEnd[1], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(cornersEnd[1], cornersEnd[2], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(cornersEnd[2], cornersEnd[3], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(cornersEnd[3], cornersEnd[0], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	//}
-	TE_SendToAll()
+	float corners[3][8][3]
+	//bottom left front
+	for(int i = 0; i <= 2; i++)
+	{
+		corners[i][0][0] = start[i][0]
+		corners[i][0][1] = start[i][1]
+		corners[i][0][2] = start[i][2]
+		//corners[0][2] += 5.0
+		//bottom right front
+		corners[i][1][0] = end[i][0]
+		corners[i][1][1] = start[i][1]
+		corners[i][1][2] = start[i][2]
+		//corners[1][2] += 5.0
+		//bottom right back
+		corners[i][2][0] = end[i][0]
+		corners[i][2][1] = end[i][1]
+		corners[i][2][2] = start[i][2]
+		//corners[2][2]
+		//bottom left back
+		corners[i][3][0] = start[i][0]
+		corners[i][3][1] = end[i][1]
+		corners[i][3][2] = start[i][2]
+		/*TE_SetupBeamPoints(cornersStart[0], cornersStart[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(cornersStart[1], cornersStart[2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(cornersStart[2], cornersStart[3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(cornersStart[3], cornersStart[0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(cornersEnd[0], cornersEnd[1], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(cornersEnd[1], cornersEnd[2], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(cornersEnd[2], cornersEnd[3], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(cornersEnd[3], cornersEnd[0], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)*/
+		//}
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SendToAll()
+	}
 	//return Plugin_Stop
 }
 
