@@ -1933,6 +1933,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 			SetEntityRenderMode(client, RENDER_NORMAL)
+			gB_block[client] = true
 			if(gB_TrikzMenuIsOpen[client])
 				Trikz(client)
 		}
@@ -1944,6 +1945,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
 			else
 				SetEntityRenderColor(client, 255, 255, 255, 125)
+			gB_block[client] = false
 			if(gB_TrikzMenuIsOpen[client])
 				Trikz(client)
 		}
