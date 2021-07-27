@@ -268,8 +268,11 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
 	
 	AddFileToDownloadsTable("materials/fakeexpert/zones/start.vmt")
+	AddFileToDownloadsTable("materials/fakeexpert/zones/start.vtf")
 	AddFileToDownloadsTable("materials/fakeexpert/zones/finish.vmt")
+	AddFileToDownloadsTable("materials/fakeexpert/zones/finish.vtf")
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vmt")
+	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 }
 
 public void OnMapEnd()
