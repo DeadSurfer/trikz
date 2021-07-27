@@ -68,6 +68,7 @@ bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
 int gI_skyFrame[MAXPLAYERS + 1]
+int gI_entityFlags[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
 float gF_devmapTime
@@ -1829,6 +1830,7 @@ Action timer_draw(Handle timer)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
+	gI_entityFlags[client] = GetEntityFlags(client)
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
@@ -1964,7 +1966,7 @@ Action timer_removePing(Handle timer, int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && IsClientInGame(other) && !gB_boost[other] && !(GetEntityFlags(other) & FL_ONGROUND))
+	if(0 < other <= MaxClients && IsClientInGame(other) && !gB_boost[other] && !(gI_entityFlags(other) & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
