@@ -1752,13 +1752,13 @@ Action timer_draw(Handle timer)
 	{
 		//for(int j = 1; j <= 10; j++)
 		//{
-		start[i][0] = (gF_vecCP[0][j][0] < gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
-		start[i][1] = (gF_vecCP[0][j][1] < gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
-		start[i][2] = (gF_vecCP[0][j][2] < gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
+		start[i][0] = (gF_vecCP[0][i][0] < gF_vecCP[1][i][0]) ? gF_vecCP[0][i][0] : gF_vecCP[1][i][0]
+		start[i][1] = (gF_vecCP[0][i][1] < gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
+		start[i][2] = (gF_vecCP[0][i][2] < gF_vecCP[1][i][2]) ? gF_vecCP[0][i][2] : gF_vecCP[1][i][2]
 		start[i][2] += 5.0
-		end[i][0] = (gF_vecCP[0][j][0] > gF_vecCP[1][j][0]) ? gF_vecCP[0][j][0] : gF_vecCP[1][j][0]
-		end[i][1] = (gF_vecCP[0][j][1] > gF_vecCP[1][j][1]) ? gF_vecCP[0][j][1] : gF_vecCP[1][j][1]
-		end[i][2] = (gF_vecCP[0][j][2] > gF_vecCP[1][j][2]) ? gF_vecCP[0][j][2] : gF_vecCP[1][j][2]
+		end[i][0] = (gF_vecCP[0][i][0] > gF_vecCP[1][i][0]) ? gF_vecCP[0][i][0] : gF_vecCP[1][i][0]
+		end[i][1] = (gF_vecCP[0][i][1] > gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
+		end[i][2] = (gF_vecCP[0][i][2] > gF_vecCP[1][i][2]) ? gF_vecCP[0][i][2] : gF_vecCP[1][i][2]
 		end[i][2] += 5.0
 		//}
 	}
