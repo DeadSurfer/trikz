@@ -1482,6 +1482,7 @@ Action SDKStartTouch(int entity, int other)
 				gB_cp[i][other] = true
 				if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
 				{
+					char sQuery[512]
 					if(!gB_cpLock[1][other] && gF_mateRecord[other])
 					{
 						Format(sQuery, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, playerid, partnerid, gS_map)
@@ -1491,7 +1492,6 @@ Action SDKStartTouch(int entity, int other)
 					gB_cpLock[i][gI_partner[other]] = true
 					gF_TimeCP[i][other] = gF_Time[other]
 					gF_TimeCP[i][gI_partner[other]] = gF_Time[other]
-					char sQuery[512]
 					Format(sQuery, 512, "SELECT cp%i FROM records", i)
 					DataPack dp = new DataPack()
 					dp.WriteCell(GetClientSerial(other))
