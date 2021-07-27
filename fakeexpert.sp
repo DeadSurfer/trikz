@@ -1740,34 +1740,60 @@ Action timer_draw(Handle timer)
 	end[1][0] = (gF_vecEndZone[0][0] > gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
 	end[1][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
 	end[1][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
-	float corners[3][8][3]
+	float cornersStart[8][3]
 	//bottom left front
-	for(int i = 0; i <= 2; i++)
-	{
-		corners[i][0][0] = start[i][0]
-		corners[i][0][1] = start[i][1]
-		corners[i][0][2] = start[i][2] += 5.0
-		//corners[0][2] += 5.0
-		//bottom right front
-		corners[i][1][0] = end[i][0]
-		corners[i][1][1] = start[i][1]
-		corners[i][1][2] = start[i][2] += 5.0
-		//corners[1][2] += 5.0
-		//bottom right back
-		corners[i][2][0] = end[i][0]
-		corners[i][2][1] = end[i][1]
-		corners[i][2][2] = start[i][2] += 5.0
-		//corners[2][2]
-		//bottom left back
-		corners[i][3][0] = start[i][0]
-		corners[i][3][1] = start[i][1]
-		corners[i][3][2] = end[i][2] += 5.0
-		//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
-		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	}
+	//for(int i = 0; i <= 2; i++)
+	//{
+	cornersStart[0][0] = start[0][0]
+	cornersStart[0][1] = start[0][1]
+	cornersStart[0][2] = start[0][2] += 5.0
+	//corners[0][2] += 5.0
+	//bottom right front
+	cornersStart[1][0] = end[0][0]
+	cornersStart[1][1] = start[0][1]
+	cornersStart[1][2] = start[0][2] += 5.0
+	//corners[1][2] += 5.0
+	//bottom right back
+	cornersStart[2][0] = end[0][0]
+	cornersStart[2][1] = end[0][1]
+	cornersStart[2][2] = start[0][2] += 5.0
+	//corners[2][2]
+	//bottom left back
+	cornersStart[3][0] = start[0][0]
+	cornersStart[3][1] = start[0][1]
+	cornersStart[3][2] = end[0][2] += 5.0
+	float cornersEnd[8][3]
+	//bottom left front
+	//for(int i = 0; i <= 2; i++)
+	//{
+	cornersEnd[0][0] = start[1][0]
+	cornersEnd[0][1] = start[1][1]
+	cornersEnd[0][2] = start[1][2] += 5.0
+	//corners[0][2] += 5.0
+	//bottom right front
+	cornersEnd[1][0] = end[1][0]
+	cornersEnd[1][1] = start[1][1]
+	cornersEnd[1][2] = start[1][2] += 5.0
+	//corners[1][2] += 5.0
+	//bottom right back
+	cornersEnd[2][0] = end[1][0]
+	cornersEnd[2][1] = end[1][1]
+	cornersEnd[2][2] = start[1][2] += 5.0
+	//corners[2][2]
+	//bottom left back
+	cornersEnd[3][0] = start[1][0]
+	cornersEnd[3][1] = start[1][1]
+	cornersEnd[3][2] = end[1][2] += 5.0
+	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
+	TE_SetupBeamPoints(cornersStart[0], cornersStart[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SetupBeamPoints(cornersStart[1], cornersStart[2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SetupBeamPoints(cornersStart[2], cornersStart[3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SetupBeamPoints(cornersStart[3], cornersStart[0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SetupBeamPoints(cornersEnd[0], cornersEnd[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SetupBeamPoints(cornersEnd[1], cornersEnd[2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SetupBeamPoints(cornersEnd[2], cornersEnd[3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	TE_SetupBeamPoints(cornersEnd[3], cornersEnd[0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+	//}
 	TE_SendToAll()
 	//return Plugin_Stop
 }
