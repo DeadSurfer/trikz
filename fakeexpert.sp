@@ -1732,60 +1732,60 @@ Action timer_draw(Handle timer)
 	end[2] += 5.0*/
 	start[0][0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
 	start[0][1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	start[0][2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	start[0][2] = ((gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]) += 5.0
 	end[0][0] = (gF_vecStartZone[0][0] > gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
 	end[0][1] = (gF_vecStartZone[0][1] > gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	end[0][2] = (gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	end[0][2] = ((gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]) += 5.0
 	start[1][0] = (gF_vecEndZone[0][0] < gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
 	start[1][1] = (gF_vecEndZone[0][1] < gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
-	start[1][2] = (gF_vecEndZone[0][2] < gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	start[1][2] = ((gF_vecEndZone[0][2] < gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]) += 5.0
 	end[1][0] = (gF_vecEndZone[0][0] > gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
 	end[1][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
-	end[1][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	end[1][2] = ((gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]) += 5.0
 	float cornersStart[8][3]
 	//bottom left front
 	//for(int i = 0; i <= 2; i++)
 	//{
 	cornersStart[0][0] = start[0][0]
 	cornersStart[0][1] = start[0][1]
-	cornersStart[0][2] = start[0][2] += 5.0
+	cornersStart[0][2] = start[0][2]
 	//corners[0][2] += 5.0
 	//bottom right front
 	cornersStart[1][0] = end[0][0]
 	cornersStart[1][1] = start[0][1]
-	cornersStart[1][2] = start[0][2] += 5.0
+	cornersStart[1][2] = start[0][2]
 	//corners[1][2] += 5.0
 	//bottom right back
 	cornersStart[2][0] = end[0][0]
 	cornersStart[2][1] = end[0][1]
-	cornersStart[2][2] = start[0][2] += 5.0
+	cornersStart[2][2] = start[0][2]
 	//corners[2][2]
 	//bottom left back
 	cornersStart[3][0] = start[0][0]
 	cornersStart[3][1] = end[0][1]
-	cornersStart[3][2] = start[0][2] += 5.0
+	cornersStart[3][2] = start[0][2]
 	float cornersEnd[8][3]
 	//bottom left front
 	//for(int i = 0; i <= 2; i++)
 	//{
 	cornersEnd[0][0] = start[1][0]
 	cornersEnd[0][1] = start[1][1]
-	cornersEnd[0][2] = start[1][2] += 5.0
+	cornersEnd[0][2] = start[1][2]
 	//corners[0][2] += 5.0
 	//bottom right front
 	cornersEnd[1][0] = end[1][0]
 	cornersEnd[1][1] = start[1][1]
-	cornersEnd[1][2] = start[1][2] += 5.0
+	cornersEnd[1][2] = start[1][2]
 	//corners[1][2] += 5.0
 	//bottom right back
 	cornersEnd[2][0] = end[1][0]
 	cornersEnd[2][1] = end[1][1]
-	cornersEnd[2][2] = start[1][2] += 5.0
+	cornersEnd[2][2] = start[1][2]
 	//corners[2][2]
 	//bottom left back
 	cornersEnd[3][0] = start[1][0]
 	cornersEnd[3][1] = end[1][1]
-	cornersEnd[3][2] = start[1][2] += 5.0//https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
+	cornersEnd[3][2] = start[1][2] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
 	//TE_SetupBeamPoints(start, end, gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
 	TE_SetupBeamPoints(cornersStart[0], cornersStart[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 	TE_SendToAll()
