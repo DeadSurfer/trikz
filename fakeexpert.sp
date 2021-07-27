@@ -103,8 +103,9 @@ char gS_color[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,
 int gI_color[MAXPLAYERS + 1][3]
 int gI_colorCount[MAXPLAYERS + 1]
 
-int gI_zoneStart
-int gI_zoneEnd
+//int gI_zoneStart
+//int gI_zoneEnd
+int gI_zoneModel[3]
 
 public Plugin myinfo =
 {
@@ -185,8 +186,8 @@ public void OnMapStart()
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
 	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
-	gI_zoneStart = PrecacheModel("materials/fakeexpert/zones/start.vmt")
-	gI_zoneEnd = PrecacheModel("materials/fakeexpert/zones/finish.vmt")
+	gI_zoneModel[0] = PrecacheModel("materials/fakeexpert/zones/start.vmt")
+	gI_zoneModel[1] = PrecacheModel("materials/fakeexpert/zones/finish.vmt")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
@@ -1829,13 +1830,13 @@ Action timer_draw(Handle timer)
 		TE_SendToAll()
 		TE_SetupBeamPoints(cornersEnd[3], cornersEnd[0], gI_zoneEnd, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)*/
 		//}
-		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[i], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[i], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[i], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[i], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
 	}
 	//return Plugin_Stop
