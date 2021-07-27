@@ -1710,7 +1710,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 Action cmd_draw(int client, int args)
 {
-	CreateTimer(0.1, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(1.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 	//GetClientsInRange(
 	//TE_SendToAllInRange(
 	return Plugin_Handled
@@ -1718,9 +1718,9 @@ Action cmd_draw(int client, int args)
 
 Action timer_draw(Handle timer)
 {
-	TE_SetupBeamPoints(gF_vecStartZone[0], gF_vecStartZone[1], gI_zoneStart, gI_zoneStart, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+	TE_SetupBeamPoints(gF_vecStartZone[0], gF_vecStartZone[1], gI_zoneStart, gI_zoneStart, 0, 0, 1.0, 10.0, 10.0, 0, 0.0, {255, 255, 255, 255}, 5)
 	TE_SendToAll()
-	//return Plugin_Stop
+	return Plugin_Stop
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
