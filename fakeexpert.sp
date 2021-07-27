@@ -1710,7 +1710,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 Action cmd_draw(int client, int args)
 {
-	CreateTimer(10.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 	//GetClientsInRange(
 	//TE_SendToAllInRange(
 	return Plugin_Handled
@@ -1718,7 +1718,7 @@ Action cmd_draw(int client, int args)
 
 Action timer_draw(Handle timer)
 {
-	TE_SetupBeamPoints(gF_vecStartZone[0], gF_vecStartZone[1], gI_zoneStart, 0, 0, 0, 10.0, 5.0, 10.0, 0, 0.0, {255, 255, 255, 255}, 5)
+	TE_SetupBeamPoints(gF_vecStartZone[0], gF_vecStartZone[1], gI_zoneStart, 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 5)
 	TE_SendToAll()
 	//return Plugin_Stop
 }
