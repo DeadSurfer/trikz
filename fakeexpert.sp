@@ -1734,7 +1734,7 @@ Action timer_draw(Handle timer)
 	end[0] = (gF_vecStartZone[0][0] > gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
 	end[1] = (gF_vecStartZone[0][1] > gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
 	end[2] = (gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
-	float corner[8][3]
+	float corners[8][3]
 	//bottom left front
 	corners[0][0] = start[0]
 	corners[0][1] = start[1]
