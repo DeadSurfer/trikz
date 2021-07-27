@@ -57,7 +57,7 @@ float gF_srCPTime[11][MAXPLAYERS + 1]
 float gF_haveRecord[MAXPLAYERS + 1]
 float gF_ServerRecord
 
-ConVar gCV_steamid
+ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
@@ -118,7 +118,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
-	AutoExecConfig(true)
+	AutoExecConfig(true) //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_trikz", cmd_trikz)
 	RegConsoleCmd("sm_bl", cmd_block)
@@ -144,7 +144,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	AddNormalSoundHook(SoundHook)
-	AddCommandListener(specchat, "say")
+	AddCommandListener(specchat, "say") ////thanks to VerMon idea.
 	HookEvent("player_spawn", event_playerspawn)
 }
 
@@ -162,7 +162,7 @@ public void OnMapStart()
 		PrintToServer("SourceTV start recording.")
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
-		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
+		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
 	gB_isServerRecord = false
 	if(!gB_isTurnedOnSourceTV)
@@ -329,7 +329,7 @@ void Checkpoint(int client)
 	menu.AddItem("Teleport", "Teleport", gB_toggledCheckpoint[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	menu.AddItem("Save second", "Save second")
 	menu.AddItem("Teleport second", "Teleport second", gB_toggledCheckpoint[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	menu.ExitBackButton = true
+	menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
@@ -369,10 +369,10 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		case MenuAction_Cancel:
+		case MenuAction_Cancel: // trikz redux menuaction end
 			switch(param2)
 			{
-				case MenuCancel_ExitBack:
+				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
 					Trikz(param1)
 			}
 		case MenuAction_End:
@@ -385,7 +385,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
-	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix)
+	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	char sQuery[512]
 	if(IsClientInGame(client) && gB_passDB)
@@ -480,7 +480,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	{
 		char sName[64]
 		GetClientName(client, sName, 64)
-		char sQuery[512]
+		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
 		if(results.FetchRow())
 		{
 			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
@@ -507,9 +507,9 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float vecAbsFlyer[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsFlyer)
 		float vecMaxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs)
+		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMaxs[2]
-		if(0.0 < delta < 2.0)
+		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_skyStep[other] == 0)
 			{
@@ -525,10 +525,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					gF_skyVel[other][2] = vecVelBooster[2]
 					if(vecVelBooster[2] > 800.0)
 						gF_skyVel[other][2] = 800.0
-					if(FloatAbs(vecVelFlyer[2]) > 118.006614)
+					if(FloatAbs(vecVelFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
 					{
 						gI_skyStep[other] = 1
-						gI_skyFrame[other] = 1
+						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 					}
 				}
 			}
@@ -573,7 +573,7 @@ Action cmd_trikz(int client, int args)
 void Trikz(int client)
 {
 	gB_TrikzMenuIsOpen[client] = true
-	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
+	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
 	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
@@ -581,7 +581,7 @@ void Trikz(int client)
 	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
 	menu.AddItem("partner", sDisplay, gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
 	menu.AddItem("color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
 	if(gB_isDevmap)
 	{
 		menu.AddItem("checkpoint", "Checkpoint")
@@ -595,7 +595,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
-		case MenuAction_Start:
+		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
 			gB_TrikzMenuIsOpen[param1] = true
 		case MenuAction_Select:
 		{
@@ -637,7 +637,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 		case MenuAction_Cancel:
-			gB_TrikzMenuIsOpen[param1] = false
+			gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
 		case MenuAction_Display:
 			gB_TrikzMenuIsOpen[param1] = true
 		case MenuAction_End:
@@ -693,7 +693,7 @@ void Partner(int client)
 		char sName[MAX_NAME_LENGTH]
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i])
+			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i]) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
 			{
 				GetClientName(i, sName, MAX_NAME_LENGTH)
 				char sNameID[32]
@@ -717,7 +717,7 @@ void Partner(int client)
 	}
 }
 
-int partner_handler(Menu menu, MenuAction action, int param1, int param2)
+int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
@@ -739,7 +739,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-int askpartner_handle(Menu menu, MenuAction action, int param1, int param2)
+int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
@@ -922,15 +922,12 @@ void createstart()
 	gF_vecStart[1] = center[1]
 	gF_vecStart[2] = center[2]
 	float mins[3]
+	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
 		mins[i] = (gF_vecStartZone[0][i] - gF_vecStartZone[1][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
-	}
-	float maxs[3]
-	for(int i = 0; i <= 1; i++)
-	{
 		maxs[i] = (gF_vecStartZone[0][i] - gF_vecStartZone[1][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
@@ -960,21 +957,18 @@ void createend()
 	center[2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
+	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
 		mins[i] = (gF_vecEndZone[0][i] - gF_vecEndZone[1][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
-	}
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	float maxs[3]
-	for(int i = 0; i <= 1; i++)
-	{
 		maxs[i] = (gF_vecEndZone[0][i] - gF_vecEndZone[1][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
 	maxs[2] = 124.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
@@ -1016,12 +1010,12 @@ Action cmd_deleteallcp(int client, int args)
 	IntToString(steamid, sCurrentSteamID, 64)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
 		if(gB_isDevmap)
 		{
 			char sQuery[512]
-			Format(sQuery, 512, "DELETE FROM cp WHERE map = '%s'", gS_map)
+			Format(sQuery, 512, "DELETE FROM cp WHERE map = '%s'", gS_map) //https://www.w3schools.com/sql/sql_delete.asp
 			gD_mysql.Query(SQLDeleteAllCP, sQuery)
 		}
 		else
@@ -1072,7 +1066,7 @@ Action cmd_maptier(int client, int args)
 		if(gB_isDevmap)
 		{
 			char sArgString[512]
-			GetCmdArgString(sArgString, 512)
+			GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
 			int tier = StringToInt(sArgString)
 			PrintToServer("[Args] Tier: %i", tier)
 			char sQuery[512]
@@ -1197,6 +1191,8 @@ void SQLCPInserted(Database db, DBResultSet results, const char[] error, any dat
 		PrintToServer("Checkpoint zone no. %i successfuly created.", data)
 }
 
+//https://forums.alliedmods.net/showthread.php?t=261378
+
 Action cmd_createcp(int args)
 {
 	char sQuery[512]
@@ -1260,21 +1256,18 @@ void createcp(int cpnum)
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
+	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
 		mins[i] = (gF_vecCP[0][cpnum][i] - gF_vecCP[1][cpnum][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
-	}
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	float maxs[3]
-	for(int i = 0; i <= 1; i++)
-	{
 		maxs[i] = (gF_vecCP[0][cpnum][i] - gF_vecCP[1][cpnum][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
 	maxs[2] = 124.0
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
@@ -1357,7 +1350,7 @@ Action SDKStartTouch(int entity, int other)
 				int playerid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
 				char sCPnum[32]
-				int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+				int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 				int personalSecond = RoundToFloor(gF_Time[other]) % 60
 				if(gF_ServerRecord != 0.0)
@@ -1489,7 +1482,7 @@ Action SDKStartTouch(int entity, int other)
 				gB_cp[i][other] = true
 				if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
 				{
-					char sQuery[512]
+					char sQuery[512] //https://stackoverflow.com/questions/9617453 //https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
 					int playerid = GetSteamAccountID(other)
 					int partnerid = GetSteamAccountID(gI_partner[other])
 					if(!gB_cpLock[1][other] && gF_mateRecord[other])
@@ -1613,7 +1606,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 	char sQuery[512]
 	if(results.FetchRow())
 	{
-		Format(sQuery, 512, "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, gS_map)
+		Format(sQuery, 512, "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, gS_map) //log help me alot with this stuff
 		DataPack dp = new DataPack()
 		dp.WriteCell(GetClientSerial(other))
 		dp.WriteCell(cpnum)
@@ -1783,7 +1776,7 @@ Action timer_draw(Handle timer)
 		corners[i][3][0] = start[i][0]
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
-		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 		TE_SendToAll()
 		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
@@ -1978,7 +1971,8 @@ Action ProjectileBoostFix(int entity, int other)
 		float vecMaxsEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
 		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
-		if(0.0 < delta < 2.0)
+		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231//https://forums.alliedmods.net/showthread.php?t=146241
+		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
@@ -1991,7 +1985,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
-			SetEntProp(entity, Prop_Send, "m_nSolidType", 0)
+			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 			gI_flash[other] = EntIndexToEntRef(entity)
 			gB_boost[other] = true
 		}
@@ -2108,7 +2102,8 @@ Action ProjectileBoostFixEndTouch(int entity, int other)
 
 Action cmd_time(int client, int args)
 {
-	int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24
+	//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+	int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 	int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
 	int second = RoundToFloor(gF_Time[client]) % 60
 	PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
@@ -2131,13 +2126,13 @@ Action SDKProjectile(int entity)
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 	if(IsValidEntity(entity) || IsPlayerAlive(client))
 	{
-		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2)
+		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		gB_silentKnife = true
 		FakeClientCommand(client, "use weapon_knife")
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		CreateTimer(1.5, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+		CreateTimer(1.49, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
 	}
 }
 
@@ -2174,12 +2169,12 @@ void SDKPlayerSpawnPost(int client)
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR)
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
 	return Plugin_Handled
 }
 
-void SDKWeaponEquipPost(int client, int weapon)
+void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw thanks to lon to give this idea. aka trikz_failtime
 {
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
