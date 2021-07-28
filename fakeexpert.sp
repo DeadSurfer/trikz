@@ -1902,7 +1902,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			float angle[3]
 			float end[3]
 			GetClientEyePosition(client, start)
-			GetClientEyePosition(client, gF_startLaser[client])
+			//GetClientEyePosition(client, gF_startLaser[client])
 			GetClientEyeAngles(client, angle)
 			GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
 			for(int i = 0; i <= 2; i++)
@@ -1927,25 +1927,36 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_color[client])
 				SetEntityRenderColor(gI_pingModel[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-			for(int i = 0; i <= 2; i++)
-				gF_endLaser[client][i] = end[i]
-			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
-			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
-		}
-		if(gI_pingModel[client])
-		{
 			//https://forums.alliedmods.net/showthread.php?p=1080444
 			if(gB_color[client])
 			{
 				//int colorR = gI_color[client][0]
 				//int colorG = gI_color[client][1]
 				//int colorB = gI_color[client][2]
-				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			}
 			else
-				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			TE_SendToAll()
+			//for(int i = 0; i <= 2; i++)
+				//gF_endLaser[client][i] = end[i]
+			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
+			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
+		//if(gI_pingModel[client])
+		//{
+			//https://forums.alliedmods.net/showthread.php?p=1080444
+			//if(gB_color[client])
+			//{
+				//int colorR = gI_color[client][0]
+				//int colorG = gI_color[client][1]
+				//int colorB = gI_color[client][2]
+				//TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+			//}
+			//else
+				//TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+			//TE_SendToAll()
+		//}
 	}
 	if(IsPlayerAlive(client))
 	{
