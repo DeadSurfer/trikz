@@ -918,13 +918,12 @@ void createstart()
 	DispatchKeyValue(entity, "targetname", "fakeexpert_startzone")
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	center[0] = (gF_vecStartZone[0][0] + gF_vecStartZone[1][0]) / 2.0
 	center[1] = (gF_vecStartZone[0][1] + gF_vecStartZone[1][1]) / 2.0
 	center[2] = (gF_vecStartZone[0][2] + gF_vecStartZone[1][2]) / 2.0
-	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	gF_vecStart[0] = center[0]
 	gF_vecStart[1] = center[1]
 	gF_vecStart[2] = center[2]
@@ -956,13 +955,12 @@ void createend()
 	DispatchKeyValue(entity, "targetname", "fakeexpert_endzone")
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	center[0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2
 	center[1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2
 	center[2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2
-	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
@@ -1252,16 +1250,12 @@ void createcp(int cpnum)
 	DispatchKeyValue(entity, "targetname", sTriggerName)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	//SetEntProp(entity, Prop_Send, "m_fEffects", 32)
-	//GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec)
-	//SetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec)
 	float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	center[0] = (gF_vecCP[1][cpnum][0] + gF_vecCP[0][cpnum][0]) / 2.0
 	center[1] = (gF_vecCP[1][cpnum][1] + gF_vecCP[0][cpnum][1]) / 2.0
 	center[2] = (gF_vecCP[1][cpnum][2] + gF_vecCP[0][cpnum][2]) / 2.0
 	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	//TeleportEntity(client, center, NULL_VECTOR, NULL_VECTOR)
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
