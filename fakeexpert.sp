@@ -105,9 +105,7 @@ int gI_color[MAXPLAYERS + 1][3]
 int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
-float gF_startLaser[MAXPLAYERS + 1][3]
 int gI_laserBeam
-float gF_endLaser[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -1902,7 +1900,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			float angle[3]
 			float end[3]
 			GetClientEyePosition(client, start)
-			//GetClientEyePosition(client, gF_startLaser[client])
 			GetClientEyeAngles(client, angle)
 			GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
 			for(int i = 0; i <= 2; i++)
@@ -1933,30 +1930,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//int colorR = gI_color[client][0]
 				//int colorG = gI_color[client][1]
 				//int colorB = gI_color[client][2]
-				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			}
 			else
-				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			TE_SendToAll()
-			//for(int i = 0; i <= 2; i++)
-				//gF_endLaser[client][i] = end[i]
 			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
-		//if(gI_pingModel[client])
-		//{
-			//https://forums.alliedmods.net/showthread.php?p=1080444
-			//if(gB_color[client])
-			//{
-				//int colorR = gI_color[client][0]
-				//int colorG = gI_color[client][1]
-				//int colorB = gI_color[client][2]
-				//TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
-			//}
-			//else
-				//TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
-			//TE_SendToAll()
-		//}
 	}
 	if(IsPlayerAlive(client))
 	{
