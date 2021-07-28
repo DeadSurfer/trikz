@@ -1766,7 +1766,7 @@ Action timer_draw(Handle timer)
 		end[i][2] += 5.0
 	}
 	float corners[13][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
-	for(int i = 1; i <= 10; i++)
+	for(int i = 1; i <= 12; i++)
 	{
 		//bottom left front
 		corners[i][0][0] = start[i][0]
@@ -1784,50 +1784,20 @@ Action timer_draw(Handle timer)
 		corners[i][3][0] = start[i][0]
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
-		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+		int modelType
+		if(i == 11)
+			modelType = 1
+		if(1 <= i <= 10)
+			modelType = 2
+		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[2], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
 	}
-	for(int i = 11; i <= 12; i++)
-	{
-		//bottom left front
-		corners[i][0][0] = start[i][0]
-		corners[i][0][1] = start[i][1]
-		corners[i][0][2] = start[i][2]
-		//bottom right front
-		corners[i][1][0] = end[i][0]
-		corners[i][1][1] = start[i][1]
-		corners[i][1][2] = start[i][2]
-		//bottom right back
-		corners[i][2][0] = end[i][0]
-		corners[i][2][1] = end[i][1]
-		corners[i][2][2] = start[i][2]
-		//bottom left back
-		corners[i][3][0] = start[i][0]
-		corners[i][3][1] = end[i][1]
-		corners[i][3][2] = start[i][2]
-	}
-	TE_SetupBeamPoints(corners[11][0], corners[11][1], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[11][1], corners[11][2], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[11][2], corners[11][3], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[11][3], corners[11][0], gI_zoneModel[0], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[12][0], corners[12][1], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[12][1], corners[12][2], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[12][2], corners[12][3], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
-	TE_SetupBeamPoints(corners[12][3], corners[12][0], gI_zoneModel[1], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-	TE_SendToAll()
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
