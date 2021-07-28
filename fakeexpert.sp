@@ -1791,10 +1791,10 @@ Action timer_draw(Handle timer)
 			modelType = 2
 		for(int j = 0; j <= 3; j++)
 		{
-			int k = 1
-			if(j == 3)
-				k = 0
-			TE_SetupBeamPoints(corners[i][j], corners[i][j+k], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			int k = j
+			if(k == 3)
+				l = 0
+			TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
 		}
 		/*TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
