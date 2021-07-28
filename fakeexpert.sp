@@ -145,7 +145,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	AddNormalSoundHook(SoundHook)
-	AddCommandListener(specchat, "say") ////thanks to VerMon idea.
+	AddCommandListener(specchat, "say") //thanks to VerMon idea.
 	HookEvent("player_spawn", event_playerspawn)
 }
 
@@ -826,12 +826,11 @@ void Color(int client, bool customSkin)
 			gI_colorCount[gI_partner[client]] = 0
 		}
 		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
-		gI_color[client][0] = StringToInt(gS_colorExploded[0])
-		gI_color[client][1] = StringToInt(gS_colorExploded[1])
-		gI_color[client][2] = StringToInt(gS_colorExploded[2])
-		gI_color[gI_partner[client]][0] = StringToInt(gS_colorExploded[0])
-		gI_color[gI_partner[client]][1] = StringToInt(gS_colorExploded[1])
-		gI_color[gI_partner[client]][2] = StringToInt(gS_colorExploded[2])
+		for(int i = 0; i <= 2; i++)
+		{
+			gI_color[client][i] = StringToInt(gS_colorExploded[i])
+			gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
+		}
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		gI_colorCount[client]++
@@ -860,7 +859,6 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 		gF_mateRecord[client] = results.FetchFloat(0)
 		gF_mateRecord[gI_partner[client]] = results.FetchFloat(0)
 	}
-		
 }
 
 void Restart(int client)
