@@ -764,7 +764,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 							Trikz(partner)
 						char sQuery[512]
 						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), gS_map)
-						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(partner))
+						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(param1))
 					}
 					else
 						PrintToChat(param1, "A player already have a partner.")
@@ -848,9 +848,15 @@ void Color(int client, bool customSkin)
 void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
+	if(client == 0)
+		return
 	gF_mateRecord[client] = 0.0
+	gF_mateRecord[gI_partner[client]] = 0.0
 	if(results.FetchRow())
+	{
 		gF_mateRecord[client] = results.FetchFloat(0)
+		gF_mateRecord[gI_partner[client]] = results.FetchFloat(0)
+	}
 		
 }
 
@@ -1463,7 +1469,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("%s. Checkpoint: +00:00:00", sCPnum)
 					}
 					gB_isServerRecord = true
-					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
+					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
 				
