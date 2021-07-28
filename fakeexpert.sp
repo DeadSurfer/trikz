@@ -1801,12 +1801,6 @@ Action timer_draw(Handle timer)
 			TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
 		}
-		/*TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()*/
 	}
 }
 
