@@ -306,6 +306,8 @@
 		//$row0 = mysqli_fet
 		//$num = 
 		//$row0 = $db->query0("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
+		// set the default timezone to use.
+		date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
 		while($row = mysqli_fetch_assoc($result))
 		{
 			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
