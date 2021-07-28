@@ -1350,7 +1350,6 @@ Action SDKStartTouch(int entity, int other)
 				char sQuery[512]
 				int playerid = GetSteamAccountID(other)
 				int partnerid = GetSteamAccountID(gI_partner[other])
-				char sCPnum[32]
 				int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 				int personalSecond = RoundToFloor(gF_Time[other]) % 60
@@ -1438,16 +1437,15 @@ Action SDKStartTouch(int entity, int other)
 					}
 					for(int i = 1; i <= 10; i++)
 					{
-						IntToString(i, sCPnum, 32)
 						if(gB_cp[i][other])
 						{
 							int srCPHour = (RoundToFloor(gF_timeDiffCP[i][other]) / 3600) % 24
 							int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
 							int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
-								PrintToChatAll("%s. Checkpoint: -%02.i:%02.i:%02.i", sCPnum, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("%i. Checkpoint: -%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
 							else
-								PrintToChatAll("%s. Checkpoint: +%02.i:%02.i:%02.i", sCPnum, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("%i. Checkpoint: +%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
 						}
 					}
 				}
@@ -1459,9 +1457,8 @@ Action SDKStartTouch(int entity, int other)
 					PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 					for(int i = 1; i <= 10; i++)
 					{
-						IntToString(i, sCPnum, 32)
 						if(gB_cp[i][other])
-							PrintToChatAll("%s. Checkpoint: +00:00:00", sCPnum)
+							PrintToChatAll("%i. Checkpoint: +00:00:00", i)
 					}
 					gB_isServerRecord = true
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
