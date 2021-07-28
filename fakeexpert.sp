@@ -763,7 +763,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						if(gB_TrikzMenuIsOpen[partner])
 							Trikz(partner)
 						char sQuery[512]
-						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(param1), GetSteamAccountID(partner), gS_map)
+						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), gS_map)
 						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(partner))
 					}
 					else
@@ -1364,7 +1364,7 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
@@ -1380,7 +1380,7 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET completions = completions + 1 WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, playerid, partnerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET completions = completions + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 						}
 						else if(gF_ServerRecord < gF_Time[other] < gF_mateRecord[other])
@@ -1390,7 +1390,7 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, playerid, partnerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							if(gF_haveRecord[other] > gF_Time[other])
 								gF_haveRecord[other] = gF_Time[other]
@@ -1487,7 +1487,7 @@ Action SDKStartTouch(int entity, int other)
 					int partnerid = GetSteamAccountID(gI_partner[other])
 					if(!gB_cpLock[1][other] && gF_mateRecord[other])
 					{
-						Format(sQuery, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", playerid, partnerid, playerid, partnerid, gS_map)
+						Format(sQuery, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
 						gD_mysql.Query(SQLSetTries, sQuery)
 					}
 					gB_cpLock[i][other] = true
