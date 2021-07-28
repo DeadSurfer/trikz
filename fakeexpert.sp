@@ -1794,7 +1794,10 @@ Action timer_draw(Handle timer)
 			int k = j
 			int l = 1
 			if(k == 3)
+			{
+				k = 0
 				l = 0
+			}
 			TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
 		}
