@@ -105,6 +105,9 @@ int gI_color[MAXPLAYERS + 1][3]
 int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
+float gF_startLaser[MAXPLAYERS + 1][3]
+int gI_laserBeam
+float gF_endLaser[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -184,6 +187,7 @@ public void OnMapStart()
 	gI_zoneModel[0] = PrecacheModel("materials/fakeexpert/zones/start.vmt")
 	gI_zoneModel[1] = PrecacheModel("materials/fakeexpert/zones/finish.vmt")
 	gI_zoneModel[2] = PrecacheModel("materials/fakeexpert/zones/check_point.vmt")
+	gI_laserBeam = PrecacheModel("materials/sprites/laser.vmt")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
 	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
@@ -1898,6 +1902,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			float angle[3]
 			float end[3]
 			GetClientEyePosition(client, start)
+			GetClientEyePosition(client, gF_startLaser[client])
 			GetClientEyeAngles(client, angle)
 			GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
 			for(int i = 0; i <= 2; i++)
@@ -1922,8 +1927,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_color[client])
 				SetEntityRenderColor(gI_pingModel[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
+			for(int i = 0; i <= 2; i++)
+				gF_endLaser[client][i] = end[i]
 			EmitSoundToAll("sound/fakeexpert/pingtool/click.wav")
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
+		}
+		if(gI_pingModel[client])
+		{
+			//https://forums.alliedmods.net/showthread.php?p=1080444\
+			if(gB_color[client])
+				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {gI_color[client][0], gI_color[client][1], gI_color[client][2], 255]}, 0)
+			else
+				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255]}, 0)
+			TE_SendToAll()
 		}
 	}
 	if(IsPlayerAlive(client))
@@ -1974,11 +1990,12 @@ Action ProjectileBoostFix(int entity, int other)
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-		float vecMaxsEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
-		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
+		//float vecMaxsEntity[3]
+		//GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
+		//float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231//https://forums.alliedmods.net/showthread.php?t=146241
-		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		//if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		if(vecOriginOther[2] >= vecOriginEntity[2])
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
