@@ -1785,6 +1785,8 @@ Action timer_draw(Handle timer)
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
 		int modelType
+		if(i == 12)
+			modelType = 0
 		if(i == 11)
 			modelType = 1
 		if(1 <= i <= 10)
