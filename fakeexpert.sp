@@ -1927,10 +1927,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//https://forums.alliedmods.net/showthread.php?p=1080444
 			if(gB_color[client])
 			{
-				//int colorR = gI_color[client][0]
-				//int colorG = gI_color[client][1]
-				//int colorB = gI_color[client][2]
-				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+				int color[4]
+				for(int i = 0; i <= 2; i++)
+					color[i] = gI_color[client][i]
+				color[3] = 255
+				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0)
 			}
 			else
 				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
