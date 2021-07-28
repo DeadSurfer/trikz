@@ -1937,8 +1937,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			TE_SendToAll()
 			EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
-			//EmitSoundToClient(client, "fakeexpert/pingtool/click.wav")
-			//EmitSoundToAll(
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
