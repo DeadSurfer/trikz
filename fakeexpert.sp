@@ -181,7 +181,7 @@ public void OnMapStart()
 	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl")
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
 	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
-	PrecacheSound("sound/fakeexpert/pingtool/click.wav")
+	PrecacheSound("fakeexpert/pingtool/click.wav") //https://forums.alliedmods.net/showthread.php?t=333211
 	gI_zoneModel[0] = PrecacheModel("materials/fakeexpert/zones/start.vmt")
 	gI_zoneModel[1] = PrecacheModel("materials/fakeexpert/zones/finish.vmt")
 	gI_zoneModel[2] = PrecacheModel("materials/fakeexpert/zones/check_point.vmt")
