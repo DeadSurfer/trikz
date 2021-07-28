@@ -1785,20 +1785,24 @@ Action timer_draw(Handle timer)
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
 		int modelType
-		//if(i == 11)
-		//	modelType = 0
 		if(i == 12)
 			modelType = 1
 		if(1 <= i <= 10)
 			modelType = 2
-		TE_SetupBeamPoints(corners[i][0], corners[i][1], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-		TE_SendToAll()
-		TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
+		for(int j = 0; j <= 3; j++)
+		{
+			int k = 1
+			if(j == 3)
+				k = 0
+			TE_SetupBeamPoints(corners[i][j], corners[i][j+k], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SendToAll()
+		}
+		/*TE_SetupBeamPoints(corners[i][1], corners[i][2], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
 		TE_SetupBeamPoints(corners[i][2], corners[i][3], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
 		TE_SendToAll()
 		TE_SetupBeamPoints(corners[i][3], corners[i][0], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5)
-		TE_SendToAll()
+		TE_SendToAll()*/
 	}
 }
 
