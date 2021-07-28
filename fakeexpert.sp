@@ -1534,6 +1534,7 @@ Action timer_sourcetv(Handle timer)
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
 		gB_isServerRecord = false
 	}
+	return Plugin_Stop
 }
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
