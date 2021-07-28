@@ -341,8 +341,8 @@
 					$timeDiffMins = floor($timeDiff / 60 % 60);
 					$timeDiffSecs = floor($timeDiff % 60);
 					$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
-					$formatedDateYmd = date("Y-m-d", (int)$row[date]);
-					$formatedDateHis = date("H:i:s", (int)$row[date]);
+					$formatedDateYmd = date("Y-m-d", $row[date]);
+					$formatedDateHis = date("H:i:s", $row[date]);
 					//if($count == 1)
 						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//else
