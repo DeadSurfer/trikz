@@ -1934,7 +1934,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		if(gI_pingModel[client])
 		{
-			//https://forums.alliedmods.net/showthread.php?p=1080444\
+			//https://forums.alliedmods.net/showthread.php?p=1080444
 			if(gB_color[client])
 				TE_SetupBeamPoints(gF_startLaser[client], gF_endLaser[client], gI_laserBeam, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {gI_color[client][0], gI_color[client][1], gI_color[client][2], 255]}, 0)
 			else
