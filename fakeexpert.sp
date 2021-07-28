@@ -502,7 +502,6 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gB_boost[client])
 	{
-		PrintToServer("sky")
 		float vecAbsBooster[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
 		float vecAbsFlyer[3]
@@ -764,7 +763,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						if(gB_TrikzMenuIsOpen[partner])
 							Trikz(partner)
 						char sQuery[512]
-						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i))", GetSteamAccountID(partner), GetSteamAccountID(param1), GetSteamAccountID(param1), GetSteamAccountID(partner))
+						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (partnerid = %i AND playerid = %i)) AND map = '%s'", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(param1), GetSteamAccountID(partner), gS_map)
 						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(partner))
 					}
 					else
