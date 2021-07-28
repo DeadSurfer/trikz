@@ -1968,7 +1968,7 @@ Action ProjectileBoostFix(int entity, int other)
 		//float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231//https://forums.alliedmods.net/showthread.php?t=146241
 		//if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
-		if(vecOriginOther[2] >= vecOriginEntity[2])
+		if(vecOriginOther[2] > vecOriginEntity[2])
 		{
 			float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
