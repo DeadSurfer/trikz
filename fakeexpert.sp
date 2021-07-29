@@ -419,9 +419,6 @@ public void OnClientPutInServer(int client)
 	gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
-	gB_color[client] = false
-	gI_pingTick[client] = 0
-	gI_colorCount[client] = 0
 }
 
 public void OnClientDisconnect(int client)
@@ -432,7 +429,11 @@ public void OnClientDisconnect(int client)
 		Trikz(partner)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
+	Color(client, false)
 	Color(partner, false)
+	gI_pingTick[client] = 0
+	gI_pingTick[partner] = 0
+	gI_colorCount[client] = 0
 	gI_colorCount[partner] = 0
 }
 
