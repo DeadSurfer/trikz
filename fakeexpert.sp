@@ -1089,7 +1089,13 @@ Action cmd_test(int client, int args)
 		else
 		{
 			FinishMSG(client, false, false, 11, 11, 11, 11, 11, 11)
-			PrintToChat(client, "\x01\x0B\x01%N and %N finished map in 11.11.11 (SR \x07FF0000\x06+11.11.11)", client, client) //https://pastebin.com/kAcPRqmw
+			SetGlobalTransTarget(client)
+			char sBuff[256]
+			Format(sBuff, 256, "%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
+			char sVBuff[256]
+			VFormat(sVBuff, 256, sBuff, 3)
+			PrintToChat(client, "%s", sVBuff)
+			//PrintToChat(client, "\x01\x0B\x01%N and %N finished map in 11.11.11 (SR \x07FF0000\x06+11.11.11)", client, client) //https://pastebin.com/kAcPRqmw
 		}	
 	}
 	return Plugin_Handled
