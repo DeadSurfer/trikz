@@ -1252,7 +1252,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		if(!gB_haveZone)
 		{
 			if(!gB_isDevmap)
-				CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+				CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE) //https://wiki.alliedmods.net/Timers_(SourceMod_Scripting)
 			gB_haveZone = true
 		}
 	}
@@ -1392,7 +1392,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
-							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
+							CreateTimer(60.0, timer_sourcetv)
 						}
 						else if(gF_ServerRecord < gF_Time[other] > gF_mateRecord[other])
 						{
@@ -1444,7 +1444,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
-							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
+							CreateTimer(60.0, timer_sourcetv)
 						}
 						else
 						{
@@ -1492,7 +1492,7 @@ Action SDKStartTouch(int entity, int other)
 						if(gB_cp[i][other])
 							PrintToChatAll("%i. Checkpoint: +00:00:00", i)
 					gB_isServerRecord = true
-					CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
+					CreateTimer(60.0, timer_sourcetv) //https://forums.alliedmods.net/showthread.php?t=191615
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
