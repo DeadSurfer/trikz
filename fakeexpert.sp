@@ -920,10 +920,7 @@ Action Timer_BlockToggle(Handle timer, int client)
 		SetEntityRenderMode(client, RENDER_NORMAL)
 		gB_block[client] = true
 		if(gB_TrikzMenuIsOpen[client])
-		{
-			gB_block[client] = true
 			Trikz(client)
-		}
 	}
 	return Plugin_Stop
 }
