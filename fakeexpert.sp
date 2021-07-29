@@ -157,7 +157,7 @@ public void OnMapStart()
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
 	ConVar CV_sourcetv = FindConVar("tv_enable")
-	bool isSourceTV = GetConVarBool(CV_sourcetv)
+	bool isSourceTV = CV_sourcetv.BoolValue
 	if(isSourceTV)
 	{
 		PrintToServer("SourceTV start recording.")
@@ -274,7 +274,7 @@ public void OnMapStart()
 public void OnMapEnd()
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable")
-	bool isSourceTV = GetConVarBool(CV_sourcetv)
+	bool isSourceTV = CV_sourcetv.BoolValue
 	if(isSourceTV)
 	{
 		ServerCommand("tv_stoprecord")
@@ -1513,7 +1513,7 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 Action timer_sourcetv(Handle timer)
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable")
-	bool isSourceTV = GetConVarBool(CV_sourcetv)
+	bool isSourceTV = CV_sourcetv.BoolValue //https://sm.alliedmods.net/new-api/convars/__raw
 	if(isSourceTV)
 	{
 		ServerCommand("tv_stoprecord")
