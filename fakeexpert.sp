@@ -1613,7 +1613,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 		{
 			SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
 			ShowHudText(client, 1, "MAP FINISHED!")
-			SetHudTextParams(-1.0, -0.73, 5.0, 0, 255, 0, 255)
+			SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
 			ShowHudText(client, 2, "NEW SERVER RECORD!")
 			SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
 			ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
