@@ -430,11 +430,14 @@ public void OnClientDisconnect(int client)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
 	Color(client, false)
-	Color(partner, false)
 	gI_pingTick[client] = 0
-	gI_pingTick[partner] = 0
 	gI_colorCount[client] = 0
-	gI_colorCount[partner] = 0
+	if(partner)
+	{
+		Color(partner, false)
+		gI_pingTick[partner] = 0
+		gI_colorCount[partner] = 0
+	}
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
