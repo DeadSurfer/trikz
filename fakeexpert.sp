@@ -1572,16 +1572,18 @@ Action SDKStartTouch(int entity, int other)
 
 void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
 {
+	Handle finishHUD = CreateHudSynchronizer()
 	if(firstServerRecord)
 	{
 		SetHudTextParams(-1.0, -0.025, 5.0, 0, 255, 255, 255)
-		ShowHudText(client, 1, "MAP FINISHED!")
+		ShowSyncHudText(client, finishHUD, "MAP FINISHED!")
 		SetHudTextParams(-1.0, -0.05, 5.0, 255, 0, 0, 255)
-		ShowHudText(client, 2, "NEW SERVER RECORD!")
+		ShowSyncHudText(client, finishHUD, "NEW SERVER RECORD!")
 		SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
-		ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+		ShowSyncHudText(client, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 		SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
-		ShowHudText(client, 4, "+00:00:00")
+		ShowSyncHudText(client, finishHUD, "+00:00:00")
+		ClearSyncHud(client, finishHUD)
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
@@ -1589,7 +1591,17 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client)
-					FinishMSG(i, true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
+				{
+					SetHudTextParams(-1.0, -0.025, 5.0, 0, 255, 255, 255)
+					ShowSyncHudText(i, finishHUD, "MAP FINISHED!")
+					SetHudTextParams(-1.0, -0.05, 5.0, 255, 0, 0, 255)
+					ShowSyncHudText(i, finishHUD, "NEW SERVER RECORD!")
+					SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
+					ShowSyncHudText(i, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+					SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
+					ShowSyncHudText(i, finishHUD, "+00:00:00")
+					ClearSyncHud(i, finishHUD)
+				}
 			}
 		}
 	}
@@ -1598,13 +1610,14 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 		if(serverRecord)
 		{
 			SetHudTextParams(-1.0, -0.025, 5.0, 0, 255, 255, 255)
-			ShowHudText(client, 1, "MAP FINISHED!")
+			ShowSyncHudText(client, finishHUD, "MAP FINISHED!")
 			SetHudTextParams(-1.0, -0.05, 5.0, 255, 0, 0, 255)
-			ShowHudText(client, 2, "NEW SERVER RECORD!")
+			ShowSyncHudText(client, finishHUD, "NEW SERVER RECORD!")
 			SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
-			ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+			ShowSyncHudText(client, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 			SetHudTextParams(-1.0, -1.01, 5.0, 0, 255, 0, 255)
-			ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+			ShowSyncHudText(client, finishHUD, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+			ClearSyncHud(client, finishHUD)
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
@@ -1612,18 +1625,29 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 					if(observerMode < 7 && observerTarget == client)
-						FinishMSG(i, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+					{
+						SetHudTextParams(-1.0, -0.025, 5.0, 0, 255, 255, 255)
+						ShowSyncHudText(i, finishHUD, "MAP FINISHED!")
+						SetHudTextParams(-1.0, -0.05, 5.0, 255, 0, 0, 255)
+						ShowSyncHudText(i, finishHUD, "NEW SERVER RECORD!")
+						SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
+						ShowSyncHudText(i, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+						SetHudTextParams(-1.0, -1.01, 5.0, 0, 255, 0, 255)
+						ShowSyncHudText(i, finishHUD, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						ClearSyncHud(i, finishHUD)
+					}
 				}
 			}
 		}
 		else
 		{
 			SetHudTextParams(-1.0, -0.0375, 5.0, 0, 255, 255, 255)
-			ShowHudText(client, 11, "MAP FINISHED!")
+			ShowSyncHudText(client, finishHUD, "MAP FINISHED!")
 			SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
-			ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+			ShowSyncHudText(client, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 			SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
-			ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+			ShowSyncHudText(client, finishHUD, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+			ClearSyncHud(client, finishHUD)
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
@@ -1631,7 +1655,15 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 					if(observerMode < 7 && observerTarget == client)
-						FinishMSG(i, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+					{
+						SetHudTextParams(-1.0, -0.0375, 5.0, 0, 255, 255, 255)
+						ShowSyncHudText(i, finishHUD, "MAP FINISHED!")
+						SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
+						ShowSyncHudText(i, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+						SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
+						ShowSyncHudText(i, finishHUD, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						ClearSyncHud(i, finishHUD)
+					}
 				}
 			}
 		}
