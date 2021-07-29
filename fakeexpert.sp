@@ -1420,6 +1420,16 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+								{
+									int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+									int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+									if(observerMode < 7 && (observerTarget == other || observerTarget == gI_partner[other]))
+										FinishMSG(i, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+								}
+							}
 							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
@@ -1438,6 +1448,16 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+								{
+									int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+									int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+									if(observerMode < 7 && (observerTarget == other || observerTarget == gI_partner[other]))
+										FinishMSG(i, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+								}
+							}
 							Format(sQuery, 512, "UPDATE records SET completions = completions + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 						}
@@ -1450,6 +1470,16 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+								{
+									int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+									int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+									if(observerMode < 7 && (observerTarget == other || observerTarget == gI_partner[other]))
+										FinishMSG(i, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+								}
+							}
 							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							if(gF_haveRecord[other] > gF_Time[other])
@@ -1472,6 +1502,16 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+								{
+									int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+									int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+									if(observerMode < 7 && (observerTarget == other || observerTarget == gI_partner[other]))
+										FinishMSG(i, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+								}
+							}
 							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 							gD_mysql.Query(SQLInsertRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
@@ -1490,6 +1530,16 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+								{
+									int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+									int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+									if(observerMode < 7 && (observerTarget == other || observerTarget == gI_partner[other]))
+										FinishMSG(i, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+								}
+							}
 							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 							gD_mysql.Query(SQLInsertRecord, sQuery)
 							if(gF_haveRecord[other] == 0.0)
@@ -1523,6 +1573,16 @@ Action SDKStartTouch(int entity, int other)
 					PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 					FinishMSG(other, true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
 					FinishMSG(gI_partner[other], true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
+					for(int i = 1; i <= MaxClients; i++)
+					{
+						if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+						{
+							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+							if(observerMode < 7 && (observerTarget == other || observerTarget == gI_partner[other]))
+								FinishMSG(i, true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
+						}
+					}
 					for(int i = 1; i <= 10; i++)
 						if(gB_cp[i][other])
 							PrintToChatAll("%i. Checkpoint: +00:00:00", i)
