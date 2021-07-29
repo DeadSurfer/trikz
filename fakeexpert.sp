@@ -1066,7 +1066,7 @@ Action cmd_test(int client, int args)
 			{
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				if(observerTarget == client)
-					PrintToServer("%i %N spectate -> %i %N", i, i, whoSpectate, whoSpectate)
+					PrintToServer("%i %N spectate -> %i %N", i, i, observerTarget, observerTarget)
 			}
 		}
 	}
