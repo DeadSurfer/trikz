@@ -1084,6 +1084,7 @@ Action cmd_test(int client, int args)
 		if(args)
 		{
 			FinishMSG(client, false, true, 11, 11, 11, 11, 11, 11)
+			PrintToChat(client, "\x01x077CFC00New server record!")
 			PrintToChat(client, "\x01%N and %N finished map in \x077CFC0011.11.11 \x01(SR \x077CFC00-11.11.11\x01)", client, client)
 		}
 		else
