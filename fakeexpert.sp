@@ -1539,36 +1539,37 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 {
 	if(firstServerRecord)
 	{
-		SetHudTextParams(-1.0, -0.25, 5.0, 0, 255, 255, 255)
+		SetHudTextParams(-1.0, -0.025, 5.0, 0, 255, 255, 255)
 		ShowHudText(client, 1, "MAP FINISHED!")
-		//ShowHudText(
-		SetHudTextParams(-1.0, -0.5, 5.0, 255, 0, 0, 255)
+		//ShowHudText(,
+		//SetHudTextParams(
+		SetHudTextParams(-1.0, -0.05, 5.0, 255, 0, 0, 255)
 		ShowHudText(client, 2, "NEW SERVER RECORD!")
-		SetHudTextParams(-1.0, -0.9, 5.0, 255, 255, 255, 255)
+		SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
 		ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-		SetHudTextParams(-1.0, -1.1, 5.0, 255, 0, 0, 255)
+		SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
 		ShowHudText(client, 4, "+00:00:00")
 	}
 	else
 	{
 		if(serverRecord)
 		{
-			SetHudTextParams(-1.0, -0.25, 5.0, 0, 255, 255, 255)
+			SetHudTextParams(-1.0, -0.025, 5.0, 0, 255, 255, 255)
 			ShowHudText(client, 1, "MAP FINISHED!")
-			SetHudTextParams(-1.0, -0.5, 5.0, 255, 0, 0, 255)
+			SetHudTextParams(-1.0, -0.05, 5.0, 255, 0, 0, 255)
 			ShowHudText(client, 2, "NEW SERVER RECORD!")
-			SetHudTextParams(-1.0, -0.9, 5.0, 255, 255, 255, 255)
+			SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
 			ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-			SetHudTextParams(-1.0, -1.1, 5.0, 0, 255, 0, 255)
+			SetHudTextParams(-1.0, -1.01, 5.0, 0, 255, 0, 255)
 			ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 		}
 		else
 		{
-			SetHudTextParams(-1.0, -0.375, 5.0, 0, 255, 255, 255)
+			SetHudTextParams(-1.0, -0.0375, 5.0, 0, 255, 255, 255)
 			ShowHudText(client, 11, "MAP FINISHED!")
-			SetHudTextParams(-1.0, -0.9, 5.0, 255, 255, 255, 255)
+			SetHudTextParams(-1.0, -0.09, 5.0, 255, 255, 255, 255)
 			ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-			SetHudTextParams(-1.0, -1.1, 5.0, 255, 0, 0, 255)
+			SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
 			ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 		}
 	}
