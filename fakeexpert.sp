@@ -1082,11 +1082,15 @@ Action cmd_test(int client, int args)
 			}
 		}
 		if(args)
+		{
 			FinishMSG(client, false, true, 11, 11, 11, 11, 11, 11)
+			PrintToChat(client, "%N and %N finished map in 11.11.11 (SR \x07008000-11.11.11)", client, client)
+		}
 		else
+		{
 			FinishMSG(client, false, false, 11, 11, 11, 11, 11, 11)
-		PrintToChat(client, "%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
-		PrintToChat(client, "%N and %N finished map in 11.11.11 (SR \x07008000-11.11.11)", client, client)
+			PrintToChat(client, "\x01\x0B\x01%N and %N finished map in 11.11.11 (SR \x07FF0000\x06+11.11.11)", client, client) //https://pastebin.com/kAcPRqmw
+		}	
 	}
 	return Plugin_Handled
 }
