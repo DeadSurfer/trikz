@@ -459,9 +459,9 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		return
 	if(IsClientInGame(client))
 	{
+		char sQuery[512]
 		char sName[64]
 		GetClientName(client, sName, 64)
-		char sQuery[512]
 		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
 		{
@@ -485,12 +485,12 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	int client = GetClientFromSerial(data)
 	if(client == 0)
 		return
-	int steamid = GetSteamAccountID(client)
 	if(IsClientInGame(client))
 	{
+		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
 		char sName[64]
 		GetClientName(client, sName, 64)
-		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
+		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
 		{
 			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
