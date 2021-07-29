@@ -1227,9 +1227,9 @@ void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any 
 
 void CPSetup()
 {
+	char sQuery[512]
 	for(int i = 1; i <= 10; i++)
 	{
-		char sQuery[512]
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s'", i, gS_map)
 		gD_mysql.Query(SQLCPSetup, sQuery, i)
 	}
@@ -1474,6 +1474,7 @@ Action SDKStartTouch(int entity, int other)
 						if(gB_cp[i][other])
 							PrintToChatAll("%i. Checkpoint: +00:00:00", i)
 					gB_isServerRecord = true
+					CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
