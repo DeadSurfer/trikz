@@ -1252,7 +1252,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		if(!gB_haveZone)
 		{
 			if(!gB_isDevmap)
-				CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE) //https://wiki.alliedmods.net/Timers_(SourceMod_Scripting)
+				CreateTimer(1.9, timer_draw, 0, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE) //https://wiki.alliedmods.net/Timers_(SourceMod_Scripting)
 			gB_haveZone = true
 		}
 	}
