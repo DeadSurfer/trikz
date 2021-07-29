@@ -301,7 +301,7 @@ Action specchat(int client, const char[] command, int argc)
 		GetClientName(client, sName, MAX_NAME_LENGTH)
 		char sChat[256]
 		GetCmdArg(argc, sChat, 256)
-		PrintToChatAll("*SPEC* %s :  %s", sName, sChat)
+		PrintToChatAll("\x01*SPEC* \x07CCCCCC%s \x01:  %s", sName, sChat)
 		PrintToServer("*SPEC* %s :  %s", sName, sChat)
 		return Plugin_Handled
 	}
