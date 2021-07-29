@@ -1972,7 +1972,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			TE_SendToAll()
 			EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
-			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
+			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client)
 		}
 	}
 	if(IsPlayerAlive(client))
@@ -2072,7 +2072,7 @@ Action cmd_devmap(int client, int args)
 			}
 		}
 		gF_devmapTime = GetEngineTime()
-		CreateTimer(20.0, timer_devmap, _, TIMER_FLAG_NO_MAPCHANGE)
+		CreateTimer(20.0, timer_devmap)
 	}
 	return Plugin_Handled
 }
@@ -2194,7 +2194,7 @@ Action SDKProjectile(int entity)
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		CreateTimer(1.49, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+		CreateTimer(1.49, timer_deleteProjectile, EntIndexToEntRef(entity)) //sometimes flashbang going to flash, entindextoentref must fix it.
 	}
 }
 
