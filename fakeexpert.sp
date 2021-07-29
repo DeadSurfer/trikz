@@ -464,15 +464,10 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		GetClientName(client, sName, 64)
 		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
-		{
 			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
-			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
-		}
 		else
-		{
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
-			gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
-		}
+		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
 	}
 }
 
