@@ -1089,18 +1089,19 @@ Action cmd_test(int client, int args)
 		else
 		{
 			FinishMSG(client, false, false, 11, 11, 11, 11, 11, 11)
-			SetGlobalTransTarget(client)
-			char sBuff[256]
-			Format(sBuff, 256, "\x01%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
-			char sVBuff[256]
-			VFormat(sVBuff, 256, sBuff, 3)
-			PrintToChat(client, "%s", sVBuff)
-			Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-			BfWriteByte(buf, client)
-			BfWriteByte(buf, true)
+			//SetGlobalTransTarget(client)
+			//char sBuff[256]
+			//Format(sBuff, 256, "\x01%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
+			PrintToChat(client, "\x01%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
+			//char sVBuff[256]
+			//VFormat(sVBuff, 256, sBuff, 3)
+			//PrintToChat(client, "%s", sVBuff)
+			//Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+			//BfWriteByte(buf, client)
+			//BfWriteByte(buf, true)
 			//BfWriteString(buf, sVBuff)
-			BfWriteString(buf, "\x07FF0000(SR \x07008000+11.11.11)")
-			EndMessage() //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L171-L185
+			//BfWriteString(buf, "\x07FF0000(SR \x07008000+11.11.11)")
+			//EndMessage() //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L171-L185
 			//PrintToChat(client, "\x01\x0B\x01%N and %N finished map in 11.11.11 (SR \x07FF0000\x06+11.11.11)", client, client) //https://pastebin.com/kAcPRqmw
 		}	
 	}
