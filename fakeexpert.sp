@@ -838,8 +838,14 @@ void Color(int client, bool customSkin)
 			gI_color[client][i] = StringToInt(gS_colorExploded[i])
 			gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
 		}
-		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
-		SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+		if(gB_block[client])
+			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+		else
+			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
+		if(gB_block[gI_partner[client]])
+			SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+		else
+			SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
 		gI_colorCount[client]++
 		gI_colorCount[gI_partner[client]]++
 	}
