@@ -144,6 +144,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
+	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
 	HookEvent("player_spawn", event_playerspawn)
@@ -1048,6 +1049,16 @@ Action cmd_deleteallcp(int client, int args)
 
 void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
 {
+}
+
+Action cmd_test(int client, int args)
+{
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		int whoSpectate = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+		PrintToServer("%i %N spectate -> %i %N", client, client, i, i)
+	}
+	return Plugin_Handled
 }
 
 Action cmd_endmins(int client, int args)
