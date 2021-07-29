@@ -1053,10 +1053,18 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 
 Action cmd_test(int client, int args)
 {
-	for(int i = 1; i <= MaxClients; i++)
+	int steamid = GetSteamAccountID(client)
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
-		int whoSpectate = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-		PrintToServer("%i %N spectate -> %i %N", client, client, i, i)
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			int whoSpectate = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+			PrintToServer("%i %N spectate -> %i %N", client, client, whoSpectate, whoSpectate)
+		}
 	}
 	return Plugin_Handled
 }
