@@ -1574,17 +1574,17 @@ Action SDKStartTouch(int entity, int other)
 
 void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
 {
-	Handle finishHUD = CreateHudSynchronizer() //https://sm.alliedmods.net/new-api/halflife/CreateHudSynchronizer
+	//Handle finishHUD = CreateHudSynchronizer() //https://sm.alliedmods.net/new-api/halflife/CreateHudSynchronizer
 	if(firstServerRecord)
 	{
 		SetHudTextParams(-1.0, -1.025, 5.0, 0, 255, 255, 255)
-		ShowSyncHudText(client, finishHUD, "MAP FINISHED!") //https://sm.alliedmods.net/new-api/halflife/ShowSyncHudText
+		ShowHudText(client, 1, "MAP FINISHED!") //https://sm.alliedmods.net/new-api/halflife/ShowSyncHudText
 		SetHudTextParams(-1.0, -1.05, 5.0, 255, 0, 0, 255)
-		ShowSyncHudText(client, finishHUD, "NEW SERVER RECORD!")
+		ShowHudText(client, 2, "NEW SERVER RECORD!")
 		SetHudTextParams(-1.0, -1.09, 5.0, 255, 255, 255, 255)
-		ShowSyncHudText(client, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+		ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 		SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
-		ShowSyncHudText(client, finishHUD, "+00:00:00")
+		ShowHudText(client, 4, "+00:00:00")
 		//ClearSyncHud(client, finishHUD)
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -1595,13 +1595,13 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 				if(observerMode < 7 && observerTarget == client)
 				{
 					SetHudTextParams(-1.0, -1.025, 5.0, 0, 255, 255, 255)
-					ShowSyncHudText(i, finishHUD, "MAP FINISHED!")
+					ShowHudText(i, 1, "MAP FINISHED!")
 					SetHudTextParams(-1.0, -1.05, 5.0, 255, 0, 0, 255)
-					ShowSyncHudText(i, finishHUD, "NEW SERVER RECORD!")
+					ShowHudText(i, 2, "NEW SERVER RECORD!")
 					SetHudTextParams(-1.0, -1.09, 5.0, 255, 255, 255, 255)
-					ShowSyncHudText(i, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+					ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 					SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
-					ShowSyncHudText(i, finishHUD, "+00:00:00")
+					ShowHudText(i, 4, "+00:00:00")
 					//ClearSyncHud(i, finishHUD) //https://sm.alliedmods.net/new-api/halflife/ClearSyncHud
 				}
 			}
@@ -1612,13 +1612,13 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 		if(serverRecord)
 		{
 			SetHudTextParams(-1.0, -1.025, 5.0, 0, 255, 255, 255)
-			ShowSyncHudText(client, finishHUD, "MAP FINISHED!")
+			ShowHudText(client, 1, "MAP FINISHED!")
 			SetHudTextParams(-1.0, -1.05, 5.0, 255, 0, 0, 255)
-			ShowSyncHudText(client, finishHUD, "NEW SERVER RECORD!")
+			ShowHudText(client, 2, "NEW SERVER RECORD!")
 			SetHudTextParams(-1.0, -1.09, 5.0, 255, 255, 255, 255)
-			ShowSyncHudText(client, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+			ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 			SetHudTextParams(-1.0, -1.01, 5.0, 0, 255, 0, 255)
-			ShowSyncHudText(client, finishHUD, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+			ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 			//ClearSyncHud(client, finishHUD)
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -1629,13 +1629,13 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 					if(observerMode < 7 && observerTarget == client)
 					{
 						SetHudTextParams(-1.0, -1.025, 5.0, 0, 255, 255, 255)
-						ShowSyncHudText(i, finishHUD, "MAP FINISHED!")
+						ShowHudText(i, 1, "MAP FINISHED!")
 						SetHudTextParams(-1.0, -1.05, 5.0, 255, 0, 0, 255)
-						ShowSyncHudText(i, finishHUD, "NEW SERVER RECORD!")
+						ShowHudText(i, 2, "NEW SERVER RECORD!")
 						SetHudTextParams(-1.0, -1.09, 5.0, 255, 255, 255, 255)
-						ShowSyncHudText(i, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+						ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 						SetHudTextParams(-1.0, -1.01, 5.0, 0, 255, 0, 255)
-						ShowSyncHudText(i, finishHUD, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 						//ClearSyncHud(i, finishHUD)
 					}
 				}
@@ -1644,11 +1644,11 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 		else
 		{
 			SetHudTextParams(-1.0, -1.0375, 5.0, 0, 255, 255, 255)
-			ShowSyncHudText(client, finishHUD, "MAP FINISHED!")
+			ShowHudText(client, 1, "MAP FINISHED!")
 			SetHudTextParams(-1.0, -1.09, 5.0, 255, 255, 255, 255)
-			ShowSyncHudText(client, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+			ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 			SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
-			ShowSyncHudText(client, finishHUD, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+			ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 			//ClearSyncHud(client, finishHUD)
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -1659,11 +1659,11 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 					if(observerMode < 7 && observerTarget == client)
 					{
 						SetHudTextParams(-1.0, -1.0375, 5.0, 0, 255, 255, 255)
-						ShowSyncHudText(i, finishHUD, "MAP FINISHED!")
+						ShowHudText(i, 1, "MAP FINISHED!")
 						SetHudTextParams(-1.0, -1.09, 5.0, 255, 255, 255, 255)
-						ShowSyncHudText(i, finishHUD, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+						ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 						SetHudTextParams(-1.0, -1.01, 5.0, 255, 0, 0, 255)
-						ShowSyncHudText(i, finishHUD, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 						//ClearSyncHud(i, finishHUD)
 					}
 				}
