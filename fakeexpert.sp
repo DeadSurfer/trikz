@@ -1064,8 +1064,9 @@ Action cmd_test(int client, int args)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
 			{
-				int whoSpectate = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-				PrintToServer("%i %N spectate -> %i %N", i, i, whoSpectate, whoSpectate)
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+				if(observerTarget == client)
+					PrintToServer("%i %N spectate -> %i %N", i, i, whoSpectate, whoSpectate)
 			}
 		}
 	}
