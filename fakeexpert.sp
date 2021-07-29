@@ -165,7 +165,6 @@ public void OnMapStart()
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 	}
-	gB_isServerRecord = false
 	if(!gB_isTurnedOnSourceTV)
 	{
 		gB_isTurnedOnSourceTV = true
