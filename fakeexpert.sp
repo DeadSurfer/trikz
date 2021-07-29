@@ -1062,7 +1062,7 @@ Action cmd_test(int client, int args)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && IsPlayerAlive(i))
+			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsPlayerAlive(i))
 			{
 				int whoSpectate = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				PrintToServer("%i %N spectate -> %i %N", client, client, whoSpectate, whoSpectate)
