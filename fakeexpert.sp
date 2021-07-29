@@ -1060,13 +1060,14 @@ Action cmd_test(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
-		PrintToServer("observerMode: %i", GetEntProp(client, Prop_Data, "m_iObserverMode"))
+		//PrintToServer("observerMode: %i", GetEntProp(client, Prop_Data, "m_iObserverMode"))
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
 			{
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-				if(observerTarget == client)
+				int observerMode = GetEntProp(i, Prop_Data, "m_hObserverTarget")
+				if(observerMode < 7 && observerTarget == client)
 					PrintToServer("%i %N spectate -> %i %N", i, i, observerTarget, observerTarget)
 			}
 		}
