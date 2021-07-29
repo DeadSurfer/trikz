@@ -1098,7 +1098,7 @@ Action cmd_test(int client, int args)
 			Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 			BfWriteByte(buf, client)
 			BfWriteByte(buf, true)
-			BfWriteByte(buf, sVBuff)
+			BfWriteString(buf, sVBuff)
 			EndMessage() //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L171-L185
 			//PrintToChat(client, "\x01\x0B\x01%N and %N finished map in 11.11.11 (SR \x07FF0000\x06+11.11.11)", client, client) //https://pastebin.com/kAcPRqmw
 		}	
