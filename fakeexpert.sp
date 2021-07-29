@@ -1442,8 +1442,8 @@ Action SDKStartTouch(int entity, int other)
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
-							PrintToChatAll("New server record!")
-							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							PrintToChatAll("\x077CFC00New server record!")
+							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
@@ -1461,7 +1461,7 @@ Action SDKStartTouch(int entity, int other)
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
-							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "UPDATE records SET completions = completions + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
@@ -1473,7 +1473,7 @@ Action SDKStartTouch(int entity, int other)
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
-							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
@@ -1494,8 +1494,8 @@ Action SDKStartTouch(int entity, int other)
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
-							PrintToChatAll("New server record!")
-							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR -%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							PrintToChatAll("\x077CFC00New server record!")
+							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
@@ -1513,7 +1513,7 @@ Action SDKStartTouch(int entity, int other)
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
-							PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +%02.i:%02.i:%02.i)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
@@ -1534,9 +1534,9 @@ Action SDKStartTouch(int entity, int other)
 							int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
 							int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
-								PrintToChatAll("%i. Checkpoint: -%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
 							else
-								PrintToChatAll("%i. Checkpoint: +%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
 						}
 					}
 				}
@@ -1545,13 +1545,13 @@ Action SDKStartTouch(int entity, int other)
 					gF_ServerRecord = gF_Time[other]
 					gF_haveRecord[other] = gF_Time[other]
 					gF_haveRecord[gI_partner[other]] = gF_Time[other]
-					PrintToChatAll("New server record!")
-					PrintToChatAll("%N and %N finished map in %02.i:%02.i:%02.i. (SR +00:00:00)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
+					PrintToChatAll("\x077CFC00New server record!")
+					PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 					FinishMSG(other, true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
 					FinishMSG(gI_partner[other], true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
 					for(int i = 1; i <= 10; i++)
 						if(gB_cp[i][other])
-							PrintToChatAll("%i. Checkpoint: +00:00:00", i)
+							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
 					gB_isServerRecord = true
 					CreateTimer(60.0, timer_sourcetv) //https://forums.alliedmods.net/showthread.php?t=191615
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
@@ -1799,8 +1799,8 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 	}
 	else
 	{
-		PrintToChat(other, "%i. Checkpoint: +00:00:00", cpnum)
-		PrintToChat(gI_partner[other], "%i. Checkpoint: +00:00:00", cpnum)
+		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
+		PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 	}
 }
 
@@ -1819,8 +1819,8 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
-			PrintToChat(other, "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
-			PrintToChat(gI_partner[other], "%i. Checkpoint: -%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(other, "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 		}
 		else
 		{
@@ -1829,14 +1829,14 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
-			PrintToChat(other, "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
-			PrintToChat(gI_partner[other], "%i. Checkpoint: +%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 		}
 	}
 	else
 	{
-		PrintToChat(other, "%i. Checkpoint: +00:00:00", cpnum)
-		PrintToChat(gI_partner[other], "%i. Checkpoint: +00:00:00", cpnum)
+		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
+		PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 	}
 }
 
