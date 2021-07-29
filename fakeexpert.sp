@@ -1081,8 +1081,7 @@ Action cmd_test(int client, int args)
 					PrintToServer("%i %N spectate -> %i %N", i, i, observerTarget, observerTarget)
 			}
 		}
-		//FinishMSG(client,
-		FinishMSG(client, false, true, 11, 11, 11, 11, 11, 11)
+		FinishMSG(client, false, false, 11, 11, 11, 11, 11, 11)
 	}
 	return Plugin_Handled
 }
