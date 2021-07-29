@@ -1061,6 +1061,16 @@ Action cmd_test(int client, int args)
 	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
 		//PrintToServer("observerMode: %i", GetEntProp(client, Prop_Data, "m_iObserverMode"))
+		/**SPEC* Nick Jurevich :  !test
+		observerMode: 4
+		*SPEC* Nick Jurevich :  !test
+		observerMode: 5
+		*SPEC* Nick Jurevich :  !test
+		observerMode: 6
+		Console: Map by Escencia
+		*SPEC* Nick Jurevich :  !test
+		observerMode: 7*/
+		//4, 5, 6 spec the player, 7 free look.
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
