@@ -1835,7 +1835,7 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	}
 	else
 	{
-		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum) https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L135
+		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L135
 		PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 	}
 }
