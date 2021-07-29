@@ -1084,7 +1084,7 @@ Action cmd_test(int client, int args)
 		if(args)
 		{
 			FinishMSG(client, false, true, 11, 11, 11, 11, 11, 11)
-			PrintToChat(client, "%N and %N finished map in 11.11.11 (SR \x07008000-11.11.11)", client, client)
+			PrintToChat(client, "%N and %N finished map in 11.11.11 (SR \x070x008000-11.11.11)", client, client)
 		}
 		else
 		{
