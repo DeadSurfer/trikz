@@ -1062,8 +1062,11 @@ Action cmd_test(int client, int args)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			int whoSpectate = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-			PrintToServer("%i %N spectate -> %i %N", client, client, whoSpectate, whoSpectate)
+			if(!IsClientSourceTV(i))
+			{
+				int whoSpectate = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+				PrintToServer("%i %N spectate -> %i %N", client, client, whoSpectate, whoSpectate)
+			}
 		}
 	}
 	return Plugin_Handled
