@@ -1085,8 +1085,8 @@ Action cmd_test(int client, int args)
 			FinishMSG(client, false, true, 11, 11, 11, 11, 11, 11)
 		else
 			FinishMSG(client, false, false, 11, 11, 11, 11, 11, 11)
-		PrintToChat(client, "%N and %N finished map in 11.11.11 (SR +11.11.11)", client, client)
-		PrintToChat(client, "%N and %N finished map in 11.11.11 (SR -11.11.11)", client, client)
+		PrintToChat(client, "%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
+		PrintToChat(client, "%N and %N finished map in 11.11.11 (SR \x07008000-11.11.11)", client, client)
 	}
 	return Plugin_Handled
 }
