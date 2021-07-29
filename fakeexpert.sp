@@ -313,6 +313,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 		gI_class[client] = 3
 	if(StrEqual(sModel, "models/player/ct_gign.mdl"))
 		gI_class[client] = 4
+	SetEntityRenderColor(client, 255, 255, 255, 255)
 }
 
 Action cmd_checkpoint(int client, int args)
