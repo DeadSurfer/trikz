@@ -625,7 +625,10 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Restart(gI_partner[param1])
 				}
 				case 4:
+				{
+					gB_TrikzMenuIsOpen[param1] = false
 					Checkpoint(param1)
+				}
 				case 5:
 				{
 					if(GetEntityMoveType(param1) & MOVETYPE_NOCLIP)
