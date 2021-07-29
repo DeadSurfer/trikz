@@ -1076,7 +1076,7 @@ Action cmd_test(int client, int args)
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
 			{
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-				int observerMode = GetEntProp(i, Prop_Data, "m_hObserverTarget")
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client)
 					PrintToServer("%i %N spectate -> %i %N", i, i, observerTarget, observerTarget)
 			}
