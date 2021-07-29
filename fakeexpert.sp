@@ -1084,7 +1084,7 @@ Action cmd_test(int client, int args)
 		if(args)
 		{
 			FinishMSG(client, false, true, 11, 11, 11, 11, 11, 11)
-			PrintToChat(client, "\x01%N and %N finished map in \x0700800011.11.11 \x01(SR \x07008000-11.11.11\x01)", client, client)
+			PrintToChat(client, "\x01%N and %N finished map in \x0700FF0011.11.11 \x01(SR \x0700FF00-11.11.11\x01)", client, client)
 		}
 		else
 		{
@@ -1092,7 +1092,7 @@ Action cmd_test(int client, int args)
 			//SetGlobalTransTarget(client)
 			//char sBuff[256]
 			//Format(sBuff, 256, "\x01%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
-			PrintToChat(client, "\x01%N and %N finished map in \x0700800011.11.11 \x01(SR \x07FF0000+11.11.11\x01)", client, client)
+			PrintToChat(client, "\x01%N and %N finished map in \x0700FF0011.11.11 \x01(SR \x07FF0000+11.11.11\x01)", client, client)
 			//char sVBuff[256]
 			//VFormat(sVBuff, 256, sBuff, 3)
 			//PrintToChat(client, "%s", sVBuff)
