@@ -1611,13 +1611,13 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 	{
 		if(serverRecord)
 		{
-			SetHudTextParams(-1.0, -1.025, 5.0, 0, 255, 255, 255)
+			SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 255, 255)
 			ShowHudText(client, 1, "MAP FINISHED!")
-			SetHudTextParams(-1.0, -1.05, 5.0, 255, 0, 0, 255)
+			SetHudTextParams(-1.0, -0.7, 5.0, 0, 255, 0, 255)
 			ShowHudText(client, 2, "NEW SERVER RECORD!")
-			SetHudTextParams(-1.0, -1.09, 5.0, 255, 255, 255, 255)
+			SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
 			ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-			SetHudTextParams(-1.0, -1.01, 5.0, 0, 255, 0, 255)
+			SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
 			ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 			//ClearSyncHud(client, finishHUD)
 			for(int i = 1; i <= MaxClients; i++)
