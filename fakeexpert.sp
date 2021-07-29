@@ -157,7 +157,7 @@ public void OnMapStart()
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
 	ConVar CV_sourcetv = FindConVar("tv_enable")
-	bool isSourceTV = CV_sourcetv.BoolValue
+	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
 	{
 		PrintToServer("SourceTV start recording.")
