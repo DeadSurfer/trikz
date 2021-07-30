@@ -58,6 +58,7 @@ float gF_haveRecord[MAXPLAYERS + 1]
 float gF_ServerRecord
 
 ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
+ConVar gCV_topURL
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
@@ -124,6 +125,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
+	gCV_topURL = CreateConVar("top url", "", "Set url for top for ex http://www.fakeexpert.rf.gd")
 	AutoExecConfig(true) //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_trikz", cmd_trikz)
@@ -2369,7 +2371,9 @@ Action timer_changelevel(Handle timer)
 
 Action cmd_top(int client, int args)
 {
-	ShowMOTDPanel(client, "Trikz Timer", "http://www.fakeexpert.rf.gd", MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	char sTopURL[192]
+	GetConVarString(gCV_topURL, sTopURL, 192)
+	ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	return Plugin_Handled
 }
 
