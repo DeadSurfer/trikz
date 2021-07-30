@@ -1111,11 +1111,11 @@ Action cmd_test(int client, int args)
 		test.ImportFromFile("test.txt")
 		char sKVString[256]
 		char sKVString2[256]
-		test.GetString(1, sKVString, 256)
+		test.GetString("1", sKVString, 256)
 		int newClient = StringToInt(sKVString)
 		//if(newClient == 1)
 		//	newClient = client
-		test.GetString(2, sKVString2, 256)
+		test.GetString("2", sKVString2, 256)
 		int kvINT = 256
 		int newKVINT = StringToInt(sKVString2)
 		//if(newClient == 1)
