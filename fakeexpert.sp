@@ -134,6 +134,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_time", cmd_time)
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
+	RegConsoleCmd("sm_top", cmd_top)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -2364,6 +2365,12 @@ Action timer_devmap(Handle timer)
 Action timer_changelevel(Handle timer)
 {
 	ForceChangeLevel(gS_map, "Reason: Devmap")
+}
+
+Action cmd_top(int client, int args)
+{
+	ShowMOTDPanel(client, "Trikz Timer", "https://www.fakeexpert.rf.gd")
+	return Plugin_Handled
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
