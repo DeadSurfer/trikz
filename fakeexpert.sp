@@ -2284,11 +2284,13 @@ Action cmd_time(int client, int args)
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == i)
-				//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
-				int hour = (RoundToFloor(gF_Time[i]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				int minute = (RoundToFloor(gF_Time[i]) / 60) % 60
-				int second = RoundToFloor(gF_Time[i]) % 60
-				PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[i], hour, minute, second)
+				{
+					//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+					int hour = (RoundToFloor(gF_Time[i]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+					int minute = (RoundToFloor(gF_Time[i]) / 60) % 60
+					int second = RoundToFloor(gF_Time[i]) % 60
+					PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[i], hour, minute, second)
+				}
 			}
 		}
 	}
