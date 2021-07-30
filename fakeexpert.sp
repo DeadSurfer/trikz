@@ -2132,6 +2132,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
 			DispatchSpawn(gI_pingModel[client])
+			AcceptEntityInput(gI_pingModel[client], "disableshadows 1")
 			float start[3]
 			float angle[3]
 			float end[3]
