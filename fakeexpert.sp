@@ -1131,6 +1131,7 @@ Action cmd_test(int client, int args)
 		else if(newKVINT == 2)
 			newKVINT = kvINT
 		PrintToServer("%i %i", newClient, newKVINT)
+		//PrintToServer("%i %i", newKVINT, newClient)
 		//int 
 	}
 	return Plugin_Handled
