@@ -827,12 +827,26 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		//SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
-		//SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
-		SetEntityModel(client, "models/fakeexpert/player/ct_urban.mdl")
-		SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_urban.mdl")
+		if(gI_wModelPlayer[gI_class[client]])
+		{
+			SetEntityModel(client, "models/fakeexpert/player/ct_urban.mdl")
+			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_urban.mdl")
+		}
+		if(gI_wModelPlayer[gI_class[client]] == 2)
+		{
+			SetEntityModel(client, "models/fakeexpert/player/ct_gsg9.mdl")
+			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_gsg9.mdl")
+		}
+		if(gI_wModelPlayer[gI_class[client]] == 3)
+		{
+			SetEntityModel(client, "models/fakeexpert/player/ct_sas.mdl")
+			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_sas.mdl")
+		}
+		if(gI_wModelPlayer[gI_class[client]] == 4)
+		{
+			SetEntityModel(client, "models/fakeexpert/player/ct_gign.mdl")
+			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_gign.mdl")
+		}
 		DispatchKeyValue(client, "skin", "2")
 		DispatchKeyValue(gI_partner[client], "skin", "2")
 		char gS_colorExploded[3][3]
