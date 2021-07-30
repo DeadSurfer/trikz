@@ -1104,7 +1104,34 @@ Action cmd_test(int client, int args)
 			//BfWriteString(buf, "\x07FF0000(SR \x07008000+11.11.11)")
 			//EndMessage() //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L171-L185
 			//PrintToChat(client, "\x01\x0B\x01%N and %N finished map in 11.11.11 (SR \x07FF0000\x06+11.11.11)", client, client) //https://pastebin.com/kAcPRqmw
-		}	
+		}
+		KeyValues test = CreateKeyValues("test")
+		//char sCfg[256]
+		//Format(sCfg, 256, "test.txt")
+		test.ImportFromFile("test.txt")
+		char sKVString[256]
+		char sKVString2[256]
+		test.GetString(1, sKVString, 256)
+		int newClient = StringToInt(sKVString)
+		//if(newClient == 1)
+		//	newClient = client
+		test.GetString(2, sKVString2, 256)
+		int kvINT = 256
+		newKVINT = StringToInt(sKVString2)
+		//if(newClient == 1)
+		//	newClient = client
+		//if(newClient == 2)
+		//	newKVINT = kvINT
+		if(newClient == 1)
+			newClient = client
+		else if(newClient == 1)
+			newClient = newKVINT
+		else if(newKVINT == 2)
+			newKVINT = kvINT
+		if(newClient == 1)
+			newClient = client
+		PrintToServer("%i %i", newClient, newKVINT)
+		//int 
 	}
 	return Plugin_Handled
 }
