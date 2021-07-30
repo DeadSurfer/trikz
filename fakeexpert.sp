@@ -106,6 +106,7 @@ int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
 int gI_laserBeam
+int gI_countTickZones
 
 public Plugin myinfo =
 {
@@ -1338,8 +1339,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		createcp(data)
 		if(!gB_haveZone)
 		{
-			if(!gB_isDevmap)
-				CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT) //https://wiki.alliedmods.net/Timers_(SourceMod_Scripting)
+			//if(!gB_isDevmap)
+				//CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT) //https://wiki.alliedmods.net/Timers_(SourceMod_Scripting)
 			gB_haveZone = true
 		}
 	}
@@ -1937,7 +1938,21 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("Zones table is successfuly created.")
 }
 
-Action timer_draw(Handle timer)
+
+
+public void OnGameFrame()
+{
+	gI_countTickZones++
+	if(gI_countTickZones == 200 && !gB_isDevmap)
+	{
+		DrawZone()
+		gI_countTickZones = 0
+	}
+}
+
+//Action timer_draw(Handle timer)
+
+void DrawZone()
 {
 	float start[13][3]
 	float end[13][3]
