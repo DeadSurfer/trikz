@@ -1117,7 +1117,7 @@ Action cmd_test(int client, int args)
 		//	newClient = client
 		test.GetString(2, sKVString2, 256)
 		int kvINT = 256
-		newKVINT = StringToInt(sKVString2)
+		int newKVINT = StringToInt(sKVString2)
 		//if(newClient == 1)
 		//	newClient = client
 		//if(newClient == 2)
