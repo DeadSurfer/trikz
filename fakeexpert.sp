@@ -842,10 +842,10 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		DispatchKeyValue(client, "skin", "1")
-		DispatchKeyValue(gI_partner[client], "skin", "1")
+		SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		DispatchKeyValue(client, "skin", "2")
+		DispatchKeyValue(gI_partner[client], "skin", "2")
 		char gS_colorExploded[3][3]
 		if(gI_colorCount[client] == 9)
 		{
