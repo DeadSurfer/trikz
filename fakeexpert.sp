@@ -687,8 +687,12 @@ Action Block(int client)
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		//SetEntityRenderMode(client, RENDER_NORMAL)
-		SetEntityRenderMode(client, RENDER_TRANSALPHA)
-		SetEntityRenderColor(client, 255, 255, 255, 255)
+		SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+		if(gB_color[client])
+			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+		else
+			SetEntityRenderColor(client, 255, 255, 255, 255)
+		//SetEntityRenderColor(client, 255, 255, 255, 255)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block enabled.")
@@ -937,7 +941,11 @@ Action Timer_BlockToggle(Handle timer, int client)
 	if(IsValidEntity(client) && IsValidEntity(gI_partner[client]))
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		SetEntityRenderMode(client, RENDER_NORMAL)
+		//SetEntityRenderMode(client, RENDER_NORMAL)
+		if(gB_color[client])
+			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+		else
+			SetEntityRenderColor(client, 255, 255, 255, 255)
 		gB_block[client] = true
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
