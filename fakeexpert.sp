@@ -109,6 +109,8 @@ int gI_laserBeam
 int gI_countTickZones
 //char gS_oldFileName[256]
 bool gB_isSourceTVchangedFileName = true
+float gF_vecVelClient[MAXPLAYERS + 1][3]
+float gF_vecVelEntity[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -576,7 +578,7 @@ void SDKBoostFix(int client)
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 			}
-			if(gB_groundBoost[client])
+			/*if(gB_groundBoost[client])
 			{
 				gF_vecVelBoostFix[client][2] *= 3.0
 				if(gF_vecVelBoostFix[client][2] > 800.0)
@@ -584,7 +586,25 @@ void SDKBoostFix(int client)
 				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 			}
 			else
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])*/
+			float velocity[3]
+			velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
+			velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
+			velocity[2] = gF_vecVelEntity[client][2]
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
+			if(gB_groundBoost[client])
+			{
+				velocity[0] += gF_vecVelEntity[client][0]
+				velocity[1] += gF_vecVelEntity[client][1]
+				velocity[2] += gF_vecVelEntity[client][2]
+			}
+			else
+			{
+				velocity[0] += gF_vecVelEntity[client][0] * 0.135
+				velocity[1] += gF_vecVelEntity[client][1] * 0.135
+			}
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gB_boost[client] = false
 		}
 	}
@@ -2216,7 +2236,7 @@ Action ProjectileBoostFix(int entity, int other)
 		//if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		if(vecOriginOther[2] > vecOriginEntity[2])
 		{
-			float vecVelClient[3]
+			/*float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
 			float vecVelEntity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
@@ -2224,7 +2244,11 @@ Action ProjectileBoostFix(int entity, int other)
 			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
 			gF_vecVelBoostFix[other][0] = vecVelClient[0]
 			gF_vecVelBoostFix[other][1] = vecVelClient[1]
-			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])
+			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])*/
+			//float vecVelClient[3]
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient)
+			//float vecVelEntity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity)
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
