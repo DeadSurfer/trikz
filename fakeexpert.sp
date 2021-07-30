@@ -2297,24 +2297,19 @@ Action cmd_time(int client, int args)
 		int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
 		int second = RoundToFloor(gF_Time[client]) % 60
 		PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
+		PrintToChat(gI_partner[client], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
 	}
 	else
 	{
-		//for(int i = 1; i <= MaxClients; i++)
+		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
+		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
+		if(observerMode < 7)
 		{
-			//if(IsClientInGame(i) && IsPlayerAlive(i))
-			{
-				int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
-				int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
-				if(observerMode < 7)
-				{
-					//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
-					int hour = (RoundToFloor(gF_Time[observerTarget]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-					int minute = (RoundToFloor(gF_Time[observerTarget]) / 60) % 60
-					int second = RoundToFloor(gF_Time[observerTarget]) % 60
-					PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[observerTarget], hour, minute, second)
-				}
-			}
+			//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+			int hour = (RoundToFloor(gF_Time[observerTarget]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			int minute = (RoundToFloor(gF_Time[observerTarget]) / 60) % 60
+			int second = RoundToFloor(gF_Time[observerTarget]) % 60
+			PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[observerTarget], hour, minute, second)
 		}
 	}
 }
