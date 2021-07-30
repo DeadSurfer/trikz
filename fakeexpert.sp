@@ -680,6 +680,7 @@ Action Block(int client)
 	{
 
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		if(gB_color[client])
 			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
 		else
@@ -825,10 +826,14 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		SetEntProp(client, Prop_Data, "m_nSkin", 3)
-		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 3)
+		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		//SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		//SetEntProp(client, Prop_Data, "m_nSkin", 1)
+		//SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 1)
+		SetEntityModel(client, "models/fakeexpert/player/ct_urban.mdl")
+		SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_urban.mdl")
+		DispatchKeyValue(client, "skin" "2")
+		DispatchKeyValue(gI_partner[client], "skin" "2")
 		char gS_colorExploded[3][3]
 		if(gI_colorCount[client] == 9)
 		{
