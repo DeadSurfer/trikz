@@ -831,27 +831,6 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		/*if(gI_class[client] == 1)
-		{
-			SetEntityModel(client, "models/fakeexpert/player/ct_urban.mdl")
-			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_urban.mdl")
-			//SetEntityModel(
-		}
-		if(gI_class[client] == 2)
-		{
-			SetEntityModel(client, "models/fakeexpert/player/ct_gsg9.mdl")
-			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_gsg9.mdl")
-		}
-		if(gI_class[client] == 3)
-		{
-			SetEntityModel(client, "models/fakeexpert/player/ct_sas.mdl")
-			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_sas.mdl")
-		}
-		if(gI_class[client] == 4)
-		{
-			SetEntityModel(client, "models/fakeexpert/player/ct_gign.mdl")
-			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_gign.mdl")
-		}*/
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		DispatchKeyValue(client, "skin", "2")
@@ -2288,11 +2267,31 @@ Action ProjectileBoostFixEndTouch(int entity, int other)
 
 Action cmd_time(int client, int args)
 {
-	//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
-	int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-	int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
-	int second = RoundToFloor(gF_Time[client]) % 60
-	PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
+	if(IsPlayerAlive(client))
+	{
+		//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+		int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+		int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
+		int second = RoundToFloor(gF_Time[client]) % 60
+		PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
+	}
+	else
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) && IsPlayerAlive(i))
+			{
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+				if(observerMode < 7 && observerTarget == i)
+				//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+				int hour = (RoundToFloor(gF_Time[i]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				int minute = (RoundToFloor(gF_Time[i]) / 60) % 60
+				int second = RoundToFloor(gF_Time[i]) % 60
+				PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[i], hour, minute, second)
+			}
+		}
+	}
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
