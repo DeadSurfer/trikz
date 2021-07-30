@@ -2145,6 +2145,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			SetVariantBool(true)
 			AcceptEntityInput(gI_pingModel[client], "disableshadows")
 			AcceptEntityInput(gI_pingModel[client], "disablereceiveshadows")
+			SetEntProp(gI_pingModel[client], Prop_Send, "m_fEffects", 16);
 			float start[3]
 			float angle[3]
 			float end[3]
