@@ -158,6 +158,7 @@ public void OnMapStart()
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
+	gI_countTickZones = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
@@ -1733,18 +1734,32 @@ Action timer_sourcetv(Handle timer)
 	if(isSourceTV)
 	{
 		ServerCommand("tv_stoprecord")
-		char sOldFileName[256]
-		Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
-		char sNewFileName[256]
-		Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
-		RenameFile(sNewFileName, sOldFileName)
-		PrintToServer("SourceTV start recording.")
-		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
-		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
-		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
+		//char sOldFileName[256]
+		//Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+		//char sNewFileName[256]
+		//Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+		//RenameFile(sNewFileName, sOldFileName)
+		CreateTimer(5.0, timer_runSourceTV)
+		//PrintToServer("SourceTV start recording.")
+		//FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
+		//FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
+		//ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
 		gB_isServerRecord = false
 	}
 	//return Plugin_Stop
+}
+
+Action timer_runSourceTV(Handle timer)
+{
+	char sOldFileName[256]
+	Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+	char sNewFileName[256]
+	Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+	RenameFile(sNewFileName, sOldFileName)
+	PrintToServer("SourceTV start recording.")
+	FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
+	FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
+	ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
 }
 
 void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
@@ -1937,8 +1952,6 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 {
 	PrintToServer("Zones table is successfuly created.")
 }
-
-
 
 public void OnGameFrame()
 {
