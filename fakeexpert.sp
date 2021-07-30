@@ -2138,7 +2138,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			AcceptEntityInput(gI_pingModel[client], "disablereceiveshadows")
 			//AcceptEntityInput(gI_pingModel[client], "SetShadowsDisabled")
 			DispatchSpawn(gI_pingModel[client])
+			SetVariantBool(true)
+			AcceptEntityInput(gI_pingModel[client], "disableshadows")
+			AcceptEntityInput(gI_pingModel[client], "disablereceiveshadows")
 			ActivateEntity(gI_pingModel[client])
+			SetVariantBool(true)
+			AcceptEntityInput(gI_pingModel[client], "disableshadows")
+			AcceptEntityInput(gI_pingModel[client], "disablereceiveshadows")
 			float start[3]
 			float angle[3]
 			float end[3]
