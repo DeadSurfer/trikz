@@ -62,7 +62,6 @@ ConVar gCV_topURL
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
-//float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 bool gB_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
@@ -108,7 +107,6 @@ int gI_colorCount[MAXPLAYERS + 1]
 int gI_zoneModel[3]
 int gI_laserBeam
 int gI_countTickZones
-//char gS_oldFileName[256]
 bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
@@ -299,7 +297,6 @@ public void OnMapEnd()
 		ServerCommand("tv_stoprecord")
 		char sOldFileName[256]
 		Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
-		//Format(gS_oldFileName, 256, sOldFileName)
 		if(gB_isServerRecord)
 		{
 			char sNewFileName[256]
@@ -581,21 +578,10 @@ void SDKBoostFix(int client)
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 			}
-			/*if(gB_groundBoost[client])
-			{
-				gF_vecVelBoostFix[client][2] *= 3.0
-				if(gF_vecVelBoostFix[client][2] > 800.0)
-					gF_vecVelBoostFix[client][2] = 800.0
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
-			}
-			else
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])*/
 			float velocity[3]
 			velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
 			velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
 			velocity[2] = gF_vecVelEntity[client][2]
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-			//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 			if(gB_groundBoost[client])
 			{
 				velocity[0] += gF_vecVelEntity[client][0]
@@ -709,13 +695,11 @@ Action Block(int client)
 	if(gB_block[client])
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		//SetEntityRenderMode(client, RENDER_NORMAL)
 		SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 		if(gB_color[client])
 			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		else
 			SetEntityRenderColor(client, 255, 255, 255, 255)
-		//SetEntityRenderColor(client, 255, 255, 255, 255)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block enabled.")
@@ -964,7 +948,6 @@ Action Timer_BlockToggle(Handle timer, int client)
 	if(IsValidEntity(client) && IsValidEntity(gI_partner[client]))
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		//SetEntityRenderMode(client, RENDER_NORMAL)
 		if(gB_color[client])
 			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		else
@@ -1386,11 +1369,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gF_vecCP[1][data][2] = results.FetchFloat(5)
 		createcp(data)
 		if(!gB_haveZone)
-		{
-			//if(!gB_isDevmap)
-				//CreateTimer(2.0, timer_draw, 0, TIMER_REPEAT) //https://wiki.alliedmods.net/Timers_(SourceMod_Scripting)
 			gB_haveZone = true
-		}
 	}
 }
 
@@ -1785,7 +1764,7 @@ Action timer_sourcetv(Handle timer)
 		//Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
 		//char sNewFileName[256]
 		//Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
-		//RenameFile(sNewFileName, sOldFileName)
+		//RenameFile(sNewFileName, sOldFileName) //its dont want to work in this case. so try to make timer for it lower.
 		gB_isSourceTVchangedFileName = false
 		CreateTimer(5.0, timer_runSourceTV)
 		//PrintToServer("SourceTV start recording.")
@@ -2007,18 +1986,6 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("Zones table is successfuly created.")
 }
 
-public void OnGameFrame()
-{
-	gI_countTickZones++
-	if(gI_countTickZones == 200 && !gB_isDevmap)
-	{
-		DrawZone()
-		gI_countTickZones = 0
-	}
-}
-
-//Action timer_draw(Handle timer)
-
 void DrawZone()
 {
 	float start[13][3]
@@ -2207,6 +2174,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		else if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
+	gI_countTickZones++
+	if(gI_countTickZones == 200 && !gB_isDevmap)
+	{
+		DrawZone()
+		gI_countTickZones = 0
+	}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
@@ -2239,18 +2212,7 @@ Action ProjectileBoostFix(int entity, int other)
 		//if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		if(vecOriginOther[2] > vecOriginEntity[2])
 		{
-			/*float vecVelClient[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vecVelClient)
-			float vecVelEntity[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-			vecVelClient[0] -= vecVelEntity[0] * 0.9964619
-			vecVelClient[1] -= vecVelEntity[1] * 0.9964619
-			gF_vecVelBoostFix[other][0] = vecVelClient[0]
-			gF_vecVelBoostFix[other][1] = vecVelClient[1]
-			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])*/
-			//float vecVelClient[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[other])
-			//float vecVelEntity[3]
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity[other])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
