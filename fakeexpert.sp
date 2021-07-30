@@ -91,7 +91,7 @@ bool gB_block[MAXPLAYERS + 1]
 int gI_wModelThrown
 int gI_class[MAXPLAYERS + 1]
 bool gB_color[MAXPLAYERS + 1]
-//int gI_wModelPlayer[5]
+int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingTick[MAXPLAYERS + 1]
@@ -177,14 +177,14 @@ public void OnMapStart()
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
 	gI_wModelPlayerDef[4] = PrecacheModel("models/player/ct_gign.mdl")
 	//PrecacheModel("models/fakeexpert/player/ct_urban.mdl", true)
-	/*gI_wModelPlayer[1] = PrecacheModel("models/fakeexpert/player/ct_urban.mdl", true)
-	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl", true)
-	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl", true)
-	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl", true)*/
-	PrecacheModel("models/fakeexpert/player/ct_urban.mdl", true)
+	gI_wModelPlayer[1] = PrecacheModel("models/fakeexpert/player/ct_urban.mdl",)
+	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl",)
+	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl")
+	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl")
+	/*PrecacheModel("models/fakeexpert/player/ct_urban.mdl", true)
 	PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl", true)
 	PrecacheModel("models/fakeexpert/player/ct_sas.mdl", true)
-	PrecacheModel("models/fakeexpert/player/ct_gign.mdl", true)
+	PrecacheModel("models/fakeexpert/player/ct_gign.mdl", true)*/
 	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl")
 	PrecacheSound("fakeexpert/pingtool/click.wav") //https://forums.alliedmods.net/showthread.php?t=333211
 	gI_zoneModel[0] = PrecacheModel("materials/fakeexpert/zones/start.vmt")
@@ -831,10 +831,11 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		if(gI_class[client] == 1)
+		/*if(gI_class[client] == 1)
 		{
 			SetEntityModel(client, "models/fakeexpert/player/ct_urban.mdl")
 			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_urban.mdl")
+			//SetEntityModel(
 		}
 		if(gI_class[client] == 2)
 		{
@@ -850,7 +851,9 @@ void Color(int client, bool customSkin)
 		{
 			SetEntityModel(client, "models/fakeexpert/player/ct_gign.mdl")
 			SetEntityModel(gI_partner[client], "models/fakeexpert/player/ct_gign.mdl")
-		}
+		}*/
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		DispatchKeyValue(client, "skin", "2")
 		DispatchKeyValue(gI_partner[client], "skin", "2")
 		char gS_colorExploded[3][3]
