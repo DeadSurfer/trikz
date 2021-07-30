@@ -2133,7 +2133,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
 			//DispatchSpawn(gI_pingModel[client])
 			//SetVariantInt(1) //https://forums.alliedmods.net/showthread.php?t=154269&page=2
-			SetVariantBool(1)
+			SetVariantBool(true)
 			AcceptEntityInput(gI_pingModel[client], "disableshadows")
 			AcceptEntityInput(gI_pingModel[client], "disablereceiveshadows")
 			//AcceptEntityInput(gI_pingModel[client], "SetShadowsDisabled")
