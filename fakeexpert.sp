@@ -107,6 +107,8 @@ int gI_colorCount[MAXPLAYERS + 1]
 int gI_zoneModel[3]
 int gI_laserBeam
 int gI_countTickZones
+//char gS_oldFileName[256]
+bool gB_isSourceTVchangedFileName = true
 
 public Plugin myinfo =
 {
@@ -163,6 +165,15 @@ public void OnMapStart()
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
 	{
+		if(!gB_isSourceTVchangedFileName)
+		{
+			char sOldFileName[256]
+			Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+			char sNewFileName[256]
+			Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
+			RenameFile(sNewFileName, sOldFileName)
+			gB_isSourceTVchangedFileName = true
+		}
 		PrintToServer("SourceTV start recording.")
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
@@ -283,6 +294,7 @@ public void OnMapEnd()
 		ServerCommand("tv_stoprecord")
 		char sOldFileName[256]
 		Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
+		//Format(gS_oldFileName, 256, sOldFileName)
 		if(gB_isServerRecord)
 		{
 			char sNewFileName[256]
@@ -1739,6 +1751,7 @@ Action timer_sourcetv(Handle timer)
 		//char sNewFileName[256]
 		//Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
 		//RenameFile(sNewFileName, sOldFileName)
+		gB_isSourceTVchangedFileName = false
 		CreateTimer(5.0, timer_runSourceTV)
 		//PrintToServer("SourceTV start recording.")
 		//FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
@@ -1764,6 +1777,7 @@ Action timer_runSourceTV(Handle timer)
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
 		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
 		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
+		gB_isSourceTVchangedFileName = true
 	}
 }
 
