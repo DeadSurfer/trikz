@@ -1125,7 +1125,7 @@ Action cmd_test(int client, int args)
 		if(newClient == 1)
 			newClient = client
 		else if(newClient == 2)
-			newClient = newKVINT
+			newClient = kvINT
 		if(newKVINT == 1)
 			newKVINT = client
 		else if(newKVINT == 2)
