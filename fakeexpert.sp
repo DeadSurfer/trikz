@@ -1126,9 +1126,9 @@ Action cmd_test(int client, int args)
 			newClient = client
 		if(newClient == 2)
 			newClient = kvINT
-		if(newKVINT == 2)
-			newKVINT = client
 		if(newKVINT == 1)
+			newKVINT = client
+		if(newKVINT == 2)
 			newKVINT = kvINT
 		PrintToServer("%i %i", newClient, newKVINT)
 		//PrintToServer("%i %i", newKVINT, newClient)
