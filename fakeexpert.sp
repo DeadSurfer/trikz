@@ -125,7 +125,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
-	gCV_topURL = CreateConVar("top url", "", "Set url for top for ex http://www.fakeexpert.rf.gd")
+	gCV_topURL = CreateConVar("topurl", "", "Set url for top for ex http://www.fakeexpert.rf.gd")
 	AutoExecConfig(true) //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_trikz", cmd_trikz)
