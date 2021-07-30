@@ -1130,7 +1130,7 @@ Action cmd_test(int client, int args)
 			newKVINT = 20
 		if(newKVINT == 2)
 			newKVINT = kvINT
-		PrintToServer("%i %i", newClient, newKVINT)
+		PrintToServer("%i %i", newClient, newKVINT) // so we can customize in this way all chats. alot secuences but its okey.
 		//PrintToServer("%i %i", newKVINT, newClient)
 		//int 
 	}
