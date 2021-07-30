@@ -579,6 +579,8 @@ void SDKBoostFix(int client)
 			if(gB_groundBoost[client])
 			{
 				gF_vecVelBoostFix[client][2] *= 3.0
+				if(gF_vecVelBoostFix[client][2] > 800)
+					gF_vecVelBoostFix[client][2] = 800
 				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_vecVelBoostFix[client])
 			}
 			else
