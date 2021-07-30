@@ -2369,7 +2369,7 @@ Action timer_changelevel(Handle timer)
 
 Action cmd_top(int client, int args)
 {
-	ShowMOTDPanel(client, "Trikz Timer", "https://www.fakeexpert.rf.gd")
+	ShowMOTDPanel(client, "Trikz Timer", "https://www.fakeexpert.rf.gd", MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	return Plugin_Handled
 }
 
