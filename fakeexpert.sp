@@ -2297,7 +2297,8 @@ Action cmd_time(int client, int args)
 		int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
 		int second = RoundToFloor(gF_Time[client]) % 60
 		PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
-		PrintToChat(gI_partner[client], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
+		if(gI_partner[client])
+			PrintToChat(gI_partner[client], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
 	}
 	else
 	{
