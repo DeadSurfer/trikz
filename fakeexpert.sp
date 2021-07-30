@@ -827,8 +827,8 @@ void Color(int client, bool customSkin)
 		gB_color[gI_partner[client]] = true
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		SetEntProp(client, Prop_Data, "m_nSkin", 2)
-		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 2)
+		SetEntProp(client, Prop_Data, "m_nSkin", 3)
+		SetEntProp(gI_partner[client], Prop_Data, "m_nSkin", 3)
 		char gS_colorExploded[3][3]
 		if(gI_colorCount[client] == 9)
 		{
@@ -2093,7 +2093,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
 		{
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-			SetEntityRenderMode(client, RENDER_NORMAL)
+			//SetEntityRenderMode(client, RENDER_NORMAL)
 			//gB_block[client] = true
 			if(gB_TrikzMenuIsOpen[client])
 				Trikz(client)
@@ -2101,14 +2101,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		else if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 		{
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-			SetEntityRenderMode(client, RENDER_TRANSALPHA)
-			if(gB_color[client])
-				SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
-			else
-				SetEntityRenderColor(client, 255, 255, 255, 125)
+			//SetEntityRenderMode(client, RENDER_TRANSALPHA)
+			//if(gB_color[client])
+			//	SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
+			//else
+			//	SetEntityRenderColor(client, 255, 255, 255, 125)
 			//gB_block[client] = false
-			if(gB_TrikzMenuIsOpen[client])
-				Trikz(client)
+			//if(gB_TrikzMenuIsOpen[client])
+			//	Trikz(client)
 		}
 	}
 }
