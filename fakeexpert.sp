@@ -686,7 +686,9 @@ Action Block(int client)
 	if(gB_block[client])
 	{
 		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		SetEntityRenderMode(client, RENDER_NORMAL)
+		//SetEntityRenderMode(client, RENDER_NORMAL)
+		SetEntityRenderMode(client, RENDER_TRANSALPHA)
+		//SetEntityRenderColor(client, 255, 255, 255, 255)
 		if(gB_TrikzMenuIsOpen[client])
 			Trikz(client)
 		PrintToChat(client, "Block enabled.")
@@ -842,8 +844,8 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = true
 		gB_color[gI_partner[client]] = true
-		SetEntProp(client, Prop_Send, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		SetEntProp(gI_partner[client], Prop_Send, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		DispatchKeyValue(client, "skin", "2")
 		DispatchKeyValue(gI_partner[client], "skin", "2")
 		char gS_colorExploded[3][3]
