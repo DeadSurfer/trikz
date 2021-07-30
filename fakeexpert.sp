@@ -61,7 +61,7 @@ ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
-float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
+//float gF_vecVelBoostFix[MAXPLAYERS + 1][3]
 bool gB_boost[MAXPLAYERS + 1]
 int gI_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
@@ -2246,9 +2246,9 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_vecVelBoostFix[other][1] = vecVelClient[1]
 			gF_vecVelBoostFix[other][2] = FloatAbs(vecVelEntity[2])*/
 			//float vecVelClient[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient)
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[client])
 			//float vecVelEntity[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity)
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity[client])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
