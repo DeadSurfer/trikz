@@ -110,6 +110,7 @@ int gI_laserBeam
 bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
+int gI_cpCount
 
 public Plugin myinfo =
 {
@@ -164,6 +165,7 @@ public void OnMapStart()
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
 	//gI_countTickZones = 0
+	gI_cpCount = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
@@ -1382,6 +1384,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gF_vecCP[1][data][1] = results.FetchFloat(4)
 		gF_vecCP[1][data][2] = results.FetchFloat(5)
 		createcp(data)
+		gI_cpCount++
 		if(!gB_haveZone)
 		{
 			gB_haveZone = true
@@ -2142,7 +2145,7 @@ void DrawZone()
 	end[12][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
 	end[12][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
 	end[12][2] += 5.0
-	for(int i = 1; i <= 10; i++)
+	for(int i = 1; i <= gI_cpCount; i++)
 	{
 		start[i][0] = (gF_vecCP[0][i][0] < gF_vecCP[1][i][0]) ? gF_vecCP[0][i][0] : gF_vecCP[1][i][0]
 		start[i][1] = (gF_vecCP[0][i][1] < gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
@@ -2154,7 +2157,46 @@ void DrawZone()
 		end[i][2] += 5.0
 	}
 	float corners[13][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
-	for(int i = 1; i <= 12; i++)
+	for(int i = 1; i <= gI_cpCount; i++)
+	{
+		//bottom left front
+		corners[i][0][0] = start[i][0]
+		corners[i][0][1] = start[i][1]
+		corners[i][0][2] = start[i][2]
+		//bottom right front
+		corners[i][1][0] = end[i][0]
+		corners[i][1][1] = start[i][1]
+		corners[i][1][2] = start[i][2]
+		//bottom right back
+		corners[i][2][0] = end[i][0]
+		corners[i][2][1] = end[i][1]
+		corners[i][2][2] = start[i][2]
+		//bottom left back
+		corners[i][3][0] = start[i][0]
+		corners[i][3][1] = end[i][1]
+		corners[i][3][2] = start[i][2]
+		int modelType
+		//if(i == 12)
+		//	modelType = 1
+		if(1 <= i <= 10)
+			modelType = 2
+		for(int j = 0; j <= 3; j++)
+		{
+			int k = j
+			int l = 1
+			if(k == 3)
+			{
+				k = 0
+				l = 0
+			}
+			if(!IsNullVector(corners[i][j]) && !IsNullVector(corners[i][k+l])) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3260
+			{
+				TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 0.1, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+				TE_SendToAll(0.0)
+			}
+		}
+	}
+	for(int i = 11; i <= 12; i++)
 	{
 		//bottom left front
 		corners[i][0][0] = start[i][0]
@@ -2175,8 +2217,8 @@ void DrawZone()
 		int modelType
 		if(i == 12)
 			modelType = 1
-		if(1 <= i <= 10)
-			modelType = 2
+		//if(1 <= i <= 10)
+		//	modelType = 2
 		for(int j = 0; j <= 3; j++)
 		{
 			int k = j
