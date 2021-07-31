@@ -1616,12 +1616,12 @@ Action SDKStartTouch(int entity, int other)
 					for(int i = 1; i <= 10; i++)
 						if(gB_cp[i][other])
 						{
-							//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
+							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
 							//int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 							//int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 							//int personalSecond = RoundToFloor(gF_Time[other]) % 60
-							FinishMSG(other, false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
-							FinishMSG(gI_partner[other], false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
+							//FinishMSG(other, false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
+							//FinishMSG(gI_partner[other], false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
 						}
 					gB_isServerRecord = true
 					CreateTimer(60.0, timer_sourcetv) //https://forums.alliedmods.net/showthread.php?t=191615
