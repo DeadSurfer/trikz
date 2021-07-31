@@ -2275,6 +2275,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gB_skyStep[client] = false
 	}
+	if(GetGameTime() - gF_boostTime[client] < 0.15)
+	{
+		float velocity[3]
+		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
+	}
 	if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
 		if(buttons & IN_JUMP)
@@ -2352,8 +2357,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
 		if(gB_boost[client] == 2)
 		{
-			velocity[0] = velocity[0] - gF_vecVelEntity[client][0]
-			velocity[1] = velocity[1] - gF_vecVelEntity[client][1]
+			velocity[0] -= gF_vecVelEntity[client][0]
+			velocity[1] -= gF_vecVelEntity[client][1]
 			velocity[2] = gF_vecVelEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 			gB_boost[client] = 3
@@ -2389,8 +2394,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//velocity[1] += gF_vecVelEntity[client][1] * 0.135
 					//velocity[0] = velocity[0] + gF_vecVelEntity[client][0] * 0.5
 					//velocity[1] = velocity[1] + gF_vecVelEntity[client][1] * 0.5
-					velocity[0] = velocity[0] + gF_vecVelEntity[client][0]
-					velocity[1] = velocity[1] + gF_vecVelEntity[client][1]
+					velocity[0] += gF_vecVelEntity[client][0] * 0.135
+					velocity[1] += gF_vecVelEntity[client][1] * 0.135
 					//PrintToServer("%f el", GetEntPropFloat(client, Prop_Data, "m_flElasticity"))
 					//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
 					//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
