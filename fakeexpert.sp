@@ -578,29 +578,8 @@ void SDKBoostFix(int client)
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 			}
-			if(gB_boost[client] == 2)
-			{
-				float velocity[3]
-				velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
-				velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
-				velocity[2] = gF_vecVelEntity[client][2]
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-				if(gB_groundBoost[client])
-				{
-					velocity[0] += gF_vecVelEntity[client][0]
-					velocity[1] += gF_vecVelEntity[client][1]
-					velocity[2] += gF_vecVelEntity[client][2]
-				}
-				else
-				{
-					velocity[0] += gF_vecVelEntity[client][0] * 0.135
-					velocity[1] += gF_vecVelEntity[client][1] * 0.135
-				}
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-				gB_boost[client] = false
-			}
-			gB_boost[client]++
+			gB_boost[client] = 2
+			//gB_boost[client]++
 		}
 	}
 }
@@ -2224,6 +2203,28 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gB_skyStep[client] = false
 			gI_skyFrame[client] = 0
 		}
+	}
+	if(gB_boost[client] == 2)
+	{
+		float velocity[3]
+		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
+		velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
+		velocity[2] = gF_vecVelEntity[client][2]
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
+		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
+		if(gB_groundBoost[client])
+		{
+			velocity[0] += gF_vecVelEntity[client][0]
+			velocity[1] += gF_vecVelEntity[client][1]
+			velocity[2] += gF_vecVelEntity[client][2]
+		}
+		else
+		{
+			velocity[0] += gF_vecVelEntity[client][0] * 0.135
+			velocity[1] += gF_vecVelEntity[client][1] * 0.135
+		}
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
+		gB_boost[client] = false
 	}
 	if(IsPlayerAlive(client) && gI_partner[client])
 	{
