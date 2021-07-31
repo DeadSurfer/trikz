@@ -106,7 +106,7 @@ int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
 int gI_laserBeam
-int gI_countTickZones
+//int gI_countTickZones
 bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
@@ -163,7 +163,7 @@ public void OnMapStart()
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
-	gI_countTickZones = 0
+	//gI_countTickZones = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
@@ -1371,7 +1371,10 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		gF_vecCP[1][data][2] = results.FetchFloat(5)
 		createcp(data)
 		if(!gB_haveZone)
+		{
 			gB_haveZone = true
+			CreateTimer(0.1, timer_draw, _, TIMER_REPEAT)
+		}
 	}
 }
 
@@ -2101,6 +2104,11 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("Zones table is successfuly created.")
 }
 
+Action timer_draw(Handle timer)
+{
+	DrawZone()
+}
+
 void DrawZone()
 {
 	float start[13][3]
@@ -2165,7 +2173,7 @@ void DrawZone()
 				k = 0
 				l = 0
 			}
-			TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 2.0, 5.0, 5.0, 0, 0.0, {0, 0, 0, 0}, 5) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 0.1, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 7) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
 		}
 	}
@@ -2289,12 +2297,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		else if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
-	gI_countTickZones++
+	/*gI_countTickZones++
 	if(gI_countTickZones == 200 && !gB_isDevmap)
 	{
 		DrawZone()
 		gI_countTickZones = 0
-	}
+	}*/
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
