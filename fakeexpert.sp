@@ -2342,7 +2342,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//float velocity[3];
 		//SetBaseVelocity(client, velocity);
 		float velocity[3]
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
+		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
 		float velClient[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velClient)
 		PrintToServer("%f %f %f", velClient[0], velClient[1], velClient[2])
@@ -2369,6 +2369,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			velocity[0] += gF_vecVelEntity[client][0] * 0.135
 			velocity[1] += gF_vecVelEntity[client][1] * 0.135
+			PrintToServer("%f el", GetEntPropFloat(client, Prop_Data, "m_flElasticity"))
 			//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
 			//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
 			//PrintToServer("normal")
@@ -2493,6 +2494,8 @@ Action ProjectileBoostFix(int entity, int other)
 		{
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[other])
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity[other])
+			PrintToServer("%f el entity", GetEntPropFloat(entity, Prop_Data, "m_flElasticity"))
+			PrintToServer("%f el other", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
