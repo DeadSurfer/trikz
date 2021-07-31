@@ -2385,8 +2385,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				//velocity[0] += gF_vecVelEntity[client][0] * 0.135
 				//velocity[1] += gF_vecVelEntity[client][1] * 0.135
-				velocity[0] = velocity[0] + gF_vecVelEntity[client][0] * 0.5
-				velocity[1] = velocity[1] + gF_vecVelEntity[client][1] * 0.5
+				//velocity[0] = velocity[0] + gF_vecVelEntity[client][0] * 0.5
+				//velocity[1] = velocity[1] + gF_vecVelEntity[client][1] * 0.5
+				velocity[0] = velocity[0] + gF_vecVelEntity[client][0]
+				velocity[1] = velocity[1] + gF_vecVelEntity[client][1]
 				//PrintToServer("%f el", GetEntPropFloat(client, Prop_Data, "m_flElasticity"))
 				//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
 				//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
