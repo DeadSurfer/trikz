@@ -116,7 +116,7 @@ public Plugin myinfo =
 	name = "trikz + timer",
 	author = "Smesh(Nick Yurevich)",
 	description = "Allows to able make trikz more comfortable",
-	version = "3.0",
+	version = "3.1",
 	url = "http://www.sourcemod.net/"
 }
 
