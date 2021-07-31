@@ -1590,14 +1590,14 @@ Action SDKStartTouch(int entity, int other)
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 							{
 								//PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
-								FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
-								FinishMSG(gI_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(other, false, false, true, false, true, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(gI_partner[other], false, false, true, false, true, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 							}
 							else
 							{
 								//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
-								FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
-								FinishMSG(gI_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(other, false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(gI_partner[other], false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 							}
 						}
 					}
@@ -1618,8 +1618,8 @@ Action SDKStartTouch(int entity, int other)
 							//int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 							//int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 							//int personalSecond = RoundToFloor(gF_Time[other]) % 60
-							FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
-							FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
+							FinishMSG(other, false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
+							FinishMSG(gI_partner[other], false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
 						}
 					gB_isServerRecord = true
 					CreateTimer(60.0, timer_sourcetv) //https://forums.alliedmods.net/showthread.php?t=191615
