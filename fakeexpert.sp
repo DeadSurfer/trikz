@@ -578,7 +578,10 @@ void SDKBoostFix(int client)
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 			}
+			//float velocity[3];
+			//SetBaseVelocity(client, velocity);
 			float velocity[3]
+			SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
 			velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
 			velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
 			velocity[2] = gF_vecVelEntity[client][2]
