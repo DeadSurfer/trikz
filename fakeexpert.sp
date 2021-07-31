@@ -63,7 +63,7 @@ ConVar gCV_topURL
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
 bool gB_boost[MAXPLAYERS + 1]
-int gI_skyStep[MAXPLAYERS + 1]
+bool gB_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
@@ -537,7 +537,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		//if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		if(vecAbsFlyer[2] > vecAbsBooster[2])
 		{
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_skyStep[other] == 0)
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
 			{
 				float vecVelBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
@@ -553,7 +553,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						gF_skyVel[other][2] = 800.0
 					if(FloatAbs(vecVelFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
 					{
-						gI_skyStep[other] = 1
+						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 					}
 				}
@@ -2197,19 +2197,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gI_skyFrame[client] == 5)
 	{
 		gI_skyFrame[client] = 0
-		gI_skyStep[client] = 0
+		gB_skyStep[client] = false
 	}
-	if(gB_boost[client] && gI_skyStep[client])
+	if(gB_boost[client] && gB_skyStep[client])
 	{
 		gI_skyFrame[client] = 0
-		gI_skyStep[client] = 0
+		gB_skyStep[client] = false
 	}
-	if(gI_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
+	if(gB_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
 		if(buttons & IN_JUMP)
 		{
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
-			gI_skyStep[client] = 0
+			gB_skyStep[client] = false
 			gI_skyFrame[client] = 0
 		}
 	}
