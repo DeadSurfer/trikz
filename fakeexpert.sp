@@ -2342,7 +2342,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 		gB_boost[client] = false
 	}*/
-	if(gB_boost[client])
+	if(gB_boost[client] == 2)
 	{
 		//float velocity[3];
 		//SetBaseVelocity(client, velocity);
