@@ -1588,9 +1588,17 @@ Action SDKStartTouch(int entity, int other)
 							int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
 							int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
-								PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+							{
+								//PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(gI_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+							}
 							else
-								PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+							{
+								//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								FinishMSG(gI_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+							}
 						}
 					}
 				}
@@ -1605,7 +1613,14 @@ Action SDKStartTouch(int entity, int other)
 					FinishMSG(gI_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0)
 					for(int i = 1; i <= 10; i++)
 						if(gB_cp[i][other])
-							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
+						{
+							//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
+							//int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+							//int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+							//int personalSecond = RoundToFloor(gF_Time[other]) % 60
+							FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
+							FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
+						}
 					gB_isServerRecord = true
 					CreateTimer(60.0, timer_sourcetv) //https://forums.alliedmods.net/showthread.php?t=191615
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
@@ -1958,8 +1973,8 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 	else
 	{
 		//FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
-		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
-		PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
+		//PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
+		//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 		int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 		int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 		int personalSecond = RoundToFloor(gF_Time[other]) % 60
@@ -1986,8 +2001,8 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
-			PrintToChat(other, "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
-			PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			//PrintToChat(other, "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(gI_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 		}
@@ -1998,16 +2013,16 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
-			PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
-			PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			//PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(gI_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 		}
 	}
 	else
 	{
-		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L135
-		PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
+		//PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L135
+		//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
 		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
 	}
