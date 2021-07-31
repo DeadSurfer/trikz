@@ -2204,7 +2204,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gB_skyStep[client] = false
 	}
-	if(gB_skyStep[client] == 1 && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
+	if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
 		if(buttons & IN_JUMP)
 		{
