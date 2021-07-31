@@ -564,7 +564,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	if(gB_boost[client])
+	if(gB_boost[client] == 1)
 	{
 		int entity = EntRefToEntIndex(gI_flash[client])
 		if(entity != INVALID_ENT_REFERENCE)
