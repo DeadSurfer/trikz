@@ -1589,15 +1589,15 @@ Action SDKStartTouch(int entity, int other)
 							int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
 							{
-								//PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
 								FinishMSG(other, false, false, true, false, true, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 								FinishMSG(gI_partner[other], false, false, true, false, true, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 							}
 							else
 							{
-								//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
-								FinishMSG(other, false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
-								FinishMSG(gI_partner[other], false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
+								//FinishMSG(other, false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
+								//FinishMSG(gI_partner[other], false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 							}
 						}
 					}
