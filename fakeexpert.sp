@@ -584,19 +584,24 @@ void SDKBoostFix(int client)
 			velocity[2] = gF_vecVelEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-			if(gB_groundBoost[client])
+			
+			if(gB_boost[client] == 2)
 			{
-				velocity[0] += gF_vecVelEntity[client][0]
-				velocity[1] += gF_vecVelEntity[client][1]
-				velocity[2] += gF_vecVelEntity[client][2]
+				if(gB_groundBoost[client])
+				{
+					velocity[0] += gF_vecVelEntity[client][0]
+					velocity[1] += gF_vecVelEntity[client][1]
+					velocity[2] += gF_vecVelEntity[client][2]
+				}
+				else
+				{
+					velocity[0] += gF_vecVelEntity[client][0] * 0.135
+					velocity[1] += gF_vecVelEntity[client][1] * 0.135
+				}
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
+				gB_boost[client] = false
 			}
-			else
-			{
-				velocity[0] += gF_vecVelEntity[client][0] * 0.135
-				velocity[1] += gF_vecVelEntity[client][1] * 0.135
-			}
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-			gB_boost[client] = false
+			gB_boost[client]++
 		}
 	}
 }
@@ -2328,12 +2333,13 @@ Action ProjectileBoostFix(int entity, int other)
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-		//if(vecOriginOther[2] > vecOriginEntity[2])
-		float vecMaxsEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
-		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
+		//
+		//float vecMaxsEntity[3]
+		//GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
+		//float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231//https://forums.alliedmods.net/showthread.php?t=146241
-		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		//if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		if(vecOriginOther[2] > vecOriginEntity[2])
 		{
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[other])
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity[other])
