@@ -1685,7 +1685,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			if(cpRecord)
 			{
 				SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
-				ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum)
+				ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum) //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157B3F4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 				SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
 				ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 				SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
@@ -1711,7 +1711,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			else
 			{
 				SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
-				ShowHudText(client, 1, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+				ShowHudText(client, 1, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond) //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 				SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
 				ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 				for(int i = 1; i <= MaxClients; i++)
@@ -1775,7 +1775,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
 				ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 				SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
-				ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+				ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond) //https://youtu.be/j4L3YvHowv8?t=45
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
