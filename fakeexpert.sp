@@ -2204,9 +2204,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_skyFrame[client] = 0
 		}
 	}
+	float velocity[3]
 	if(gB_boost[client] == 2)
 	{
-		float velocity[3]
+		//float velocity[3]
 		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
 		velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
 		velocity[2] = gF_vecVelEntity[client][2]
