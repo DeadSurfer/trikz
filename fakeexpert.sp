@@ -2486,10 +2486,10 @@ Action timer_devmap(Handle timer)
 		else
 		{
 			PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-			gB_isDevmap = true
+			//gB_isDevmap = true
 			for(int i = 0; i <= 1; i++)
 				gF_devmap[i] = 0.0
-			CreateTimer(5.0, timer_changelevel)
+			CreateTimer(5.0, timer_changelevel, true)
 		}
 	}
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0])
@@ -2499,8 +2499,8 @@ Action timer_devmap(Handle timer)
 			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
 			for(int i = 0; i <= 1; i++)
 				gF_devmap[i] = 0.0
-			gB_isDevmap = false
-			CreateTimer(5.0, timer_changelevel)
+			//gB_isDevmap = false
+			CreateTimer(5.0, timer_changelevel, false)
 		}
 		else
 		{
@@ -2515,8 +2515,11 @@ Action timer_devmap(Handle timer)
 	return Plugin_Stop
 }
 
-Action timer_changelevel(Handle timer)
+Action timer_changelevel(Handle timer, bool value)
 {
+	//for(int i = 0; i <= 1; i++)
+		//gF_devmap[i] = 0.0
+	gB_isDevmap = value
 	ForceChangeLevel(gS_map, "Reason: Devmap")
 }
 
