@@ -580,35 +580,35 @@ void SDKBoostFix(int client)
 			}
 			//gB_boost[client] = 2
 			//gB_boost[client]++
-		float velocity[3]
-		//if(gB_boost[client] == 2)
-		//{
-			//float velocity[3]
-		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
-		velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
-		velocity[2] = gF_vecVelEntity[client][2]
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-			//gB_boost[client] = 3
-		//}
-		//else if(gB_boost[client] == 3)
-		//{
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-		if(gB_groundBoost[client])
-		{
-			velocity[0] += gF_vecVelEntity[client][0]
-			velocity[1] += gF_vecVelEntity[client][1]
-			velocity[2] += gF_vecVelEntity[client][2]
-			PrintToServer("normal")
+			float velocity[3]
+			//if(gB_boost[client] == 2)
+			//{
+				//float velocity[3]
+			velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
+			velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
+			velocity[2] = gF_vecVelEntity[client][2]
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
+				//gB_boost[client] = 3
+			//}
+			//else if(gB_boost[client] == 3)
+			//{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
+			if(gB_groundBoost[client])
+			{
+				velocity[0] += gF_vecVelEntity[client][0]
+				velocity[1] += gF_vecVelEntity[client][1]
+				velocity[2] += gF_vecVelEntity[client][2]
+				PrintToServer("normal")
+			}
+			else
+			{
+				velocity[0] += gF_vecVelEntity[client][0] * 0.135
+				velocity[1] += gF_vecVelEntity[client][1] * 0.135
+				PrintToServer("gb")
+			}
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
+			gB_boost[client] = false
 		}
-		else
-		{
-			velocity[0] += gF_vecVelEntity[client][0] * 0.135
-			velocity[1] += gF_vecVelEntity[client][1] * 0.135
-			PrintToServer("gb")
-		}
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-		gB_boost[client] = false
-		//}
 	}
 }
 
