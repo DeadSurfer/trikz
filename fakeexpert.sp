@@ -589,9 +589,12 @@ void SDKBoostFix(int client)
 			//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 			if(gB_groundBoost[client])
 			{
-				velocity[0] += gF_vecVelEntity[client][0]
-				velocity[1] += gF_vecVelEntity[client][1]
-				velocity[2] += gF_vecVelEntity[client][2] * 1.865
+				//velocity[0] += gF_vecVelEntity[client][0]
+				//velocity[1] += gF_vecVelEntity[client][1]
+				//velocity[2] += gF_vecVelEntity[client][2] * 1.865
+				velocity[0] += gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
+				velocity[1] += gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
+				velocity[2] += gF_vecVelClient[client][2] - gF_vecVelEntity[client][2]
 				PrintToServer("gb")
 			}
 			else
