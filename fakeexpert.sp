@@ -1386,7 +1386,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		{
 			gB_haveZone = true
 			if(!gB_isDevmap)
-				CreateTimer(0.1, timer_draw, _, TIMER_REPEAT)
+				CreateTimer(0.1, timer_draw, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
 }
