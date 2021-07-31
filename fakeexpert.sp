@@ -1113,14 +1113,14 @@ Action cmd_test(int client, int args)
 		}
 		if(args)
 		{
-			FinishMSG(client, false, true, 11, 11, 11, 11, 11, 11)
+			FinishMSG(client, false, true, false, false, 11, 11, 11, 11, 11, 11)
 			PrintToChat(client, "\x077CFC00New server record!")
 			PrintToChat(client, "\x01%N and %N finished map in \x077CFC0011.11.11 \x01(SR \x077CFC00-11.11.11\x01)", client, client)
 			PrintToChat(client, "\x011. Checkpoint: \x077CFC00-11.11.11")
 		}
 		else
 		{
-			FinishMSG(client, false, false, 11, 11, 11, 11, 11, 11)
+			FinishMSG(client, false, false, false, false, 11, 11, 11, 11, 11, 11)
 			//SetGlobalTransTarget(client)
 			//char sBuff[256]
 			//Format(sBuff, 256, "\x01%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
@@ -1498,8 +1498,8 @@ Action SDKStartTouch(int entity, int other)
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("\x077CFC00New server record!")
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(other, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(gI_partner[other], false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(other, false, true, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(gI_partner[other], false, true, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
@@ -1516,8 +1516,8 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(other, false, false, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(gI_partner[other], false, false, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "UPDATE records SET completions = completions + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 						}
@@ -1528,8 +1528,8 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(other, false, false, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(gI_partner[other], false, false, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "UPDATE records SET time = %f, completions = completions + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							if(gF_haveRecord[other] > gF_Time[other])
@@ -1550,8 +1550,8 @@ Action SDKStartTouch(int entity, int other)
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("\x077CFC00New server record!")
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(other, false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(gI_partner[other], false, true, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(other, false, true, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(gI_partner[other], false, true, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 							gD_mysql.Query(SQLInsertRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
@@ -1568,8 +1568,8 @@ Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60
 							int srSecond = RoundToFloor(timeDiff) % 60
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(other, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							FinishMSG(gI_partner[other], false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(other, false, false, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
+							FinishMSG(gI_partner[other], false, false, false, false, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 							gD_mysql.Query(SQLInsertRecord, sQuery)
 							if(gF_haveRecord[other] == 0.0)
@@ -1601,8 +1601,8 @@ Action SDKStartTouch(int entity, int other)
 					gF_haveRecord[gI_partner[other]] = gF_Time[other]
 					PrintToChatAll("\x077CFC00New server record!")
 					PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
-					FinishMSG(other, true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
-					FinishMSG(gI_partner[other], true, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
+					FinishMSG(other, true, false, false, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
+					FinishMSG(gI_partner[other], true, false, false, false, personalHour, personalMinute, personalSecond, 0, 0, 0)
 					for(int i = 1; i <= 10; i++)
 						if(gB_cp[i][other])
 							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
@@ -1650,50 +1650,100 @@ Action SDKStartTouch(int entity, int other)
 	}
 }
 
-void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
+void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
 {
-	if(firstServerRecord)
+	if(onlyCP)
 	{
-		SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255) //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-		ShowHudText(client, 1, "MAP FINISHED!") //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-		SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
-		ShowHudText(client, 2, "NEW SERVER RECORD!")
-		SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
-		ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-		SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
-		ShowHudText(client, 4, "+00:00:00")
-		for(int i = 1; i <= MaxClients; i++)
+		if(firstCPRecord)
 		{
-			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+			SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255) //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum) //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+			SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+			ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+			SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+			ShowHudText(client, 3, "+00:00:00")
+			for(int i = 1; i <= MaxClients; i++)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-				if(observerMode < 7 && observerTarget == client)
+				if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
 				{
-					SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
-					ShowHudText(i, 1, "MAP FINISHED!")
-					SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
-					ShowHudText(i, 2, "NEW SERVER RECORD!")
-					SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
-					ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-					SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
-					ShowHudText(i, 4, "+00:00:00")
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+					if(observerMode < 7 && observerTarget == client)
+					{
+						SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
+						ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum)
+						SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+						ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+						SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+						ShowHudText(i, 3, "+00:00:00")
+					}
+				}
+			}
+		}
+		else
+		{
+			if(isCPRecord)
+			{
+				SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
+				ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum)
+				SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+				ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+				SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
+				ShowHudText(client, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
+							ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum)
+							SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+							ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+							SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
+							ShowHudText(i, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						}
+					}
+				}
+			}
+			else
+			{
+				SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+				ShowHudText(client, 1, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+				SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+				ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+							ShowHudText(i, 1, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+							SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+							ShowHudText(i, 1, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						}
+					}
 				}
 			}
 		}
 	}
 	else
 	{
-		if(serverRecord)
+		if(firstServerRecord)
 		{
-			SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
-			ShowHudText(client, 1, "MAP FINISHED!")
+			SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255) //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			ShowHudText(client, 1, "MAP FINISHED!") //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 			SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
 			ShowHudText(client, 2, "NEW SERVER RECORD!")
 			SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
 			ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-			SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
-			ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+			SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+			ShowHudText(client, 4, "+00:00:00")
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
@@ -1708,34 +1758,67 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, int person
 						ShowHudText(i, 2, "NEW SERVER RECORD!")
 						SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
 						ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-						SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
-						ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+						ShowHudText(i, 4, "+00:00:00")
 					}
 				}
 			}
 		}
 		else
 		{
-			SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
-			ShowHudText(client, 1, "MAP FINISHED!")
-			SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
-			ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-			SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
-			ShowHudText(client, 4, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
-			for(int i = 1; i <= MaxClients; i++)
+			if(serverRecord)
 			{
-				if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+				SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
+				ShowHudText(client, 1, "MAP FINISHED!")
+				SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
+				ShowHudText(client, 2, "NEW SERVER RECORD!")
+				SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+				ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+				SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
+				ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+				for(int i = 1; i <= MaxClients; i++)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-					if(observerMode < 7 && observerTarget == client)
+					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
 					{
-						SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
-						ShowHudText(i, 1, "MAP FINISHED!")
-						SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
-						ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-						SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
-						ShowHudText(i, 4, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
+							ShowHudText(i, 1, "MAP FINISHED!")
+							SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
+							ShowHudText(i, 2, "NEW SERVER RECORD!")
+							SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+							ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+							SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
+							ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						}
+					}
+				}
+			}
+			else
+			{
+				SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
+				ShowHudText(client, 1, "MAP FINISHED!")
+				SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+				ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+				SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+				ShowHudText(client, 4, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
+							ShowHudText(i, 1, "MAP FINISHED!")
+							SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+							ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+							SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+							ShowHudText(i, 4, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						}
 					}
 				}
 			}
@@ -1874,8 +1957,14 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 	}
 	else
 	{
+		//FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
 		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 		PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
+		int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+		int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+		int personalSecond = RoundToFloor(gF_Time[other]) % 60
+		FinishMSG(other, false, false, true, true, false, personalHour, personalMinute, personalSecond)
+		FinishMSG(gI_partner[other], false, false, true, true, false, personalHour, personalMinute, personalSecond)
 	}
 }
 
@@ -1887,6 +1976,9 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	if(results.FetchRow())
 	{
 		gF_srCPTime[cpnum][other] = results.FetchFloat(0)
+		int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
+		int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
+		int personalSecond = RoundToFloor(gF_Time[other]) % 60
 		if(gF_TimeCP[cpnum][other] < gF_srCPTime[cpnum][other])
 		{
 			gF_timeDiffCP[cpnum][other] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
@@ -1896,6 +1988,8 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
 			PrintToChat(other, "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			FinishMSG(other, false, false, true, false, true, personalHour, personalMinute, personalSecond)
+			FinishMSG(gI_partner[other], false, false, true, false, true, personalHour, personalMinute, personalSecond)
 		}
 		else
 		{
@@ -1906,6 +2000,8 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
 			PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
+			FinishMSG(other, false, false, true, false, false, personalHour, personalMinute, personalSecond)
+			FinishMSG(gI_partner[other], false, false, true, false, false, personalHour, personalMinute, personalSecond)
 		}
 	}
 	else
