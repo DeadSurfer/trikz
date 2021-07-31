@@ -595,7 +595,7 @@ void SDKBoostFix(int client)
 				velocity[1] += gF_vecVelEntity[client][1]
 				//velocity[2] += gF_vecVelEntity[client][2] * 1.865
 				//velocity[2] += gF_vecVelEntity[client][2] * 2.0
-				velocity[2] = gF_vecVelEntity[client][2] * 3.0
+				velocity[2] = gF_vecVelEntity[client][2] * 2.865
 				//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
 				//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
 				//velocity[2] += gF_vecVelClient[client][2] + gF_vecVelEntity[client][2]
