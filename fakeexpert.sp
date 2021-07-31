@@ -2217,11 +2217,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			velocity[0] += gF_vecVelEntity[client][0]
 			velocity[1] += gF_vecVelEntity[client][1]
 			velocity[2] += gF_vecVelEntity[client][2]
+			PrintToServer("normal")
 		}
 		else
 		{
 			velocity[0] += gF_vecVelEntity[client][0] * 0.135
 			velocity[1] += gF_vecVelEntity[client][1] * 0.135
+			PrintToServer("gb")
 		}
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 		gB_boost[client] = false
