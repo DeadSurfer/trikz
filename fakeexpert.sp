@@ -1963,8 +1963,8 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 		int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 		int personalSecond = RoundToFloor(gF_Time[other]) % 60
-		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
-		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
+		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
+		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
 	}
 }
 
@@ -2008,8 +2008,8 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	{
 		PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L135
 		PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
-		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
-		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
+		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
+		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
 	}
 }
 
