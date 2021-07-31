@@ -2186,8 +2186,11 @@ void DrawZone()
 				k = 0
 				l = 0
 			}
-			TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 0.1, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			TE_SendToAll(0.0)
+			if(!IsNullVector(corners[i][j]) && !IsNullVector(corners[i][k+l]))
+			{
+				TE_SetupBeamPoints(corners[i][j], corners[i][k+l], gI_zoneModel[modelType], 0, 0, 0, 0.1, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+				TE_SendToAll(0.0)
+			}
 		}
 	}
 }
