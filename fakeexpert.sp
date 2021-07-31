@@ -584,6 +584,10 @@ void SDKBoostFix(int client)
 			//SetBaseVelocity(client, velocity);
 			float velocity[3]
 			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
+			float velClient[3]
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velClient)
+			PrintToServer("%f %f %f", velClient[0], velClient[1], velClient[2])
+			PrintToServer("%f %f %f", gF_vecVelClient[client][0], gF_vecVelClient[client][1], gF_vecVelClient[client][2])
 			velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
 			velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
 			velocity[2] = gF_vecVelEntity[client][2]
