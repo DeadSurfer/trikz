@@ -596,15 +596,15 @@ void SDKBoostFix(int client)
 				//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
 				//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
 				//velocity[2] += gF_vecVelClient[client][2] + gF_vecVelEntity[client][2]
-				PrintToServer("gb")
+				//PrintToServer("gb")
 			}
 			else
 			{
-				//velocity[0] += gF_vecVelEntity[client][0] * 0.135
-				//velocity[1] += gF_vecVelEntity[client][1] * 0.135
-				velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
-				velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
-				PrintToServer("normal")
+				velocity[0] += gF_vecVelEntity[client][0] * 0.135
+				velocity[1] += gF_vecVelEntity[client][1] * 0.135
+				//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
+				//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
+				//PrintToServer("normal")
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gB_boost[client] = false
