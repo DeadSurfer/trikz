@@ -62,7 +62,7 @@ ConVar gCV_topURL
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
-int gB_boost[MAXPLAYERS + 1]
+bool gB_boost[MAXPLAYERS + 1]
 bool gB_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
@@ -564,7 +564,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	if(gB_boost[client] == 1)
+	if(gB_boost[client])
 	{
 		int entity = EntRefToEntIndex(gI_flash[client])
 		if(entity != INVALID_ENT_REFERENCE)
@@ -2256,7 +2256,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 		gB_boost[client] = false
 	}*/
-	if(gB_boost[client] == 2)
+	/*if(gB_boost[client] == 2)
 	{
 		float velocity[3]
 		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
@@ -2279,7 +2279,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 		gB_boost[client] = false
-	}
+	}*/
 	if(IsPlayerAlive(client) && gI_partner[client])
 	{
 		if(buttons & IN_USE)
