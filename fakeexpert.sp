@@ -1682,7 +1682,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 		}
 		else
 		{
-			if(isCPRecord)
+			if(cpRecord)
 			{
 				SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
 				ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum)
