@@ -2594,19 +2594,10 @@ Action timer_devmap(Handle timer)
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
 	{
 		if(gB_isDevmap)
-		{
-			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-			//google translate russian to english.
-			gB_isDevmap = true
-			for(int i = 0; i <= 1; i++)
-				gF_devmap[i] = 0.0
-		}
+			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
 		else
 		{
 			PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-			//gB_isDevmap = true
-			for(int i = 0; i <= 1; i++)
-				gF_devmap[i] = 0.0
 			CreateTimer(5.0, timer_changelevel, true)
 		}
 	}
@@ -2615,18 +2606,10 @@ Action timer_devmap(Handle timer)
 		if(gB_isDevmap)
 		{
 			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
-			for(int i = 0; i <= 1; i++)
-				gF_devmap[i] = 0.0
-			//gB_isDevmap = false
 			CreateTimer(5.0, timer_changelevel, false)
 		}
 		else
-		{
 			PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
-			for(int i = 0; i <= 1; i++)
-				gF_devmap[i] = 0.0
-			gB_isDevmap = false
-		}
 	}
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
@@ -2700,7 +2683,6 @@ Action SDKProjectile(int entity)
 	if(IsValidEntity(entity) || IsPlayerAlive(client))
 	{
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
-		//GivePlayerAmmo(client, 2, 48, true)
 		gB_silentKnife = true
 		FakeClientCommand(client, "use weapon_knife")
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
@@ -2738,7 +2720,6 @@ void SDKPlayerSpawnPost(int client)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
-		//Give
 	}
 }
 
