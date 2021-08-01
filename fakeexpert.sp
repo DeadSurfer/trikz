@@ -2644,7 +2644,7 @@ Action timer_changelevel(Handle timer, bool value)
 Action cmd_top(int client, int args)
 {
 	char sTopURL[192]
-	GetConVarString(gCV_topURL, sTopURL, 192)
+	gCV_topURL.GetString(sTopURL, 192)
 	ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	return Plugin_Handled
 }
