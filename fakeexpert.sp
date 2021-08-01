@@ -106,7 +106,6 @@ int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
 int gI_laserBeam
-//int gI_countTickZones
 bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
@@ -580,74 +579,9 @@ void SDKBoostFix(int client)
 				vecVelEntity[2] *= -0.135
 				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
 			}
-			/*//float velocity[3];
-			//SetBaseVelocity(client, velocity);
-			float velocity[3]
-			//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
-			float velClient[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velClient)
-			PrintToServer("%f %f %f", velClient[0], velClient[1], velClient[2])
-			PrintToServer("%f %f %f", gF_vecVelClient[client][0], gF_vecVelClient[client][1], gF_vecVelClient[client][2])
-			velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
-			velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
-			velocity[2] = gF_vecVelEntity[client][2]
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-			//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-			if(gB_groundBoost[client])
-			{
-				velocity[0] += gF_vecVelEntity[client][0]
-				velocity[1] += gF_vecVelEntity[client][1]
-				//velocity[2] += gF_vecVelEntity[client][2] * 1.865
-				//velocity[2] += gF_vecVelEntity[client][2] * 2.0
-				velocity[2] = gF_vecVelEntity[client][2] * 2.5
-				//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
-				//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
-				//velocity[2] += gF_vecVelClient[client][2] + gF_vecVelEntity[client][2]
-				//PrintToServer("gb")
-			}
-			else
-			{
-				velocity[0] += gF_vecVelEntity[client][0] * 0.135
-				velocity[1] += gF_vecVelEntity[client][1] * 0.135
-				//velocity[0] += gF_vecVelClient[client][0] + gF_vecVelEntity[client][0]
-				//velocity[1] += gF_vecVelClient[client][1] + gF_vecVelEntity[client][1]
-				//PrintToServer("normal")
-			}
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-			gI_boost[client] = false*/
 			gI_boost[client] = 2
 		}
 	}
-	/*if(gI_boost[client] > 1)
-	{
-		float velocity[3]
-		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-		if(gI_boost[client] == 2)
-		{
-			velocity[0] -= gF_vecVelEntity[client][0]
-			velocity[1] -= gF_vecVelEntity[client][1]
-			velocity[2] = gF_vecVelEntity[client][2]
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-			gI_boost[client] = 3
-		}
-		else if(gI_boost[client] == 3)
-		{
-			if(gB_groundBoost[client])
-			{
-				velocity[0] += gF_vecVelEntity[client][0]
-				velocity[1] += gF_vecVelEntity[client][1]
-				velocity[2] += gF_vecVelEntity[client][2]
-			}
-			else
-			{
-				velocity[0] += gF_vecVelEntity[client][0] * 0.135
-				velocity[1] += gF_vecVelEntity[client][1] * 0.135
-			}
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-			gI_boost[client] = 0
-		}
-	}*/
 }
 
 Action cmd_trikz(int client, int args)
@@ -1215,7 +1149,6 @@ Action cmd_test(int client, int args)
 			newKVINT = kvINT
 		PrintToServer("%i %i", newClient, newKVINT) // so we can customize in this way all chats. alot secuences but its okey.
 		//PrintToServer("%i %i", newKVINT, newClient)
-		//int 
 	}
 	return Plugin_Handled
 }
@@ -1644,17 +1577,9 @@ Action SDKStartTouch(int entity, int other)
 							int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
 							int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
 							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
-							{
 								PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
-								//FinishMSG(other, false, false, true, false, true, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
-								//FinishMSG(gI_partner[other], false, false, true, false, true, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
-							}
 							else
-							{
 								PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
-								//FinishMSG(other, false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
-								//FinishMSG(gI_partner[other], false, false, true, false, false, i, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
-							}
 						}
 					}
 				}
@@ -1669,14 +1594,7 @@ Action SDKStartTouch(int entity, int other)
 					FinishMSG(gI_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0)
 					for(int i = 1; i <= 10; i++)
 						if(gB_cp[i][other])
-						{
 							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
-							//int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
-							//int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
-							//int personalSecond = RoundToFloor(gF_Time[other]) % 60
-							//FinishMSG(other, false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
-							//FinishMSG(gI_partner[other], false, false, true, true, false, i, personalHour, personalMinute, personalSecond, 0, 0, 0)
-						}
 					gB_isServerRecord = true
 					CreateTimer(60.0, timer_sourcetv) //https://forums.alliedmods.net/showthread.php?t=191615
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, completions, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
@@ -2028,9 +1946,6 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 	}
 	else
 	{
-		//FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
-		//PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
-		//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 		int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 		int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 		int personalSecond = RoundToFloor(gF_Time[other]) % 60
@@ -2057,8 +1972,6 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
-			//PrintToChat(other, "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
-			//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(gI_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 		}
@@ -2069,16 +1982,12 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
-			//PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
-			//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", cpnum, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 			FinishMSG(gI_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond)
 		}
 	}
 	else
 	{
-		//PrintToChat(other, "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L135
-		//PrintToChat(gI_partner[other], "\x01%i. Checkpoint: \x07FF0000+00:00:00", cpnum)
 		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
 		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
 	}
@@ -2319,60 +2228,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_skyFrame[client] = 0
 		}
 	}
-	/*float velocity[3]
-	if(gI_boost[client] == 2)
-	{
-		//float velocity[3]
-		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
-		velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
-		velocity[2] = gF_vecVelEntity[client][2]
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-		gI_boost[client] = 3
-	}
-	else if(gI_boost[client] == 3)
-	{
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-		if(gB_groundBoost[client])
-		{
-			velocity[0] += gF_vecVelEntity[client][0]
-			velocity[1] += gF_vecVelEntity[client][1]
-			velocity[2] += gF_vecVelEntity[client][2]
-			PrintToServer("normal")
-		}
-		else
-		{
-			velocity[0] += gF_vecVelEntity[client][0] * 0.135
-			velocity[1] += gF_vecVelEntity[client][1] * 0.135
-			PrintToServer("gb")
-		}
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-		gI_boost[client] = false
-	}*/
-	/*if(gI_boost[client] == 2)
-	{
-		float velocity[3]
-		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
-		velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
-		velocity[2] = gF_vecVelEntity[client][2]
-		//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-		//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-		if(gB_groundBoost[client])
-		{
-			velocity[0] += gF_vecVelEntity[client][0]
-			velocity[1] += gF_vecVelEntity[client][1]
-			velocity[2] += gF_vecVelEntity[client][2]
-			PrintToServer("gb")
-		}
-		else
-		{
-			velocity[0] += gF_vecVelEntity[client][0] * 0.135
-			velocity[1] += gF_vecVelEntity[client][1] * 0.135
-			PrintToServer("normal")
-		}
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-		gI_boost[client] = false
-	}*/
-	if(gI_boost[client] > 1)
+	if(gI_boost[client])
 	{
 		float velocity[3]
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
@@ -2475,15 +2331,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		else if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+		if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
-	/*gI_countTickZones++
-	if(gI_countTickZones == 200 && !gB_isDevmap)
-	{
-		DrawZone()
-		gI_countTickZones = 0
-	}*/
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
@@ -2509,7 +2359,6 @@ Action ProjectileBoostFix(int entity, int other)
 		GetClientAbsOrigin(other, vecOriginOther)
 		float vecOriginEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-		//
 		//float vecMaxsEntity[3]
 		//GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
 		//float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
@@ -2519,8 +2368,6 @@ Action ProjectileBoostFix(int entity, int other)
 		{
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[other])
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity[other])
-			//PrintToServer("%f el entity", GetEntPropFloat(entity, Prop_Data, "m_flElasticity"))
-			//PrintToServer("%f el other", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
@@ -2618,8 +2465,6 @@ Action timer_devmap(Handle timer)
 
 Action timer_changelevel(Handle timer, bool value)
 {
-	//for(int i = 0; i <= 1; i++)
-		//gF_devmap[i] = 0.0
 	gB_isDevmap = value
 	ForceChangeLevel(gS_map, "Reason: Devmap")
 }
