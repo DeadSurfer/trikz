@@ -618,7 +618,7 @@ void SDKBoostFix(int client)
 			gI_boost[client] = 2
 		}
 	}
-	if(gI_boost[client] > 1)
+	/*if(gI_boost[client] > 1)
 	{
 		float velocity[3]
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
@@ -647,7 +647,7 @@ void SDKBoostFix(int client)
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
 		}
-	}
+	}*/
 }
 
 Action cmd_trikz(int client, int args)
@@ -2372,7 +2372,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 		gI_boost[client] = false
 	}*/
-	/*if(gI_boost[client] > 1)
+	if(gI_boost[client] > 1)
 	{
 		float velocity[3]
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
@@ -2401,7 +2401,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
 		}
-	}*/
+	}
 	if(IsPlayerAlive(client) && gI_partner[client])
 	{
 		if(buttons & IN_USE)
