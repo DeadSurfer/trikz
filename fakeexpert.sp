@@ -1520,8 +1520,11 @@ Action SDKStartTouch(int entity, int other)
 								gF_haveRecord[other] = gF_Time[other]
 							if(gF_haveRecord[gI_partner[other]] > gF_Time[other])
 								gF_haveRecord[gI_partner[other]] = gF_Time[other]
-							gF_mateRecord[other] = gF_Time[other]
-							gF_mateRecord[gI_partner[other]] = gF_Time[other]
+							if(gF_mateRecord[other] > gF_Time[other])
+							{
+								gF_mateRecord[other] = gF_Time[other]
+								gF_mateRecord[gI_partner[other]] = gF_Time[other]
+							}					
 						}
 					}
 					else
@@ -1583,6 +1586,8 @@ Action SDKStartTouch(int entity, int other)
 					gF_ServerRecord = gF_Time[other]
 					gF_haveRecord[other] = gF_Time[other]
 					gF_haveRecord[gI_partner[other]] = gF_Time[other]
+					gF_mateRecord[other] = gF_Time[other]
+					gF_mateRecord[gI_partner[other]] = gF_Time[other]
 					PrintToChatAll("\x077CFC00New server record!")
 					PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0)
