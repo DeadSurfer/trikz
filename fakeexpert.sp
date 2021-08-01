@@ -1353,11 +1353,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		createcp(data)
 		gI_cpCount++
 		if(!gB_haveZone)
-		{
 			gB_haveZone = true
-			//if(!gB_isDevmap)
-				//CreateTimer(0.1, timer_draw, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
-		}
 	}
 }
 
@@ -2062,11 +2058,6 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 {
 	PrintToServer("Zones table is successfuly created.")
 }
-
-/*Action timer_draw(Handle timer)
-{
-	DrawZone()
-}*/
 
 void DrawZone()
 {
