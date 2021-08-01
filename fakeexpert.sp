@@ -2700,6 +2700,7 @@ Action SDKProjectile(int entity)
 	if(IsValidEntity(entity) || IsPlayerAlive(client))
 	{
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+		//GivePlayerAmmo(client, 2, 48, true)
 		gB_silentKnife = true
 		FakeClientCommand(client, "use weapon_knife")
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
@@ -2736,7 +2737,8 @@ void SDKPlayerSpawnPost(int client)
 	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang")
-		GivePlayerItem(client, "weapon_flashbang") 
+		GivePlayerItem(client, "weapon_flashbang")
+		//Give
 	}
 }
 
@@ -2744,7 +2746,7 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 {
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
-	return Plugin_Handled
+	return Plugin_Handled //full god-mode
 }
 
 void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw thanks to lon to give this idea. aka trikz_failtime
