@@ -2519,8 +2519,8 @@ Action ProjectileBoostFix(int entity, int other)
 		{
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[other])
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity[other])
-			PrintToServer("%f el entity", GetEntPropFloat(entity, Prop_Data, "m_flElasticity"))
-			PrintToServer("%f el other", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
+			//PrintToServer("%f el entity", GetEntPropFloat(entity, Prop_Data, "m_flElasticity"))
+			//PrintToServer("%f el other", GetEntPropFloat(other, Prop_Data, "m_flElasticity"))
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
