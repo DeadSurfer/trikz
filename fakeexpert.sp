@@ -2339,7 +2339,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonPressed"))
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
-		if(gI_partner[observerTarget])
+		if(gI_partner[observerTarget] && IsPlayerAlive(gI_partner[observerTarget]))
 			SetEntProp(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
 	}
 }
