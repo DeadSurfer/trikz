@@ -62,7 +62,7 @@ ConVar gCV_topURL
 
 bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
 
-int gB_boost[MAXPLAYERS + 1]
+int gI_boost[MAXPLAYERS + 1]
 bool gB_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
@@ -527,7 +527,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gB_boost[client])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && gI_boost[client] == 0)
 	{
 		float vecAbsBooster[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
@@ -566,7 +566,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	if(gB_boost[client] == 1)
+	if(gI_boost[client] == 1)
 	{
 		int entity = EntRefToEntIndex(gI_flash[client])
 		if(entity != INVALID_ENT_REFERENCE)
@@ -614,24 +614,24 @@ void SDKBoostFix(int client)
 				//PrintToServer("normal")
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-			gB_boost[client] = false*/
-			gB_boost[client] = 2
+			gI_boost[client] = false*/
+			gI_boost[client] = 2
 		}
 	}
-	if(gB_boost[client] > 1)
+	if(gI_boost[client] > 1)
 	{
 		float velocity[3]
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-		if(gB_boost[client] == 2)
+		if(gI_boost[client] == 2)
 		{
 			velocity[0] -= gF_vecVelEntity[client][0]
 			velocity[1] -= gF_vecVelEntity[client][1]
 			velocity[2] = gF_vecVelEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-			gB_boost[client] = 3
+			gI_boost[client] = 3
 		}
-		else if(gB_boost[client] == 3)
+		else if(gI_boost[client] == 3)
 		{
 			if(gB_groundBoost[client])
 			{
@@ -645,7 +645,7 @@ void SDKBoostFix(int client)
 				velocity[1] += gF_vecVelEntity[client][1] * 0.135
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-			gB_boost[client] = false
+			gI_boost[client] = 0
 		}
 	}
 }
@@ -2300,7 +2300,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gB_skyStep[client] = false
 	}
-	if(gB_boost[client] && gB_skyStep[client])
+	if(gI_boost[client] && gB_skyStep[client])
 	{
 		gI_skyFrame[client] = 0
 		gB_skyStep[client] = false
@@ -2320,16 +2320,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 	/*float velocity[3]
-	if(gB_boost[client] == 2)
+	if(gI_boost[client] == 2)
 	{
 		//float velocity[3]
 		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
 		velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
 		velocity[2] = gF_vecVelEntity[client][2]
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-		gB_boost[client] = 3
+		gI_boost[client] = 3
 	}
-	else if(gB_boost[client] == 3)
+	else if(gI_boost[client] == 3)
 	{
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 		if(gB_groundBoost[client])
@@ -2346,9 +2346,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			PrintToServer("gb")
 		}
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-		gB_boost[client] = false
+		gI_boost[client] = false
 	}*/
-	/*if(gB_boost[client] == 2)
+	/*if(gI_boost[client] == 2)
 	{
 		float velocity[3]
 		velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
@@ -2370,22 +2370,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			PrintToServer("normal")
 		}
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-		gB_boost[client] = false
+		gI_boost[client] = false
 	}*/
-	/*if(gB_boost[client] > 1)
+	/*if(gI_boost[client] > 1)
 	{
 		float velocity[3]
 		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
-		if(gB_boost[client] == 2)
+		if(gI_boost[client] == 2)
 		{
 			velocity[0] -= gF_vecVelEntity[client][0]
 			velocity[1] -= gF_vecVelEntity[client][1]
 			velocity[2] = gF_vecVelEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-			gB_boost[client] = 3
+			gI_boost[client] = 3
 		}
-		else if(gB_boost[client] == 3)
+		else if(gI_boost[client] == 3)
 		{
 			if(gB_groundBoost[client])
 			{
@@ -2399,7 +2399,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				velocity[1] += gF_vecVelEntity[client][1] * 0.135
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-			gB_boost[client] = false
+			gI_boost[client] = 0
 		}
 	}*/
 	if(IsPlayerAlive(client) && gI_partner[client])
@@ -2503,7 +2503,7 @@ Action timer_removePing(Handle timer, int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && IsClientInGame(other) && !gB_boost[other] && !(gI_entityFlags[other] & FL_ONGROUND))
+	if(0 < other <= MaxClients && IsClientInGame(other) && gI_boost[other] == 0 && !(gI_entityFlags[other] & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
@@ -2525,7 +2525,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 			gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
-			gB_boost[other] = true
+			gI_boost[other] = 1
 		}
 	}
 }
