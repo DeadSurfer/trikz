@@ -161,8 +161,6 @@ public void OnMapStart()
 {
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
-	for(int i = 0; i <= 1; i++)
-		gF_devmap[i] = 0.0
 	gB_haveZone = false
 	gI_countTickZones = 0
 	gI_cpCount = 0
