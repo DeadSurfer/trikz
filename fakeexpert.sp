@@ -2385,7 +2385,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 			gI_boost[client] = 3
 		}
-		else if(gI_boost[client] == 3)
+		else if(gI_boost[client] == 3) // let make loop finish and come back to here.
 		{
 			if(gB_groundBoost[client])
 			{
