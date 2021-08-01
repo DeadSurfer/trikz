@@ -2336,6 +2336,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawZone()
 		//gI_countTickZones = 0
 	}
+	if(buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonPressed"))
+	{
+		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
+		if(gI_partner[observerTarget])
+			SetEntProp(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
+	}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
