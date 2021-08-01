@@ -2326,7 +2326,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	//gI_countTickZones++
 	//if(gI_countTickZones == 10 && !gB_isDevmap)
-	if(GetGameTickCount() % 10 = 0)
+	if(GetGameTickCount() % 10 == 0)
 	{
 		DrawZone()
 		//gI_countTickZones = 0
