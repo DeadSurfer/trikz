@@ -106,6 +106,7 @@ int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
 int gI_laserBeam
+int gI_countTickZones
 bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
@@ -163,7 +164,7 @@ public void OnMapStart()
 	for(int i = 0; i <= 1; i++)
 		gF_devmap[i] = 0.0
 	gB_haveZone = false
-	//gI_countTickZones = 0
+	gI_countTickZones = 0
 	gI_cpCount = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
@@ -1356,8 +1357,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		if(!gB_haveZone)
 		{
 			gB_haveZone = true
-			if(!gB_isDevmap)
-				CreateTimer(0.1, timer_draw, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+			//if(!gB_isDevmap)
+				//CreateTimer(0.1, timer_draw, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
 }
@@ -2064,10 +2065,10 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("Zones table is successfuly created.")
 }
 
-Action timer_draw(Handle timer)
+/*Action timer_draw(Handle timer)
 {
 	DrawZone()
-}
+}*/
 
 void DrawZone()
 {
@@ -2333,6 +2334,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 		if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+	}
+	gI_countTickZones++
+	if(gI_countTickZones == 10 && !gB_isDevmap)
+	{
+		DrawZone()
+		gI_countTickZones = 0
 	}
 }
 
