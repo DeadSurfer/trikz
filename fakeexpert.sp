@@ -106,7 +106,7 @@ int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
 int gI_laserBeam
-int gI_countTickZones
+//int gI_countTickZones
 bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
@@ -162,7 +162,7 @@ public void OnMapStart()
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
 	gB_haveZone = false
-	gI_countTickZones = 0
+	//gI_countTickZones = 0
 	gI_cpCount = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
@@ -2324,11 +2324,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
-	gI_countTickZones++
-	if(gI_countTickZones == 10 && !gB_isDevmap)
+	//gI_countTickZones++
+	//if(gI_countTickZones == 10 && !gB_isDevmap)
+	if(GetGameTickCount() % 10 = 0)
 	{
 		DrawZone()
-		gI_countTickZones = 0
+		//gI_countTickZones = 0
 	}
 }
 
