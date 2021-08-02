@@ -2336,7 +2336,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawZone()
 		//gI_countTickZones = 0
 	}
-	if(buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonPressed"))
+	if(buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonReleased"))
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 		if(gI_partner[observerTarget] && IsPlayerAlive(gI_partner[observerTarget]))
