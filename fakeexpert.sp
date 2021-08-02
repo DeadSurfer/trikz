@@ -2257,7 +2257,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(buttons & IN_USE)
 		{
-			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") == 32)
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
 				gI_pingTick[client] = 1
 			if(gI_pingTick[client] > 0)
 				gI_pingTick[client]++
@@ -2336,7 +2336,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawZone()
 		//gI_countTickZones = 0
 	}
-	if(!IsPlayerAlive(client) && buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonPressed") == 32)
+	if(!IsPlayerAlive(client) && buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
