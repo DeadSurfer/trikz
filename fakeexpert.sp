@@ -2336,10 +2336,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawZone()
 		//gI_countTickZones = 0
 	}
-	if(buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonReleased"))
+	if(buttons & IN_USE && GetEntProp(client, Prop_Data, "m_afButtonPressed") && !IsPlayerAlive(client))
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
-		if(gI_partner[observerTarget] && IsPlayerAlive(gI_partner[observerTarget]))
+		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
+		if(gI_partner[observerTarget] && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
 			SetEntProp(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
 	}
 }
