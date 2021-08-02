@@ -413,12 +413,12 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
-	char sQuery[512]
 	if(IsClientInGame(client) && gB_passDB)
 	{
-		int steamid = GetSteamAccountID(client)
+		char sQuery[512]
 		Format(sQuery, 512, "SELECT * FROM users")
 		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
+		int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
