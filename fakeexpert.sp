@@ -1653,7 +1653,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			ShowHudText(client, 3, "+00:00:00")
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+				if(IsClientInGame(i) && !IsPlayerAlive(i))
 				{
 					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
@@ -1681,7 +1681,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				ShowHudText(client, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+					if(IsClientInGame(i) && !IsPlayerAlive(i))
 					{
 						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
@@ -1705,7 +1705,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+					if(IsClientInGame(i) && !IsPlayerAlive(i))
 					{
 						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
@@ -1735,7 +1735,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			ShowHudText(client, 4, "+00:00:00")
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+				if(IsClientInGame(i) && !IsPlayerAlive(i))
 				{
 					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
@@ -1767,7 +1767,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond) //https://youtu.be/j4L3YvHowv8?t=45
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+					if(IsClientInGame(i) && !IsPlayerAlive(i))
 					{
 						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
@@ -1795,7 +1795,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				ShowHudText(client, 4, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
+					if(IsClientInGame(i) && !IsPlayerAlive(i))
 					{
 						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
