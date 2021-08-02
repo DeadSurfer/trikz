@@ -2485,7 +2485,7 @@ Action cmd_top(int client, int args)
 	KeyValues kv = new KeyValues("data")
 	kv.SetString("title", "Trikz Timer")
 	kv.SetNum("type", MOTDPANEL_TYPE_URL)
-	kv.SetTring("msg", sTopURL)
+	kv.SetString("msg", sTopURL)
 	ShowVGUIPanel(client, "info", kv, true)
 	return Plugin_Handled
 }
