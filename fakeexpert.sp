@@ -1754,6 +1754,17 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 						SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
 						ShowHudText(i, 4, "+00:00:00")
 					}
+					if(IsClientSourceTV(i))
+					{
+						SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
+						ShowHudText(i, 1, "MAP FINISHED!")
+						SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
+						ShowHudText(i, 2, "NEW SERVER RECORD!")
+						SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+						ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+						SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
+						ShowHudText(i, 4, "+00:00:00")
+					}
 				}
 			}
 		}
@@ -1776,6 +1787,17 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
+							ShowHudText(i, 1, "MAP FINISHED!")
+							SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
+							ShowHudText(i, 2, "NEW SERVER RECORD!")
+							SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
+							ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+							SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
+							ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+						}
+						if(IsClientSourceTV(i))
 						{
 							SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
 							ShowHudText(i, 1, "MAP FINISHED!")
