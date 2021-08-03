@@ -52,7 +52,7 @@ bool gB_cp[11][MAXPLAYERS + 1]
 bool gB_cpLock[11][MAXPLAYERS + 1]
 float gF_TimeCP[11][MAXPLAYERS + 1]
 float gF_timeDiffCP[11][MAXPLAYERS + 1]
-float gF_srCPTime[11][MAXPLAYERS + 1]
+float gF_srCPTime[11]
 
 float gF_haveRecord[MAXPLAYERS + 1]
 float gF_ServerRecord
@@ -1574,7 +1574,7 @@ Action SDKStartTouch(int entity, int other)
 							int srCPHour = (RoundToFloor(gF_timeDiffCP[i][other]) / 3600) % 24
 							int srCPMinute = (RoundToFloor(gF_timeDiffCP[i][other]) / 60) % 60
 							int srCPSecond = RoundToFloor(gF_timeDiffCP[i][other]) % 60
-							if(gF_TimeCP[i][other] < gF_srCPTime[i][other])
+							if(gF_TimeCP[i][other] < gF_srCPTime[i])
 								PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
 							else
 								PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond)
@@ -1964,11 +1964,11 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 	int personalSecond = RoundToFloor(gF_Time[other]) % 60
 	if(results.FetchRow())
 	{
-		gF_srCPTime[cpnum][other] = results.FetchFloat(0)
-		if(gF_TimeCP[cpnum][other] < gF_srCPTime[cpnum][other])
+		gF_srCPTime[cpnum] = results.FetchFloat(0)
+		if(gF_TimeCP[cpnum][other] < gF_srCPTime[cpnum])
 		{
-			gF_timeDiffCP[cpnum][other] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
-			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_srCPTime[cpnum][other] - gF_TimeCP[cpnum][other]
+			gF_timeDiffCP[cpnum][other] = gF_srCPTime[cpnum] - gF_TimeCP[cpnum][other]
+			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_srCPTime[cpnum] - gF_TimeCP[cpnum][other]
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
@@ -1977,8 +1977,8 @@ void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPac
 		}
 		else
 		{
-			gF_timeDiffCP[cpnum][other] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
-			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum][other]
+			gF_timeDiffCP[cpnum][other] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum]
+			gF_timeDiffCP[cpnum][gI_partner[other]] = gF_TimeCP[cpnum][other] - gF_srCPTime[cpnum]
 			int srCPHour = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 3600) % 24
 			int srCPMinute = (RoundToFloor(gF_timeDiffCP[cpnum][other]) / 60) % 60
 			int srCPSecond = RoundToFloor(gF_timeDiffCP[cpnum][other]) % 60
@@ -2483,7 +2483,7 @@ Action cmd_top(int client, int args)
 	char sTopURL[192]
 	gCV_topURL.GetString(sTopURL, 192)
 	ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
-	ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	//ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	//ShowMOTDPanel(
 	//KeyValues kv = new KeyValues("data")
 	//kv.SetString("title", "Trikz Timer")
