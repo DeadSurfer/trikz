@@ -2303,7 +2303,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				float vecAngle[3]
 				GetAngleVectors(normal, vecAngle, NULL_VECTOR, NULL_VECTOR)
 				for(int i = 0; i <= 2; i++)
-					end[i] += vecAngle[i] * 1.0
+					end[i] += vecAngle[i]
 				normal[0] -= 270.0
 				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 			}
