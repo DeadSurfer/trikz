@@ -1093,8 +1093,7 @@ Action cmd_test(int client, int args)
 			{
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-				//if(observerMode < 7 && observerTarget == client)
-				if(observerTarget == client)
+				if(observerMode < 7 && observerTarget == client)
 					PrintToServer("%i %N spectate -> %i %N", i, i, observerTarget, observerTarget)
 			}
 		}
