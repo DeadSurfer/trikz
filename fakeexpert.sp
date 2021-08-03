@@ -1089,6 +1089,7 @@ Action cmd_test(int client, int args)
 		{
 			//if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
 			//if(IsClientInGame(i) && !IsPlayerAlive(i))
+			if(IsClientInGame(i))
 			{
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
