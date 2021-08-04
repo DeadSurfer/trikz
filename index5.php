@@ -252,7 +252,7 @@
 				<th><center>Place</center></th>
 				<th>Team</th> <!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
 				<th><center>Time</center></th>
-				<th><center>Completions</center></th>
+				<th><center>Finishes</center></th>
 				<th><center>Tries</center></th>
 				<!--<th>Map</th>-->
 				<th><center>Date</center></th>
@@ -347,11 +347,11 @@
 					$formatedDateYmd = date("Y-m-d", $row["date"]);
 					$formatedDateHis = date("H:i:s", $row['date']);
 					//if($count == 1)
-						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[completions]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//else
 					//https://www.w3schools.com/html/html_colors.asp
 					//https://www.tutorialspoint.com/html/html_colors.htm
-					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[completions]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 					//$countx = $countx + 1;
 					$count++;
 					//echo "<td>$row2x[username]</td>";
