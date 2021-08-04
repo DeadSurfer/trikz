@@ -1292,7 +1292,7 @@ void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data
 	if(results.HasResults)
 		PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
+	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", data, gF_vecCP[0][data][0], gF_vecCP[0][data][1], gF_vecCP[0][data][2], gF_vecCP[1][data][0], gF_vecCP[1][data][1], gF_vecCP[1][data][2], gS_map)
 	gD_mysql.Query(SQLCPInserted, sQuery, data)
 }
 
