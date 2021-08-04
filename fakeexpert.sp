@@ -462,17 +462,28 @@ public void OnClientDisconnect(int client)
 		gI_pingTick[partner] = 0
 		gI_colorCount[partner] = 0
 	}
+	int entity
+	while((entity = FindEntityByClassname(entity, "weapon_")) > 0)
+	{
+		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
+			RequestFrame(removeDrop, entity)
+	}
 }
 
-public void OnClientDisconnect_Post(int client)
+void removeDrop(int entity)
+{
+	RemoveEntity(entity)
+}
+
+/*public void OnClientDisconnect_Post(int client)
 {
 	int entity
-	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
+	while((entity = FindEntityByClassname(entity, "weapon_")) > 0)
 	{
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
 	}
-}
+}*/
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
