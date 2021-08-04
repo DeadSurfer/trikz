@@ -467,17 +467,17 @@ public void OnClientDisconnect(int client)
 	{
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 		{
-			PrintToServer("%i", entity)
-			RequestFrame(removeDrop, entity)
+			//PrintToServer("%i", entity)
+			//RequestFrame(removeDrop, entity)
 			RemoveEntity(entity)
 		}
 	}
 }
 
-void removeDrop(int entity)
-{
+//void removeDrop(int entity)
+//{
 	//RemoveEntity(entity)
-}
+//}
 
 /*public void OnClientDisconnect_Post(int client)
 {
