@@ -1289,8 +1289,8 @@ Action cmd_cpmins(int client, int args)
 
 void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
-		PrintToServer("Checkpoint zone no. %i successfuly deleted.")
+	//if(results.FetchRow())
+	PrintToServer("Checkpoint zone no. %i successfuly deleted.")
 }
 
 Action cmd_cpmaxs(int client, int args)
@@ -1316,8 +1316,8 @@ Action cmd_cpmaxs(int client, int args)
 
 void SQLCPInserted(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
-		PrintToServer("Checkpoint zone no. %i successfuly created.", data)
+	//if(results.FetchRow())
+	PrintToServer("Checkpoint zone no. %i successfuly created.", data)
 }
 
 //https://forums.alliedmods.net/showthread.php?t=261378
