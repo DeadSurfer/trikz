@@ -466,7 +466,10 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_")) > 0)
 	{
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
+		{
+			PrintToServer("%i", entity)
 			RequestFrame(removeDrop, entity)
+		}
 	}
 }
 
