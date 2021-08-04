@@ -464,6 +464,16 @@ public void OnClientDisconnect(int client)
 	}
 }
 
+public void OnClientDisconnect_Post(int client)
+{
+	int entity
+	while((entity = FindEntityByClassname(entity, "weapon_")) > 0)
+	{
+		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
+			RemoveEntity(entity)
+	}
+}
+
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	gF_ServerRecord = 0.0
