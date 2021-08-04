@@ -1214,14 +1214,14 @@ void SQLTier(Database db, DBResultSet results, const char[] error, any data)
 
 void SQLSetStartZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	//if(results.FetchRow())
-	PrintToServer("Start zone successfuly created.")
+	if(results.HasResult)
+		PrintToServer("Start zone successfuly created.")
 }
 
 void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	//if(results.FetchRow())
-	PrintToServer("End zone successfuly created.")
+	if(results.HasResult)
+		PrintToServer("End zone successfuly created.")
 }
 
 Action cmd_startmaxs(int client, int args)
@@ -1276,9 +1276,9 @@ Action cmd_cpmins(int client, int args)
 			int cpnum = StringToInt(sCmd)
 			PrintToChat(client, "CP: No.%i", cpnum)
 			GetClientAbsOrigin(client, gF_vecCP[0][cpnum])
-			char sQuery[512]
-			Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
-			gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
+			//char sQuery[512]
+			//Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
+			//gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
 			gB_firstZoneCP = true
 		}
 		else
@@ -1289,8 +1289,10 @@ Action cmd_cpmins(int client, int args)
 
 void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
-	//if(results.FetchRow())
-	PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
+	if(results.HasResult)
+		PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
+	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
+	gD_mysql.Query(SQLCPInserted, sQuery, cpnum)
 }
 
 Action cmd_cpmaxs(int client, int args)
@@ -1307,8 +1309,10 @@ Action cmd_cpmaxs(int client, int args)
 		int cpnum = StringToInt(sCmd)
 		GetClientAbsOrigin(client, gF_vecCP[1][cpnum])
 		char sQuery[512]
-		Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
-		gD_mysql.Query(SQLCPInserted, sQuery, cpnum)
+		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
+		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
+		//Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
+		//gD_mysql.Query(SQLCPInserted, sQuery, cpnum)
 		gB_firstZoneCP = false
 	}
 	return Plugin_Handled
@@ -1316,8 +1320,8 @@ Action cmd_cpmaxs(int client, int args)
 
 void SQLCPInserted(Database db, DBResultSet results, const char[] error, any data)
 {
-	//if(results.FetchRow())
-	PrintToServer("Checkpoint zone no. %i successfuly created.", data)
+	if(results.HasResult)
+		PrintToServer("Checkpoint zone no. %i successfuly created.", data)
 }
 
 //https://forums.alliedmods.net/showthread.php?t=261378
