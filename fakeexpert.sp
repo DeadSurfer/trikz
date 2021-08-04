@@ -155,7 +155,7 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
 	HookEvent("player_spawn", event_playerspawn)
-	HookEvent("player_death", event_playerdeath)
+	//HookEvent("player_death", event_playerdeath)
 }
 
 public void OnMapStart()
