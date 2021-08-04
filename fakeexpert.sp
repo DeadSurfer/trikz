@@ -1290,7 +1290,7 @@ Action cmd_cpmins(int client, int args)
 void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
 	//if(results.FetchRow())
-	PrintToServer("Checkpoint zone no. %i successfuly deleted.")
+	PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
 }
 
 Action cmd_cpmaxs(int client, int args)
