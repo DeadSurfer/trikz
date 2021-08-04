@@ -931,7 +931,8 @@ void Restart(int client)
 				int pistol = GetPlayerWeaponSlot(client, 1)
 				if(pistol > 0)
 					RemovePlayerItem(client, pistol)
-				GivePlayerItem(client, "weapon_usp")
+				pistol = GivePlayerItem(client, "weapon_usp")
+				EquipPlayerWeapon(client, pistol)
 			}
 		}
 		else
