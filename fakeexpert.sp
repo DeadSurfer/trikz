@@ -155,6 +155,7 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
 	HookEvent("player_spawn", event_playerspawn)
+	HookEvent("player_death", event_playerdeath)
 }
 
 public void OnMapStart()
@@ -340,6 +341,11 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	SetEntityRenderColor(client, 255, 255, 255, 255)
 }
 
+/*Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+}*/
+
 Action cmd_checkpoint(int client, int args)
 {
 	if(gB_isDevmap)
@@ -413,6 +419,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
+	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
@@ -2633,6 +2640,11 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
+}
+
+void SDKWeaponDrop(int client, int weapon)
+{
+	RemoveEntity(weapon)
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
