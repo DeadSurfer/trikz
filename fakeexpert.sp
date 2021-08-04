@@ -928,7 +928,9 @@ void Restart(int client)
 					Trikz(client)
 				CreateTimer(3.0, Timer_BlockToggle, client) //https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
 				//int pistol = GetEntPropEnt(client, Prop_Data, "m_hMyWeapons", ) //https://forums.alliedmods.net/showthread.php?p=2458524
-				RemovePlayerItem(client, GetPlayerWeaponSlot(client, 1))
+				int pistol = GetPlayerWeaponSlot(client, 1)
+				if(pistol != -1)
+					RemovePlayerItem(client, pistol)
 				GivePlayerItem(client, "weapon_usp")
 			}
 		}
