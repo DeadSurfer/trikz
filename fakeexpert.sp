@@ -463,7 +463,7 @@ public void OnClientDisconnect(int client)
 		gI_colorCount[partner] = 0
 	}
 	int entity
-	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
+	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
 }
