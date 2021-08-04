@@ -1214,13 +1214,13 @@ void SQLTier(Database db, DBResultSet results, const char[] error, any data)
 
 void SQLSetStartZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.HasResult)
+	if(results.HasResults)
 		PrintToServer("Start zone successfuly created.")
 }
 
 void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.HasResult)
+	if(results.HasResults)
 		PrintToServer("End zone successfuly created.")
 }
 
@@ -1289,8 +1289,9 @@ Action cmd_cpmins(int client, int args)
 
 void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.HasResult)
+	if(results.HasResultss)
 		PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
+	char sQuery[512]
 	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
 	gD_mysql.Query(SQLCPInserted, sQuery, cpnum)
 }
@@ -1320,7 +1321,7 @@ Action cmd_cpmaxs(int client, int args)
 
 void SQLCPInserted(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.HasResult)
+	if(results.HasResults)
 		PrintToServer("Checkpoint zone no. %i successfuly created.", data)
 }
 
