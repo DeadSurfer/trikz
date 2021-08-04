@@ -419,7 +419,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
-	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
+	SDKHook(client, SDKHook_WeaponDropPost, SDKWeaponDropPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
