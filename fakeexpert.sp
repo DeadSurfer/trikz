@@ -419,7 +419,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
-	SDKHook(client, SDKHook_WeaponDropPost, SDKWeaponDropPost)
+	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
@@ -2642,7 +2642,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	}
 }
 
-void SDKWeaponDropPost(int client, int weapon)
+Action SDKWeaponDrop(int client, int weapon)
 {
 	RemoveEntity(weapon)
 }
