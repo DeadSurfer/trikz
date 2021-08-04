@@ -931,9 +931,9 @@ void Restart(int client)
 				int pistol = GetPlayerWeaponSlot(client, 1)
 				if(pistol > 0)
 					RemovePlayerItem(client, pistol)
-				//GivePlayerItem(client, "weapon_usp")
-				if(IsClientInGame(client))
-					EquipPlayerWeapon(client, 8) //https://forums.alliedmods.net/showthread.php?t=81546
+				GivePlayerItem(client, "weapon_usp")
+				//if(IsClientInGame(client))
+				//	EquipPlayerWeapon(client, 8) //https://forums.alliedmods.net/showthread.php?t=81546
 			}
 		}
 		else
