@@ -467,7 +467,7 @@ public void OnClientDisconnect(int client)
 public void OnClientDisconnect_Post(int client)
 {
 	int entity
-	while((entity = FindEntityByClassname(entity, "weapon_")) > 0)
+	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
 	{
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
