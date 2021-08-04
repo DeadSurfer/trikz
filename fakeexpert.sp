@@ -469,13 +469,14 @@ public void OnClientDisconnect(int client)
 		{
 			PrintToServer("%i", entity)
 			RequestFrame(removeDrop, entity)
+			RemoveEntity(entity)
 		}
 	}
 }
 
 void removeDrop(int entity)
 {
-	RemoveEntity(entity)
+	//RemoveEntity(entity)
 }
 
 /*public void OnClientDisconnect_Post(int client)
