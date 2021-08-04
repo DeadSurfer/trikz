@@ -463,7 +463,7 @@ public void OnClientDisconnect(int client)
 		gI_colorCount[partner] = 0
 	}
 	int entity
-	while((entity = FindEntityByClassname(entity, "weapon_")) > 0)
+	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
 	{
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 		{
