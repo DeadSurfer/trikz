@@ -2642,7 +2642,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	}
 }
 
-void SDKWeaponDrop(int client, int weapon)
+void SDKWeaponDropPost(int client, int weapon)
 {
 	RemoveEntity(weapon)
 }
