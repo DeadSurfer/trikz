@@ -1214,14 +1214,14 @@ void SQLTier(Database db, DBResultSet results, const char[] error, any data)
 
 void SQLSetStartZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
-		PrintToServer("Start zone successfuly created.")
+	//if(results.FetchRow())
+	PrintToServer("Start zone successfuly created.")
 }
 
 void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
-		PrintToServer("End zone successfuly created.")
+	//if(results.FetchRow())
+	PrintToServer("End zone successfuly created.")
 }
 
 Action cmd_startmaxs(int client, int args)
