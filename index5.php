@@ -1,7 +1,7 @@
 <?php
 //https://stackoverflow.com/questions/4146647/destroy-php-session-on-closing
 //session_set_cookie_params(0);
-//session_start();
+session_start();
 ?> 
 <html>
 <!--<head>Trikz Timer</head>-->
@@ -245,7 +245,7 @@
 	//https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
 	//session_start();
 	//function endSession
-	$_SESSION['map'] = "";
+	//$_SESSION['map'] = "";
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 	{	
 		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
@@ -253,19 +253,22 @@
 		//$_POST['data'] = $name;
 		//$_SESSION['data'] = $_POST['data']; //https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
 		$_SESSION['map'] = $_POST['submit'];
+		//$start = 0;
 		//$chosedMap[]
 		//if($_SERVER['QUERY_STRING'] != null)
 		//if(str$_SESSION['map'])
 		//	$_SERVER['QUERY_STRING'] = "";
 		//if(strlen($_SERVER['QUERY_STRING']) > 0)
 		//	$_SESSION['map'] = $_SERVER['QUERY_STRING'];
+		//$_SESSION['map'] = 
 	}
 	else
 		$name = "trikz_adventure";
 	if(strlen($_SERVER['QUERY_STRING']) > 0 && strlen($_SESSION['map']) == 0)
 	{
 		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
-		$name = $_SERVER['QUERY_STRING'];
+		//$name = $_SERVER['QUERY_STRING'];
+		$_SESSION['map'] = $_SERVER['QUERY_STRING'];
 		//print "<a href='$page?$_SESSION['map']'>Previous</a>";
 		//print "<a href='?$_SESSION[map]'></a>";
 		//return $_SERVER['QUERY_STRING'];
@@ -280,7 +283,8 @@
 	?>
 	<?php
 	//echo "Map: $name";
-	echo "<table class='styled-table2'><thead><tr><th>Map: $name</th></tr></thead></table>";
+	//echo "<table class='styled-table2'><thead><tr><th>Map: $name</th></tr></thead></table>";
+	echo "<table class='styled-table2'><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
@@ -301,27 +305,40 @@
 		<?php
 		//Step2
 		//https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531
-		//$page = basename($_SERVER['PHP_SELF']);
-		//$start = $_GET['start'];
+		$page = basename($_SERVER['PHP_SELF']);
+		$start = $_GET['start'];
+		if(isset($_POST['submit']))
+			$start = 0;
 		//echo $page;
 		//echo $_SERVER['QUERY_STRING']; //https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
 		//$eu = $start - 0;
-		//$limit = 10;
-		//$thisp = $eu + $limit;
-		//$back = $eu - $limit;
-		//$next = $eu + $limit;
+		$limit = 10;
+		$thisp = $start + $limit;
+		$back = $start - $limit;
+		$next = $start + $limit;
 		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC")->fetchColumn();
 		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
+		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
-		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
+		$query0 = "SELECT COUNT(id) FROM records WHERE map = '$_SESSION[map]'";
+		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC";
+		$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC LIMIT $start, $limit";
+		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
 		mysqli_query($db, $query) or die('Error querying database. [1]');
+		mysqli_query($db, $query0) or die('Error querying database. [2]');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
 		$result = mysqli_query($db, $query);
+		$result0 = mysqli_query($db, $query0);
+		//$row0 = mysqli_fetch_column($result0);
+		$row0 = mysqli_fetch_assoc($result0);
+		//$row0 = mysqli_fetch_column($result0);
+		//$row0 = mysqli_fetch_field($result0);
+		//mysqli_fetch_column
 		//$rowx = mysqli_fetch_assoc($resultx);
-		$count = 1;
+		$count = $start + 1;
 		//echo "<table class='styled-table'>";
 		//echo "<thead><tr>";
 		//echo "<th>Place</th>";
@@ -353,49 +370,34 @@
 			mysqli_query($db, $query2) or die('Error querying in table. [3]');
 			$result2 = mysqli_query($db, $query2);
 			$row2 = mysqli_fetch_array($result2);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			{
-				$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
-				mysqli_query($db, $query3) or die('Error querying in table. [4]');
-				$result3 = mysqli_query($db, $query3);
-				$row3 = mysqli_fetch_array($result3);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-					//echo "<td>$countx</td>";
-					//$countx = $countx + 1;
-					$hours = floor($row['time'] / 3600);
-					$mins = floor($row['time'] / 60 % 60);
-					$secs = floor($row['time'] % 60);
-					$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
-					$timeDiff;
-					if($serverRecord == 0)
-						$serverRecord = $row['time'];
-					$timeDiff = $row['time'] - $serverRecord;
-					$timeDiffHours = floor($timeDiff / 3600);
-					$timeDiffMins = floor($timeDiff / 60 % 60);
-					$timeDiffSecs = floor($timeDiff % 60);
-					$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
-					$formatedDateYmd = date("Y-m-d", $row["date"]);
-					$formatedDateHis = date("H:i:s", $row['date']);
-					//if($count == 1)
-						//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
-					//else
-					//https://www.w3schools.com/html/html_colors.asp
-					//https://www.tutorialspoint.com/html/html_colors.htm
-					echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
-					//$countx = $countx + 1;
-					$count++;
-					//echo "<td>$row2x[username]</td>";
-					//echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
-				}
-			}
+			$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
+			mysqli_query($db, $query3) or die('Error querying in table. [4]');
+			$result3 = mysqli_query($db, $query3);
+			$row3 = mysqli_fetch_array($result3);
+			$hours = floor($row['time'] / 3600);
+			$mins = floor($row['time'] / 60 % 60);
+			$secs = floor($row['time'] % 60);
+			$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
+			$timeDiff;
+			if($serverRecord == 0)
+				$serverRecord = $row['time'];
+			$timeDiff = $row['time'] - $serverRecord;
+			$timeDiffHours = floor($timeDiff / 3600);
+			$timeDiffMins = floor($timeDiff / 60 % 60);
+			$timeDiffSecs = floor($timeDiff % 60);
+			$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
+			$formatedDateYmd = date("Y-m-d", $row["date"]);
+			$formatedDateHis = date("H:i:s", $row['date']);
+			//if($count == 1)
+				//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+			//else
+			//https://www.w3schools.com/html/html_colors.asp
+			//https://www.tutorialspoint.com/html/html_colors.htm
+			echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+			//$countx = $countx + 1;
+			$count++;
+			//echo "<td>$row2x[username]</td>";
+			//echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
 			
 			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
 			//$formatedDate = date("Y-m-d H:i:s", (int)$rowx['date']);
@@ -450,15 +452,10 @@
 			//document.forms['myform'].elements['mytextfield'].focus();
 			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		/*if($back >= 0)
-		{
-			print "<a href='$page?start=$back'>Previous</a>";
-			//print "test";
-		}
-		if($thisp < $row0)
-		{
-			print "<a href='$page?start=$next'>Next</a>";
-		}*/
+		//if($back >= 0)
+		//	print "<a href='$page?start=$back'>Previous</a>";
+		//if($thisp < $row0)
+		//	print "<a href='$page?start=$next'>Next</a>";
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?><!--</center></td>-->
@@ -876,6 +873,11 @@
 	</tbody>
 	</table>
 	<?php
+		if($back >= 0)
+			print "<a href='$page?start=$back'>Previous</a>";
+		if($start < $row0)
+			print "<a href='$page?start=$next'>Next</a>";
+		echo "<br>";
 		/*//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
