@@ -883,11 +883,14 @@ session_start();
 	</tbody>
 	</table>
 	<?php
+		echo "<table class='styled-table2'><thead><tr>";
 		if($back >= 0)
-			print "<a href='$page?start=$back'>Previous</a>";
-		if($start + $limit < $row0[0])
-			print "<a href='$page?start=$next'>Next</a>";
-		echo "<br>";
+			//print "<a href='$page?start=$back'>Previous</a>";
+			print "<th><center><a href='$page?start=$back' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html
+		//if($start + $limit < $row0[0])
+		if($start < $row0[0])
+			print "<th><center><a href='$page?start=$next' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+		echo "</tr></thead></table><br>";
 		/*//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
 		mysqli_query($db, $query) or die('Error querying database.');
