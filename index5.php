@@ -236,11 +236,17 @@
 	//$next = 0;
 	//$prev = $_POST['prev'];
 	//if($_POST['submit'] != NULL)
+	//$chosedMap[$_SERVER[REMOTE_ADDR]] = "yes";
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
+	{	
 		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
+        //$chosedMap[$_SERVER['REMOTE_ADDR']] = $name; //https://www.codexworld.com/how-to/get-user-ip-address-php/
+	}
 	else
 		$name = "trikz_adventure";
 	//$name = $_POST
+    //echo $chosedMap[$_SERVER['REMOTE_ADDR']];
+	//echo $_SERVER['REMOTE_ADDR'];
 	?>
 	<?php
 	//echo "Map: $name";
