@@ -885,7 +885,7 @@ session_start();
 	<?php
 		if($back >= 0)
 			print "<a href='$page?start=$back'>Previous</a>";
-		if($start * 2 < $row0[0])
+		if($start + $limit < $row0[0])
 			print "<a href='$page?start=$next'>Next</a>";
 		echo "<br>";
 		/*//Step2
