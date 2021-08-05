@@ -1,3 +1,8 @@
+<?php
+//https://stackoverflow.com/questions/4146647/destroy-php-session-on-closing
+//session_set_cookie_params(0);
+//session_start();
+?> 
 <html>
 <!--<head>Trikz Timer</head>-->
 <style>
@@ -237,16 +242,40 @@
 	//$prev = $_POST['prev'];
 	//if($_POST['submit'] != NULL)
 	//$chosedMap[$_SERVER[REMOTE_ADDR]] = "yes";
+	//https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
+	//session_start();
+	//function endSession
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 	{	
 		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
         //$chosedMap[$_SERVER['REMOTE_ADDR']] = $name; //https://www.codexworld.com/how-to/get-user-ip-address-php/
+		//$_POST['data'] = $name;
+		//$_SESSION['data'] = $_POST['data']; //https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
+		$_SESSION['map'] = $_POST['submit'];
+		//$chosedMap[]
+		//if($_SERVER['QUERY_STRING'] != null)
+		//if(str$_SESSION['map'])
+		//	$_SERVER['QUERY_STRING'] = "";
+		//if(strlen($_SERVER['QUERY_STRING']) > 0)
+		//	$_SESSION['map'] = $_SERVER['QUERY_STRING'];
 	}
 	else
 		$name = "trikz_adventure";
+	if(strlen($_SERVER['QUERY_STRING']) > 0 && strlen($_SESSION['map']) == 0)
+	{
+		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
+		$name = $_SERVER['QUERY_STRING'];
+		//print "<a href='$page?$_SESSION['map']'>Previous</a>";
+		//print "<a href='?$_SESSION[map]'></a>";
+		//return $_SERVER['QUERY_STRING'];
+		//echo "<a href='?$_SESSION[map]'></a>";
+		//echo '<a href="index.php?$_SESSION[map]"></a>';
+	}
 	//$name = $_POST
     //echo $chosedMap[$_SERVER['REMOTE_ADDR']];
 	//echo $_SERVER['REMOTE_ADDR'];
+	//echo $_SESSION['data'];
+	//echo $_SESSION['map'];
 	?>
 	<?php
 	//echo "Map: $name";
@@ -271,15 +300,17 @@
 		<?php
 		//Step2
 		//https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531
-		//$page = basename($_SERVER[PHP_SELF]);
-		//$start = $_GET[start];
+		//$page = basename($_SERVER['PHP_SELF']);
+		//$start = $_GET['start'];
 		//echo $page;
+		//echo $_SERVER['QUERY_STRING']; //https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
 		//$eu = $start - 0;
 		//$limit = 10;
 		//$thisp = $eu + $limit;
 		//$back = $eu - $limit;
 		//$next = $eu + $limit;
 		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC")->fetchColumn();
+		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
 		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
 		$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
@@ -312,7 +343,7 @@
 		//$row0 = mysqli_fetch_array($result0);
 		//$row0 = mysqli_fet
 		//$num = 
-		//$row0 = $db->query0("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
+		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
 		// set the default timezone to use.
 		date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
 		while($row = mysqli_fetch_assoc($result))
@@ -418,11 +449,15 @@
 			//document.forms['myform'].elements['mytextfield'].focus();
 			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
 		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//if($back >= 0)
-		//	print "<a href='$page?start=$back'>Previous</a>";
+		/*if($back >= 0)
+		{
+			print "<a href='$page?start=$back'>Previous</a>";
 			//print "test";
-		//if($thisp < $row0)
-		//	print "<a href='$page?start=$next'>Next</a>";
+		}
+		if($thisp < $row0)
+		{
+			print "<a href='$page?start=$next'>Next</a>";
+		}*/
 		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?><!--</center></td>-->
