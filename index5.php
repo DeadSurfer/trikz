@@ -266,7 +266,7 @@ session_start();
 	else
 		$name = "trikz_adventure";
 	//if(strlen($_SERVER['QUERY_STRING']) > 0 && strlen($_SESSION['map']) == 0)
-	if(isset($_GET['map'])))
+	if(isset($_GET['map']))
 	{
 		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
 		//$name = $_SERVER['QUERY_STRING'];
