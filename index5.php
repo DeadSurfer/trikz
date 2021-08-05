@@ -310,7 +310,7 @@ session_start();
 		//if(strlen($_GET['start']) > 6)
 		//	$_GET['start'] = 0;
 		//$start = 0;
-		$start = (int) $_GET['start'];
+		$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
 		//if(strlen($start) > 6)
 		//	$start = 0;
 		if(isset($_POST['submit']))
@@ -342,7 +342,8 @@ session_start();
 		$result = mysqli_query($db, $query);
 		$result0 = mysqli_query($db, $query0);
 		//$row0 = mysqli_fetch_column($result0);
-		$row0 = mysqli_fetch_assoc($result0);
+		$row0 = mysqli_fetch_array($result0);
+		echo $row0[0]; //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
 		//$row0 = mysqli_fetch_column($result0);
 		//$row0 = mysqli_fetch_field($result0);
 		//mysqli_fetch_column
