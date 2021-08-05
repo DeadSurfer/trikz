@@ -245,7 +245,8 @@ session_start();
 	//https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
 	//session_start();
 	//function endSession
-	//$_SESSION['map'] = "";
+	if(strlen($_SESSION['map']) == 0)
+		$_SESSION['map'] = "trikz_adventure";
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 	{	
 		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
