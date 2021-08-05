@@ -268,7 +268,8 @@ session_start();
 	{
 		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
 		//$name = $_SERVER['QUERY_STRING'];
-		$_SESSION['map'] = $_SERVER['QUERY_STRING'];
+		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
+		$_SESSION['map'] = $_GET['map'];
 		//print "<a href='$page?$_SESSION['map']'>Previous</a>";
 		//print "<a href='?$_SESSION[map]'></a>";
 		//return $_SERVER['QUERY_STRING'];
@@ -306,10 +307,18 @@ session_start();
 		//Step2
 		//https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531
 		$page = basename($_SERVER['PHP_SELF']);
-		$start = $_GET['start'];
+		//if(strlen($_GET['start']) > 6)
+		//	$_GET['start'] = 0;
+		//$start = 0;
+		$start = (int) $_GET['start'];
+		//if(strlen($start) > 6)
+		//	$start = 0;
 		if(isset($_POST['submit']))
 			$start = 0;
+		//if(strlen($start) == 0)
+		//	$start = 0;
 		//echo $page;
+		//echo $start;
 		//echo $_SERVER['QUERY_STRING']; //https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
 		//$eu = $start - 0;
 		$limit = 10;
