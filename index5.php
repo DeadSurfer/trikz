@@ -311,7 +311,7 @@ session_start();
 		//if(strlen($_GET['start']) > 6)
 		//	$_GET['start'] = 0;
 		//$start = 0;
-		if(strlen($_GET['start']) > 0)
+		if(strlen((int) $_GET['start']) > 0)
 			$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
 		//if(strlen($start) > 6)
 		//	$start = 0;
