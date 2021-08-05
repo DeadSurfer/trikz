@@ -2531,7 +2531,7 @@ Action cmd_top(int client, int args)
 	char sTopURL[192]
 	gCV_topURL.GetString(sTopURL, 192)
 	char sTopURLwMap[256]
-	Format(sTopURLwMap, 256, "sTopURL?%s", gS_map)
+	Format(sTopURLwMap, 256, "%s?%s", sTopURL, gS_map)
 	//ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	//ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
