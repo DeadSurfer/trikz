@@ -887,8 +887,7 @@ session_start();
 		if($back >= 0)
 			//print "<a href='$page?start=$back'>Previous</a>";
 			print "<th><center><a href='$page?start=$back' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html
-		//if($start + $limit < $row0[0])
-		if($start < $row0[0])
+		if($start + $limit < $row0[0])
 			print "<th><center><a href='$page?start=$next' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
 		echo "</tr></thead></table><br>";
 		/*//Step2
