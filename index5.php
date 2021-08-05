@@ -311,7 +311,7 @@ session_start();
 		//if(strlen($_GET['start']) > 6)
 		//	$_GET['start'] = 0;
 		//$start = 0;
-		if(isset((int) $_GET['start']) > 0)
+		if(isset($_GET['start'])) //https://www.stechies.com/undefined-index-error-php/
 			$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
 		//if(strlen($start) > 6)
 		//	$start = 0;
