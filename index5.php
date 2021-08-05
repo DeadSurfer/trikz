@@ -247,6 +247,18 @@ session_start();
 	//function endSession
 	//$_SESSION['map'] = $_GET['map'];
 	//echo $_GET['map'];
+	if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp
+	{
+		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
+		//$name = $_SERVER['QUERY_STRING'];
+		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
+		$_SESSION['map'] = $_GET['map'];
+		//print "<a href='$page?$_SESSION['map']'>Previous</a>";
+		//print "<a href='?$_SESSION[map]'></a>";
+		//return $_SERVER['QUERY_STRING'];
+		//echo "<a href='?$_SESSION[map]'></a>";
+		//echo '<a href="index.php?$_SESSION[map]"></a>';
+	}
 	if(!isset($_SESSION['map']))
 		$_SESSION['map'] = "trikz_adventure";
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
@@ -269,18 +281,18 @@ session_start();
 		$name = "trikz_adventure";
 	//if(strlen($_SERVER['QUERY_STRING']) > 0 && strlen($_SESSION['map']) == 0)
 	//if(isset($_GET['map']))
-	if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp
-	{
+	//if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp
+	//{
 		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
 		//$name = $_SERVER['QUERY_STRING'];
 		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
-		$_SESSION['map'] = $_GET['map'];
+		//$_SESSION['map'] = $_GET['map'];
 		//print "<a href='$page?$_SESSION['map']'>Previous</a>";
 		//print "<a href='?$_SESSION[map]'></a>";
 		//return $_SERVER['QUERY_STRING'];
 		//echo "<a href='?$_SESSION[map]'></a>";
 		//echo '<a href="index.php?$_SESSION[map]"></a>';
-	}
+	//}
 	//$name = $_POST
     //echo $chosedMap[$_SERVER['REMOTE_ADDR']];
 	//echo $_SERVER['REMOTE_ADDR'];
