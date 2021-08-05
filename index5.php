@@ -245,7 +245,7 @@ session_start();
 	//https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
 	//session_start();
 	//function endSession
-	if(strlen($_SESSION['map']) == 0)
+	if(!isset($_SESSION['map']))
 		$_SESSION['map'] = "trikz_adventure";
 	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 	{	
@@ -313,6 +313,8 @@ session_start();
 		//$start = 0;
 		if(isset($_GET['start'])) //https://www.stechies.com/undefined-index-error-php/
 			$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
+		else
+			$start = 0;
 		//if(strlen($start) > 6)
 		//	$start = 0;
 		if(isset($_POST['submit']))
