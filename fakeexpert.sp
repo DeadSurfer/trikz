@@ -1902,7 +1902,7 @@ Action timer_runSourceTV(Handle timer)
 	RenameFile(sNewFileName, sOldFileName)
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://sm.alliedmods.net/new-api/convars/__raw
-	if(isSourceTV)
+	if(isSourceTV && !gB_isSourceTVchangedFileName)
 	{
 		PrintToServer("SourceTV start recording.")
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
