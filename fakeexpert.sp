@@ -1225,7 +1225,7 @@ Action cmd_maptier(int client, int args)
 	return Plugin_Handled
 }
 
-void SQLTier(Database db, DBResultSet results, const char[] error, any data)
+void SQLTierRemove(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "INSERT INTO tier (tier) VALUES (%i) WHERE map = '%s'", data, gS_map)
