@@ -143,6 +143,7 @@ public void OnPluginStart()
 	RegServerCmd("sm_createusers", cmd_createusers)
 	RegServerCmd("sm_createrecords", cmd_createrecords)
 	RegServerCmd("sm_createcp", cmd_createcp)
+	RegServerCmd("sm_createtier", cmd_createtier)
 	RegConsoleCmd("sm_startmins", cmd_startmins)
 	RegConsoleCmd("sm_startmaxs", cmd_startmaxs)
 	RegConsoleCmd("sm_endmins", cmd_endmins)
@@ -1214,8 +1215,9 @@ Action cmd_maptier(int client, int args)
 			int tier = StringToInt(sArgString)
 			PrintToServer("[Args] Tier: %i", tier)
 			char sQuery[512]
-			Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
-			gD_mysql.Query(SQLTier, sQuery)
+			//Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
+			Format(sQuery, 512, "DELETE FROM tier WHERE map = '%s'", gS_map)
+			gD_mysql.Query(SQLTierRemove, sQuery, tier)
 		}
 		else
 			PrintToChat(client, "Turn on devmap.")
@@ -1225,6 +1227,15 @@ Action cmd_maptier(int client, int args)
 
 void SQLTier(Database db, DBResultSet results, const char[] error, any data)
 {
+	char sQuery[512]
+	Format(sQuery, 512, "INSERT INTO tier (tier) VALUES (%i) WHERE map = '%s'", data, gS_map)
+	gD_mysql.Query(SQLTierInsert, sQuery, data)
+}
+
+void SQLTierInsert(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.HasResults)
+		PrintToServer("Tier %i is set for %s.", data, gS_map)
 }
 
 void SQLSetStartZones(Database db, DBResultSet results, const char[] error, any data)
@@ -1291,9 +1302,6 @@ Action cmd_cpmins(int client, int args)
 			int cpnum = StringToInt(sCmd)
 			PrintToChat(client, "CP: No.%i", cpnum)
 			GetClientAbsOrigin(client, gF_vecCP[0][cpnum])
-			//char sQuery[512]
-			//Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
-			//gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
 			gB_firstZoneCP = true
 		}
 		else
@@ -1327,8 +1335,6 @@ Action cmd_cpmaxs(int client, int args)
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
 		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
-		//Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, gF_vecCP[0][cpnum][0], gF_vecCP[0][cpnum][1], gF_vecCP[0][cpnum][2], gF_vecCP[1][cpnum][0], gF_vecCP[1][cpnum][1], gF_vecCP[1][cpnum][2], gS_map)
-		//gD_mysql.Query(SQLCPInserted, sQuery, cpnum)
 		gB_firstZoneCP = false
 	}
 	return Plugin_Handled
@@ -1345,13 +1351,20 @@ void SQLCPInserted(Database db, DBResultSet results, const char[] error, any dat
 Action cmd_createcp(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx FLOAT, cpy FLOAT, cpz FLOAT, cpx2 FLOAT, cpy2 FLOAT, cpz2 FLOAT, map VARCHAR(192),  PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx FLOAT, cpy FLOAT, cpz FLOAT, cpx2 FLOAT, cpy2 FLOAT, cpz2 FLOAT, map VARCHAR(192), PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateCPTable, sQuery)
 }
 
 void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("CP table successfuly created.")
+}
+
+Action cmd_createtier(int client, int args)
+{
+	char sQuery[512]
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS tier (id INT AUTO_INCREMENT, tier INT, map VARCHAR(192), PRIMARY KEY(id))")
+	gD_mysql.Query(SQLCreateTierTable, sQuery)
 }
 
 void CPSetup()
@@ -1625,7 +1638,7 @@ Action SDKStartTouch(int entity, int other)
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
 				
-				Format(sQuery, 512, "SELECT tier FROM zones WHERE map = '%s' AND type = 0", gS_map)
+				Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
 			}
 			gB_state[other] = false
