@@ -1360,7 +1360,7 @@ void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any 
 	PrintToServer("CP table successfuly created.")
 }
 
-Action cmd_createtier(int client, int args)
+Action cmd_createtier(int args)
 {
 	char sQuery[512]
 	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS tier (id INT AUTO_INCREMENT, tier INT, map VARCHAR(192), PRIMARY KEY(id))")
