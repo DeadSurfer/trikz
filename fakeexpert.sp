@@ -444,6 +444,7 @@ public void OnClientPutInServer(int client)
 	CancelClientMenu(client)
 	gB_block[client] = true
 	Color(client, false)
+	gF_Time[client] = 0.0
 }
 
 public void OnClientDisconnect(int client)
