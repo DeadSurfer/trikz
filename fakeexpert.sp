@@ -1367,6 +1367,11 @@ Action cmd_createtier(int args)
 	gD_mysql.Query(SQLCreateTierTable, sQuery)
 }
 
+void SQLCreateTierTable(Database db, DBResultSet results, const char[] error, any data)
+{
+	PrintToServer("Tier table successfuly created.")
+}
+
 void CPSetup()
 {
 	char sQuery[512]
