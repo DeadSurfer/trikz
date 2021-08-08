@@ -2364,8 +2364,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	ExplodeString(sTime, ".", sTimeFormated, 16, 16)
 	int zone = StringToInt(sTimeFormated[1])
 	//if(gB_haveZone && GetGameTickCount() % 100 == 0)
-	PrintToServer("%i", zone)
-	if(gB_haveZone && zone % 218750 == 0)
+	//PrintToServer("%i", zone)
+	if(gB_haveZone && zone == 968750)
 	{
 		DrawZone()
 		PrintToServer("%i", zone)
