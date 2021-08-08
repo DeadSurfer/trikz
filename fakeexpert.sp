@@ -2365,7 +2365,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	int zone = StringToInt(sTimeFormated[1])
 	//if(gB_haveZone && GetGameTickCount() % 100 == 0)
 	if(gB_haveZone && zone % 100000 == 0)
+	{
 		DrawZone()
+		PrintToServer("%i", zone)
+	}
 	if(!IsPlayerAlive(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
