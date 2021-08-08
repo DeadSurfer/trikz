@@ -2185,7 +2185,7 @@ void DrawZone()
 		int modelType
 		if(i == 1)
 			modelType = 1
-		if(2 <= i <= 12)
+		if(i > 1)
 			modelType = 2
 		for(int j = 0; j <= 3; j++)
 		{
