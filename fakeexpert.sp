@@ -2362,7 +2362,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	Format(sTime, 32, "%f", GetEngineTime())
 	char sTimeFormated[16][16]
 	ExplodeString(sTime, ".", sTimeFormated, 16, 16)
-	float zone = StringToFloat(sTimeFormated[1])
+	int zone = StringToFloat(sTimeFormated[1])
 	//if(gB_haveZone && GetGameTickCount() % 100 == 0)
 	if(gB_haveZone && zone % 100000 == 0)
 		DrawZone()
