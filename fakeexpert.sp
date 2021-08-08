@@ -110,7 +110,7 @@ bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
-int gF_zoneDrawTime
+int gI_zoneDrawTime
 
 public Plugin myinfo =
 {
@@ -2369,10 +2369,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gB_haveZone && zone == 968750)
 	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0)
 	{
-		gF_zoneDrawTime = GetTime()
+		gI_zoneDrawTime = GetTime()
 		DrawZone()
-		//gF_zoneDrawTime = 0
-		PrintToServer("%i", gF_zoneDrawTime)
+		//gI_zoneDrawTime = 0
+		PrintToServer("%i", gI_zoneDrawTime)
 	}
 	if(!IsPlayerAlive(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
