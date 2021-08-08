@@ -106,7 +106,6 @@ int gI_colorCount[MAXPLAYERS + 1]
 
 int gI_zoneModel[3]
 int gI_laserBeam
-//int gI_countTickZones
 bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
@@ -164,7 +163,6 @@ public void OnMapStart()
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
 	gB_haveZone = false
-	//gI_countTickZones = 0
 	gI_cpCount = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
@@ -2161,7 +2159,10 @@ void DrawZone()
 		end[i][2] += 3.0
 	}
 	float corners[13][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
-	for(int i = 1; i <= gI_cpCount; i++)
+	int cp = 1
+	if(gI_cpCount)
+		cp += gI_cpCount
+	for(int i = 0; i <= cp; i++)
 	{
 		//bottom left front
 		corners[i][0][0] = start[i][0]
@@ -2180,59 +2181,17 @@ void DrawZone()
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
 		int modelType
-		//if(i == 12)
-		//	modelType = 1
-		if(1 <= i <= 10)
+		if(i == 1)
+			modelType = 1
+		if(2 <= i <= 11)
 			modelType = 2
 		for(int j = 0; j <= 3; j++)
 		{
 			int k = j + 1
 			if(j == 3)
 				k = 0
-			//if(!IsNullVector(corners[i][j]) && !IsNullVector(corners[i][k+l])) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3260
-			{
-				//corners[i][j][2] += 3.0
-				//corners[i][k+l][2] = corners[i][j][2]
-				TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 0.1, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-				TE_SendToAll()
-			}
-		}
-	}
-	for(int i = 11; i <= 12; i++)
-	{
-		//bottom left front
-		corners[i][0][0] = start[i][0]
-		corners[i][0][1] = start[i][1]
-		corners[i][0][2] = start[i][2]
-		//bottom right front
-		corners[i][1][0] = end[i][0]
-		corners[i][1][1] = start[i][1]
-		corners[i][1][2] = start[i][2]
-		//bottom right back
-		corners[i][2][0] = end[i][0]
-		corners[i][2][1] = end[i][1]
-		corners[i][2][2] = start[i][2]
-		//bottom left back
-		corners[i][3][0] = start[i][0]
-		corners[i][3][1] = end[i][1]
-		corners[i][3][2] = start[i][2]
-		int modelType
-		if(i == 12)
-			modelType = 1
-		//if(1 <= i <= 10)
-		//	modelType = 2
-		for(int j = 0; j <= 3; j++)
-		{
-			int k = j + 1
-			if(j == 3)
-				k = 0
-			//if(!IsNullVector(corners[i][j]) && !IsNullVector(corners[i][k+l])) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3260
-			{
-				//corners[i][j][2] += 3.0
-				//corners[i][k+l][2] = corners[i][j][2]
-				TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 0.1, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-				TE_SendToAll()
-			}
+			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 0.1, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SendToAll()
 		}
 	}
 }
@@ -2340,7 +2299,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_pingModel[client] = 0
 				KillTimer(gH_timerPing[client])
 			}
-			//gI_pingTick[client] = 0
 			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
 			DispatchSpawn(gI_pingModel[client])
@@ -2396,13 +2354,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
-	//gI_countTickZones++
-	//if(gI_countTickZones == 10 && !gB_isDevmap)
 	if(gB_haveZone && GetGameTickCount() % 10 == 0)
-	{
 		DrawZone()
-		//gI_countTickZones = 0
-	}
 	if(!IsPlayerAlive(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
@@ -2618,7 +2571,7 @@ Action SDKProjectile(int entity)
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		CreateTimer(1.49, timer_deleteProjectile, EntIndexToEntRef(entity)) //sometimes flashbang going to flash, entindextoentref must fix it.
+		CreateTimer(1.45, timer_deleteProjectile, EntIndexToEntRef(entity)) //sometimes flashbang going to flash, entindextoentref must fix it.
 	}
 }
 
