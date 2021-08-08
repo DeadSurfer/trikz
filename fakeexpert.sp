@@ -110,6 +110,7 @@ bool gB_isSourceTVchangedFileName = true
 float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
+int gF_zoneDrawTime
 
 public Plugin myinfo =
 {
@@ -2358,17 +2359,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
-	char sTime[32]
-	Format(sTime, 32, "%f", GetEngineTime())
-	char sTimeFormated[16][16]
-	ExplodeString(sTime, ".", sTimeFormated, 16, 16)
-	int zone = StringToInt(sTimeFormated[1])
+	//char sTime[32]
+	//Format(sTime, 32, "%f", GetEngineTime())
+	//char sTimeFormated[16][16]
+	//ExplodeString(sTime, ".", sTimeFormated, 16, 16)
+	//int zone = StringToInt(sTimeFormated[1])
 	//if(gB_haveZone && GetGameTickCount() % 100 == 0)
 	//PrintToServer("%i", zone)
-	if(gB_haveZone && zone == 968750)
+	//if(gB_haveZone && zone == 968750)
+	gF_zoneDrawTime = GetTime()
+	if(gB_haveZone && GetTime() - gF_zoneDrawTime > 0)
 	{
 		DrawZone()
-		PrintToServer("%i", zone)
+		gF_zoneDrawTime = 0
+		PrintToServer("%i", gF_zoneDrawTime)
 	}
 	if(!IsPlayerAlive(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
