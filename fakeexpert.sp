@@ -2186,7 +2186,7 @@ void DrawZone()
 		for(int j = 0; j <= 3; j++)
 		{
 			int k = j + 1
-			if(k == 3)
+			if(j == 3)
 				k = 0
 			//if(!IsNullVector(corners[i][j]) && !IsNullVector(corners[i][k+l])) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3260
 			{
@@ -2223,7 +2223,7 @@ void DrawZone()
 		for(int j = 0; j <= 3; j++)
 		{
 			int k = j + 1
-			if(k == 3)
+			if(j == 3)
 				k = 0
 			//if(!IsNullVector(corners[i][j]) && !IsNullVector(corners[i][k+l])) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3260
 			{
