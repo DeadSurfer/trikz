@@ -2334,7 +2334,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(gI_pingTick[client])
 				gI_pingTick[client]++
-			if(gI_pingTick[client] == 50)
+			if(gI_pingTick[client] == 75)
 				gI_pingTick[client] = 0
 		}
 		if(gI_pingTick[client] == 50)
