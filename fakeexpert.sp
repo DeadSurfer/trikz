@@ -2359,20 +2359,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
-	//char sTime[32]
-	//Format(sTime, 32, "%f", GetEngineTime())
-	//char sTimeFormated[16][16]
-	//ExplodeString(sTime, ".", sTimeFormated, 16, 16)
-	//int zone = StringToInt(sTimeFormated[1])
-	//if(gB_haveZone && GetGameTickCount() % 100 == 0)
-	//PrintToServer("%i", zone)
-	//if(gB_haveZone && zone == 968750)
 	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0)
 	{
 		gI_zoneDrawTime = GetTime()
 		DrawZone()
-		//gI_zoneDrawTime = 0
-		PrintToServer("%i", gI_zoneDrawTime)
 	}
 	if(!IsPlayerAlive(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
