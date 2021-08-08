@@ -2147,7 +2147,10 @@ void DrawZone()
 	end[12][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
 	end[12][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
 	end[12][2] += 3.0
-	for(int i = 1; i <= gI_cpCount; i++)
+	int zones = 1
+	if(gI_cpCount)
+		zones += gI_cpCount
+	for(int i = 2; i <= zones; i++)
 	{
 		start[i][0] = (gF_vecCP[0][i][0] < gF_vecCP[1][i][0]) ? gF_vecCP[0][i][0] : gF_vecCP[1][i][0]
 		start[i][1] = (gF_vecCP[0][i][1] < gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
@@ -2159,10 +2162,7 @@ void DrawZone()
 		end[i][2] += 3.0
 	}
 	float corners[13][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
-	int cp = 1
-	if(gI_cpCount)
-		cp += gI_cpCount
-	for(int i = 0; i <= cp; i++)
+	for(int i = 0; i <= zones; i++)
 	{
 		//bottom left front
 		corners[i][0][0] = start[i][0]
