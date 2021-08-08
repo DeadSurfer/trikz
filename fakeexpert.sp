@@ -1168,6 +1168,7 @@ Action cmd_test(int client, int args)
 		//PrintToServer("%i %i", newKVINT, newClient)
 		PrintToServer("TickCount: %i", GetGameTickCount())
 		PrintToServer("GetTime: %i", GetTime())
+		PrintToServer("EngineTime: %f", GetEngineTime())
 	}
 	return Plugin_Handled
 }
