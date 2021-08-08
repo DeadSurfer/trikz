@@ -2367,9 +2367,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(gB_haveZone && GetGameTickCount() % 100 == 0)
 	//PrintToServer("%i", zone)
 	//if(gB_haveZone && zone == 968750)
-	gF_zoneDrawTime = GetTime()
 	if(gB_haveZone && GetTime() - gF_zoneDrawTime > 0)
 	{
+		gF_zoneDrawTime = GetTime()
 		DrawZone()
 		gF_zoneDrawTime = 0
 		PrintToServer("%i", gF_zoneDrawTime)
