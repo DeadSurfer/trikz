@@ -1902,7 +1902,7 @@ Action timer_sourcetv(Handle timer)
 		//Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
 		//RenameFile(sNewFileName, sOldFileName) //its dont want to work in this case. so try to make timer for it lower.
 		gB_isSourceTVchangedFileName = false
-		CreateTimer(5.0, timer_runSourceTV)
+		CreateTimer(5.0, timer_runSourceTV, _, TIMER_FLAG_NO_MAPCHANGE)
 		//PrintToServer("SourceTV start recording.")
 		//FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
 		//FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
