@@ -2129,8 +2129,8 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 
 void DrawZone()
 {
-	float start[13][3]
-	float end[13][3]
+	float start[12][3]
+	float end[12][3]
 	start[0][0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
 	start[0][1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
 	start[0][2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
@@ -2163,7 +2163,7 @@ void DrawZone()
 			end[i][2] += 3.0
 		}
 	}
-	float corners[13][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
+	float corners[12][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
 	for(int i = 0; i <= zones; i++)
 	{
 		//bottom left front
