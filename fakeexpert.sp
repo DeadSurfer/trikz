@@ -1167,6 +1167,7 @@ Action cmd_test(int client, int args)
 		PrintToServer("%i %i", newClient, newKVINT) // so we can customize in this way all chats. alot secuences but its okey.
 		//PrintToServer("%i %i", newKVINT, newClient)
 		PrintToServer("TickCount: %i", GetGameTickCount())
+		PrintToServer("GetTime: %i", GetTime())
 	}
 	return Plugin_Handled
 }
