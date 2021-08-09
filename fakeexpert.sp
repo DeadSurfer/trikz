@@ -1330,9 +1330,12 @@ Action cmd_zones(int client, int args)
 	IntToString(steamid, sCurrentSteamID, 64)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID) && gB_isDevmap && gB_haveZone)
+	if(StrEqual(sSteamID, sCurrentSteamID) && gB_haveZone)
 	{
-		ZoneEditor(client)
+		if(gB_isDevmap)
+			ZoneEditor(client)
+		else
+			PrintToChat(client, "Turn on devmap.")
 	}
 }
 
