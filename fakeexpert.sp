@@ -2261,6 +2261,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(gI_pingTick[client])
 				gI_pingTick[client]++
+			if(gI_pingTick[client] == 49)
+				gI_pingTick[client] = 51
 			if(gI_pingTick[client] == 75)
 				gI_pingTick[client] = 0
 		}
@@ -2537,7 +2539,7 @@ Action timer_afk(Handle timer)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	for(int i = 1; i <= MaxClients; i++)
-		if(gB_afk[i])
+		if(!gB_afk[i])
 			KickClient(i, "Away from keyboard.")
 	return Plugin_Stop
 }
