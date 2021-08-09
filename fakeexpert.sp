@@ -2388,7 +2388,7 @@ Action ProjectileBoostFix(int entity, int other)
 
 Action cmd_devmap(int client, int args)
 {
-	if(GetEngineTime() - gF_devmapTime > 25.0 && GetEngineTime() - gF_afkTime > 20.0)
+	if(GetEngineTime() - gF_devmapTime > 35.0 && GetEngineTime() - gF_afkTime > 30.0)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -2498,7 +2498,7 @@ Action cmd_top(int client, int args)
 
 Action cmd_afk(int client, int args)
 {
-	if(GetEngineTime() - gF_afkTime > 20.0 && GetEngineTime() - gF_devmapTime > 25.0)
+	if(GetEngineTime() - gF_afkTime > 30.0 && GetEngineTime() - gF_devmapTime > 35.0)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
