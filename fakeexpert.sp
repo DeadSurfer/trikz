@@ -2513,7 +2513,7 @@ Action cmd_afk(int client, int args)
 			}
 		}
 		gF_afkTime = GetEngineTime()
-		CreateTimer(20.0, timer_afk, _, TIMER_FLAG_NO_MAPCHANGE)
+		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE)
 	}
 	return Plugin_Handled
 }
@@ -2539,7 +2539,7 @@ Action timer_afk(Handle timer)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && !gB_afk[i])
+		if(IsClientInGame(i) && !gB_afk[i] && client != i)
 			KickClient(i, "Away from keyboard.")
 	return Plugin_Stop
 }
