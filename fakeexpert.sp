@@ -1021,7 +1021,7 @@ Action cmd_startmins(int client, int args)
 void SQLDeleteStartZone(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %f, %f, %f, %f, %f, %f)", gS_map, gF_vecStartZone[0][0], gF_vecStartZone[0][1], gF_vecStartZone[0][2], gF_vecStartZone[1][0], gF_vecStartZone[1][1], gF_vecStartZone[1][2])
+	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", gS_map, RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]))
 	gD_mysql.Query(SQLSetStartZones, sQuery)
 }
 
@@ -1172,7 +1172,7 @@ Action cmd_endmins(int client, int args)
 void SQLDeleteEndZone(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %f, %f, %f, %f, %f, %f)", gS_map, gF_vecEndZone[0][0], gF_vecEndZone[0][1], gF_vecEndZone[0][2], gF_vecEndZone[1][0], gF_vecEndZone[1][1], gF_vecEndZone[1][2])
+	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", gS_map, RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]))
 	gD_mysql.Query(SQLSetEndZones, sQuery)
 }
 
@@ -1291,7 +1291,7 @@ void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data
 	if(results.HasResults)
 		PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", data, gF_vecCP[0][data][0], gF_vecCP[0][data][1], gF_vecCP[0][data][2], gF_vecCP[1][data][0], gF_vecCP[1][data][1], gF_vecCP[1][data][2], gS_map)
+	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(gF_vecCP[0][data][0]), RoundFloat(gF_vecCP[0][data][1]), RoundFloat(gF_vecCP[0][data][2]), RoundFloat(gF_vecCP[1][data][0]), RoundFloat(gF_vecCP[1][data][1]), RoundFloat(gF_vecCP[1][data][2]), gS_map)
 	gD_mysql.Query(SQLCPInserted, sQuery, data)
 }
 
@@ -1327,7 +1327,7 @@ void SQLCPInserted(Database db, DBResultSet results, const char[] error, any dat
 Action cmd_createcp(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx FLOAT, cpy FLOAT, cpz FLOAT, cpx2 FLOAT, cpy2 FLOAT, cpz2 FLOAT, map VARCHAR(192), PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx INT, cpy INT, cpz INT, cpx2 INT, cpy2 INT, cpz2 INT, map VARCHAR(192), PRIMARY KEY(id))")
 	gD_mysql.Query(SQLCreateCPTable, sQuery)
 }
 
@@ -2040,7 +2040,7 @@ void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_createzones(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x FLOAT, possition_y FLOAT, possition_z FLOAT, possition_x2 FLOAT, possition_y2 FLOAT, possition_z2 FLOAT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x2 INT, possition_y2 INT, possition_z2 INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
 	gD_mysql.Query(SQLCreateZonesTable, sQuery)
 }
 
