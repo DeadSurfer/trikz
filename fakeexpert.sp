@@ -1479,6 +1479,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			ExplodeString(sItem, ";", sExploded, 16, 16)
 			char sFormat[16]
 			Format(sFormat, 16, "%s", sExploded[0])
+			PrintToServer("%s", sFormat)
 			int cpnum = StringToInt(sFormat)
 			char sFormatCP[16]
 			Format(sFormatCP, 16, "%i;%s", cpnum - 1, sExploded[1])
