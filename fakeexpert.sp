@@ -1482,6 +1482,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			int cpnum = StringToInt(sFormat)
 			char sFormatCP[16]
 			Format(sFormatCP, 16, "%i;%s", cpnum, sExploded[1])
+			PrintToServer("%s", sFormatCP)
 			if(StrEqual(sItem, sFormatCP))
 				TeleportEntity(param1, gF_center[cpnum], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, sFormatCP))
