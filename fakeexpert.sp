@@ -1366,6 +1366,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
+			char sQuery[512]
 			switch(param2)
 			{
 				case 0:
@@ -1376,88 +1377,32 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 1:
 				{
-					gF_vecStartZone[0][0] -= 16.0
+					gF_vecStartZone[0][1] -= 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
 				case 2:
 				{
-					gF_vecStartZone[0][1] += 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}
-				case 3:
-				{
-					gF_vecStartZone[0][1] -= 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}
-				case 4:
-				{
-					//gF_vecStartZone[1][0] -= 16.0
-					//ZoneEditor(param1)
-					//DrawZone()
-					char sQuery[512]
 					Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), gS_map)
 					gD_mysql.Query(SQLUpdateZone, sQuery, 0)
 				}
-				/*case 4:
-				{
-					gF_vecStartZone[0][2] += 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}
-				case 5:
-				{
-					gF_vecStartZone[0][2] -= 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}*/
-				case 5:
-				{
-					gF_vecStartZone[1][0] += 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}
-				case 6:
+				case 3:
 				{
 					gF_vecStartZone[1][0] -= 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
-				case 7:
+				case 4:
 				{
 					gF_vecStartZone[1][1] += 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
-				case 8:
+				case 5:
 				{
-					gF_vecStartZone[1][1] -= 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}
-				case 9:
-				{
-					//gF_vecStartZone[1][0] -= 16.0
-					//ZoneEditor(param1)
-					//DrawZone()
-					char sQuery[512]
 					Format(sQuery, 512, "UPDATE zones SET possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), gS_map)
 					gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 				}
-				/*case 10:
-				{
-					gF_vecStartZone[1][2] += 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}
-				case 11:
-				{
-					gF_vecStartZone[1][2] -= 16.0
-					ZoneEditor(param1)
-					DrawZone()
-				}*/
 			}
 		}
 	}
