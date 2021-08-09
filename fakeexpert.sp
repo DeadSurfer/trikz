@@ -1520,7 +1520,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("118", "-y/maxs")
 				menu.AddItem("11", "Update CP nr. 10 zone")
 			}
-			menu.Display(param1, MENU_TIME_FOREVER)
+			menu2.Display(param1, MENU_TIME_FOREVER)
 		}
 	}
 }
