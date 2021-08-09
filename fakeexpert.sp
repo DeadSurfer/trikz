@@ -1532,7 +1532,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Select:
 		{
 			char sItem[16]
-			menu.GetItem(param1, sItem, 16)
+			menu.GetItem(param2, sItem, 16)
 			int type = StringToInt(sItem)
 			char sQuery[512]
 			if(StrEqual(sItem, "01"))
