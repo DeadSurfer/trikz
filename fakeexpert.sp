@@ -1336,7 +1336,7 @@ Action cmd_zones(int client, int args)
 	}
 }
 
-void ZoneEditr(int client)
+void ZoneEditor(int client)
 {
 	Menu menu = new Menu(zones_handler)
 	menu.SetTitle("Zone editor")
