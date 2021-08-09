@@ -1363,7 +1363,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[16]
 			menu.GetItem(param2, sItem, 16)
-			Menu menu = new Menu(zones2_handler)
+			Menu menu2 = new Menu(zones2_handler)
 			if(StrEqual(sItem, "0"))
 			{
 				menu.SetTitle("Zone editor - Start zone")
