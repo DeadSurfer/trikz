@@ -1437,6 +1437,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			menu.GetItem(param2, sItem, 16)
 			int type = StringToInt(sItem)
 			char sQuery[512]
+			if(StrEqual(sItem, "00"))
+				TeleportEntity(param1, gF_center[0], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, "01"))
 				gF_vecStartZone[0][0] += 16.0
 			if(StrEqual(sItem, "02"))
@@ -1453,6 +1455,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				gF_vecStartZone[1][1] += 16.0
 			if(StrEqual(sItem, "08"))
 				gF_vecStartZone[1][1] -= 16.0
+			if(StrEqual(sItem, "10"))
+				TeleportEntity(param1, gF_center[1], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, "11"))
 				gF_vecEndZone[0][0] += 16.0
 			if(StrEqual(sItem, "12"))
@@ -1476,6 +1480,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			int cpnum = StringToInt(sFormat)
 			char sFormatCP[16]
 			Format(sFormatCP, 16, "%i;%s", cpnum - 1, sExploded[1])
+			if(StrEqual(sItem, sFormatCP))
+				TeleportEntity(param1, gF_center[cpnum - 1], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][0] += 16.0
 			if(StrEqual(sItem, sFormatCP))
