@@ -2535,7 +2535,7 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-Action timer_afk(Handle timer)
+Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	for(int i = 1; i <= MaxClients; i++)
