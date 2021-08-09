@@ -1394,7 +1394,6 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu2.AddItem("18", "-y/maxs")
 				menu2.AddItem("1", "Update start zone")
 			}
-
 			if(gI_cpCount)
 			{
 				for(int i = 1; i <= gI_cpCount; i++)
@@ -1484,7 +1483,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			char sFormatCP[16]
 			Format(sFormatCP, 16, "%i;%s", cpnum - 1, sExploded[1])
 			if(StrEqual(sItem, sFormatCP))
-				TeleportEntity(param1, gF_center[cpnum - 1], NULL_VECTOR, NULL_VECTOR)
+				TeleportEntity(param1, gF_center[cpnum], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][0] += 16.0
 			if(StrEqual(sItem, sFormatCP))
