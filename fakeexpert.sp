@@ -676,7 +676,7 @@ Action cmd_block(int client, int args)
 	return Plugin_Handled
 }
 
-Action Block(int client)
+Action Block(int client) //thanks maru for optimization.
 {
 	gB_block[client] = !gB_block[client]
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", gB_block[client] ? 5 : 2)
