@@ -655,16 +655,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 5:
 				{
-					if(GetEntityMoveType(param1) & MOVETYPE_NOCLIP)
-					{
-						SetEntityMoveType(param1, MOVETYPE_WALK)
-						PrintToChat(param1, "Noclip disabled.")
-					}
-					else
-					{
-						SetEntityMoveType(param1, MOVETYPE_NOCLIP)
-						PrintToChat(param1, "Noclip enabled.")
-					}
+					SetEntityMoveType(param1, GetEntityMoveType(param1) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP)
+					PrintToChat(param1, GetEntityMoveType(param1) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.")
 					Trikz(param1)
 				}
 			}
@@ -1188,7 +1180,6 @@ Action cmd_maptier(int client, int args)
 			int tier = StringToInt(sArgString)
 			PrintToServer("[Args] Tier: %i", tier)
 			char sQuery[512]
-			//Format(sQuery, 512, "UPDATE zones SET tier = %i WHERE map = '%s' AND type = 0", tier, gS_map)
 			Format(sQuery, 512, "DELETE FROM tier WHERE map = '%s'", gS_map)
 			gD_mysql.Query(SQLTierRemove, sQuery, tier)
 		}
