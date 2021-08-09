@@ -849,14 +849,8 @@ void Color(int client, bool customSkin)
 			gI_color[client][i] = StringToInt(gS_colorExploded[i])
 			gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
 		}
-		if(gB_block[client])
-			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
-		else
-			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
-		if(gB_block[gI_partner[client]])
-			SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
-		else
-			SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
+		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
+		SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[gI_partner[client]] ? 255 : 125)
 		gI_colorCount[client]++
 		gI_colorCount[gI_partner[client]]++
 	}
@@ -866,14 +860,8 @@ void Color(int client, bool customSkin)
 		gB_color[gI_partner[client]] = false
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
-		if(gB_block[client])
-			SetEntityRenderColor(client, 255, 255, 255, 255)
-		else
-			SetEntityRenderColor(client, 255, 255, 255, 125)
-		if(gB_block[gI_partner[client]])
-			SetEntityRenderColor(gI_partner[client], 255, 255, 255, 255)
-		else
-			SetEntityRenderColor(gI_partner[client], 255, 255, 255, 125)
+		SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
+		SetEntityRenderColor(gI_partner[client], 255, 255, 255, gB_block[gI_partner[client]] ? 255 : 125)
 	}
 }
 
