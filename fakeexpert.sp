@@ -1392,9 +1392,10 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu2.AddItem("18", "-y/maxs")
 				menu2.AddItem("1", "Update start zone")
 			}
-			for(int i = 0; i <= gI_cpCount; i++)
+
+			if(gI_cpCount)
 			{
-				if(gI_cpCount)
+				for(int i = 1; i <= gI_cpCount; i++)
 				{
 					i += 1
 					char sCP[16]
