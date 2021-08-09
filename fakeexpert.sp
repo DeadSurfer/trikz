@@ -114,6 +114,7 @@ int gI_zoneDrawTime
 ConVar gCV_turboPhysics
 float gF_afkTime
 bool gB_afk[MAXPLAYERS + 1]
+float gF_center[12][3]
 
 public Plugin myinfo =
 {
@@ -936,15 +937,15 @@ void createstart()
 	DispatchKeyValue(entity, "targetname", "fakeexpert_startzone")
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	float center[3]
+	//float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vecStartZone[0][0] + gF_vecStartZone[1][0]) / 2.0
-	center[1] = (gF_vecStartZone[0][1] + gF_vecStartZone[1][1]) / 2.0
-	center[2] = (gF_vecStartZone[0][2] + gF_vecStartZone[1][2]) / 2.0
-	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	gF_vecStart[0] = center[0]
-	gF_vecStart[1] = center[1]
-	gF_vecStart[2] = center[2]
+	gF_center[0][0] = (gF_vecStartZone[0][0] + gF_vecStartZone[1][0]) / 2.0
+	gF_center[0][1] = (gF_vecStartZone[0][1] + gF_vecStartZone[1][1]) / 2.0
+	gF_center[0][2] = (gF_vecStartZone[0][2] + gF_vecStartZone[1][2]) / 2.0
+	TeleportEntity(entity, gF_center[0], NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	gF_vecStart[0] = gF_center[0][0]
+	gF_vecStart[1] = gF_center[0][1]
+	gF_vecStart[2] = gF_center[0][2]
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
@@ -973,12 +974,12 @@ void createend()
 	DispatchKeyValue(entity, "targetname", "fakeexpert_endzone")
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	float center[3]
+	//float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2
-	center[1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2
-	center[2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2
-	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	gF_center[1][0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2
+	gF_center[1][1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2
+	gF_center[1][2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2
+	TeleportEntity(entity, gF_center[1], NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
@@ -1343,7 +1344,15 @@ void ZoneEditor(int client)
 {
 	Menu menu = new Menu(zones_handler)
 	menu.SetTitle("Zone editor")
-	menu.AddItem("1", "+x/mins")
+	menu.AddItem("0", "Start zone")
+	menu.AddItem("1", "End zone")
+	char sFormat[32]
+	for(int i = 2; i <= gI_cpCount; i++)
+	{
+		Format(sFormat, 32, "CP nr. %i zone", i)
+		menu.AddItem("i", sFormat)
+	}
+	/*menu.AddItem("1", "+x/mins")
 	menu.AddItem("2", "-x/mins")
 	menu.AddItem("3", "+y/mins")
 	menu.AddItem("4", "-y/mins")
@@ -1360,7 +1369,7 @@ void ZoneEditor(int client)
 	menu.AddItem("15", "-x/maxs")
 	menu.AddItem("16", "+y/maxs")
 	menu.AddItem("17", "-y/maxs")
-	menu.AddItem("18", "Update end zone")
+	menu.AddItem("18", "Update end zone")*/
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
@@ -1370,119 +1379,245 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
+			char sItem[16]
+			menu.GetItem(param2, sItem, 16)
 			char sQuery[512]
-			switch(param2)
+			Menu menu = new Menu(zones2_handler)
+			if(StrEqual(sItem, "0")
 			{
-				case 0:
-				{
-					gF_vecStartZone[0][0] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
-				}
-				case 1:
-				{
-					gF_vecStartZone[0][0] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 2:
-				{
-					gF_vecStartZone[0][1] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 3:
-				{
-					gF_vecStartZone[0][1] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 4:
-				{
-					gF_vecStartZone[1][0] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 5:
-				{
-					gF_vecStartZone[1][0] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 6:
-				{
-					gF_vecStartZone[1][1] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 7:
-				{
-					gF_vecStartZone[1][1] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 8:
-				{
-					Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), gS_map)
-					gD_mysql.Query(SQLUpdateZone, sQuery, 0)
-				}
-				case 9:
-				{
-					gF_vecEndZone[0][0] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 10:
-				{
-					gF_vecEndZone[0][0] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 11:
-				{
-					gF_vecEndZone[0][1] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 12:
-				{
-					gF_vecEndZone[0][1] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 13:
-				{
-					gF_vecEndZone[1][0] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 14:
-				{
-					gF_vecEndZone[1][0] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 15:
-				{
-					gF_vecEndZone[1][1] += 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 16:
-				{
-					gF_vecEndZone[1][1] -= 16.0
-					//ZoneEditor(param1)
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
-				}
-				case 17:
-				{
-					Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]), gS_map)
-					gD_mysql.Query(SQLUpdateZone, sQuery, 1)
-				}
+				menu.SetTitle("Zone editor - Start zone")
+				menu.AddItem("01", "+x/mins")
+				menu.AddItem("02", "-x/mins")
+				menu.AddItem("03", "+y/mins")
+				menu.AddItem("04", "-y/mins")
+				menu.AddItem("05", "+x/maxs")
+				menu.AddItem("06", "-x/maxs")
+				menu.AddItem("07", "+y/maxs")
+				menu.AddItem("08", "-y/maxs")
+				menu.AddItem("0", "Update start zone")
 			}
-			//ZoneEditor(param1)
+			if(StrEqual(sItem, "1")
+			{
+				menu.SetTitle("Zone editor - End zone")
+				menu.AddItem("11", "+x/mins")
+				menu.AddItem("12", "-x/mins")
+				menu.AddItem("13", "+y/mins")
+				menu.AddItem("14", "-y/mins")
+				menu.AddItem("15", "+x/maxs")
+				menu.AddItem("16", "-x/maxs")
+				menu.AddItem("17", "+y/maxs")
+				menu.AddItem("18", "-y/maxs")
+				menu.AddItem("1", "Update start zone")
+			}
+			if(StrEqual(sItem, "2")
+			{
+				menu.SetTitle("Zone editor - CP nr. 1 zone")
+				menu.AddItem("2;1", "+x/mins")
+				menu.AddItem("2;2", "-x/mins")
+				menu.AddItem("2;3", "+y/mins")
+				menu.AddItem("2;4", "-y/mins")
+				menu.AddItem("2;5", "+x/maxs")
+				menu.AddItem("2;6", "-x/maxs")
+				menu.AddItem("2;7", "+y/maxs")
+				menu.AddItem("2;8", "-y/maxs")
+				menu.AddItem("2", "Update CP nr. 1 zone")
+			}
+			if(StrEqual(sItem, "3")
+			{
+				menu.SetTitle("Zone editor - CP nr. 2 zone")
+				menu.AddItem("3;1", "+x/mins")
+				menu.AddItem("3;2", "-x/mins")
+				menu.AddItem("3;3", "+y/mins")
+				menu.AddItem("3;4", "-y/mins")
+				menu.AddItem("3;5", "+x/maxs")
+				menu.AddItem("3;6", "-x/maxs")
+				menu.AddItem("3;7", "+y/maxs")
+				menu.AddItem("3;8", "-y/maxs")
+				menu.AddItem("3", "Update CP nr. 2 zone")
+			}
+			if(StrEqual(sItem, "4")
+			{
+				menu.SetTitle("Zone editor - CP nr. 3 zone")
+				menu.AddItem("4;1", "+x/mins")
+				menu.AddItem("4;2", "-x/mins")
+				menu.AddItem("4;3", "+y/mins")
+				menu.AddItem("4;4", "-y/mins")
+				menu.AddItem("4;5", "+x/maxs")
+				menu.AddItem("4;6", "-x/maxs")
+				menu.AddItem("4;7", "+y/maxs")
+				menu.AddItem("4;8", "-y/maxs")
+				menu.AddItem("4", "Update CP nr. 3 zone")
+			}
+			if(StrEqual(sItem, "5")
+			{
+				menu.SetTitle("Zone editor - CP nr. 4 zone")
+				menu.AddItem("5;1", "+x/mins")
+				menu.AddItem("5;2", "-x/mins")
+				menu.AddItem("5;3", "+y/mins")
+				menu.AddItem("5;4", "-y/mins")
+				menu.AddItem("5;5", "+x/maxs")
+				menu.AddItem("5;6", "-x/maxs")
+				menu.AddItem("5;7", "+y/maxs")
+				menu.AddItem("5;8", "-y/maxs")
+				menu.AddItem("5", "Update CP nr. 4 zone")
+			}
+			if(StrEqual(sItem, "6")
+			{
+				menu.SetTitle("Zone editor - CP nr. 5 zone")
+				menu.AddItem("6;1", "+x/mins")
+				menu.AddItem("6;2", "-x/mins")
+				menu.AddItem("6;3", "+y/mins")
+				menu.AddItem("6;4", "-y/mins")
+				menu.AddItem("6;5", "+x/maxs")
+				menu.AddItem("6;6", "-x/maxs")
+				menu.AddItem("6;7", "+y/maxs")
+				menu.AddItem("6;8", "-y/maxs")
+				menu.AddItem("6", "Update CP nr. 5 zone")
+			}
+			if(StrEqual(sItem, "7")
+			{
+				menu.SetTitle("Zone editor - CP nr. 6 zone")
+				menu.AddItem("7;1", "+x/mins")
+				menu.AddItem("7;2", "-x/mins")
+				menu.AddItem("7;3", "+y/mins")
+				menu.AddItem("7;4", "-y/mins")
+				menu.AddItem("7;5", "+x/maxs")
+				menu.AddItem("7;6", "-x/maxs")
+				menu.AddItem("7;7", "+y/maxs")
+				menu.AddItem("7;8", "-y/maxs")
+				menu.AddItem("7", "Update CP nr. 6 zone")
+			}
+			if(StrEqual(sItem, "8")
+			{
+				menu.SetTitle("Zone editor - CP nr. 7 zone")
+				menu.AddItem("8;1", "+x/mins")
+				menu.AddItem("8;2", "-x/mins")
+				menu.AddItem("8;3", "+y/mins")
+				menu.AddItem("8;4", "-y/mins")
+				menu.AddItem("8;5", "+x/maxs")
+				menu.AddItem("8;6", "-x/maxs")
+				menu.AddItem("8;7", "+y/maxs")
+				menu.AddItem("8;8", "-y/maxs")
+				menu.AddItem("8", "Update CP nr. 7 zone")
+			}
+			if(StrEqual(sItem, "9")
+			{
+				menu.SetTitle("Zone editor - CP nr. 8 zone")
+				menu.AddItem("9;1", "+x/mins")
+				menu.AddItem("9;2", "-x/mins")
+				menu.AddItem("9;3", "+y/mins")
+				menu.AddItem("9;4", "-y/mins")
+				menu.AddItem("9;5", "+x/maxs")
+				menu.AddItem("9;6", "-x/maxs")
+				menu.AddItem("9;7", "+y/maxs")
+				menu.AddItem("9;8", "-y/maxs")
+				menu.AddItem("9", "Update CP nr. 8 zone")
+			}
+			if(StrEqual(sItem, "10")
+			{
+				menu.SetTitle("Zone editor - CP nr. 9 zone")
+				menu.AddItem("10;1", "+x/mins")
+				menu.AddItem("10;2", "-x/mins")
+				menu.AddItem("10;3", "+y/mins")
+				menu.AddItem("10;3", "-y/mins")
+				menu.AddItem("10;4", "+x/maxs")
+				menu.AddItem("10;4", "-x/maxs")
+				menu.AddItem("10;5", "+y/maxs")
+				menu.AddItem("10;6", "-y/maxs")
+				menu.AddItem("10", "Update CP nr. 9 zone")
+			}
+			if(StrEqual(sItem, "11")
+			{
+				menu.SetTitle("Zone editor - CP nr. 10 zone")
+				menu.AddItem("111", "+x/mins")
+				menu.AddItem("112", "-x/mins")
+				menu.AddItem("113", "+y/mins")
+				menu.AddItem("114", "-y/mins")
+				menu.AddItem("115", "+x/maxs")
+				menu.AddItem("116", "-x/maxs")
+				menu.AddItem("117", "+y/maxs")
+				menu.AddItem("118", "-y/maxs")
+				menu.AddItem("11", "Update CP nr. 10 zone")
+			}
+			menu.Display(param1, MENU_TIME_FOREVER)
+		}
+	}
+}
+
+int zones_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char sItem[16]
+			menu.GetItem(param1, sItem, 16)
+			int type = StringToInt(sItem)
+			char sQuery[512]
+			if(StrEqual(sItem, "01")
+				gF_vecStartZone[0][0] += 16.0
+			if(StrEqual(sItem, "02")
+				gF_vecStartZone[0][0] -= 16.0
+			if(StrEqual(sItem, "03")
+				gF_vecStartZone[0][1] += 16.0
+			if(StrEqual(sItem, "04")
+				gF_vecStartZone[0][1] -= 16.0
+			if(StrEqual(sItem, "05")
+				gF_vecStartZone[1][0] += 16.0
+			if(StrEqual(sItem, "06")
+				gF_vecStartZone[1][0] -= 16.0
+			if(StrEqual(sItem, "07")
+				gF_vecStartZone[1][1] += 16.0
+			if(StrEqual(sItem, "08")
+				gF_vecStartZone[1][1] -= 16.0
+			if(StrEqual(sItem, "11")
+				gF_vecEndZone[0][0] += 16.0
+			if(StrEqual(sItem, "12")
+				gF_vecEndZone[0][0] -= 16.0
+			if(StrEqual(sItem, "13")
+				gF_vecEndZone[0][1] += 16.0
+			if(StrEqual(sItem, "14")
+				gF_vecEndZone[0][1] -= 16.0
+			if(StrEqual(sItem, "15")
+				gF_vecEndZone[1][0] += 16.0
+			if(StrEqual(sItem, "16")
+				gF_vecEndZone[1][0] -= 16.0
+			if(StrEqual(sItem, "17")
+				gF_vecEndZone[1][1] += 16.0
+			if(StrEqual(sItem, "18")
+				gF_vecEndZone[1][1] -= 16.0
+			char sExploded[16][16]
+			ExplodeString(sItem, ";", sExploded, 16, 16)
+			char sFormat[16]
+			Format(sFormat, 16, "%s", sExploded[0])
+			int cpnum = StringToInt(sFormat)
+			char sFormatCP[16]
+			Format(sFormatCP, 16, "%i;%s", cpnum, sExploded[1])
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[0][cpnum][0] += 16.0
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[0][cpnum][0] -= 16.0
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[0][cpnum][1] += 16.0
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[0][cpnum][1] -= 16.0
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[1][cpnum][0] += 16.0
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[1][cpnum][0] -= 16.0
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[1][cpnum][1] += 16.0
+			if(StrEqual(sItem, sFormatCP)
+				gF_vecCP[1][cpnum][1] -= 16.0
+			if(!type)
+				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type, gS_map)
+			else if(type == 1)
+				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]), type, gS_map)
+			else if(type > 1)
+				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type, gS_map)
+			gD_mysql.Query(SQLUpdateZone, sQuery, type)
 			DrawZone()
-			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
 	}
 }
@@ -1495,6 +1630,8 @@ void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any dat
 			PrintToServer("End zone successfuly updated.")
 		else
 			PrintToServer("Start zone successfuly updated.")
+		if(data > 1)
+			PrintToServer("CP zone nr. %i successfuly updated.", data)
 	}
 }
 
@@ -1561,12 +1698,12 @@ void createcp(int cpnum)
 	DispatchKeyValue(entity, "targetname", sTriggerName)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	float center[3]
+	//float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	center[0] = (gF_vecCP[1][cpnum][0] + gF_vecCP[0][cpnum][0]) / 2.0
-	center[1] = (gF_vecCP[1][cpnum][1] + gF_vecCP[0][cpnum][1]) / 2.0
-	center[2] = (gF_vecCP[1][cpnum][2] + gF_vecCP[0][cpnum][2]) / 2.0
-	TeleportEntity(entity, center, NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	gF_center[cpnum + 1][0] = (gF_vecCP[1][cpnum][0] + gF_vecCP[0][cpnum][0]) / 2.0
+	gF_center[cpnum + 1][1] = (gF_vecCP[1][cpnum][1] + gF_vecCP[0][cpnum][1]) / 2.0
+	gF_center[cpnum + 1][2] = (gF_vecCP[1][cpnum][2] + gF_vecCP[0][cpnum][2]) / 2.0
+	TeleportEntity(entity, center[cpnum + 1], NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
