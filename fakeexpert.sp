@@ -1432,6 +1432,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 					}
 				}
 			}
+			menu2.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 			menu2.Display(param1, MENU_TIME_FOREVER)
 		}
 	}
@@ -1535,6 +1536,12 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			DrawZone()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
+		case MenuAction_Cancel: // trikz redux menuaction end
+			switch(param2)
+			{
+				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
+					ZoneEditor(param1)
+			}
 	}
 }
 
