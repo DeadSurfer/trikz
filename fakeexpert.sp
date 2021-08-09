@@ -2359,13 +2359,13 @@ void DrawZone()
 		zones += gI_cpCount
 		for(int i = 2; i <= zones; i++)
 		{
-			start[i][0] = (gF_vecCP[0][i][0] < gF_vecCP[1][i][0]) ? gF_vecCP[0][i][0] : gF_vecCP[1][i][0]
-			start[i][1] = (gF_vecCP[0][i][1] < gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
-			start[i][2] = (gF_vecCP[0][i][2] < gF_vecCP[1][i][2]) ? gF_vecCP[0][i][2] : gF_vecCP[1][i][2]
+			start[i][0] = (gF_vecCP[0][i - 1][0] < gF_vecCP[1][i - 1][0]) ? gF_vecCP[0][i - 1][0] : gF_vecCP[1][i - 1][0]
+			start[i][1] = (gF_vecCP[0][i - 1][1] < gF_vecCP[1][i - 1][1]) ? gF_vecCP[0][i - 1][1] : gF_vecCP[1][i - 1][1]
+			start[i][2] = (gF_vecCP[0][i - 1][2] < gF_vecCP[1][i - 1][2]) ? gF_vecCP[0][i - 1][2] : gF_vecCP[1][i - 1][2]
 			start[i][2] += 3.0
-			end[i][0] = (gF_vecCP[0][i][0] > gF_vecCP[1][i][0]) ? gF_vecCP[0][i][0] : gF_vecCP[1][i][0]
-			end[i][1] = (gF_vecCP[0][i][1] > gF_vecCP[1][i][1]) ? gF_vecCP[0][i][1] : gF_vecCP[1][i][1]
-			end[i][2] = (gF_vecCP[0][i][2] > gF_vecCP[1][i][2]) ? gF_vecCP[0][i][2] : gF_vecCP[1][i][2]
+			end[i][0] = (gF_vecCP[0][i - 1][0] > gF_vecCP[1][i - 1][0]) ? gF_vecCP[0][i - 1][0] : gF_vecCP[1][i - 1][0]
+			end[i][1] = (gF_vecCP[0][i - 1][1] > gF_vecCP[1][i - 1][1]) ? gF_vecCP[0][i - 1][1] : gF_vecCP[1][i - 1][1]
+			end[i][2] = (gF_vecCP[0][i - 1][2] > gF_vecCP[1][i - 1][2]) ? gF_vecCP[0][i - 1][2] : gF_vecCP[1][i - 1][2]
 			end[i][2] += 3.0
 		}
 	}
