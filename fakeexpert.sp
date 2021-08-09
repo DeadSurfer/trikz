@@ -687,33 +687,16 @@ Action cmd_block(int client, int args)
 Action Block(int client)
 {
 	gB_block[client] = !gB_block[client]
-	if(gB_block[client])
-	{
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-		if(gB_color[client])
-			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
-		else
-			SetEntityRenderColor(client, 255, 255, 255, 255)
-		if(gB_TrikzMenuIsOpen[client])
-			Trikz(client)
-		PrintToChat(client, "Block enabled.")
-		return Plugin_Handled
-	}
+	SetEntProp(client, Prop_Data, "m_CollisionGroup", gB_block[client] ? 5 : 2)
+	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+	if(gB_color[client])
+		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 	else
-	{
-
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-		SetEntityRenderMode(client, RENDER_TRANSALPHA)
-		if(gB_color[client])
-			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
-		else
-			SetEntityRenderColor(client, 255, 255, 255, 125)
-		if(gB_TrikzMenuIsOpen[client])
-			Trikz(client)
-		PrintToChat(client, "Block disabled.")
-		return Plugin_Handled
-	}
+		SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
+	if(gB_TrikzMenuIsOpen[client])
+		Trikz(client)
+	PrintToChat(client, gB_block[client] ? "Block enabled." : "Block disabled.")
+	return Plugin_Handled
 }
 
 Action cmd_partner(int client, int args)
