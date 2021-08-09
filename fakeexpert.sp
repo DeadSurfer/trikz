@@ -1377,28 +1377,52 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 1:
 				{
-					gF_vecStartZone[0][1] -= 16.0
+					gF_vecStartZone[0][0] -= 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
 				case 2:
 				{
-					Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), gS_map)
-					gD_mysql.Query(SQLUpdateZone, sQuery, 0)
+					gF_vecStartZone[0][1] += 16.0
+					ZoneEditor(param1)
+					DrawZone()
 				}
 				case 3:
 				{
-					gF_vecStartZone[1][0] -= 16.0
+					gF_vecStartZone[0][1] -= 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
 				case 4:
 				{
+					Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), gS_map)
+					gD_mysql.Query(SQLUpdateZone, sQuery, 0)
+				}
+				case 5:
+				{
+					gF_vecStartZone[1][0] += 16.0
+					ZoneEditor(param1)
+					DrawZone()
+				}
+				case 6:
+				{
+					gF_vecStartZone[1][0] -= 16.0
+					ZoneEditor(param1)
+					DrawZone()
+				}
+				case 7:
+				{
 					gF_vecStartZone[1][1] += 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
-				case 5:
+				case 8:
+				{
+					gF_vecStartZone[1][1] -= 16.0
+					ZoneEditor(param1)
+					DrawZone()
+				}
+				case 9:
 				{
 					Format(sQuery, 512, "UPDATE zones SET possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), gS_map)
 					gD_mysql.Query(SQLUpdateZone, sQuery, 1)
