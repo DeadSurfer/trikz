@@ -154,6 +154,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_endmaxs", cmd_endmaxs)
 	RegConsoleCmd("sm_cpmins", cmd_cpmins)
 	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs)
+	RegConsoleCmd("sm_zones", cmd_zones)
 	RegConsoleCmd("sm_maptier", cmd_maptier)
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
@@ -1320,6 +1321,111 @@ void SQLCPInserted(Database db, DBResultSet results, const char[] error, any dat
 {
 	if(results.HasResults)
 		PrintToServer("Checkpoint zone no. %i successfuly created.", data)
+}
+
+Action cmd_zones(int client, int args)
+{
+	int steamid = GetSteamAccountID(client)
+	char sCurrentSteamID[64]
+	IntToString(steamid, sCurrentSteamID, 64)
+	char sSteamID[64]
+	GetConVarString(gCV_steamid, sSteamID, 64)
+	if(StrEqual(sSteamID, sCurrentSteamID) && gB_haveZone)
+	{
+		ZoneEditor(client)
+	}
+}
+
+void ZoneEditr(int client)
+{
+	Menu menu = new Menu(zones_handler)
+	menu.SetTitle("Zone editor")
+	menu.AddItem("1", "+x/0")
+	menu.AddItem("2", "-x/0")
+	menu.AddItem("3", "+y/0")
+	menu.AddItem("4", "-y/0")
+	menu.AddItem("5", "+z/0")
+	menu.AddItem("6", "-z/0")
+	menu.AddItem("7", "+x/1")
+	menu.AddItem("8", "-x/1")
+	menu.AddItem("9", "+y/1")
+	menu.AddItem("10", "-y/1")
+	menu.AddItem("11", "+z/1")
+	menu.AddItem("12", "-z/1")
+	menu.Display(client, MENU_TIME_FOREVER)
+}
+
+int zones_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					gF_vecStartZone[0][0] += 16.0
+					ZoneEditr(param1)
+				}
+				case 1:
+				{
+					gF_vecStartZone[0][0] -= 16.0
+					ZoneEditr(param1)
+				}
+				case 2:
+				{
+					gF_vecStartZone[0][1] += 16.0
+					ZoneEditr(param1)
+				}
+				case 3:
+				{
+					gF_vecStartZone[0][1] -= 16.0
+					ZoneEditr(param1)
+				}
+				case 4:
+				{
+					gF_vecStartZone[0][2] += 16.0
+					ZoneEditr(param1)
+				}
+				case 5:
+				{
+					gF_vecStartZone[0][2] -= 16.0
+					ZoneEditr(param1)
+				}
+				case 6:
+				{
+					gF_vecStartZone[1][0] += 16.0
+					ZoneEditr(param1)
+				}
+				case 7:
+				{
+					gF_vecStartZone[1][0] -= 16.0
+					ZoneEditr(param1)
+				}
+				case 8:
+				{
+					gF_vecStartZone[1][1] += 16.0
+					ZoneEditr(param1)
+				}
+				case 9:
+				{
+					gF_vecStartZone[1][1] -= 16.0
+					ZoneEditr(param1)
+				}
+				case 10:
+				{
+					gF_vecStartZone[1][2] += 16.0
+					ZoneEditr(param1)
+				}
+				case 11:
+				{
+					gF_vecStartZone[1][2] -= 16.0
+					ZoneEditr(param1)
+				}
+			}
+		}
+	}
 }
 
 //https://forums.alliedmods.net/showthread.php?t=261378
