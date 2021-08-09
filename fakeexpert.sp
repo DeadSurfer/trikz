@@ -1531,7 +1531,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			if(StrEqual(sItem, sCP))
 			{
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecCP[0][cpnum][0]), RoundFloat(gF_vecStartZone[0][cpnum][1]), RoundFloat(gF_vecStartZone[0][cpnum][2]), RoundFloat(gF_vecStartZone[1][cpnum][0]), RoundFloat(gF_vecStartZone[1][cpnum][1]), RoundFloat(gF_vecStartZone[1][cpnum][2]), cpnum, gS_map)
-				gD_mysql.Query(SQLUpdateZone, sQuery, type)
+				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
 			}
 			DrawZone()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
