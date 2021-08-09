@@ -1353,7 +1353,7 @@ void ZoneEditor(int client)
 		{
 			Format(sFormat, 32, "CP nr. %i zone", i)
 			char sCP[16]
-			Format(sCP, 16, "%i", i += 1)
+			Format(sCP, 16, "%i", i + 1)
 			menu.AddItem(sCP, sFormat)
 		}
 	}
@@ -1401,34 +1401,33 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				for(int i = 1; i <= gI_cpCount; i++)
 				{
-					i += 1
 					char sCP[16]
 					IntToString(i, sCP, 16)
 					if(StrEqual(sItem, sCP))
 					{
-						menu2.SetTitle("Zone editor - CP nr. %i zone", i - 1)
+						menu2.SetTitle("Zone editor - CP nr. %i zone", i)
 						char sItemCP[16]
-						Format(sItemCP, 16, "%i;0", i)
+						Format(sItemCP, 16, "%i;0", i + 1)
 						char sButton[32]
-						Format(sButton, 32, "Teleport to CP nr. %i zone", i - 1)
+						Format(sButton, 32, "Teleport to CP nr. %i zone", i)
 						menu2.AddItem(sItemCP, sButton)
-						Format(sItemCP, 16, "%i;1", i)
+						Format(sItemCP, 16, "%i;1", i + 1)
 						menu2.AddItem(sItemCP, "+x/mins")
-						Format(sItemCP, 16, "%i;2", i)
+						Format(sItemCP, 16, "%i;2", i + 1)
 						menu2.AddItem(sItemCP, "-x/mins")
-						Format(sItemCP, 16, "%i;3", i)
+						Format(sItemCP, 16, "%i;3", i + 1)
 						menu2.AddItem(sItemCP, "+y/mins")
-						Format(sItemCP, 16, "%i;4", i)
+						Format(sItemCP, 16, "%i;4", i + 1)
 						menu2.AddItem(sItemCP, "-y/mins")
-						Format(sItemCP, 16, "%i;5", i)
+						Format(sItemCP, 16, "%i;5", i + 1)
 						menu2.AddItem(sItemCP, "+x/maxs")
-						Format(sItemCP, 16, "%i;6", i)
+						Format(sItemCP, 16, "%i;6", i + 1)
 						menu2.AddItem(sItemCP, "-x/maxs")
-						Format(sItemCP, 16, "%i;7", i)
+						Format(sItemCP, 16, "%i;7", i + 1)
 						menu2.AddItem(sItemCP, "+y/maxs")
-						Format(sItemCP, 16, "%i;8", i)
+						Format(sItemCP, 16, "%i;8", i + 1)
 						menu2.AddItem(sItemCP, "-y/maxs")
-						Format(sButton, 32, "Update CP nr. %i zone", i - 1)
+						Format(sButton, 32, "Update CP nr. %i zone", i)
 						menu2.AddItem(sCP, sButton)
 					}
 				}
