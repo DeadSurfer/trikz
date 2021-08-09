@@ -1417,7 +1417,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 							menu2.AddItem(sItemCP, "-x/maxs")
 							menu2.AddItem(sItemCP, "+y/maxs")
 							menu2.AddItem(sItemCP, "-y/maxs")
-							menu2.AddItem(i, "Update CP nr. 1 zone")
+							menu2.AddItem(sCP, "Update CP nr. 1 zone")
 						}
 					}
 				}
