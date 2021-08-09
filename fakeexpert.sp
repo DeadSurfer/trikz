@@ -111,6 +111,7 @@ float gF_vecVelClient[MAXPLAYERS + 1][3]
 float gF_vecVelEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
 int gI_zoneDrawTime
+ConVar gCV_turboPhysics
 
 public Plugin myinfo =
 {
@@ -287,6 +288,8 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/finish.vtf")
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vmt")
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
+	
+	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
 }
 
 public void OnMapEnd()
@@ -2314,8 +2317,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client)
 		}
 	}
-	ConVar turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
-	if(!turboPhysics.BoolValue)
+	if(!gCV_turboPhysics.BoolValue)
 	{
 		if(IsPlayerAlive(client))
 		{
