@@ -2502,7 +2502,7 @@ Action cmd_afk(int client, int args)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && !IsPlayerAlive(i))
+			if(IsClientInGame(i) && !IsPlayerAlive(i) && client != i)
 			{
 				gB_afk[i] = false
 				Menu menu = new Menu(afk_handler)
@@ -2539,7 +2539,7 @@ Action timer_afk(Handle timer)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	for(int i = 1; i <= MaxClients; i++)
-		if(!gB_afk[i])
+		if(IsClientInGame(i) && !gB_afk[i])
 			KickClient(i, "Away from keyboard.")
 	return Plugin_Stop
 }
