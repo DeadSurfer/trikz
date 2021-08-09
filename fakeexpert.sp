@@ -1401,9 +1401,9 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 					{
 						menu2.SetTitle("Zone editor - CP nr. %i zone", i - 1)
 						char sItemCP[16]
-						Format(sItemCP, 16, "%i;%i", i, j)
 						for(int j = 0; j <= 8; j++)
 						{
+							Format(sItemCP, 16, "%i;%i", i, j)
 							char sButton[32]
 							Format(sButton, 32, "Teleport to CP nr. %i zone", i - 1)
 							menu2.AddItem(sItemCP, sButton)
