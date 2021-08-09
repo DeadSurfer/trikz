@@ -1352,24 +1352,6 @@ void ZoneEditor(int client)
 		Format(sFormat, 32, "CP nr. %i zone", i)
 		menu.AddItem("i", sFormat)
 	}
-	/*menu.AddItem("1", "+x/mins")
-	menu.AddItem("2", "-x/mins")
-	menu.AddItem("3", "+y/mins")
-	menu.AddItem("4", "-y/mins")
-	menu.AddItem("5", "+x/maxs")
-	menu.AddItem("6", "-x/maxs")
-	menu.AddItem("7", "+y/maxs")
-	menu.AddItem("8", "-y/maxs")
-	menu.AddItem("9", "Update start zone")
-	menu.AddItem("10", "+x/mins")
-	menu.AddItem("11", "-x/mins")
-	menu.AddItem("12", "+y/mins")
-	menu.AddItem("13", "-y/mins")
-	menu.AddItem("14", "+x/maxs")
-	menu.AddItem("15", "-x/maxs")
-	menu.AddItem("16", "+y/maxs")
-	menu.AddItem("17", "-y/maxs")
-	menu.AddItem("18", "Update end zone")*/
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
@@ -1381,7 +1363,6 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[16]
 			menu.GetItem(param2, sItem, 16)
-			char sQuery[512]
 			Menu menu = new Menu(zones2_handler)
 			if(StrEqual(sItem, "0")
 			{
@@ -1592,7 +1573,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			Format(sFormat, 16, "%s", sExploded[0])
 			int cpnum = StringToInt(sFormat)
 			char sFormatCP[16]
-			Format(sFormatCP, 16, "%i;%s", cpnum, sExploded[1])
+			Format(sFormatCP, 16, "%i;%s", cpnum - 1, sExploded[1])
 			if(StrEqual(sItem, sFormatCP)
 				gF_vecCP[0][cpnum][0] += 16.0
 			if(StrEqual(sItem, sFormatCP)
@@ -1614,7 +1595,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			else if(type == 1)
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]), type, gS_map)
 			else if(type > 1)
-				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type, gS_map)
+				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type - 1, gS_map)
 			gD_mysql.Query(SQLUpdateZone, sQuery, type)
 			DrawZone()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
@@ -1631,7 +1612,7 @@ void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any dat
 		else
 			PrintToServer("Start zone successfuly updated.")
 		if(data > 1)
-			PrintToServer("CP zone nr. %i successfuly updated.", data)
+			PrintToServer("CP zone nr. %i successfuly updated.", data - 1)
 	}
 }
 
