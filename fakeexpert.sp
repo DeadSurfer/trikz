@@ -1492,28 +1492,28 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				TeleportEntity(param1, gF_center[cpnum], NULL_VECTOR, NULL_VECTOR)
 			Format(sFormatCP, 16, "%i;1", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum][0] += 16.0
+				gF_vecCP[0][cpnum - 1][0] += 16.0
 			Format(sFormatCP, 16, "%i;2", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum][0] -= 16.0
+				gF_vecCP[0][cpnum - 1][0] -= 16.0
 			Format(sFormatCP, 16, "%i;3", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum][1] += 16.0
+				gF_vecCP[0][cpnum - 1][1] += 16.0
 			Format(sFormatCP, 16, "%i;4", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum][1] -= 16.0
+				gF_vecCP[0][cpnum - 1][1] -= 16.0
 			Format(sFormatCP, 16, "%i;5", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum][0] += 16.0
+				gF_vecCP[1][cpnum - 1][0] += 16.0
 			Format(sFormatCP, 16, "%i;6", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum][0] -= 16.0
+				gF_vecCP[1][cpnum - 1][0] -= 16.0
 			Format(sFormatCP, 16, "%i;7", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum][1] += 16.0
+				gF_vecCP[1][cpnum - 1][1] += 16.0
 			Format(sFormatCP, 16, "%i;8", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum][1] -= 16.0
+				gF_vecCP[1][cpnum - 1][1] -= 16.0
 			char sQuery[512]
 			if(StrEqual(sItem, "0"))
 			{
@@ -1529,8 +1529,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			IntToString(cpnum, sCP, 16)
 			if(StrEqual(sItem, sCP))
 			{
-				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecCP[0][cpnum][0]), RoundFloat(gF_vecCP[0][cpnum][1]), RoundFloat(gF_vecCP[0][cpnum][2]), RoundFloat(gF_vecCP[1][cpnum][0]), RoundFloat(gF_vecCP[1][cpnum][1]), RoundFloat(gF_vecCP[1][cpnum][2]), cpnum, gS_map)
-				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
+				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecCP[0][cpnum - 1][0]), RoundFloat(gF_vecCP[0][cpnum - 1][1]), RoundFloat(gF_vecCP[0][cpnum - 1][2]), RoundFloat(gF_vecCP[1][cpnum - 1][0]), RoundFloat(gF_vecCP[1][cpnum - 1][1]), RoundFloat(gF_vecCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
+				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum - 1)
 			}
 			DrawZone()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
