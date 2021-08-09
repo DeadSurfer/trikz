@@ -1140,11 +1140,11 @@ Action cmd_test(int client, int args)
 		PrintToServer("GetTime: %i", GetTime())
 		PrintToServer("EngineTime: %f", GetEngineTime())
 		float round = 123.123
-		PrintToServer("RoundFloat: %f", RoundFloat(round)
-		PrintToServer("RoundToCeil: %f", RoundToCeil(round)
-		PrintToServer("RoundToFloor: %f", RoundToFloor(round)
-		PrintToServer("RoundToNearest: %f", RoundToNearest(round)
-		PrintToServer("RoundToZero: %f", RoundToZero(round)
+		PrintToServer("RoundFloat: %f", RoundFloat(round))
+		PrintToServer("RoundToCeil: %f", RoundToCeil(round))
+		PrintToServer("RoundToFloor: %f", RoundToFloor(round))
+		PrintToServer("RoundToNearest: %f", RoundToNearest(round))
+		PrintToServer("RoundToZero: %f", RoundToZero(round))
 	}
 	return Plugin_Handled
 }
