@@ -1343,23 +1343,23 @@ void ZoneEditor(int client)
 {
 	Menu menu = new Menu(zones_handler)
 	menu.SetTitle("Zone editor")
-	menu.AddItem("1", "+x/0")
-	menu.AddItem("2", "-x/0")
-	menu.AddItem("3", "+y/0")
-	menu.AddItem("4", "-y/0")
-	menu.AddItem("5", "+x/1")
-	menu.AddItem("6", "-x/1")
-	menu.AddItem("7", "+y/1")
-	menu.AddItem("8", "-y/1")
+	menu.AddItem("1", "+x/mins")
+	menu.AddItem("2", "-x/mins")
+	menu.AddItem("3", "+y/mins")
+	menu.AddItem("4", "-y/mins")
+	menu.AddItem("5", "+x/maxs")
+	menu.AddItem("6", "-x/maxs")
+	menu.AddItem("7", "+y/maxs")
+	menu.AddItem("8", "-y/maxs")
 	menu.AddItem("9", "Update start zone")
-	menu.AddItem("10", "+x/0")
-	menu.AddItem("11", "-x/0")
-	menu.AddItem("12", "+y/0")
-	menu.AddItem("13", "-y/0")
-	menu.AddItem("14", "+x/1")
-	menu.AddItem("15", "-x/1")
-	menu.AddItem("16", "+y/1")
-	menu.AddItem("17", "-y/1")
+	menu.AddItem("10", "+x/mins")
+	menu.AddItem("11", "-x/mins")
+	menu.AddItem("12", "+y/mins")
+	menu.AddItem("13", "-y/mins")
+	menu.AddItem("14", "+x/maxs")
+	menu.AddItem("15", "-x/maxs")
+	menu.AddItem("16", "+y/maxs")
+	menu.AddItem("17", "-y/maxs")
 	menu.AddItem("18", "Update end zone")
 	menu.Display(client, MENU_TIME_FOREVER)
 }
@@ -1376,50 +1376,50 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					gF_vecStartZone[0][0] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 				}
 				case 1:
 				{
 					gF_vecStartZone[0][0] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 2:
 				{
 					gF_vecStartZone[0][1] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 3:
 				{
 					gF_vecStartZone[0][1] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 4:
 				{
 					gF_vecStartZone[1][0] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 5:
 				{
 					gF_vecStartZone[1][0] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 6:
 				{
 					gF_vecStartZone[1][1] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 7:
 				{
 					gF_vecStartZone[1][1] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 8:
 				{
@@ -1429,50 +1429,50 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 9:
 				{
 					gF_vecEndZone[0][0] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 10:
 				{
 					gF_vecEndZone[0][0] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 11:
 				{
 					gF_vecEndZone[0][1] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 12:
 				{
 					gF_vecEndZone[0][1] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 13:
 				{
 					gF_vecEndZone[1][0] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 14:
 				{
 					gF_vecEndZone[1][0] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 15:
 				{
 					gF_vecEndZone[1][1] += 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 16:
 				{
 					gF_vecEndZone[1][1] -= 16.0
-					ZoneEditor(param1)
-					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+					//ZoneEditor(param1)
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 17:
 				{
@@ -1480,6 +1480,8 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 					gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 				}
 			}
+			ZoneEditor(param1)
+			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 		}
 	}
 }
