@@ -1366,62 +1366,62 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					gF_vecStartZone[0][0] += 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 1:
 				{
 					gF_vecStartZone[0][0] -= 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 2:
 				{
 					gF_vecStartZone[0][1] += 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 3:
 				{
 					gF_vecStartZone[0][1] -= 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 4:
 				{
 					gF_vecStartZone[0][2] += 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 5:
 				{
 					gF_vecStartZone[0][2] -= 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 6:
 				{
 					gF_vecStartZone[1][0] += 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 7:
 				{
 					gF_vecStartZone[1][0] -= 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 8:
 				{
 					gF_vecStartZone[1][1] += 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 9:
 				{
 					gF_vecStartZone[1][1] -= 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 10:
 				{
 					gF_vecStartZone[1][2] += 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 				case 11:
 				{
 					gF_vecStartZone[1][2] -= 16.0
-					ZoneEditr(param1)
+					ZoneEditor(param1)
 				}
 			}
 		}
