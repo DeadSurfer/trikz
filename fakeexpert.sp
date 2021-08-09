@@ -112,6 +112,7 @@ float gF_vecVelEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
 int gI_zoneDrawTime
 ConVar gCV_turboPhysics
+float gF_afkTime
 
 public Plugin myinfo =
 {
@@ -137,6 +138,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
 	RegConsoleCmd("sm_top", cmd_top)
+	RegConsoleCmd("sm_afk", cmd_afk)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -2489,6 +2491,54 @@ Action cmd_top(int client, int args)
 	//kv.SetString("msg", sTopURL)
 	//ShowVGUIPanel(client, "info", kv, true)
 	return Plugin_Handled
+}
+
+Action cmd_afk(int client, int args)
+{
+	if(GetEngineTime() - gF_afkTime > 25.0 )
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(!IsPlayerAlive(i))
+			{
+				gB_afk[i] = false
+				Menu menu = new Menu(afk_handler)
+				menu.SetTitle("Are you here?")
+				menu.AddItem("yes", "Yes")
+				menu.AddItem("no", "No")
+				menu.Display(i, 20)
+			}
+		}
+		gF_afkTime = GetEngineTime()
+		CreateTimer(20.0, timer_afk, _, TIMER_FLAG_NO_MAPCHANGE)
+	}
+	return Plugin_Handled
+}
+
+int afk_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+					gB_afk[param1] = true
+			}
+		}
+		case MenuAction_End:
+			delete menu
+	}
+}
+
+Action timer_afk(Handle timer)
+{
+	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
+	for(int i 1; i <= MaxClients; i++)
+		if(gB_afk[i])
+			KickClient(i, "Away from keyboard.")
+	return Plugin_Stop
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
