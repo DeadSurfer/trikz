@@ -1487,33 +1487,48 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			Format(sFormat, 16, "%s", sExploded[0])
 			int cpnum = StringToInt(sFormat)
 			char sFormatCP[16]
-			Format(sFormatCP, 16, "%i;%s", cpnum, sExploded[1])
-			PrintToServer("%s", sFormatCP)
+			Format(sFormatCP, 16, "%i;0", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				TeleportEntity(param1, gF_center[cpnum], NULL_VECTOR, NULL_VECTOR)
+			Format(sFormatCP, 16, "%i;1", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][0] += 16.0
+			Format(sFormatCP, 16, "%i;2", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][0] -= 16.0
+			Format(sFormatCP, 16, "%i;3", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][1] += 16.0
+			Format(sFormatCP, 16, "%i;4", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][1] -= 16.0
+			Format(sFormatCP, 16, "%i;5", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][0] += 16.0
+			Format(sFormatCP, 16, "%i;6", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][0] -= 16.0
+			Format(sFormatCP, 16, "%i;7", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][1] += 16.0
+			Format(sFormatCP, 16, "%i;8", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][1] -= 16.0
 			if(!type)
+			{
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type, gS_map)
+				gD_mysql.Query(SQLUpdateZone, sQuery, type)
+			}
 			else if(type == 1)
+			{
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]), type, gS_map)
+				gD_mysql.Query(SQLUpdateZone, sQuery, type)
+			}
 			else if(type > 1)
+			{
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type - 1, gS_map)
-			gD_mysql.Query(SQLUpdateZone, sQuery, type)
+				gD_mysql.Query(SQLUpdateZone, sQuery, type)
+			}
 			DrawZone()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
