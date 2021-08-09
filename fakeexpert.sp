@@ -2314,12 +2314,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client)
 		}
 	}
-	if(IsPlayerAlive(client))
+	ConVar turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
+	if(!turboPhysics.BoolValue)
 	{
-		if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		if(IsPlayerAlive(client))
+		{
+			if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
+				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+			if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		}
 	}
 	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0)
 	{
