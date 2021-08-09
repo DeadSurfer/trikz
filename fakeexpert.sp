@@ -1397,7 +1397,9 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				if(gI_cpCount)
 				{
 					i += 1
-					if(StrEqual(sItem, i))
+					char sCP[16]
+					IntToString(i, sCP, 16)
+					if(StrEqual(sItem, sCP))
 					{
 						menu2.SetTitle("Zone editor - CP nr. %i zone", i - 1)
 						char sItemCP[16]
