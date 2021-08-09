@@ -1377,49 +1377,49 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					gF_vecStartZone[0][0] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 				}
 				case 1:
 				{
 					gF_vecStartZone[0][0] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 2:
 				{
 					gF_vecStartZone[0][1] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 3:
 				{
 					gF_vecStartZone[0][1] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 4:
 				{
 					gF_vecStartZone[1][0] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 5:
 				{
 					gF_vecStartZone[1][0] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 6:
 				{
 					gF_vecStartZone[1][1] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 7:
 				{
 					gF_vecStartZone[1][1] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 8:
 				{
@@ -1430,49 +1430,49 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					gF_vecEndZone[0][0] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 10:
 				{
 					gF_vecEndZone[0][0] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 11:
 				{
 					gF_vecEndZone[0][1] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 12:
 				{
 					gF_vecEndZone[0][1] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 13:
 				{
 					gF_vecEndZone[1][0] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 14:
 				{
 					gF_vecEndZone[1][0] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 15:
 				{
 					gF_vecEndZone[1][1] += 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 16:
 				{
 					gF_vecEndZone[1][1] -= 16.0
 					ZoneEditor(param1)
-					DrawZone()
+					menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 				}
 				case 17:
 				{
