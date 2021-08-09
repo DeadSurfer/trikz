@@ -1684,7 +1684,7 @@ void createcp(int cpnum)
 	gF_center[cpnum + 1][0] = (gF_vecCP[1][cpnum][0] + gF_vecCP[0][cpnum][0]) / 2.0
 	gF_center[cpnum + 1][1] = (gF_vecCP[1][cpnum][1] + gF_vecCP[0][cpnum][1]) / 2.0
 	gF_center[cpnum + 1][2] = (gF_vecCP[1][cpnum][2] + gF_vecCP[0][cpnum][2]) / 2.0
-	TeleportEntity(entity, center[cpnum + 1], NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	TeleportEntity(entity, gF_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR) ////Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
