@@ -1347,12 +1347,14 @@ void ZoneEditor(int client)
 	menu.AddItem("2", "-x/0")
 	menu.AddItem("3", "+y/0")
 	menu.AddItem("4", "-y/0")
+	menu.AddItem("5", "Update start zone")
 	//menu.AddItem("5", "+z/0")
 	//menu.AddItem("6", "-z/0")
-	menu.AddItem("7", "+x/1")
-	menu.AddItem("8", "-x/1")
-	menu.AddItem("9", "+y/1")
-	menu.AddItem("10", "-y/1")
+	menu.AddItem("6", "+x/1")
+	menu.AddItem("7", "-x/1")
+	menu.AddItem("8", "+y/1")
+	menu.AddItem("9", "-y/1")
+	menu.AddItem("10", "Update end zone")
 	//menu.AddItem("11", "+z/1")
 	//menu.AddItem("12", "-z/1")
 	menu.Display(client, MENU_TIME_FOREVER)
@@ -1390,6 +1392,15 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 					ZoneEditor(param1)
 					DrawZone()
 				}
+				case 4:
+				{
+					//gF_vecStartZone[1][0] -= 16.0
+					//ZoneEditor(param1)
+					//DrawZone()
+					char sQuery[512]
+					Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), gS_map)
+					gD_mysql.Query(SQLUpdateZone, sQuery, 0)
+				}
 				/*case 4:
 				{
 					gF_vecStartZone[0][2] += 16.0
@@ -1402,29 +1413,38 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 					ZoneEditor(param1)
 					DrawZone()
 				}*/
-				case 4:
+				case 5:
 				{
 					gF_vecStartZone[1][0] += 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
-				case 5:
+				case 6:
 				{
 					gF_vecStartZone[1][0] -= 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
-				case 6:
+				case 7:
 				{
 					gF_vecStartZone[1][1] += 16.0
 					ZoneEditor(param1)
 					DrawZone()
 				}
-				case 7:
+				case 8:
 				{
 					gF_vecStartZone[1][1] -= 16.0
 					ZoneEditor(param1)
 					DrawZone()
+				}
+				case 9:
+				{
+					//gF_vecStartZone[1][0] -= 16.0
+					//ZoneEditor(param1)
+					//DrawZone()
+					char sQuery[512]
+					Format(sQuery, 512, "UPDATE zones SET possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), gS_map)
+					gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 				}
 				/*case 10:
 				{
@@ -1440,6 +1460,17 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				}*/
 			}
 		}
+	}
+}
+
+void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.HasResults)
+	{
+		if(data)
+			PrintToServer("End zone successfuly updated.")
+		else
+			PrintToServer("Start zone successfuly updated.")
 	}
 }
 
