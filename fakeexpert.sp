@@ -1347,8 +1347,9 @@ void ZoneEditor(int client)
 	menu.AddItem("0", "Start zone")
 	menu.AddItem("1", "End zone")
 	char sFormat[32]
-	for(int i = 2; i <= gI_cpCount; i++)
+	for(int i = 0; i <= gI_cpCount; i++)
 	{
+		i += 1
 		Format(sFormat, 32, "CP nr. %i zone", i - 1)
 		char sCP[16]
 		Format(sCP, 16, "%i", i)
@@ -1406,8 +1407,8 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 						menu2.SetTitle("Zone editor - CP nr. %i zone", i - 1)
 						char sItemCP[16]
 						Format(sItemCP, 16, "%i;0", i)
-						char sButton[64]
-						Format(sButton, 64, "Teleport to CP nr. %i zone", i - 1)
+						char sButton[32]
+						Format(sButton, 32, "Teleport to CP nr. %i zone", i - 1)
 						menu2.AddItem(sItemCP, sButton)
 						Format(sItemCP, 16, "%i;1", i)
 						menu2.AddItem(sItemCP, "+x/mins")
@@ -1425,7 +1426,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 						menu2.AddItem(sItemCP, "+y/maxs")
 						Format(sItemCP, 16, "%i;8", i)
 						menu2.AddItem(sItemCP, "-y/maxs")
-						Format(sButton, 64, "Update CP nr. %i zone", i - 1)
+						Format(sButton, 32, "Update CP nr. %i zone", i - 1)
 						menu2.AddItem(sCP, sButton)
 					}
 				}
