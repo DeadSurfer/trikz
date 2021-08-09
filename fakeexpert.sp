@@ -113,6 +113,7 @@ int gI_cpCount
 int gI_zoneDrawTime
 ConVar gCV_turboPhysics
 float gF_afkTime
+bool gB_afk[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
