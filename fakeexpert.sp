@@ -1364,7 +1364,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			char sItem[16]
 			menu.GetItem(param2, sItem, 16)
 			Menu menu = new Menu(zones2_handler)
-			if(StrEqual(sItem, "0")
+			if(StrEqual(sItem, "0"))
 			{
 				menu.SetTitle("Zone editor - Start zone")
 				menu.AddItem("01", "+x/mins")
@@ -1377,7 +1377,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("08", "-y/maxs")
 				menu.AddItem("0", "Update start zone")
 			}
-			if(StrEqual(sItem, "1")
+			if(StrEqual(sItem, "1"))
 			{
 				menu.SetTitle("Zone editor - End zone")
 				menu.AddItem("11", "+x/mins")
@@ -1390,7 +1390,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("18", "-y/maxs")
 				menu.AddItem("1", "Update start zone")
 			}
-			if(StrEqual(sItem, "2")
+			if(StrEqual(sItem, "2"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 1 zone")
 				menu.AddItem("2;1", "+x/mins")
@@ -1403,7 +1403,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("2;8", "-y/maxs")
 				menu.AddItem("2", "Update CP nr. 1 zone")
 			}
-			if(StrEqual(sItem, "3")
+			if(StrEqual(sItem, "3"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 2 zone")
 				menu.AddItem("3;1", "+x/mins")
@@ -1416,7 +1416,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("3;8", "-y/maxs")
 				menu.AddItem("3", "Update CP nr. 2 zone")
 			}
-			if(StrEqual(sItem, "4")
+			if(StrEqual(sItem, "4"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 3 zone")
 				menu.AddItem("4;1", "+x/mins")
@@ -1429,7 +1429,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("4;8", "-y/maxs")
 				menu.AddItem("4", "Update CP nr. 3 zone")
 			}
-			if(StrEqual(sItem, "5")
+			if(StrEqual(sItem, "5"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 4 zone")
 				menu.AddItem("5;1", "+x/mins")
@@ -1442,7 +1442,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("5;8", "-y/maxs")
 				menu.AddItem("5", "Update CP nr. 4 zone")
 			}
-			if(StrEqual(sItem, "6")
+			if(StrEqual(sItem, "6"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 5 zone")
 				menu.AddItem("6;1", "+x/mins")
@@ -1455,7 +1455,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("6;8", "-y/maxs")
 				menu.AddItem("6", "Update CP nr. 5 zone")
 			}
-			if(StrEqual(sItem, "7")
+			if(StrEqual(sItem, "7"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 6 zone")
 				menu.AddItem("7;1", "+x/mins")
@@ -1468,7 +1468,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("7;8", "-y/maxs")
 				menu.AddItem("7", "Update CP nr. 6 zone")
 			}
-			if(StrEqual(sItem, "8")
+			if(StrEqual(sItem, "8"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 7 zone")
 				menu.AddItem("8;1", "+x/mins")
@@ -1481,7 +1481,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("8;8", "-y/maxs")
 				menu.AddItem("8", "Update CP nr. 7 zone")
 			}
-			if(StrEqual(sItem, "9")
+			if(StrEqual(sItem, "9"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 8 zone")
 				menu.AddItem("9;1", "+x/mins")
@@ -1494,7 +1494,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("9;8", "-y/maxs")
 				menu.AddItem("9", "Update CP nr. 8 zone")
 			}
-			if(StrEqual(sItem, "10")
+			if(StrEqual(sItem, "10"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 9 zone")
 				menu.AddItem("10;1", "+x/mins")
@@ -1507,7 +1507,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu.AddItem("10;6", "-y/maxs")
 				menu.AddItem("10", "Update CP nr. 9 zone")
 			}
-			if(StrEqual(sItem, "11")
+			if(StrEqual(sItem, "11"))
 			{
 				menu.SetTitle("Zone editor - CP nr. 10 zone")
 				menu.AddItem("111", "+x/mins")
@@ -1535,37 +1535,37 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			menu.GetItem(param1, sItem, 16)
 			int type = StringToInt(sItem)
 			char sQuery[512]
-			if(StrEqual(sItem, "01")
+			if(StrEqual(sItem, "01"))
 				gF_vecStartZone[0][0] += 16.0
-			if(StrEqual(sItem, "02")
+			if(StrEqual(sItem, "02"))
 				gF_vecStartZone[0][0] -= 16.0
-			if(StrEqual(sItem, "03")
+			if(StrEqual(sItem, "03"))
 				gF_vecStartZone[0][1] += 16.0
-			if(StrEqual(sItem, "04")
+			if(StrEqual(sItem, "04"))
 				gF_vecStartZone[0][1] -= 16.0
-			if(StrEqual(sItem, "05")
+			if(StrEqual(sItem, "05"))
 				gF_vecStartZone[1][0] += 16.0
-			if(StrEqual(sItem, "06")
+			if(StrEqual(sItem, "06"))
 				gF_vecStartZone[1][0] -= 16.0
-			if(StrEqual(sItem, "07")
+			if(StrEqual(sItem, "07"))
 				gF_vecStartZone[1][1] += 16.0
-			if(StrEqual(sItem, "08")
+			if(StrEqual(sItem, "08"))
 				gF_vecStartZone[1][1] -= 16.0
-			if(StrEqual(sItem, "11")
+			if(StrEqual(sItem, "11"))
 				gF_vecEndZone[0][0] += 16.0
-			if(StrEqual(sItem, "12")
+			if(StrEqual(sItem, "12"))
 				gF_vecEndZone[0][0] -= 16.0
-			if(StrEqual(sItem, "13")
+			if(StrEqual(sItem, "13"))
 				gF_vecEndZone[0][1] += 16.0
-			if(StrEqual(sItem, "14")
+			if(StrEqual(sItem, "14"))
 				gF_vecEndZone[0][1] -= 16.0
-			if(StrEqual(sItem, "15")
+			if(StrEqual(sItem, "15"))
 				gF_vecEndZone[1][0] += 16.0
-			if(StrEqual(sItem, "16")
+			if(StrEqual(sItem, "16"))
 				gF_vecEndZone[1][0] -= 16.0
-			if(StrEqual(sItem, "17")
+			if(StrEqual(sItem, "17"))
 				gF_vecEndZone[1][1] += 16.0
-			if(StrEqual(sItem, "18")
+			if(StrEqual(sItem, "18"))
 				gF_vecEndZone[1][1] -= 16.0
 			char sExploded[16][16]
 			ExplodeString(sItem, ";", sExploded, 16, 16)
@@ -1574,21 +1574,21 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			int cpnum = StringToInt(sFormat)
 			char sFormatCP[16]
 			Format(sFormatCP, 16, "%i;%s", cpnum - 1, sExploded[1])
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][0] += 16.0
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][0] -= 16.0
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][1] += 16.0
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[0][cpnum][1] -= 16.0
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][0] += 16.0
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][0] -= 16.0
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][1] += 16.0
-			if(StrEqual(sItem, sFormatCP)
+			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][1] -= 16.0
 			if(!type)
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type, gS_map)
