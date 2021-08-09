@@ -2496,11 +2496,11 @@ Action cmd_top(int client, int args)
 
 Action cmd_afk(int client, int args)
 {
-	if(GetEngineTime() - gF_afkTime > 25.0 )
+	if(GetEngineTime() - gF_afkTime > 20.0 )
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(!IsPlayerAlive(i))
+			if(IsClientInGame(i) && !IsPlayerAlive(i))
 			{
 				gB_afk[i] = false
 				Menu menu = new Menu(afk_handler)
