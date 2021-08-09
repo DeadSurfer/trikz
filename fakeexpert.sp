@@ -162,7 +162,6 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
 	HookEvent("player_spawn", event_playerspawn)
-	//HookEvent("player_death", event_playerdeath)
 }
 
 public void OnMapStart()
@@ -348,11 +347,6 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 		gI_class[client] = 4
 	SetEntityRenderColor(client, 255, 255, 255, 255)
 }
-
-/*Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
-{
-	int client = GetClientOfUserId(event.GetInt("userid"))
-}*/
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -890,8 +884,8 @@ void Restart(int client)
 				gB_readyToStart[client] = true
 				gF_Time[client] = 0.0
 				gB_state[client] = false
-				float vecVel[3]
-				TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecVel)
+				float vecNullVel[3]
+				TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecNullVel)
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 				SetEntityRenderMode(client, RENDER_TRANSALPHA)
 				if(gB_color[client])
@@ -937,7 +931,6 @@ void createstart()
 	DispatchKeyValue(entity, "targetname", "fakeexpert_startzone")
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	//float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	gF_center[0][0] = (gF_vecStartZone[0][0] + gF_vecStartZone[1][0]) / 2.0
 	gF_center[0][1] = (gF_vecStartZone[0][1] + gF_vecStartZone[1][1]) / 2.0
@@ -974,7 +967,6 @@ void createend()
 	DispatchKeyValue(entity, "targetname", "fakeexpert_endzone")
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	//float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	gF_center[1][0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2
 	gF_center[1][1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2
@@ -1621,7 +1613,6 @@ void createcp(int cpnum)
 	DispatchKeyValue(entity, "targetname", sTriggerName)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
-	//float center[3]
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	gF_center[cpnum + 1][0] = (gF_vecCP[1][cpnum][0] + gF_vecCP[0][cpnum][0]) / 2.0
 	gF_center[cpnum + 1][1] = (gF_vecCP[1][cpnum][1] + gF_vecCP[0][cpnum][1]) / 2.0
