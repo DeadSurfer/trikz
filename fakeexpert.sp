@@ -1445,8 +1445,6 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[16]
 			menu.GetItem(param2, sItem, 16)
-			int type = StringToInt(sItem)
-			char sQuery[512]
 			if(StrEqual(sItem, "00"))
 				TeleportEntity(param1, gF_center[0], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, "01"))
@@ -1516,14 +1514,15 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			Format(sFormatCP, 16, "%i;8", cpnum)
 			if(StrEqual(sItem, sFormatCP))
 				gF_vecCP[1][cpnum][1] -= 16.0
+			char sQuery[512]
 			if(StrEqual(sItem, "0"))
 			{
-				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), type, gS_map)
+				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 0)
 			}
 			if(StrEqual(sItem, "1"))
 			{
-				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = %i AND map = '%s'", RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]), type, gS_map)
+				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 			}
 			char sCP[16]
