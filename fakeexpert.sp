@@ -1544,7 +1544,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
-int zones_handler(Menu menu, MenuAction action, int param1, int param2)
+int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
