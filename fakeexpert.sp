@@ -2459,7 +2459,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		}
 	}
-	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0 && gB_haveZone)
+	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0 && !gB_isDevmap)
 	{
 		gI_zoneDrawTime = GetTime()
 		DrawZone()
