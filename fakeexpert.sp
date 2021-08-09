@@ -1480,7 +1480,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 					gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 				}
 			}
-			ZoneEditor(param1)
+			//ZoneEditor(param1)
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 		}
 	}
