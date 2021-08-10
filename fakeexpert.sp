@@ -968,9 +968,9 @@ void createend()
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	gF_center[1][0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2
-	gF_center[1][1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2
-	gF_center[1][2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2
+	gF_center[1][0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2.0
+	gF_center[1][1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2.0
+	gF_center[1][2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2.0
 	TeleportEntity(entity, gF_center[1], NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	float maxs[3]
