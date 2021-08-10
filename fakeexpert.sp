@@ -183,10 +183,13 @@ public void OnMapStart()
 			RenameFile(sNewFileName, sOldFileName)
 			gB_isSourceTVchangedFileName = true
 		}
-		PrintToServer("SourceTV start recording.")
-		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
-		FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
-		ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
+		if(!gB_isDevmap)
+		{
+			PrintToServer("SourceTV start recording.")
+			FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
+			FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
+			ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
+		}
 	}
 	if(!gB_isTurnedOnSourceTV && !isSourceTV)
 	{
@@ -300,7 +303,7 @@ public void OnMapEnd()
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue
-	if(isSourceTV)
+	if(isSourceTV && !gB_isDevmap)
 	{
 		ServerCommand("tv_stoprecord")
 		char sOldFileName[256]
