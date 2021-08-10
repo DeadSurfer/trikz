@@ -2483,7 +2483,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(buttons & IN_USE)
 		{
-			if(!gI_pingTick[client] && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
 				gI_pingTick[client] = 1
 			if(gI_pingTick[client])
 				gI_pingTick[client]++
