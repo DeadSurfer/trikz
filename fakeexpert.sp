@@ -2479,7 +2479,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_boost[client] = 0
 		}
 	}
-	if(IsPlayerAlive(client) && gI_partner[client])
+	if(IsPlayerAlive(client) && (gI_partner[client] || gB_isDevmap))
 	{
 		if(buttons & IN_USE)
 		{
