@@ -2646,7 +2646,12 @@ Action cmd_devmap(int client, int args)
 		CreateTimer(20.0, timer_devmap)
 	}
 	else if(GetEngineTime() - gF_afkTime <= 30.0)
+	{
 		PrintToChat(client, "Afk vote is in progress.")
+		return Plugin_Handled
+	}
+	else if(GetEngineTime() - gF_devmapTime <= 35.0)
+		PrintToChat(client, "Devmap vote is in progress.")
 	return Plugin_Handled
 }
 
@@ -2751,7 +2756,12 @@ Action cmd_afk(int client, int args)
 		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE)
 	}
 	else if(GetEngineTime() - gF_devmapTime <= 35.0)
+	{
 		PrintToChat(client, "Devmap vote is in progress.")
+		return Plugin_Handled
+	}
+	else if(GetEngineTime() - gF_afkTime <= 30.0)
+		PrintToChat(client, "Afk vote is in progress.")
 	return Plugin_Handled
 }
 
