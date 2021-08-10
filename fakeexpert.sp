@@ -303,7 +303,7 @@ public void OnMapEnd()
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue
-	if(isSourceTV && !gB_isDevmap)
+	if(isSourceTV)
 	{
 		ServerCommand("tv_stoprecord")
 		char sOldFileName[256]
