@@ -566,21 +566,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					vecVelBooster[2] *= 3.0
 					gF_skyVel[other][2] = vecVelBooster[2]
 					if(FloatAbs(vecVelFlyer[2]) < 300.0)
-					{
 						if(vecVelBooster[2] > 750.0)
-						{
 							gF_skyVel[other][2] = 750.0
-							PrintToServer("first %f", FloatAbs(vecVelFlyer[2]))
-						}
-					}
-					else if(FloatAbs(vecVelFlyer[2]) >= 300.0)
-					{
+					if(FloatAbs(vecVelFlyer[2]) >= 300.0)
 						if(vecVelBooster[2] > 800.0)
-						{
 							gF_skyVel[other][2] = 800.0
-							PrintToServer("second %f", FloatAbs(vecVelFlyer[2]))
-						}
-					}
 					if(FloatAbs(vecVelFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
 					{
 						gB_skyStep[other] = true
@@ -2710,7 +2700,10 @@ Action timer_devmap(Handle timer)
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
 	{
 		if(gB_isDevmap)
+		{
 			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
+			return Plugin_Stop
+		}
 		else
 		{
 			PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
@@ -2723,6 +2716,7 @@ Action timer_devmap(Handle timer)
 		{
 			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
 			CreateTimer(5.0, timer_changelevel, false)
+			return Plugin_Stop
 		}
 		else
 			PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
@@ -2734,6 +2728,8 @@ Action timer_devmap(Handle timer)
 
 Action timer_changelevel(Handle timer, bool value)
 {
+	for(int i = 0; i <= 1; i++)
+		gF_devmap[i] = 0.0
 	gB_isDevmap = value
 	ForceChangeLevel(gS_map, "Reason: Devmap")
 }
