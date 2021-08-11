@@ -2707,7 +2707,7 @@ Action timer_devmap(Handle timer)
 		{
 			for(int i = 0; i <= 1; i++)
 				gF_devmap[i] = 0.0
-			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
+			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
 			return Plugin_Stop
 		}
 		else
@@ -2721,7 +2721,7 @@ Action timer_devmap(Handle timer)
 	{
 		if(gB_isDevmap)
 		{
-			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
+			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
 			CreateTimer(5.0, timer_changelevel, false)
 			return Plugin_Stop
 		}
