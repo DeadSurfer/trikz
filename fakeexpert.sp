@@ -2447,7 +2447,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(GetGameTime() - gF_boostTime[client] < 0.15)
 	{
-		float velocity[3]
+		//float velocity[3]
 		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
 	}
 	if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
