@@ -2474,6 +2474,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		else if(gI_boost[client] == 3) // let make loop finish and come back to here.
 		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 			if(gB_groundBoost[client])
 			{
 				velocity[0] += gF_vecVelEntity[client][0]
