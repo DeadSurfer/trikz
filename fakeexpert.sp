@@ -570,7 +570,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						if(vecVelBooster[2] > 700.0)
 							gF_skyVel[other][2] = 700.0
 					}
-					else if(FloatAbs(vecVelFlyer[2]( >= 300.0)
+					else if(FloatAbs(vecVelFlyer[2]) >= 300.0)
 						if(vecVelBooster[2] > 800.0)
 							gF_skyVel[other][2] = 800.0
 					if(FloatAbs(vecVelFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
