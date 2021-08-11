@@ -2696,13 +2696,13 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action timer_devmap(Handle timer)
 {
-	for(int i = 0; i <= 1; i++)
-		gF_devmap[i] = 0.0
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
 	{
 		if(gB_isDevmap)
 		{
+			for(int i = 0; i <= 1; i++)
+				gF_devmap[i] = 0.0
 			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
 			return Plugin_Stop
 		}
@@ -2723,6 +2723,8 @@ Action timer_devmap(Handle timer)
 		}
 		else
 		{
+			for(int i = 0; i <= 1; i++)
+				gF_devmap[i] = 0.0
 			PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
 			return Plugin_Stop
 		}
@@ -2732,6 +2734,8 @@ Action timer_devmap(Handle timer)
 
 Action timer_changelevel(Handle timer, bool value)
 {
+	for(int i = 0; i <= 1; i++)
+		gF_devmap[i] = 0.0
 	gB_isDevmap = value
 	ForceChangeLevel(gS_map, "Reason: Devmap")
 }
