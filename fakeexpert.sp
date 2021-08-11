@@ -2678,19 +2678,9 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case 0:
-				{
-					if(gB_isDevmap)
-						gF_devmap[0]++
-					else
-						gF_devmap[1]++
-				}
+					gF_devmap[1]++
 				case 1:
-				{
-					if(gB_isDevmap)
-						gF_devmap[1]++
-					else
-						gF_devmap[0]++
-				}
+					gF_devmap[0]++
 			}
 		}
 		case MenuAction_End:
@@ -2705,9 +2695,8 @@ Action timer_devmap(Handle timer)
 	{
 		if(gB_isDevmap)
 		{
-			for(int i = 0; i <= 1; i++)
-				gF_devmap[i] = 0.0
-			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
+			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
+			CreateTimer(5.0, timer_changelevel, false)
 			return Plugin_Stop
 		}
 		else
@@ -2721,8 +2710,9 @@ Action timer_devmap(Handle timer)
 	{
 		if(gB_isDevmap)
 		{
-			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-			CreateTimer(5.0, timer_changelevel, false)
+			for(int i = 0; i <= 1; i++)
+				gF_devmap[i] = 0.0
+			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
 			return Plugin_Stop
 		}
 		else
