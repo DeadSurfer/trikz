@@ -570,7 +570,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						if(vecVelBooster[2] > 750.0)
 						{
 							gF_skyVel[other][2] = 750.0
-							PrintToServer("first")
+							PrintToServer("first %f", FloatAbs(vecVelFlyer[2]))
 						}
 					}
 					else if(FloatAbs(vecVelFlyer[2]) >= 300.0)
@@ -578,7 +578,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						if(vecVelBooster[2] > 800.0)
 						{
 							gF_skyVel[other][2] = 800.0
-							PrintToServer("second")
+							PrintToServer("second %f", FloatAbs(vecVelFlyer[2]))
 						}
 					}
 					if(FloatAbs(vecVelFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
