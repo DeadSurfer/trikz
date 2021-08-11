@@ -2658,6 +2658,7 @@ Action cmd_devmap(int client, int args)
 		}
 		gF_devmapTime = GetEngineTime()
 		CreateTimer(20.0, timer_devmap)
+		PrintToChatAll("Devmap vote started by %N", client)
 	}
 	else if(GetEngineTime() - gF_afkTime <= 30.0)
 	{
@@ -2770,6 +2771,7 @@ Action cmd_afk(int client, int args)
 		}
 		gF_afkTime = GetEngineTime()
 		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE)
+		PrintToChatAll("Afk check - vote started by %N", client)
 	}
 	else if(GetEngineTime() - gF_devmapTime <= 35.0)
 	{
