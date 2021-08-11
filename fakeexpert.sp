@@ -616,9 +616,9 @@ void Trikz(int client)
 	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
 	menu.AddItem("partner", sDisplay, gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
 	if(gB_isDevmap)
-		menu.AddItem("color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+		menu.AddItem("color", "Color")
 	else
-		menu.AddItem("color", "Color" )
+		menu.AddItem("color", "Color", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
 	menu.AddItem("restart", "Restart", gI_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED) //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
 	if(gB_isDevmap)
 	{
