@@ -1150,13 +1150,25 @@ Action cmd_test(int client, int args)
 		PrintToServer("RoundToNearest: %i", RoundToNearest(round))
 		PrintToServer("RoundToZero: %i", RoundToZero(round))
 		float x = 0.0
-		PrintToServer("%i == 0.0", x)
+		if(x)
+			PrintToServer("%f == 0.0 | true", x)
+		else
+			PrintToServer("%f == 0.0 | false", x)
 		x = 1.0
-		PrintToServer("%i == 1.0", x)
+		if(x)
+			PrintToServer("%f == 1.0 | true", x)
+		else
+			PrintToServer("%f == 1.0 | false", x)
 		x = -1.0
-		PrintToServer("%i == -1.0", x)
+		if(x)
+			PrintToServer("%f == -1.0 | true", x)
+		else
+			PrintToServer("%f == -1.0 | false", x)
 		x = 0.1
-		PrintToServer("%i == 0.1", x)
+		if(x)
+			PrintToServer("%f == 0.1 | true", x)
+		else
+			PrintToServer("%f == 0.1 | false", x)
 	}
 	return Plugin_Handled
 }
