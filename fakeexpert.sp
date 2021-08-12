@@ -2127,12 +2127,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	PrintToServer("Record updated.")
 }
 
 void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("Record inserted.")
 }
 
 Action timer_sourcetv(Handle timer)
