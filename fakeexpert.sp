@@ -2619,7 +2619,7 @@ Action ProjectileBoostFix(int entity, int other)
 		float vecMaxsEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
 		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
-		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231//https://forums.alliedmods.net/showthread.php?t=146241
+		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[other])
@@ -2833,6 +2833,7 @@ Action cmd_time(int client, int args)
 			PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[observerTarget], hour, minute, second)
 		}
 	}
+	return Plugin_Handled
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
