@@ -1143,6 +1143,7 @@ Action cmd_test(int client, int args)
 		PrintToServer("TickCount: %i", GetGameTickCount())
 		PrintToServer("GetTime: %i", GetTime())
 		PrintToServer("EngineTime: %f", GetEngineTime())
+		PrintToServer("GetTickInterval: %f, tickrate: %f (1.0 / GetTickInterval())", 1.0 / GetTickInterval())
 		float round = 123.123
 		PrintToServer("RoundFloat: %i", RoundFloat(round))
 		PrintToServer("RoundToCeil: %i", RoundToCeil(round))
