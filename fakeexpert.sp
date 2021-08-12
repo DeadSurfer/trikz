@@ -2406,7 +2406,7 @@ void DrawZone()
 			int k = j + 1
 			if(j == 3)
 				k = 0
-			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 2.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
 		}
 	}
@@ -2733,6 +2733,7 @@ Action timer_changelevel(Handle timer, bool value)
 		gF_devmap[i] = 0.0
 	gB_isDevmap = value
 	ForceChangeLevel(gS_map, "Reason: Devmap")
+	return Plugin_Stop
 }
 
 Action cmd_top(int client, int args)
@@ -2741,15 +2742,7 @@ Action cmd_top(int client, int args)
 	gCV_topURL.GetString(sTopURL, 192)
 	char sTopURLwMap[256]
 	Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
-	//ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
-	//ShowMOTDPanel(client, "Trikz Timer", sTopURL, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
-	//ShowMOTDPanel(
-	//KeyValues kv = new KeyValues("data")
-	//kv.SetString("title", "Trikz Timer")
-	//kv.SetNum("type", MOTDPANEL_TYPE_URL)
-	//kv.SetString("msg", sTopURL)
-	//ShowVGUIPanel(client, "info", kv, true)
 	return Plugin_Handled
 }
 
