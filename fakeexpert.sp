@@ -1149,6 +1149,13 @@ Action cmd_test(int client, int args)
 		PrintToServer("RoundToFloor: %i", RoundToFloor(round))
 		PrintToServer("RoundToNearest: %i", RoundToNearest(round))
 		PrintToServer("RoundToZero: %i", RoundToZero(round))
+		/*
+		RoundFloat: 123
+		RoundToCeil: 124
+		RoundToFloor: 123
+		RoundToNearest: 123
+		RoundToZero: 123
+		*/
 		float x = 0.0
 		if(x)
 			PrintToServer("%f == 0.0 | true", x)
@@ -1169,6 +1176,12 @@ Action cmd_test(int client, int args)
 			PrintToServer("%f == 0.1 | true", x)
 		else
 			PrintToServer("%f == 0.1 | false", x)
+		/*
+		0.000000 == 0.0 | false
+		1.000000 == 1.0 | true
+		-1.000000 == -1.0 | true
+		0.100000 == 0.1 | true
+		*/
 	}
 	return Plugin_Handled
 }
@@ -1745,9 +1758,9 @@ Action SDKStartTouch(int entity, int other)
 				int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 				int personalSecond = RoundToFloor(gF_Time[other]) % 60
-				if(gF_ServerRecord != 0.0)
+				if(gF_ServerRecord)
 				{
-					if(gF_mateRecord[other] != 0.0)
+					if(gF_mateRecord[other])
 					{
 						if(gF_ServerRecord > gF_Time[other])
 						{
@@ -1834,9 +1847,9 @@ Action SDKStartTouch(int entity, int other)
 							FinishMSG(gI_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 							gD_mysql.Query(SQLInsertRecord, sQuery)
-							if(gF_haveRecord[other] == 0.0)
+							if(!gF_haveRecord[other])
 								gF_haveRecord[other] = gF_Time[other]
-							if(gF_haveRecord[gI_partner[other]] == 0.0)
+							if(!gF_haveRecord[gI_partner[other]])
 								gF_haveRecord[gI_partner[other]] = gF_Time[other]
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
