@@ -2250,7 +2250,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		DataPack dp = new DataPack()
 		dp.WriteCell(GetClientSerial(other))
 		dp.WriteCell(cpnum)
-		gD_mysql.Query(SQLCPSelect_2, sQuery, dp)
+		gD_mysql.Query(SQLCPSelect2, sQuery, dp)
 	}
 	else
 	{
@@ -2262,7 +2262,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 	}
 }
 
-void SQLCPSelect_2(Database db, DBResultSet results, const char[] error, DataPack data)
+void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset()
 	int other = GetClientFromSerial(data.ReadCell())
@@ -2476,11 +2476,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gB_skyStep[client] = false
 	}
-	if(GetGameTime() - gF_boostTime[client] < 0.15)
-	{
-		//float velocity[3]
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
-	}
 	if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
 	{
 		if(buttons & IN_JUMP)
@@ -2493,22 +2488,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gI_boost[client])
 	{
 		float velocity[3]
-		//SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velocity)
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 		if(gI_boost[client] == 2)
 		{
 			velocity[0] -= gF_vecVelEntity[client][0]
 			velocity[1] -= gF_vecVelEntity[client][1]
 			velocity[2] = gF_vecVelEntity[client][2]
-			//velocity[0] = gF_vecVelClient[client][0] - gF_vecVelEntity[client][0]
-			//velocity[1] = gF_vecVelClient[client][1] - gF_vecVelEntity[client][1]
-			//velocity[2] = gF_vecVelEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 			gI_boost[client] = 3
 		}
 		else if(gI_boost[client] == 3) // let make loop finish and come back to here.
 		{
-			//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 			if(gB_groundBoost[client])
 			{
 				velocity[0] += gF_vecVelEntity[client][0]
