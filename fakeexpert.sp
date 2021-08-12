@@ -39,7 +39,7 @@ float gF_TimeStart[MAXPLAYERS + 1]
 float gF_Time[MAXPLAYERS + 1]
 bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
-bool gB_mapfinished[MAXPLAYERS + 1]
+bool gB_mapFinished[MAXPLAYERS + 1]
 bool gB_passDB
 bool gB_passZone[MAXPLAYERS + 1]
 float gF_vecStart[3]
@@ -1684,8 +1684,8 @@ Action SDKEndTouch(int entity, int other)
 	{
 		gB_state[other] = true
 		gB_state[gI_partner[other]] = true
-		gB_mapfinished[other] = false
-		gB_mapfinished[gI_partner[other]] = false
+		gB_mapFinished[other] = false
+		gB_mapFinished[gI_partner[other]] = false
 		gF_TimeStart[other] = GetEngineTime()
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
 		gB_passZone[other] = true
@@ -1708,16 +1708,16 @@ Action SDKStartTouch(int entity, int other)
 	{
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
-		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapfinished[other])
+		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapFinished[other])
 		{
 			//gB_readyToStart[other] = true //expert zone idea.
 			//gB_readyToStart[gI_partner[other]] = true
 		}
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
-			gB_mapfinished[other] = true
+			gB_mapFinished[other] = true
 			gB_passZone[other] = false
-			if(gB_mapfinished[other] && gB_mapfinished[gI_partner[other]])
+			if(gB_mapFinished[other] && gB_mapFinished[gI_partner[other]])
 			{
 				char sQuery[512]
 				int playerid = GetSteamAccountID(other)
