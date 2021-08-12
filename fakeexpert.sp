@@ -492,7 +492,7 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
-	if(client == 0)
+	if(!client)
 		return
 	if(IsClientInGame(client))
 	{
@@ -515,7 +515,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
-	if(client == 0)
+	if(!client)
 		return
 	if(IsClientInGame(client))
 	{
@@ -542,7 +542,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && gI_boost[client] == 0)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
 	{
 		float vecAbsBooster[3]
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
@@ -872,7 +872,7 @@ void Color(int client, bool customSkin)
 void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
-	if(client == 0)
+	if(!client)
 		return
 	gF_mateRecord[client] = 0.0
 	gF_mateRecord[gI_partner[client]] = 0.0
@@ -1149,6 +1149,14 @@ Action cmd_test(int client, int args)
 		PrintToServer("RoundToFloor: %i", RoundToFloor(round))
 		PrintToServer("RoundToNearest: %i", RoundToNearest(round))
 		PrintToServer("RoundToZero: %i", RoundToZero(round))
+		float x = 0.0
+		PrintToServer("%i == 0.0", x)
+		x = 1.0
+		PrintToServer("%i == 1.0", x)
+		x = -1.0
+		PrintToServer("%i == -1.0", x)
+		x = 0.1
+		PrintToServer("%i == 0.1", x)
 	}
 	return Plugin_Handled
 }
@@ -2610,7 +2618,7 @@ Action timer_removePing(Handle timer, int client)
 
 Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && IsClientInGame(other) && gI_boost[other] == 0 && !(gI_entityFlags[other] & FL_ONGROUND))
+	if(0 < other <= MaxClients && IsClientInGame(other) && !gI_boost[other] && !(gI_entityFlags[other] & FL_ONGROUND))
 	{
 		float vecOriginOther[3]
 		GetClientAbsOrigin(other, vecOriginOther)
@@ -2887,7 +2895,7 @@ Action timer_deleteProjectile(Handle timer, int entRef)
 
 void SDKPlayerSpawnPost(int client)
 {
-	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if(!GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
@@ -2903,7 +2911,7 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw thanks to lon to give this idea. aka trikz_failtime
 {
-	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if(!GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
