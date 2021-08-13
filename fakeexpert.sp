@@ -2460,8 +2460,16 @@ void DrawZone()
 			DispatchSpawn(beam)
 			ActivateEntity(beam)
 			AcceptEntityInput(beam, "TurnOn")
+			CreateTimer(1.0, timer_removeBeam, beam, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
+}
+
+Action timer_removeBeam(Handle timer, int entity)
+{
+	if(IsValidEntity(entity))
+		RemoveEntity(entity)
+	return Plugin_Stop
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
