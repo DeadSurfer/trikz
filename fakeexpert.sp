@@ -2458,6 +2458,7 @@ void DrawZone()
 			DispatchKeyValue(beam, "spawnflags", "1")
 			DispatchKeyValue(beam, "BoltWidth", "3")
 			DispatchSpawn(beam)
+			ActivateEntity(beam)
 			AcceptEntityInput(beam, "TurnOn")
 		}
 	}
