@@ -2452,8 +2452,10 @@ void DrawZone()
 			}*/
 			//https://forums.alliedmods.net/showthread.php?t=190685
 			int beamStart = CreateEntityByName("info_null") //https://developer.valvesoftware.com/wiki/Env_beam
+			DispatchSpawn(beamStart)
 			TeleportEntity(beamStart, corners[i][j], NULL_VECTOR, NULL_VECTOR)
 			int beamEnd = CreateEntityByName("info_null")
+			DispatchSpawn(beamEnd)
 			TeleportEntity(beamEnd, corners[i][k], NULL_VECTOR, NULL_VECTOR)
 			int beam = CreateEntityByName("env_beam")
 			//TeleportEntity(beam, corners[i][j], NULL_VECTOR, NULL_VECTOR)
