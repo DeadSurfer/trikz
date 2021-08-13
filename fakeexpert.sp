@@ -2452,9 +2452,11 @@ void DrawZone()
 			}*/
 			//https://forums.alliedmods.net/showthread.php?t=190685
 			int beamStart = CreateEntityByName("info_null") //https://developer.valvesoftware.com/wiki/Env_beam
+			DispatchKeyValue(beam, "targetname", "beamStart")
 			DispatchSpawn(beamStart)
 			TeleportEntity(beamStart, corners[i][j], NULL_VECTOR, NULL_VECTOR)
 			int beamEnd = CreateEntityByName("info_null")
+			DispatchKeyValue(beam, "targetname", "beamEnd")
 			DispatchSpawn(beamEnd)
 			TeleportEntity(beamEnd, corners[i][k], NULL_VECTOR, NULL_VECTOR)
 			int beam = CreateEntityByName("env_beam")
@@ -2467,6 +2469,8 @@ void DrawZone()
 			//DispatchKeyValue(beam, "renderamt", "100")
 			//DispatchKeyValue(beam, "spawnflags", "1")
 			//DispatchKeyValue(beam, "BoltWidth", "3")
+			DispatchKeyValue(beam, "LightningStart", "beamStart")
+			DispatchKeyValue(beam, "LightningStart", "beamEnd")
 			DispatchSpawn(beam)
 			SetEntPropFloat(beam, Prop_Data, "m_fWidth", 3.0) // how big the beam will be, i.e "4.0"
 			SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", 3.0) // same as above
