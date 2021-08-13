@@ -2444,9 +2444,10 @@ void DrawZone()
 			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
 			float vec[3]
-			for(int l = 1; l <= 2048; l++)
+			int index
+			while((index = FindEntityByClassname(entity, "env_beam")) != -1)
 			{
-				GetEntPropVector(l, Prop_Send, "m_vecStartPoint", vec)
+				GetEntPropVector(index, Prop_Send, "m_vecStartPoint", vec)
 				PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 			}
 		}
