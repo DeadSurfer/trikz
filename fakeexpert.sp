@@ -2441,7 +2441,7 @@ void DrawZone()
 			if(j == 3)
 				k = 0
 			//TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 1, 100, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			/*TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
 			float vec[3]
 			int index
@@ -2449,7 +2449,15 @@ void DrawZone()
 			{
 				GetEntPropVector(index, Prop_Send, "m_vecStartPoint", vec)
 				PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
-			}
+			}*/
+			//https://forums.alliedmods.net/showthread.php?t=190685
+			int beam = CreateEntityByName("env_beam")
+			TeleportEntity(beam, corners[i][j], NULL_VECTOR, NULL_VECTOR)
+			SetEntProp(beam, Prop_Data, "m_nModelIndex", gI_zoneModel[modelType])
+			SetEntPropVector(beam, Prop_Data, "m_vecEndPos", corners[i][k])
+			DispatchKeyValue(beam, "spawnflags", "1")
+			DispatchKeyValue(beam, "BoltWidth", "3")
+			DispatchSpawn(beam)
 		}
 	}
 }
