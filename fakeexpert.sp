@@ -2441,9 +2441,9 @@ void DrawZone()
 			if(j == 3)
 				k = 0
 			//TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 1, 100, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			/*TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
-			float vec[3]
+			/*float vec[3]
 			int index
 			while((index = FindEntityByClassname(index, "env_beam")) != -1)
 			{
@@ -2451,7 +2451,7 @@ void DrawZone()
 				PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 			}*/
 			//https://forums.alliedmods.net/showthread.php?t=190685
-			int beam = CreateEntityByName("env_beam")
+			/*int beam = CreateEntityByName("env_beam")
 			TeleportEntity(beam, corners[i][j], NULL_VECTOR, NULL_VECTOR)
 			SetEntProp(beam, Prop_Data, "m_nModelIndex", gI_zoneModel[modelType])
 			SetEntPropVector(beam, Prop_Data, "m_vecEndPos", corners[i][k])
@@ -2465,17 +2465,17 @@ void DrawZone()
 			SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", 3.0) // same as above
 			ActivateEntity(beam)
 			AcceptEntityInput(beam, "TurnOn")
-			CreateTimer(1.0, timer_removeBeam, beam, TIMER_FLAG_NO_MAPCHANGE)
+			CreateTimer(1.0, timer_removeBeam, beam, TIMER_FLAG_NO_MAPCHANGE)*/
 		}
 	}
 }
 
-Action timer_removeBeam(Handle timer, int entity)
+/*Action timer_removeBeam(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
 		RemoveEntity(entity)
 	return Plugin_Stop
-}
+}*/
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
