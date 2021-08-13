@@ -1645,8 +1645,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		if(!gB_haveZone)
 			gB_haveZone = true
 	}
-	//if(data == 10)
-	//	DrawZone()
+	if(data == 10)
+		DrawZone()
 }
 
 void createcp(int cpnum)
