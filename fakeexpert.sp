@@ -2445,7 +2445,7 @@ void DrawZone()
 			TE_SendToAll()
 			float vec[3]
 			int index
-			while((index = FindEntityByClassname(entity, "env_beam")) != -1)
+			while((index = FindEntityByClassname(index, "env_beam")) != -1)
 			{
 				GetEntPropVector(index, Prop_Send, "m_vecStartPoint", vec)
 				PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
