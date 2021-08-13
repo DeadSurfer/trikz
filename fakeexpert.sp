@@ -1645,8 +1645,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 		if(!gB_haveZone)
 			gB_haveZone = true
 	}
-	if(data == 10)
-		DrawZone()
+	//if(data == 10)
+	//	DrawZone()
 }
 
 void createcp(int cpnum)
@@ -2441,8 +2441,11 @@ void DrawZone()
 			if(j == 3)
 				k = 0
 			//TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 1, 100, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 0.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			int x = TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToAll()
+			float vec[3]
+			GetEntPropVector(x, Prop_Send, "m_vecStartPoint", vec)
+			PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
 		}
 	}
 }
@@ -2604,7 +2607,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		}
 	}
-	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 24 && !gB_isDevmap)
+	if(gB_haveZone && GetTime() - gI_zoneDrawTime == 1 && !gB_isDevmap)
 	{
 		gI_zoneDrawTime = GetTime()
 		DrawZone()
