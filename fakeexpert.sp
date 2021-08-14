@@ -2443,13 +2443,13 @@ void DrawZone()
 			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			//TE_SendToAll()
 			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3154
-			float eyeAngles[3]
+			float origin[3]
 			for(int l = 1; l <= MaxClients; l++)
 			{
 				if(IsClientInGame(l))
 				{
-					GetClientEyeAngles(l, eyeAngles)
-					if(GetVectorDistance(corners[i][j], eyeAngles) <= 1024.0)
+					GetClientAbsOrigin(l, origin)
+					if(GetVectorDistance(corners[i][j], origin) <= 1024.0)
 						TE_SendToClient(l)
 				}
 			}
@@ -2667,7 +2667,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
-		if(gI_partner[observerTarget] && !IsClientSourceTV(gI_partner[observerTarget]) && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
+		if(gI_partner[observerTarget] && !IsClientSourceTV(client) && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
 			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
 	}
 }
