@@ -2443,13 +2443,13 @@ void DrawZone()
 			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			//TE_SendToAll()
 			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3154
-			float origin[3]
+			float eyePos[3]
 			for(int l = 1; l <= MaxClients; l++)
 			{
 				if(IsClientInGame(l))
 				{
-					GetClientAbsOrigin(l, origin)
-					if(GetVectorDistance(corners[i][j], origin) <= 1024.0 && GetVectorDistance(corners[i][k], origin) <= 1024.0)
+					GetClientEyePosition(l, eyePos)
+					if(GetVectorDistance(corners[i][j], eyePos) <= 1024.0 && GetVectorDistance(corners[i][k], eyePos) <= 1024.0)
 						TE_SendToClient(l)
 				}
 			}
