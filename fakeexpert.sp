@@ -2449,7 +2449,10 @@ void DrawZone()
 				if(IsClientInGame(l))
 				{
 					GetClientEyePosition(l, eyePos)
-					if(GetVectorDistance(corners[i][j], eyePos) <= 1024.0 && GetVectorDistance(corners[i][j], eyePos) <= 1024.0)
+					if((GetVectorDistance(corners[i][j], eyePos) <= 1024.0 
+					&& GetVectorDistance(corners[i][j], eyePos) <= 1024.0) ||
+					TR_TraceRayFilter(eyes, corners[i][j], MASK_PLAYERSOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit()
+					&& TR_TraceRayFilter(eyes, corners[i][k], MASK_PLAYERSOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit())
 						TE_SendToClient(l)
 				}
 			}
@@ -2500,6 +2503,11 @@ void DrawZone()
 		RemoveEntity(entity)
 	return Plugin_Stop
 }*/
+
+bool TraceFilter_World(int entity, int contentsMask)
+{
+	return entity == 0
+}
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
