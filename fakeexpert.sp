@@ -2444,13 +2444,13 @@ void DrawZone()
 			//TE_SendToAll()
 			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3154
 			float origin[3]
-			for(int i = 1; i <= MaxClients; i++)
+			for(int l = 1; l <= MaxClients; l++)
 			{
-				if(IsClientInGame(i))
+				if(IsClientInGame(l))
 				{
-					GetClientAbsOrigin(i, origin)
+					GetClientAbsOrigin(l, origin)
 					if(GetVectorDistance(corners[i][j], origin) <= 1024.0)
-						TE_SendToClient(i)
+						TE_SendToClient(l)
 				}
 			}
 			/*float vec[3]
