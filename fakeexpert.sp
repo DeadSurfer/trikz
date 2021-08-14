@@ -74,7 +74,7 @@ bool gB_isDevmap
 float gF_devmapTime
 
 float gF_vec[MAXPLAYERS + 1][2][3]
-float gF_angles[MAXPLAYERS + 1][2][3]
+float gF_eyeAngles[MAXPLAYERS + 1][2][3]
 float gF_velocity[MAXPLAYERS +1][2][3]
 bool gB_toggledCheckpoint[MAXPLAYERS + 1][2]
 
@@ -381,45 +381,23 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					GetClientAbsOrigin(param1, gF_vec[param1][0])
-					GetClientAbsAngles(param1, gF_angles[param1][0])
+					GetClientEyeAngles(param1, gF_eyeAngles[param1][0]) //https://github.com/Smesh292/trikz/blob/main/checkpoint.sp#L101
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
 					if(!gB_toggledCheckpoint[param1][0])
 						gB_toggledCheckpoint[param1][0] = true
 				}
 				case 1:
-				{
-					float origin[3]
-					float angles[3]
-					float velocity[3]
-					for(int i = 0; i <= 2; i++)
-					{
-						origin[i] = gF_vec[param1][0][i]
-						angles[i] = gF_angles[param1][0][i]
-						velocity[i] = gF_velocity[param1][0][i]
-					}
-					TeleportEntity(param1, origin, angles, velocity)
-				}
+					TeleportEntity(param1, gF_vec[param1][0], gF_eyeAngles[param1][0], gF_velocity[param1][0])
 				case 2:
 				{
 					GetClientAbsOrigin(param1, gF_vec[param1][1])
-					GetClientAbsAngles(param1, gF_angles[param1][1])
+					GetClientEyeAngles(param1, gF_eyeAngles[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1])
 					if(!gB_toggledCheckpoint[param1][1])
 						gB_toggledCheckpoint[param1][1] = true
 				}
 				case 3:
-				{
-					float origin[3]
-					float angles[3]
-					float velocity[3]
-					for(int i = 0; i <= 2; i++)
-					{
-						origin[i] = gF_vec[param1][1][i]
-						angles[i] = gF_angles[param1][1][i]
-						velocity[i] = gF_velocity[param1][1][i]
-					}
-					TeleportEntity(param1, origin, angles, velocity)
-				}
+					TeleportEntity(param1, gF_vec[param1][1], gF_eyeAngles[param1][1], gF_velocity[param1][1])
 			}
 			Checkpoint(param1)
 		}
@@ -458,7 +436,7 @@ public void OnClientPutInServer(int client)
 		for(int j = 0; j <= 2; j++)
 		{
 			gF_vec[client][i][j] = 0.0
-			gF_angles[client][i][j] = 0.0
+			gF_eyeAngles[client][i][j] = 0.0
 			gF_velocity[client][i][j] = 0.0
 		}
 	}
