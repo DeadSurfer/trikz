@@ -544,7 +544,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		GetClientAbsOrigin(client, originBooster)
 		float originFlyer[3]
 		//GetEntPropVector(other, Prop_Data, "m_vecOrigin", originFlyer)
-		GetClientAbsOrigin(client, originFlyer)
+		GetClientAbsOrigin(other, originFlyer)
 		float maxs[3]
 		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
