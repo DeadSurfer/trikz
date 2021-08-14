@@ -2440,7 +2440,7 @@ void DrawZone()
 			if(j == 3)
 				k = 0
 			//TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 1, 100, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			//TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			//TE_SendToAll()
 			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3154
 			float eyePos[3]
@@ -2449,11 +2449,13 @@ void DrawZone()
 				if(IsClientInGame(l))
 				{
 					GetClientEyePosition(l, eyePos)
-					if((GetVectorDistance(corners[i][j], eyePos) <= 1024.0 
-					&& GetVectorDistance(corners[i][j], eyePos) <= 1024.0) ||
-					(TR_TraceRayFilter(eyePos, corners[i][j], MASK_SOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit()
-					&& TR_TraceRayFilter(eyePos, corners[i][k], MASK_SOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit()))
+					if((GetVectorDistance(corners[i][j], eyePos) <= 1024.0 && GetVectorDistance(corners[i][j], eyePos) <= 1024.0) ||
+					(TR_TraceRayFilter(eyePos, corners[i][j], MASK_SOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit() &&
+					TR_TraceRayFilter(eyePos, corners[i][k], MASK_SOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit()))
+					{
+						TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 						TE_SendToClient(l)
+					}
 				}
 			}
 			/*float vec[3]
