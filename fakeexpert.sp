@@ -2667,7 +2667,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
-		if(0 < gI_partner[observerTarget] <= MaxClients && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
+		if(0 < client <= MaxClients && 0 < gI_partner[observerTarget] <= MaxClients && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
 			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
 	}
 }
