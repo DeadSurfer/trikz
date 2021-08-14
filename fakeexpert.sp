@@ -383,7 +383,8 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsOrigin(param1, gF_vec[param1][0])
 					GetClientAbsAngles(param1, gF_angles[param1][0])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
-					gB_toggledCheckpoint[param1][0] = true
+					if(!gB_toggledCheckpoint[param1][0])
+						gB_toggledCheckpoint[param1][0] = true
 				}
 				case 1:
 					TeleportEntity(param1, gF_vec[param1][0], gF_angles[param1][0], gF_velocity[param1][0])
@@ -392,7 +393,8 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 					GetClientAbsOrigin(param1, gF_vec[param1][1])
 					GetClientAbsAngles(param1, gF_angles[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1])
-					gB_toggledCheckpoint[param1][1] = true
+					if(!gB_toggledCheckpoint[param1][1])
+						gB_toggledCheckpoint[param1][1] = true
 				}
 				case 3:
 					TeleportEntity(param1, gF_vec[param1][1], gF_angles[param1][1], gF_velocity[param1][1])
