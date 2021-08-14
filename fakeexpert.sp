@@ -32,8 +32,8 @@
 #include <sdkhooks>
 
 int gI_partner[MAXPLAYERS + 1]
-float gF_vecStartZone[2][3]
-float gF_vecEndZone[2][3]
+float gF_originStartZone[2][3]
+float gF_originEndZone[2][3]
 Database gD_mysql
 float gF_TimeStart[MAXPLAYERS + 1]
 float gF_Time[MAXPLAYERS + 1]
@@ -42,12 +42,12 @@ char gS_map[192]
 bool gB_mapFinished[MAXPLAYERS + 1]
 bool gB_passDB
 bool gB_passZone[MAXPLAYERS + 1]
-float gF_vecStart[3]
+float gF_originStart[3]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyVel[MAXPLAYERS + 1][3]
 bool gB_readyToStart[MAXPLAYERS + 1]
 
-float gF_vecCP[2][11][3]
+float gF_originCP[2][11][3]
 bool gB_cp[11][MAXPLAYERS + 1]
 bool gB_cpLock[11][MAXPLAYERS + 1]
 float gF_TimeCP[11][MAXPLAYERS + 1]
@@ -73,7 +73,7 @@ float gF_devmap[2]
 bool gB_isDevmap
 float gF_devmapTime
 
-float gF_vec[MAXPLAYERS + 1][2][3]
+float gF_origin[MAXPLAYERS + 1][2][3]
 float gF_eyeAngles[MAXPLAYERS + 1][2][3]
 float gF_velocity[MAXPLAYERS +1][2][3]
 bool gB_toggledCheckpoint[MAXPLAYERS + 1][2]
@@ -107,8 +107,8 @@ int gI_colorCount[MAXPLAYERS + 1]
 int gI_zoneModel[3]
 int gI_laserBeam
 bool gB_isSourceTVchangedFileName = true
-float gF_vecVelClient[MAXPLAYERS + 1][3]
-float gF_vecVelEntity[MAXPLAYERS + 1][3]
+float gF_originVelClient[MAXPLAYERS + 1][3]
+float gF_originVelEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
 int gI_zoneDrawTime
 ConVar gCV_turboPhysics
@@ -380,24 +380,24 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 				{
-					GetClientAbsOrigin(param1, gF_vec[param1][0])
+					GetClientAbsOrigin(param1, gF_origin[param1][0])
 					GetClientEyeAngles(param1, gF_eyeAngles[param1][0]) //https://github.com/Smesh292/trikz/blob/main/checkpoint.sp#L101
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][0])
 					if(!gB_toggledCheckpoint[param1][0])
 						gB_toggledCheckpoint[param1][0] = true
 				}
 				case 1:
-					TeleportEntity(param1, gF_vec[param1][0], gF_eyeAngles[param1][0], gF_velocity[param1][0])
+					TeleportEntity(param1, gF_origin[param1][0], gF_eyeAngles[param1][0], gF_velocity[param1][0])
 				case 2:
 				{
-					GetClientAbsOrigin(param1, gF_vec[param1][1])
+					GetClientAbsOrigin(param1, gF_origin[param1][1])
 					GetClientEyeAngles(param1, gF_eyeAngles[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", gF_velocity[param1][1])
 					if(!gB_toggledCheckpoint[param1][1])
 						gB_toggledCheckpoint[param1][1] = true
 				}
 				case 3:
-					TeleportEntity(param1, gF_vec[param1][1], gF_eyeAngles[param1][1], gF_velocity[param1][1])
+					TeleportEntity(param1, gF_origin[param1][1], gF_eyeAngles[param1][1], gF_velocity[param1][1])
 			}
 			Checkpoint(param1)
 		}
@@ -435,7 +435,7 @@ public void OnClientPutInServer(int client)
 		gB_toggledCheckpoint[client][i] = false
 		for(int j = 0; j <= 2; j++)
 		{
-			gF_vec[client][i][j] = 0.0
+			gF_origin[client][i][j] = 0.0
 			gF_eyeAngles[client][i][j] = 0.0
 			gF_velocity[client][i][j] = 0.0
 		}
@@ -539,34 +539,34 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
 	{
-		float vecAbsBooster[3]
-		GetEntPropVector(client, Prop_Data, "m_vecOrigin", vecAbsBooster)
-		float vecAbsFlyer[3]
-		GetEntPropVector(other, Prop_Data, "m_vecOrigin", vecAbsFlyer)
-		float vecMaxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", vecMaxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-		float delta = vecAbsFlyer[2] - vecAbsBooster[2] - vecMaxs[2]
+		float originBooster[3]
+		GetEntPropVector(client, Prop_Data, "m_vecOrigin", originBooster)
+		float originFlyer[3]
+		GetEntPropVector(other, Prop_Data, "m_vecOrigin", originFlyer)
+		float maxs[3]
+		GetEntPropVector(client, Prop_Data, "m_maxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
 			{
-				float vecVelBooster[3]
-				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVelBooster)
-				if(vecVelBooster[2] > 0.0)
+				float velBooster[3]
+				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
+				if(velBooster[2] > 0.0)
 				{
-					float vecVelFlyer[3]
-					GetEntPropVector(other, Prop_Data, "m_vecVelocity", vecVelFlyer)
-					gF_skyVel[other][0] = vecVelFlyer[0]
-					gF_skyVel[other][1] = vecVelFlyer[1]				
-					vecVelBooster[2] *= 3.0
-					gF_skyVel[other][2] = vecVelBooster[2]
-					if(FloatAbs(vecVelFlyer[2]) < 300.0)
-						if(vecVelBooster[2] > 750.0)
+					float velFlyer[3]
+					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
+					gF_skyVel[other][0] = velFlyer[0]
+					gF_skyVel[other][1] = velFlyer[1]				
+					velBooster[2] *= 3.0
+					gF_skyVel[other][2] = velBooster[2]
+					if(FloatAbs(velFlyer[2]) < 300.0)
+						if(velBooster[2] > 750.0)
 							gF_skyVel[other][2] = 750.0
-					if(FloatAbs(vecVelFlyer[2]) >= 300.0)
-						if(vecVelBooster[2] > 800.0)
+					if(FloatAbs(velFlyer[2]) >= 300.0)
+						if(velBooster[2] > 800.0)
 							gF_skyVel[other][2] = 800.0
-					if(FloatAbs(vecVelFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
+					if(FloatAbs(velFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
 					{
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
@@ -584,14 +584,14 @@ void SDKBoostFix(int client)
 		int entity = EntRefToEntIndex(gI_flash[client])
 		if(entity != INVALID_ENT_REFERENCE)
 		{
-			float vecVelEntity[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelEntity)
-			if(vecVelEntity[2] > 0.0)
+			float velEntity[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity)
+			if(velEntity[2] > 0.0)
 			{
-				vecVelEntity[0] *= 0.135
-				vecVelEntity[1] *= 0.135
-				vecVelEntity[2] *= -0.135
-				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelEntity)
+				velEntity[0] *= 0.135
+				velEntity[1] *= 0.135
+				velEntity[2] *= -0.135
+				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velEntity)
 			}
 			gI_boost[client] = 2
 		}
@@ -889,8 +889,8 @@ void Restart(int client)
 				gB_readyToStart[client] = true
 				gF_Time[client] = 0.0
 				gB_state[client] = false
-				float vecNullVel[3]
-				TeleportEntity(client, gF_vecStart, NULL_VECTOR, vecNullVel)
+				float velNull[3]
+				TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 				SetEntityRenderMode(client, RENDER_TRANSALPHA)
 				if(gB_color[client])
@@ -937,27 +937,27 @@ void createstart()
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	gF_center[0][0] = (gF_vecStartZone[0][0] + gF_vecStartZone[1][0]) / 2.0
-	gF_center[0][1] = (gF_vecStartZone[0][1] + gF_vecStartZone[1][1]) / 2.0
-	gF_center[0][2] = (gF_vecStartZone[0][2] + gF_vecStartZone[1][2]) / 2.0
+	gF_center[0][0] = (gF_originStartZone[0][0] + gF_originStartZone[1][0]) / 2.0
+	gF_center[0][1] = (gF_originStartZone[0][1] + gF_originStartZone[1][1]) / 2.0
+	gF_center[0][2] = (gF_originStartZone[0][2] + gF_originStartZone[1][2]) / 2.0
 	TeleportEntity(entity, gF_center[0], NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
-	gF_vecStart[0] = gF_center[0][0]
-	gF_vecStart[1] = gF_center[0][1]
-	gF_vecStart[2] = gF_center[0][2]
+	gF_originStart[0] = gF_center[0][0]
+	gF_originStart[1] = gF_center[0][1]
+	gF_originStart[2] = gF_center[0][2]
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
-		mins[i] = (gF_vecStartZone[0][i] - gF_vecStartZone[1][i]) / 2.0
+		mins[i] = (gF_originStartZone[0][i] - gF_originStartZone[1][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
-		maxs[i] = (gF_vecStartZone[0][i] - gF_vecStartZone[1][i]) / 2.0
+		maxs[i] = (gF_originStartZone[0][i] - gF_originStartZone[1][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
 	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	SetEntPropVector(entity, Prop_Send, "m_maxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
@@ -973,24 +973,24 @@ void createend()
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	gF_center[1][0] = (gF_vecEndZone[0][0] + gF_vecEndZone[1][0]) / 2.0
-	gF_center[1][1] = (gF_vecEndZone[0][1] + gF_vecEndZone[1][1]) / 2.0
-	gF_center[1][2] = (gF_vecEndZone[0][2] + gF_vecEndZone[1][2]) / 2.0
+	gF_center[1][0] = (gF_originEndZone[0][0] + gF_originEndZone[1][0]) / 2.0
+	gF_center[1][1] = (gF_originEndZone[0][1] + gF_originEndZone[1][1]) / 2.0
+	gF_center[1][2] = (gF_originEndZone[0][2] + gF_originEndZone[1][2]) / 2.0
 	TeleportEntity(entity, gF_center[1], NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
-		mins[i] = (gF_vecEndZone[0][i] - gF_vecEndZone[1][i]) / 2.0
+		mins[i] = (gF_originEndZone[0][i] - gF_originEndZone[1][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
-		maxs[i] = (gF_vecEndZone[0][i] - gF_vecEndZone[1][i]) / 2.0
+		maxs[i] = (gF_originEndZone[0][i] - gF_originEndZone[1][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
 	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	SetEntPropVector(entity, Prop_Send, "m_maxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("End zone is successfuly setup.")
@@ -1008,7 +1008,7 @@ Action cmd_startmins(int client, int args)
 	{
 		if(gB_isDevmap)
 		{
-			GetClientAbsOrigin(client, gF_vecStartZone[0])
+			GetClientAbsOrigin(client, gF_originStartZone[0])
 			gB_zoneFirst[0] = true
 		}
 		else
@@ -1020,7 +1020,7 @@ Action cmd_startmins(int client, int args)
 void SQLDeleteStartZone(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", gS_map, RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]))
+	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", gS_map, RoundFloat(gF_originStartZone[0][0]), RoundFloat(gF_originStartZone[0][1]), RoundFloat(gF_originStartZone[0][2]), RoundFloat(gF_originStartZone[1][0]), RoundFloat(gF_originStartZone[1][1]), RoundFloat(gF_originStartZone[1][2]))
 	gD_mysql.Query(SQLSetStartZones, sQuery)
 }
 
@@ -1193,7 +1193,7 @@ Action cmd_endmins(int client, int args)
 	{
 		if(gB_isDevmap)
 		{
-			GetClientAbsOrigin(client, gF_vecEndZone[0])
+			GetClientAbsOrigin(client, gF_originEndZone[0])
 			gB_zoneFirst[1] = true
 		}
 		else
@@ -1205,7 +1205,7 @@ Action cmd_endmins(int client, int args)
 void SQLDeleteEndZone(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", gS_map, RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]))
+	Format(sQuery, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", gS_map, RoundFloat(gF_originEndZone[0][0]), RoundFloat(gF_originEndZone[0][1]), RoundFloat(gF_originEndZone[0][2]), RoundFloat(gF_originEndZone[1][0]), RoundFloat(gF_originEndZone[1][1]), RoundFloat(gF_originEndZone[1][2]))
 	gD_mysql.Query(SQLSetEndZones, sQuery)
 }
 
@@ -1268,7 +1268,7 @@ Action cmd_startmaxs(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID) && gB_zoneFirst[0])
 	{
-		GetClientAbsOrigin(client, gF_vecStartZone[1])
+		GetClientAbsOrigin(client, gF_originStartZone[1])
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 0", gS_map)
 		gD_mysql.Query(SQLDeleteStartZone, sQuery)
@@ -1286,7 +1286,7 @@ Action cmd_endmaxs(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID) && gB_zoneFirst[1])
 	{
-		GetClientAbsOrigin(client, gF_vecEndZone[1])
+		GetClientAbsOrigin(client, gF_originEndZone[1])
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1", gS_map)
 		gD_mysql.Query(SQLDeleteEndZone, sQuery)
@@ -1310,7 +1310,7 @@ Action cmd_cpmins(int client, int args)
 			GetCmdArg(args, sCmd, 512)
 			int cpnum = StringToInt(sCmd)
 			PrintToChat(client, "CP: No.%i", cpnum)
-			GetClientAbsOrigin(client, gF_vecCP[0][cpnum])
+			GetClientAbsOrigin(client, gF_originCP[0][cpnum])
 			gB_firstZoneCP = true
 		}
 		else
@@ -1324,7 +1324,7 @@ void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data
 	if(results.HasResults)
 		PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(gF_vecCP[0][data][0]), RoundFloat(gF_vecCP[0][data][1]), RoundFloat(gF_vecCP[0][data][2]), RoundFloat(gF_vecCP[1][data][0]), RoundFloat(gF_vecCP[1][data][1]), RoundFloat(gF_vecCP[1][data][2]), gS_map)
+	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(gF_originCP[0][data][0]), RoundFloat(gF_originCP[0][data][1]), RoundFloat(gF_originCP[0][data][2]), RoundFloat(gF_originCP[1][data][0]), RoundFloat(gF_originCP[1][data][1]), RoundFloat(gF_originCP[1][data][2]), gS_map)
 	gD_mysql.Query(SQLCPInserted, sQuery, data)
 }
 
@@ -1340,7 +1340,7 @@ Action cmd_cpmaxs(int client, int args)
 		char sCmd[512]
 		GetCmdArg(args, sCmd, 512)
 		int cpnum = StringToInt(sCmd)
-		GetClientAbsOrigin(client, gF_vecCP[1][cpnum])
+		GetClientAbsOrigin(client, gF_originCP[1][cpnum])
 		char sQuery[512]
 		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
 		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
@@ -1480,39 +1480,39 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			if(StrEqual(sItem, "00"))
 				TeleportEntity(param1, gF_center[0], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, "01"))
-				gF_vecStartZone[0][0] += 16.0
+				gF_originStartZone[0][0] += 16.0
 			if(StrEqual(sItem, "02"))
-				gF_vecStartZone[0][0] -= 16.0
+				gF_originStartZone[0][0] -= 16.0
 			if(StrEqual(sItem, "03"))
-				gF_vecStartZone[0][1] += 16.0
+				gF_originStartZone[0][1] += 16.0
 			if(StrEqual(sItem, "04"))
-				gF_vecStartZone[0][1] -= 16.0
+				gF_originStartZone[0][1] -= 16.0
 			if(StrEqual(sItem, "05"))
-				gF_vecStartZone[1][0] += 16.0
+				gF_originStartZone[1][0] += 16.0
 			if(StrEqual(sItem, "06"))
-				gF_vecStartZone[1][0] -= 16.0
+				gF_originStartZone[1][0] -= 16.0
 			if(StrEqual(sItem, "07"))
-				gF_vecStartZone[1][1] += 16.0
+				gF_originStartZone[1][1] += 16.0
 			if(StrEqual(sItem, "08"))
-				gF_vecStartZone[1][1] -= 16.0
+				gF_originStartZone[1][1] -= 16.0
 			if(StrEqual(sItem, "10"))
 				TeleportEntity(param1, gF_center[1], NULL_VECTOR, NULL_VECTOR)
 			if(StrEqual(sItem, "11"))
-				gF_vecEndZone[0][0] += 16.0
+				gF_originEndZone[0][0] += 16.0
 			if(StrEqual(sItem, "12"))
-				gF_vecEndZone[0][0] -= 16.0
+				gF_originEndZone[0][0] -= 16.0
 			if(StrEqual(sItem, "13"))
-				gF_vecEndZone[0][1] += 16.0
+				gF_originEndZone[0][1] += 16.0
 			if(StrEqual(sItem, "14"))
-				gF_vecEndZone[0][1] -= 16.0
+				gF_originEndZone[0][1] -= 16.0
 			if(StrEqual(sItem, "15"))
-				gF_vecEndZone[1][0] += 16.0
+				gF_originEndZone[1][0] += 16.0
 			if(StrEqual(sItem, "16"))
-				gF_vecEndZone[1][0] -= 16.0
+				gF_originEndZone[1][0] -= 16.0
 			if(StrEqual(sItem, "17"))
-				gF_vecEndZone[1][1] += 16.0
+				gF_originEndZone[1][1] += 16.0
 			if(StrEqual(sItem, "18"))
-				gF_vecEndZone[1][1] -= 16.0
+				gF_originEndZone[1][1] -= 16.0
 			char sExploded[16][16]
 			ExplodeString(sItem, ";", sExploded, 16, 16)
 			char sFormat[16]
@@ -1524,44 +1524,44 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				TeleportEntity(param1, gF_center[cpnum], NULL_VECTOR, NULL_VECTOR)
 			Format(sFormatCP, 16, "%i;1", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum - 1][0] += 16.0
+				gF_originCP[0][cpnum - 1][0] += 16.0
 			Format(sFormatCP, 16, "%i;2", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum - 1][0] -= 16.0
+				gF_originCP[0][cpnum - 1][0] -= 16.0
 			Format(sFormatCP, 16, "%i;3", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum - 1][1] += 16.0
+				gF_originCP[0][cpnum - 1][1] += 16.0
 			Format(sFormatCP, 16, "%i;4", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[0][cpnum - 1][1] -= 16.0
+				gF_originCP[0][cpnum - 1][1] -= 16.0
 			Format(sFormatCP, 16, "%i;5", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum - 1][0] += 16.0
+				gF_originCP[1][cpnum - 1][0] += 16.0
 			Format(sFormatCP, 16, "%i;6", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum - 1][0] -= 16.0
+				gF_originCP[1][cpnum - 1][0] -= 16.0
 			Format(sFormatCP, 16, "%i;7", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum - 1][1] += 16.0
+				gF_originCP[1][cpnum - 1][1] += 16.0
 			Format(sFormatCP, 16, "%i;8", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_vecCP[1][cpnum - 1][1] -= 16.0
+				gF_originCP[1][cpnum - 1][1] -= 16.0
 			char sQuery[512]
 			if(StrEqual(sItem, "0"))
 			{
-				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_vecStartZone[0][0]), RoundFloat(gF_vecStartZone[0][1]), RoundFloat(gF_vecStartZone[0][2]), RoundFloat(gF_vecStartZone[1][0]), RoundFloat(gF_vecStartZone[1][1]), RoundFloat(gF_vecStartZone[1][2]), gS_map)
+				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_originStartZone[0][0]), RoundFloat(gF_originStartZone[0][1]), RoundFloat(gF_originStartZone[0][2]), RoundFloat(gF_originStartZone[1][0]), RoundFloat(gF_originStartZone[1][1]), RoundFloat(gF_originStartZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 0)
 			}
 			if(StrEqual(sItem, "1"))
 			{
-				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_vecEndZone[0][0]), RoundFloat(gF_vecEndZone[0][1]), RoundFloat(gF_vecEndZone[0][2]), RoundFloat(gF_vecEndZone[1][0]), RoundFloat(gF_vecEndZone[1][1]), RoundFloat(gF_vecEndZone[1][2]), gS_map)
+				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_originEndZone[0][0]), RoundFloat(gF_originEndZone[0][1]), RoundFloat(gF_originEndZone[0][2]), RoundFloat(gF_originEndZone[1][0]), RoundFloat(gF_originEndZone[1][1]), RoundFloat(gF_originEndZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 			}
 			if(StrEqual(sItem, "2") || StrEqual(sItem, "3") || StrEqual(sItem, "4") || StrEqual(sItem, "5") ||
 			StrEqual(sItem, "6") || StrEqual(sItem, "7") || StrEqual(sItem, "8") || StrEqual(sItem, "9") ||
 			StrEqual(sItem, "10") || StrEqual(sItem, "11"))
 			{
-				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_vecCP[0][cpnum - 1][0]), RoundFloat(gF_vecCP[0][cpnum - 1][1]), RoundFloat(gF_vecCP[0][cpnum - 1][2]), RoundFloat(gF_vecCP[1][cpnum - 1][0]), RoundFloat(gF_vecCP[1][cpnum - 1][1]), RoundFloat(gF_vecCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
+				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum - 1)
 			}
 			DrawZone()
@@ -1629,12 +1629,12 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
-		gF_vecCP[0][data][0] = results.FetchFloat(0)
-		gF_vecCP[0][data][1] = results.FetchFloat(1)
-		gF_vecCP[0][data][2] = results.FetchFloat(2)
-		gF_vecCP[1][data][0] = results.FetchFloat(3)
-		gF_vecCP[1][data][1] = results.FetchFloat(4)
-		gF_vecCP[1][data][2] = results.FetchFloat(5)
+		gF_originCP[0][data][0] = results.FetchFloat(0)
+		gF_originCP[0][data][1] = results.FetchFloat(1)
+		gF_originCP[0][data][2] = results.FetchFloat(2)
+		gF_originCP[1][data][0] = results.FetchFloat(3)
+		gF_originCP[1][data][1] = results.FetchFloat(4)
+		gF_originCP[1][data][2] = results.FetchFloat(5)
 		createcp(data)
 		gI_cpCount++
 		if(!gB_haveZone)
@@ -1655,24 +1655,24 @@ void createcp(int cpnum)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	gF_center[cpnum + 1][0] = (gF_vecCP[1][cpnum][0] + gF_vecCP[0][cpnum][0]) / 2.0
-	gF_center[cpnum + 1][1] = (gF_vecCP[1][cpnum][1] + gF_vecCP[0][cpnum][1]) / 2.0
-	gF_center[cpnum + 1][2] = (gF_vecCP[1][cpnum][2] + gF_vecCP[0][cpnum][2]) / 2.0
+	gF_center[cpnum + 1][0] = (gF_originCP[1][cpnum][0] + gF_originCP[0][cpnum][0]) / 2.0
+	gF_center[cpnum + 1][1] = (gF_originCP[1][cpnum][1] + gF_originCP[0][cpnum][1]) / 2.0
+	gF_center[cpnum + 1][2] = (gF_originCP[1][cpnum][2] + gF_originCP[0][cpnum][2]) / 2.0
 	TeleportEntity(entity, gF_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
 	{
-		mins[i] = (gF_vecCP[0][cpnum][i] - gF_vecCP[1][cpnum][i]) / 2.0
+		mins[i] = (gF_originCP[0][cpnum][i] - gF_originCP[1][cpnum][i]) / 2.0
 		if(mins[i] > 0.0)
 			mins[i] *= -1.0
-		maxs[i] = (gF_vecCP[0][cpnum][i] - gF_vecCP[1][cpnum][i]) / 2.0
+		maxs[i] = (gF_originCP[0][cpnum][i] - gF_originCP[1][cpnum][i]) / 2.0
 		if(maxs[i] < 0.0)
 			maxs[i] *= -1.0
 	}
 	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	SetEntPropVector(entity, Prop_Send, "m_maxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
@@ -2338,12 +2338,12 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 {
 	if(results.FetchRow())
 	{
-		gF_vecStartZone[0][0] = results.FetchFloat(0)
-		gF_vecStartZone[0][1] = results.FetchFloat(1)
-		gF_vecStartZone[0][2] = results.FetchFloat(2)
-		gF_vecStartZone[1][0] = results.FetchFloat(3)
-		gF_vecStartZone[1][1] = results.FetchFloat(4)
-		gF_vecStartZone[1][2] = results.FetchFloat(5)
+		gF_originStartZone[0][0] = results.FetchFloat(0)
+		gF_originStartZone[0][1] = results.FetchFloat(1)
+		gF_originStartZone[0][2] = results.FetchFloat(2)
+		gF_originStartZone[1][0] = results.FetchFloat(3)
+		gF_originStartZone[1][1] = results.FetchFloat(4)
+		gF_originStartZone[1][2] = results.FetchFloat(5)
 		createstart()
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
@@ -2355,12 +2355,12 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 {
 	if(results.FetchRow())
 	{
-		gF_vecEndZone[0][0] = results.FetchFloat(0)
-		gF_vecEndZone[0][1] = results.FetchFloat(1)
-		gF_vecEndZone[0][2] = results.FetchFloat(2)
-		gF_vecEndZone[1][0] = results.FetchFloat(3)
-		gF_vecEndZone[1][1] = results.FetchFloat(4)
-		gF_vecEndZone[1][2] = results.FetchFloat(5)
+		gF_originEndZone[0][0] = results.FetchFloat(0)
+		gF_originEndZone[0][1] = results.FetchFloat(1)
+		gF_originEndZone[0][2] = results.FetchFloat(2)
+		gF_originEndZone[1][0] = results.FetchFloat(3)
+		gF_originEndZone[1][1] = results.FetchFloat(4)
+		gF_originEndZone[1][2] = results.FetchFloat(5)
 		createend()
 	}
 }
@@ -2374,21 +2374,21 @@ void DrawZone()
 {
 	float start[12][3]
 	float end[12][3]
-	start[0][0] = (gF_vecStartZone[0][0] < gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
-	start[0][1] = (gF_vecStartZone[0][1] < gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	start[0][2] = (gF_vecStartZone[0][2] < gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	start[0][0] = (gF_originStartZone[0][0] < gF_originStartZone[1][0]) ? gF_originStartZone[0][0] : gF_originStartZone[1][0]
+	start[0][1] = (gF_originStartZone[0][1] < gF_originStartZone[1][1]) ? gF_originStartZone[0][1] : gF_originStartZone[1][1]
+	start[0][2] = (gF_originStartZone[0][2] < gF_originStartZone[1][2]) ? gF_originStartZone[0][2] : gF_originStartZone[1][2]
 	start[0][2] += 3.0
-	end[0][0] = (gF_vecStartZone[0][0] > gF_vecStartZone[1][0]) ? gF_vecStartZone[0][0] : gF_vecStartZone[1][0]
-	end[0][1] = (gF_vecStartZone[0][1] > gF_vecStartZone[1][1]) ? gF_vecStartZone[0][1] : gF_vecStartZone[1][1]
-	end[0][2] = (gF_vecStartZone[0][2] > gF_vecStartZone[1][2]) ? gF_vecStartZone[0][2] : gF_vecStartZone[1][2]
+	end[0][0] = (gF_originStartZone[0][0] > gF_originStartZone[1][0]) ? gF_originStartZone[0][0] : gF_originStartZone[1][0]
+	end[0][1] = (gF_originStartZone[0][1] > gF_originStartZone[1][1]) ? gF_originStartZone[0][1] : gF_originStartZone[1][1]
+	end[0][2] = (gF_originStartZone[0][2] > gF_originStartZone[1][2]) ? gF_originStartZone[0][2] : gF_originStartZone[1][2]
 	end[0][2] += 3.0
-	start[1][0] = (gF_vecEndZone[0][0] < gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
-	start[1][1] = (gF_vecEndZone[0][1] < gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
-	start[1][2] = (gF_vecEndZone[0][2] < gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	start[1][0] = (gF_originEndZone[0][0] < gF_originEndZone[1][0]) ? gF_originEndZone[0][0] : gF_originEndZone[1][0]
+	start[1][1] = (gF_originEndZone[0][1] < gF_originEndZone[1][1]) ? gF_originEndZone[0][1] : gF_originEndZone[1][1]
+	start[1][2] = (gF_originEndZone[0][2] < gF_originEndZone[1][2]) ? gF_originEndZone[0][2] : gF_originEndZone[1][2]
 	start[1][2] += 3.0
-	end[1][0] = (gF_vecEndZone[0][0] > gF_vecEndZone[1][0]) ? gF_vecEndZone[0][0] : gF_vecEndZone[1][0]
-	end[1][1] = (gF_vecEndZone[0][1] > gF_vecEndZone[1][1]) ? gF_vecEndZone[0][1] : gF_vecEndZone[1][1]
-	end[1][2] = (gF_vecEndZone[0][2] > gF_vecEndZone[1][2]) ? gF_vecEndZone[0][2] : gF_vecEndZone[1][2]
+	end[1][0] = (gF_originEndZone[0][0] > gF_originEndZone[1][0]) ? gF_originEndZone[0][0] : gF_originEndZone[1][0]
+	end[1][1] = (gF_originEndZone[0][1] > gF_originEndZone[1][1]) ? gF_originEndZone[0][1] : gF_originEndZone[1][1]
+	end[1][2] = (gF_originEndZone[0][2] > gF_originEndZone[1][2]) ? gF_originEndZone[0][2] : gF_originEndZone[1][2]
 	end[1][2] += 3.0
 	int zones = 1
 	if(gI_cpCount)
@@ -2396,13 +2396,13 @@ void DrawZone()
 		zones += gI_cpCount
 		for(int i = 2; i <= zones; i++)
 		{
-			start[i][0] = (gF_vecCP[0][i - 1][0] < gF_vecCP[1][i - 1][0]) ? gF_vecCP[0][i - 1][0] : gF_vecCP[1][i - 1][0]
-			start[i][1] = (gF_vecCP[0][i - 1][1] < gF_vecCP[1][i - 1][1]) ? gF_vecCP[0][i - 1][1] : gF_vecCP[1][i - 1][1]
-			start[i][2] = (gF_vecCP[0][i - 1][2] < gF_vecCP[1][i - 1][2]) ? gF_vecCP[0][i - 1][2] : gF_vecCP[1][i - 1][2]
+			start[i][0] = (gF_originCP[0][i - 1][0] < gF_originCP[1][i - 1][0]) ? gF_originCP[0][i - 1][0] : gF_originCP[1][i - 1][0]
+			start[i][1] = (gF_originCP[0][i - 1][1] < gF_originCP[1][i - 1][1]) ? gF_originCP[0][i - 1][1] : gF_originCP[1][i - 1][1]
+			start[i][2] = (gF_originCP[0][i - 1][2] < gF_originCP[1][i - 1][2]) ? gF_originCP[0][i - 1][2] : gF_originCP[1][i - 1][2]
 			start[i][2] += 3.0
-			end[i][0] = (gF_vecCP[0][i - 1][0] > gF_vecCP[1][i - 1][0]) ? gF_vecCP[0][i - 1][0] : gF_vecCP[1][i - 1][0]
-			end[i][1] = (gF_vecCP[0][i - 1][1] > gF_vecCP[1][i - 1][1]) ? gF_vecCP[0][i - 1][1] : gF_vecCP[1][i - 1][1]
-			end[i][2] = (gF_vecCP[0][i - 1][2] > gF_vecCP[1][i - 1][2]) ? gF_vecCP[0][i - 1][2] : gF_vecCP[1][i - 1][2]
+			end[i][0] = (gF_originCP[0][i - 1][0] > gF_originCP[1][i - 1][0]) ? gF_originCP[0][i - 1][0] : gF_originCP[1][i - 1][0]
+			end[i][1] = (gF_originCP[0][i - 1][1] > gF_originCP[1][i - 1][1]) ? gF_originCP[0][i - 1][1] : gF_originCP[1][i - 1][1]
+			end[i][2] = (gF_originCP[0][i - 1][2] > gF_originCP[1][i - 1][2]) ? gF_originCP[0][i - 1][2] : gF_originCP[1][i - 1][2]
 			end[i][2] += 3.0
 		}
 	}
@@ -2534,9 +2534,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 		if(gI_boost[client] == 2)
 		{
-			velocity[0] -= gF_vecVelEntity[client][0]
-			velocity[1] -= gF_vecVelEntity[client][1]
-			velocity[2] = gF_vecVelEntity[client][2]
+			velocity[0] -= gF_originVelEntity[client][0]
+			velocity[1] -= gF_originVelEntity[client][1]
+			velocity[2] = gF_originVelEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 			gI_boost[client] = 3
 		}
@@ -2544,14 +2544,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(gB_groundBoost[client])
 			{
-				velocity[0] += gF_vecVelEntity[client][0]
-				velocity[1] += gF_vecVelEntity[client][1]
-				velocity[2] += gF_vecVelEntity[client][2]
+				velocity[0] += gF_originVelEntity[client][0]
+				velocity[1] += gF_originVelEntity[client][1]
+				velocity[2] += gF_originVelEntity[client][2]
 			}
 			else
 			{
-				velocity[0] += gF_vecVelEntity[client][0] * 0.135
-				velocity[1] += gF_vecVelEntity[client][1] * 0.135
+				velocity[0] += gF_originVelEntity[client][0] * 0.135
+				velocity[1] += gF_originVelEntity[client][1] * 0.135
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
@@ -2607,10 +2607,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				float normal[3]
 				TR_GetPlaneNormal(INVALID_HANDLE, normal)
 				GetVectorAngles(normal, normal)
-				float vecAngle[3]
-				GetAngleVectors(normal, vecAngle, NULL_VECTOR, NULL_VECTOR)
+				float angle[3]
+				GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR)
 				for(int i = 0; i <= 2; i++)
-					end[i] += vecAngle[i]
+					end[i] += angle[i]
 				normal[0] -= 270.0
 				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
 			}
@@ -2676,18 +2676,18 @@ Action ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsClientInGame(other) && !gI_boost[other] && !(gI_entityFlags[other] & FL_ONGROUND))
 	{
-		float vecOriginOther[3]
-		GetClientAbsOrigin(other, vecOriginOther)
-		float vecOriginEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecOriginEntity)
-		float vecMaxsEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxsEntity)
-		float delta = vecOriginOther[2] - vecOriginEntity[2] - vecMaxsEntity[2]
+		float originOther[3]
+		GetClientAbsOrigin(other, originOther)
+		float originEntity[3]
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity)
+		float maxsEntity[3]
+		GetEntPropVector(entity, Prop_Send, "m_maxs", maxsEntity)
+		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_vecVelClient[other])
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_vecVelEntity[other])
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_originVelClient[other])
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_originVelEntity[other])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
