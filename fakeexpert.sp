@@ -818,6 +818,8 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_colorCount[partner] = 0
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
+					//gB_state[param1] = false
+					//gB_state[partner] = false
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
 				}
@@ -2496,7 +2498,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
 		KickClient(client, "Don't use joystick") //https://sm.alliedmods.net/new-api/clients/KickClient
 	//Timer
-	if(gB_state[client])
+	if(gB_state[client] && gI_partner[client])
 	{
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
 		if(!IsPlayerAlive(client))
