@@ -2607,7 +2607,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				float normal[3]
 				TR_GetPlaneNormal(INVALID_HANDLE, normal)
 				GetVectorAngles(normal, normal)
-				float angle[3]
+				//float angle[3]
 				GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR)
 				for(int i = 0; i <= 2; i++)
 					end[i] += angle[i]
