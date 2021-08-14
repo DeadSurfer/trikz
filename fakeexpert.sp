@@ -2663,12 +2663,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_zoneDrawTime = GetTime()
 		DrawZone()
 	}
-	if(!IsClientSourceTV(client) && IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
+	if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
 		if(0 < observerTarget <= MaxClients && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
-			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
+			//SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
 	}
 }
 
