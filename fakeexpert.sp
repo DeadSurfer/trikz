@@ -2451,8 +2451,8 @@ void DrawZone()
 					GetClientEyePosition(l, eyePos)
 					if((GetVectorDistance(corners[i][j], eyePos) <= 1024.0 
 					&& GetVectorDistance(corners[i][j], eyePos) <= 1024.0) ||
-					TR_TraceRayFilter(eyes, corners[i][j], MASK_PLAYERSOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit()
-					&& TR_TraceRayFilter(eyes, corners[i][k], MASK_PLAYERSOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit())
+					(TR_TraceRayFilter(eyePos, corners[i][j], MASK_PLAYERSOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit()
+					&& TR_TraceRayFilter(eyePos, corners[i][k], MASK_PLAYERSOLID, RayType_EndPoint, TraceFilter_World) && !TR_DidHit()_)
 						TE_SendToClient(l)
 				}
 			}
