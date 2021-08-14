@@ -544,7 +544,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float originFlyer[3]
 		GetEntPropVector(other, Prop_Data, "m_vecOrigin", originFlyer)
 		float maxs[3]
-		GetEntPropVector(client, Prop_Data, "m_maxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
@@ -957,7 +957,7 @@ void createstart()
 	}
 	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
-	SetEntPropVector(entity, Prop_Send, "m_maxs", maxs)
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
@@ -990,7 +990,7 @@ void createend()
 	}
 	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	SetEntPropVector(entity, Prop_Send, "m_maxs", maxs)
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("End zone is successfuly setup.")
@@ -1672,7 +1672,7 @@ void createcp(int cpnum)
 	}
 	maxs[2] = 124.0
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	SetEntPropVector(entity, Prop_Send, "m_maxs", maxs)
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
@@ -2681,7 +2681,7 @@ Action ProjectileBoostFix(int entity, int other)
 		float originEntity[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity)
 		float maxsEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_maxs", maxsEntity)
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
