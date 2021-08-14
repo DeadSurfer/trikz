@@ -2448,7 +2448,7 @@ void DrawZone()
 			{
 				if(IsClientInGame(l))
 				{
-					GetClientEyePosition(i, eyePos)
+					GetClientEyePosition(l, eyePos)
 					if(GetVectorDistance(corners[i][j], eyePos) <= 1024.0 && GetVectorDistance(corners[i][j], eyePos) <= 1024.0)
 						TE_SendToClient(l)
 				}
