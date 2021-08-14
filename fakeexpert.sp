@@ -107,8 +107,8 @@ int gI_colorCount[MAXPLAYERS + 1]
 int gI_zoneModel[3]
 int gI_laserBeam
 bool gB_isSourceTVchangedFileName = true
-float gF_originVelClient[MAXPLAYERS + 1][3]
-float gF_originVelEntity[MAXPLAYERS + 1][3]
+//float gF_originVelClient[MAXPLAYERS + 1][3]
+float gF_velEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
 int gI_zoneDrawTime
 ConVar gCV_turboPhysics
@@ -2534,9 +2534,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 		if(gI_boost[client] == 2)
 		{
-			velocity[0] -= gF_originVelEntity[client][0]
-			velocity[1] -= gF_originVelEntity[client][1]
-			velocity[2] = gF_originVelEntity[client][2]
+			velocity[0] -= gF_velEntity[client][0]
+			velocity[1] -= gF_velEntity[client][1]
+			velocity[2] = gF_velEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 			gI_boost[client] = 3
 		}
@@ -2544,14 +2544,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(gB_groundBoost[client])
 			{
-				velocity[0] += gF_originVelEntity[client][0]
-				velocity[1] += gF_originVelEntity[client][1]
-				velocity[2] += gF_originVelEntity[client][2]
+				velocity[0] += gF_velEntity[client][0]
+				velocity[1] += gF_velEntity[client][1]
+				velocity[2] += gF_velEntity[client][2]
 			}
 			else
 			{
-				velocity[0] += gF_originVelEntity[client][0] * 0.135
-				velocity[1] += gF_originVelEntity[client][1] * 0.135
+				velocity[0] += gF_velEntity[client][0] * 0.135
+				velocity[1] += gF_velEntity[client][1] * 0.135
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
@@ -2686,8 +2686,8 @@ Action ProjectileBoostFix(int entity, int other)
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_originVelClient[other])
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_originVelEntity[other])
+			//GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_originVelClient[other])
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_velEntity[other])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
