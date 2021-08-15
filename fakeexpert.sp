@@ -1586,7 +1586,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 		case MenuAction_Cancel: // trikz redux menuaction end
 		{
-			PrintToServer("c")
+			//PrintToServer("c")
 			gB_DrawZone[param1] = false
 			switch(param2)
 			{
@@ -2693,15 +2693,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 	if(gB_DrawZone[client])
+	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			//if((1.0 / GetTickInterval()) / 10.0)
-			if(GetEngineTime() - gF_engineTime >= 0.1)
-			{
-				gF_engineTime = GetEngineTime()
-				DrawZone(i, 0.1)
-			}
+			if(IsClientInGame(i))
+				if(GetEngineTime() - gF_engineTime >= 0.1)
+				{
+					gF_engineTime = GetEngineTime()
+					DrawZone(i, 0.1)
+				}
 		}
+	}
 	/*if(gB_haveZone && GetTime() - gI_zoneDrawTime > 4 && !gB_isDevmap)
 	{
 		//gI_zoneDrawTime = GetTime()
