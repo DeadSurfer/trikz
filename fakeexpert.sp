@@ -2434,8 +2434,9 @@ void DrawZone()
 			modelType = 1
 		if(i > 1)
 			modelType = 2
-		for(int j = 0; j <= 3; j++)
+		//for(int j = 0; j <= 3; j++)
 		{
+			int j = i - 1
 			int k = j + 1
 			if(j == 3)
 				k = 0
