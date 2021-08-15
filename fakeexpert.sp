@@ -1373,7 +1373,7 @@ Action cmd_zones(int client, int args)
 	IntToString(steamid, sCurrentSteamID, 64)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID) && gB_haveZone)
+	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
 		if(gB_isDevmap)
 			ZoneEditor(client)
@@ -1672,21 +1672,17 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 	int cp = dp.ReadCell()
 	if(results.FetchRow())
 	{
-		if(gB_isDevmap)
-			gI_cpCount++
-		else
-		{
-			gF_originCP[0][cp][0] = results.FetchFloat(0)
-			gF_originCP[0][cp][1] = results.FetchFloat(1)
-			gF_originCP[0][cp][2] = results.FetchFloat(2)
-			gF_originCP[1][cp][0] = results.FetchFloat(3)
-			gF_originCP[1][cp][1] = results.FetchFloat(4)
-			gF_originCP[1][cp][2] = results.FetchFloat(5)
+		gF_originCP[0][cp][0] = results.FetchFloat(0)
+		gF_originCP[0][cp][1] = results.FetchFloat(1)
+		gF_originCP[0][cp][2] = results.FetchFloat(2)
+		gF_originCP[1][cp][0] = results.FetchFloat(3)
+		gF_originCP[1][cp][1] = results.FetchFloat(4)
+		gF_originCP[1][cp][2] = results.FetchFloat(5)
+		if(!gB_isDevmap)
 			createcp(cp)
-			gI_cpCount++
-			if(!gB_haveZone)
-				gB_haveZone = true
-		}
+		gI_cpCount++
+		if(!gB_haveZone)
+			gB_haveZone = true
 	}
 	if(cp == 10)
 	{
