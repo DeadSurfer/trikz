@@ -110,7 +110,7 @@ bool gB_isSourceTVchangedFileName = true
 //float gF_originVelClient[MAXPLAYERS + 1][3]
 float gF_velEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
-int gI_zoneDrawTime
+//int gI_zoneDrawTime
 ConVar gCV_turboPhysics
 float gF_afkTime
 bool gB_afk[MAXPLAYERS + 1]
