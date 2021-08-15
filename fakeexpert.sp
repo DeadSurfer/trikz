@@ -1618,6 +1618,7 @@ void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any dat
 		if(data > 1)
 			PrintToServer("CP zone nr. %i successfuly updated.", data - 1)
 	}
+	PrintToServer("%i", results.HasResults)
 }
 
 //https://forums.alliedmods.net/showthread.php?t=261378
