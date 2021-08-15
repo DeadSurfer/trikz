@@ -445,6 +445,7 @@ public void OnClientPutInServer(int client)
 	gB_block[client] = true
 	Color(client, false)
 	gF_Time[client] = 0.0
+	DrawZone(0.0)
 }
 
 public void OnClientDisconnect(int client)
@@ -1568,7 +1569,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum - 1)
 			}
-			DrawZone()
+			DrawZone(5.0)
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
 		case MenuAction_Cancel: // trikz redux menuaction end
@@ -2374,7 +2375,7 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	PrintToServer("Zones table is successfuly created.")
 }
 
-void DrawZone()
+void DrawZone(float life)
 {
 	float start[12][3]
 	float end[12][3]
@@ -2455,7 +2456,7 @@ void DrawZone()
 					if(((TR_TraceRayFilter(eyePos, corners[i][j], MASK_SOLID, RayType_EndPoint, TraceFilter_World) ||
 					TR_TraceRayFilter(eyePos, corners[i][k], MASK_SOLID, RayType_EndPoint, TraceFilter_World)) && !TR_DidHit()))
 					{
-						TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 0.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+						TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, life, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 						TE_SendToClient(l) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3152-L3155
 					}
 				}
@@ -2670,11 +2671,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		}
 	}
-	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0 && !gB_isDevmap)
-	{
-		gI_zoneDrawTime = GetTime()
-		DrawZone()
-	}
+	//if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0 && !gB_isDevmap)
+	//{
+	//	gI_zoneDrawTime = GetTime()
+	//	DrawZone()
+	//}
 	if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
