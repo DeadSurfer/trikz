@@ -1586,6 +1586,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 		case MenuAction_Cancel: // trikz redux menuaction end
 		{
+			PrintToServer("c")
 			gB_DrawZone[param1] = false
 			switch(param2)
 			{
