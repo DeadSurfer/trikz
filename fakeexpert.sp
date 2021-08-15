@@ -299,7 +299,9 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
-	gB_DrawZone[client] = false
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			gB_DrawZone[i] = false
 }
 
 public void OnMapEnd()
@@ -2688,7 +2690,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		}
 	}
-	if(gB_DrawZone)
+	if(gB_DrawZone[client])
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			//if((1.0 / GetTickInterval()) / 10.0)
