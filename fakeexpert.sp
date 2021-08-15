@@ -492,8 +492,8 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 	if(IsClientInGame(client))
 	{
 		char sQuery[512]
-		char sName[64]
-		GetClientName(client, sName, 64)
+		char sName[MAX_NAME_LENGTH]
+		GetClientName(client, sName, MAX_NAME_LENGTH)
 		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
 			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
@@ -515,8 +515,8 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 	if(IsClientInGame(client))
 	{
 		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
-		char sName[64]
-		GetClientName(client, sName, 64)
+		char sName[MAX_NAME_LENGTH]
+		GetClientName(client, sName, MAX_NAME_LENGTH)
 		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
 		{
