@@ -1476,6 +1476,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 						menu2.AddItem(sItemCP, "-y/maxs")
 						Format(sButton, 32, "Update CP nr. %i zone", i)
 						menu2.AddItem(sCP, sButton)
+						PrintToServer("%s", sCP)
 					}
 				}
 			}
