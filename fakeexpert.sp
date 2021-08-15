@@ -1396,15 +1396,12 @@ void ZoneEditor2(int client)
 	char sFormat[32]
 	if(gI_cpCount)
 	{
-		for(int i = 0; i <= gI_cpCount; i++)
+		for(int i = 1; i <= gI_cpCount; i++)
 		{
-			if(!i)
-			{
-				Format(sFormat, 32, "CP nr. %i zone", i)
-				char sCP[16]
-				Format(sCP, 16, "%i", i + 1)
-				menu.AddItem(sCP, sFormat)
-			}
+			Format(sFormat, 32, "CP nr. %i zone", i)
+			char sCP[16]
+			Format(sCP, 16, "%i", i + 1)
+			menu.AddItem(sCP, sFormat)
 		}
 	}
 	menu.Display(client, MENU_TIME_FOREVER)
