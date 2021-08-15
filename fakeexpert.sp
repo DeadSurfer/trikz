@@ -2694,12 +2694,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gB_DrawZone[client])
 	{
-		if(GetEngineTime() - gF_engineTime >= 0.5)
+		if(GetEngineTime() - gF_engineTime >= 0.3)
 		{
 			gF_engineTime = GetEngineTime()
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsClientInGame(i))
-						DrawZone(i, 0.5)
+						DrawZone(i, 0.3)
 		}
 	}
 	/*if(gB_haveZone && GetTime() - gI_zoneDrawTime > 4 && !gB_isDevmap)
