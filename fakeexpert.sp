@@ -1536,6 +1536,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			char sFormat[16]
 			Format(sFormat, 16, "%s", sExploded[0])
 			int cpnum = StringToInt(sFormat)
+			PrintToServer("%i", cpnum)
 			char sFormatCP[16]
 			Format(sFormatCP, 16, "%i;0", cpnum)
 			if(StrEqual(sItem, sFormatCP))
