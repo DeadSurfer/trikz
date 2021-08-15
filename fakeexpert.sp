@@ -116,7 +116,7 @@ float gF_afkTime
 bool gB_afk[MAXPLAYERS + 1]
 float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
-//float gF_engineTime
+float gF_engineTime
 
 public Plugin myinfo =
 {
