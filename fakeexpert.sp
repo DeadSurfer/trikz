@@ -1476,7 +1476,6 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 						menu2.AddItem(sItemCP, "-y/maxs")
 						Format(sButton, 32, "Update CP nr. %i zone", i)
 						menu2.AddItem(sCP, sButton)
-						PrintToServer("%s", sCP)
 					}
 				}
 			}
@@ -1578,7 +1577,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 			if(StrEqual(sItem, "2") || StrEqual(sItem, "3") || StrEqual(sItem, "4") || StrEqual(sItem, "5") ||
 			StrEqual(sItem, "6") || StrEqual(sItem, "7") || StrEqual(sItem, "8") || StrEqual(sItem, "9") ||
-			StrEqual(sItem, "10") || StrEqual(sItem, "11"))
+			StrEqual(sItem, "10") || StrEqual(sItem, "11") || StrEqual(sItem, "12"))
 			{
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum - 1)
