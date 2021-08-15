@@ -298,6 +298,7 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
+	gB_DrawZone = false
 }
 
 public void OnMapEnd()
