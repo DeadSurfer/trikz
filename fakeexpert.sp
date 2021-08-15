@@ -115,6 +115,7 @@ ConVar gCV_turboPhysics
 float gF_afkTime
 bool gB_afk[MAXPLAYERS + 1]
 float gF_center[12][3]
+bool gB_DrawZone
 
 public Plugin myinfo =
 {
