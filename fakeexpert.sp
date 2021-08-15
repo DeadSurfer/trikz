@@ -2510,10 +2510,10 @@ void DrawZone(int client, float life)
 	return Plugin_Stop
 }*/
 
-bool TraceFilter_World(int entity, int contentsMask)
+/*bool TraceFilter_World(int entity, int contentsMask)
 {
 	return entity == 0
-}
+}*/
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
