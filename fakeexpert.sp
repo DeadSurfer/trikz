@@ -2452,8 +2452,8 @@ void DrawZone()
 					//if((GetVectorDistance(corners[i][j], eyePos) <= 1024.0 || GetVectorDistance(corners[i][k], eyePos) <= 1024.0) ||
 					//((TR_TraceRayFilter(eyePos, corners[i][j], MASK_SOLID, RayType_EndPoint, TraceFilter_World) ||
 					//TR_TraceRayFilter(eyePos, corners[i][k], MASK_SOLID, RayType_EndPoint, TraceFilter_World)) && !TR_DidHit()))
-					if(((TR_TraceRayFilter(eyePos, corners[i][j], MASK_VISIBLE, RayType_EndPoint, TraceFilter_World) ||
-					TR_TraceRayFilter(eyePos, corners[i][k], MASK_VISIBLE, RayType_EndPoint, TraceFilter_World)) && !TR_DidHit()))
+					if(((TR_TraceRayFilter(eyePos, corners[i][j], MASK_SOLID, RayType_EndPoint, TraceFilter_World) ||
+					TR_TraceRayFilter(eyePos, corners[i][k], MASK_SOLID, RayType_EndPoint, TraceFilter_World)) && !TR_DidHit()))
 					{
 						TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 						TE_SendToClient(l)
