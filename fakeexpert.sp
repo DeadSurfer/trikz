@@ -1653,7 +1653,10 @@ void CPSetup(int client)
 	{
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s'", i, gS_map)
 		DataPack dp = new DataPack()
-		dp.WriteCell(GetClientSerial(client))
+		if(client)
+			dp.WriteCell(GetClientSerial(client))
+		else
+			dp.WriteCell(0)
 		dp.WriteCell(i)
 		gD_mysql.Query(SQLCPSetup, sQuery, dp)
 	}
