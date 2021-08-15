@@ -1579,7 +1579,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			StrEqual(sItem, "6") || StrEqual(sItem, "7") || StrEqual(sItem, "8") || StrEqual(sItem, "9") ||
 			StrEqual(sItem, "10") || StrEqual(sItem, "11") || StrEqual(sItem, "12"))
 			{
-				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
+				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
 			}
 			//PrintToServer("%s", sItem)
@@ -1611,9 +1611,9 @@ void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any dat
 {
 	if(results.HasResults)
 	{
-		if(data)
+		if(data == 1)
 			PrintToServer("End zone successfuly updated.")
-		else
+		else if(!data)
 			PrintToServer("Start zone successfuly updated.")
 		if(data > 1)
 			PrintToServer("CP zone nr. %i successfuly updated.", data - 1)
