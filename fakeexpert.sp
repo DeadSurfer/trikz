@@ -110,12 +110,13 @@ bool gB_isSourceTVchangedFileName = true
 //float gF_originVelClient[MAXPLAYERS + 1][3]
 float gF_velEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
-int gI_zoneDrawTime
+//int gI_zoneDrawTime
 ConVar gCV_turboPhysics
 float gF_afkTime
 bool gB_afk[MAXPLAYERS + 1]
 float gF_center[12][3]
-bool gB_DrawZone
+bool gB_DrawZone[MAXPLAYERS + 1]
+float gF_engineTime
 
 public Plugin myinfo =
 {
@@ -298,7 +299,7 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
-	gB_DrawZone = false
+	gB_DrawZone[client] = false
 }
 
 public void OnMapEnd()
@@ -1406,7 +1407,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[16]
 			menu.GetItem(param2, sItem, 16)
-			Menu menu2 = new Menu(zones2_handler)
+			Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
 			if(StrEqual(sItem, "0"))
 			{
 				menu2.SetTitle("Zone editor - Start zone")
@@ -1480,6 +1481,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
+		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
+			gB_DrawZone[param1] = true
 		case MenuAction_Select:
 		{
 			char sItem[16]
@@ -1574,16 +1577,23 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			//for(int i = 1; i <= MaxClients; i++)
 			//	if(IsClientInGame(i))
 			//		DrawZone(i, 5.0)
-			gB_DrawZone = true
-			gI_zoneDrawTime = GetTime()
+			//gB_DrawZone = true
+			//gI_zoneDrawTime = GetTime()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
 		case MenuAction_Cancel: // trikz redux menuaction end
+		{
+			gB_DrawZone[param1] = false
 			switch(param2)
 			{
 				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
 					ZoneEditor(param1)
 			}
+		}
+		//case MenuAction_Cancel:
+		//	gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
+		case MenuAction_Display:
+			gB_DrawZone[param1] = true
 	}
 }
 
@@ -2680,13 +2690,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gB_DrawZone)
 		for(int i = 1; i <= MaxClients; i++)
-			DrawZone(i, 0.0)
-	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 4 && !gB_isDevmap)
+		{
+			//if((1.0 / GetTickInterval()) / 10.0)
+			if(GetEngineTime() - gF_engineTime >= 0.1)
+			{
+				gF_engineTime = GetEngineTime()
+				DrawZone(i, 0.1)
+			}
+		}
+	/*if(gB_haveZone && GetTime() - gI_zoneDrawTime > 4 && !gB_isDevmap)
 	{
 		//gI_zoneDrawTime = GetTime()
 		//DrawZone()
 		gB_DrawZone = false
-	}
+	}*/
 	if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
