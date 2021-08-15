@@ -171,7 +171,7 @@ public void OnMapStart()
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
 	gB_haveZone = false
-	gI_cpCount = 0
+	//gI_cpCount = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
@@ -1005,7 +1005,7 @@ void createend()
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("End zone is successfuly setup.")
-	CPSetup()
+	CPSetup(0)
 }
 
 Action cmd_startmins(int client, int args)
@@ -1384,6 +1384,11 @@ Action cmd_zones(int client, int args)
 
 void ZoneEditor(int client)
 {
+	CPSetup(client)
+}
+
+void ZoneEditor2(int client)
+{
 	Menu menu = new Menu(zones_handler)
 	menu.SetTitle("Zone editor")
 	menu.AddItem("0", "Start zone")
@@ -1640,33 +1645,49 @@ void SQLCreateTierTable(Database db, DBResultSet results, const char[] error, an
 	PrintToServer("Tier table successfuly created.")
 }
 
-void CPSetup()
+void CPSetup(int client)
 {
+	gI_cpCount = 0
 	char sQuery[512]
 	for(int i = 1; i <= 10; i++)
 	{
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s'", i, gS_map)
-		gD_mysql.Query(SQLCPSetup, sQuery, i)
+		DataPack dp = new DataPack()
+		dp.WriteCell(GetClientSerial(client))
+		dp.WriteCell(i)
+		gD_mysql.Query(SQLCPSetup, sQuery, dp)
 	}
 }
 
-void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
+void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
+	dp.Reset()
+	int client = GetClientFromSerial(dp.ReadCell())
+	int cp = dp.ReadCell()
 	if(results.FetchRow())
 	{
-		gF_originCP[0][data][0] = results.FetchFloat(0)
-		gF_originCP[0][data][1] = results.FetchFloat(1)
-		gF_originCP[0][data][2] = results.FetchFloat(2)
-		gF_originCP[1][data][0] = results.FetchFloat(3)
-		gF_originCP[1][data][1] = results.FetchFloat(4)
-		gF_originCP[1][data][2] = results.FetchFloat(5)
-		createcp(data)
-		gI_cpCount++
-		if(!gB_haveZone)
-			gB_haveZone = true
+		if(gB_isDevmap)
+			gI_cpCount++
+		else
+		{
+			gF_originCP[0][cp][0] = results.FetchFloat(0)
+			gF_originCP[0][cp][1] = results.FetchFloat(1)
+			gF_originCP[0][cp][2] = results.FetchFloat(2)
+			gF_originCP[1][cp][0] = results.FetchFloat(3)
+			gF_originCP[1][cp][1] = results.FetchFloat(4)
+			gF_originCP[1][cp][2] = results.FetchFloat(5)
+			createcp(cp)
+			gI_cpCount++
+			if(!gB_haveZone)
+				gB_haveZone = true
+		}
 	}
-	//if(data == 10)
-	//	DrawZone()
+	if(cp == 10)
+	{
+		if(!client)
+			return 
+		ZoneEditor2(client)
+	}
 }
 
 void createcp(int cpnum)
