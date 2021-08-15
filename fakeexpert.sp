@@ -2437,6 +2437,8 @@ void DrawZone()
 		//for(int j = 0; j <= 3; j++)
 		{
 			int j = i - 1
+			if(j < 0)
+				j = 0
 			int k = j + 1
 			if(j == 3)
 				k = 0
