@@ -450,7 +450,8 @@ public void OnClientPutInServer(int client)
 	gB_block[client] = true
 	Color(client, false)
 	gF_Time[client] = 0.0
-	DrawZone(client, 0.0)
+	if(!gB_isDevmap)
+		DrawZone(client, 0.0)
 }
 
 public void OnClientDisconnect(int client)
