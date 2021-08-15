@@ -110,7 +110,7 @@ bool gB_isSourceTVchangedFileName = true
 //float gF_originVelClient[MAXPLAYERS + 1][3]
 float gF_velEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
-//int gI_zoneDrawTime
+int gI_zoneDrawTime
 ConVar gCV_turboPhysics
 float gF_afkTime
 bool gB_afk[MAXPLAYERS + 1]
@@ -1569,9 +1569,11 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpx2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum - 1)
 			}
-			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i))
-					DrawZone(i, 5.0)
+			//for(int i = 1; i <= MaxClients; i++)
+			//	if(IsClientInGame(i))
+			//		DrawZone(i, 5.0)
+			gB_DrawZone = true
+			gI_zoneDrawTime = GetTime()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
 		case MenuAction_Cancel: // trikz redux menuaction end
@@ -2674,11 +2676,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		}
 	}
-	//if(gB_haveZone && GetTime() - gI_zoneDrawTime > 0 && !gB_isDevmap)
-	//{
-	//	gI_zoneDrawTime = GetTime()
-	//	DrawZone()
-	//}
+	if(gB_DrawZone)
+		for(int i = 1; i <= MaxClients; i++)
+			DrawZone(i, 0.0)
+	if(gB_haveZone && GetTime() - gI_zoneDrawTime > 4 && !gB_isDevmap)
+	{
+		//gI_zoneDrawTime = GetTime()
+		//DrawZone()
+		gB_DrawZone = false
+	}
 	if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
