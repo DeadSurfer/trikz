@@ -1609,7 +1609,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
+	if(results.HasResults)
 	{
 		if(data == 1)
 			PrintToServer("End zone successfuly updated.")
