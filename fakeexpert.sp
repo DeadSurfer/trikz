@@ -389,7 +389,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			{
 				//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
 				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
-				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
+				SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				if(gB_color[client])
 				{
 					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView)
