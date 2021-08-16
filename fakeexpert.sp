@@ -107,10 +107,8 @@ int gI_colorCount[MAXPLAYERS + 1]
 int gI_zoneModel[3]
 int gI_laserBeam
 bool gB_isSourceTVchangedFileName = true
-//float gF_originVelClient[MAXPLAYERS + 1][3]
 float gF_velEntity[MAXPLAYERS + 1][3]
 int gI_cpCount
-//int gI_zoneDrawTime
 ConVar gCV_turboPhysics
 float gF_afkTime
 bool gB_afk[MAXPLAYERS + 1]
@@ -171,7 +169,6 @@ public void OnMapStart()
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
 	gB_haveZone = false
-	//gI_cpCount = 0
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
@@ -299,9 +296,6 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
-	//for(int i = 1; i <= MaxClients; i++)
-	//	if(IsClientInGame(i))
-	//		gB_DrawZone[i] = false
 }
 
 public void OnMapEnd()
@@ -445,7 +439,6 @@ public void OnClientPutInServer(int client)
 			gF_velocity[client][i][j] = 0.0
 		}
 	}
-	//gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
 	Color(client, false)
@@ -547,10 +540,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
 	{
 		float originBooster[3]
-		//GetEntPropVector(client, Prop_Data, "m_vecOrigin", originBooster)
 		GetClientAbsOrigin(client, originBooster)
 		float originFlyer[3]
-		//GetEntPropVector(other, Prop_Data, "m_vecOrigin", originFlyer)
 		GetClientAbsOrigin(other, originFlyer)
 		float maxs[3]
 		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
@@ -825,8 +816,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					gI_colorCount[partner] = 0
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
-					//gB_state[param1] = false
-					//gB_state[partner] = false
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
 				}
@@ -1583,26 +1572,17 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
 			}
-			//PrintToServer("%s", sItem)
-			//for(int i = 1; i <= MaxClients; i++)
-			//	if(IsClientInGame(i))
-			//		DrawZone(i, 5.0)
-			//gB_DrawZone = true
-			//gI_zoneDrawTime = GetTime()
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
 		case MenuAction_Cancel: // trikz redux menuaction end
 		{
-			//PrintToServer("c")
-			gB_DrawZone[param1] = false
+			gB_DrawZone[param1] = false //idea from expert zone.
 			switch(param2)
 			{
 				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
 					ZoneEditor(param1)
 			}
 		}
-		//case MenuAction_Cancel:
-		//	gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
 		case MenuAction_Display:
 			gB_DrawZone[param1] = true
 	}
@@ -2198,7 +2178,7 @@ Action timer_sourcetv(Handle timer)
 		//ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
 		gB_isServerRecord = false
 	}
-	//return Plugin_Stop
+	return Plugin_Stop
 }
 
 Action timer_runSourceTV(Handle timer)
@@ -2482,80 +2462,11 @@ void DrawZone(int client, float life)
 			int k = j + 1
 			if(j == 3)
 				k = 0
-			//TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 1, 100, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			//TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, 1.0, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			//TE_SendToAll()
-			//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3154
-			//float eyePos[3]
-			//for(int l = 1; l <= MaxClients; l++)
-			{
-				//if(IsClientInGame(l))
-				{
-					//GetClientEyePosition(l, eyePos)
-					//if((GetVectorDistance(corners[i][j], eyePos) <= 1024.0 || GetVectorDistance(corners[i][k], eyePos) <= 1024.0) ||
-					//((TR_TraceRayFilter(eyePos, corners[i][j], MASK_SOLID, RayType_EndPoint, TraceFilter_World) ||
-					//TR_TraceRayFilter(eyePos, corners[i][k], MASK_SOLID, RayType_EndPoint, TraceFilter_World)) && !TR_DidHit()))
-					//if(((TR_TraceRayFilter(eyePos, corners[i][j], MASK_SOLID, RayType_EndPoint, TraceFilter_World) ||
-					//TR_TraceRayFilter(eyePos, corners[i][k], MASK_SOLID, RayType_EndPoint, TraceFilter_World)) && !TR_DidHit()))
-					{
-						TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, life, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-						//TE_SendToClient(l) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3152-L3155
-						TE_SendToClient(client)
-					}
-				}
-			}
-			/*float vec[3]
-			int index
-			while((index = FindEntityByClassname(index, "env_beam")) != -1)
-			{
-				GetEntPropVector(index, Prop_Send, "m_vecStartPoint", vec)
-				PrintToServer("%f %f %f", vec[0], vec[1], vec[2])
-			}*/
-			//https://forums.alliedmods.net/showthread.php?t=190685
-			/*int beamStart = CreateEntityByName("info_null") //https://developer.valvesoftware.com/wiki/Env_beam
-			DispatchKeyValue(beamStart, "targetname", "beamStart")
-			DispatchSpawn(beamStart)
-			TeleportEntity(beamStart, corners[i][j], NULL_VECTOR, NULL_VECTOR)
-			int beamEnd = CreateEntityByName("info_null")
-			DispatchKeyValue(beamEnd, "targetname", "beamEnd")
-			DispatchSpawn(beamEnd)
-			TeleportEntity(beamEnd, corners[i][k], NULL_VECTOR, NULL_VECTOR)
-			int beam = CreateEntityByName("env_beam")
-			//TeleportEntity(beam, corners[i][j], NULL_VECTOR, NULL_VECTOR)
-			SetEntProp(beam, Prop_Data, "m_nModelIndex", gI_zoneModel[modelType])
-			//SetEntProp(beam, Prop_Data, "m_nAttachIndex", gI_zoneModel[modelType])
-			//SetEntPropVector(beam, Prop_Data, "m_vecEndPos", corners[i][k])
-			//DispatchKeyValue(beam, "targetname", "beam")
-			//DispatchKeyValue(beam, "rendercolor", "255 255 255")
-			//DispatchKeyValue(beam, "renderamt", "100")
-			//DispatchKeyValue(beam, "spawnflags", "1")
-			//DispatchKeyValue(beam, "BoltWidth", "3")
-			DispatchKeyValue(beam, "LightningStart", "beamStart")
-			DispatchKeyValue(beam, "LightningStart", "beamEnd")
-			DispatchSpawn(beam)
-			SetEntPropFloat(beam, Prop_Data, "m_fWidth", 3.0) // how big the beam will be, i.e "4.0"
-			SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", 3.0) // same as above
-			ActivateEntity(beam)
-			AcceptEntityInput(beam, "TurnOn")
-			TeleportEntity(beam, corners[i][j], NULL_VECTOR, NULL_VECTOR)
-			CreateTimer(1.0, timer_removeBeam, beamStart, TIMER_FLAG_NO_MAPCHANGE)
-			CreateTimer(1.0, timer_removeBeam, beamEnd, TIMER_FLAG_NO_MAPCHANGE)
-			CreateTimer(1.0, timer_removeBeam, beam, TIMER_FLAG_NO_MAPCHANGE)*/
+			TE_SetupBeamPoints(corners[i][j], corners[i][k], gI_zoneModel[modelType], 0, 0, 0, life, 3.0, 3.0, 0, 0.0, {0, 0, 0, 0}, 10) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SendToClient(client)
 		}
 	}
 }
-
-/*Action timer_removeBeam(Handle timer, int entity)
-{
-	if(IsValidEntity(entity))
-		RemoveEntity(entity)
-	return Plugin_Stop
-}*/
-
-/*bool TraceFilter_World(int entity, int contentsMask)
-{
-	return entity == 0
-}*/
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -2636,18 +2547,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_pingTick[client] = 1
 			if(gI_pingTick[client])
 				gI_pingTick[client]++
-			//if(gI_pingTick[client] == 100)
-			//	gI_pingTick[client] = 0
 		}
 		else
-		{
 			if(gI_pingTick[client])
 				gI_pingTick[client] = 0
-			//if(gI_pingTick[client] == 100)
-			//	gI_pingTick[client] = 0
-			//if(gI_pingTick[client] == 200)
-			//	gI_pingTick[client] = 0
-		}
 		if(gI_pingTick[client] == 75)
 		{
 			if(gI_pingModel[client])
@@ -2678,7 +2581,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				float normal[3]
 				TR_GetPlaneNormal(null, normal) //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
 				GetVectorAngles(normal, normal)
-				//float angle[3]
 				GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR)
 				for(int i = 0; i <= 2; i++)
 					end[i] += angle[i]
@@ -2724,12 +2626,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						DrawZone(i, 0.1)
 		}
 	}
-	/*if(gB_haveZone && GetTime() - gI_zoneDrawTime > 4 && !gB_isDevmap)
-	{
-		//gI_zoneDrawTime = GetTime()
-		//DrawZone()
-		gB_DrawZone = false
-	}*/
 	if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
@@ -2768,7 +2664,6 @@ Action ProjectileBoostFix(int entity, int other)
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
-			//GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_originVelClient[other])
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_velEntity[other])
 			gF_boostTime[other] = GetGameTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
