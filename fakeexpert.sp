@@ -2578,7 +2578,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gB_state[gI_partner[client]] = false
 		}
 	}
-	if(1 <= gI_skyFrame[client])
+	if(gI_skyFrame[client])
 		gI_skyFrame[client]++
 	if(gI_skyFrame[client] == 5)
 	{
@@ -2636,7 +2636,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_pingTick[client] = 1
 			if(gI_pingTick[client])
 				gI_pingTick[client]++
-			if(gI_pingTick[client] == 75)
+			if(gI_pingTick[client] == 100)
 				gI_pingTick[client] = 0
 		}
 		else
@@ -2645,7 +2645,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_pingTick[client]++
 			if(gI_pingTick[client] == 49)
 				gI_pingTick[client] = 51
-			if(gI_pingTick[client] == 75)
+			if(gI_pingTick[client] == 100)
 				gI_pingTick[client] = 0
 		}
 		if(gI_pingTick[client] == 50)
