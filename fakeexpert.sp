@@ -115,6 +115,8 @@ bool gB_afk[MAXPLAYERS + 1]
 float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
+int gI_viewmodel[MAXPLAYERS + 1]
+int gI_wModelView
 
 public Plugin myinfo =
 {
@@ -196,6 +198,7 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
+	gI_wModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -348,6 +351,29 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	if(StrEqual(sModel, "models/player/ct_gign.mdl"))
 		gI_class[client] = 4
 	SetEntityRenderColor(client, 255, 255, 255, 255)
+	//https://forums.alliedmods.net/showthread.php?t=273885
+	//gI_viewmodel[client] = 
+	int index
+	while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
+	{
+		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
+		if(client == owner)
+		{
+			gI_viewmodel[client] = owner
+			continue
+		}
+	}
+}
+
+Action SDKWeaponSwitch(int client, int weapon)
+{
+	char sWeapon[32]
+	GetEntityClassname(weapon, sWeapon, 32)
+	if(StrEqual(sWeapon, "weapon_flashbang"))
+	{
+		SetEntProp(gI_viemodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
+		DispatchKeyValue(gI_viemodel[client], "skin", "1")
+	}
 }
 
 Action cmd_checkpoint(int client, int args)
@@ -419,6 +445,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
+	SDKHook(client, SDKHook_WeaponSwitch, SDKWeaponSwitch)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
