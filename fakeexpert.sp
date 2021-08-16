@@ -379,16 +379,16 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//DispatchKeyValue(client, "skin", "2")
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelView)
-		int index
-		while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
+		//int index
+		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
-			int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-			if(owner == client)
+			//int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
+			//if(owner == client)
 			{
 				//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
-				SetEntProp(index, Prop_Send, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
+				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
-				DispatchKeyValue(index, "skin", "2")
+				//DispatchKeyValue(index, "skin", "2")
 			}
 		}
 	}
@@ -2932,6 +2932,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
+	if(StrEqual(classname, "predicted_viewmodel"))
+		SDKHook(entity, SDKHook_SpawnPost, SDKViewmodelPost)
 }
 
 Action SDKProjectile(int entity)
@@ -2959,6 +2961,22 @@ void SDKProjectilePost(int entity)
 			SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelThrown)
 			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 			SetEntityRenderColor(entity, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+		}
+	}
+}
+
+void SDKViewmodelPost(int entity)
+{
+	//int index
+	//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
+	{
+		//int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwner")
+		//if(owner == client)
+		{
+			//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
+			SetEntProp(entity, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
+			//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
+			DispatchKeyValue(entity, "skin", "2")
 		}
 	}
 }
