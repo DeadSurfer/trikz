@@ -379,14 +379,15 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//DispatchKeyValue(client, "skin", "2")
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelView)
-		//int index
-		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
+		int index
+		while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
-			//int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-			//if(owner == client)
+			int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
+			if(owner == client)
 			{
-				int viewmodel = GetEntPropEnt(weapon, Prop_Data, "m_nViewModelIndex")
-				SetEntProp(viewmodel, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
+				//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
+				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
+				SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				DispatchKeyValue(viewmodel, "skin", "2")
 			}
 		}
