@@ -372,7 +372,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		//SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
-		SetEntProp(client, Prop_Data, FindDataMapInfo(client, "m_hViewModel") + 4, gI_wModelView) //https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141
+		SetEntData(client, Prop_Data, FindDataMapInfo(client, "m_hViewModel") + 4, gI_wModelView) //https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141
 		//DispatchSpawn(gI_viewmodel[client])
 		DispatchKeyValue(client, "skin", "2")
 	}
