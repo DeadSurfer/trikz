@@ -2933,7 +2933,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
 	if(StrEqual(classname, "predicted_viewmodel"))
-		SDKHook(entity, SDKHook_SpawnPost, SDKViewmodelPost)
+		SDKHook(entity, SDKHook_Spawn, SDKViewmodel)
 }
 
 Action SDKProjectile(int entity)
@@ -2965,7 +2965,7 @@ void SDKProjectilePost(int entity)
 	}
 }
 
-void SDKViewmodelPost(int entity)
+Action SDKViewmodel(int entity)
 {
 	//int index
 	//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
