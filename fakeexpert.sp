@@ -1137,8 +1137,8 @@ Action cmd_test(int client, int args)
 		//PrintToServer("%i %i", newKVINT, newClient)
 		PrintToServer("TickCount: %i", GetGameTickCount())
 		PrintToServer("GetTime: %i", GetTime())
+		PrintToServer("GetGameTime: %f", GetGameTime())
 		PrintToServer("GetEngineTime: %f", GetEngineTime())
-		PrintToServer("EngineTime: %f", GetEngineTime())
 		PrintToServer("GetTickInterval: %f, tickrate: %f (1.0 / GetTickInterval())", GetTickInterval(), 1.0 / GetTickInterval()) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay.sp#L386
 		float round = 123.123
 		PrintToServer("RoundFloat: %i", RoundFloat(round))
