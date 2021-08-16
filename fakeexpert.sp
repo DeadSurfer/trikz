@@ -372,6 +372,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
+		DispatchSpawn(gI_viewmodel[client])
 		DispatchKeyValue(gI_viewmodel[client], "skin", "2")
 	}
 }
