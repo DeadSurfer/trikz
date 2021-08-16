@@ -2672,11 +2672,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				end[i] = start[i] + angle[i] //thanks to rumour for pingtool original code.
 			}
 			TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
-			if(TR_DidHit()) //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
+			if(TR_DidHit())
 			{
 				TR_GetEndPosition(end)
 				float normal[3]
-				TR_GetPlaneNormal(null, normal)
+				TR_GetPlaneNormal(null, normal) //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
 				GetVectorAngles(normal, normal)
 				//float angle[3]
 				GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR)
