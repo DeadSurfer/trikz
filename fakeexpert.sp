@@ -366,7 +366,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}*/
 }
 
-void SDKWeaponSwitchPost(int client, int weapon)
+Action SDKWeaponSwitch(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
@@ -464,7 +464,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
+	SDKHook(client, SDKHook_WeaponSwitch, SDKWeaponSwitch)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
