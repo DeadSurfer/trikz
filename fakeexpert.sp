@@ -366,7 +366,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}*/
 }
 
-Action SDKWeaponSwitch(int client, int weapon)
+void SDKWeaponSwitchPost(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
@@ -379,19 +379,17 @@ Action SDKWeaponSwitch(int client, int weapon)
 		//DispatchKeyValue(client, "skin", "2")
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelView)
-		int index
-		while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
+		//int index
+		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
-			int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-			if(owner == client)
+			//int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
+			//if(owner == client)
 			{
-				//int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
-				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
-				DispatchKeyValue(index, "skin", "2")
-				continue
+				int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
+				SetEntProp(viewmodel, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
+				DispatchKeyValue(viewmodel, "skin", "2")
 			}
 		}
-		PrintToServer("yes")
 	}
 }
 
@@ -464,7 +462,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-	SDKHook(client, SDKHook_WeaponSwitch, SDKWeaponSwitch)
+	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
