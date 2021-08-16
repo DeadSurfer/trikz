@@ -116,8 +116,8 @@ float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
-int gI_vModelView
-int gI_vModelViewDef
+//int gI_vModelView
+//int gI_vModelViewDef
 int gI_wModel
 int gI_wModelDef
 
@@ -203,8 +203,8 @@ public void OnMapStart()
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
-	gI_wModelView = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	gI_wModelViewDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
+	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
