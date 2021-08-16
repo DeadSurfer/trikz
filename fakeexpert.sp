@@ -391,15 +391,10 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				if(gB_color[client])
-				{
-					DispatchKeyValue(index, "skin", "2")
-					SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
-				}
+					if(gI_colorCount[client])
+						SetEntProp(index, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
 				else
-				{
-					//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelViewDef)
-					//SetEntityRenderColor(index, 255, 255, 255, gB_block[client] ? 255 : 125)
-				}
+					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelViewDef)
 			}
 		}
 	}
