@@ -373,7 +373,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 	{
 		//SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
 		//SetEntData(client, Prop_Data, FindDataMapInfo(client, "m_hViewModel") + 4, gI_wModelView) //https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141
-		SetEntProp(client, Prop_Data, "m_hViewModel", gI_wModelView)
+		SetEntProp(client, Prop_Send, "m_hViewModel", gI_wModelView)
 		//DispatchSpawn(gI_viewmodel[client])
 		DispatchKeyValue(client, "skin", "2")
 	}
