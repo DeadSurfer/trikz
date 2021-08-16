@@ -2636,19 +2636,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_pingTick[client] = 1
 			if(gI_pingTick[client])
 				gI_pingTick[client]++
-			if(gI_pingTick[client] == 100)
-				gI_pingTick[client] = 0
+			//if(gI_pingTick[client] == 100)
+			//	gI_pingTick[client] = 0
 		}
 		else
 		{
 			if(gI_pingTick[client])
-				gI_pingTick[client]++
-			if(gI_pingTick[client] == 49)
-				gI_pingTick[client] = 51
-			if(gI_pingTick[client] == 100)
 				gI_pingTick[client] = 0
+			//if(gI_pingTick[client] == 100)
+			//	gI_pingTick[client] = 0
+			//if(gI_pingTick[client] == 200)
+			//	gI_pingTick[client] = 0
 		}
-		if(gI_pingTick[client] == 50)
+		if(gI_pingTick[client] == 100)
 		{
 			if(gI_pingModel[client])
 			{
