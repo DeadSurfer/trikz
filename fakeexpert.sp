@@ -396,8 +396,10 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 				}
 				else
+				{
 					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelViewDef)
 					SetEntityRenderColor(index, 255, 255, 255, gB_block[client] ? 255 : 125)
+				}
 			}
 		}
 	}
