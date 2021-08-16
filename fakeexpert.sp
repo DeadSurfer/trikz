@@ -117,6 +117,7 @@ bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
 int gI_wModelView
+int gI_wModelViewDef
 
 public Plugin myinfo =
 {
@@ -199,6 +200,7 @@ public void OnMapStart()
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	gI_wModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	gI_wModelViewDef = PrecacheModel("models/models/weapons/v_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -379,16 +381,23 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//DispatchKeyValue(client, "skin", "2")
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelView)
-		//int index
-		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
+		int index
+		while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
-			//int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-			//if(owner == client)
+			int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
+			if(owner == client)
 			{
 				//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
-				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
+				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
-				//DispatchKeyValue(index, "skin", "2")
+				if(gB_color[client])
+				{
+					DispatchKeyValue(index, "skin", "2")
+					SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
+				}
+				else
+					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelViewDef)
+					SetEntityRenderColor(index, 255, 255, 255, gB_block[client] ? 255 : 125)
 			}
 		}
 	}
@@ -2932,8 +2941,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
-	//if(StrEqual(classname, "predicted_viewmodel"))
-	//	SDKHook(entity, SDKHook_SpawnPost, SDKViewmodelPost)
 }
 
 Action SDKProjectile(int entity)
@@ -2963,26 +2970,7 @@ void SDKProjectilePost(int entity)
 			SetEntityRenderColor(entity, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		}
 	}
-	int index
-	while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
-	{
-		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-		//int owner2 = GetEntPropEnt(entity, Prop_Data, "m_hOwner")
-		if(owner == client)
-		{
-			//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
-			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
-			//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
-			DispatchKeyValue(index, "skin", "2")
-		}
-	}
 }
-
-//void SDKViewmodelPost(int entity)
-//{
-
-//}
-
 Action timer_deleteProjectile(Handle timer, int entRef)
 {
 	int entity = EntRefToEntIndex(entRef)
