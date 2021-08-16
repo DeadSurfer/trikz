@@ -388,6 +388,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
 				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				DispatchKeyValue(index, "skin", "2")
+				continue
 			}
 		}
 		PrintToServer("yes")
