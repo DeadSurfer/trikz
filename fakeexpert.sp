@@ -371,7 +371,7 @@ Action SDKWeaponSwitch(int client, int weapon)
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		SetEntProp(gI_viemodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
+		SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
 		DispatchKeyValue(gI_viemodel[client], "skin", "1")
 	}
 }
