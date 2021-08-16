@@ -2971,7 +2971,8 @@ void SDKViewmodelPost(int entity)
 	while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 	{
 		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-		if(owner == client)
+		int owner2 = GetEntPropEnt(entity, Prop_Data, "m_hOwner")
+		if(owner == owner2)
 		{
 			//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
 			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
