@@ -445,7 +445,7 @@ public void OnClientPutInServer(int client)
 			gF_velocity[client][i][j] = 0.0
 		}
 	}
-	gF_boostTime[client] = 0.0
+	//gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
 	Color(client, false)
@@ -1148,6 +1148,7 @@ Action cmd_test(int client, int args)
 		//PrintToServer("%i %i", newKVINT, newClient)
 		PrintToServer("TickCount: %i", GetGameTickCount())
 		PrintToServer("GetTime: %i", GetTime())
+		PrintToServer("GetGameTime: %f", GetGameTime())
 		PrintToServer("EngineTime: %f", GetEngineTime())
 		PrintToServer("GetTickInterval: %f, tickrate: %f (1.0 / GetTickInterval())", GetTickInterval(), 1.0 / GetTickInterval()) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay.sp#L386
 		float round = 123.123
