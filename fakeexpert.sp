@@ -2932,8 +2932,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
 	}
-	if(StrEqual(classname, "predicted_viewmodel"))
-		SDKHook(entity, SDKHook_SpawnPost, SDKViewmodelPost)
+	//if(StrEqual(classname, "predicted_viewmodel"))
+	//	SDKHook(entity, SDKHook_SpawnPost, SDKViewmodelPost)
 }
 
 Action SDKProjectile(int entity)
@@ -2963,16 +2963,12 @@ void SDKProjectilePost(int entity)
 			SetEntityRenderColor(entity, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		}
 	}
-}
-
-void SDKViewmodelPost(int entity)
-{
 	int index
 	while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 	{
 		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-		int owner2 = GetEntPropEnt(entity, Prop_Data, "m_hOwner")
-		if(owner == owner2)
+		//int owner2 = GetEntPropEnt(entity, Prop_Data, "m_hOwner")
+		if(owner == client)
 		{
 			//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
 			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
@@ -2981,6 +2977,11 @@ void SDKViewmodelPost(int entity)
 		}
 	}
 }
+
+//void SDKViewmodelPost(int entity)
+//{
+
+//}
 
 Action timer_deleteProjectile(Handle timer, int entRef)
 {
