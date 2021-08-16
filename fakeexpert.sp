@@ -2857,9 +2857,9 @@ Action cmd_time(int client, int args)
 		int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
 		int second = RoundToFloor(gF_Time[client]) % 60
-		PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
+		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second)
 		if(gI_partner[client])
-			PrintToChat(gI_partner[client], "Time: %f [%02.i:%02.i:%02.i]", gF_Time[client], hour, minute, second)
+			PrintToChat(gI_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second)
 	}
 	else
 	{
@@ -2871,7 +2871,7 @@ Action cmd_time(int client, int args)
 			int hour = (RoundToFloor(gF_Time[observerTarget]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 			int minute = (RoundToFloor(gF_Time[observerTarget]) / 60) % 60
 			int second = RoundToFloor(gF_Time[observerTarget]) % 60
-			PrintToChat(client, "Time: %f [%02.i:%02.i:%02.i]", gF_Time[observerTarget], hour, minute, second)
+			PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second)
 		}
 	}
 	return Plugin_Handled
