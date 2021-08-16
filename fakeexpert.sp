@@ -1764,8 +1764,8 @@ Action SDKEndTouch(int entity, int other)
 		gB_state[gI_partner[other]] = true
 		gB_mapFinished[other] = false
 		gB_mapFinished[gI_partner[other]] = false
-		gF_TimeStart[other] = GetEngineTime()
-		gF_TimeStart[gI_partner[other]] = GetEngineTime()
+		gF_TimeStart[other] = GetGameTime()
+		gF_TimeStart[gI_partner[other]] = GetGameTime()
 		gB_passZone[other] = true
 		gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
@@ -2567,7 +2567,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//Timer
 	if(gB_state[client] && gI_partner[client])
 	{
-		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
+		gF_Time[client] = GetGameTime() - gF_TimeStart[client]
 		if(!IsPlayerAlive(client))
 		{
 			gB_readyToStart[client] = true
@@ -2716,9 +2716,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gB_DrawZone[client])
 	{
-		if(GetEngineTime() - gF_engineTime >= 0.1)
+		if(GetGameTime() - gF_engineTime >= 0.1)
 		{
-			gF_engineTime = GetEngineTime()
+			gF_engineTime = GetGameTime()
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsClientInGame(i))
 						DrawZone(i, 0.1)
@@ -2781,7 +2781,7 @@ Action ProjectileBoostFix(int entity, int other)
 
 Action cmd_devmap(int client, int args)
 {
-	if(GetEngineTime() - gF_devmapTime > 35.0 && GetEngineTime() - gF_afkTime > 30.0)
+	if(GetGameTime() - gF_devmapTime > 35.0 && GetGameTime() - gF_afkTime > 30.0)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -2802,16 +2802,16 @@ Action cmd_devmap(int client, int args)
 				menu.Display(i, 20)
 			}
 		}
-		gF_devmapTime = GetEngineTime()
+		gF_devmapTime = GetGameTime()
 		CreateTimer(20.0, timer_devmap)
 		PrintToChatAll("Devmap vote started by %N", client)
 	}
-	else if(GetEngineTime() - gF_afkTime <= 30.0)
+	else if(GetGameTime() - gF_afkTime <= 30.0)
 	{
 		PrintToChat(client, "Afk vote is in progress.")
 		return Plugin_Handled
 	}
-	else if(GetEngineTime() - gF_devmapTime <= 35.0)
+	else if(GetGameTime() - gF_devmapTime <= 35.0)
 		PrintToChat(client, "Devmap vote is in progress.")
 	return Plugin_Handled
 }
@@ -2894,7 +2894,7 @@ Action cmd_top(int client, int args)
 
 Action cmd_afk(int client, int args)
 {
-	if(GetEngineTime() - gF_afkTime > 30.0 && GetEngineTime() - gF_devmapTime > 35.0)
+	if(GetGameTime() - gF_afkTime > 30.0 && GetGameTime() - gF_devmapTime > 35.0)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -2908,16 +2908,16 @@ Action cmd_afk(int client, int args)
 				menu.Display(i, 20)
 			}
 		}
-		gF_afkTime = GetEngineTime()
+		gF_afkTime = GetGameTime()
 		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE)
 		PrintToChatAll("Afk check - vote started by %N", client)
 	}
-	else if(GetEngineTime() - gF_devmapTime <= 35.0)
+	else if(GetGameTime() - gF_devmapTime <= 35.0)
 	{
 		PrintToChat(client, "Devmap vote is in progress.")
 		return Plugin_Handled
 	}
-	else if(GetEngineTime() - gF_afkTime <= 30.0)
+	else if(GetGameTime() - gF_afkTime <= 30.0)
 		PrintToChat(client, "Afk vote is in progress.")
 	return Plugin_Handled
 }
