@@ -439,7 +439,7 @@ public void OnClientPutInServer(int client)
 			gF_velocity[client][i][j] = 0.0
 		}
 	}
-	gF_boostTime[client] = 0.0
+	//gF_boostTime[client] = 0.0
 	CancelClientMenu(client)
 	gB_block[client] = true
 	Color(client, false)
