@@ -385,7 +385,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
 			//if(owner == client)
 			{
-				int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
+				int viewmodel = GetEntProp(client, Prop_Data, "m_nViewModelIndex")
 				SetEntProp(viewmodel, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				DispatchKeyValue(viewmodel, "skin", "2")
 			}
