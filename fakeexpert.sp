@@ -360,6 +360,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 		if(client == owner)
 		{
 			gI_viewmodel[client] = owner
+			PrintToServer("%i %i", client, owner)
 			continue
 		}
 	}
