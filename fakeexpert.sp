@@ -116,8 +116,10 @@ float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
-int gI_wModelView
-int gI_wModelViewDef
+int gI_vModelView
+int gI_vModelViewDef
+int gI_wModel
+int gI_wModelDef
 
 public Plugin myinfo =
 {
@@ -199,8 +201,10 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	gI_wModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	gI_wModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
+	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
+	gI_wModelView = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	gI_wModelViewDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -368,19 +372,19 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}*/
 }
 
-void SDKWeaponSwitchPost(int client, int weapon)
+/*void SDKWeaponSwitchPost(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		//SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
-		//SetEntData(client, Prop_Data, FindDataMapInfo(client, "m_hViewModel") + 4, gI_wModelView) //https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141
-		//SetEntProp(client, Prop_Send, "m_hViewModel", gI_wModelView)
+		//SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_vModelView)
+		//SetEntData(client, Prop_Data, FindDataMapInfo(client, "m_hViewModel") + 4, gI_vModelView) //https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141
+		//SetEntProp(client, Prop_Send, "m_hViewModel", gI_vModelView)
 		//DispatchSpawn(gI_viewmodel[client])
 		//DispatchKeyValue(client, "skin", "2")
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
-		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelView)
+		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModelView)
 		int index
 		while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
@@ -388,11 +392,11 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			if(owner == client)
 			{
 				//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
-				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
+				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				if(gB_color[client])
 				{
-					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelView)
+					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
 					if(gI_colorCount[client] == 1)
 						SetEntProp(index, Prop_Data, "m_nSkin", 2)
 					//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
@@ -400,11 +404,11 @@ void SDKWeaponSwitchPost(int client, int weapon)
 						SetEntProp(index, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
 				}
 				else
-					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModelViewDef)
+					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
 			}
 		}
 	}
-}
+}*/
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -475,7 +479,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
+	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
@@ -3004,6 +3008,13 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
+	}
+	char sWeapon[32]
+	GetEntityClassname(weapon, sWeapon, 32)
+	if(StrEqual(sWeapon, "weapon_flashbang"))
+	{
+		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
+		DispatchKeyValue(weapon, "skin", "2")
 	}
 }
 
