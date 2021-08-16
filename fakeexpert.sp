@@ -115,7 +115,7 @@ bool gB_afk[MAXPLAYERS + 1]
 float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
-int gI_viewmodel[MAXPLAYERS + 1]
+//int gI_viewmodel[MAXPLAYERS + 1]
 int gI_wModelView
 
 public Plugin myinfo =
@@ -353,7 +353,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	SetEntityRenderColor(client, 255, 255, 255, 255)
 	//https://forums.alliedmods.net/showthread.php?t=273885
 	//gI_viewmodel[client] = 
-	int index
+	/*int index
 	while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 	{
 		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
@@ -363,7 +363,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 			PrintToServer("%i %i", client, owner)
 			continue
 		}
-	}
+	}*/
 }
 
 void SDKWeaponSwitchPost(int client, int weapon)
@@ -374,9 +374,11 @@ void SDKWeaponSwitchPost(int client, int weapon)
 	{
 		//SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_wModelView)
 		//SetEntData(client, Prop_Data, FindDataMapInfo(client, "m_hViewModel") + 4, gI_wModelView) //https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141
-		SetEntProp(client, Prop_Send, "m_hViewModel", gI_wModelView)
+		//SetEntProp(client, Prop_Send, "m_hViewModel", gI_wModelView)
 		//DispatchSpawn(gI_viewmodel[client])
-		DispatchKeyValue(client, "skin", "2")
+		//DispatchKeyValue(client, "skin", "2")
+		SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelView)
 	}
 }
 
