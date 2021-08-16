@@ -538,7 +538,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetGameTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
@@ -1138,7 +1138,7 @@ Action cmd_test(int client, int args)
 		//PrintToServer("%i %i", newKVINT, newClient)
 		PrintToServer("TickCount: %i", GetGameTickCount())
 		PrintToServer("GetTime: %i", GetTime())
-		PrintToServer("GetGameTime: %f", GetGameTime())
+		PrintToServer("GetEngineTime: %f", GetEngineTime())
 		PrintToServer("EngineTime: %f", GetEngineTime())
 		PrintToServer("GetTickInterval: %f, tickrate: %f (1.0 / GetTickInterval())", GetTickInterval(), 1.0 / GetTickInterval()) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay.sp#L386
 		float round = 123.123
@@ -1745,8 +1745,8 @@ Action SDKEndTouch(int entity, int other)
 		gB_state[gI_partner[other]] = true
 		gB_mapFinished[other] = false
 		gB_mapFinished[gI_partner[other]] = false
-		gF_TimeStart[other] = GetGameTime()
-		gF_TimeStart[gI_partner[other]] = GetGameTime()
+		gF_TimeStart[other] = GetEngineTime()
+		gF_TimeStart[gI_partner[other]] = GetEngineTime()
 		gB_passZone[other] = true
 		gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
@@ -2479,7 +2479,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//Timer
 	if(gB_state[client] && gI_partner[client])
 	{
-		gF_Time[client] = GetGameTime() - gF_TimeStart[client]
+		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
 		if(!IsPlayerAlive(client))
 		{
 			gB_readyToStart[client] = true
@@ -2502,7 +2502,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_skyFrame[client] = 0
 		gB_skyStep[client] = false
 	}
-	if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetGameTime() - gF_boostTime[client] > 0.15)
+	if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		if(buttons & IN_JUMP)
 		{
@@ -2619,9 +2619,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gB_DrawZone[client])
 	{
-		if(GetGameTime() - gF_engineTime >= 0.1)
+		if(GetEngineTime() - gF_engineTime >= 0.1)
 		{
-			gF_engineTime = GetGameTime()
+			gF_engineTime = GetEngineTime()
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsClientInGame(i))
 						DrawZone(i, 0.1)
@@ -2666,7 +2666,7 @@ Action ProjectileBoostFix(int entity, int other)
 		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_velEntity[other])
-			gF_boostTime[other] = GetGameTime()
+			gF_boostTime[other] = GetEngineTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 			gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
@@ -2677,7 +2677,7 @@ Action ProjectileBoostFix(int entity, int other)
 
 Action cmd_devmap(int client, int args)
 {
-	if(GetGameTime() - gF_devmapTime > 35.0 && GetGameTime() - gF_afkTime > 30.0)
+	if(GetEngineTime() - gF_devmapTime > 35.0 && GetEngineTime() - gF_afkTime > 30.0)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -2698,16 +2698,16 @@ Action cmd_devmap(int client, int args)
 				menu.Display(i, 20)
 			}
 		}
-		gF_devmapTime = GetGameTime()
+		gF_devmapTime = GetEngineTime()
 		CreateTimer(20.0, timer_devmap)
 		PrintToChatAll("Devmap vote started by %N", client)
 	}
-	else if(GetGameTime() - gF_afkTime <= 30.0)
+	else if(GetEngineTime() - gF_afkTime <= 30.0)
 	{
 		PrintToChat(client, "Afk vote is in progress.")
 		return Plugin_Handled
 	}
-	else if(GetGameTime() - gF_devmapTime <= 35.0)
+	else if(GetEngineTime() - gF_devmapTime <= 35.0)
 		PrintToChat(client, "Devmap vote is in progress.")
 	return Plugin_Handled
 }
@@ -2790,7 +2790,7 @@ Action cmd_top(int client, int args)
 
 Action cmd_afk(int client, int args)
 {
-	if(GetGameTime() - gF_afkTime > 30.0 && GetGameTime() - gF_devmapTime > 35.0)
+	if(GetEngineTime() - gF_afkTime > 30.0 && GetEngineTime() - gF_devmapTime > 35.0)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -2804,16 +2804,16 @@ Action cmd_afk(int client, int args)
 				menu.Display(i, 20)
 			}
 		}
-		gF_afkTime = GetGameTime()
+		gF_afkTime = GetEngineTime()
 		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE)
 		PrintToChatAll("Afk check - vote started by %N", client)
 	}
-	else if(GetGameTime() - gF_devmapTime <= 35.0)
+	else if(GetEngineTime() - gF_devmapTime <= 35.0)
 	{
 		PrintToChat(client, "Devmap vote is in progress.")
 		return Plugin_Handled
 	}
-	else if(GetGameTime() - gF_afkTime <= 30.0)
+	else if(GetEngineTime() - gF_afkTime <= 30.0)
 		PrintToChat(client, "Afk vote is in progress.")
 	return Plugin_Handled
 }
