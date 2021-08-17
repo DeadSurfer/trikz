@@ -1301,7 +1301,6 @@ void SQLTierRemove(Database db, DBResultSet results, const char[] error, any dat
 
 void SQLTierInsert(Database db, DBResultSet results, const char[] error, any data)
 {
-	PrintToServer("%i", results.HasResults)
 	bool hasResults = results.HasResults
 	if(!hasResults)
 		PrintToServer("Tier %i is set for %s.", data, gS_map)
@@ -1309,13 +1308,15 @@ void SQLTierInsert(Database db, DBResultSet results, const char[] error, any dat
 
 void SQLSetStartZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(!results.HasResults)
+	bool hasResults = results.HasResults
+	if(!hasResults)
 		PrintToServer("Start zone successfuly created.")
 }
 
 void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(!results.HasResults)
+	bool hasResults = results.HasResults
+	if(!hasResults)
 		PrintToServer("End zone successfuly created.")
 }
 
@@ -1381,7 +1382,8 @@ Action cmd_cpmins(int client, int args)
 
 void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(!results.HasResults)
+	bool hasResults = results.HasResults
+	if(!hasResults)
 		PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
 	char sQuery[512]
 	Format(sQuery, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(gF_originCP[0][data][0]), RoundFloat(gF_originCP[0][data][1]), RoundFloat(gF_originCP[0][data][2]), RoundFloat(gF_originCP[1][data][0]), RoundFloat(gF_originCP[1][data][1]), RoundFloat(gF_originCP[1][data][2]), gS_map)
@@ -1411,7 +1413,8 @@ Action cmd_cpmaxs(int client, int args)
 
 void SQLCPInserted(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(!results.HasResults)
+	bool hasResults = results.HasResults
+	if(!hasResults)
 		PrintToServer("Checkpoint zone no. %i successfuly created.", data)
 }
 
@@ -1649,7 +1652,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(!results.HasResults)
+	bool hasResults = results.HasResults
+	if(!hasResults)
 	{
 		if(data == 1)
 			PrintToServer("End zone successfuly updated.")
