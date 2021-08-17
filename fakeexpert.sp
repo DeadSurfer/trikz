@@ -511,13 +511,13 @@ public void OnClientPutInServer(int client)
 
 public void OnClientDisconnect(int client)
 {
+	Color(client, false)
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
 	if(partner && gB_TrikzMenuIsOpen[partner])
 		Trikz(partner)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
-	Color(client, false)
 	int entity
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
