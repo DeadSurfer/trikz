@@ -175,6 +175,11 @@ public void OnMapStart()
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
 	gB_haveZone = false
+	if(gB_isDevmap)
+	{
+		gB_zoneFirst[0] = false
+		gB_zoneFirst[1] = false
+	}
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
