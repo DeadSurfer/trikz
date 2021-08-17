@@ -1292,7 +1292,7 @@ Action cmd_maptier(int client, int args)
 void SQLTierRemove(Database db, DBResultSet results, const char[] error, any data)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO tier (tier) VALUES (%i) WHERE map = '%s'", data, gS_map)
+	Format(sQuery, 512, "INSERT INTO tier (tier, map) VALUES (%i, '%s')", data, gS_map)
 	gD_mysql.Query(SQLTierInsert, sQuery, data)
 }
 
