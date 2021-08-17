@@ -3013,8 +3013,12 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
-		DispatchKeyValue(weapon, "skin", "2")
+		int index
+		while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
+		{
+			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModel)
+			DispatchKeyValue(index, "skin", "2")
+		}
 	}
 }
 
