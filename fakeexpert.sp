@@ -2615,7 +2615,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//	if(gI_pingTick[client])
 		//		gI_pingTick[client] = 0
 			//if(gI_pingTick[client] == 75)
-			if(GetEngineTime() - gF_pingTime[client] == 0.7)
+			if(0.75 > GetEngineTime() - gF_pingTime[client] > 0.7)
 			{
 				if(gI_pingModel[client])
 				{
