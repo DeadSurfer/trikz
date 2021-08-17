@@ -3018,6 +3018,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		{
 			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModel)
 			DispatchKeyValue(index, "skin", "2")
+			PrintToServer("%i", index)
 		}
 	}
 }
