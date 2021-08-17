@@ -1302,7 +1302,8 @@ void SQLTierRemove(Database db, DBResultSet results, const char[] error, any dat
 void SQLTierInsert(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("%i", results.HasResults)
-	if(results.HasResults)
+	bool hasResults = results.HasResults
+	if(!hasResults)
 		PrintToServer("Tier %i is set for %s.", data, gS_map)
 }
 
