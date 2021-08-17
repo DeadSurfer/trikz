@@ -115,10 +115,10 @@ float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
-int gI_vModelView
-int gI_vModelViewDef
-int gI_wModel
-int gI_wModelDef
+//int gI_vModelView
+//int gI_vModelViewDef
+//int gI_wModel
+//int gI_wModelDef
 float gF_pingTime[MAXPLAYERS +1]
 bool gB_pingLock[MAXPLAYERS + 1]
 
@@ -378,7 +378,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}*/
 }
 
-void SDKWeaponSwitchPost(int client, int weapon)
+/*void SDKWeaponSwitchPost(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
@@ -414,7 +414,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			}
 		}
 	}
-}
+}*/
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -485,7 +485,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
+	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
@@ -3018,7 +3018,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-	char sWeapon[32]
+	/*char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
@@ -3029,7 +3029,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 			DispatchKeyValue(index, "skin", "1")
 			PrintToServer("%i %i", weapon, index)
 		}
-	}
+	}*/
 }
 
 Action SDKWeaponDrop(int client, int weapon)
