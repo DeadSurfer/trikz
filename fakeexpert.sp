@@ -2908,7 +2908,7 @@ Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && !IsPlayerAlive(i) && !gB_afk[i] && client != i)
+		if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsClientSourceTV(i) && !gB_afk[i] && client != i)
 			KickClient(i, "Away from keyboard")
 	return Plugin_Stop
 }
