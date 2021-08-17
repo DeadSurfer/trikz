@@ -2611,61 +2611,64 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gF_pingTime[client] = GetEngineTime()
 				gB_pingLock[client] = false
 			}
-			if(!gB_pingLock[client] &&GetEngineTime() - gF_pingTime[client] > 0.7)
+		}
+		else
+			if(gB_pingLock[client])
+				gB_pingLock[client] = false
+		if(!gB_pingLock[client] && GetEngineTime() - gF_pingTime[client] > 0.7)
+		{
+			gB_pingLock[client] = true
+			if(gI_pingModel[client])
 			{
-				gB_pingLock[client] = true
-				if(gI_pingModel[client])
-				{
-					RemoveEntity(gI_pingModel[client])
-					gI_pingModel[client] = 0
-					KillTimer(gH_timerPing[client])
-				}
-				gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
-				SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
-				DispatchSpawn(gI_pingModel[client])
-				SetEntProp(gI_pingModel[client], Prop_Data, "m_fEffects", 16) //https://pastebin.com/SdNC88Ma //https://developer.valvesoftware.com/wiki/Effect_flags
-				float start[3]
-				float angle[3]
-				float end[3]
-				GetClientEyePosition(client, start)
-				GetClientEyeAngles(client, angle)
-				GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
-				for(int i = 0; i <= 2; i++)
-				{
-					angle[i] *= 8192.0
-					end[i] = start[i] + angle[i] //thanks to rumour for pingtool original code.
-				}
-				TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
-				if(TR_DidHit())
-				{
-					TR_GetEndPosition(end)
-					float normal[3]
-					TR_GetPlaneNormal(null, normal) //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
-					GetVectorAngles(normal, normal)
-					GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR)
-					for(int i = 0; i <= 2; i++)
-						end[i] += angle[i]
-					normal[0] -= 270.0
-					SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
-				}
-				if(gB_color[client])
-					SetEntityRenderColor(gI_pingModel[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
-				TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-				//https://forums.alliedmods.net/showthread.php?p=1080444
-				if(gB_color[client])
-				{
-					int color[4]
-					for(int i = 0; i <= 2; i++)
-						color[i] = gI_color[client][i]
-					color[3] = 255
-					TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0)
-				}
-				else
-					TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
-				TE_SendToAll()
-				EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
-				gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client)
+				RemoveEntity(gI_pingModel[client])
+				gI_pingModel[client] = 0
+				KillTimer(gH_timerPing[client])
 			}
+			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
+			DispatchSpawn(gI_pingModel[client])
+			SetEntProp(gI_pingModel[client], Prop_Data, "m_fEffects", 16) //https://pastebin.com/SdNC88Ma //https://developer.valvesoftware.com/wiki/Effect_flags
+			float start[3]
+			float angle[3]
+			float end[3]
+			GetClientEyePosition(client, start)
+			GetClientEyeAngles(client, angle)
+			GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
+			for(int i = 0; i <= 2; i++)
+			{
+				angle[i] *= 8192.0
+				end[i] = start[i] + angle[i] //thanks to rumour for pingtool original code.
+			}
+			TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
+			if(TR_DidHit())
+			{
+				TR_GetEndPosition(end)
+				float normal[3]
+				TR_GetPlaneNormal(null, normal) //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
+				GetVectorAngles(normal, normal)
+				GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR)
+				for(int i = 0; i <= 2; i++)
+					end[i] += angle[i]
+				normal[0] -= 270.0
+				SetEntPropVector(gI_pingModel[client], Prop_Data, "m_angRotation", normal)
+			}
+			if(gB_color[client])
+				SetEntityRenderColor(gI_pingModel[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
+			//https://forums.alliedmods.net/showthread.php?p=1080444
+			if(gB_color[client])
+			{
+				int color[4]
+				for(int i = 0; i <= 2; i++)
+					color[i] = gI_color[client][i]
+				color[3] = 255
+				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0)
+			}
+			else
+				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+			TE_SendToAll()
+			EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
+			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client)
 		}
 	}
 	if(!gCV_turboPhysics.BoolValue)
