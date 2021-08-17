@@ -115,10 +115,10 @@ float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
-//int gI_vModelView
-//int gI_vModelViewDef
-//int gI_wModel
-//int gI_wModelDef
+int gI_vModelView
+int gI_vModelViewDef
+int gI_wModel
+int gI_wModelDef
 float gF_pingTime[MAXPLAYERS +1]
 bool gB_pingLock[MAXPLAYERS + 1]
 
@@ -207,10 +207,10 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
-	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	//gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
+	gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
+	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -378,7 +378,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}*/
 }
 
-/*void SDKWeaponSwitchPost(int client, int weapon)
+void SDKWeaponSwitchPost(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
@@ -399,12 +399,12 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 			{
 				//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
 				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
-				SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
+				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				if(gB_color[client])
 				{
 					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
 					if(gI_colorCount[client] == 1)
-						SetEntProp(index, Prop_Data, "m_nSkin", 2)
+						SetEntProp(index, Prop_Data, "m_nSkin", 1)
 					//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 					if(gI_colorCount[client] > 1)	
 						SetEntProp(index, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
@@ -414,7 +414,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 			}
 		}
 	}
-}*/
+}
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -3018,7 +3018,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-	/*char sWeapon[32]
+	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
@@ -3026,10 +3026,10 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		//while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
 		{
 			SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel)
-			DispatchKeyValue(weapon, "skin", "2")
+			DispatchKeyValue(weapon, "skin", "1")
 			PrintToServer("%i", weapon)
 		}
-	}*/
+	}
 }
 
 Action SDKWeaponDrop(int client, int weapon)
