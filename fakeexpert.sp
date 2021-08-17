@@ -121,6 +121,7 @@ float gF_engineTime
 //int gI_wModel
 //int gI_wModelDef
 float gF_pingTime[MAXPLAYERS +1]
+bool gB_pingLock[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -2606,17 +2607,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(buttons & IN_USE)
 		{
 			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
-				//gI_pingTick[client] = 1
-				gF_pingTime[client] = GetEngineTime()
-			//if(gI_pingTick[client])
-			//	gI_pingTick[client]++
-		
-		//else
-		//	if(gI_pingTick[client])
-		//		gI_pingTick[client] = 0
-			//if(gI_pingTick[client] == 75)
-			if(0.75 > GetEngineTime() - gF_pingTime[client] > 0.7)
 			{
+				gF_pingTime[client] = GetEngineTime()
+				gB_pingLock[client] = false
+			}
+			if(!gB_pingLock[client] &&GetEngineTime() - gF_pingTime[client] > 0.7)
+			{
+				gB_pingLock[client] = true
 				if(gI_pingModel[client])
 				{
 					RemoveEntity(gI_pingModel[client])
