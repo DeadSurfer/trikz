@@ -118,8 +118,8 @@ float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
 //int gI_vModelView
 //int gI_vModelViewDef
-int gI_wModel
-int gI_wModelDef
+//int gI_wModel
+//int gI_wModelDef
 
 public Plugin myinfo =
 {
@@ -203,8 +203,8 @@ public void OnMapStart()
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
 	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
-	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
+	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	//gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -3009,7 +3009,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-	char sWeapon[32]
+	/*char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
@@ -3020,7 +3020,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 			DispatchKeyValue(index, "skin", "2")
 			PrintToServer("%i", index)
 		}
-	}
+	}*/
 }
 
 Action SDKWeaponDrop(int client, int weapon)
