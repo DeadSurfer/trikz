@@ -2613,8 +2613,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 		else
-			if(gB_pingLock[client])
-				gB_pingLock[client] = false
+			if(!gB_pingLock[client])
+				gB_pingLock[client] = true
 		if(!gB_pingLock[client] && GetEngineTime() - gF_pingTime[client] > 0.7)
 		{
 			gB_pingLock[client] = true
