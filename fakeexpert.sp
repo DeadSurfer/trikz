@@ -1406,11 +1406,14 @@ Action cmd_cpmaxs(int client, int args)
 		char sCmd[512]
 		GetCmdArg(args, sCmd, 512)
 		int cpnum = StringToInt(sCmd)
-		GetClientAbsOrigin(client, gF_originCP[1][cpnum])
-		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
-		gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
-		gB_firstZoneCP = false
+		if(cpnum > 0)
+		{
+			GetClientAbsOrigin(client, gF_originCP[1][cpnum])
+			char sQuery[512]
+			Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
+			gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
+			gB_firstZoneCP = false
+		}
 	}
 	return Plugin_Handled
 }
