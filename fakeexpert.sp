@@ -1818,7 +1818,7 @@ Action SDKEndTouch(int entity, int other)
 		gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
-		for(int i = 1; i <= 10; i++)
+		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
 			gB_cp[i][gI_partner[other]] = false
@@ -1948,7 +1948,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 						}
 					}
-					for(int i = 1; i <= 10; i++)
+					for(int i = 1; i <= gI_cpCount; i++)
 					{
 						if(gB_cp[i][other])
 						{
@@ -1973,7 +1973,7 @@ Action SDKStartTouch(int entity, int other)
 					PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
 					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0)
 					FinishMSG(gI_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0)
-					for(int i = 1; i <= 10; i++)
+					for(int i = 1; i <= gI_cpCount; i++)
 						if(gB_cp[i][other])
 							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
 					gB_isServerRecord = true
@@ -1988,7 +1988,7 @@ Action SDKStartTouch(int entity, int other)
 			gB_state[other] = false
 			gB_state[gI_partner[other]] = false
 		}
-		for(int i = 1; i <= 10; i++)
+		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			char sTrigger2[64]
 			Format(sTrigger2, 64, "fakeexpert_cp%i", i)
