@@ -1372,9 +1372,12 @@ Action cmd_cpmins(int client, int args)
 			char sCmd[512]
 			GetCmdArg(args, sCmd, 512)
 			int cpnum = StringToInt(sCmd)
-			PrintToChat(client, "CP: No.%i", cpnum)
-			GetClientAbsOrigin(client, gF_originCP[0][cpnum])
-			gB_firstZoneCP = true
+			if(cpnum > 0)
+			{
+				PrintToChat(client, "CP: No.%i", cpnum)
+				GetClientAbsOrigin(client, gF_originCP[0][cpnum])
+				gB_firstZoneCP = true
+			}
 		}
 		else
 			PrintToChat(client, "Turn on devmap.")
