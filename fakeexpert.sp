@@ -94,7 +94,6 @@ bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 int gI_pingModel[MAXPLAYERS + 1]
-//int gI_pingTick[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
 
 bool gB_zoneFirst[2]
@@ -518,14 +517,7 @@ public void OnClientDisconnect(int client)
 		Trikz(partner)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
-	//gI_pingTick[client] = 0
-	gI_colorCount[client] = 0
-	if(partner)
-	{
-		Color(partner, false)
-		//gI_pingTick[partner] = 0
-		gI_colorCount[partner] = 0
-	}
+	Color(client, false)
 	int entity
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
@@ -875,8 +867,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					Color(param1, false)
-					gI_colorCount[param1] = 0
-					gI_colorCount[partner] = 0
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
@@ -920,6 +910,8 @@ void Color(int client, bool customSkin)
 	{
 		gB_color[client] = false
 		gB_color[gI_partner[client]] = false
+		gI_colorCount[client] = 0
+		gI_colorCount[gI_partner[client]] = 0
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 		SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
