@@ -1278,10 +1278,13 @@ Action cmd_maptier(int client, int args)
 			char sArgString[512]
 			GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
 			int tier = StringToInt(sArgString)
-			PrintToServer("[Args] Tier: %i", tier)
-			char sQuery[512]
-			Format(sQuery, 512, "DELETE FROM tier WHERE map = '%s'", gS_map)
-			gD_mysql.Query(SQLTierRemove, sQuery, tier)
+			if(tier > 0)
+			{
+				PrintToServer("[Args] Tier: %i", tier)
+				char sQuery[512]
+				Format(sQuery, 512, "DELETE FROM tier WHERE map = '%s'", gS_map)
+				gD_mysql.Query(SQLTierRemove, sQuery, tier)
+			}
 		}
 		else
 			PrintToChat(client, "Turn on devmap.")
