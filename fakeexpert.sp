@@ -916,7 +916,7 @@ void Color(int client, bool customSkin)
 		gB_color[gI_partner[client]] = false
 		gI_colorCount[client] = 0
 		gI_colorCount[gI_partner[client]] = 0
-		if(0 < client <= MaxClients && IsClientInGame(client))
+		if(IsClientInGame(client))
 		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
