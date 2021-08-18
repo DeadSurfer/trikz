@@ -916,10 +916,13 @@ void Color(int client, bool customSkin)
 		gB_color[gI_partner[client]] = false
 		gI_colorCount[client] = 0
 		gI_colorCount[gI_partner[client]] = 0
-		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
-		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
-		SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
-		SetEntityRenderColor(gI_partner[client], 255, 255, 255, gB_block[gI_partner[client]] ? 255 : 125)
+		if(0 < client <= MaxClients && IsClientInGame(client))
+		{
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
+			SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
+			SetEntityRenderColor(gI_partner[client], 255, 255, 255, gB_block[gI_partner[client]] ? 255 : 125)
+		}
 	}
 }
 
