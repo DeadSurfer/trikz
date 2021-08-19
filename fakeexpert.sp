@@ -434,6 +434,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//SDKCall(gH_viewmodel, ent, viewModel, 64) //https://forums.alliedmods.net/showthread.php?t=100404
 				//PrintToServer("%i %s", ent, viewModel)
 				PrintToServer("%i", GetEntPropEnt(client, Prop_Data, "m_hViewModel")) //https://forums.alliedmods.net/showthread.php?p=2752343
+				PrintToServer("%i %i", client, index)
 			}
 		}
 	}
