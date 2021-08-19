@@ -423,10 +423,10 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 				}
 				//int ent
-				//char viewModel[64]
-				//SDKCall(gH_viewmodel, ent, viewModel, 64)
+				//char viewModel[64] //https://forums.alliedmods.net/showthread.php?t=319516&page=2
+				//SDKCall(gH_viewmodel, ent, viewModel, 64) //https://forums.alliedmods.net/showthread.php?t=100404
 				//PrintToServer("%i %s", ent, viewModel)
-				PrintToServer("%i", GetEntProp(client, Prop_Data, "m_hViewModel"))
+				PrintToServer("%i", GetEntPropEnt(client, Prop_Data, "m_hViewModel")) //https://forums.alliedmods.net/showthread.php?p=2752343
 			}
 		}
 	}
