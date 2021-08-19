@@ -431,6 +431,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					//color[2] = 0
 					//color[3] = 255
 					//SetEntProp(vm, Prop_Data, "m_clrRender", color)
+					SetEntityRenderMode(vm, RENDER_TRANSALPHA)
 					SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255)
 					SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0)
 					SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0)
