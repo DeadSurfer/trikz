@@ -420,10 +420,10 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					char sModelName[128]
 					GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 					PrintToServer("%s", sModelName)
-					SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
+					//SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
 					//char sModelName[128] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
 					//SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
-					//SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+					SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 					if(gI_colorCount[client] == 1)
 						SetEntProp(vm, Prop_Data, "m_nSkin", 1)
