@@ -421,6 +421,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 					PrintToServer("%s", sModelName)
 					SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
+					GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 					PrintToServer("%s", sModelName)
 					//char sModelName[128] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
 					//SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
