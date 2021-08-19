@@ -418,8 +418,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				if(gB_color[client])
 				{
 					//SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
-					char sModelName[64] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
-					SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 64)
+					char sModelName[128] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
+					SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 					//SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 					if(gI_colorCount[client] == 1)
