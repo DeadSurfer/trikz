@@ -422,6 +422,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
 					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 				}
+				int ent
 				char viewModel[64]
 				SDKCall(gH_viewmodel, ent, viewModel, 64)
 				PrintToServer("%i %s", ent, viewModel)
