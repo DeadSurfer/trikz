@@ -413,7 +413,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				//int index
 				//SDKCall(gH_viewmodel, client, index)
-				int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel", index)
+				//int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel", index)
+				int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
 				if(gB_color[client])
 				{
 					SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
