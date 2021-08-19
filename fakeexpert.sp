@@ -115,8 +115,8 @@ float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
-//int gI_vModelView
-//int gI_vModelViewDef
+int gI_vModelView
+int gI_vModelViewDef
 //int gI_wModel
 //int gI_wModelDef
 float gF_pingTime[MAXPLAYERS +1]
@@ -207,8 +207,8 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
+	gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
 	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
 	//gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
@@ -378,7 +378,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}*/
 }
 
-/*void SDKWeaponSwitchPost(int client, int weapon)
+void SDKWeaponSwitchPost(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
@@ -418,7 +418,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 			}
 		}
 	}
-}*/
+}
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -489,7 +489,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
+	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
@@ -2710,6 +2710,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(0 < observerTarget <= MaxClients && gI_partner[observerTarget] && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
 			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
 	}
+	if(IsPlayerAlive(client))
+		PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nModelIndex"))
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
