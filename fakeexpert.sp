@@ -414,7 +414,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//int index
 				//SDKCall(gH_viewmodel, client, index)
 				//int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel", index)
-				int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
+				int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel", 0)
 				if(gB_color[client])
 				{
 					char sModelName[128]
