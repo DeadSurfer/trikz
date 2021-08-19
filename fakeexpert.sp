@@ -408,7 +408,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
 			if(owner == client)
 			{
-				RemoveEntity(index)
+				//RemoveEntity(index)
+				//PrintToServer("%s", sModelName)
 			}
 		}
 		//int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
@@ -424,7 +425,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			PrintToServer("%s", sModelName)
 			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
-			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
+			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			PrintToServer("%s", sModelName)
 			PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
 			//char sModelName[128] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
