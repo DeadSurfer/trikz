@@ -413,7 +413,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				int index
 				SDKCall(gH_viewmodel, client, index)
-				int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
+				int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel", index)
 				if(gB_color[client])
 				{
 					SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
@@ -434,7 +434,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//SDKCall(gH_viewmodel, ent, viewModel, 64) //https://forums.alliedmods.net/showthread.php?t=100404
 				//PrintToServer("%i %s", ent, viewModel)
 				PrintToServer("%i", GetEntPropEnt(client, Prop_Data, "m_hViewModel")) //https://forums.alliedmods.net/showthread.php?p=2752343
-				PrintToServer("%i %i", client, index)
+				//PrintToServer("%i %i", client, index)
+				PrintToServer("%i", vm)
 			}
 		}
 	}
