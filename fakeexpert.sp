@@ -425,12 +425,16 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 					if(gI_colorCount[client] > 1)	
 						SetEntProp(vm, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
-					int color[4]
-					color[0] = 255
-					color[1] = 0
-					color[2] = 0
-					color[3] = 255
-					SetEntProp(vm, Prop_Data, "m_clrRender", color)
+					//int color[4]
+					//color[0] = 255
+					//color[1] = 0
+					//color[2] = 0
+					//color[3] = 255
+					//SetEntProp(vm, Prop_Data, "m_clrRender", color)
+					SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255)
+					SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0)
+					SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0)
+					SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255) //https://pastebin.com/CiY6ey59
 					//SetEntityRenderColor(vm, 255, 0, 0, 255)
 				}
 				else
