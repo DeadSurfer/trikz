@@ -425,6 +425,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 					if(gI_colorCount[client] > 1)	
 						SetEntProp(vm, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
+					SetEntityRenderColor(vm, 255, 0, 0, 255)
 				}
 				else
 				{
