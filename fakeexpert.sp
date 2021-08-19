@@ -121,7 +121,7 @@ int gI_vModelViewDef
 //int gI_wModelDef
 float gF_pingTime[MAXPLAYERS +1]
 bool gB_pingLock[MAXPLAYERS + 1]
-//Handle gH_viewmodel
+Handle gH_viewmodel
 
 public Plugin myinfo =
 {
@@ -174,6 +174,10 @@ public void OnPluginStart()
 	//PrepSDKCall_SetVirtual(308)
 	//PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer)
 	//gH_viewmodel = EndPrepSDKCall()
+	StartPrepSDKCall(SDKCall_Player)
+	PrepSDKCall_SetVirtual(321) //https://forums.alliedmods.net/showthread.php?p=2752343 https://hatebin.com/wsyflqvnqc
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain)
+	gH_viewmodel = EndPrepSDKCall()
 }
 
 public void OnMapStart()
@@ -398,15 +402,17 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModelView)
 		//SetEntProp(weapon, Prop_Data, "m_nViewModelIndex", gI_vModelView)
-		int index
-		while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
+		//int index
+		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
-			int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-			if(owner == client)
+			//int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
+			//if(owner == client)
 			{
 				//int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
 				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
+				int index
+				SDKCall(gH_viewmodel, client, index)
 				int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
 				if(gB_color[client])
 				{
