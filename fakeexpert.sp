@@ -402,7 +402,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				if(gB_color[client])
 				{
-					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
+					//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
 					SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 					if(gI_colorCount[client] == 1)
 						SetEntProp(index, Prop_Data, "m_nSkin", 1)
@@ -412,7 +412,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				}
 				else
 				{
-					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
+					//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
 					SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 				}
 			}
