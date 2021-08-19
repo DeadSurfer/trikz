@@ -121,7 +121,7 @@ int gI_vModelViewDef
 //int gI_wModelDef
 float gF_pingTime[MAXPLAYERS +1]
 bool gB_pingLock[MAXPLAYERS + 1]
-Handle gH_viewmodel
+//Handle gH_viewmodel
 
 public Plugin myinfo =
 {
@@ -169,11 +169,11 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	AddCommandListener(specchat, "say") //thanks to VerMon idea.
 	HookEvent("player_spawn", event_playerspawn)
-	StartPrepSDKCall(SDKCall_Entity)
+	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
-	PrepSDKCall_SetVirtual(308)
-	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer)
-	gH_viewmodel = EndPrepSDKCall()
+	//PrepSDKCall_SetVirtual(308)
+	//PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer)
+	//gH_viewmodel = EndPrepSDKCall()
 }
 
 public void OnMapStart()
@@ -422,10 +422,11 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
 					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 				}
-				int ent
-				char viewModel[64]
-				SDKCall(gH_viewmodel, ent, viewModel, 64)
-				PrintToServer("%i %s", ent, viewModel)
+				//int ent
+				//char viewModel[64]
+				//SDKCall(gH_viewmodel, ent, viewModel, 64)
+				//PrintToServer("%i %s", ent, viewModel)
+				PrintToServer("%i", GetEntProp(client, Prop_Data, "m_hViewModel"))
 			}
 		}
 	}
