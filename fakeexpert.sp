@@ -405,10 +405,10 @@ void SDKWeaponSwitchPost(int client, int weapon)
 					SetEntProp(viewmodel, Prop_Data, "m_nModelIndex", gI_vModelView)
 					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 					if(gI_colorCount[client] == 1)
-						SetEntProp(index, Prop_Data, "m_nSkin", 1)
+						SetEntProp(viewmodel, Prop_Data, "m_nSkin", 1)
 					//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 					if(gI_colorCount[client] > 1)	
-						SetEntProp(index, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
+						SetEntProp(viewmodel, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
 				}
 				else
 				{
