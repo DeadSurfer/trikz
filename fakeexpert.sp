@@ -397,13 +397,13 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
 			if(owner == client)
 			{
-				//int viewmodel = GetEntProp(weapon, Prop_Data, "m_nViewModelIndex")
+				int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
 				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
 				//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
 				if(gB_color[client])
 				{
-					//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
-					SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
+					SetEntProp(viewmodel, Prop_Data, "m_nModelIndex", gI_vModelView)
+					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 					if(gI_colorCount[client] == 1)
 						SetEntProp(index, Prop_Data, "m_nSkin", 1)
 					//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
@@ -412,8 +412,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				}
 				else
 				{
-					//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
-					SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
+					SetEntProp(viewmodel, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
+					//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 				}
 			}
 		}
