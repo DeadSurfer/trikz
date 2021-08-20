@@ -458,10 +458,10 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//int b = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 2)
 			//int a = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 3) //https://github.com/HotoCocoaco/Zephyrus-store-fix/blob/ebfc622a67d80655ea3e8954d431d806b4eff4fa/scripting/store/invisibility.sp#L47
 			//PrintToServer("%i %i %i %i", r, g, b, a)
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255)
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0)
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0)
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255) //https://pastebin.com/CiY6ey59
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255, 1, true) //https://github.com/alliedmodders/sourcemod/blob/1fbe5e1daaee9ba44164078fe7f59d862786e612/plugins/include/entity_prop_stocks.inc#L447
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0, 1, true)
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0, 1, true)
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255, 1, true) //https://pastebin.com/CiY6ey59
 			//SetEntityRenderColor(vm, 255, 0, 0, 255)
 			//SetEntProp(pv, Prop_Data, "m_fEffects", 16) //https://forums.alliedmods.net/printthread.php?t=134571&pp=40
 		}
