@@ -425,7 +425,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			char sModelName[128]
 			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			PrintToServer("%s", sModelName)
-			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
+			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView, 2)
 			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			PrintToServer("%s", sModelName)
 			PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
