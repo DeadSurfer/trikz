@@ -403,7 +403,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModelView)
 		//SetEntProp(weapon, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 		int pv = CreateEntityByName("predicted_viewmodel")
-		SetEntPropEnt(pv, Prop_Data, "m_hOwner", client)
+		//SetEntPropEnt(pv, Prop_Data, "m_hOwner", client)
 		//int index
 		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
