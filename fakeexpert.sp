@@ -402,8 +402,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModelView)
 		//SetEntProp(weapon, Prop_Data, "m_nViewModelIndex", gI_vModelView)
-		int pv = CreateEntityByName("predicted_viewmodel")
-		SetEntPropEnt(pv, Prop_Data, "m_hOwner", client)
+		//int pv = CreateEntityByName("predicted_viewmodel")
+		//SetEntPropEnt(pv, Prop_Data, "m_hOwner", client)
 		//int index
 		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
 		{
@@ -429,8 +429,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//char sModelName[128]
 			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			//PrintToServer("%s", sModelName)
-			SetEntProp(vm, Prop_Data, "m_fEffects", 16)
-			SetEntProp(pv, Prop_Data, "m_nModelIndex", gI_vModelView)
+			//SetEntProp(vm, Prop_Data, "m_fEffects", 16)
+			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
 			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			//PrintToServer("%s", sModelName)
 			//PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
@@ -441,10 +441,10 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 			//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 			if(gI_colorCount[client] == 1)
-				SetEntProp(pv, Prop_Data, "m_nSkin", 1)
+				SetEntProp(vm, Prop_Data, "m_nSkin", 1)
 			//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 			if(gI_colorCount[client] > 1)	
-				SetEntProp(pv, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
+				SetEntProp(vm, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
 			//int color[4]
 			//color[0] = 255
 			//color[1] = 0
@@ -452,17 +452,17 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//color[3] = 255
 			//SetEntProp(vm, Prop_Data, "m_clrRender", color)
 			//SetEntityRenderMode(vm, RENDER_TRANSALPHA)
-			SetEntProp(pv, Prop_Data, "m_nRenderMode", RENDER_TRANSALPHA)
-			SetEntData(pv, FindDataMapInfo(pv, "m_clrRender"), 255)
-			SetEntData(pv, FindDataMapInfo(pv, "m_clrRender") + 1, 0)
-			SetEntData(pv, FindDataMapInfo(pv, "m_clrRender") + 2, 0)
-			SetEntData(pv, FindDataMapInfo(pv, "m_clrRender") + 3, 255) //https://pastebin.com/CiY6ey59
+			//SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSALPHA)
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255)
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0)
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0)
+			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255) //https://pastebin.com/CiY6ey59
 			//SetEntityRenderColor(vm, 255, 0, 0, 255)
-			SetEntProp(pv, Prop_Data, "m_fEffects", 16)
+			//SetEntProp(pv, Prop_Data, "m_fEffects", 16) //https://forums.alliedmods.net/printthread.php?t=134571&pp=40
 		}
 		else
 		{
-			SetEntProp(pv, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
+			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
 			//SetEntityModel(vm, "models/weapons/v_eq_flashbang.mdl")
 			//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 		}
