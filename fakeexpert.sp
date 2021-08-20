@@ -430,7 +430,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//PrintToServer("%s", sModelName)
 			//PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
 			char sModelName[PLATFORM_MAX_PATH] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
-			SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, PLATFORM_MAX_PATH)
+			SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName)
 			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, PLATFORM_MAX_PATH)
 			PrintToServer("%s", sModelName)
 			//SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
