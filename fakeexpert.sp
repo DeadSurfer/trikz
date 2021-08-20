@@ -410,6 +410,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			{
 				//RemoveEntity(index)
 				//PrintToServer("%s", sModelName)
+				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
 			}
 		}
 		//int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
