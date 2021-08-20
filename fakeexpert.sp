@@ -466,7 +466,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255, 1, true) //https://pastebin.com/CiY6ey59
 			//SetEntityRenderColor(vm, 255, 0, 0, 255)
 			//SetEntProp(pv, Prop_Data, "m_fEffects", 16) //https://forums.alliedmods.net/printthread.php?t=134571&pp=40
-			DispatchKeyValue(vm, "rendercolor" "255 0 0")
+			DispatchKeyValue(vm, "rendercolor", "255 0 0")
 			//Dispat
 		}
 		else
