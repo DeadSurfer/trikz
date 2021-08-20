@@ -423,18 +423,18 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//int index
 		//SDKCall(gH_viewmodel, client, index)
 		//int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel", index)
-		//int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
+		int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
 		if(gB_color[client])
 		{
 			//char sModelName[128]
 			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			//PrintToServer("%s", sModelName)
-			//SetEntProp(vm, Prop_Data, "m_fEffects", 16)
+			SetEntProp(vm, Prop_Data, "m_fEffects", 16)
 			SetEntProp(pv, Prop_Data, "m_nModelIndex", gI_vModelView)
 			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			//PrintToServer("%s", sModelName)
 			//PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
-		//	char sModelName[PLATFORM_MAX_PATH] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
+			//char sModelName[PLATFORM_MAX_PATH] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
 			//SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName)
 			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, PLATFORM_MAX_PATH)
 			//PrintToServer("%s", sModelName)
