@@ -411,6 +411,8 @@ void SDKWeaponSwitchPost(int client, int weapon)
 				//RemoveEntity(index)
 				//PrintToServer("%s", sModelName)
 				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
+				char sModelName[PLATFORM_MAX_PATH] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
+				SetEntPropString(index, Prop_Data, "m_ModelName", sModelName)
 			}
 		}
 		//int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
