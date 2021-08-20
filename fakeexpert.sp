@@ -458,7 +458,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			SetEntData(pv, FindDataMapInfo(pv, "m_clrRender") + 2, 0)
 			SetEntData(pv, FindDataMapInfo(pv, "m_clrRender") + 3, 255) //https://pastebin.com/CiY6ey59
 			//SetEntityRenderColor(vm, 255, 0, 0, 255)
-			SetEntProp(pm, Prop_Data, "m_fEffects", 16)
+			SetEntProp(pv, Prop_Data, "m_fEffects", 16)
 		}
 		else
 		{
