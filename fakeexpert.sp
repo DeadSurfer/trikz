@@ -422,16 +422,18 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
 		if(gB_color[client])
 		{
-			char sModelName[128]
-			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
-			PrintToServer("%s", sModelName)
+			//char sModelName[128]
+			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
+			//PrintToServer("%s", sModelName)
 			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
-			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
+			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
+			//PrintToServer("%s", sModelName)
+			//PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
+			char sModelName[PLATFORM_MAX_PATH] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
+			SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, PLATFORM_MAX_PATH)
+			GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, PLATFORM_MAX_PATH)
 			PrintToServer("%s", sModelName)
-			PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
-			//char sModelName[128] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
-			//SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
-			SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+			//SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
 			//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
 			if(gI_colorCount[client] == 1)
 				SetEntProp(vm, Prop_Data, "m_nSkin", 1)
