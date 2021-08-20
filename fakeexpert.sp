@@ -362,8 +362,8 @@ Action specchat(int client, const char[] command, int argc)
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	char sModel[32]
-	GetClientModel(client, sModel, 32)
+	char sModel[PLATFORM_MAX_PATH]
+	GetClientModel(client, sModel, PLATFORM_MAX_PATH)
 	if(StrEqual(sModel, "models/player/ct_urban.mdl"))
 		gI_class[client] = 1
 	if(StrEqual(sModel, "models/player/ct_gsg9.mdl"))
@@ -855,8 +855,8 @@ void Partner(int client)
 	{
 		Menu menu = new Menu(cancelpartner_handler)
 		menu.SetTitle("Cancel partnership with %N", gI_partner[client])
-		char sName[MAX_NAME_LENGTH]
-		GetClientName(gI_partner[client], sName, MAX_NAME_LENGTH)
+		//char sName[MAX_NAME_LENGTH]
+		//GetClientName(gI_partner[client], sName, MAX_NAME_LENGTH)
 		char sPartner[32]
 		IntToString(gI_partner[client], sPartner, 32)
 		menu.AddItem(sPartner, "Yes")
