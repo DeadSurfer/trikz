@@ -167,8 +167,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
-	AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	//HookUserMessage(GetUserMessageId("SayText2"), specchat) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
+	HookUserMessage(GetUserMessageId("SayText2"), specchat) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	//HookEvent("player_say", event_playersay) //http://world-source.ru/forum/102-2953-1
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
@@ -346,7 +346,7 @@ public void OnMapEnd()
 	}
 }
 
-Action specchat(int client, const char[] command, int argc)
+/*Action specchat(int client, const char[] command, int argc)
 {
 	if(MaxClients >= client > 0 && GetClientTeam(client) == 1)
 	{
@@ -359,12 +359,12 @@ Action specchat(int client, const char[] command, int argc)
 		return Plugin_Handled
 	}
 	return Plugin_Continue
-}
+}*/
 
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
-/*Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
+Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
 {
-	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	BfRead bfmsg = UserMessageToBfRead(msg)
 	int client = bfmsg.ReadByte()
 	bfmsg.ReadByte()
@@ -374,13 +374,28 @@ Action specchat(int client, const char[] command, int argc)
 	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
 	bfmsg.ReadString(sText, 256)
-	BfWrite bfmsg2 = UserMessageToBfWrite(hSayText2)
-	bfmsg2.WriteByte(client)
-	bfmsg2.WriteByte(true)
 	Format(sText, 256, "%s %s", sName, sText)
-	bfmsg2.WriteString(sText)
+	DataPack dp = new DataPack()
+	dp.WriteCell(GetClientSerial(client))
+	dp.WriteCell(1)
+	dp.WriteString(sText)
+	RequestFrame(frame_SayText2, dp)
+	return Plugin_Stop
+}
+
+void frame_SayText2(DataPack dp)
+{
+	dp.Reset()
+	int client = GetClientFromSerial(dp.ReadCell())
+	bool allchat = dp.ReadCell()
+	char sText[256)
+	dp.ReadString(sText, 256)
+	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
+	bfmsg.WriteByte(client)
+	bfmsg.WriteByte(true)
+	bfmsg.WriteString(sText)
 	EndMessage()
-}*/
+}
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 {
