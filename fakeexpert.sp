@@ -365,7 +365,7 @@ public void OnMapEnd()
 Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	BfWrite bfmsg = UserMessageToBfRead(msg)
+	BfRead bfmsg = UserMessageToBfRead(msg)
 	int client = bfmsg.ReadByte()
 	char sMsg[32]
 	bfmsg.ReadString(sMsg, 32)
@@ -373,7 +373,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
 	bfmsg.ReadString(Text, 256)
-	bfmsg = UserMessageToBfWrite(hSayText2)
+	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
 	bfmsg.WriteByte(client)
 	bfmsg.WriteByte(true)
 	Format(sText, 256, "%s %s", sName, sText)
