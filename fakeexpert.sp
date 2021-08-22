@@ -167,8 +167,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
-	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	HookUserMessage(GetUserMessageId("SayText2"), specchat)
+	AddCommandListener(specchat, "say") //thanks to VerMon idea.
+	//HookUserMessage(GetUserMessageId("SayText2"), specchat)
 	//HookEvent("player_say", event_playersay)
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
@@ -362,7 +362,7 @@ public void OnMapEnd()
 }*/
 
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
-Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
+/*Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	BfRead bfmsg = UserMessageToBfRead(msg)
@@ -380,7 +380,7 @@ Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bo
 	Format(sText, 256, "%s %s", sName, sText)
 	bfmsg2.WriteString(sText)
 	EndMessage()
-}
+}*/
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 {
