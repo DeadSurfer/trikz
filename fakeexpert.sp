@@ -346,7 +346,7 @@ public void OnMapEnd()
 	}
 }
 
-/*Action specchat(int client, const char[] command, int argc)
+Action specchat(int client, const char[] command, int argc)
 {
 	if(MaxClients >= client > 0 && GetClientTeam(client) == 1)
 	{
@@ -359,7 +359,7 @@ public void OnMapEnd()
 		return Plugin_Handled
 	}
 	return Plugin_Continue
-}*/
+}
 
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
 /*Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
