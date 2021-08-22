@@ -371,14 +371,21 @@ public void OnMapEnd()
 Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-	bfmsg.WriteByte(client)
-	bfmsg.WriteByte(true)
-	//char sChat[256]
-	//Format(sChat, 256, "%s", name)
-	//bfmsg.WriteString(sChat)
-	EndMessage()
+	if(GetClientTeam(client) == 1)
+	{
+		char sChat[256]
+		event.GetString("text", sChat, 256)
+		Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
+		bfmsg.WriteByte(client)
+		bfmsg.WriteByte(true)
+		//char sChat[256]
+		//Format(sChat, 256, "%s", name)
+		bfmsg.WriteString(sChat)
+		EndMessage()
+		return Plugin_Handled
+	}
+	return Plugin_Continue
 }
 
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
