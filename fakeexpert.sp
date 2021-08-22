@@ -377,7 +377,7 @@ Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 		event.GetString("text", sChat, 256)
 		Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-		bfmsg.WriteByte(client)
+		bfmsg.WriteByte(0)
 		bfmsg.WriteByte(true)
 		//char sChat[256]
 		//Format(sChat, 256, "%s", name)
