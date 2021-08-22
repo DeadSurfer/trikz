@@ -378,6 +378,7 @@ Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 	char sChat[256]
 	Format(sChat, 256, "%s", name)
 	bfmsg.WriteString(sChat)
+	EndMessage()
 }
 
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
