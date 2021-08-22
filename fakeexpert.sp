@@ -362,7 +362,7 @@ public void OnMapEnd()
 }*/
 
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
-Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	BfRead bfmsg = UserMessageToBfRead(msg)
