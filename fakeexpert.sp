@@ -168,8 +168,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
 	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	//HookUserMessage(GetUserMessageId("SayText2"), specchat)
-	HookEvent("player_say", event_playersay)
+	HookUserMessage(GetUserMessageId("SayText2"), specchat)
+	//HookEvent("player_say", event_playersay)
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
@@ -362,13 +362,26 @@ public void OnMapEnd()
 }*/
 
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
-/*Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-}*/
+	BfWrite bfmsg = UserMessageToBfRead(msg)
+	int client = bfmsg.ReadByte()
+	char sMsg[32]
+	bfmsg.ReadString(sMsg, 32)
+	char sName[MAX_NAME_LENGTH]
+	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
+	char sText[256]
+	bfmsg.ReadString(Text, 256)
+	bfmsg = UserMessageToBfWrite(hSayText2)
+	bfmsg.WriteByte(client)
+	bfmsg.WriteByte(true)
+	Format(sText, 256, "%s %s", sName, sText)
+	bfmsg.WriteString(sText)
+	EndMessage()
+}
 
-Action event_playersay(Event event, const char[] name, bool dontBroadcast)
+/*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(GetClientTeam(client) == 1)
@@ -386,7 +399,7 @@ Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 		return Plugin_Handled
 	}
 	return Plugin_Continue
-}
+}*/
 
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
