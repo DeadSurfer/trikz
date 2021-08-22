@@ -374,12 +374,12 @@ Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bo
 	char sText[256]
 	bfmsg.ReadString(sText, 256)
 	StringMap sm_msg = new StringMap()
-	char sPrefix[256]
-	sm_msg.GetString(sMsg, sPrefix, 256)
+	char sPrefix[255]
+	sm_msg.GetString(sMsg, sPrefix, 255)
 	Format(sText, 256, "%s %s %s", sPrefix, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
-	dp.WriteCell(1)
+	dp.WriteCell(sm_msg)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
 	return Plugin_Stop
