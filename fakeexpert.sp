@@ -375,7 +375,9 @@ Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
 	bfmsg.WriteByte(client)
 	bfmsg.WriteByte(true)
-	bfmsg.WriteString("%s", name)
+	char sChat[256]
+	Format(sChat, 256, "%s", name)
+	bfmsg.WriteString(sChat)
 }
 
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
