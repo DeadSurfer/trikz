@@ -367,6 +367,7 @@ Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bo
 	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	BfRead bfmsg = UserMessageToBfRead(msg)
 	int client = bfmsg.ReadByte()
+	bfmsg.ReadByte()
 	char sMsg[32]
 	bfmsg.ReadString(sMsg, 32)
 	char sName[MAX_NAME_LENGTH]
