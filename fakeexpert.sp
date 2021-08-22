@@ -372,12 +372,12 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	char sName[MAX_NAME_LENGTH]
 	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
-	bfmsg.ReadString(Text, 256)
-	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-	bfmsg.WriteByte(client)
-	bfmsg.WriteByte(true)
+	bfmsg.ReadString(sText, 256)
+	BfWrite bfmsg2 = UserMessageToBfWrite(hSayText2)
+	bfmsg2.WriteByte(client)
+	bfmsg2.WriteByte(true)
 	Format(sText, 256, "%s %s", sName, sText)
-	bfmsg.WriteString(sText)
+	bfmsg2.WriteString(sText)
 	EndMessage()
 }
 
