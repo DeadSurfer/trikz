@@ -362,7 +362,7 @@ public void OnMapEnd()
 }*/
 
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
-Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
+Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	//if(reliable)
 	//{
@@ -408,7 +408,7 @@ void frame_SayText2(DataPack dp)
 	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && GetClientTeam(i) == team)
+		if(IsClientSourceTV(i) || (IsClientInGame(i) && GetClientTeam(i) == team))
 			clients[count++] = i
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
