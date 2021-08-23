@@ -379,7 +379,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 		return Plugin_Stop
 	gB_msg[client] = false
 	PrintToServer("[ %s ]", sMsg)
-	StringMap smChar[32] = new StringMap()
+	StringMap smChar = new StringMap()
 	char sFormated[32]
 	smChar.GetString(sMsg, sFormated, 32)
 	PrintToServer("[ %s ]", sFormated)
