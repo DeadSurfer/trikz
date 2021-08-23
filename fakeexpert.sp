@@ -379,7 +379,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	Format(sText, 256, "%s %s %s", sMsg, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(0)
-	dp.WriteCell(sm_msg)
+	dp.WriteCell(sMsg)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
 	return Plugin_Stop
