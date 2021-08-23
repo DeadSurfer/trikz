@@ -362,7 +362,7 @@ public void OnMapEnd()
 }*/
 
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
-Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init)
+Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	BfRead bfmsg = UserMessageToBfRead(msg)
 	int client = bfmsg.ReadByte()
@@ -397,7 +397,7 @@ void frame_SayText2(DataPack dp)
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
 	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
 	bfmsg.WriteByte(0)
-	bfmsg.WriteByte(false)
+	bfmsg.WriteByte(true)
 	bfmsg.WriteString(sText)
 	EndMessage()
 }
