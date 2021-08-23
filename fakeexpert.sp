@@ -364,7 +364,7 @@ public void OnMapEnd()
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
 Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
-	if(reliable)
+	//if(reliable)
 	{
 		BfRead bfmsg = UserMessageToBfRead(msg)
 		int client = bfmsg.ReadByte()
@@ -385,7 +385,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 			Format(sMsg, 32, "(Spectator)")
 		Format(sText, 256, "%s %s :  %s", sMsg, sName, sText)
 		DataPack dp = new DataPack()
-		dp.WriteCell(0)
+		dp.WriteCell(client)
 		dp.WriteCell(0)
 		dp.WriteString(sText)
 		RequestFrame(frame_SayText2, dp)
@@ -396,15 +396,21 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 void frame_SayText2(DataPack dp)
 {
 	dp.Reset()
-	//int client = GetClientFromSerial(dp.ReadCell())
-	int client = dp.ReadCell()
+	int client = GetClientFromSerial(dp.ReadCell())
+	int clients[MAXPLAYERS +1]
+	int count
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			clients[count++] = i
+	//int client = dp.ReadCell()
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
-	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
 	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-	bfmsg.WriteByte(0)
+	bfmsg.WriteByte(client)
 	bfmsg.WriteByte(true)
 	bfmsg.WriteString(sText)
 	EndMessage()
