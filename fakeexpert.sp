@@ -408,10 +408,12 @@ void frame_SayText2(DataPack dp)
 	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
+	{
 		if(!IsClientInGame(i))
 			continue
 		if(IsClientSourceTV(i) ||GetClientTeam(i) == team)
 			clients[count++] = i
+	}
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
