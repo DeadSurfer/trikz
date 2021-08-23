@@ -416,12 +416,15 @@ void frame_SayText2(DataPack dp)
 	}
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
-	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-	bfmsg.WriteByte(client)
-	bfmsg.WriteByte(true)
-	bfmsg.WriteString(sText)
-	EndMessage()
+	if(hSayText2 != INVALID_HANDLE)
+	{
+		//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
+		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
+		bfmsg.WriteByte(client)
+		bfmsg.WriteByte(true)
+		bfmsg.WriteString(sText)
+		EndMessage()
+	}
 }
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
