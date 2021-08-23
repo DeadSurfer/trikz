@@ -364,29 +364,32 @@ public void OnMapEnd()
 //void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
 Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
-	BfRead bfmsg = UserMessageToBfRead(msg)
-	int client = bfmsg.ReadByte()
-	PrintToServer("%N %i", client, client)
-	bfmsg.ReadByte()
-	char sMsg[32]
-	bfmsg.ReadString(sMsg, 32)
-	char sName[MAX_NAME_LENGTH]
-	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
-	char sText[256]
-	bfmsg.ReadString(sText, 256)
-	//StringMap sm_msg = new StringMap()
-	//char sPrefix[255]
-	//sm_msg.GetString(sMsg, sPrefix, 255)
-	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
-		Format(sMsg, 32, "*SPEC*")
-	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
-		Format(sMsg, 32, "(Spectator)")
-	Format(sText, 256, "%s %s :  %s", sMsg, sName, sText)
-	DataPack dp = new DataPack()
-	dp.WriteCell(0)
-	dp.WriteCell(0)
-	dp.WriteString(sText)
-	RequestFrame(frame_SayText2, dp)
+	if(reliable)
+	{
+		BfRead bfmsg = UserMessageToBfRead(msg)
+		int client = bfmsg.ReadByte()
+		//PrintToServer("%N %i", client, client)
+		bfmsg.ReadByte()
+		char sMsg[32]
+		bfmsg.ReadString(sMsg, 32)
+		char sName[MAX_NAME_LENGTH]
+		bfmsg.ReadString(sName, MAX_NAME_LENGTH)
+		char sText[256]
+		bfmsg.ReadString(sText, 256)
+		//StringMap sm_msg = new StringMap()
+		//char sPrefix[255]
+		//sm_msg.GetString(sMsg, sPrefix, 255)
+		if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
+			Format(sMsg, 32, "*SPEC*")
+		else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
+			Format(sMsg, 32, "(Spectator)")
+		Format(sText, 256, "%s %s :  %s", sMsg, sName, sText)
+		DataPack dp = new DataPack()
+		dp.WriteCell(0)
+		dp.WriteCell(0)
+		dp.WriteString(sText)
+		RequestFrame(frame_SayText2, dp)
+	}
 	return Plugin_Stop
 }
 
