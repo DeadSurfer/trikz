@@ -397,26 +397,24 @@ void frame_SayText2(DataPack dp)
 {
 	dp.Reset()
 	int client = GetClientFromSerial(dp.ReadCell())
-	if(client)
-	{
-		int clients[MAXPLAYERS +1]
-		int count
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i))
-				clients[count++] = i
-		//int client = dp.ReadCell()
-		bool allchat = dp.ReadCell()
-		char sText[256]
-		dp.ReadString(sText, 256)
-		//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-		Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-		//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
-		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-		bfmsg.WriteByte(client)
-		bfmsg.WriteByte(true)
-		bfmsg.WriteString(sText)
-		EndMessage()
-		}
+	bool allchat = dp.ReadCell()
+	char sText[256]
+	dp.ReadString(sText, 256)
+	if(!client)
+		return
+	int clients[MAXPLAYERS +1]
+	int count
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			clients[count++] = i
+	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
+	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
+	bfmsg.WriteByte(client)
+	bfmsg.WriteByte(true)
+	bfmsg.WriteString(sText)
+	EndMessage()
 }
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
