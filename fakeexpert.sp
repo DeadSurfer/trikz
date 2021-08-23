@@ -378,11 +378,12 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	if(!gB_msg[client])
 		return Plugin_Stop
 	gB_msg[client] = false
-	TrimString(sMsg)
+	//TrimString(sMsg)
 	PrintToServer("[ %s ]", sMsg)
 	StringMap smChar = new StringMap()
 	char sFormated[32]
 	smChar.GetString(sMsg, sFormated, 32)
+	Format(sFormated, 32, "{1} : {2}")
 	PrintToServer("[ %s ]", sFormated)
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
