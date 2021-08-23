@@ -378,6 +378,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	if(!gB_msg[client])
 		return Plugin_Stop
 	gB_msg[client] = false
+	PrintToServer("[ %s ]", sMsg)
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
