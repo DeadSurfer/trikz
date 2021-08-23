@@ -394,7 +394,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	else if(StrEqual(sMsg, "Cstrike_Chat_CT"))
 		Format(sText, 256, "\x0799CCFF%s \x01:  %s", sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_T"))
-		Format(sText, 256, "\x07FF4040%s \x01:  %s", sName, sText)
+		Format(sText, 256, "\x07FF4040%s \x01:  %s", sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
