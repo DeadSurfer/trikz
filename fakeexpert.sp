@@ -382,9 +382,12 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	PrintToServer("[ %s ]", sMsg)
 	StringMap smChar = new StringMap()
 	char sFormated[32]
-	smChar.GetString(sMsg, sFormated, 32)
-	Format(sFormated, 32, "{1} : {2}")
+	smChar.GetString(sMsg, sFormated, sizeof(sFormated))
+	if(strlen(sFormated) == 0)
+		Format(sFormated, sizeof(sFormated), "{1} : {2}")
 	PrintToServer("[ %s ]", sFormated)
+	sFormated[0] = '\0'
+	smChar.GetString(sMsg, sFormated, sizeof(sFormated))
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
