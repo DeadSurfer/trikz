@@ -675,6 +675,7 @@ public void OnClientPutInServer(int client)
 	gF_Time[client] = 0.0
 	if(!gB_isDevmap)
 		DrawZone(client, 0.0)
+	gB_msg[client] = true
 }
 
 public void OnClientDisconnect(int client)
