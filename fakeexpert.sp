@@ -408,15 +408,13 @@ void frame_SayText2(DataPack dp)
 	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
-	{
-		if(!IsClientInGame(i))
-			continue
-		if(IsClientSourceTV(i) ||GetClientTeam(i) == team)
+		if(IsClientInGame(i) && GetClientTeam(i) == team)
 			clients[count++] = i
-	}
+	if(!count)
+		return
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	if(hSayText2 != INVALID_HANDLE)
+	//if(hSayText2 != INVALID_HANDLE)
 	{
 		//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
 		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
