@@ -401,8 +401,9 @@ void frame_SayText2(DataPack dp)
 	char sText[256]
 	dp.ReadString(sText, 256)
 	delete dp
-	if(!client)
-		return
+	//if(!client)
+	//	return
+	PrintToServer("%i %N", client, client)
 	int clients[MAXPLAYERS +1]
 	int count
 	int team = GetClientTeam(client)
