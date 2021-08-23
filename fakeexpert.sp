@@ -393,7 +393,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	Format(sText, 256, "%s %s :  %s", sMsgFormated, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
-	dp.WriteCell(StrContains(sMsg, "_ALL") != -1)
+	dp.WriteCell(StrContains(sMsg, "_All") != -1)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
 	//}
