@@ -416,7 +416,7 @@ void frame_SayText2(DataPack dp)
 	int team = GetClientTeam(client)
 	gB_msg[client] = true
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && allchat && GetClientTeam(i) == team)
+		if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
 			clients[count++] = i
 	if(!count)
 		return
