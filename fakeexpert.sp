@@ -385,7 +385,7 @@ Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bo
 		Format(sMsg, 32, "(Spectator)")
 	Format(sText, 256, "%s %s :  %s", sMsg, sName, sText)
 	DataPack dp = new DataPack()
-	dp.WriteCell(client)
+	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(0)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
@@ -401,9 +401,9 @@ void frame_SayText2(DataPack dp)
 	char sText[256]
 	dp.ReadString(sText, 256)
 	delete dp
-	//if(!client)
-	//	return
-	PrintToServer("%i %N", client, client)
+	if(!client)
+		return
+	//PrintToServer("%i %N", client, client)
 	int clients[MAXPLAYERS +1]
 	int count
 	int team = GetClientTeam(client)
