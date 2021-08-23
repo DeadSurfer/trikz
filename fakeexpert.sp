@@ -123,6 +123,7 @@ float gF_pingTime[MAXPLAYERS +1]
 bool gB_pingLock[MAXPLAYERS + 1]
 //Handle gH_viewmodel
 bool gB_msg[MAXPLAYERS +1]
+StringMap gSM_char
 
 public Plugin myinfo =
 {
@@ -181,6 +182,7 @@ public void OnPluginStart()
 	//PrepSDKCall_SetVirtual(321) //https://forums.alliedmods.net/showthread.php?p=2752343 https://hatebin.com/wsyflqvnqc
 	//PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain)
 	//gH_viewmodel = EndPrepSDKCall()
+	gSM_char = new StringMap()
 }
 
 public void OnMapStart()
@@ -380,14 +382,15 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	gB_msg[client] = false
 	//TrimString(sMsg)
 	PrintToServer("[ %s ]", sMsg)
-	StringMap smChar = new StringMap()
 	char sFormated[32]
-	smChar.GetString(sMsg, sFormated, sizeof(sFormated))
-	if(strlen(sFormated) == 0)
-		Format(sFormated, sizeof(sFormated), "{1} : {2}")
-	PrintToServer("[ %s ]", sFormated)
-	sFormated[0] = '\0'
-	smChar.GetString(sMsg, sFormated, sizeof(sFormated))
+	gSM_char.GetString(sMsg, sFormated, sizeof(sFormated))
+	//Format(sFormated, 32, "#%s", sMsg)
+	//PrintToServer
+	//if(strlen(sFormated) == 0)
+	//	Format(sFormated, sizeof(sFormated), "{1} : {2}")
+	//PrintToServer("[ %s ]", sFormated)
+	//sFormated[0] = '\0'
+	//smChar.GetString(sMsg, sFormated, sizeof(sFormated))
 	PrintToServer("[ %s ]", sFormated)
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
