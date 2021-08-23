@@ -400,6 +400,7 @@ void frame_SayText2(DataPack dp)
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
+	delete dp
 	if(!client)
 		return
 	int clients[MAXPLAYERS +1]
