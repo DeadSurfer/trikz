@@ -376,7 +376,11 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	//StringMap sm_msg = new StringMap()
 	//char sPrefix[255]
 	//sm_msg.GetString(sMsg, sPrefix, 255)
-	Format(sText, 256, "%s %s %s", sMsg, sName, sText)
+	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
+		Format(sMsg, 32, "*SPEC*")
+	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
+		Format(sMsg, 32, "(Spectator)")
+	Format(sText, 256, "%s %s: %s", sMsg, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(0)
 	dp.WriteCell(0)
