@@ -420,6 +420,7 @@ void frame_SayText2(DataPack dp)
 	bfmsg.WriteString(sText)
 	EndMessage()
 	gB_msg[client] = true
+	PrintToServer("yes")
 }
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
