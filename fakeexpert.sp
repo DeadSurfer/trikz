@@ -383,7 +383,9 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	//TrimString(sMsg)
 	PrintToServer("[ %s ]", sMsg)
 	char sFormated[32]
-	gSM_char.GetString(sMsg, sFormated, sizeof(sFormated))
+	char sMsgNew[32]
+	Format(sMsgNew, 32, "#%s", sMsg)
+	gSM_char.GetString(sMsgNew, sFormated, sizeof(sFormated))
 	//Format(sFormated, 32, "#%s", sMsg)
 	//PrintToServer
 	//if(strlen(sFormated) == 0)
