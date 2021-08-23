@@ -122,6 +122,7 @@ float gF_engineTime
 float gF_pingTime[MAXPLAYERS +1]
 bool gB_pingLock[MAXPLAYERS + 1]
 //Handle gH_viewmodel
+bool gB_msg[MAXPLAYERS +1]
 
 public Plugin myinfo =
 {
@@ -378,6 +379,9 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	bfmsg.ReadString(sText, 256)
 	if(!client)
 		return Plugin_Continue
+	if(!gB_msg[client])
+		return Plugin_Stop
+	gB_msg[client] = false
 	//StringMap sm_msg = new StringMap()
 	//char sPrefix[255]
 	//sm_msg.GetString(sMsg, sPrefix, 255)
@@ -426,6 +430,7 @@ void frame_SayText2(DataPack dp)
 	bfmsg.WriteByte(true)
 	bfmsg.WriteString(sText)
 	EndMessage()
+	gB_msg[client] = true
 	//}
 }
 
