@@ -169,7 +169,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
 	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	//HookUserMessage(GetUserMessageId("SayText2"), specchat, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	HookUserMessage(GetUserMessageId("SayText2"), specchat, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	//HookEvent("player_say", event_playersay) //http://world-source.ru/forum/102-2953-1
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
@@ -392,9 +392,9 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 			Format(sText, 256, "\x0799CCFF%s \x01:  %s", sName, sText)
 	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_CT"))
-		Format(sText, 256, "\x0799CCFF%s \x01:  %s", sName, sText)
+		Format(sText, 256, "\x01(Counter-Terrorist) \x0799CCFF%s \x01:  %s", sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_T"))
-		Format(sText, 256, "\x07FF4040%s \x01:  %s", sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
+		Format(sText, 256, "\x01(Terrorist) \x07FF4040%s \x01:  %s", sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
