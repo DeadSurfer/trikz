@@ -377,8 +377,8 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
 	bfmsg.ReadString(sText, 256)
-	//if(!client)
-	//	return Plugin_Continue
+	if(!client)
+		return Plugin_Continue
 	if(!gB_msg[client])
 		return Plugin_Stop
 	gB_msg[client] = false
@@ -415,7 +415,7 @@ void frame_SayText2(DataPack dp)
 	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && IsPlayerAlive(i) == allchat)
+		if(IsClientInGame(i) && (IsPlayerAlive(i) == allchat || !IsPlayerAlive(i) != allchat))
 			clients[count++] = i
 	if(!count)
 		return
