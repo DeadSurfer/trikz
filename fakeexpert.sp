@@ -389,6 +389,7 @@ void frame_SayText2(DataPack dp)
 {
 	dp.Reset()
 	//int client = GetClientFromSerial(dp.ReadCell())
+	int client = dp.ReadCell()
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
