@@ -376,7 +376,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
 	bfmsg.ReadString(sText, 256)
-	if(client)
+	if(!client)
 		return Plugin_Continue
 	//StringMap sm_msg = new StringMap()
 	//char sPrefix[255]
