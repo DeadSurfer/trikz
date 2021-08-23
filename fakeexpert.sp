@@ -418,9 +418,9 @@ void frame_SayText2(DataPack dp)
 	//bfmsg.WriteByte(client)
 	//bfmsg.WriteByte(true)
 	//bfmsg.WriteString(sText)
-	//EndMessage()
 	PrintToChatAll("%s", sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	PrintToServer("%s", sText)
+	EndMessage()
 	gB_msg[client] = true
 }
 
