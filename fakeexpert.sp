@@ -414,6 +414,7 @@ void frame_SayText2(DataPack dp)
 	int clients[MAXPLAYERS +1]
 	int count
 	int team = GetClientTeam(client)
+	gB_msg[client] = true
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && allchat && GetClientTeam(i) == team)
 			clients[count++] = i
@@ -431,7 +432,6 @@ void frame_SayText2(DataPack dp)
 	bfmsg.WriteByte(true)
 	bfmsg.WriteString(sText)
 	EndMessage()
-	gB_msg[client] = true
 	//}
 }
 
