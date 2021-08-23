@@ -377,22 +377,23 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
 	bfmsg.ReadString(sText, 256)
-	if(!client)
-		return Plugin_Continue
+	//if(!client)
+	//	return Plugin_Continue
 	if(!gB_msg[client])
 		return Plugin_Stop
 	gB_msg[client] = false
 	//StringMap sm_msg = new StringMap()
 	//char sPrefix[255]
 	//sm_msg.GetString(sMsg, sPrefix, 255)
+	char sMsgFormated[32]
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
-		Format(sMsg, 32, "*SPEC*")
+		Format(sMsgFormated, 32, "*SPEC*")
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
-		Format(sMsg, 32, "(Spectator)")
-	Format(sText, 256, "%s %s :  %s", sMsg, sName, sText)
+		Format(sMsgFormated, 32, "(Spectator)")
+	Format(sText, 256, "%s %s :  %s", sMsgFormated, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
-	dp.WriteCell(0)
+	dp.WriteCell(StrContains(sMsg, "_ALL") != -1)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
 	//}
@@ -414,7 +415,7 @@ void frame_SayText2(DataPack dp)
 	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i))
+		if(IsClientInGame(i) && allchat)
 			clients[count++] = i
 	if(!count)
 		return
