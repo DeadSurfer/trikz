@@ -400,11 +400,11 @@ void frame_SayText2(DataPack dp)
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
-	delete dp
+	//delete dp
 	if(!client)
 		return
 	int clients[MAXPLAYERS +1]
-	int count
+	/int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
@@ -414,13 +414,14 @@ void frame_SayText2(DataPack dp)
 	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	if(hSayText2 == null)
 		return
-	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-	bfmsg.WriteByte(client)
-	bfmsg.WriteByte(true)
-	bfmsg.WriteString(sText)
-	EndMessage()
+	//BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
+	//bfmsg.WriteByte(client)
+	//bfmsg.WriteByte(true)
+	//bfmsg.WriteString(sText)
+	//EndMessage()
+	PrintToChatAll("%s", sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
+	PrintToServer("%s", sText)
 	gB_msg[client] = true
-	PrintToServer("yes")
 }
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
