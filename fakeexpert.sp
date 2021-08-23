@@ -373,10 +373,10 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
 	bfmsg.ReadString(sText, 256)
-	StringMap sm_msg = new StringMap()
-	char sPrefix[255]
-	sm_msg.GetString(sMsg, sPrefix, 255)
-	Format(sText, 256, "%s %s %s", sPrefix, sName, sText)
+	//StringMap sm_msg = new StringMap()
+	//char sPrefix[255]
+	//sm_msg.GetString(sMsg, sPrefix, 255)
+	Format(sText, 256, "%s %s %s", sMsg, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(0)
 	dp.WriteCell(sm_msg)
