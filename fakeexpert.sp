@@ -415,7 +415,7 @@ void frame_SayText2(DataPack dp)
 	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && ((!IsPlayerAlive(client) && team == i) || IsPlayerAlive(i)))
+		if(IsClientInGame(i) && allchat && GetClientTeam(i) == team)
 			clients[count++] = i
 	if(!count)
 		return
