@@ -397,6 +397,8 @@ void frame_SayText2(DataPack dp)
 {
 	dp.Reset()
 	int client = GetClientFromSerial(dp.ReadCell())
+	if(!client)
+		return
 	int clients[MAXPLAYERS +1]
 	int count
 	for(int i = 1; i <= MaxClients; i++)
