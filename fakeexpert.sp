@@ -378,7 +378,7 @@ Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bo
 	sm_msg.GetString(sMsg, sPrefix, 255)
 	Format(sText, 256, "%s %s %s", sPrefix, sName, sText)
 	DataPack dp = new DataPack()
-	dp.WriteCell(GetClientSerial(client))
+	dp.WriteCell(0)
 	dp.WriteCell(sm_msg)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
@@ -388,7 +388,7 @@ Action specchat(UserMsg msg_id, any msg, const int[] players, int playersNum, bo
 void frame_SayText2(DataPack dp)
 {
 	dp.Reset()
-	int client = GetClientFromSerial(dp.ReadCell())
+	//int client = GetClientFromSerial(dp.ReadCell())
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
