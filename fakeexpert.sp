@@ -404,7 +404,7 @@ void frame_SayText2(DataPack dp)
 	if(!client)
 		return
 	int clients[MAXPLAYERS +1]
-	/int count
+	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
