@@ -362,14 +362,10 @@ public void OnMapEnd()
 	return Plugin_Continue
 }*/
 
-//void specchat(UserMsg msg_id, MsgHook hook, bool intercept, function void(UserMsg msg_id, bool sent) post)
 Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
-	//if(reliable)
-	//{
 	BfRead bfmsg = UserMessageToBfRead(msg)
 	int client = bfmsg.ReadByte()
-	//PrintToServer("%N %i", client, client)
 	bfmsg.ReadByte()
 	char sMsg[32]
 	bfmsg.ReadString(sMsg, 32)
@@ -382,9 +378,6 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	if(!gB_msg[client])
 		return Plugin_Stop
 	gB_msg[client] = false
-	//StringMap sm_msg = new StringMap()
-	//char sPrefix[255]
-	//sm_msg.GetString(sMsg, sPrefix, 255)
 	char sMsgFormated[32]
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
 		Format(sMsgFormated, 32, "*SPEC*")
@@ -396,7 +389,6 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
-	//}
 	return Plugin_Stop
 }
 
@@ -410,29 +402,23 @@ void frame_SayText2(DataPack dp)
 	delete dp
 	if(!client)
 		return
-	//PrintToServer("%i %N", client, client)
 	int clients[MAXPLAYERS +1]
 	int count
 	int team = GetClientTeam(client)
-	gB_msg[client] = true
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
 			clients[count++] = i
 	if(!count)
 		return
-	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	if(hSayText2 == null)
 		return
-	//if(hSayText2 != INVALID_HANDLE)
-	//{
-	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
 	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
 	bfmsg.WriteByte(client)
 	bfmsg.WriteByte(true)
 	bfmsg.WriteString(sText)
 	EndMessage()
-	//}
+	gB_msg[client] = true
 }
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
