@@ -168,8 +168,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
-	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	HookUserMessage(GetUserMessageId("SayText2"), specchat, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	AddCommandListener(specchat, "say") //thanks to VerMon idea.
+	//HookUserMessage(GetUserMessageId("SayText2"), specchat, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	//HookEvent("player_say", event_playersay) //http://world-source.ru/forum/102-2953-1
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
@@ -347,7 +347,7 @@ public void OnMapEnd()
 	}
 }
 
-/*Action specchat(int client, const char[] command, int argc)
+Action specchat(int client, const char[] command, int argc)
 {
 	if(MaxClients >= client > 0 && GetClientTeam(client) == 1)
 	{
@@ -360,9 +360,9 @@ public void OnMapEnd()
 		return Plugin_Handled
 	}
 	return Plugin_Continue
-}*/
+}
 
-Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+/*Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	BfRead bfmsg = UserMessageToBfRead(msg)
 	int client = bfmsg.ReadByte()
@@ -391,9 +391,9 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
 	return Plugin_Stop
-}
+}*/
 
-void frame_SayText2(DataPack dp)
+/*void frame_SayText2(DataPack dp)
 {
 	dp.Reset()
 	int client = GetClientFromSerial(dp.ReadCell())
@@ -422,7 +422,7 @@ void frame_SayText2(DataPack dp)
 	PrintToChatAll("%s", sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	PrintToServer("%s", sText)
 	gB_msg[client] = true
-}
+}*/
 
 /*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
 {
