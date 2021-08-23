@@ -168,7 +168,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
 	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	HookUserMessage(GetUserMessageId("say"), specchat, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	HookUserMessage(GetUserMessageId("SayText"), specchat, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	//HookEvent("player_say", event_playersay) //http://world-source.ru/forum/102-2953-1
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
@@ -397,7 +397,7 @@ void frame_SayText2(DataPack dp)
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
-	Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	Handle hSayText2 = StartMessageAll("SayText", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	//Handle hSayText2 = StartMessageAll("SayText2", USERMSG_INITMSG | USERMSG_BLOCKHOOKS)
 	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
 	bfmsg.WriteByte(0)
