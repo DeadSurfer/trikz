@@ -379,11 +379,12 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 		return Plugin_Stop
 	gB_msg[client] = false
 	char sMsgFormated[32]
+	Format(sMsgFormated, 32, "%s", sMsg)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
 		Format(sMsgFormated, 32, "*SPEC*")
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
 		Format(sMsgFormated, 32, "(Spectator)")
-	Format(sText, 256, "%s %s :  %s", sMsgFormated, sName, sText)
+	Format(sText, 256, "\x01%s x07CCCCCC%s \x01:  %s", sMsgFormated, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
