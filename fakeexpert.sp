@@ -75,7 +75,7 @@ float gF_devmapTime
 
 float gF_origin[MAXPLAYERS + 1][2][3]
 float gF_eyeAngles[MAXPLAYERS + 1][2][3]
-float gF_velocity[MAXPLAYERS +1][2][3]
+float gF_velocity[MAXPLAYERS + 1][2][3]
 bool gB_toggledCheckpoint[MAXPLAYERS + 1][2]
 
 bool gB_haveZone
@@ -119,11 +119,11 @@ float gF_engineTime
 //int gI_vModelViewDef
 //int gI_wModel
 //int gI_wModelDef
-float gF_pingTime[MAXPLAYERS +1]
+float gF_pingTime[MAXPLAYERS + 1]
 bool gB_pingLock[MAXPLAYERS + 1]
 //Handle gH_viewmodel
-bool gB_msg[MAXPLAYERS +1]
-StringMap gSM_char
+bool gB_msg[MAXPLAYERS + 1]
+//StringMap gSM_char
 
 public Plugin myinfo =
 {
@@ -182,7 +182,7 @@ public void OnPluginStart()
 	//PrepSDKCall_SetVirtual(321) //https://forums.alliedmods.net/showthread.php?p=2752343 https://hatebin.com/wsyflqvnqc
 	//PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain)
 	//gH_viewmodel = EndPrepSDKCall()
-	gSM_char = new StringMap()
+	//gSM_char = new StringMap()
 }
 
 public void OnMapStart()
@@ -381,11 +381,11 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 		return Plugin_Stop
 	gB_msg[client] = false
 	//TrimString(sMsg)
-	PrintToServer("[ %s ]", sMsg)
-	char sFormated[32]
-	char sMsgNew[32]
-	Format(sMsgNew, 32, "#%s", sMsg)
-	gSM_char.GetString(sMsgNew, sFormated, sizeof(sFormated))
+	//PrintToServer("[ %s ]", sMsg)
+	//char sFormated[32]
+	//char sMsgNew[32]
+	//Format(sMsgNew, 32, "#%s", sMsg)
+	//gSM_char.GetString(sMsgNew, sFormated, sizeof(sFormated))
 	//Format(sFormated, 32, "#%s", sMsg)
 	//PrintToServer
 	//if(strlen(sFormated) == 0)
@@ -393,7 +393,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	//PrintToServer("[ %s ]", sFormated)
 	//sFormated[0] = '\0'
 	//smChar.GetString(sMsg, sFormated, sizeof(sFormated))
-	PrintToServer("[ %s ]", sFormated)
+	//PrintToServer("[ %s ]", sFormated)
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
