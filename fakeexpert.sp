@@ -411,16 +411,16 @@ void frame_SayText2(DataPack dp)
 			clients[count++] = i
 	if(!count)
 		return
-	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	if(hSayText2 == null)
-		return
+	//Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	//if(hSayText2 == null)
+	//	return
 	//BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
 	//bfmsg.WriteByte(client)
 	//bfmsg.WriteByte(true)
 	//bfmsg.WriteString(sText)
+	//EndMessage()
 	PrintToChatAll("%s", sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	PrintToServer("%s", sText)
-	EndMessage()
 	gB_msg[client] = true
 }
 
