@@ -381,10 +381,20 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
-		Format(sMsgFormated, 32, "*SPEC*")
+		Format(sText, 256, "\x01*SPEC* \x07CCCCCC%s \x01 :  %s", sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
-		Format(sMsgFormated, 32, "(Spectator)")
-	Format(sText, 256, "\x01%s \x07CCCCCC%s \x01:  %s", sMsgFormated, sName, sText)
+		Format(sText, 256, "\x01(Spectator) \x07CCCCCC%s \x01 :  %s", sName, sText)
+	else if(StrEqual(sMsg, "Cstrike_Chat_All"))
+	{
+		if(GetClientTeam(client) == 2)
+			Format(sText, 256, "\x07CCCCCC%s \x01 :  %s", sName, sText)
+		else if(GetClientTeam(client) == 3)
+			Format(sText, 256, "\x0799CCFF%s \x01 :  %s", sName, sText)
+	}
+	else if(StrEqual(sMsg, "Cstrike_Chat_CT"))
+		Format(sText, 256, "\x0799CCFF%s \x01 :  %s", sName, sText)
+	else if(StrEqual(sMsg, "Cstrike_Chat_T"))
+		Format(sText, 256, "\x07CCCCCC%s \x01 :  %s", sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
