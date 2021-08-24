@@ -3159,8 +3159,20 @@ void Noclip(int client)
 public void OnClientSayCommand_Post(int client, const char[] command, const char[] sArgs)
 {
 	if(IsChatTrigger())
-		return
-	ReplySource rs = SetCmdReplySource(SM_REPLY_TO_CHAT)
+		return Plugin_Handled
+	DataPack dp = new DataPack()
+	dp.WriteCell(GetClientSerial(client))
+	dp.WriteString(sArgs)
+	RequestFrame(frame_onSay, dp)
+	return Plugin_Continue
+}
+
+void frame_onSay(DataPack dp)
+{
+	dp.Reset()
+	int client = GetClientFromSerial(dp.ReadCell())
+	char sArgs[256]
+	dp.ReadString(sArgs, 256)
 	if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
 		Trikz(client)
 	else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
@@ -3179,7 +3191,6 @@ public void OnClientSayCommand_Post(int client, const char[] command, const char
 		cmd_afk(client, 0)
 	else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
 		Noclip(client)
-	SetCmdReplySource(rs)
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
