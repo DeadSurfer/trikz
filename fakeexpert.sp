@@ -494,7 +494,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		DispatchKeyValue(client, "skin", "2")
 		SetEntityRenderMode(client, RENDER_TRANSALPHA)
-		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
+		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 	}
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
@@ -1110,6 +1110,10 @@ void Color(int client, bool customSkin)
 			gI_colorCount[client] = 0
 			gI_colorCount[gI_partner[client]] = 0
 		}
+		char sArgString[512]
+		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+		gI_colorCount[client] = StringToInt(sArgString)
+		gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
 		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
 		for(int i = 0; i <= 2; i++)
 		{
