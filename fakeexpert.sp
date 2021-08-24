@@ -3160,19 +3160,6 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 {
 	if(IsChatTrigger())
 		return Plugin_Handled
-	DataPack dp = new DataPack()
-	dp.WriteCell(GetClientSerial(client))
-	dp.WriteString(sArgs)
-	RequestFrame(frame_onSay, dp)
-	return Plugin_Continue
-}
-
-void frame_onSay(DataPack dp)
-{
-	dp.Reset()
-	int client = GetClientFromSerial(dp.ReadCell())
-	char sArgs[256]
-	dp.ReadString(sArgs, 256)
 	if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
 		Trikz(client)
 	else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
@@ -3191,6 +3178,7 @@ void frame_onSay(DataPack dp)
 		cmd_afk(client, 0)
 	else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
 		Noclip(client)
+	return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
