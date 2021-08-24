@@ -3234,6 +3234,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		cmd_afk(client, 0)
 	else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
 		Noclip(client)
+	PrintToServer("%s %s", command, sArgs)
 	return Plugin_Continue
 }
 
