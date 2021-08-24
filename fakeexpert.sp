@@ -3138,6 +3138,27 @@ void afk(int client, bool force)
 				KickClient(i, "Away from keyboard")
 }
 
+Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	if(IsChatTrigger())
+		return Plugin_Handled
+	if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
+		Trikz(client)
+	else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
+		Block(client)
+	else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
+		Partner(client)
+	else if(StrEqual(sArgs, "time"))
+		cmd_time(client, 0)
+	else if(StrEqual(sArgs, "devmap"))
+		cmd_devmap(client, 0)
+	else if(StrEqual(sArgs, "top"))
+		cmd_top(client, 0)
+	else if(StrEqual(sArgs, "afk"))
+		cmd_afk(client, 0)
+	return Plugin_Continue
+}
+
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(!other)
