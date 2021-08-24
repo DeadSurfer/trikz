@@ -125,6 +125,7 @@ bool gB_pingLock[MAXPLAYERS + 1]
 bool gB_msg[MAXPLAYERS + 1]
 //StringMap gSM_char
 int gI_voters
+int gI_afkClient
 
 public Plugin myinfo =
 {
@@ -3078,6 +3079,7 @@ Action cmd_afk(int client, int args)
 	if(GetEngineTime() - gF_afkTime > 30.0 && GetEngineTime() - gF_devmapTime > 35.0)
 	{
 		gI_voters = 0
+		gI_afkClient = client
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i) && client != i)
@@ -3117,9 +3119,13 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					gB_afk[param1] = true
 					gI_voters--
+					afk(gI_afkClient, false)
 				}
 				case 1:
+				{
 					gI_voters--
+					afk(gI_afkClient, false)
+				}
 			}
 		}
 		case MenuAction_End:
