@@ -3115,8 +3115,10 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case 0:
+				{
 					gB_afk[param1] = true
 					gI_voters[1]--
+				}
 				case 1:
 					gI_voters[1]--
 			}
