@@ -2962,12 +2962,7 @@ Action cmd_devmap(int client, int args)
 		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE)
 		PrintToChatAll("Devmap vote started by %N", client)
 	}
-	else if(GetEngineTime() - gF_afkTime <= 30.0)
-	{
-		PrintToChat(client, "Afk vote is not allowed yet.")
-		return Plugin_Handled
-	}
-	else if(GetEngineTime() - gF_devmapTime <= 35.0)
+	else if(GetEngineTime() - gF_devmapTime <= 35.0 || GetEngineTime() - gF_afkTime <= 30.0)
 		PrintToChat(client, "Devmap vote is not allowed yet.")
 	return Plugin_Handled
 }
@@ -3097,13 +3092,8 @@ Action cmd_afk(int client, int args)
 		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE)
 		PrintToChatAll("Afk check - vote started by %N", client)
 	}
-	else if(GetEngineTime() - gF_afkTime <= 30.0)
+	else if(GetEngineTime() - gF_afkTime <= 30.0 || GetEngineTime() - gF_devmapTime <= 35.0)
 		PrintToChat(client, "Afk vote is not allowed yet.")
-	else if(GetEngineTime() - gF_devmapTime <= 35.0)
-	{
-		PrintToChat(client, "Devmap vote is not allowed yet.")
-		return Plugin_Handled
-	}
 	return Plugin_Handled
 }
 
