@@ -158,6 +158,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_afk", cmd_afk)
 	RegConsoleCmd("sm_nc", cmd_noclip)
 	RegConsoleCmd("sm_noclip", cmd_noclip)
+	RegConsoleCmd("sm_sp", cmd_spec)
+	RegConsoleCmd("sm_spec", cmd_spec)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -3214,6 +3216,12 @@ void Noclip(int client)
 		PrintToChat(client, "Turn on devmap.")
 }
 
+Action cmd_spec(int client, int args)
+{
+	FakeClientCommand(client, "spectate")
+	return Plugin_Handled
+}
+
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(IsChatTrigger())
@@ -3240,6 +3248,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		cmd_afk(client, 0)
 	else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
 		Noclip(client)
+	else if(StrEqual(sArgs, "sp") || StrEqual(sArgs, "spec"))
+		cmd_spec(client, 0)
 	return Plugin_Continue
 }
 
