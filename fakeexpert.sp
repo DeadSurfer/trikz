@@ -3132,11 +3132,11 @@ Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	gI_voters[0] = 1
-	afk()
+	afk(client)
 	return Plugin_Stop
 }
 
-void afk()
+void afk(int client)
 {
 	if(gI_voters[0] || !gI_voters[1])
 		for(int i = 1; i <= MaxClients; i++)
