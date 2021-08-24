@@ -3138,7 +3138,7 @@ void afk(int client, bool force)
 				KickClient(i, "Away from keyboard")
 }
 
-Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(IsChatTrigger())
 		return Plugin_Handled
