@@ -3037,7 +3037,13 @@ Action cmd_top(int client, int args)
 	gCV_topURL.GetString(sTopURL, 192)
 	char sTopURLwMap[256]
 	Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
-	ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	//ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	KeyValues kv = new KeyValues("data")
+	kv.SetString("title", "Trikz Timer")
+	kv.SetNum("type", MOTDPANEL_TYPE_URL)
+	kv.SetString("msg", sTopURLwMap)
+	ShowVGUIPanel(client, "info", kv, true)
+	delete kv
 	return Plugin_Handled
 }
 
