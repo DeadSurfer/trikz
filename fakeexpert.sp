@@ -124,6 +124,7 @@ bool gB_pingLock[MAXPLAYERS + 1]
 //Handle gH_viewmodel
 bool gB_msg[MAXPLAYERS + 1]
 //StringMap gSM_char
+int gI_voters[2]
 
 public Plugin myinfo =
 {
@@ -326,6 +327,7 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
+	gI_voters[1] = 0
 }
 
 public void OnMapEnd()
@@ -2934,21 +2936,26 @@ Action cmd_devmap(int client, int args)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(gB_isDevmap)
+			if(!IsClientSourceTV(i))
 			{
-				Menu menu = new Menu(devmap_handler)
-				menu.SetTitle("Turn off dev map?")
-				menu.AddItem("yes", "Yes")
-				menu.AddItem("no", "No")
-				menu.Display(i, 20)
-			}
-			else
-			{
-				Menu menu = new Menu(devmap_handler)
-				menu.SetTitle("Turn on dev map?")
-				menu.AddItem("yes", "Yes")
-				menu.AddItem("no", "No")
-				menu.Display(i, 20)
+				gI_voters[0] = 0
+				gI_voters[1]++
+				if(gB_isDevmap)
+				{
+					Menu menu = new Menu(devmap_handler)
+					menu.SetTitle("Turn off dev map?")
+					menu.AddItem("yes", "Yes")
+					menu.AddItem("no", "No")
+					menu.Display(i, 20)
+				}
+				else
+				{
+					Menu menu = new Menu(devmap_handler)
+					menu.SetTitle("Turn on dev map?")
+					menu.AddItem("yes", "Yes")
+					menu.AddItem("no", "No")
+					menu.Display(i, 20)
+				}
 			}
 		}
 		gF_devmapTime = GetEngineTime()
@@ -2974,9 +2981,17 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case 0:
+				{
 					gF_devmap[1]++
+					gI_voters[1]--
+					devmap()
+				}
 				case 1:
+				{
 					gF_devmap[0]++
+					gI_voters[1]--
+					devmap()
+				}
 			}
 		}
 		case MenuAction_End:
@@ -2987,39 +3002,48 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 Action timer_devmap(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
-	{
-		if(gB_isDevmap)
-		{
-			PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-			CreateTimer(5.0, timer_changelevel, false)
-			return Plugin_Stop
-		}
-		else
-		{
-			PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-			CreateTimer(5.0, timer_changelevel, true)
-			return Plugin_Stop
-		}
-	}
-	if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0])
-	{
-		if(gB_isDevmap)
-		{
-			PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
-			for(int i = 0; i <= 1; i++)
-				gF_devmap[i] = 0.0
-			return Plugin_Stop
-		}
-		else
-		{
-			PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
-			for(int i = 0; i <= 1; i++)
-				gF_devmap[i] = 0.0
-			return Plugin_Stop
-		}
-	}
+	gI_voters[0] = 1
+	devmap()
 	return Plugin_Stop
+}
+
+void devmap()
+{
+	if(gI_voters[0] || !gI_voters[1])
+	{
+		if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
+		{
+			if(gB_isDevmap)
+			{
+				PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
+				CreateTimer(5.0, timer_changelevel, false)
+				return
+			}
+			else
+			{
+				PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
+				CreateTimer(5.0, timer_changelevel, true)
+				return
+			}
+		}
+		if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0])
+		{
+			if(gB_isDevmap)
+			{
+				PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
+				for(int i = 0; i <= 1; i++)
+					gF_devmap[i] = 0.0
+				return
+			}
+			else
+			{
+				PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
+				for(int i = 0; i <= 1; i++)
+					gF_devmap[i] = 0.0
+				return
+			}
+		}
+	}
 }
 
 Action timer_changelevel(Handle timer, bool value)
@@ -3056,9 +3080,11 @@ Action cmd_afk(int client, int args)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && !IsPlayerAlive(i) && client != i)
+			if(!IsClientSourceTV(i) && IsClientInGame(i) && !IsPlayerAlive(i) && client != i)
 			{
 				gB_afk[i] = false
+				gI_voters[0] = 0
+				gI_voters[1]++
 				Menu menu = new Menu(afk_handler)
 				menu.SetTitle("Are you here?")
 				menu.AddItem("yes", "Yes")
@@ -3090,6 +3116,9 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 					gB_afk[param1] = true
+					gI_voters[1]--
+				case 1:
+					gI_voters[1]--
 			}
 		}
 		case MenuAction_End:
@@ -3100,10 +3129,17 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsClientSourceTV(i) && !gB_afk[i] && client != i)
-			KickClient(i, "Away from keyboard")
+	gI_voters[0] = 1
+	afk()
 	return Plugin_Stop
+}
+
+void afk()
+{
+	if(gI_voters[0] || !gI_voters[1])
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsClientSourceTV(i) && !gB_afk[i] && client != i)
+				KickClient(i, "Away from keyboard")
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
