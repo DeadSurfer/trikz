@@ -147,6 +147,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_block", cmd_block)
 	RegConsoleCmd("sm_p", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
+	RegConsoleCmd("sm_c", cmd_color)
+	RegConsoleCmd("sm_color", cmd_color)
 	RegConsoleCmd("sm_r", cmd_restart)
 	RegConsoleCmd("sm_restart", cmd_restart)
 	RegConsoleCmd("sm_time", cmd_time)
@@ -1076,8 +1078,16 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
+Action cmd_color(int client, int args)
+{
+	Color(client, true)
+	return Plugin_Handled
+}
+
 void Color(int client, bool customSkin)
 {
+	if(!gB_isDevmap && !gI_partner[client])
+		PrintToChat(client, "You must have a partner.")
 	if(customSkin)
 	{
 		gB_color[client] = true
@@ -3188,6 +3198,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		Block(client)
 	else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
 		Partner(client)
+	else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color"))
+		Color(client)
 	else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		Restart(client)
 	else if(StrEqual(sArgs, "time"))
