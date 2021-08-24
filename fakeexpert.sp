@@ -417,10 +417,21 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 		else if(GetClientTeam(client) == 3)
 			Format(sText, 256, "\x0799CCFF%s \x01:  %s", sName, sText)
 	}
+	else if(StrEqual(sMsg, "Cstrike_Chat_AllDead"))
+	{
+		if(GetClientTeam(client) == 2)
+			Format(sText, 256, "*DEAD* \x07FF4040%s \x01:  %s", sName, sText)
+		else if(GetClientTeam(client) == 3)
+			Format(sText, 256, "*DEAD* \x0799CCFF%s \x01:  %s", sName, sText)
+	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_CT"))
 		Format(sText, 256, "\x01(Counter-Terrorist) \x0799CCFF%s \x01:  %s", sName, sText)
+	else if(StrEqual(sMsg, "Cstrike_Chat_CT_Dead"))
+		Format(sText, 256, "\x01*DEAD*(Counter-Terrorist) \x0799CCFF%s \x01:  %s", sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_T"))
 		Format(sText, 256, "\x01(Terrorist) \x07FF4040%s \x01:  %s", sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
+	else if(StrEqual(sMsg, "Cstrike_Chat_T_Dead"))
+		Format(sText, 256, "\x01*DEAD*(Terrorist) \x07FF4040%s \x01:  %s", sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
