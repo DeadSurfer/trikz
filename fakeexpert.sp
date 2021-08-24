@@ -1095,7 +1095,10 @@ Action cmd_color(int client, int args)
 void Color(int client, bool customSkin)
 {
 	if(!gB_isDevmap && !gI_partner[client])
+	{
 		PrintToChat(client, "You must have a partner.")
+		return
+	}
 	if(customSkin)
 	{
 		gB_color[client] = true
