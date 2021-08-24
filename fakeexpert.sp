@@ -3033,17 +3033,21 @@ Action timer_changelevel(Handle timer, bool value)
 
 Action cmd_top(int client, int args)
 {
-	CreateTimer(0.1, timer_motd, client) //OnMapStart() is not work from first try.
+	CreateTimer(0.1, timer_motd, client, TIMER_FLAG_NO_MAPCHANGE) //OnMapStart() is not work from first try.
 	return Plugin_Handled
 }
 
 Action timer_motd(Handle timer, int client)
 {
-	char sTopURL[192]
-	gCV_topURL.GetString(sTopURL, 192)
-	char sTopURLwMap[256]
-	Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
-	ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	if(IsClientInGame(client))
+	{
+		char sTopURL[192]
+		gCV_topURL.GetString(sTopURL, 192)
+		char sTopURLwMap[256]
+		Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
+		ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	}
+	return Plugin_Stop
 }
 
 Action cmd_afk(int client, int args)
