@@ -3039,32 +3039,32 @@ Action timer_changelevel(Handle timer, bool value)
 
 Action cmd_top(int client, int args)
 {
-	//char sTopURL[192]
-	//gCV_topURL.GetString(sTopURL, 192)
-	//char sTopURLwMap[256]
-	//Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
-	//ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	char sTopURL[192]
+	gCV_topURL.GetString(sTopURL, 192)
+	char sTopURLwMap[256]
+	Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
+	ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	//ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL)
 	//RequestFrame(frame_motd, client)
-	CreateTimer(0.1, timer_motd, client)
+	//CreateTimer(0.1, timer_motd, client)
 	//KeyValues kv = new KeyValues("data")
 	//kv.SetString("title", "Trikz Timer")
 	//kv.SetNum("type", MOTDPANEL_TYPE_URL)
 	//kv.SetString("msg", sTopURLwMap)
 	//ShowVGUIPanel(client, "info", kv, true)
 	//delete kv
-	return Plugin_Handled
+	return Plugin_Changed
 }
 
 //void frame_motd(int client)
-Action timer_motd(Handle timer, int client)
+/*Action timer_motd(Handle timer, int client)
 {
 	char sTopURL[192]
 	gCV_topURL.GetString(sTopURL, 192)
 	char sTopURLwMap[256]
 	Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
 	ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
-}
+}*/
 
 Action cmd_afk(int client, int args)
 {
