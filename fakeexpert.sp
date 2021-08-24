@@ -953,7 +953,7 @@ Action cmd_partner(int client, int args)
 
 void Partner(int client)
 {
-	if(gI_devmap)
+	if(gB_devmap)
 		PrintToChat(client, "Turn on devmap.")
 	else
 	{
