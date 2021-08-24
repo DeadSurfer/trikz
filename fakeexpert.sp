@@ -3218,7 +3218,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		Block(client)
 	else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
 		Partner(client)
-	else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color"))
+	else if(StrContains(sArgs, "c ") || StrContains(sArgs, "color"))
 		Color(client, true)
 	else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		Restart(client)
