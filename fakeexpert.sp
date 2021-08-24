@@ -1113,14 +1113,14 @@ void Color(int client, bool customSkin)
 			gI_colorCount[client] = 0
 			gI_colorCount[gI_partner[client]] = 0
 		}
-		char sArgString[512]
-		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+		//char sArgString[512]
+		//GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
 		//int color = StringToInt(sArgString)
-		if(strlen(sArgString))
-		{
-			gI_colorCount[client] = StringToInt(sArgString)
-			gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
-		}
+		//if(strlen(sArgString))
+		//{
+		//	gI_colorCount[client] = StringToInt(sArgString)
+		//	gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
+		//}
 		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
 		for(int i = 0; i <= 2; i++)
 		{
@@ -3212,14 +3212,13 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 {
 	if(IsChatTrigger())
 		return Plugin_Handled
-	PrintToServer("%s %s", command, sArgs)
 	if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
 		Trikz(client)
 	else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
 		Block(client)
 	else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
 		Partner(client)
-	else if(StrContains(sArgs, "c ") || StrContains(sArgs, "color"))
+	else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color"))
 		Color(client, true)
 	else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		Restart(client)
