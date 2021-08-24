@@ -598,21 +598,23 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 
 Action cmd_checkpoint(int client, int args)
 {
-	if(gB_isDevmap)
-		Checkpoint(client)
+	Checkpoint(client)
 	return Plugin_Handled
 }
 
 void Checkpoint(int client)
 {
-	Menu menu = new Menu(checkpoint_handler)
-	menu.SetTitle("Checkpoint")
-	menu.AddItem("Save", "Save")
-	menu.AddItem("Teleport", "Teleport", gB_toggledCheckpoint[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	menu.AddItem("Save second", "Save second")
-	menu.AddItem("Teleport second", "Teleport second", gB_toggledCheckpoint[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
-	menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
-	menu.Display(client, MENU_TIME_FOREVER)
+	if(gB_isDevmap)
+	{
+		Menu menu = new Menu(checkpoint_handler)
+		menu.SetTitle("Checkpoint")
+		menu.AddItem("Save", "Save")
+		menu.AddItem("Teleport", "Teleport", gB_toggledCheckpoint[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+		menu.AddItem("Save second", "Save second")
+		menu.AddItem("Teleport second", "Teleport second", gB_toggledCheckpoint[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED)
+		menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+		menu.Display(client, MENU_TIME_FOREVER)
+	}
 }
 
 int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -3154,6 +3156,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		cmd_devmap(client, 0)
 	else if(StrEqual(sArgs, "top"))
 		cmd_top(client, 0)
+	else if(StrEqual(sArgs, "cp"))
+		Checkpoint(client)
 	else if(StrEqual(sArgs, "afk"))
 		cmd_afk(client, 0)
 	return Plugin_Continue
