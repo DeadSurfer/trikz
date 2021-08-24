@@ -1116,7 +1116,7 @@ void Color(int client, bool customSkin)
 		char sArgString[512]
 		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
 		//int color = StringToInt(sArgString)
-		if(Strlen(sArgString))
+		if(strlen(sArgString))
 		{
 			gI_colorCount[client] = StringToInt(sArgString)
 			gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
