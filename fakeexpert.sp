@@ -3156,7 +3156,7 @@ void Noclip(int client)
 	}
 }
 
-public Action OnClientSayCommand_Post(int client, const char[] command, const char[] sArgs)
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(IsChatTrigger())
 		return Plugin_Handled
