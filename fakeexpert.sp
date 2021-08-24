@@ -3160,6 +3160,7 @@ public void OnClientSayCommand_Post(int client, const char[] command, const char
 {
 	if(IsChatTrigger())
 		return
+	ReplySource rs = SetCmdReplySource(SM_REPLY_TO_CHAT)
 	if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
 		Trikz(client)
 	else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
@@ -3178,6 +3179,7 @@ public void OnClientSayCommand_Post(int client, const char[] command, const char
 		cmd_afk(client, 0)
 	else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
 		Noclip(client)
+	SetCmdReplySource(rs)
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
