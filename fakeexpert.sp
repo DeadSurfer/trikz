@@ -3156,10 +3156,10 @@ void Noclip(int client)
 	}
 }
 
-public Action OnClientSayCommand_Post(int client, const char[] command, const char[] sArgs)
+public void OnClientSayCommand_Post(int client, const char[] command, const char[] sArgs)
 {
 	if(IsChatTrigger())
-		return Plugin_Handled
+		return
 	if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
 		Trikz(client)
 	else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
@@ -3178,7 +3178,6 @@ public Action OnClientSayCommand_Post(int client, const char[] command, const ch
 		cmd_afk(client, 0)
 	else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
 		Noclip(client)
-	return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
