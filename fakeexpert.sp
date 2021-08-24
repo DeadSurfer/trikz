@@ -1115,8 +1115,12 @@ void Color(int client, bool customSkin)
 		}
 		char sArgString[512]
 		GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
-		gI_colorCount[client] = StringToInt(sArgString)
-		gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
+		int color = StringToInt(sArgString)
+		if(0 <= color <= 8)
+		{
+			gI_colorCount[client] = StringToInt(sArgString)
+			gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
+		}
 		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
 		for(int i = 0; i <= 2; i++)
 		{
