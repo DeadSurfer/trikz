@@ -1141,7 +1141,7 @@ void Restart(int client)
 				gB_block[client] = false
 				if(gB_TrikzMenuIsOpen[client])
 					Trikz(client)
-				CreateTimer(3.0, Timer_BlockToggle, client) 
+				CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
 				int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 //https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
 				if(IsValidEntity(pistol))
 					RemovePlayerItem(client, pistol)
@@ -2855,7 +2855,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			TE_SendToAll()
 			EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
-			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client)
+			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
 	if(!gCV_turboPhysics.BoolValue)
@@ -2952,7 +2952,7 @@ Action cmd_devmap(int client, int args)
 			}
 		}
 		gF_devmapTime = GetEngineTime()
-		CreateTimer(20.0, timer_devmap)
+		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE)
 		PrintToChatAll("Devmap vote started by %N", client)
 	}
 	else if(GetEngineTime() - gF_afkTime <= 30.0)
@@ -3163,7 +3163,7 @@ Action SDKProjectile(int entity)
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		CreateTimer(1.45, timer_deleteProjectile, EntIndexToEntRef(entity)) //sometimes flashbang going to flash, entindextoentref must fix it.
+		CreateTimer(1.45, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
 	}
 }
 
