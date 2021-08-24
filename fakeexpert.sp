@@ -124,7 +124,7 @@ bool gB_pingLock[MAXPLAYERS + 1]
 //Handle gH_viewmodel
 bool gB_msg[MAXPLAYERS + 1]
 //StringMap gSM_char
-int gI_voters[2]
+int gI_voters
 
 public Plugin myinfo =
 {
@@ -327,7 +327,6 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
-	gI_voters[1] = 0
 }
 
 public void OnMapEnd()
@@ -2934,12 +2933,12 @@ Action cmd_devmap(int client, int args)
 {
 	if(GetEngineTime() - gF_devmapTime > 35.0 && GetEngineTime() - gF_afkTime > 30.0)
 	{
+		gI_voters = 0
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i))
 			{
-				gI_voters[0] = 0
-				gI_voters[1]++
+				gI_voters++
 				if(gB_isDevmap)
 				{
 					Menu menu = new Menu(devmap_handler)
@@ -2983,13 +2982,13 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					gF_devmap[1]++
-					gI_voters[1]--
+					gI_voters--
 					devmap()
 				}
 				case 1:
 				{
 					gF_devmap[0]++
-					gI_voters[1]--
+					gI_voters--
 					devmap()
 				}
 			}
@@ -3002,14 +3001,14 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 Action timer_devmap(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	gI_voters[0] = 1
-	devmap()
+	gI_voters = 1
+	devmap(true)
 	return Plugin_Stop
 }
 
-void devmap()
+void devmap(bool force)
 {
-	if(gI_voters[0] || !gI_voters[1])
+	if(force || !gI_voters)
 	{
 		if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
 		{
@@ -3078,13 +3077,13 @@ Action cmd_afk(int client, int args)
 {
 	if(GetEngineTime() - gF_afkTime > 30.0 && GetEngineTime() - gF_devmapTime > 35.0)
 	{
+		gI_voters = 0
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i) && client != i)
 			{
 				gB_afk[i] = false
-				gI_voters[0] = 0
-				gI_voters[1]++
+				gI_voters++
 				Menu menu = new Menu(afk_handler)
 				menu.SetTitle("Are you here?")
 				menu.AddItem("yes", "Yes")
@@ -3117,10 +3116,10 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					gB_afk[param1] = true
-					gI_voters[1]--
+					gI_voters--
 				}
 				case 1:
-					gI_voters[1]--
+					gI_voters--
 			}
 		}
 		case MenuAction_End:
@@ -3131,14 +3130,13 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	gI_voters[0] = 1
-	afk(client)
+	afk(client, true)
 	return Plugin_Stop
 }
 
-void afk(int client)
+void afk(int client, bool force)
 {
-	if(gI_voters[0] || !gI_voters[1])
+	if(force || !gI_voters)
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsClientSourceTV(i) && !gB_afk[i] && client != i)
 				KickClient(i, "Away from keyboard")
