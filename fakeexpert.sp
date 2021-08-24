@@ -147,6 +147,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_block", cmd_block)
 	RegConsoleCmd("sm_p", cmd_partner)
 	RegConsoleCmd("sm_partner", cmd_partner)
+	RegConsoleCmd("sm_r", cmd_restart)
+	RegConsoleCmd("sm_restart", cmd_restart)
 	RegConsoleCmd("sm_time", cmd_time)
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
@@ -617,6 +619,8 @@ void Checkpoint(int client)
 		menu.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 		menu.Display(client, MENU_TIME_FOREVER)
 	}
+	else
+		PrintToChat(client, "Turn on devmap.")
 }
 
 int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -949,34 +953,39 @@ Action cmd_partner(int client, int args)
 
 void Partner(int client)
 {
-	if(!gI_partner[client])
-	{
-		Menu menu = new Menu(partner_handler)
-		menu.SetTitle("Choose partner")
-		char sName[MAX_NAME_LENGTH]
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i]) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
-			{
-				GetClientName(i, sName, MAX_NAME_LENGTH)
-				char sNameID[32]
-				IntToString(i, sNameID, 32)
-				menu.AddItem(sNameID, sName)
-			}
-		}
-		menu.Display(client, 20)
-	}
+	if(gI_devmap)
+		PrintToChat(client, "Turn on devmap.")
 	else
 	{
-		Menu menu = new Menu(cancelpartner_handler)
-		menu.SetTitle("Cancel partnership with %N", gI_partner[client])
-		//char sName[MAX_NAME_LENGTH]
-		//GetClientName(gI_partner[client], sName, MAX_NAME_LENGTH)
-		char sPartner[32]
-		IntToString(gI_partner[client], sPartner, 32)
-		menu.AddItem(sPartner, "Yes")
-		menu.AddItem("", "No")
-		menu.Display(client, 20)
+		if(!gI_partner[client])
+		{
+			Menu menu = new Menu(partner_handler)
+			menu.SetTitle("Choose partner")
+			char sName[MAX_NAME_LENGTH]
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i]) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
+				{
+					GetClientName(i, sName, MAX_NAME_LENGTH)
+					char sNameID[32]
+					IntToString(i, sNameID, 32)
+					menu.AddItem(sNameID, sName)
+				}
+			}
+			menu.Display(client, 20)
+		}
+		else
+		{
+			Menu menu = new Menu(cancelpartner_handler)
+			menu.SetTitle("Cancel partnership with %N", gI_partner[client])
+			//char sName[MAX_NAME_LENGTH]
+			//GetClientName(gI_partner[client], sName, MAX_NAME_LENGTH)
+			char sPartner[32]
+			IntToString(gI_partner[client], sPartner, 32)
+			menu.AddItem(sPartner, "Yes")
+			menu.AddItem("", "No")
+			menu.Display(client, 20)
+		}
 	}
 }
 
@@ -1124,37 +1133,48 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 	}
 }
 
+Action cmd_restart(int client, int args)
+{
+	Restart(client)
+	return Plugin_Handled
+}
+
 void Restart(int client)
 {
-	if(!gB_isDevmap && gB_haveZone)
+	if(gB_isDevmap)
+		PrintToChat(client, "Turn on devmap.")
+	else
 	{
-		if(gI_partner[client])
+		if(gB_haveZone)
 		{
-			if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
+			if(gI_partner[client])
 			{
-				gB_readyToStart[client] = true
-				gF_Time[client] = 0.0
-				gB_state[client] = false
-				float velNull[3]
-				TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
-				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-				SetEntityRenderMode(client, RENDER_TRANSALPHA)
-				if(gB_color[client])
-					SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
-				else
-					SetEntityRenderColor(client, 255, 255, 255, 125)
-				gB_block[client] = false
-				if(gB_TrikzMenuIsOpen[client])
-					Trikz(client)
-				CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
-				int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 //https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
-				if(IsValidEntity(pistol))
-					RemovePlayerItem(client, pistol)
-				GivePlayerItem(client, "weapon_usp")
+				if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
+				{
+					gB_readyToStart[client] = true
+					gF_Time[client] = 0.0
+					gB_state[client] = false
+					float velNull[3]
+					TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
+					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+					SetEntityRenderMode(client, RENDER_TRANSALPHA)
+					if(gB_color[client])
+						SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
+					else
+						SetEntityRenderColor(client, 255, 255, 255, 125)
+					gB_block[client] = false
+					if(gB_TrikzMenuIsOpen[client])
+						Trikz(client)
+					CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
+					int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 //https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
+					if(IsValidEntity(pistol))
+						RemovePlayerItem(client, pistol)
+					GivePlayerItem(client, "weapon_usp")
+				}
 			}
+			else
+				PrintToChat(client, "You must have a partner.")
 		}
-		else
-			PrintToChat(client, "You must have a partner.")
 	}
 }
 
@@ -3154,6 +3174,8 @@ void Noclip(int client)
 		SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP)
 		PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.")
 	}
+	else
+		PrintToChat(client, "Turn on devmap.")
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
