@@ -152,6 +152,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_devmap", cmd_devmap)
 	RegConsoleCmd("sm_top", cmd_top)
 	RegConsoleCmd("sm_afk", cmd_afk)
+	RegConsoleCmd("sm_nc", cmd_noclip)
+	RegConsoleCmd("sm_noclip", cmd_noclip)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -904,8 +906,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 5:
 				{
-					SetEntityMoveType(param1, GetEntityMoveType(param1) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP)
-					PrintToChat(param1, GetEntityMoveType(param1) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.")
+					Noclip(param1)
 					Trikz(param1)
 				}
 			}
@@ -3140,6 +3141,21 @@ void afk(int client, bool force)
 				KickClient(i, "Away from keyboard")
 }
 
+Action cmd_noclip(int client, int args)
+{
+	Noclip(client)
+	return Plugin_Handled
+}
+
+void Noclip(int client)
+{
+	if(gB_isDevmap)
+	{
+		SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP)
+		PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.")
+	}
+}
+
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(IsChatTrigger())
@@ -3160,6 +3176,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		Checkpoint(client)
 	else if(StrEqual(sArgs, "afk"))
 		cmd_afk(client, 0)
+	else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
+		Noclip(client)
 	return Plugin_Continue
 }
 
