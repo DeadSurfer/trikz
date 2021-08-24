@@ -2983,13 +2983,13 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					gF_devmap[1]++
 					gI_voters--
-					devmap()
+					devmap(false)
 				}
 				case 1:
 				{
 					gF_devmap[0]++
 					gI_voters--
-					devmap()
+					devmap(false)
 				}
 			}
 		}
