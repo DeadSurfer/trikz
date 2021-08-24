@@ -964,7 +964,7 @@ Action cmd_partner(int client, int args)
 void Partner(int client)
 {
 	if(gB_isDevmap)
-		PrintToChat(client, "Turn on devmap.")
+		PrintToChat(client, "Turn off devmap.")
 	else
 	{
 		if(!gI_partner[client])
@@ -1179,7 +1179,7 @@ Action cmd_restart(int client, int args)
 void Restart(int client)
 {
 	if(gB_isDevmap)
-		PrintToChat(client, "Turn on devmap.")
+		PrintToChat(client, "Turn off devmap.")
 	else
 	{
 		if(gB_haveZone)
