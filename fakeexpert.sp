@@ -493,6 +493,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	{
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		DispatchKeyValue(client, "skin", "2")
+		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 	}
 	else
@@ -944,7 +945,6 @@ Action Block(int client) //thanks maru for optimization.
 {
 	gB_block[client] = !gB_block[client]
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", gB_block[client] ? 5 : 2)
-	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 	if(gB_color[client])
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 	else
@@ -1116,6 +1116,8 @@ void Color(int client, bool customSkin)
 			gI_color[client][i] = StringToInt(gS_colorExploded[i])
 			gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
 		}
+		SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+		SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 		SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[gI_partner[client]] ? 255 : 125)
 		gI_colorCount[client]++
@@ -1175,7 +1177,6 @@ void Restart(int client)
 					float velNull[3]
 					TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
 					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-					SetEntityRenderMode(client, RENDER_TRANSALPHA)
 					if(gB_color[client])
 						SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
 					else
