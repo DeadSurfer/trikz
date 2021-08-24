@@ -1092,6 +1092,7 @@ Action cmd_color(int client, int args)
 	return Plugin_Handled
 }
 
+//void Color(int client, bool customSkin, int color = -1)
 void Color(int client, bool customSkin)
 {
 	if(!gB_isDevmap && !gI_partner[client])
@@ -1120,6 +1121,11 @@ void Color(int client, bool customSkin)
 		//{
 		//	gI_colorCount[client] = StringToInt(sArgString)
 		//	gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
+		//}
+		//if(0 <= color <= 8)
+		//{
+		//	gI_colorCount[client] = color
+		//	gI_colorCount[gI_partner[client]] = color
 		//}
 		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
 		for(int i = 0; i <= 2; i++)
