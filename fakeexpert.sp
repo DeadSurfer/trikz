@@ -3080,7 +3080,6 @@ Action cmd_afk(int client, int args)
 	{
 		gI_voters = 0
 		gI_afkClient = client
-		PrintToServer("%i", MaxClients)
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i) && client != i)
