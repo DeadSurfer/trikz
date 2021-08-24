@@ -2964,11 +2964,11 @@ Action cmd_devmap(int client, int args)
 	}
 	else if(GetEngineTime() - gF_afkTime <= 30.0)
 	{
-		PrintToChat(client, "Afk vote is in progress.")
+		PrintToChat(client, "Afk vote is not allowed yet.")
 		return Plugin_Handled
 	}
 	else if(GetEngineTime() - gF_devmapTime <= 35.0)
-		PrintToChat(client, "Devmap vote is in progress.")
+		PrintToChat(client, "Devmap vote is not allowed yet.")
 	return Plugin_Handled
 }
 
@@ -3098,11 +3098,11 @@ Action cmd_afk(int client, int args)
 	}
 	else if(GetEngineTime() - gF_devmapTime <= 35.0)
 	{
-		PrintToChat(client, "Devmap vote is in progress.")
+		PrintToChat(client, "Devmap vote is not allowed yet.")
 		return Plugin_Handled
 	}
 	else if(GetEngineTime() - gF_afkTime <= 30.0)
-		PrintToChat(client, "Afk vote is in progress.")
+		PrintToChat(client, "Afk vote is not allowed yet.")
 	return Plugin_Handled
 }
 
