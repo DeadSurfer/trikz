@@ -489,7 +489,15 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 		gI_class[client] = 3
 	if(StrEqual(sModel, "models/player/ct_gign.mdl"))
 		gI_class[client] = 4
-	SetEntityRenderColor(client, 255, 255, 255, 255)
+	if(gB_color[client])
+	{
+		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+		DispatchKeyValue(client, "skin", "2")
+		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
+	}
+	else
+		SetEntityRenderColor(client, 255, 255, 255, 255)
+	//SetEntityRenderColor(client, 255, 255, 255, 255)
 	//https://forums.alliedmods.net/showthread.php?t=273885
 	//gI_viewmodel[client] = 
 	/*int index
