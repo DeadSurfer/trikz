@@ -327,11 +327,11 @@ public void OnMapStart()
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
 	
-	char sTopURL[192]
+	/*char sTopURL[192]
 	gCV_topURL.GetString(sTopURL, 192)
 	char sTopURLwMap[256]
 	Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
-	ShowMOTDPanel(0, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	ShowMOTDPanel(0, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL)*/ //https://forums.alliedmods.net/showthread.php?t=232476
 }
 
 public void OnMapEnd()
@@ -3039,13 +3039,13 @@ Action timer_changelevel(Handle timer, bool value)
 
 Action cmd_top(int client, int args)
 {
-	char sTopURL[192]
-	gCV_topURL.GetString(sTopURL, 192)
-	char sTopURLwMap[256]
-	Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
-	ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+	//char sTopURL[192]
+	//gCV_topURL.GetString(sTopURL, 192)
+	//char sTopURLwMap[256]
+	//Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
+	//ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	//ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL)
-	//RequestFrame(frame_motd, client)
+	RequestFrame(frame_motd, client)
 	//CreateTimer(0.1, timer_motd, client)
 	//KeyValues kv = new KeyValues("data")
 	//kv.SetString("title", "Trikz Timer")
