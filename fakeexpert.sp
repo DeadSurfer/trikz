@@ -3188,6 +3188,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		Block(client)
 	else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
 		Partner(client)
+	else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
+		Restart(client)
 	else if(StrEqual(sArgs, "time"))
 		cmd_time(client, 0)
 	else if(StrEqual(sArgs, "devmap"))
