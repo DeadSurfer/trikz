@@ -180,7 +180,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
 	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	HookUserMessage(GetUserMessageId("SayText2"), specchat, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	HookUserMessage(GetUserMessageId("SayText2"), specchat) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	//HookEvent("player_say", event_playersay) //http://world-source.ru/forum/102-2953-1
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
@@ -391,7 +391,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 		return Plugin_Stop
 	gB_msg[client] = false
 	//TrimString(sMsg)
-	//PrintToServer("[ %s ]", sMsg)
+	PrintToServer("[ %s ]", sMsg)
 	//char sFormated[32]
 	//char sMsgNew[32]
 	//Format(sMsgNew, 32, "#%s", sMsg)
