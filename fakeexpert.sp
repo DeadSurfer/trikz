@@ -3229,10 +3229,7 @@ void Noclip(int client)
 
 Action cmd_spec(int client, int args)
 {
-	//SetEntProp(client, Prop_Data, "m_iTeamNum", 1)
-	//FakeClientCommand(client, "spectate")
-	CS_SwitchTeam(client, 1)
-	//ChangeClientTeam(client, 1)
+	ChangeClientTeam(client, 1)
 	return Plugin_Handled
 }
 
