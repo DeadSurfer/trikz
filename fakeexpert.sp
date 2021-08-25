@@ -724,12 +724,12 @@ public void OnClientPutInServer(int client)
 	if(!gB_isDevmap)
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
-	Color(client, false)
 }
 
 public void OnClientDisconnect(int client)
 {
 	Color(client, false)
+	gB_color[client] = false
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
 	if(partner && gB_TrikzMenuIsOpen[partner])
