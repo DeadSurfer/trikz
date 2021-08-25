@@ -1106,7 +1106,7 @@ Action cmd_color(int client, int args)
 }
 
 //void Color(int client, bool customSkin, int color = -1)
-void Color(int client, bool customSkin)
+void Color(int client, bool customSkin, int color = -1)
 {
 	if(!gB_isDevmap && !gI_partner[client])
 	{
@@ -1135,11 +1135,11 @@ void Color(int client, bool customSkin)
 		//	gI_colorCount[client] = StringToInt(sArgString)
 		//	gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
 		//}
-		//if(0 <= color <= 8)
-		//{
-		//	gI_colorCount[client] = color
-		//	gI_colorCount[gI_partner[client]] = color
-		//}
+		if(0 <= color <= 8)
+		{
+			gI_colorCount[client] = color
+			gI_colorCount[gI_partner[client]] = color
+		}
 		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
 		for(int i = 0; i <= 2; i++)
 		{
@@ -3245,6 +3245,24 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		Partner(client)
 	else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color"))
 		Color(client, true)
+	else if(StrEqual(sArgs, "c 0") || StrEqual(sArgs, "color 0"))
+		Color(client, true, 0)
+	else if(StrEqual(sArgs, "c 1") || StrEqual(sArgs, "color 1"))
+		Color(client, true, 1)
+	else if(StrEqual(sArgs, "c 2") || StrEqual(sArgs, "color 2"))
+		Color(client, true, 2)
+	else if(StrEqual(sArgs, "c 3") || StrEqual(sArgs, "color 3"))
+		Color(client, true, 3)
+	else if(StrEqual(sArgs, "c 4") || StrEqual(sArgs, "color 4"))
+		Color(client, true, 4)
+	else if(StrEqual(sArgs, "c 5") || StrEqual(sArgs, "color 5"))
+		Color(client, true, 5)
+	else if(StrEqual(sArgs, "c 6") || StrEqual(sArgs, "color 6"))
+		Color(client, true, 6)
+	else if(StrEqual(sArgs, "c 7") || StrEqual(sArgs, "color 7"))
+		Color(client, true, 7)
+	else if(StrEqual(sArgs, "c 8") || StrEqual(sArgs, "color 8"))
+		Color(client, true, 8)
 	else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		Restart(client)
 	else if(StrEqual(sArgs, "time"))
