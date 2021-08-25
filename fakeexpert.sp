@@ -3229,7 +3229,8 @@ void Noclip(int client)
 
 Action cmd_spec(int client, int args)
 {
-	FakeClientCommand(client, "spectate")
+	//FakeClientCommand(client, "spectate")
+	SetEntProp(client, Prop_Data, "m_iTeamNum", 1)
 	return Plugin_Handled
 }
 
