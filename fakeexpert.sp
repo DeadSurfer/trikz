@@ -724,6 +724,7 @@ public void OnClientPutInServer(int client)
 	if(!gB_isDevmap)
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
+	Color(client, false)
 }
 
 public void OnClientDisconnect(int client)
