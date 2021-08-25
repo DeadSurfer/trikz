@@ -1127,14 +1127,6 @@ void Color(int client, bool customSkin, int color = -1)
 			gI_colorCount[client] = 0
 			gI_colorCount[gI_partner[client]] = 0
 		}
-		//char sArgString[512]
-		//GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
-		//int color = StringToInt(sArgString)
-		//if(strlen(sArgString))
-		//{
-		//	gI_colorCount[client] = StringToInt(sArgString)
-		//	gI_colorCount[gI_partner[client]] = StringToInt(sArgString)
-		//}
 		if(0 <= color <= 8)
 		{
 			gI_colorCount[client] = color
@@ -3243,25 +3235,25 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		Block(client)
 	else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
 		Partner(client)
-	else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color"))
+	else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color")) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
 		Color(client, true)
-	else if(StrEqual(sArgs, "c 0") || StrEqual(sArgs, "color 0"))
+	else if(StrEqual(sArgs, "c 0") || StrEqual(sArgs, "c white") || StrEqual(sArgs, "color 0") || StrEqual(sArgs, "color white"))
 		Color(client, true, 0)
-	else if(StrEqual(sArgs, "c 1") || StrEqual(sArgs, "color 1"))
+	else if(StrEqual(sArgs, "c 1") || StrEqual(sArgs, "c red") || StrEqual(sArgs, "color 1") || StrEqual(sArgs, "color red"))
 		Color(client, true, 1)
-	else if(StrEqual(sArgs, "c 2") || StrEqual(sArgs, "color 2"))
+	else if(StrEqual(sArgs, "c 2") || StrEqual(sArgs, "c orange") || StrEqual(sArgs, "color 2") || StrEqual(sArgs, "color orange"))
 		Color(client, true, 2)
-	else if(StrEqual(sArgs, "c 3") || StrEqual(sArgs, "color 3"))
+	else if(StrEqual(sArgs, "c 3") || StrEqual(sArgs, "c yellow") || StrEqual(sArgs, "color 3") || StrEqual(sArgs, "color yellow"))
 		Color(client, true, 3)
-	else if(StrEqual(sArgs, "c 4") || StrEqual(sArgs, "color 4"))
+	else if(StrEqual(sArgs, "c 4") || StrEqual(sArgs, "c lime") || StrEqual(sArgs, "color 4") || StrEqual(sArgs, "color lime"))
 		Color(client, true, 4)
-	else if(StrEqual(sArgs, "c 5") || StrEqual(sArgs, "color 5"))
+	else if(StrEqual(sArgs, "c 5") || StrEqual(sArgs, "c aqua") || StrEqual(sArgs, "color 5") || StrEqual(sArgs, "color aqua"))
 		Color(client, true, 5)
-	else if(StrEqual(sArgs, "c 6") || StrEqual(sArgs, "color 6"))
+	else if(StrEqual(sArgs, "c 6") || StrEqual(sArgs, "c deep sky blue") || StrEqual(sArgs, "color 6") || StrEqual(sArgs, "color deep sky blue"))
 		Color(client, true, 6)
-	else if(StrEqual(sArgs, "c 7") || StrEqual(sArgs, "color 7"))
+	else if(StrEqual(sArgs, "c 7") || StrEqual(sArgs, "c blue") || StrEqual(sArgs, "color 7") || StrEqual(sArgs, "color blue"))
 		Color(client, true, 7)
-	else if(StrEqual(sArgs, "c 8") || StrEqual(sArgs, "color 8"))
+	else if(StrEqual(sArgs, "c 8") || StrEqual(sArgs, "c magenta") || StrEqual(sArgs, "color 8") || StrEqual(sArgs, "color magenta"))
 		Color(client, true, 8)
 	else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		Restart(client)
