@@ -456,7 +456,7 @@ void frame_SayText2(DataPack dp)
 	//if(!client)
 	//	return
 	//int clients[MAXPLAYERS +1]
-	int clients[MAXPLAYERS +1]
+	//int clients[MAXPLAYERS +1]
 	//int count
 	int team = GetClientTeam(client)
 	Handle hSayText2
