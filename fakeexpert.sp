@@ -3105,42 +3105,25 @@ void devmap(bool force)
 		if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
 		{
 			if(gB_isDevmap)
-			{
 				PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-				CreateTimer(5.0, timer_changelevel, false)
-				return
-			}
 			else
-			{
 				PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-				CreateTimer(5.0, timer_changelevel, true)
-				return
-			}
+			CreateTimer(5.0, timer_changelevel, gB_isDevmap ? true : false)
 		}
-		if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0])
+		else if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0])
 		{
 			if(gB_isDevmap)
-			{
 				PrintToChatAll("Devmap will be continue. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
-				for(int i = 0; i <= 1; i++)
-					gF_devmap[i] = 0.0
-				return
-			}
 			else
-			{
 				PrintToChatAll("Devmap will not be enabled. \"No\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
-				for(int i = 0; i <= 1; i++)
-					gF_devmap[i] = 0.0
-				return
-			}
 		}
+		for(int i = 0; i <= 1; i++)
+			gF_devmap[i] = 0.0
 	}
 }
 
 Action timer_changelevel(Handle timer, bool value)
 {
-	for(int i = 0; i <= 1; i++)
-		gF_devmap[i] = 0.0
 	gB_isDevmap = value
 	ForceChangeLevel(gS_map, "Reason: Devmap")
 	return Plugin_Stop
