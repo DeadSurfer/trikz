@@ -394,6 +394,7 @@ Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum,
 	//TrimString(sMsg)
 	PrintToServer("[ %s ]", sMsg)
 	StringMap sm = new StringMap()
+	char sMsgSM[32]
 	sm.GetString(sMsgSM, 32)
 	PrintToServer("[ %s ]", sMsgSM)
 	//char sFormated[32]
