@@ -1134,51 +1134,51 @@ Action cmd_color(int client, int args)
 //void Color(int client, bool customSkin, int color = -1)
 void Color(int client, bool customSkin, int color = -1)
 {
-	if(!gB_isDevmap && !gI_partner[client])
+	if(IsClientInGame(client))
 	{
-		PrintToChat(client, "You must have a partner.")
-		return
-	}
-	if(customSkin)
-	{
-		gB_color[client] = true
-		gB_color[gI_partner[client]] = true
-		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
-		DispatchKeyValue(client, "skin", "2")
-		DispatchKeyValue(gI_partner[client], "skin", "2")
-		char gS_colorExploded[3][3]
-		if(gI_colorCount[client] == 9)
+		if(!gB_isDevmap && !gI_partner[client])
 		{
+			PrintToChat(client, "You must have a partner.")
+			return
+		}
+		if(customSkin)
+		{
+			gB_color[client] = true
+			gB_color[gI_partner[client]] = true
+			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
+			DispatchKeyValue(client, "skin", "2")
+			DispatchKeyValue(gI_partner[client], "skin", "2")
+			char gS_colorExploded[3][3]
+			if(gI_colorCount[client] == 9)
+			{
+				gI_colorCount[client] = 0
+				gI_colorCount[gI_partner[client]] = 0
+			}
+			if(0 <= color <= 8)
+			{
+				gI_colorCount[client] = color
+				gI_colorCount[gI_partner[client]] = color
+			}
+			ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
+			for(int i = 0; i <= 2; i++)
+			{
+				gI_color[client][i] = StringToInt(gS_colorExploded[i])
+				gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
+			}
+			SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+			SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
+			SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[gI_partner[client]] ? 255 : 125)
+			gI_colorCount[client]++
+			gI_colorCount[gI_partner[client]]++
+		}
+		else
+		{
+			gB_color[client] = false
+			gB_color[gI_partner[client]] = false
 			gI_colorCount[client] = 0
 			gI_colorCount[gI_partner[client]] = 0
-		}
-		if(0 <= color <= 8)
-		{
-			gI_colorCount[client] = color
-			gI_colorCount[gI_partner[client]] = color
-		}
-		ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
-		for(int i = 0; i <= 2; i++)
-		{
-			gI_color[client][i] = StringToInt(gS_colorExploded[i])
-			gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
-		}
-		SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-		SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
-		SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[gI_partner[client]] ? 255 : 125)
-		gI_colorCount[client]++
-		gI_colorCount[gI_partner[client]]++
-	}
-	else
-	{
-		gB_color[client] = false
-		gB_color[gI_partner[client]] = false
-		gI_colorCount[client] = 0
-		gI_colorCount[gI_partner[client]] = 0
-		if(IsClientInGame(client))
-		{
 			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 			SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
