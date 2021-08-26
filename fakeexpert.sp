@@ -179,9 +179,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
-	//AddCommandListener(specchat, "say") //thanks to VerMon idea.
-	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
-	//HookEvent("player_say", event_playersay) //http://world-source.ru/forum/102-2953-1
+	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
@@ -360,21 +358,6 @@ public void OnMapEnd()
 	}
 }
 
-/*Action specchat(int client, const char[] command, int argc)
-{
-	if(MaxClients >= client > 0 && GetClientTeam(client) == 1)
-	{
-		char sName[MAX_NAME_LENGTH]
-		GetClientName(client, sName, MAX_NAME_LENGTH)
-		char sChat[256]
-		GetCmdArg(argc, sChat, 256)
-		PrintToChatAll("\x01*SPEC* \x07CCCCCC%s \x01:  %s", sName, sChat) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
-		PrintToServer("*SPEC* %s :  %s", sName, sChat)
-		return Plugin_Handled
-	}
-	return Plugin_Continue
-}*/
-
 Action hookum_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	//bfmsg = UserMessageToBfRead(msg)
@@ -412,15 +395,15 @@ Action hookum_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int play
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
-		Format(sText, 256, "\x01*SPEC* \x07CCCCCC%s \x01:  %s", sName, sText)
+		Format(sText, 256, "\x01*SPEC* \x07CCCCCC%s \x01:  %s", sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
 		Format(sText, 256, "\x01(Spectator) \x07CCCCCC%s \x01:  %s", sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_All"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(sText, 256, "\x07FF4040%s \x01:  %s", sName, sText)
+			Format(sText, 256, "\x07FF4040%s \x01:  %s", sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
 		else if(GetClientTeam(client) == 3)
-			Format(sText, 256, "\x0799CCFF%s \x01:  %s", sName, sText)
+			Format(sText, 256, "\x0799CCFF%s \x01:  %s", sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
 	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_AllDead"))
 	{
@@ -473,26 +456,6 @@ void frame_SayText2(DataPack dp)
 	EndMessage()
 	gB_msg[client] = true
 }
-
-/*Action event_playersay(Event event, const char[] name, bool dontBroadcast)
-{
-	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(GetClientTeam(client) == 1)
-	{
-		char sChat[256]
-		event.GetString("text", sChat, 256)
-		Handle hSayText2 = StartMessageAll("SayText2", USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-		bfmsg.WriteByte(client)
-		bfmsg.WriteByte(true)
-		//char sChat[256]
-		//Format(sChat, 256, "%s", name)
-		bfmsg.WriteString(sChat)
-		EndMessage()
-		return Plugin_Handled
-	}
-	return Plugin_Continue
-}*/
 
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
