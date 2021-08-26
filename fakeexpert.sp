@@ -78,7 +78,7 @@ float gF_eyeAngles[MAXPLAYERS + 1][2][3]
 float gF_velocity[MAXPLAYERS + 1][2][3]
 bool gB_toggledCheckpoint[MAXPLAYERS + 1][2]
 
-bool gB_haveZone
+bool gB_haveZone[3]
 
 bool gB_isServerRecord
 char gS_date[64]
@@ -199,7 +199,8 @@ public void OnMapStart()
 {
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
-	gB_haveZone = false
+	for(int i = 0; i <= 2; i++)
+		gB_haveZone[i] = false
 	if(gB_isDevmap)
 	{
 		gB_zoneFirst[0] = false
@@ -1212,7 +1213,7 @@ void Restart(int client)
 		PrintToChat(client, "Turn off devmap.")
 	else
 	{
-		if(gB_haveZone)
+		if(gB_haveZone[0] && gB_haveZone[1])
 		{
 			if(gI_partner[client])
 			{
@@ -1294,6 +1295,7 @@ void createstart()
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
 	PrintToServer("Start zone is successfuly setup.")
+	gB_haveZone[0] = true
 }
 
 void createend()
@@ -1327,6 +1329,7 @@ void createend()
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("End zone is successfuly setup.")
 	CPSetup(0)
+	gB_haveZone[1] = true
 }
 
 Action cmd_startmins(int client, int args)
@@ -1706,7 +1709,7 @@ Action cmd_zones(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		if(gB_isDevmap)
+		if(gB_isDevmap && (gB_haveZone[0] || gB_haveZone[1] || gB_haveZone[2]))
 			ZoneEditor(client)
 		else
 			PrintToChat(client, "Turn on devmap.")
@@ -2001,8 +2004,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 		if(!gB_isDevmap)
 			createcp(cp)
 		gI_cpCount++
-		if(!gB_haveZone)
-			gB_haveZone = true
+		if(!gB_haveZone[2])
+			gB_haveZone[2] = true
 	}
 	if(cp == 10)
 	{
