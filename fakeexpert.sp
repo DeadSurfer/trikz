@@ -377,17 +377,17 @@ public void OnMapEnd()
 
 Action specchat(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
-	BfRead bfmsg = UserMessageToBfRead(msg)
-	int client = bfmsg.ReadByte()
-	bfmsg.ReadByte()
+	//bfmsg = UserMessageToBfRead(msg)
+	int client = msg.ReadByte()
+	msg.ReadByte()
 	char sMsg[32]
-	bfmsg.ReadString(sMsg, 32)
+	msg.ReadString(sMsg, 32)
 	char sName[MAX_NAME_LENGTH]
-	bfmsg.ReadString(sName, MAX_NAME_LENGTH)
+	msg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
-	bfmsg.ReadString(sText, 256)
-	if(!client)
-		return Plugin_Continue
+	msg.ReadString(sText, 256)
+	//if(!client)
+	//	return Plugin_Continue
 	if(!gB_msg[client])
 		return Plugin_Stop
 	gB_msg[client] = false
@@ -448,20 +448,20 @@ void frame_SayText2(DataPack dp)
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
-	delete dp
-	if(!client)
-		return
+	//delete dp
+	//if(!client)
+	//	return
 	int clients[MAXPLAYERS +1]
 	int count
 	int team = GetClientTeam(client)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
 			clients[count++] = i
-	if(!count)
-		return
+	//if(!count)
+	//	return
 	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	if(hSayText2 == null)
-		return
+	//if(hSayText2 == null)
+	//	return
 	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
 	bfmsg.WriteByte(client)
 	bfmsg.WriteByte(true)
@@ -685,8 +685,8 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
 					Trikz(param1)
 			}
-		case MenuAction_End:
-			delete menu
+		//case MenuAction_End:
+		//	delete menu
 	}
 }
 
@@ -945,8 +945,8 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
 		case MenuAction_Display:
 			gB_TrikzMenuIsOpen[param1] = true
-		case MenuAction_End:
-			delete menu
+		//case MenuAction_End:
+		//	delete menu
 	}
 }
 
@@ -1031,8 +1031,8 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			menu2.AddItem(sItem, "No")
 			menu2.Display(partner, 20)
 		}
-		case MenuAction_End:
-			delete menu
+		//case MenuAction_End:
+		//	delete menu
 	}
 }
 
@@ -1070,8 +1070,8 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 					PrintToChat(param1, "Partnersheep declined with %N.", partner)
 			}
 		}
-		case MenuAction_End:
-			delete menu
+		//case MenuAction_End:
+		//	delete menu
 	}
 }
 
@@ -1096,8 +1096,8 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		case MenuAction_End:
-			delete menu
+		//case MenuAction_End:
+		//	delete menu
 	}
 }
 
@@ -3085,8 +3085,8 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		case MenuAction_End:
-			delete menu
+		//case MenuAction_End:
+		//	delete menu
 	}
 }
 
@@ -3197,8 +3197,8 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		case MenuAction_End:
-			delete menu
+		//case MenuAction_End:
+		//	delete menu
 	}
 }
 
