@@ -455,18 +455,15 @@ void frame_SayText2(DataPack dp)
 	//delete dp
 	//if(!client)
 	//	return
-	//int clients[MAXPLAYERS +1]
-	//int clients[MAXPLAYERS +1]
-	//int count
+	int clients[MAXPLAYERS +1]
+	int count
 	int team = GetClientTeam(client)
-	Handle hSayText2
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
-			hSayText2 = StartMessageOne("SayText2", i, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+			clients[count++] = i
 	//if(!count)
 	//	return
-	//Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	//Handle hSayText2 = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 	//if(hSayText2 == null)
 	//	return
 	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
