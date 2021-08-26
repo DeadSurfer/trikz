@@ -179,7 +179,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
-	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
