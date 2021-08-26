@@ -1709,7 +1709,7 @@ Action cmd_zones(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID))
 	{
-		if(gB_isDevmap && (gB_haveZone[0] || gB_haveZone[1] || gB_haveZone[2]))
+		if(gB_isDevmap)
 			ZoneEditor(client)
 		else
 			PrintToChat(client, "Turn on devmap.")
@@ -1725,8 +1725,10 @@ void ZoneEditor2(int client)
 {
 	Menu menu = new Menu(zones_handler)
 	menu.SetTitle("Zone editor")
-	menu.AddItem("0", "Start zone")
-	menu.AddItem("1", "End zone")
+	if(gB_haveZone[0])
+		menu.AddItem("0", "Start zone")
+	if(gB_haveZone[1])
+		menu.AddItem("1", "End zone")
 	char sFormat[32]
 	if(gI_cpCount)
 	{
@@ -1738,6 +1740,8 @@ void ZoneEditor2(int client)
 			menu.AddItem(sCP, sFormat)
 		}
 	}
+	if(!gB_haveZone[0] && !gB_haveZone[1] && !gI_cpCount)
+		menu.AddItem("-1", "No zones are setup.", ITEMDRAW_DISABLED)
 	menu.Display(client, MENU_TIME_FOREVER)
 }
 
