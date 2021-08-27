@@ -155,11 +155,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 		}*/
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
-			if(gI_ADcount[client] == 0)
-				gI_SWcount[client]++
+			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
-			if(gI_SWcount[client] == 0)
-				gI_ADcount[client]++
+			gI_ADcount[client]++
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -197,11 +195,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
 	{
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
-			if(gI_ADcount[client] == 0)
-				gI_SWcount[client]++
+			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
-			if(gI_SWcount[client] == 0)
-				gI_ADcount[client]++
+			gI_ADcount[client]++
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
@@ -213,12 +209,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			PrintToServer("ladder: success")
 			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
-			if(190.0 > distance >= 22.0 && gI_SWcount[client] == 0 && gI_ADcount[client] == 0)
+			if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
 				PrintToChat(client, "[SM] Ladder: %.1f units!", distance)
-			if(190.0 > distance >= 22.0 && gI_SWcount[client] > 0)
-				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i", distance, gI_SWcount[client])
-			if(190.0 > distance >= 22.0 && gI_ADcount[client] > 0)
-				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client])
+			if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
+				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i", distance, gI_SWcount[client]++)
+			if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
+				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client]++)
 		}
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
