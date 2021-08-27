@@ -144,6 +144,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_ADcount[client]++
 		if(mouse[0] > 0)
 		{
+			PrintToServer("%i", mouse[0])
 			if(buttons & IN_MOVERIGHT)
 				gF_sync[client][gI_ADcount[client]] += 1.0
 		}
