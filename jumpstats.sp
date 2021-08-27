@@ -40,7 +40,8 @@ bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
-float gF_sync[MAXPLAYERS + 1]
+float gF_sync[MAXPLAYERS + 1][2][50 + 1]
+int gI_tickAir[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -85,7 +86,12 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		{
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
-			gF_sync[client] = 0.0
+			for(int i = 1; i <= 50; i++)
+			{
+				gF_sync[client][0][i] = 0.0
+				gF_sync[client][1][i] = 0.0
+			}
+			gI_tickAir[client] = 0.0
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 			gF_origin[client][0] = origin[0]
@@ -121,6 +127,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityFlags(client) & FL_ONGROUND)
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
+	else
+		gI_tickAir[client]++
 	if(gB_jumped[client])
 	{
 		if(gB_getFirstStrafe[client])
@@ -135,7 +143,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
-		PrintToServer("%i %i", mouse[0], mouse[1])
+		if(mouse[0] > 0)
+			if(buttons & IN_MOVERIGHT)
+				gF_sync[client][1][gI_ADcount[client]]++
+		else
+			if(buttons & IN_MOVELEFT)
+				gF_sync[client][0][gI_ADcount[client]]++
+		//PrintToServer("%i %i", mouse[0], mouse[1]) //if mouse[0] is positive is moving to right, is negative moving to left.
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -160,6 +174,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_ADcount[client] = 0
 		//gI_jumpready[client] = 0
 		//gF_jumpTime[client] = GetEngineTime()
+		float sync
+		for(int i = 1; i <= 50; i++)
+			sync += gF_sync[client][0][i]
+		sync /= gI_tickAir[client]
+		sync *= 100.0
+		PrintToServer("%f", sync)
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
