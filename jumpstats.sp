@@ -86,9 +86,9 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		{
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
-			gI_syncTick[client][0] = 0
-			gI_syncTick[client][1] = 0
-			gI_tickAir[client] = 0
+			//gI_syncTick[client][0] = 0
+			//gI_syncTick[client][1] = 0
+			//gI_tickAir[client] = 0
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 			gF_origin[client][0] = origin[0]
@@ -295,6 +295,9 @@ void ResetFactory(int client)
 	//gB_getFirstStrafe[client] = false
 	gI_SWcount[client] = 0
 	gI_ADcount[client] = 0
+	gI_syncTick[client][0] = 0
+	gI_syncTick[client][1] = 0
+	gI_tickAir[client] = 0
 }
 
 Action StartTouchProjectile(int entity, int other)
