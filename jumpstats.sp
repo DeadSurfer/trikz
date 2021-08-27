@@ -95,6 +95,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			if(gI_SWcount[client] == 0)
 				gI_ADcount[client]++
+		PrintToServer("%i %i %i %i %i %i", GetEntProp(client, Prop_Data, "m_nButtons"), GetEntProp(client, Prop_Data, "m_afButtonLast"), GetEntProp(client, Prop_Data, "m_afButtonPressed"), GetEntProp(client, Prop_Data, "m_afButtonReleased"), GetEntProp(client, Prop_Data, "m_afButtonDisabled"), GetEntProp(client, Prop_Data, "m_afButtonForced"))
 	}
 }
 
