@@ -278,7 +278,7 @@ void ResetFactory(int client)
 {
 	gB_jumped[client] = false
 	gB_ladder[client] = false
-	/gB_getFirstStrafe[client] = false
+	//gB_getFirstStrafe[client] = false
 	gI_SWcount[client] = 0
 	gI_ADcount[client] = 0
 }
