@@ -2066,7 +2066,7 @@ Action SDKStartTouch(int entity, int other)
 		{
 			//gB_readyToStart[other] = true //expert zone idea.
 			//gB_readyToStart[gI_partner[other]] = true
-			Restart(other)
+			Restart(other) //expert zone idea.
 			Restart(gI_partner[other])
 		}
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
