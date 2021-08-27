@@ -152,7 +152,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		if(mouse[0] < 0)
 		{
-			if(buttons & IN_MOVELEFT || )
+			if(buttons & IN_MOVELEFT)
 				gI_syncTick[client][0]++
 			if(buttons & IN_FORWARD)
 				gI_syncTick[client][1]++
