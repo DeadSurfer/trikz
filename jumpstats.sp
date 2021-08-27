@@ -126,7 +126,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
 	}
-	else
+	else if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityMoveType(client) == MOVETYPE_LADDER))
 		gI_tickAir[client]++
 	if(gB_jumped[client])
 	{
