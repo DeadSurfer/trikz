@@ -162,8 +162,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
-		float sync
-		PrintToServer("sync null = %f", sync)
+		float sync = -1
+		PrintToServer("sync null = %f", sync) //sync null = 0.000000
 		if(gI_SWcount[client] < gI_ADcount[client])
 			sync += float(gI_syncTick[client][0])
 		else if(gI_SWcount[client] > gI_ADcount[client])
