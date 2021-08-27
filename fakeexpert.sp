@@ -96,8 +96,7 @@ int gI_wModelPlayerDef[5]
 int gI_pingModel[MAXPLAYERS + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
 
-bool gB_zoneFirst[2]
-bool gB_firstZoneCP
+bool gB_zoneFirst[3]
 
 char gS_color[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,0", "0,255,255", "0,191,255", "0,0,255", "255,0,255"} //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
 int gI_color[MAXPLAYERS + 1][3]
@@ -198,12 +197,12 @@ public void OnMapStart()
 	GetCurrentMap(gS_map, 192)
 	Database.Connect(SQLConnect, "fakeexpert")
 	for(int i = 0; i <= 2; i++)
-		gB_haveZone[i] = false
-	if(gB_isDevmap)
 	{
-		gB_zoneFirst[0] = false
-		gB_zoneFirst[1] = false
+		gB_haveZone[i] = false
+		if(gB_isDevmap)
+			gB_zoneFirst[i] = false
 	}
+			
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
@@ -360,7 +359,6 @@ public void OnMapEnd()
 
 Action hookum_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
-	//bfmsg = UserMessageToBfRead(msg)
 	int client = msg.ReadByte()
 	msg.ReadByte()
 	char sMsg[32]
@@ -369,29 +367,9 @@ Action hookum_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int play
 	msg.ReadString(sName, MAX_NAME_LENGTH)
 	char sText[256]
 	msg.ReadString(sText, 256)
-	//if(!client)
-	//	return Plugin_Continue
 	if(!gB_msg[client])
 		return Plugin_Stop
 	gB_msg[client] = false
-	//TrimString(sMsg)
-	//PrintToServer("[ %s ]", sMsg)
-	//StringMap sm = new StringMap()
-	//char sMsgSM[32]
-	//sm.GetString(sMsg, sMsgSM, 32)
-	//PrintToServer("[ %s ]", sMsgSM)
-	//char sFormated[32]
-	//char sMsgNew[32]
-	//Format(sMsgNew, 32, "#%s", sMsg)
-	//gSM_char.GetString(sMsgNew, sFormated, sizeof(sFormated))
-	//Format(sFormated, 32, "#%s", sMsg)
-	//PrintToServer
-	//if(strlen(sFormated) == 0)
-	//	Format(sFormated, sizeof(sFormated), "{1} : {2}")
-	//PrintToServer("[ %s ]", sFormated)
-	//sFormated[0] = '\0'
-	//smChar.GetString(sMsg, sFormated, sizeof(sFormated))
-	//PrintToServer("[ %s ]", sFormated)
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
@@ -435,26 +413,22 @@ void frame_SayText2(DataPack dp)
 	bool allchat = dp.ReadCell()
 	char sText[256]
 	dp.ReadString(sText, 256)
-	//delete dp
-	//if(!client)
-	//	return
-	int clients[MAXPLAYERS +1]
-	int count
-	int team = GetClientTeam(client)
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
-			clients[count++] = i
-	//if(!count)
-	//	return
-	Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-	//if(hSayText2 == null)
-	//	return
-	BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
-	bfmsg.WriteByte(client)
-	bfmsg.WriteByte(true)
-	bfmsg.WriteString(sText)
-	EndMessage()
-	gB_msg[client] = true
+	if(IsClientInGame(client))
+	{
+		int clients[MAXPLAYERS +1]
+		int count
+		int team = GetClientTeam(client)
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
+				clients[count++] = i
+		Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
+		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
+		bfmsg.WriteByte(client)
+		bfmsg.WriteByte(true)
+		bfmsg.WriteString(sText)
+		EndMessage()
+		gB_msg[client] = true
+	}
 }
 
 Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
@@ -1619,7 +1593,7 @@ Action cmd_cpmins(int client, int args)
 			{
 				PrintToChat(client, "CP: No.%i", cpnum)
 				GetClientAbsOrigin(client, gF_originCP[0][cpnum])
-				gB_firstZoneCP = true
+				gB_zoneFirst[2] = true
 			}
 		}
 		else
@@ -1644,7 +1618,7 @@ Action cmd_cpmaxs(int client, int args)
 	IntToString(steamid, sCurrentSteamID, 64)
 	char sSteamID[64]
 	GetConVarString(gCV_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID) && gB_firstZoneCP)
+	if(StrEqual(sSteamID, sCurrentSteamID) && gB_zoneFirst[2])
 	{
 		char sCmd[512]
 		GetCmdArg(args, sCmd, 512)
@@ -1655,7 +1629,7 @@ Action cmd_cpmaxs(int client, int args)
 			char sQuery[512]
 			Format(sQuery, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, gS_map)
 			gD_mysql.Query(SQLCPRemoved, sQuery, cpnum)
-			gB_firstZoneCP = false
+			gB_zoneFirst[2] = false
 		}
 	}
 	return Plugin_Handled
