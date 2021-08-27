@@ -2939,9 +2939,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(IsPlayerAlive(client))
 	//	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nModelIndex"))
 	if(GetEngineTime() - gF_hudTime >= 0.1)
+	{
+		gF_hudTime = GetEngineTime()
 		if(gB_hudVel[client])
-			gF_hudTime = GetEngineTime()
-				Hud(client)
+			Hud(client)
+	}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
