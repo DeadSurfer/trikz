@@ -175,9 +175,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 290.0)
 			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s", sZLevel, distance, pre)
 		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 290.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_SWcount[client]++, pre)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_SWcount[client] + 1, pre)
 		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 290.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client]++, pre)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client] + 1, pre)
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
 		//gI_jumpready[client] = 0
@@ -212,9 +212,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
 				PrintToChat(client, "[SM] Ladder: %.1f units!", distance)
 			if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i", distance, gI_SWcount[client]++)
+				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i", distance, gI_SWcount[client] + 1)
 			if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client]++)
+				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client] + 1)
 		}
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
