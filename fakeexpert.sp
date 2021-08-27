@@ -3198,7 +3198,7 @@ Action cmd_hud(int client, int args)
 
 void Hud(int client)
 {
-	GetEntPropVector(client, Prop_Data, "m_vec")
+	//GetEntPropVector(client, Prop_Data, "m_vec")
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
