@@ -125,8 +125,10 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(GetEntityFlags(client) & FL_ONGROUND)
+	{
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
+	}
 	else
 		gI_tickAir[client]++
 	if(gB_jumped[client])
@@ -144,8 +146,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
 		if(mouse[0] > 0)
+		{
 			if(buttons & IN_MOVERIGHT)
 				gF_sync[client][1][gI_ADcount[client]] += 1.0
+		}
 		else
 			if(buttons & IN_MOVELEFT)
 				gF_sync[client][0][gI_ADcount[client]] += 1.0
