@@ -3214,7 +3214,10 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		else if(StrEqual(sArgs, "c 8") || StrEqual(sArgs, "c magenta") || StrEqual(sArgs, "color 8") || StrEqual(sArgs, "color magenta"))
 			Color(client, true, 8)
 		else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
+		{
 			Restart(client)
+			Restart(gI_partner[client])
+		}
 		else if(StrEqual(sArgs, "time"))
 			cmd_time(client, 0)
 		else if(StrEqual(sArgs, "devmap"))
