@@ -41,11 +41,11 @@ bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
 bool gB_mapFinished[MAXPLAYERS + 1]
 bool gB_passDB
-bool gB_passZone[MAXPLAYERS + 1]
+//bool gB_passZone[MAXPLAYERS + 1]
 float gF_originStart[3]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyVel[MAXPLAYERS + 1][3]
-bool gB_readyToStart[MAXPLAYERS + 1]
+//bool gB_readyToStart[MAXPLAYERS + 1]
 
 float gF_originCP[2][11][3]
 bool gB_cp[11][MAXPLAYERS + 1]
@@ -1164,7 +1164,7 @@ void Restart(int client)
 			{
 				if(IsPlayerAlive(client))
 				{
-					gB_readyToStart[client] = true
+					//gB_readyToStart[client] = true
 					gF_Time[client] = 0.0
 					gB_state[client] = false
 					float velNull[3]
@@ -2032,7 +2032,8 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 
 Action SDKEndTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && gB_readyToStart[other])
+	//if(0 < other <= MaxClients && gB_readyToStart[other])
+	if(0 < other <= MaxClients && !gB_state[other])
 	{
 		gB_state[other] = true
 		gB_state[gI_partner[other]] = true
@@ -2040,10 +2041,10 @@ Action SDKEndTouch(int entity, int other)
 		gB_mapFinished[gI_partner[other]] = false
 		gF_TimeStart[other] = GetEngineTime()
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
-		gB_passZone[other] = true
-		gB_passZone[gI_partner[other]] = true
-		gB_readyToStart[other] = false
-		gB_readyToStart[gI_partner[other]] = false
+		//gB_passZone[other] = true
+		//gB_passZone[gI_partner[other]] = true
+		//gB_readyToStart[other] = false
+		//gB_readyToStart[gI_partner[other]] = false
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
@@ -2056,7 +2057,8 @@ Action SDKEndTouch(int entity, int other)
 
 Action SDKStartTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && gB_passZone[other])
+	//if(0 < other <= MaxClients && gB_passZone[other])
+	if(0 < other <= MaxClients)
 	{
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
@@ -2070,8 +2072,8 @@ Action SDKStartTouch(int entity, int other)
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
 			gB_mapFinished[other] = true
-			gB_passZone[other] = false
-			if(gB_mapFinished[other] && gB_mapFinished[gI_partner[other]])
+			//gB_passZone[other] = false
+			if(gB_mapFinished[gI_partner[other]])
 			{
 				char sQuery[512]
 				int playerid = GetSteamAccountID(other)
@@ -2777,8 +2779,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
 		if(!IsPlayerAlive(client))
 		{
-			gB_readyToStart[client] = true
-			gB_readyToStart[gI_partner[client]] = true
+			//gB_readyToStart[client] = true
+			//gB_readyToStart[gI_partner[client]] = true
 			gF_Time[client] = 0.0
 			gF_Time[gI_partner[client]] = 0.0
 			gB_state[client] = false
