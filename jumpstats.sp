@@ -141,7 +141,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
-		if(mouse[0] > 0) //moving to right.
+		if((mouse[0] || mouse[1] > 0) //moving to right.
 		{
 			if(buttons & IN_MOVERIGHT)
 				gI_syncTick[client]++
@@ -168,11 +168,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %1.f", sZLevel, distance, pre, sync)
+			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, distance, pre, sync)
 		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %1.f", sZLevel, distance, gI_SWcount[client]++, pre, sync)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, distance, gI_SWcount[client]++, pre, sync)
 		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %1.f", sZLevel, distance, gI_ADcount[client]++, pre, sync)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, distance, gI_ADcount[client]++, pre, sync)
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
 	}
