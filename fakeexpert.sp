@@ -2939,8 +2939,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//if(IsPlayerAlive(client))
 	//	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nModelIndex"))
 	if(gB_hudVel[client])
-		if(GetEngineTime() - gF_hudTime[client] >= 0.25)
+		if(GetEngineTime() - gF_hudTime[client] >= 0.1)
+		{
+			gF_hudTime[client] = GetEngineTime()
 			Hud(client)
+		}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
@@ -3218,10 +3221,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case 0:
-				{
 					gB_hudVel[param1] = !gB_hudVel[param1]
-					gF_hudTime[param1] = GetEngineTime()
-				}
 			}
 			cmd_hud(param1, 0)
 		}
