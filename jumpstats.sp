@@ -141,18 +141,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
-		if(mouse[0] > 0)
-		{
+		if(mouse[0] > 0) //moving to right.
 			if(buttons & IN_MOVERIGHT)
-			{
 				gI_syncTick[client]++
-				PrintToServer("%i", mouse[0])
-			}
-		}
-		else
+		else //moving to left.
 			if(buttons & IN_MOVELEFT)
 				gI_syncTick[client]++
-		//PrintToServer("%i %i", mouse[0], mouse[1]) //if mouse[0] is positive is moving to right, is negative moving to left.
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -167,23 +161,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
-		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s", sZLevel, distance, pre)
-		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_SWcount[client]++, pre)
-		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client]++, pre)
-		gI_SWcount[client] = 0
-		gI_ADcount[client] = 0
-		//gI_jumpready[client] = 0
-		//gF_jumpTime[client] = GetEngineTime()
 		float sync
 		sync += float(gI_syncTick[client])
-		PrintToServer("%f", sync)
-		PrintToServer("%f", float(gI_tickAir[client]))
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
-		PrintToServer("%f", sync)
+		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
+			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %1.f", sZLevel, distance, pre, sync)
+		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %1.f", sZLevel, distance, gI_SWcount[client]++, pre, sync)
+		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %1.f", sZLevel, distance, gI_ADcount[client]++, pre, sync)
+		gI_SWcount[client] = 0
+		gI_ADcount[client] = 0
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
@@ -220,10 +209,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
-		//gI_jumpready[client] = 0
-		//gF_jumpTime[client] = GetEngineTime()
 	}
-	//return Plugin_Continue
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
@@ -242,7 +228,6 @@ void ResetFactory(int client)
 	gB_ladder[client] = false
 	gI_SWcount[client] = 0
 	gI_ADcount[client] = 0
-	//gI_jumpready[client] = 0
 }
 
 Action StartTouchProjectile(int entity, int other)
