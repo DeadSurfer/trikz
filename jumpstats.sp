@@ -40,6 +40,7 @@ bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
+float gF_sync[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -84,6 +85,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		{
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
+			gF_sync[client] = 0.0
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 			gF_origin[client][0] = origin[0]
@@ -133,6 +135,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
+		PrintToServer("%i %i", mouse[0], mouse[1])
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
