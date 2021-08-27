@@ -79,7 +79,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gB_jumpstats[client])
 	{
-		if(GetEngineTime() - gF_jumpTime[client] >= 0.5 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
+		if(GetEngineTime() - gF_jumpTime[client] >= 1.0 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 		{
 			gF_jumpTime[client] = GetEngineTime()
 			gB_jumped[client] = true
