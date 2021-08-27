@@ -178,6 +178,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float sync
 		for(int i = 1; i <= gI_ADcount[client]; i++)
 			sync += gF_sync[client][i]
+		PrintToServer("%f", sync)
 		PrintToServer("%f", float(gI_tickAir[client]))
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
