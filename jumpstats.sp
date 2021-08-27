@@ -76,7 +76,7 @@ public void OnClientPutInServer(int client)
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(gB_jumpstats)
+	if(gB_jumpstats[client])
 	{
 		if(gI_jumpready[client] == 50 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 			gB_jumped[client] = true
@@ -106,6 +106,14 @@ Action cmd_jumpstats(int client, int args)
 	else
 		PrintToChat(client, "Jump stats is off.")
 	return Plugin_Handled
+}
+
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	if(!IsChatTrigger())
+	{
+		if(StrEqual(sArgs, "js"))
+			cmd_jumpstats(client, 0)
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
