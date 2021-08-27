@@ -1157,9 +1157,9 @@ void Restart(int client)
 	{
 		if(gB_haveZone[0] && gB_haveZone[1])
 		{
-			//if(gI_partner[client])
+			if(gI_partner[client])
 			{
-				if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
+				if(IsPlayerAlive(client))
 				{
 					gB_readyToStart[client] = true
 					gF_Time[client] = 0.0
@@ -1181,8 +1181,7 @@ void Restart(int client)
 					GivePlayerItem(client, "weapon_usp")
 				}
 			}
-			//else
-			if(!gI_partner[client])
+			else
 				PrintToChat(client, "You must have a partner.")
 		}
 	}
