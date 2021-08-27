@@ -143,10 +143,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
 		//{
-		if(buttons & IN_MOVERIGHT)
-			if(mouse[0] > 0) //moving to right.
+		if(mouse[0])
+		{
+			if(buttons & IN_MOVERIGHT || buttons & IN_MOVELEFT)
 				gI_syncTick[client][0]++
-		if(buttons & IN_MOVELEFT)
+			if(buttons & IN_FORWARD || buttons & IN_BACK)
+				gI_syncTick[client][1]++
+		}
+		/*if()
 			if(mouse[0] < 0) //moving to left.
 				gI_syncTick[client][0]++
 		if(buttons & IN_BACK)
@@ -154,7 +158,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_syncTick[client][1]++
 		if(buttons & IN_FORWARD)
 			if(mouse[0] < 0) //moving to left.
-				gI_syncTick[client][1]++
+				gI_syncTick[client][1]++*/
 		/*}
 		else //moving to left.
 			if(buttons & IN_MOVELEFT)
