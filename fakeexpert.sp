@@ -901,6 +901,7 @@ Action Block(int client) //thanks maru for optimization.
 {
 	gB_block[client] = !gB_block[client]
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", gB_block[client] ? 5 : 2)
+	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 	if(gB_color[client])
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 	else
@@ -1082,6 +1083,8 @@ void Color(int client, bool customSkin, int color = -1)
 			PrintToChat(client, "You must have a partner.")
 			return
 		}
+		SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+		SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 		if(customSkin)
 		{
 			gB_color[client] = true
@@ -1107,8 +1110,8 @@ void Color(int client, bool customSkin, int color = -1)
 				gI_color[client][i] = StringToInt(gS_colorExploded[i])
 				gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
 			}
-			SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-			SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+			//SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+			//SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 			SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[gI_partner[client]] ? 255 : 125)
 			gI_colorCount[client]++
@@ -1120,8 +1123,8 @@ void Color(int client, bool customSkin, int color = -1)
 			gB_color[gI_partner[client]] = false
 			gI_colorCount[client] = 0
 			gI_colorCount[gI_partner[client]] = 0
-			SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
-			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
+			//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
+			//SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 			SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
 			SetEntityRenderColor(gI_partner[client], 255, 255, 255, gB_block[gI_partner[client]] ? 255 : 125)
 		}
@@ -1157,7 +1160,7 @@ void Restart(int client)
 	{
 		if(gB_haveZone[0] && gB_haveZone[1])
 		{
-			//if(gI_partner[client])
+			if(gI_partner[client])
 			{
 				if(IsPlayerAlive(client))
 				{
@@ -1167,6 +1170,7 @@ void Restart(int client)
 					float velNull[3]
 					TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
 					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+					SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 					if(gB_color[client])
 						SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
 					else
@@ -1181,8 +1185,7 @@ void Restart(int client)
 					GivePlayerItem(client, "weapon_usp")
 				}
 			}
-			//else
-			if(!gI_partner[client])
+			else
 				PrintToChat(client, "You must have a partner.")
 		}
 	}
@@ -2059,8 +2062,10 @@ Action SDKStartTouch(int entity, int other)
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapFinished[other])
 		{
-			gB_readyToStart[other] = true //expert zone idea.
-			gB_readyToStart[gI_partner[other]] = true
+			//gB_readyToStart[other] = true //expert zone idea.
+			//gB_readyToStart[gI_partner[other]] = true
+			Restart(other)
+			Restart(gI_partner[other])
 		}
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
