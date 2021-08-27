@@ -3246,7 +3246,7 @@ void Hud(int client)
 		{
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-			if(observerMode < 7 && observerTarget == client)
+			if(observerMode < 7 && observerTarget == client && gB_hudVel[i])
 				PrintHintText(i, "%0.f", unitVel)
 		}
 	}
