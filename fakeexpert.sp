@@ -45,7 +45,7 @@ bool gB_passDB
 float gF_originStart[3]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyVel[MAXPLAYERS + 1][3]
-//bool gB_readyToStart[MAXPLAYERS + 1]
+bool gB_readyToStart[MAXPLAYERS + 1]
 
 float gF_originCP[2][11][3]
 bool gB_cp[11][MAXPLAYERS + 1]
@@ -159,6 +159,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_noclip", cmd_noclip)
 	RegConsoleCmd("sm_sp", cmd_spec)
 	RegConsoleCmd("sm_spec", cmd_spec)
+	RegConsoleCmd("sm_hud", cmd_hud)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -1164,7 +1165,7 @@ void Restart(int client)
 			{
 				if(IsPlayerAlive(client))
 				{
-					//gB_readyToStart[client] = true
+					gB_readyToStart[client] = true
 					gF_Time[client] = 0.0
 					gB_state[client] = false
 					float velNull[3]
@@ -2032,8 +2033,7 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 
 Action SDKEndTouch(int entity, int other)
 {
-	//if(0 < other <= MaxClients && gB_readyToStart[other])
-	if(0 < other <= MaxClients && !gB_state[other])
+	if(0 < other <= MaxClients && gB_readyToStart[other])
 	{
 		gB_state[other] = true
 		gB_state[gI_partner[other]] = true
@@ -2043,8 +2043,8 @@ Action SDKEndTouch(int entity, int other)
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
 		//gB_passZone[other] = true
 		//gB_passZone[gI_partner[other]] = true
-		//gB_readyToStart[other] = false
-		//gB_readyToStart[gI_partner[other]] = false
+		gB_readyToStart[other] = false
+		gB_readyToStart[gI_partner[other]] = false
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
@@ -2779,8 +2779,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
 		if(!IsPlayerAlive(client))
 		{
-			//gB_readyToStart[client] = true
-			//gB_readyToStart[gI_partner[client]] = true
+			gB_readyToStart[client] = true
+			gB_readyToStart[gI_partner[client]] = true
 			gF_Time[client] = 0.0
 			gF_Time[gI_partner[client]] = 0.0
 			gB_state[client] = false
@@ -3188,6 +3188,17 @@ Action cmd_spec(int client, int args)
 {
 	ChangeClientTeam(client, 1)
 	return Plugin_Handled
+}
+
+Action cmd_hud(int client, int args)
+{
+	Hud(client)
+	return Plugin_Handled
+}
+
+void Hud(int client)
+{
+	GetEntPropVector(client, Prop_Data, "m_vec")
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
