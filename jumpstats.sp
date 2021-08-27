@@ -38,7 +38,7 @@ float gF_preVel[MAXPLAYERS + 1][3]
 //float gF_jumpTime[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
-bool gB_getFirstStrafe[MAXPLAYERS + 1]
+//bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
 
 public Plugin myinfo =
@@ -85,7 +85,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		{
 			//gF_jumpTime[client] = GetEngineTime()
 			gB_jumped[client] = true
-			gB_getFirstStrafe[client] = true
+			//gB_getFirstStrafe[client] = true
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 			gF_origin[client][0] = origin[0]
@@ -139,7 +139,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_tick[client]++
 	if(gB_jumped[client])
 	{
-		if(gB_getFirstStrafe[client])
+		/*if(gB_getFirstStrafe[client])
 		{
 			if(buttons & IN_FORWARD || buttons & IN_BACK)
 				if(gI_ADcount[client] == 0)
@@ -153,7 +153,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_ADcount[client]++
 					gB_getFirstStrafe[client] = false
 				}
-		}
+		}*/
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 			if(gI_ADcount[client] == 0)
 				gI_SWcount[client]++
@@ -174,12 +174,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
-		if(1000.0 > distance > 230.0 && gI_SWcount[client] == 0 && gI_ADcount[client] == 0 && pre < 290.0)
+		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 290.0)
 			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s", sZLevel, distance, pre)
-		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 290.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_SWcount[client], pre)
-		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 290.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client], pre)
+		if(1000.0 > distance >= 230.0 && !gI_ADcount[client] && pre < 290.0)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_SWcount[client] + 1, pre)
+		if(1000.0 > distance >= 230.0 && !gI_SWcount[client] && pre < 290.0)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client] + 1, pre)
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
 		//gI_jumpready[client] = 0
