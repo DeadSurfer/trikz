@@ -1157,7 +1157,7 @@ void Restart(int client)
 	{
 		if(gB_haveZone[0] && gB_haveZone[1])
 		{
-			if(gI_partner[client])
+			//if(gI_partner[client])
 			{
 				if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
 				{
