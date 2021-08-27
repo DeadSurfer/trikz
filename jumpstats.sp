@@ -145,11 +145,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(mouse[0] > 0)
 		{
 			if(buttons & IN_MOVERIGHT)
-				gF_sync[client][gI_ADcount[client]]++
+				gF_sync[client][gI_ADcount[client]] += 1.0
 		}
 		else
 			if(buttons & IN_MOVELEFT)
-				gF_sync[client][gI_ADcount[client]]++
+				gF_sync[client][gI_ADcount[client]] += 1.0
 		//PrintToServer("%i %i", mouse[0], mouse[1]) //if mouse[0] is positive is moving to right, is negative moving to left.
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
