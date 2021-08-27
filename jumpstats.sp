@@ -38,6 +38,7 @@ float gF_prevelocity[MAXPLAYERS + 1][3]
 int gI_jumpready[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
+bool gB_getFirstStrafe[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -89,13 +90,14 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 		gF_prevelocity[client][0] = vel[0]
 		gF_prevelocity[client][1] = vel[1]
-		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
-			if(gI_ADcount[client] == 0)
-				gI_SWcount[client]++
-		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
-			if(gI_SWcount[client] == 0)
-				gI_ADcount[client]++
-		PrintToServer("%i %i %i %i %i %i", GetEntProp(client, Prop_Data, "m_nButtons"), GetEntProp(client, Prop_Data, "m_afButtonLast"), GetEntProp(client, Prop_Data, "m_afButtonPressed"), GetEntProp(client, Prop_Data, "m_afButtonReleased"), GetEntProp(client, Prop_Data, "m_afButtonDisabled"), GetEntProp(client, Prop_Data, "m_afButtonForced"))
+		gB_getFirstStrafe[client] = true
+		//if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
+		//	if(gI_ADcount[client] == 0)
+		//		gI_SWcount[client]++
+		//if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
+		//	if(gI_SWcount[client] == 0)
+		//		gI_ADcount[client]++
+		//PrintToServer("%i %i %i %i %i %i", GetEntProp(client, Prop_Data, "m_nButtons"), GetEntProp(client, Prop_Data, "m_afButtonLast"), GetEntProp(client, Prop_Data, "m_afButtonPressed"), GetEntProp(client, Prop_Data, "m_afButtonReleased"), GetEntProp(client, Prop_Data, "m_afButtonDisabled"), GetEntProp(client, Prop_Data, "m_afButtonForced"))
 	}
 }
 
@@ -124,6 +126,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_jumpready[client]++
 	if(gB_jumped[client])
 	{
+		if(gB_getFirstStrafe[client])
+		{
+			if(buttons & IN_FORWARD || buttons & IN_BACK)
+				if(gI_ADcount[client] == 0)
+					gI_SWcount[client]++
+			if(buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT)
+				if(gI_SWcount[client] == 0)
+					gI_ADcount[client]++
+			gB_getFirstStrafe[client] = false
+		}
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 			if(gI_ADcount[client] == 0)
 				gI_SWcount[client]++
