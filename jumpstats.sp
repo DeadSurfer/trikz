@@ -1,22 +1,23 @@
-/*GNU GENERAL PUBLIC LICENSE
+/*
+	GNU GENERAL PUBLIC LICENSE
 
-VERSION 2, JUNE 1991
+	VERSION 2, JUNE 1991
 
-Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
+	Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+	51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
 
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.*/
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
 
-/*GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
-Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.
+	GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
+	Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
 
-						Preamble
+							Preamble
 
 	The GNU General Public License is a free, copyleft license for
-software and other kinds of works.
+	software and other kinds of works.
 
 	The licenses for most software and other practical works are designed
 	to take away your freedom to share and change the works. By contrast,
@@ -25,7 +26,8 @@ software and other kinds of works.
 	software for all its users. We, the Free Software Foundation, use the
 	GNU General Public license for most of our software; it applies also to
 	any other work released this way by its authors. You can apply it to
-	your programs, too.*/
+	your programs, too.
+*/
 #include <sdkhooks>
 #include <sdktools>
 
@@ -35,7 +37,6 @@ int gI_SWcount[MAXPLAYERS + 1]
 int gI_ADcount[MAXPLAYERS + 1]
 bool gB_ladder[MAXPLAYERS + 1]
 float gF_preVel[MAXPLAYERS + 1][3]
-//float gF_jumpTime[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
@@ -58,16 +59,6 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
-	//HookEntityOutput("trigger_teleport", "OnStartTouch", OutputTrigger)
-	//HookEntityOutput("trigger_teleport", "OnEndTouch", OutputTrigger)
-	//HookEntityOutput("trigger_teleport_relative", "OnStartTouch", OutputTrigger)
-	//HookEntityOutput("trigger_teleport_relative", "OnEndTouch", OutputTrigger)
-	//HookEntityOutput("trigger_push", "OnStartTouch", OutputTrigger)
-	//HookEntityOutput("trigger_push", "OnEndTouch", OutputTrigger)
-	//HookEntityOutput("trigger_gravity", "OnStartTouch", OutputTrigger)
-	//HookEntityOutput("trigger_gravity", "OnEndTouch", OutputTrigger)
-	//HookEntityOutput("trigger_multiple", "OnStartTouch", OutputTrigger)
-	//HookEntityOutput("trigger_multiple", "OnEndTouch", OutputTrigger)
 	RegConsoleCmd("sm_js", cmd_jumpstats)
 }
 
@@ -86,9 +77,6 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		{
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
-			//gI_syncTick[client][0] = 0
-			//gI_syncTick[client][1] = 0
-			//gI_tickAir[client] = 0
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 			gF_origin[client][0] = origin[0]
@@ -142,7 +130,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
-		//{
 		if(mouse[0] > 0)
 		{
 			if(buttons & IN_MOVERIGHT)
@@ -157,31 +144,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(buttons & IN_FORWARD)
 				gI_syncTick[client][1]++
 		}
-		/*if()
-			if(mouse[0] < 0) //moving to left.
-				gI_syncTick[client][0]++
-		if(buttons & IN_BACK)
-			if(mouse[0] > 0) //moving to right.
-				gI_syncTick[client][1]++
-		if(buttons & IN_FORWARD)
-			if(mouse[0] < 0) //moving to left.
-				gI_syncTick[client][1]++*/
-		/*}
-		else //moving to left.
-			if(buttons & IN_MOVELEFT)
-				gI_syncTick[client][0]++
-		if(mouse[1] > 0) //moving to right.
-		{
-			if(buttons & IN_FORWARD)
-				gI_syncTick[client][1]++
-		}
-		else //moving to left.
-			if(buttons & IN_BACK)
-				gI_syncTick[client][1]++*/
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
-		//gB_jumped[client] = false
 		float origin[3]
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 		char sZLevel[9]
@@ -200,13 +165,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.01f u/s, Sync: %.1f%", sZLevel, distance, pre, sync)
+			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, distance, pre, sync)
 		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.01f u/s, Sync: %.1f%", sZLevel, distance, gI_SWcount[client]++, pre, sync)
+			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, distance, gI_SWcount[client]++, pre, sync)
 		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.01f u/s, Sync: %.1f%", sZLevel, distance, gI_ADcount[client]++, pre, sync)
-		//gI_SWcount[client] = 0
-		//gI_ADcount[client] = 0
+			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, distance, gI_ADcount[client]++, pre, sync)
 		ResetFactory(client)
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
@@ -250,7 +213,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
-		//gB_ladder[client] = false
 		float origin[3]
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 		PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
@@ -266,14 +228,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			sync /= float(gI_tickAir[client])
 			sync *= 100.0
 			if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, Sync: %.0f%", distance, sync)
+				PrintToChat(client, "[SM] Ladder: %.1f units, Sync: %.1f%", distance, sync)
 			if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.0f%", distance, gI_SWcount[client]++, sync)
+				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.1f%", distance, gI_SWcount[client]++, sync)
 			if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.0f%", distance, gI_ADcount[client]++, sync)
+				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.1f%", distance, gI_ADcount[client]++, sync)
 		}
-		//gI_SWcount[client] = 0
-		//gI_ADcount[client] = 0
 		ResetFactory(client)
 	}
 }
@@ -292,7 +252,6 @@ void ResetFactory(int client)
 {
 	gB_jumped[client] = false
 	gB_ladder[client] = false
-	//gB_getFirstStrafe[client] = false
 	gI_SWcount[client] = 0
 	gI_ADcount[client] = 0
 	gI_syncTick[client][0] = 0
@@ -340,9 +299,3 @@ void TouchClient(int client, int other)
 			ResetFactory(client)
 	}
 }
-
-/*void OutputTrigger(const char[] output, int caller, int activator, float delay)
-{
-	if(gB_jumped[activator] || gB_ladder[activator])
-		ResetFactory(activator)
-}*/
