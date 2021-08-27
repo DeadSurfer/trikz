@@ -168,7 +168,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			sync += float(gI_syncTick[client][0])
 		else if(gI_SWcount[client] > gI_ADcount[client])
 			sync += float(gI_syncTick[client][1])
-		PrintToServer("sync: %f %f %i", sync, float(gI_tickAir[client]), gI_tickAir[client])
+		PrintToServer("sync: %f %f %i", sync, float(gI_tickAir[client]), gI_tickAir[client]) //sync: 77.000000 76.000000 76 [SM] Jump: 234.0 units, (A-D) Strafes: 1, Pre: 261.8 u/s, Sync: 101.3%
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
