@@ -111,7 +111,6 @@ Action cmd_jumpstats(int client, int args)
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(!IsChatTrigger())
-	{
 		if(StrEqual(sArgs, "js"))
 			cmd_jumpstats(client, 0)
 }
