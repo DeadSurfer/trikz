@@ -142,8 +142,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
 		if(mouse[0] > 0) //moving to right.
+		{
 			if(buttons & IN_MOVERIGHT)
 				gI_syncTick[client]++
+		}
 		else //moving to left.
 			if(buttons & IN_MOVELEFT)
 				gI_syncTick[client]++
