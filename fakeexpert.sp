@@ -3064,17 +3064,17 @@ void devmap(bool force)
 		if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] >= gF_devmap[0])
 		{
 			if(gB_isDevmap)
-				PrintToChatAll("Devmap will be disabled. \"Yes\" chose %.f%%% or %.f of %.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
+				PrintToChatAll("Devmap will be disabled. \"Yes\" chose %.0f%%% or %.0f of %.0f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
 			else
-				PrintToChatAll("Devmap will be enabled. \"Yes\" chose %.f%%% or %.f of %.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
+				PrintToChatAll("Devmap will be enabled. \"Yes\" chose %.0f%%% or %.0f of %.0f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
 			CreateTimer(5.0, timer_changelevel, gB_isDevmap ? false : true)
 		}
 		else if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0])
 		{
 			if(gB_isDevmap)
-				PrintToChatAll("Devmap will be continue. \"No\" chose %.f%%% or %.f of %.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
+				PrintToChatAll("Devmap will be continue. \"No\" chose %.0f%%% or %.0f of %.0f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1]) //google translate russian to english.
 			else
-				PrintToChatAll("Devmap will not be enabled. \"No\" chose %.f%%% or %.f of %.f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
+				PrintToChatAll("Devmap will not be enabled. \"No\" chose %.0f%%% or %.0f of %.0f players.", (gF_devmap[0] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[0], gF_devmap[0] + gF_devmap[1])
 		}
 		for(int i = 0; i <= 1; i++)
 			gF_devmap[i] = 0.0
@@ -3239,7 +3239,7 @@ void Hud(int client)
 	float vel[3]
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
 	float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-	PrintHintText(client, "%.f", unitVel)
+	PrintHintText(client, "%.0f", unitVel)
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) && !IsPlayerAlive(i))
@@ -3247,7 +3247,7 @@ void Hud(int client)
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 			if(observerMode < 7 && observerTarget == client && gB_hudVel[i])
-				PrintHintText(i, "%.f", unitVel)
+				PrintHintText(i, "%.0f", unitVel)
 		}
 	}
 }
