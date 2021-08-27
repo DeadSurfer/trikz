@@ -88,7 +88,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			gF_preVel[client][0] = vel[0]
 			gF_preVel[client][1] = vel[1]
 			gB_isCountJump[client] = GetEntProp(client, Prop_Data, "m_bDucking")
-			PrintToServer("%i", gB_isCountJump[client])
+			PrintToServer("%i", view_as<int>(gB_isCountJump[client]))
 		}
 	}
 }
