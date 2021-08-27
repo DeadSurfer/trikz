@@ -181,7 +181,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
-		gB_jumped[client] = false
+		//gB_jumped[client] = false
 		float origin[3]
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 		char sZLevel[9]
@@ -205,8 +205,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.01f u/s, Sync: %.1f%", sZLevel, distance, gI_SWcount[client]++, pre, sync)
 		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
 			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.01f u/s, Sync: %.1f%", sZLevel, distance, gI_ADcount[client]++, pre, sync)
-		gI_SWcount[client] = 0
-		gI_ADcount[client] = 0
+		//gI_SWcount[client] = 0
+		//gI_ADcount[client] = 0
+		ResetFactory(client)
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
@@ -216,9 +217,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
+		gB_getFirstStrafe[client] = true
 	}
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
 	{
+		if(gB_getFirstStrafe[client])
+		{
+			if(buttons & IN_FORWARD || buttons & IN_BACK)
+				gI_SWcount[client]++
+			if(buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT)
+				gI_ADcount[client]++
+			gB_getFirstStrafe[client] = false
+		}
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
@@ -226,7 +236,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
-		gB_ladder[client] = false
+		//gB_ladder[client] = false
 		float origin[3]
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 		PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
@@ -234,6 +244,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			PrintToServer("ladder: success")
 			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
+			float sync
+			if(gI_SWcount[client] < gI_ADcount[client])
+				sync += float(gI_syncTick[client][0])
+			else if(gI_SWcount[client] > gI_ADcount[client])
+				sync += float(gI_syncTick[client][1])
+			sync /= float(gI_tickAir[client])
+			sync *= 100.0
 			if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
 				PrintToChat(client, "[SM] Ladder: %.1f units!", distance)
 			if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
@@ -241,8 +258,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
 				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client]++)
 		}
-		gI_SWcount[client] = 0
-		gI_ADcount[client] = 0
+		//gI_SWcount[client] = 0
+		//gI_ADcount[client] = 0
+		ResetFactory(client)
 	}
 }
 
@@ -260,6 +278,7 @@ void ResetFactory(int client)
 {
 	gB_jumped[client] = false
 	gB_ladder[client] = false
+	/gB_getFirstStrafe[client] = false
 	gI_SWcount[client] = 0
 	gI_ADcount[client] = 0
 }
@@ -305,8 +324,8 @@ void TouchClient(int client, int other)
 	}
 }
 
-void OutputTrigger(const char[] output, int caller, int activator, float delay)
+/*void OutputTrigger(const char[] output, int caller, int activator, float delay)
 {
 	if(gB_jumped[activator] || gB_ladder[activator])
 		ResetFactory(activator)
-}
+}*/
