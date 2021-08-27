@@ -1145,6 +1145,7 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 Action cmd_restart(int client, int args)
 {
 	Restart(client)
+	Restart(gI_partner[client])
 	return Plugin_Handled
 }
 
