@@ -148,7 +148,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gI_ADcount[client] == 0)
 				gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
-			gI_ADcount[client]++
+			if(gI_SWcount[client] == 0)
+				gI_ADcount[client]++
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -167,7 +168,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s", sZLevel, distance, velocity)
 		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client])
 			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_SWcount[client], velocity)
-		if(1000.0 > distance >= 230.0 && (gI_ADcount[client] > gI_SWcount[client]))
+		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client])
 			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client], velocity)
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
