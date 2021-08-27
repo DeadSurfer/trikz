@@ -39,6 +39,7 @@ float gF_preVel[MAXPLAYERS + 1][3]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
+int gI_tick[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -80,7 +81,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	if(gB_jumpstats[client])
 	{
 		//if(GetEngineTime() - gF_jumpTime[client] >= 0.5 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
-		if(GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0)
+		if(gI_tick[client] == 30 && GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0)
 		{
 			//gF_jumpTime[client] = GetEngineTime()
 			gB_jumped[client] = true
@@ -133,6 +134,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//	gF_jumpTime[client] = GetEngineTime()
 	//else
 	//if()
+	if(!(GetEntityFlags(client) & FL_ONGROUND))
+		if(gI_tick[client] <= 30)
+			gI_tick[client]++
 	if(gB_jumped[client])
 	{
 		if(gB_getFirstStrafe[client])
