@@ -30,11 +30,11 @@ software and other kinds of works.
 #include <sdktools>
 
 bool gB_jumped[MAXPLAYERS + 1]
-float gF_vec1[MAXPLAYERS + 1][3]
+float gF_origin[MAXPLAYERS + 1][3]
 int gI_SWcount[MAXPLAYERS + 1]
 int gI_ADcount[MAXPLAYERS + 1]
 bool gB_ladder[MAXPLAYERS + 1]
-float gF_prevelocity[MAXPLAYERS + 1][3]
+float gF_preVel[MAXPLAYERS + 1][3]
 float gF_jumpTime[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
@@ -83,17 +83,17 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		{
 			gF_jumpTime[client] = GetEngineTime()
 			gB_jumped[client] = true
+			gB_getFirstStrafe[client] = true
+			float origin[3]
+			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+			gF_origin[client][0] = origin[0]
+			gF_origin[client][1] = origin[1]
+			gF_origin[client][2] = origin[2]
+			float vel[3]
+			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+			gF_preVel[client][0] = vel[0]
+			gF_preVel[client][1] = vel[1]
 		}
-		float vec1[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec1)
-		gF_vec1[client][0] = vec1[0]
-		gF_vec1[client][1] = vec1[1]
-		gF_vec1[client][2] = vec1[2]
-		float vel[3]
-		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
-		gF_prevelocity[client][0] = vel[0]
-		gF_prevelocity[client][1] = vel[1]
-		gB_getFirstStrafe[client] = true
 		//if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 		//	if(gI_ADcount[client] == 0)
 		//		gI_SWcount[client]++
@@ -150,21 +150,21 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
 		gB_jumped[client] = false
-		float vec2[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec2)
+		float origin[3]
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 		char sZLevel[9]
-		if(vec2[2] - gF_vec1[client][2] > 1.475586)
+		if(origin[2] - gF_origin[client][2] > 1.475586)
 			Format(sZLevel, 9, "[Rise] ")
-		if(vec2[2] - gF_vec1[client][2] < 0.793945)
+		if(origin[2] - gF_origin[client][2] < 0.793945)
 			Format(sZLevel, 9, "[Fall] ")
-		PrintToServer("jump: %f", vec2[2] - gF_vec1[client][2])
-		float distance = SquareRoot(Pow(gF_vec1[client][0] - vec2[0], 2.0) + Pow(gF_vec1[client][1] - vec2[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
-		float velocity = SquareRoot(Pow(gF_prevelocity[client][0], 2.0) + Pow(gF_prevelocity[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
-		if(1000.0 > distance > 217.000000 && gI_SWcount[client] == 0 && gI_ADcount[client] == 0)
+		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
+		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
+		float velocity = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
+		if(1000.0 > distance > 230.0 && gI_SWcount[client] == 0 && gI_ADcount[client] == 0)
 			PrintToChat(client, "[SM] %sJump: %.1f units, Strafes: 0, Pre: %.1f u/s", sZLevel, distance, velocity)
-		if(1000.0 > distance > 217.000000 && gI_SWcount[client] > 0)
+		if(1000.0 > distance > 230.0 && gI_SWcount[client] > 0)
 			PrintToChat(client, "[SM] %sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_SWcount[client], velocity)
-		if(1000.0 > distance > 217.000000 && (gI_ADcount[client] > 0))
+		if(1000.0 > distance > 230.0 && (gI_ADcount[client] > 0))
 			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client], velocity)
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
@@ -173,11 +173,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
 		gB_ladder[client] = true
-		float vec1[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec1)
-		gF_vec1[client][0] = vec1[0]
-		gF_vec1[client][1] = vec1[1]
-		gF_vec1[client][2] = vec1[2]
+		float origin[3]
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+		gF_origin[client][0] = origin[0]
+		gF_origin[client][1] = origin[1]
+		gF_origin[client][2] = origin[2]
 	}
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
 	{
@@ -191,13 +191,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
 		gB_ladder[client] = false
-		float vec2[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec2)
-		PrintToServer("ladder: %f", vec2[2] - gF_vec1[client][2])
-		if(4.549926 >= vec2[2] - gF_vec1[client][2] >= -3.872436)
+		float origin[3]
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+		PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
+		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
 		{
 			PrintToServer("ladder: success")
-			float distance = SquareRoot(Pow(gF_vec1[client][0] - vec2[0], 2.0) + Pow(gF_vec1[client][1] - vec2[1], 2.0))
+			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
 			if(190.0 > distance >= 22.0 && gI_SWcount[client] == 0 && gI_ADcount[client] == 0)
 				PrintToChat(client, "[SM] Ladder: %.1f units!", distance)
 			if(190.0 > distance >= 22.0 && gI_SWcount[client] > 0)
@@ -256,7 +256,7 @@ Action EndTouchProjectile(int entity, int other)
 
 void TouchClient(int client, int other)
 {
-	if(other == 0 && (gB_jumped[client] || !gB_ladder[client]))
+	if(gB_jumped[client] || !gB_ladder[client])
 		ResetFactory(client)
 	if(0 < other <= MaxClients)
 	{
