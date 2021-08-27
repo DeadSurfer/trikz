@@ -38,7 +38,7 @@ float gF_preVel[MAXPLAYERS + 1][3]
 //float gF_jumpTime[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
-//bool gB_getFirstStrafe[MAXPLAYERS + 1]
+bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
 
 public Plugin myinfo =
@@ -83,6 +83,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		if(gI_tick[client] == 30 && GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0)
 		{
 			gB_jumped[client] = true
+			gB_getFirstStrafe[client] = true
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 			gF_origin[client][0] = origin[0]
@@ -120,6 +121,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_tick[client]++
 	if(gB_jumped[client])
 	{
+		if(gB_getFirstStrafe[client])
+		{
+			if(buttons & IN_FORWARD || buttons & IN_BACK)
+				gI_SWcount[client]++
+			if(buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT)
+				gI_ADcount[client]++
+			gB_getFirstStrafe[client] = false
+		}
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
