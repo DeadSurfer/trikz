@@ -3198,7 +3198,10 @@ Action cmd_hud(int client, int args)
 
 void Hud(int client)
 {
-	//GetEntPropVector(client, Prop_Data, "m_vec")
+	float vel[3]
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
+	float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+	PrintHintText(client, "%i", unitVel)
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
