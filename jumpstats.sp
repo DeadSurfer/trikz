@@ -138,6 +138,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(gI_SWcount[client] == 0)
 					gI_ADcount[client]++
 			gB_getFirstStrafe[client] = false
+			PrintToServer("%i", buttons)
 		}
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 			if(gI_ADcount[client] == 0)
