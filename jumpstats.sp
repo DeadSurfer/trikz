@@ -37,6 +37,7 @@ bool gB_ladder[MAXPLAYERS + 1]
 float gF_prevelocity[MAXPLAYERS + 1][3]
 int gI_jumpready[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048]
+bool gB_jumpstats[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -63,27 +64,48 @@ public void OnPluginStart()
 	HookEntityOutput("trigger_gravity", "OnEndTouch", OutputTrigger)
 	//HookEntityOutput("trigger_multiple", "OnStartTouch", OutputTrigger)
 	//HookEntityOutput("trigger_multiple", "OnEndTouch", OutputTrigger)
+	RegConsoleCmd("sm_js", cmd_jumpstats)
 }
 
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_Touch, TouchClient)
+	gB_jumpstats[client] = false
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(gI_jumpready[client] == 50 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
-		gB_jumped[client] = true
-	float vec1[3]
-	GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec1)
-	gF_vec1[client][0] = vec1[0]
-	gF_vec1[client][1] = vec1[1]
-	gF_vec1[client][2] = vec1[2]
-	float vel[3]
-	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
-	gF_prevelocity[client][0] = vel[0]
-	gF_prevelocity[client][1] = vel[1]
+	if(gB_jumpstats)
+	{
+		if(gI_jumpready[client] == 50 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
+			gB_jumped[client] = true
+		float vec1[3]
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec1)
+		gF_vec1[client][0] = vec1[0]
+		gF_vec1[client][1] = vec1[1]
+		gF_vec1[client][2] = vec1[2]
+		float vel[3]
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+		gF_prevelocity[client][0] = vel[0]
+		gF_prevelocity[client][1] = vel[1]
+		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
+			if(gI_ADcount[client] == 0)
+				gI_SWcount[client]++
+		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
+			if(gI_SWcount[client] == 0)
+				gI_ADcount[client]++
+	}
+}
+
+Action cmd_jumpstats(int client, int args)
+{
+	gB_jumpstats[client] = !gB_jumpstats[client]
+	if(gB_jumpstats[client])
+		PrintToChat(client, "Jump stats is on.")
+	else
+		PrintToChat(client, "Jump stats is off.")
+	return Plugin_Handled
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
