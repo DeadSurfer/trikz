@@ -74,7 +74,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gB_jumpstats[client])
 	{
-		if(gI_tick[client] == 30 && GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0)
+		if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 		{
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
@@ -167,6 +167,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			sync += float(gI_syncTick[client][0])
 		else if(gI_SWcount[client] > gI_ADcount[client])
 			sync += float(gI_syncTick[client][1])
+		PrintToServer("sync: %f %f %i", sync, float(gI_tickAir[client]), gI_tickAir[client])
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
