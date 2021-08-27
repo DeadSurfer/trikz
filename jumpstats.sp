@@ -58,10 +58,10 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
-	HookEntityOutput("trigger_teleport", "OnStartTouch", OutputTrigger)
-	HookEntityOutput("trigger_teleport", "OnEndTouch", OutputTrigger)
-	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", OutputTrigger)
-	HookEntityOutput("trigger_teleport_relative", "OnEndTouch", OutputTrigger)
+	//HookEntityOutput("trigger_teleport", "OnStartTouch", OutputTrigger)
+	//HookEntityOutput("trigger_teleport", "OnEndTouch", OutputTrigger)
+	//HookEntityOutput("trigger_teleport_relative", "OnStartTouch", OutputTrigger)
+	//HookEntityOutput("trigger_teleport_relative", "OnEndTouch", OutputTrigger)
 	HookEntityOutput("trigger_push", "OnStartTouch", OutputTrigger)
 	HookEntityOutput("trigger_push", "OnEndTouch", OutputTrigger)
 	HookEntityOutput("trigger_gravity", "OnStartTouch", OutputTrigger)
@@ -142,11 +142,31 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
-		if(mouse[0] > 0) //moving to right.
+		//{
+		if(mouse[0] > 0)
 		{
 			if(buttons & IN_MOVERIGHT)
 				gI_syncTick[client][0]++
+			if(buttons & IN_BACK)
+				gI_syncTick[client][1]++
 		}
+		if(mouse[0] < 0)
+		{
+			if(buttons & IN_MOVELEFT)
+				gI_syncTick[client][0]++
+			if(buttons & IN_FORWARD)
+				gI_syncTick[client][1]++
+		}
+		/*if()
+			if(mouse[0] < 0) //moving to left.
+				gI_syncTick[client][0]++
+		if(buttons & IN_BACK)
+			if(mouse[0] > 0) //moving to right.
+				gI_syncTick[client][1]++
+		if(buttons & IN_FORWARD)
+			if(mouse[0] < 0) //moving to left.
+				gI_syncTick[client][1]++*/
+		/*}
 		else //moving to left.
 			if(buttons & IN_MOVELEFT)
 				gI_syncTick[client][0]++
@@ -157,7 +177,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		else //moving to left.
 			if(buttons & IN_BACK)
-				gI_syncTick[client][1]++
+				gI_syncTick[client][1]++*/
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
