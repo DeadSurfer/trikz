@@ -40,7 +40,7 @@ bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
-float gF_sync[MAXPLAYERS + 1][2][50 + 1]
+float gF_sync[MAXPLAYERS + 1][50 + 1]
 int gI_tickAir[MAXPLAYERS + 1]
 
 public Plugin myinfo =
@@ -87,10 +87,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
 			for(int i = 1; i <= 50; i++)
-			{
-				gF_sync[client][0][i] = 0.0
-				gF_sync[client][1][i] = 0.0
-			}
+				gF_sync[client][i] = 0.0
 			gI_tickAir[client] = 0
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
@@ -148,11 +145,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(mouse[0] > 0)
 		{
 			if(buttons & IN_MOVERIGHT)
-				gF_sync[client][1][gI_ADcount[client]]++
+				gF_sync[client][gI_ADcount[client]]++
 		}
 		else
 			if(buttons & IN_MOVELEFT)
-				gF_sync[client][0][gI_ADcount[client]]++
+				gF_sync[client][gI_ADcount[client]]++
 		//PrintToServer("%i %i", mouse[0], mouse[1]) //if mouse[0] is positive is moving to right, is negative moving to left.
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
@@ -180,7 +177,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//gF_jumpTime[client] = GetEngineTime()
 		float sync
 		for(int i = 1; i <= gI_ADcount[client]; i++)
-			sync += gF_sync[client][0][i]
+			sync += gF_sync[client][i]
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		PrintToServer("%f", sync)
