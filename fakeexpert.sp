@@ -60,7 +60,7 @@ float gF_ServerRecord
 ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 ConVar gCV_topURL
 
-bool gB_TrikzMenuIsOpen[MAXPLAYERS + 1]
+bool gB_MenuIsOpen[MAXPLAYERS + 1]
 
 int gI_boost[MAXPLAYERS + 1]
 bool gB_skyStep[MAXPLAYERS + 1]
@@ -125,6 +125,8 @@ bool gB_msg[MAXPLAYERS + 1]
 //StringMap gSM_char
 int gI_voters
 int gI_afkClient
+bool gB_hudVel[MAXPLAYERS + 1]
+float gF_hudTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -650,7 +652,7 @@ public void OnClientPutInServer(int client)
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
-	gB_TrikzMenuIsOpen[client] = false
+	gB_MenuIsOpen[client] = false
 	for(int i = 0; i <= 1; i++)
 	{
 		gB_toggledCheckpoint[client][i] = false
@@ -667,6 +669,7 @@ public void OnClientPutInServer(int client)
 	if(!gB_isDevmap)
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
+	gB_hudVel[client] = false
 }
 
 public void OnClientDisconnect(int client)
@@ -675,7 +678,7 @@ public void OnClientDisconnect(int client)
 	gB_color[client] = false
 	int partner = gI_partner[client]
 	gI_partner[gI_partner[client]] = 0
-	if(partner && gB_TrikzMenuIsOpen[partner])
+	if(partner && gB_MenuIsOpen[partner])
 		Trikz(partner)
 	gI_partner[client] = 0
 	CancelClientMenu(client)
@@ -822,7 +825,7 @@ Action cmd_trikz(int client, int args)
 
 void Trikz(int client)
 {
-	gB_TrikzMenuIsOpen[client] = true
+	gB_MenuIsOpen[client] = true
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	menu.SetTitle("Trikz")
 	char sDisplay[32]
@@ -849,7 +852,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	switch(action)
 	{
 		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
-			gB_TrikzMenuIsOpen[param1] = true
+			gB_MenuIsOpen[param1] = true
 		case MenuAction_Select:
 		{
 			switch(param2)
@@ -858,7 +861,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Block(param1)
 				case 1:
 				{
-					gB_TrikzMenuIsOpen[param1] = false
+					gB_MenuIsOpen[param1] = false
 					Partner(param1)
 				}
 				case 2:
@@ -873,7 +876,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 4:
 				{
-					gB_TrikzMenuIsOpen[param1] = false
+					gB_MenuIsOpen[param1] = false
 					Checkpoint(param1)
 				}
 				case 5:
@@ -884,9 +887,9 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 		case MenuAction_Cancel:
-			gB_TrikzMenuIsOpen[param1] = false //idea from expert zone.
+			gB_MenuIsOpen[param1] = false //idea from expert zone.
 		case MenuAction_Display:
-			gB_TrikzMenuIsOpen[param1] = true
+			gB_MenuIsOpen[param1] = true
 		//case MenuAction_End:
 		//	delete menu
 	}
@@ -907,7 +910,7 @@ Action Block(int client) //thanks maru for optimization.
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 	else
 		SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
-	if(gB_TrikzMenuIsOpen[client])
+	if(gB_MenuIsOpen[client])
 		Trikz(client)
 	PrintToChat(client, gB_block[client] ? "Block enabled." : "Block disabled.")
 	return Plugin_Handled
@@ -1000,7 +1003,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						PrintToChat(partner, "You have %N as partner.", param1) //sender
 						Restart(param1)
 						Restart(partner) //Expert-Zone idea.
-						if(gB_TrikzMenuIsOpen[partner])
+						if(gB_MenuIsOpen[partner])
 							Trikz(partner)
 						char sQuery[512]
 						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), gS_map)
@@ -1177,7 +1180,7 @@ void Restart(int client)
 					else
 						SetEntityRenderColor(client, 255, 255, 255, 125)
 					gB_block[client] = false
-					if(gB_TrikzMenuIsOpen[client])
+					if(gB_MenuIsOpen[client])
 						Trikz(client)
 					CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
 					int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 //https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
@@ -1202,7 +1205,7 @@ Action Timer_BlockToggle(Handle timer, int client)
 		else
 			SetEntityRenderColor(client, 255, 255, 255, 255)
 		gB_block[client] = true
-		if(gB_TrikzMenuIsOpen[client])
+		if(gB_MenuIsOpen[client])
 			Trikz(client)
 	}
 	return Plugin_Stop
@@ -2935,6 +2938,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	//if(IsPlayerAlive(client))
 	//	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nModelIndex"))
+	if(gB_hudVel[client])
+		if(GetEngineTime() - gF_hudTime[client] >= 0.1)
+			Hud(client)
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
@@ -3192,8 +3198,39 @@ Action cmd_spec(int client, int args)
 
 Action cmd_hud(int client, int args)
 {
-	Hud(client)
+	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
+	menu.SetTitle("Hud")
+	char sFormat[32]
+	Format(sFormat, 32, gB_hudVel[client] ? "Velocity [v]" : "Velocity [x]")
+	menu.AddItem("vel", sFormat)
+	menu.Display(client, 20)
 	return Plugin_Handled
+}
+
+int hud_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
+			gB_MenuIsOpen[param1] = true
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					gB_hudVel[param1] = !gB_hudVel[param1]
+					gF_hudTime[param1] = GetEngineTime()
+				}
+			}
+		}
+		case MenuAction_Cancel:
+			gB_MenuIsOpen[param1] = false //idea from expert zone.
+		case MenuAction_Display:
+			gB_MenuIsOpen[param1] = true
+		//case MenuAction_End:
+		//	delete menu
+	}
 }
 
 void Hud(int client)
@@ -3202,6 +3239,16 @@ void Hud(int client)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
 	float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 	PrintHintText(client, "%0.f", unitVel)
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) && !IsPlayerAlive(i))
+		{
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+			if(observerMode < 7 && observerTarget == client)
+				PrintHintText(i, "%0.f", unitVel)
+		}
+	}
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
