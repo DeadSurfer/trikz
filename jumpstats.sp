@@ -40,7 +40,7 @@ bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
-int gI_syncTick[MAXPLAYERS + 1]
+int gI_syncTick[MAXPLAYERS + 1][2]
 int gI_tickAir[MAXPLAYERS + 1]
 
 public Plugin myinfo =
@@ -86,7 +86,8 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		{
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
-			gI_syncTick[client] = 0
+			gI_syncTick[client][0] = 0
+			gI_syncTick[client][1] = 0
 			gI_tickAir[client] = 0
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
@@ -144,19 +145,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(mouse[0] > 0) //moving to right.
 		{
 			if(buttons & IN_MOVERIGHT)
-				gI_syncTick[client]++
+				gI_syncTick[client][0]++
 		}
 		else //moving to left.
 			if(buttons & IN_MOVELEFT)
-				gI_syncTick[client]++
+				gI_syncTick[client][0]++
 		if(mouse[1] > 0) //moving to right.
 		{
 			if(buttons & IN_FORWARD)
-				gI_syncTick[client]++
+				gI_syncTick[client][1]++
 		}
 		else //moving to left.
 			if(buttons & IN_BACK)
-				gI_syncTick[client]++
+				gI_syncTick[client][1]++
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -172,7 +173,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		float sync
-		sync += float(gI_syncTick[client])
+		if(gI_SWcount[client] > gI_ADcount[client])
+			sync += float(gI_syncTick[client][1])
+		else
+			sync += float(gI_syncTick[client][0])
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
