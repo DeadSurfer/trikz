@@ -91,7 +91,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 				gF_sync[client][0][i] = 0.0
 				gF_sync[client][1][i] = 0.0
 			}
-			gI_tickAir[client] = 0.0
+			gI_tickAir[client] = 0
 			float origin[3]
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
 			gF_origin[client][0] = origin[0]
@@ -177,7 +177,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float sync
 		for(int i = 1; i <= 50; i++)
 			sync += gF_sync[client][0][i]
-		sync /= gI_tickAir[client]
+		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		PrintToServer("%f", sync)
 	}
