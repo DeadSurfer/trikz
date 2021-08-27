@@ -133,19 +133,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(buttons & IN_FORWARD || buttons & IN_BACK)
 				if(gI_ADcount[client] == 0)
+				{
 					gI_SWcount[client]++
+					gB_getFirstStrafe[client] = false
+				}
 			if(buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT)
 				if(gI_SWcount[client] == 0)
+				{
 					gI_ADcount[client]++
-			gB_getFirstStrafe[client] = false
-			PrintToServer("%i", buttons)
+					gB_getFirstStrafe[client] = false
+				}
 		}
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 			if(gI_ADcount[client] == 0)
 				gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
-			if(gI_SWcount[client] == 0)
-				gI_ADcount[client]++
+			gI_ADcount[client]++
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -256,8 +259,8 @@ Action EndTouchProjectile(int entity, int other)
 
 void TouchClient(int client, int other)
 {
-	//if(gB_jumped[client] || !gB_ladder[client])
-	//	ResetFactory(client)
+	if(!other && (gB_jumped[client] || !gB_ladder[client]))
+		ResetFactory(client)
 	if(0 < other <= MaxClients)
 	{
 		float clientOrigin[3]
