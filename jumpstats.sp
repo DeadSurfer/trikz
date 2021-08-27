@@ -93,6 +93,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 			gF_preVel[client][0] = vel[0]
 			gF_preVel[client][1] = vel[1]
+			PrintToServer("is jump!")
 		}
 		//if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 		//	if(gI_ADcount[client] == 0)
