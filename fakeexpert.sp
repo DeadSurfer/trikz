@@ -3049,7 +3049,7 @@ void devmap(bool force)
 				PrintToChatAll("Devmap will be disabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
 			else
 				PrintToChatAll("Devmap will be enabled. \"Yes\" chose %0.f%%% or %0.f of %0.f players.", (gF_devmap[1] / (gF_devmap[0] + gF_devmap[1])) * 100.0, gF_devmap[1], gF_devmap[0] + gF_devmap[1])
-			CreateTimer(5.0, timer_changelevel, gB_isDevmap ? true : false)
+			CreateTimer(5.0, timer_changelevel, gB_isDevmap ? false : true)
 		}
 		else if((gF_devmap[1] || gF_devmap[0]) && gF_devmap[1] <= gF_devmap[0])
 		{
