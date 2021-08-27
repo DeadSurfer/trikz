@@ -126,7 +126,7 @@ bool gB_msg[MAXPLAYERS + 1]
 int gI_voters
 int gI_afkClient
 bool gB_hudVel[MAXPLAYERS + 1]
-float gF_hudTime
+float gF_hudTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -2938,12 +2938,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	//if(IsPlayerAlive(client))
 	//	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nModelIndex"))
-	if(GetEngineTime() - gF_hudTime >= 0.1)
-	{
-		gF_hudTime = GetEngineTime()
-		if(gB_hudVel[client])
+	if(gB_hudVel[client])
+		if(GetEngineTime() - gF_hudTime[client] >= 0.1)
+		{
+			gF_hudTime[client] = GetEngineTime()
 			Hud(client)
-	}
+		}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
