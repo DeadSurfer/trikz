@@ -252,11 +252,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			sync /= float(gI_tickAir[client])
 			sync *= 100.0
 			if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units!", distance)
+				PrintToChat(client, "[SM] Ladder: %.1f units, Sync: %.0f%", distance, sync)
 			if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i", distance, gI_SWcount[client]++)
+				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.0f%", distance, gI_SWcount[client]++, sync)
 			if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client]++)
+				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.0f%", distance, gI_ADcount[client]++, sync)
 		}
 		//gI_SWcount[client] = 0
 		//gI_ADcount[client] = 0
