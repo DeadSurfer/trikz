@@ -43,6 +43,7 @@ bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
 int gI_syncTick[MAXPLAYERS + 1][2]
 int gI_tickAir[MAXPLAYERS + 1]
+bool gB_isCountJump[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
