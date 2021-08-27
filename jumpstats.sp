@@ -35,7 +35,7 @@ int gI_SWcount[MAXPLAYERS + 1]
 int gI_ADcount[MAXPLAYERS + 1]
 bool gB_ladder[MAXPLAYERS + 1]
 float gF_prevelocity[MAXPLAYERS + 1][3]
-int gI_jumpready[MAXPLAYERS + 1]
+float gF_jumpTime[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
@@ -79,8 +79,11 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gB_jumpstats[client])
 	{
-		if(gI_jumpready[client] == 50 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
+		if(GetEngineTime() - gF_jumpTime[client] >= 0.5 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
+		{
+			gF_jumpTime[client] = GetEngineTime()
 			gB_jumped[client] = true
+		}
 		float vec1[3]
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", vec1)
 		gF_vec1[client][0] = vec1[0]
@@ -120,10 +123,10 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsFakeClient(client))
-		ResetFactory(client)
-	if(GetEntityFlags(client) & FL_ONGROUND && gI_jumpready[client] < 50)
-		gI_jumpready[client]++
+	//if(IsFakeClient(client))
+	//	ResetFactory(client)
+	//if(GetEntityFlags(client) & FL_ONGROUND && GetEngineTime() - gF_jumpTime[client] < 0.5)
+	//	gI_jumpready[client]++
 	if(gB_jumped[client])
 	{
 		if(gB_getFirstStrafe[client])
@@ -164,7 +167,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			PrintToChat(client, "[SM] %sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, distance, gI_ADcount[client], velocity)
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
-		gI_jumpready[client] = 0
+		//gI_jumpready[client] = 0
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
@@ -203,7 +206,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
-		gI_jumpready[client] = 0
+		//gI_jumpready[client] = 0
 	}
 	return Plugin_Continue
 }
@@ -224,7 +227,7 @@ void ResetFactory(int client)
 	gB_ladder[client] = false
 	gI_SWcount[client] = 0
 	gI_ADcount[client] = 0
-	gI_jumpready[client] = 0
+	//gI_jumpready[client] = 0
 }
 
 Action StartTouchProjectile(int entity, int other)
