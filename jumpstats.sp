@@ -79,9 +79,9 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gB_jumpstats[client])
 	{
-		if(GetEngineTime() - gF_jumpTime[client] >= 1.0 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
+		if(GetEngineTime() - gF_jumpTime[client] >= 0.5 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 		{
-			gF_jumpTime[client] = GetEngineTime()
+			//gF_jumpTime[client] = GetEngineTime()
 			gB_jumped[client] = true
 			gB_getFirstStrafe[client] = true
 			float origin[3]
@@ -93,7 +93,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 			gF_preVel[client][0] = vel[0]
 			gF_preVel[client][1] = vel[1]
-			PrintToServer("is jump!")
+			//PrintToServer("is jump!")
 		}
 		//if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
 		//	if(gI_ADcount[client] == 0)
@@ -128,6 +128,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//	ResetFactory(client)
 	//if(GetEntityFlags(client) & FL_ONGROUND && GetEngineTime() - gF_jumpTime[client] < 0.5)
 	//	gI_jumpready[client]++
+	//if(GetEntityFlags(client) & FL_ONGROUND)
+	//	gF_jumpTime[client] = GetEngineTime()
+	//else
+	//if()
 	if(gB_jumped[client])
 	{
 		if(gB_getFirstStrafe[client])
@@ -174,6 +178,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
 		//gI_jumpready[client] = 0
+		gF_jumpTime[client] = GetEngineTime()
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
@@ -213,8 +218,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gI_SWcount[client] = 0
 		gI_ADcount[client] = 0
 		//gI_jumpready[client] = 0
+		gF_jumpTime[client] = GetEngineTime()
 	}
-	return Plugin_Continue
+	//return Plugin_Continue
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
