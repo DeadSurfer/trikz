@@ -3301,6 +3301,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			Noclip(client)
 		else if(StrEqual(sArgs, "sp") || StrEqual(sArgs, "spec"))
 			cmd_spec(client, 0)
+		else if(StrEqual(sArgs, "hud"))
+			cmd_hud(client, 0)
 	}
 }
 
