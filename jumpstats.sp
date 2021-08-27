@@ -115,7 +115,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(!(GetEntityFlags(client) & FL_ONGROUND))
+	if(GetEntityFlags(client) & FL_ONGROUND)
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
 	if(gB_jumped[client])
