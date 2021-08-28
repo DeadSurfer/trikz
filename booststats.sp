@@ -59,8 +59,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			gF_boostTimeStart[client] = GetEngineTime()
 			gB_boostRead[client] = true
-			float vel[3]
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel)
+			//float vel[3]
+			//GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel)
 			gF_unitVel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 			gI_duck[client] = GetEntProp(client, Prop_Data, "m_bDucking")
 		}
