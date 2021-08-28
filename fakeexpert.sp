@@ -1166,7 +1166,7 @@ void Restart(int client)
 		{
 			if(gI_partner[client])
 			{
-				if(IsPlayerAlive(client))
+				if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
 				{
 					gB_readyToStart[client] = true
 					gF_Time[client] = 0.0
@@ -2214,12 +2214,11 @@ Action SDKStartTouch(int entity, int other)
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
-				
 				Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
 				gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
+				gB_state[other] = false
+				gB_state[gI_partner[other]] = false
 			}
-			gB_state[other] = false
-			gB_state[gI_partner[other]] = false
 		}
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
