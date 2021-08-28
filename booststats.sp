@@ -56,7 +56,7 @@ public void OnPluginStart()
 Action cmd_booststats(int client, int args)
 {
 	gB_boostStats[client] = !gB_boostStats[client]
-	PrintToServer(client, gB_boostStats[client] ? "Boost stats is on." : "Boost stats is off.")
+	PrintToChat(client, gB_boostStats[client] ? "Boost stats is on." : "Boost stats is off.")
 	return Plugin_Handled
 }
 
