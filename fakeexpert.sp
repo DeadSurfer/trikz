@@ -3557,7 +3557,7 @@ void MLStats(int client)
 		for(int i = 1; i <= gI_mlsCount[client]; i++)
 			Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][i])
 	else
-		Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][i])
+		Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][gI_mlsCount[client]])
 	if(gB_mlstats[gI_mlsBooster[client]])
 	{
 		Handle hKeyHintText = StartMessageOne("KeyHintText", gI_mlsBooster[client]);
