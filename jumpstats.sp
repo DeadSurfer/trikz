@@ -107,8 +107,10 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(GetEntityFlags(client) & FL_ONGROUND)
+	{
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
+	}
 	else
 		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
 			gI_tickAir[client]++
