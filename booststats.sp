@@ -69,10 +69,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
-		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnPostProjectile)
+		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
 }
 
-void SDKSpawnPostProjectile(int entity)
+Action SDKSpawnProjectile(int entity)
 {
 	//CreateTimer(0.1, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 	RequestFrame(frame_projectileVel, EntIndexToEntRef(entity))
