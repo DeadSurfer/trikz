@@ -37,6 +37,7 @@ bool gB_boostRead[MAXPLAYERS + 1]
 float gF_projectileVel[MAXPLAYERS + 1]
 float gF_unitVel[MAXPLAYERS + 1]
 float gF_duck[MAXPLAYERS + 1]
+bool gB_boostStats[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -45,6 +46,18 @@ public Plugin myinfo =
 	description = "Measures time between attack and jump",
 	version = "0.1",
 	url = "http://www.sourcemod.net/"
+}
+
+public void OnPluginStart()
+{
+	RegConsoleCmd("sm_bs", cmd_booststats)
+}
+
+Action cmd_booststats(int client, int args)
+{
+	gB_boostStats[client] = !gB_boostStats[client]
+	PrintToServer(client, gB_boostStats[client] ? "Boost stats is on." : "Boost stats is off.")
+	return Plugin_Handled
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -81,16 +94,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKSpawnProjectile(int entity)
 {
-	//float vel[3]
-	//GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
-	//float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-	//float unitVel = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
-	//PrintToServer("%f", unitVel)
 	RequestFrame(frame_projectileVel, EntIndexToEntRef(entity))
-	//CreateTimer(0.2, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 }
 
-//Action timer_projectileVel(Handle timer, int ref)
 void frame_projectileVel(int ref)
 {
 	int entity = EntRefToEntIndex(ref)
@@ -103,7 +109,6 @@ void frame_projectileVel(int ref)
 		char sDuck[16]
 		Format(sDuck, 16, gF_duck[client] ? "Yes" : "No")
 		//PrintToServer("%f", gF_projectileVel[client])
-		PrintToServer("Time: %f, Speed: %f, Run: %f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], sDuck)
+		PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], sDuck)
 	}
-//	return Plugin_Stop
 }
