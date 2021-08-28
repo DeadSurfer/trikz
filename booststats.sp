@@ -34,6 +34,7 @@
 float gF_boostTimeStart[MAXPLAYERS + 1]
 float gF_boostTimeEnd[MAXPLAYERS + 1]
 bool gB_boostRead[MAXPLAYERS + 1]
+float gF_projectileVel[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -60,7 +61,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
 		{
 			gF_boostTimeEnd[client] = GetEngineTime()
-			PrintToServer("%f", gF_boostTimeEnd[client] - gF_boostTimeStart[client])
+			PrintToServer("Time: %f, Speed: %f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client])
 			gB_boostRead[client] = false
 		}
 	}
@@ -92,8 +93,8 @@ void frame_projectileVel(int ref)
 		float vel[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
 		//float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		float unitVel = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
-		PrintToServer("%f", unitVel)
+		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+		//PrintToServer("%f", unitVel)
 	}
 //	return Plugin_Stop
 }
