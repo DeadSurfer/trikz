@@ -103,7 +103,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "flashbang_projectile") && gB_boostStats[client])
+	if(StrEqual(classname, "flashbang_projectile"))
 		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
 }
 
@@ -124,6 +124,7 @@ void frame_projectileVel(int ref)
 		char sDuck[16]
 		Format(sDuck, 16, gF_duck[client] ? "Yes" : "No")
 		//PrintToServer("%f", gF_projectileVel[client])
-		PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], sDuck)
+		if(gB_boostStats[client])
+			PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], sDuck)
 	}
 }
