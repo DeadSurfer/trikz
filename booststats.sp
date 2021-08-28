@@ -62,26 +62,29 @@ Action cmd_booststats(int client, int args)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	char sWeapon[32]
-	int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
-	if(IsValidEntity(activeWeapon))
-		GetEntityClassname(activeWeapon, sWeapon, 32)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
+	if(gB_boostStats[client])
 	{
-		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+		char sWeapon[32]
+		int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
+		if(IsValidEntity(activeWeapon))
+			GetEntityClassname(activeWeapon, sWeapon, 32)
+		if(StrEqual(sWeapon, "weapon_flashbang"))
 		{
-			gF_boostTimeStart[client] = GetEngineTime()
-			gB_boostRead[client] = true
-			//float vel[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
-			gF_unitVel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-			gF_duck[client] = GetEntPropFloat(client, Prop_Data, "m_flDucktime")
-		}
-		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
-		{
-			gF_boostTimeEnd[client] = GetEngineTime()
-			//PrintToServer("Time: %f, Speed: %f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client])
-			gB_boostRead[client] = false
+			if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+			{
+				gF_boostTimeStart[client] = GetEngineTime()
+				gB_boostRead[client] = true
+				//float vel[3]
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
+				gF_unitVel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+				gF_duck[client] = GetEntPropFloat(client, Prop_Data, "m_flDucktime")
+			}
+			if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
+			{
+				gF_boostTimeEnd[client] = GetEngineTime()
+				//PrintToServer("Time: %f, Speed: %f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client])
+				gB_boostRead[client] = false
+			}
 		}
 	}
 }
