@@ -87,7 +87,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 			gF_preVel[client][0] = vel[0]
 			gF_preVel[client][1] = vel[1]
-			gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking"))
+			gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking"), 1)
 		}
 	}
 }
