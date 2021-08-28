@@ -98,7 +98,7 @@ void frame_projectileVel(int ref)
 		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 		bool duck = GetEntProp(client, Prop_Data, "m_bDucking")
 		char sDuck[16]
-		Format(sDuck, 16, duck ? "Yes" : "No")
+		Format(sDuck, 16, view_as<bool>(duck) ? "Yes" : "No")
 		//PrintToServer("%f", gF_projectileVel[client])
 		PrintToServer("Time: %f, Speed: %f, Run: %f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], unitVel, sDuck)
 	}
