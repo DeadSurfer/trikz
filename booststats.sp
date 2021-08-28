@@ -131,9 +131,7 @@ Action timer_finalMSG(Handle timer, int client)
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 			if(observerMode < 7 && observerTarget == client && gB_boostStats[i])
-			{
 				PrintToChat(i, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
-			}
 		}
 	}
 	return Plugin_Stop
