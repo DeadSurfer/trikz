@@ -3555,9 +3555,9 @@ Action timer_clantag(Handle timer, int client)
 
 void MLStats(int client, bool ground = false)
 {
-	float preVel = SquareRoot(Pow(gF_mlsVel[client][0][0], 2.0) + Pow(gF_mlsVel[client][0][1], 2.0))
-	float postVel = SquareRoot(Pow(gF_mlsVel[client][1][0], 2.0) + Pow(gF_mlsVel[client][1][1], 2.0))
-	Format(gS_mlsPrint[client][gI_mlsCount[client]], 256, "%i %.1f-%.1f\n", gI_mlsCount[client], preVel, postVel)
+	float velPre = SquareRoot(Pow(gF_mlsVel[client][0][0], 2.0) + Pow(gF_mlsVel[client][0][1], 2.0))
+	float velPost = SquareRoot(Pow(gF_mlsVel[client][1][0], 2.0) + Pow(gF_mlsVel[client][1][1], 2.0))
+	Format(gS_mlsPrint[client][gI_mlsCount[client]], 256, "%i %.1f-%.1f\n", gI_mlsCount[client], velPre, velPost)
 	char sFullPrint[256]
 	for(int i = 1; i <= 10; i++)
 		Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][i])
@@ -3567,6 +3567,7 @@ void MLStats(int client, bool ground = false)
 	{
 		float x = gF_mlsDistance[client][1][0] - gF_mlsDistance[client][0][0]
 		float y = gF_mlsDistance[client][1][1] - gF_mlsDistance[client][0][1]
+		PrintToServer("%f %f", x, y)
 		Format(sFullPrint, 256, "%s\nDistance: %.1f units", sFullPrint, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0)
 	}
 	if(gB_mlstats[gI_mlsBooster[client]])
