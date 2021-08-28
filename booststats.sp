@@ -79,18 +79,21 @@ Action SDKSpawnProjectile(int entity)
 	//float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 	float unitVel = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 	PrintToServer("%f", unitVel)
+	RequestFrame(frame_projectileVel, EntIndexToEntRef(entity))
 	//CreateTimer(0.2, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 }
 
-/*Action timer_projectileVel(Handle timer, int ref)
+//Action timer_projectileVel(Handle timer, int ref)
+void frame_projectileVel(int ref)
 {
 	int entity = EntRefToEntIndex(ref)
 	if(IsValidEntity(entity))
 	{
 		float vel[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
-		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		//float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		float unitVel = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		PrintToServer("%f", unitVel)
 	}
-	return Plugin_Stop
-}*/
+//	return Plugin_Stop
+}
