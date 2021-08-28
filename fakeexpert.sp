@@ -2065,7 +2065,7 @@ Action SDKStartTouch(int entity, int other)
 	{
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
-		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapFinished[other])
+		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapFinished[gI_partner[other]])
 		{
 			//gB_readyToStart[other] = true //expert zone idea.
 			//gB_readyToStart[gI_partner[other]] = true
@@ -2076,7 +2076,7 @@ Action SDKStartTouch(int entity, int other)
 		{
 			gB_mapFinished[other] = true
 			//gB_passZone[other] = false
-			if(gB_mapFinished[gI_partner[other] && gB_state[other]])
+			if(gB_mapFinished[gI_partner[other]] && gB_state[other])
 			{
 				char sQuery[512]
 				int playerid = GetSteamAccountID(other)
