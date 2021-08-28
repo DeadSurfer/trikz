@@ -134,6 +134,7 @@ Handle gH_timerClanTag[MAXPLAYERS + 1]
 float gF_mlsVel[MAXPLAYERS + 1][2][2]
 int gI_mlsCount[MAXPLAYERS + 1]
 char gS_mlsPrint[MAXPLAYERS + 1][100][256]
+int gI_mlsOwner[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -3002,7 +3003,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_hudTime[client] = GetEngineTime()
 		Hud(client)
 	}
-	
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
 		if(gI_mlsCount[client])
@@ -3056,6 +3056,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_mlsVel[other][0][0] = vel[0]
 			gF_mlsVel[other][0][1] = vel[1]
 			gI_mlsCount[other]++
+			gI_mlsOwner[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		}
 	}
 }
@@ -3537,5 +3538,5 @@ void MLStats(int client)
 	float preVel = SquareRoot(Pow(gF_mlsVel[client][0][0], 2.0) + Pow(gF_mlsVel[client][0][1], 2.0))
 	float postVel = SquareRoot(Pow(gF_mlsVel[client][1][0], 2.0) + Pow(gF_mlsVel[client][1][1], 2.0))
 	Format(gS_mlsPrint[client][gI_mlsCount[client]], 256, "%i %.1f-%.1f", gI_mlsCount[client], preVel, postVel)
-	PrintToServer("%s", gS_mlsPrint[client][gI_mlsCount[client]])
+	PrintToServer("%s %N %N", gS_mlsPrint[client][gI_mlsCount[client]], gI_mlsOwner[client], client)
 }
