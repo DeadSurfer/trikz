@@ -3482,12 +3482,12 @@ Action timer_clantag(Handle timer, int client)
 	if(gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][1])
-		CS_SetClientClanTag(gI_partner[client], gS_clanTag[client][1])
+		CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][1])
 	}
 	else
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][0])
-		CS_SetClientClanTag(gI_partner[client], gS_clanTag[client][0])
+		CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][0])
 		KillTimer(gH_timerSetClanTag[client])
 	}
 }
