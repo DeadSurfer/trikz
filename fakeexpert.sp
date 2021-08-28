@@ -131,6 +131,9 @@ float gF_hudTime[MAXPLAYERS + 1]
 char gS_clanTag[MAXPLAYERS + 1][2][256]
 Handle gH_timerClanTag[MAXPLAYERS + 1]
 //Handle gH_timerSetClanTag[MAXPLAYERS + 1]
+float gF_mlsVel[MAXPLAYERS + 1][2][2]
+int gI_mlsCount[MAXPLAYERS + 1]
+char gS_mlsPrint[MAXPLAYERS + 1][100][256]
 
 public Plugin myinfo =
 {
@@ -2891,6 +2894,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
+			gF_mlsVel[client][1][0] = velocity[0]
+			gF_mlsVel[client][1][1] = velocity[1]
+			MLStats(client)
 		}
 	}
 	if(IsPlayerAlive(client) && (gI_partner[client] || gB_isDevmap))
@@ -2996,6 +3002,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_hudTime[client] = GetEngineTime()
 		Hud(client)
 	}
+	if(GetEntityFlags(client) & FL_ONGROUND)
+		if(gI_mlsCount[client])
+			gI_mlsCount[client] = 0
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
@@ -3033,6 +3042,11 @@ Action ProjectileBoostFix(int entity, int other)
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 			gI_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
 			gI_boost[other] = 1
+			float vel[3]
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel)
+			gF_mlsVel[client][0][0] = vel[0]
+			gF_mlsVel[client][0][1] = vel[1]
+			gI_mlsCount[client]++
 		}
 	}
 }
@@ -3507,4 +3521,12 @@ Action timer_clantag(Handle timer, int client)
 		CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][0])
 		KillTimer(gH_timerClanTag[client])
 	}
+}
+
+void MLStats(int clinet)
+{
+	float preVel = SquareRoot(Pow(gF_mlsVel[client][0][0], 2.0) + Pow(gF_mlsVel[client][0][1], 2.0))
+	float postVel = SquareRoot(Pow(gF_mlsVel[client][1][0], 2.0) + Pow(gF_mlsVel[client][1][1], 2.0))
+	Format(gS_mlsPrint[client][gI_mlsCount[client]], 256, "%i %.1f-%.1f", gI_mlsCount[client], preVel, postVel)
+	PrintToServer("%s", gS_mlsPrint[client][gI_mlsCount[client]])
 }
