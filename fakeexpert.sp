@@ -3304,7 +3304,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 					gB_hudVel[param1] = !gB_hudVel[param1]
-				case 0:
+				case 1:
 					gB_mlstats[param1] = !gB_mlstats[param1]
 			}
 			cmd_hud(param1, 0)
