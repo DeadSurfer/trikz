@@ -167,11 +167,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync *= 100.0
 		if(gB_jumpstats[client])
 		{
-			if(3000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
+			if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
-			if(3000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
+			if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
-			if(3000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
+			if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
 		}
 		for(int i = 1; i <= MaxClients; i++)
@@ -182,11 +182,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 				{
-					if(3000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
+					if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
 						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
-					if(3000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
+					if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
 						PrintToChat(i, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
-					if(3000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
+					if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
 						PrintToChat(i, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
 				}
 			}
