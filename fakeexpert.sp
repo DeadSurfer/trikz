@@ -3012,7 +3012,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 			char sClass[32]
-			GetEntityClassname(groundEntity, sClass, 32)
+			if(IsValidEntity(groundEntity))
+				GetEntityClassname(groundEntity, sClass, 32)
 			if(!(StrEqual(sClass, "flashbang_projectile")))
 				gI_mlsCount[client] = 0
 		}
