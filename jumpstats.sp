@@ -76,6 +76,13 @@ Action cmd_jumpstats(int client, int args)
 	return Plugin_Handled
 }
 
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	if(!IsChatTrigger())
+		if(StrEqual(sArgs, "js"))
+			cmd_jumpstats(client, 0)
+}
+
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
@@ -97,13 +104,6 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
 		}
 	}
-}
-
-public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
-{
-	if(!IsChatTrigger())
-		if(StrEqual(sArgs, "js"))
-			cmd_jumpstats(client, 0)
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
