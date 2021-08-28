@@ -1334,7 +1334,7 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 {
 }
 
-public void OnClientSettingsChanged(int client)
+/*public void OnClientSettingsChanged(int client)
 {
 	if(IsClientInGame(client))
 	{
@@ -1342,6 +1342,13 @@ public void OnClientSettingsChanged(int client)
 		CS_GetClientClanTag(client, sClanTag, 256)
 		PrintToServer("%s x", sClanTag)
 	}
+}*/
+
+public Action OnClientCommandKeyValues(int client, KeyValues kv)
+{
+	char sCmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
+	if(kv.GetSectionName(sCmd, 64,) && StrEqual(sCmd, "ClanTagChanged")
+		PrintToServer("yes sir")
 }
 
 Action cmd_test(int client, int args)
