@@ -674,8 +674,8 @@ public void OnClientPutInServer(int client)
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
 	gB_hudVel[client] = false
-	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
-	PrintToServer("%s", gS_clanTag[client][0])
+	//CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	//PrintToServer("%s", gS_clanTag[client][0])
 	//gH_timerClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 }
 
@@ -1344,15 +1344,17 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 {
 }
 
-/*public void OnClientSettingsChanged(int client)
+public void OnClientSettingsChanged(int client)
 {
 	if(IsClientInGame(client))
 	{
-		char sClanTag[256]
-		CS_GetClientClanTag(client, sClanTag, 256)
-		PrintToServer("%s x", sClanTag)
+		//char sClanTag[256]
+		//CS_GetClientClanTag(client, sClanTag, 256)
+		//PrintToServer("%s x", sClanTag)
+		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+		PrintToServer("%s", gS_clanTag[client][0])
 	}
-}*/
+}
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
