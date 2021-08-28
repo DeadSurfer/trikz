@@ -1336,9 +1336,12 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 
 public void OnClientSettingsChanged(int client)
 {
-	char sClanTag[256]
-	CS_GetClientClanTag(client, sClanTag, 256)
-	PrintToServer("%s", sClanTag)
+	if(IsClientInGame(client))
+	{
+		char sClanTag[256]
+		CS_GetClientClanTag(client, sClanTag, 256)
+		PrintToServer("%s", sClanTag)
+	}
 }
 
 Action cmd_test(int client, int args)
