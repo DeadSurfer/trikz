@@ -326,7 +326,10 @@ Action EndTouchProjectile(int entity, int other)
 void TouchClient(int client, int other)
 {
 	if(!other && (gB_jumped[client] || gB_ladder[client]))
+	{
 		ResetFactory(client)
+		PrintToServer("%i", other)
+	}
 	if(0 < other <= MaxClients)
 	{
 		float clientOrigin[3]
