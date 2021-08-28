@@ -151,9 +151,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			Format(sZLevel, 9, "[Rise] ")
 		if(origin[2] - gF_origin[client][2] < 0.017089)
 			Format(sZLevel, 9, "[Fall] ")
-		char sCJ[7]
-		if(gB_isCountJump[client])
-			Format(sCJ, 7, "[CJ] ")
 		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
@@ -169,11 +166,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gB_jumpstats[client])
 		{
 			if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, pre, sync)
 			if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_SWcount[client]++, pre, sync)
 			if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_ADcount[client]++, pre, sync)
 			PrintToServer("yes")
 		}
 		for(int i = 1; i <= MaxClients; i++)
@@ -185,11 +182,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 				{
 					if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, pre, sync)
 					if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_SWcount[client]++, pre, sync)
 					if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_ADcount[client]++, pre, sync)
 				}
 			}
 		}
