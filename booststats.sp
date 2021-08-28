@@ -132,5 +132,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 void frame_finalMSG(int client)
 {
+	RequestFrame(frame_finalMSG2, client)
+}
+
+void frame_finalMSG2(int client)
+{
 	PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
 }
