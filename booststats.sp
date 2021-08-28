@@ -74,8 +74,18 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 void SDKSpawnPostProjectile(int entity)
 {
-	float vel[3]
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
-	float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-	PrintToServer("%f", unitVel)
+	CreateTimer(0.1, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
+}
+
+Action timer_projectileVel(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref)
+	if(IsValidEntity(entity))
+	{
+		float vel[3]
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
+		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		PrintToServer("%f", unitVel)
+	}
+	return Plugin_Stop
 }
