@@ -3044,9 +3044,9 @@ Action ProjectileBoostFix(int entity, int other)
 			gI_boost[other] = 1
 			float vel[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel)
-			gF_mlsVel[client][0][0] = vel[0]
-			gF_mlsVel[client][0][1] = vel[1]
-			gI_mlsCount[client]++
+			gF_mlsVel[other][0][0] = vel[0]
+			gF_mlsVel[other][0][1] = vel[1]
+			gI_mlsCount[other]++
 		}
 	}
 }
