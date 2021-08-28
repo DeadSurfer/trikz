@@ -44,7 +44,8 @@ public Plugin myinfo =
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	char sWeapon[32]
-	GetEntPropString(client, Prop_Data, "m_hActiveWeapon", sWeapon, 32)
+	int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
+	GetEntityClassname(activeWeapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
