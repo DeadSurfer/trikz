@@ -74,10 +74,15 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKSpawnProjectile(int entity)
 {
-	CreateTimer(0.2, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
+	float vel[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
+	//float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+	float unitVel = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+	PrintToServer("%f", unitVel)
+	//CreateTimer(0.2, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 }
 
-Action timer_projectileVel(Handle timer, int ref)
+/*Action timer_projectileVel(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref)
 	if(IsValidEntity(entity))
@@ -88,4 +93,4 @@ Action timer_projectileVel(Handle timer, int ref)
 		PrintToServer("%f", unitVel)
 	}
 	return Plugin_Stop
-}
+}*/
