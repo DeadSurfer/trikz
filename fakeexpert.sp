@@ -197,6 +197,7 @@ public void OnPluginStart()
 	//PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain)
 	//gH_viewmodel = EndPrepSDKCall()
 	//gSM_char = new StringMap()
+	HookEvent(""
 }
 
 public void OnMapStart()
@@ -460,6 +461,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
+	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 	//SetEntityRenderColor(client, 255, 255, 255, 255)
 	//https://forums.alliedmods.net/showthread.php?t=273885
 	//gI_viewmodel[client] = 
@@ -679,14 +681,14 @@ public void OnClientPutInServer(int client)
 	//gH_timerClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 }
 
-public void OnClientConnected(int client)
+/*public void OnClientConnected(int client)
 {
 	if(IsClientInGame(client))
 	{
 		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 		PrintToServer("%s", gS_clanTag[client][0])
 	}
-}
+}*/
 
 public void OnClientDisconnect(int client)
 {
