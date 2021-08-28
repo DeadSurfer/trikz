@@ -86,12 +86,13 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
+	PrintToServer("%f", GetEntityGravity(client))
 	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
 		gB_jumped[client] = true
 		gB_getFirstStrafe[client] = true
 		float origin[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+		GetClientAbsOrigin(client, origin)
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
@@ -144,7 +145,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
 		float origin[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+		GetClientAbsOrigin(client, origin)
 		char sZLevel[9]
 		if(origin[2] - gF_origin[client][2] > 1.475586)
 			Format(sZLevel, 9, "[Rise] ")
@@ -167,11 +168,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync *= 100.0
 		if(gB_jumpstats[client])
 		{
-			//if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
+			if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
-			//if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
+			if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
-			//if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
+			if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
 		}
 		for(int i = 1; i <= MaxClients; i++)
@@ -197,7 +198,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		gB_ladder[client] = true
 		float origin[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+		GetClientAbsOrigin(client, origin)
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
@@ -235,7 +236,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
 		float origin[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+		GetClientAbsOrigin(client, origin)
 		PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
 		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
 		{
