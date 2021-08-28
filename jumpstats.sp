@@ -167,11 +167,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync *= 100.0
 		if(gB_jumpstats[client])
 		{
-			if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
+			//if(4000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
-			if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
+			//if(4000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
-			if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
+			//if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
 		}
 		for(int i = 1; i <= MaxClients; i++)
