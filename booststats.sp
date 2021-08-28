@@ -45,7 +45,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	char sWeapon[32]
 	int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
-	GetEntityClassname(activeWeapon, sWeapon, 32)
+	if(IsValidEntity(activeWeapon))
+		GetEntityClassname(activeWeapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
