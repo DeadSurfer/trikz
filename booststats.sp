@@ -83,7 +83,7 @@ Action timer_projectileVel(Handle timer, int ref)
 	if(IsValidEntity(entity))
 	{
 		float vel[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
+		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
 		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 		PrintToServer("%f", unitVel)
 	}
