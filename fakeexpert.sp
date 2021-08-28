@@ -700,7 +700,7 @@ public void OnClientDisconnect(int client)
 			RemoveEntity(entity)
 	if(partner)
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
-	if(gH_timerClanTag[client] != null)
+	if(gH_timerClanTag[client] != INVALID_HANDLE)
 		KillTimer(gH_timerClanTag[client])
 }
 
