@@ -61,7 +61,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
 		{
 			gF_boostTimeEnd[client] = GetEngineTime()
-			PrintToServer("Time: %f, Speed: %f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client])
+			//PrintToServer("Time: %f, Speed: %f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client])
 			gB_boostRead[client] = false
 		}
 	}
@@ -92,10 +92,15 @@ void frame_projectileVel(int ref)
 	{
 		float vel[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
-		//float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
-		PrintToServer("%f", gF_projectileVel[client])
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel)
+		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		bool duck = GetEntProp(client, Prop_Data, "m_bDucking")
+		char sDuck[16]
+		Format(sDuck, 16, duck ? "Yes" : "No")
+		//PrintToServer("%f", gF_projectileVel[client])
+		PrintToServer("Time: %f, Speed: %f, Run: %f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], unitVel, sDuck)
 	}
 //	return Plugin_Stop
 }
