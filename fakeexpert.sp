@@ -3390,6 +3390,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			cmd_spec(client, 0)
 		else if(StrEqual(sArgs, "hud"))
 			cmd_hud(client, 0)
+		else if(StrEqual(sArgs, "mls"))
+			cmd_mlstats(client, 0)
 	}
 }
 
