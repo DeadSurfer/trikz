@@ -36,7 +36,7 @@ float gF_boostTimeEnd[MAXPLAYERS + 1]
 bool gB_boostRead[MAXPLAYERS + 1]
 float gF_projectileVel[MAXPLAYERS + 1]
 float gF_unitVel[MAXPLAYERS + 1]
-int gF_duck[MAXPLAYERS + 1]
+float gF_duck[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
