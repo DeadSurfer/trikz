@@ -86,7 +86,6 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	PrintToServer("%f", GetEntityGravity(client))
 	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
 		gB_jumped[client] = true
@@ -326,10 +325,7 @@ Action EndTouchProjectile(int entity, int other)
 void TouchClient(int client, int other)
 {
 	if(!other && (gB_jumped[client] || gB_ladder[client]))
-	{
 		ResetFactory(client)
-		PrintToServer("%i", other)
-	}
 	if(0 < other <= MaxClients)
 	{
 		float clientOrigin[3]
