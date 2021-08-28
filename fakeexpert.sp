@@ -675,6 +675,7 @@ public void OnClientPutInServer(int client)
 	gB_msg[client] = true
 	gB_hudVel[client] = false
 	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	PrintToServer("%s", gS_clanTag[client][0])
 	//gH_timerClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 }
 
