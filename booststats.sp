@@ -53,6 +53,11 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_bs", cmd_booststats)
 }
 
+public void OnClientPutInServer(int client)
+{
+	gB_boostStats[client] = false
+}
+
 Action cmd_booststats(int client, int args)
 {
 	gB_boostStats[client] = !gB_boostStats[client]
@@ -98,7 +103,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "flashbang_projectile"))
+	if(StrEqual(classname, "flashbang_projectile") && gB_boostStats[client])
 		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
 }
 
