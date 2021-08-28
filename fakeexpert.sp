@@ -156,7 +156,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_color", cmd_color)
 	RegConsoleCmd("sm_r", cmd_restart)
 	RegConsoleCmd("sm_restart", cmd_restart)
-	RegConsoleCmd("sm_time", cmd_time)
+	//RegConsoleCmd("sm_time", cmd_time)
 	RegConsoleCmd("sm_cp", cmd_checkpoint)
 	RegConsoleCmd("sm_devmap", cmd_devmap)
 	RegConsoleCmd("sm_top", cmd_top)
@@ -3323,8 +3323,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			Restart(client)
 			Restart(gI_partner[client])
 		}
-		else if(StrEqual(sArgs, "time"))
-			cmd_time(client, 0)
+		//else if(StrEqual(sArgs, "time"))
+		//	cmd_time(client, 0)
 		else if(StrEqual(sArgs, "devmap"))
 			cmd_devmap(client, 0)
 		else if(StrEqual(sArgs, "top"))
@@ -3348,7 +3348,7 @@ Action ProjectileBoostFixEndTouch(int entity, int other)
 		gB_bouncedOff[entity] = true //get from tengu github tengulawl scriptig boost-fix.sp
 }
 
-Action cmd_time(int client, int args)
+/*Action cmd_time(int client, int args)
 {
 	if(IsPlayerAlive(client))
 	{
@@ -3374,7 +3374,7 @@ Action cmd_time(int client, int args)
 		}
 	}
 	return Plugin_Handled
-}
+}*/
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
