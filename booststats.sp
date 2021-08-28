@@ -66,7 +66,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }
 
-public Action OnEntityCreated(int entity, const char[] classname)
+public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
 		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
