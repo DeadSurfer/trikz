@@ -3553,7 +3553,7 @@ Action timer_clantag(Handle timer, int client)
 	}
 }
 
-void MLStats(int client, bool ground)
+void MLStats(int client, bool ground = false)
 {
 	float preVel = SquareRoot(Pow(gF_mlsVel[client][0][0], 2.0) + Pow(gF_mlsVel[client][0][1], 2.0))
 	float postVel = SquareRoot(Pow(gF_mlsVel[client][1][0], 2.0) + Pow(gF_mlsVel[client][1][1], 2.0))
