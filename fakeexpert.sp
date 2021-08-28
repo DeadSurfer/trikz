@@ -42,7 +42,6 @@ bool gB_state[MAXPLAYERS + 1]
 char gS_map[192]
 bool gB_mapFinished[MAXPLAYERS + 1]
 bool gB_passDB
-//bool gB_passZone[MAXPLAYERS + 1]
 float gF_originStart[3]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyVel[MAXPLAYERS + 1][3]
@@ -130,7 +129,6 @@ bool gB_hudVel[MAXPLAYERS + 1]
 float gF_hudTime[MAXPLAYERS + 1]
 char gS_clanTag[MAXPLAYERS + 1][2][256]
 Handle gH_timerClanTag[MAXPLAYERS + 1]
-//Handle gH_timerSetClanTag[MAXPLAYERS + 1]
 float gF_mlsVel[MAXPLAYERS + 1][2][2]
 int gI_mlsCount[MAXPLAYERS + 1]
 char gS_mlsPrint[MAXPLAYERS + 1][100][256]
@@ -683,20 +681,8 @@ public void OnClientPutInServer(int client)
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
 	gB_hudVel[client] = false
-	//CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
-	//PrintToServer("%s", gS_clanTag[client][0])
-	//gH_timerClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 	gB_mlstats[client] = false
 }
-
-/*public void OnClientConnected(int client)
-{
-	if(IsClientInGame(client))
-	{
-		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
-		PrintToServer("%s", gS_clanTag[client][0])
-	}
-}*/
 
 public void OnClientDisconnect(int client)
 {
@@ -716,8 +702,6 @@ public void OnClientDisconnect(int client)
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
 	if(gH_timerClanTag[client] != null)
 		KillTimer(gH_timerClanTag[client])
-	//KillTimer(gH_timerSetClanTag[client])
-	//KillTimer(gH_timerSetClanTag[partner])
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -977,8 +961,6 @@ void Partner(int client)
 		{
 			Menu menu = new Menu(cancelpartner_handler)
 			menu.SetTitle("Cancel partnership with %N", gI_partner[client])
-			//char sName[MAX_NAME_LENGTH]
-			//GetClientName(gI_partner[client], sName, MAX_NAME_LENGTH)
 			char sPartner[32]
 			IntToString(gI_partner[client], sPartner, 32)
 			menu.AddItem(sPartner, "Yes")
@@ -1142,8 +1124,6 @@ void Color(int client, bool customSkin, int color = -1)
 				gI_color[client][i] = StringToInt(gS_colorExploded[i])
 				gI_color[gI_partner[client]][i] = StringToInt(gS_colorExploded[i])
 			}
-			//SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-			//SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 			SetEntityRenderColor(gI_partner[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[gI_partner[client]] ? 255 : 125)
 			gI_colorCount[client]++
@@ -1155,8 +1135,6 @@ void Color(int client, bool customSkin, int color = -1)
 			gB_color[gI_partner[client]] = false
 			gI_colorCount[client] = 0
 			gI_colorCount[gI_partner[client]] = 0
-			//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
-			//SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayerDef[gI_class[client]])
 			SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
 			SetEntityRenderColor(gI_partner[client], 255, 255, 255, gB_block[gI_partner[client]] ? 255 : 125)
 		}
@@ -1211,7 +1189,7 @@ void Restart(int client)
 					if(gB_MenuIsOpen[client])
 						Trikz(client)
 					CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
-					int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 //https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
+					int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
 					if(IsValidEntity(pistol))
 						RemovePlayerItem(client, pistol)
 					GivePlayerItem(client, "weapon_usp")
@@ -1360,18 +1338,6 @@ Action cmd_deleteallcp(int client, int args)
 void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
 {
 }
-
-/*public void OnClientSettingsChanged(int client)
-{
-	if(IsClientInGame(client))
-	{
-		//char sClanTag[256]
-		//CS_GetClientClanTag(client, sClanTag, 256)
-		//PrintToServer("%s x", sClanTag)
-		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
-		PrintToServer("%s", gS_clanTag[client][0])
-	}
-}*/
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
@@ -2096,8 +2062,6 @@ void SDKEndTouchPost(int entity, int other)
 		gB_mapFinished[gI_partner[other]] = false
 		gF_TimeStart[other] = GetEngineTime()
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
-		//gB_passZone[other] = true
-		//gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
 		gH_timerClanTag[other] = CreateTimer(1.0, timer_clantag, other, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
@@ -2113,22 +2077,18 @@ void SDKEndTouchPost(int entity, int other)
 
 Action SDKStartTouch(int entity, int other)
 {
-	//if(0 < other <= MaxClients && gB_passZone[other])
 	if(0 < other <= MaxClients && !gB_isDevmap)
 	{
 		char sTrigger[32]
 		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
 		if(StrEqual(sTrigger, "fakeexpert_startzone") && gB_mapFinished[gI_partner[other]])
 		{
-			//gB_readyToStart[other] = true //expert zone idea.
-			//gB_readyToStart[gI_partner[other]] = true
 			Restart(other) //expert zone idea.
 			Restart(gI_partner[other])
 		}
 		if(StrEqual(sTrigger, "fakeexpert_endzone"))
 		{
 			gB_mapFinished[other] = true
-			//gB_passZone[other] = false
 			if(gB_mapFinished[gI_partner[other]] && gB_state[other])
 			{
 				char sQuery[512]
