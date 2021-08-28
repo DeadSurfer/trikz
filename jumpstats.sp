@@ -86,23 +86,20 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(gB_jumpstats[client])
+	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
-		if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
-		{
-			gB_jumped[client] = true
-			gB_getFirstStrafe[client] = true
-			float origin[3]
-			GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
-			gF_origin[client][0] = origin[0]
-			gF_origin[client][1] = origin[1]
-			gF_origin[client][2] = origin[2]
-			float vel[3]
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
-			gF_preVel[client][0] = vel[0]
-			gF_preVel[client][1] = vel[1]
-			gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
-		}
+		gB_jumped[client] = true
+		gB_getFirstStrafe[client] = true
+		float origin[3]
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin)
+		gF_origin[client][0] = origin[0]
+		gF_origin[client][1] = origin[1]
+		gF_origin[client][2] = origin[2]
+		float vel[3]
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+		gF_preVel[client][0] = vel[0]
+		gF_preVel[client][1] = vel[1]
+		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
 	}
 }
 
@@ -168,12 +165,32 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//PrintToServer("sync: %f %f %i", sync, float(gI_tickAir[client]), gI_tickAir[client]) //sync: 77.000000 76.000000 76 [SM] Jump: 234.0 units, (A-D) Strafes: 1, Pre: 261.8 u/s, Sync: 101.3%
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
-		if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
-		if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
-		if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-			PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
+		if(gB_jumpstats[client])
+		{
+			if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
+			if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
+			if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
+		}
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) && IsClientObserver(i))
+			{
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+				{
+					if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, pre, sync)
+					if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
+					if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
+				}
+			}
+		}
 		ResetFactory(client)
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
@@ -231,12 +248,32 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				sync += float(gI_syncTick[client][1])
 			sync /= float(gI_tickAir[client])
 			sync *= 100.0
-			if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, Sync: %.1f%", distance, sync)
-			if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.1f%", distance, gI_SWcount[client]++, sync)
-			if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
-				PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.1f%", distance, gI_ADcount[client]++, sync)
+			if(gB_jumpstats[client])
+			{
+				if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
+					PrintToChat(client, "[SM] Ladder: %.1f units, Sync: %.1f%", distance, sync)
+				if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
+					PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.1f%", distance, gI_SWcount[client]++, sync)
+				if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
+					PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.1f%", distance, gI_ADcount[client]++, sync)
+			}
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) && IsClientObserver(i))
+				{
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+					{
+						if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
+							PrintToChat(i, "[SM] Ladder: %.1f units, Sync: %.1f%", distance, sync)
+						if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
+							PrintToChat(i, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.1f%", distance, gI_SWcount[client]++, sync)
+						if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
+							PrintToChat(i, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.1f%", distance, gI_ADcount[client]++, sync)
+					}
+				}
+			}
 		}
 		ResetFactory(client)
 	}
