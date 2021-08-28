@@ -2079,7 +2079,7 @@ Action SDKEndTouch(int entity, int other)
 		//gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
-		gH_timerSetClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
+		gH_timerSetClanTag[client][1] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
@@ -3482,13 +3482,13 @@ Action timer_clantag(Handle timer, int client)
 	if(gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][1])
-		CS_SetClientClanTag(gI_partner[partner], gS_clanTag[client][1])
+		CS_SetClientClanTag(gI_partner[client], gS_clanTag[client][1])
 	}
 	else
 	{
 		KillTimer(gH_timerSetClanTag[client])
-		KillTimer(gH_timerSetClanTag[gI_partner[partner]])
+		KillTimer(gH_timerSetClanTag[gI_partner[client]])
 		CS_SetClientClanTag(client, gS_clanTag[client][0])
-		CS_SetClientClanTag(gI_partner[partner], gS_clanTag[client][0])
+		CS_SetClientClanTag(gI_partner[client], gS_clanTag[client][0])
 	}
 }
