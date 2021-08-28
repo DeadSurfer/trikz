@@ -97,47 +97,44 @@ void frame_projectileVel(int ref)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(gB_boostStats[client])
+	char sWeapon[32]
+	int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
+	if(IsValidEntity(activeWeapon))
+		GetEntityClassname(activeWeapon, sWeapon, 32)
+	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		char sWeapon[32]
-		int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
-		if(IsValidEntity(activeWeapon))
-			GetEntityClassname(activeWeapon, sWeapon, 32)
-		if(StrEqual(sWeapon, "weapon_flashbang"))
+		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
 		{
-			if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
-			{
-				gF_boostTimeStart[client] = GetEngineTime()
-				gB_boostRead[client] = true
-				//float vel[3]
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
-				gF_unitVel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-				gF_duck[client] = GetEntPropFloat(client, Prop_Data, "m_flDucktime")
-			}
-			if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
-			{
-				gF_boostTimeEnd[client] = GetEngineTime()
-				//PrintToServer("Time: %f, Speed: %f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client])
-				//RequestFrame(frame_finalMSG, client)
-				CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
-				gB_boostRead[client] = false
-			}
+			gF_boostTimeStart[client] = GetEngineTime()
+			gB_boostRead[client] = true
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
+			gF_unitVel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+			gF_duck[client] = GetEntPropFloat(client, Prop_Data, "m_flDucktime")
+		}
+		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
+		{
+			gF_boostTimeEnd[client] = GetEngineTime()
+			CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
+			gB_boostRead[client] = false
 		}
 	}
 }
 
-/*void frame_finalMSG(int client)
-{
-	RequestFrame(frame_finalMSG2, client)
-}
-
-void frame_finalMSG2(int client)
-{
-	PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
-}*/
-
 Action timer_finalMSG(Handle timer, int client)
 {
-	PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
+	if(gB_boostStats[client])
+		PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) && IsClientObserver(i))
+		{
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+			if(observerMode < 7 && observerTarget == client && gB_boostStats[i])
+			{
+				PrintToChat(i, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
+			}
+		}
+	}
 	return Plugin_Stop
 }
