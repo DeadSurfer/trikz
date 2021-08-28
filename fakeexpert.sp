@@ -1235,7 +1235,7 @@ void createstart()
 	TeleportEntity(entity, gF_center[0], NULL_VECTOR, NULL_VECTOR) //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 	gF_originStart[0] = gF_center[0][0]
 	gF_originStart[1] = gF_center[0][1]
-	gF_originStart[2] = gF_center[0][2]
+	gF_originStart[2] = gF_center[0][2] + 8.0
 	float mins[3]
 	float maxs[3]
 	for(int i = 0; i <= 1; i++)
