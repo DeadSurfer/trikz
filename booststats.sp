@@ -74,7 +74,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKSpawnProjectile(int entity)
 {
-	CreateTimer(0.1, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(0.2, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
 }
 
 Action timer_projectileVel(Handle timer, int ref)
