@@ -1252,7 +1252,7 @@ void createstart()
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
-	SDKHook(entity, SDKHook_EndTouchPost, SDKEndTouch)
+	SDKHook(entity, SDKHook_EndTouchPost, SDKEndTouchPost) //run timer, go to the start zone, type r. post fix this.
 	PrintToServer("Start zone is successfuly setup.")
 	gB_haveZone[0] = true
 }
@@ -2065,7 +2065,7 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Successfuly created records table.")
 }
 
-void SDKEndTouch(int entity, int other)
+void SDKEndTouchPost(int entity, int other)
 {
 	if(0 < other <= MaxClients && gB_readyToStart[other])
 	{
