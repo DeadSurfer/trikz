@@ -1464,6 +1464,10 @@ Action cmd_test(int client, int args)
 		-1.000000 == -1.0 | true
 		0.100000 == 0.1 | true
 		*/
+		char sClanTag[256]
+		CS_SetClientClanTag(client, "test ofc")
+		CS_GetClientClanTag(client, sClanTag, 256)
+		PrintToServer("%s", sClanTag)
 	}
 	return Plugin_Handled
 }
