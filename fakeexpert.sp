@@ -135,6 +135,7 @@ float gF_mlsVel[MAXPLAYERS + 1][2][2]
 int gI_mlsCount[MAXPLAYERS + 1]
 char gS_mlsPrint[MAXPLAYERS + 1][100][256]
 int gI_mlsBooster[MAXPLAYERS + 1]
+bool gB_mlstats[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -170,6 +171,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_sp", cmd_spec)
 	RegConsoleCmd("sm_spec", cmd_spec)
 	RegConsoleCmd("sm_hud", cmd_hud)
+	RegConsoleCmd("sm_mls", cmd_mlstats)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -683,6 +685,7 @@ public void OnClientPutInServer(int client)
 	//CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 	//PrintToServer("%s", gS_clanTag[client][0])
 	//gH_timerClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
+	gB_mlstats[client] = false
 }
 
 /*public void OnClientConnected(int client)
@@ -3329,6 +3332,13 @@ void Hud(int client)
 	}
 }
 
+Action cmd_mlstats(int client, int args)
+{
+	gB_mlstats[client] = !gB_mlstats[client]
+	PrintToChat(client, gB_mlstats[client] ? "ML stats is on." : "ML stats is off.")
+	return Plugin_Handled
+}
+
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(!IsChatTrigger())
@@ -3542,12 +3552,31 @@ void MLStats(int client)
 	char sFullPrint[256]
 	for(int i = 1; i <= gI_mlsCount[client]; i++)
 		Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][i])
-	Handle hKeyHintText = StartMessageOne("KeyHintText", gI_mlsBooster[client]);
-	BfWriteByte(hKeyHintText, 1); 
-	BfWriteString(hKeyHintText, sFullPrint);
-	EndMessage();
-	hKeyHintText = StartMessageOne("KeyHintText", client);
-	BfWriteByte(hKeyHintText, 1); 
-	BfWriteString(hKeyHintText, sFullPrint);
-	EndMessage();
+	if(gB_mlstats[gI_mlsBooster[client]])
+	{
+		Handle hKeyHintText = StartMessageOne("KeyHintText", gI_mlsBooster[client]);
+		BfWriteByte(hKeyHintText, 1); 
+		BfWriteString(hKeyHintText, sFullPrint);
+		EndMessage();
+	}
+	if(gB_mlstats[client])
+	{
+		Handle hKeyHintText = StartMessageOne("KeyHintText", client);
+		BfWriteByte(hKeyHintText, 1); 
+		BfWriteString(hKeyHintText, sFullPrint);
+		EndMessage();
+	}
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i) && IsClientObserver(i))
+		{
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+			if(observerMode < 7 && observerTarget == client && gB_mlstats[i])
+			{
+				Handle hKeyHintText = StartMessageOne("KeyHintText", i);
+				BfWriteByte(hKeyHintText, 1); 
+				BfWriteString(hKeyHintText, sFullPrint);
+				EndMessage();
+			}
+		}
 }
