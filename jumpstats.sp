@@ -69,6 +69,13 @@ public void OnClientPutInServer(int client)
 	gB_jumpstats[client] = false
 }
 
+Action cmd_jumpstats(int client, int args)
+{
+	gB_jumpstats[client] = !gB_jumpstats[client]
+	PrintToChat(client, gB_jumpstats[client] ? "Jump stats is on." : "Jump stats is off.")
+	return Plugin_Handled
+}
+
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
@@ -90,16 +97,6 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
 		}
 	}
-}
-
-Action cmd_jumpstats(int client, int args)
-{
-	gB_jumpstats[client] = !gB_jumpstats[client]
-	if(gB_jumpstats[client])
-		PrintToChat(client, "Jump stats is on.")
-	else
-		PrintToChat(client, "Jump stats is off.")
-	return Plugin_Handled
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
