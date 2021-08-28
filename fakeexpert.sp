@@ -130,7 +130,7 @@ bool gB_hudVel[MAXPLAYERS + 1]
 float gF_hudTime[MAXPLAYERS + 1]
 char gS_clanTag[MAXPLAYERS + 1][2][256]
 Handle gH_timerClanTag[MAXPLAYERS + 1]
-Handle gH_timerSetClanTag[MAXPLAYERS + 1]
+//Handle gH_timerSetClanTag[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -692,9 +692,10 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
+	CS_SetClientClanTag(partner, gS_clanTag[partner][0])
 	KillTimer(gH_timerClanTag[client])
-	KillTimer(gH_timerSetClanTag[client])
-	KillTimer(gH_timerSetClanTag[partner])
+	//KillTimer(gH_timerSetClanTag[client])
+	//KillTimer(gH_timerSetClanTag[partner])
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -2079,7 +2080,7 @@ void SDKEndTouchPost(int entity, int other)
 		//gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
-		gH_timerSetClanTag[other] = CreateTimer(1.0, timer_clantag, other, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
+		gH_timerClanTag[other] = CreateTimer(1.0, timer_clantag, other, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
@@ -3488,6 +3489,6 @@ Action timer_clantag(Handle timer, int client)
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][0])
 		CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][0])
-		KillTimer(gH_timerSetClanTag[client])
+		KillTimer(gH_timerClanTag[client])
 	}
 }
