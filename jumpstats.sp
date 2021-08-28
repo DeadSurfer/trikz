@@ -174,6 +174,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_SWcount[client]++, pre, sync)
 			if(4000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, sCJ, distance, gI_ADcount[client]++, pre, sync)
+			PrintToServer("yes")
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
