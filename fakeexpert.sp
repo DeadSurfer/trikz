@@ -3572,15 +3572,17 @@ void MLStats(int client, bool ground = false)
 	if(gB_mlstats[gI_mlsBooster[client]])
 	{
 		Handle hKeyHintText = StartMessageOne("KeyHintText", gI_mlsBooster[client])
-		hKeyHintText.WriteByte(true)
-		hKeyHintText.WriteString(sFullPrint)
+		BfWrite bfmsg = UserMessageToBfWrite(hKeyHintText)
+		bfmsg.WriteByte(true)
+		bfmsg.WriteString(sFullPrint)
 		EndMessage()
 	}
 	if(gB_mlstats[client])
 	{
 		Handle hKeyHintText = StartMessageOne("KeyHintText", client)
-		hKeyHintText.WriteByte(true)
-		hKeyHintText.WriteString(sFullPrint)
+		BfWrite bfmsg = UserMessageToBfWrite(hKeyHintText)
+		bfmsg.WriteByte(true)
+		bfmsg.WriteString(sFullPrint)
 		EndMessage()
 	}
 	for(int i = 1; i <= MaxClients; i++)
@@ -3591,8 +3593,9 @@ void MLStats(int client, bool ground = false)
 			if(observerMode < 7 && observerTarget == client && gB_mlstats[i])
 			{
 				Handle hKeyHintText = StartMessageOne("KeyHintText", i)
-				hKeyHintText.WriteByte(true)
-				hKeyHintText.WriteString(sFullPrint)
+				BfWrite bfmsg = UserMessageToBfWrite(hKeyHintText)
+				bfmsg.WriteByte(true)
+				bfmsg.WriteString(sFullPrint)
 				EndMessage()
 			}
 		}
