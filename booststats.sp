@@ -31,6 +31,7 @@
 
 float gF_boostTimeStart[MAXPLAYERS + 1]
 float gF_boostTimeEnd[MAXPLAYERS + 1]
+bool gB_boostRead[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -50,9 +51,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+		{
 			gF_boostTimeStart[client] = GetEngineTime()
-		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP)
-			gF_boostTimeEnd[client] = GetEngineTime()
-		PrintToServer("%f", gF_boostTimeEnd[client] - gF_boostTimeStart[client])
+			gB_boostRead[client] = true
+		}
+		if(gB_boostRead[client])
+		{
+			if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP)
+				gF_boostTimeEnd[client] = GetEngineTime()
+			PrintToServer("%f", gF_boostTimeEnd[client] - gF_boostTimeStart[client])
+			gB_boostRead[client] = false
+		}
 	}
 }
