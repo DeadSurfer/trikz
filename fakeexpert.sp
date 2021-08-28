@@ -30,6 +30,7 @@
 */
 #include <sdktools>
 #include <sdkhooks>
+#include <cstrike>
 
 int gI_partner[MAXPLAYERS + 1]
 float gF_originStartZone[2][3]
