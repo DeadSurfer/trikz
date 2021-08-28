@@ -3002,9 +3002,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_hudTime[client] = GetEngineTime()
 		Hud(client)
 	}
+	
 	if(GetEntityFlags(client) & FL_ONGROUND)
-		if(gI_mlsCount[client])
+	{
+		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
+		char sClass[32]
+		GetEntityClassname(groundEntity, sClass, 32)
+		if(!(StrEqual(sClass, "flashbang_projectile")) && gI_mlsCount[client])
 			gI_mlsCount[client] = 0
+	}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
