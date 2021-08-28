@@ -74,10 +74,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 void SDKSpawnPostProjectile(int entity)
 {
-	CreateTimer(0.1, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
+	//CreateTimer(0.1, timer_projectileVel, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE)
+	RequestFrame(frame_projectileVel, EntIndexToEntRef(entity))
 }
 
-Action timer_projectileVel(Handle timer, int ref)
+//Action timer_projectileVel(Handle timer, int ref)
+void frame_projectileVel(int ref)
 {
 	int entity = EntRefToEntIndex(ref)
 	if(IsValidEntity(entity))
@@ -87,5 +89,5 @@ Action timer_projectileVel(Handle timer, int ref)
 		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 		PrintToServer("%f", unitVel)
 	}
-	return Plugin_Stop
+	//return Plugin_Stop
 }
