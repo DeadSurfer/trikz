@@ -197,7 +197,7 @@ public void OnPluginStart()
 	//PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain)
 	//gH_viewmodel = EndPrepSDKCall()
 	//gSM_char = new StringMap()
-	HookEvent(""
+	//HookEvent(""
 }
 
 public void OnMapStart()
