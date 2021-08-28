@@ -95,7 +95,7 @@ void frame_projectileVel(int ref)
 		//float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
-		//PrintToServer("%f", unitVel)
+		PrintToServer("%f", gF_projectileVel[client])
 	}
 //	return Plugin_Stop
 }
