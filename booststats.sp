@@ -92,11 +92,6 @@ void frame_projectileVel(int ref)
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
-		//char sDuck[16]
-		//Format(sDuck, 16, gF_duck[client] ? "Yes" : "No")
-		//PrintToServer("%f", gF_projectileVel[client])
-		//if(gB_boostStats[client])
-		//	PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], sDuck)
 	}
 }
 
@@ -123,14 +118,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				gF_boostTimeEnd[client] = GetEngineTime()
 				//PrintToServer("Time: %f, Speed: %f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client])
-				RequestFrame(frame_finalMSG, client)
+				//RequestFrame(frame_finalMSG, client)
+				CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
 				gB_boostRead[client] = false
 			}
 		}
 	}
 }
 
-void frame_finalMSG(int client)
+/*void frame_finalMSG(int client)
 {
 	RequestFrame(frame_finalMSG2, client)
 }
@@ -138,4 +134,10 @@ void frame_finalMSG(int client)
 void frame_finalMSG2(int client)
 {
 	PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
+}*/
+
+Action timer_finalMSG2(Handle timer, int client)
+{
+	PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
+	return Plugin_Stop
 }
