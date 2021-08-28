@@ -55,10 +55,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_boostTimeStart[client] = GetEngineTime()
 			gB_boostRead[client] = true
 		}
-		if(gB_boostRead[client])
+		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
 		{
-			if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP)
-				gF_boostTimeEnd[client] = GetEngineTime()
+			gF_boostTimeEnd[client] = GetEngineTime()
 			PrintToServer("%f", gF_boostTimeEnd[client] - gF_boostTimeStart[client])
 			gB_boostRead[client] = false
 		}
