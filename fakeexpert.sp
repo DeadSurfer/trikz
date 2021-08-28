@@ -3017,7 +3017,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetEntityClassname(groundEntity, sClass, 32)
 			if(!(StrEqual(sClass, "flashbang_projectile")))
 			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", gF_mlsDistance[client][1])
+				GetClientAbsOrigin(client, gF_mlsDistance[client][1])
 				MLStats(client, true)
 				gI_mlsCount[client] = 0
 			}
@@ -3066,7 +3066,7 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_mlsVel[other][0][1] = vel[1]
 			gI_mlsCount[other]++
 			if(gI_mlsCount[other] == 1)
-				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_mlsDistance[other][0])
+				GetClientAbsOrigin(other, gF_mlsDistance[other][0])
 			gI_mlsBooster[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		}
 	}
@@ -3567,7 +3567,6 @@ void MLStats(int client, bool ground = false)
 	{
 		float x = gF_mlsDistance[client][1][0] - gF_mlsDistance[client][0][0]
 		float y = gF_mlsDistance[client][1][1] - gF_mlsDistance[client][0][1]
-		PrintToServer("%f %f", x, y)
 		Format(sFullPrint, 256, "%s\nDistance: %.1f units", sFullPrint, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0)
 	}
 	if(gB_mlstats[gI_mlsBooster[client]])
