@@ -681,8 +681,11 @@ public void OnClientPutInServer(int client)
 
 public void OnClientConnected(int client)
 {
-	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
-	PrintToServer("%s", gS_clanTag[client][0])
+	if(IsClientInGame(client))
+	{
+		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+		PrintToServer("%s", gS_clanTag[client][0])
+	}
 }
 
 public void OnClientDisconnect(int client)
