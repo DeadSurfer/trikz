@@ -679,6 +679,12 @@ public void OnClientPutInServer(int client)
 	//gH_timerClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 }
 
+public void OnClientConnected(int client)
+{
+	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	PrintToServer("%s", gS_clanTag[client][0])
+}
+
 public void OnClientDisconnect(int client)
 {
 	Color(client, false)
@@ -1344,7 +1350,7 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 {
 }
 
-public void OnClientSettingsChanged(int client)
+/*public void OnClientSettingsChanged(int client)
 {
 	if(IsClientInGame(client))
 	{
@@ -1354,7 +1360,7 @@ public void OnClientSettingsChanged(int client)
 		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 		PrintToServer("%s", gS_clanTag[client][0])
 	}
-}
+}*/
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
