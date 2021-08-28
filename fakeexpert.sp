@@ -2076,7 +2076,7 @@ Action SDKStartTouch(int entity, int other)
 		{
 			gB_mapFinished[other] = true
 			//gB_passZone[other] = false
-			if(gB_mapFinished[gI_partner[other] && gB_state[client]])
+			if(gB_mapFinished[gI_partner[other] && gB_state[other]])
 			{
 				char sQuery[512]
 				int playerid = GetSteamAccountID(other)
