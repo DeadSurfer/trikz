@@ -2079,7 +2079,7 @@ Action SDKEndTouch(int entity, int other)
 		//gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
-		gH_timerSetClanTag[other] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
+		gH_timerSetClanTag[other] = CreateTimer(1.0, timer_clantag, other, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
