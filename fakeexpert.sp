@@ -1340,7 +1340,7 @@ public void OnClientSettingsChanged(int client)
 	{
 		char sClanTag[256]
 		CS_GetClientClanTag(client, sClanTag, 256)
-		PrintToServer("%s", sClanTag)
+		PrintToServer("%s x", sClanTag)
 	}
 }
 
