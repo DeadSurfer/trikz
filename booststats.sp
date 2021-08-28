@@ -138,6 +138,6 @@ void frame_finalMSG2(int client)
 
 Action timer_finalMSG(Handle timer, int client)
 {
-	PrintToChat(client, "Time: %f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
+	PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No")
 	return Plugin_Stop
 }
