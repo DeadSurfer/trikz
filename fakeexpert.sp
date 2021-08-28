@@ -2937,12 +2937,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	//if(IsPlayerAlive(client))
 	//	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nModelIndex"))
-	if(gB_hudVel[client])
-		if(GetEngineTime() - gF_hudTime[client] >= 0.1)
-		{
-			gF_hudTime[client] = GetEngineTime()
-			Hud(client)
-		}
+	if(GetEngineTime() - gF_hudTime[client] >= 0.1)
+	{
+		gF_hudTime[client] = GetEngineTime()
+		Hud(client)
+	}
 }
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
@@ -3238,7 +3237,8 @@ void Hud(int client)
 	float vel[3]
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
 	float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-	PrintHintText(client, "%.0f", unitVel)
+	if(gB_hudVel[client])
+		PrintHintText(client, "%.0f", unitVel)
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) && !IsPlayerAlive(i))
