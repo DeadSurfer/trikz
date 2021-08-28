@@ -321,18 +321,21 @@ Action EndTouchProjectile(int entity, int other)
 
 void TouchClient(int client, int other)
 {
-	if(!other && (gB_jumped[client] || gB_ladder[client]))
-		ResetFactory(client)
-	if(0 < other <= MaxClients)
+	if(gB_jumped[client] || gB_ladder[client])
 	{
-		float clientOrigin[3]
-		GetClientAbsOrigin(client, clientOrigin)
-		float otherOrigin[3]
-		GetClientAbsOrigin(other, otherOrigin)
-		float clientMaxs[3]
-		GetClientMaxs(client, clientMaxs)
-		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
-		if(delta == -124.031250)
+		if(!other)
 			ResetFactory(client)
+		if(0 < other <= MaxClients)
+		{
+			float clientOrigin[3]
+			GetClientAbsOrigin(client, clientOrigin)
+			float otherOrigin[3]
+			GetClientAbsOrigin(other, otherOrigin)
+			float clientMaxs[3]
+			GetClientMaxs(client, clientMaxs)
+			float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
+			if(delta == -124.031250)
+				ResetFactory(client)
+		}
 	}
 }
