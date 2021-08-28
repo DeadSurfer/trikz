@@ -860,11 +860,8 @@ void Trikz(int client)
 	gB_MenuIsOpen[client] = true
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel) //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	menu.SetTitle("Trikz")
-	char sDisplay[32]
-	Format(sDisplay, 32, gB_block[client] ? "Block [v]" : "Block [x]")
-	menu.AddItem("block", sDisplay)
-	Format(sDisplay, 32, gI_partner[client] ? "Breakup" : "Partner")
-	menu.AddItem("partner", sDisplay, gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
+	menu.AddItem("block", gB_block[client] ? "Block [v]" : "Block [x]")
+	menu.AddItem("partner", gI_partner[client] ? "Breakup" : "Partner", gB_isDevmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT)
 	if(gB_isDevmap)
 		menu.AddItem("color", "Color")
 	else
@@ -873,8 +870,7 @@ void Trikz(int client)
 	if(gB_isDevmap)
 	{
 		menu.AddItem("checkpoint", "Checkpoint")
-		Format(sDisplay, 32, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
-		menu.AddItem("noclip", sDisplay)
+		menu.AddItem("noclip", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]")
 	}
 	menu.Display(client, MENU_TIME_FOREVER)
 }
@@ -3290,9 +3286,8 @@ Action cmd_hud(int client, int args)
 {
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
 	menu.SetTitle("Hud")
-	char sFormat[32]
-	Format(sFormat, 32, gB_hudVel[client] ? "Velocity [v]" : "Velocity [x]")
-	menu.AddItem("vel", sFormat)
+	menu.AddItem("vel", gB_hudVel[client] ? "Velocity [v]" : "Velocity [x]")
+	menu.AddItem("mls", gB_mlstats[client] ? "ML stats [v]" : "ML stats [x]")
 	menu.Display(client, 20)
 	return Plugin_Handled
 }
@@ -3309,6 +3304,8 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 					gB_hudVel[param1] = !gB_hudVel[param1]
+				case 0:
+					gB_mlstats[param1] = !gB_mlstats[param1]
 			}
 			cmd_hud(param1, 0)
 		}
