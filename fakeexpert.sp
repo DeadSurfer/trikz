@@ -707,10 +707,7 @@ public void OnClientDisconnect(int client)
 	if(partner)
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
 	if(gH_timerClanTag[client])
-	{
 		KillTimer(gH_timerClanTag[client])
-		PrintToServer("killed")
-	}
 	//KillTimer(gH_timerSetClanTag[client])
 	//KillTimer(gH_timerSetClanTag[partner])
 }
