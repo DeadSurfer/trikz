@@ -96,9 +96,9 @@ void frame_projectileVel(int ref)
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel)
 		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		bool duck = GetEntProp(client, Prop_Data, "m_bDucking")
+		int duck = GetEntProp(client, Prop_Data, "m_bDucking")
 		char sDuck[16]
-		Format(sDuck, 16, view_as<int>(duck) ? "Yes" : "No")
+		Format(sDuck, 16, duck ? "Yes" : "No")
 		//PrintToServer("%f", gF_projectileVel[client])
 		PrintToServer("Time: %f, Speed: %f, Run: %f, Duck: %s", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], unitVel, sDuck)
 	}
