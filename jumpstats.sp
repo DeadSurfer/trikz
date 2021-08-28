@@ -334,7 +334,7 @@ void TouchClient(int client, int other)
 		float clientMaxs[3]
 		GetClientMaxs(client, clientMaxs)
 		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
-		//if(delta == -124.031250)
-		//	ResetFactory(client)
+		if(delta == -124.031250)
+			ResetFactory(client)
 	}
 }
