@@ -60,6 +60,13 @@ Action cmd_booststats(int client, int args)
 	return Plugin_Handled
 }
 
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	if(!IsChatTrigger())
+		if(StrEqual(sArgs, "bs"))
+			cmd_booststats(client, 0)
+}
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(gB_boostStats[client])
