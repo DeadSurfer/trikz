@@ -136,6 +136,7 @@ int gI_mlsCount[MAXPLAYERS + 1]
 char gS_mlsPrint[MAXPLAYERS + 1][100][256]
 int gI_mlsBooster[MAXPLAYERS + 1]
 bool gB_mlstats[MAXPLAYERS + 1]
+float gF_mlsDistance[MAXPLAYERS + 1][2][3]
 
 public Plugin myinfo =
 {
@@ -3015,7 +3016,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(IsValidEntity(groundEntity))
 				GetEntityClassname(groundEntity, sClass, 32)
 			if(!(StrEqual(sClass, "flashbang_projectile")))
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", gF_mlsDistance[client][1])
+				MLStats(client, true)
 				gI_mlsCount[client] = 0
+			}
 		}
 	}
 }
@@ -3060,6 +3065,8 @@ Action ProjectileBoostFix(int entity, int other)
 			gF_mlsVel[other][0][0] = vel[0]
 			gF_mlsVel[other][0][1] = vel[1]
 			gI_mlsCount[other]++
+			if(gI_mlsCount[other] == 1)
+				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_mlsDistance[other][0])
 			gI_mlsBooster[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		}
 	}
@@ -3546,7 +3553,7 @@ Action timer_clantag(Handle timer, int client)
 	}
 }
 
-void MLStats(int client)
+void MLStats(int client, bool ground)
 {
 	float preVel = SquareRoot(Pow(gF_mlsVel[client][0][0], 2.0) + Pow(gF_mlsVel[client][0][1], 2.0))
 	float postVel = SquareRoot(Pow(gF_mlsVel[client][1][0], 2.0) + Pow(gF_mlsVel[client][1][1], 2.0))
@@ -3556,6 +3563,12 @@ void MLStats(int client)
 		Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][i])
 	if(gI_mlsCount[client] > 10)
 		Format(sFullPrint, 256, "%s...\n%s", sFullPrint, gS_mlsPrint[client][gI_mlsCount[client]])
+	if(ground)
+	{
+		float x = gF_mlsDistance[client][1][0] - gF_mlsDistance[client][0][0]
+		float y = gF_mlsDistance[client][1][1] - gF_mlsDistance[client][0][1]
+		Format(sFullPrint, "%s\nDistance: %.1f units", sFullPrint, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0)
+	}
 	if(gB_mlstats[gI_mlsBooster[client]])
 	{
 		Handle hKeyHintText = StartMessageOne("KeyHintText", gI_mlsBooster[client]);
