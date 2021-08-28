@@ -128,6 +128,9 @@ int gI_voters
 int gI_afkClient
 bool gB_hudVel[MAXPLAYERS + 1]
 float gF_hudTime[MAXPLAYERS + 1]
+char gS_clanTag[MAXPLAYERS + 1][2][256]
+Handle gH_timerClanTag[MAXPLAYERS + 1]
+Handle gH_timerSetClanTag[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -671,6 +674,8 @@ public void OnClientPutInServer(int client)
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
 	gB_hudVel[client] = false
+	CS_GetClientClanTag(client, gS_clanTag[0], 256)
+	gH_timerClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 }
 
 public void OnClientDisconnect(int client)
@@ -687,6 +692,9 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
+	KillTimer(gH_timerClanTag[client])
+	KillTimer(gH_timerSetClanTag[client])
+	KillTimer(gH_timerSetClanTag[partner])
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -1347,8 +1355,9 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char sCmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
-	if(kv.GetSectionName(sCmd, 64) && StrEqual(sCmd, "ClanTagChanged"))
-		PrintToServer("yes sir")
+	kv.GetSectionName(sCmd, 64)
+	if(StrEqual(sCmd, "ClanTagChanged"))
+		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 }
 
 Action cmd_test(int client, int args)
@@ -2070,6 +2079,7 @@ Action SDKEndTouch(int entity, int other)
 		//gB_passZone[gI_partner[other]] = true
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
+		gH_timerSetClanTag[client] = CreateTimer(1.0, timer_clantag, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
@@ -2801,6 +2811,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gB_state[client] && gI_partner[client])
 	{
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
+		//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+		int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
+		int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
+		int second = RoundToFloor(gF_Time[client]) % 60
+		Format(gS_clanTag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second)
 		if(!IsPlayerAlive(client))
 		{
 			gB_readyToStart[client] = true
@@ -3460,4 +3475,20 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 		return Plugin_Handled
 	}
 	return Plugin_Continue
+}
+
+Action timer_clantag(Handle timer, int client)
+{
+	if(gB_state[client])
+	{
+		CS_SetClientClanTag(client, gS_clanTag[client][1])
+		CS_SetClientClanTag(gI_partner[partner], gS_clanTag[client][1])
+	}
+	else
+	{
+		KillTimer(gH_timerSetClanTag[client])
+		KillTimer(gH_timerSetClanTag[gI_partner[partner]])
+		CS_SetClientClanTag(client, gS_clanTag[client][0])
+		CS_SetClientClanTag(gI_partner[partner], gS_clanTag[client][0])
+	}
 }
