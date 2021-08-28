@@ -3567,7 +3567,7 @@ void MLStats(int client, bool ground = false)
 	{
 		float x = gF_mlsDistance[client][1][0] - gF_mlsDistance[client][0][0]
 		float y = gF_mlsDistance[client][1][1] - gF_mlsDistance[client][0][1]
-		Format(sFullPrint, "%s\nDistance: %.1f units", sFullPrint, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0)
+		Format(sFullPrint, 256, "%s\nDistance: %.1f units", sFullPrint, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0)
 	}
 	if(gB_mlstats[gI_mlsBooster[client]])
 	{
