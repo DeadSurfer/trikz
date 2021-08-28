@@ -3549,10 +3549,14 @@ void MLStats(int client)
 {
 	float preVel = SquareRoot(Pow(gF_mlsVel[client][0][0], 2.0) + Pow(gF_mlsVel[client][0][1], 2.0))
 	float postVel = SquareRoot(Pow(gF_mlsVel[client][1][0], 2.0) + Pow(gF_mlsVel[client][1][1], 2.0))
+	//if(gI_mlsCount[client]] <= 10)
 	Format(gS_mlsPrint[client][gI_mlsCount[client]], 256, "%i %.1f-%.1f\n", gI_mlsCount[client], preVel, postVel)
-	PrintToServer("%s %N %N", gS_mlsPrint[client][gI_mlsCount[client]], gI_mlsBooster[client], client)
+	//PrintToServer("%s %N %N", gS_mlsPrint[client][gI_mlsCount[client]], gI_mlsBooster[client], client)
 	char sFullPrint[256]
-	for(int i = 1; i <= gI_mlsCount[client]; i++)
+	if(gI_mlsCount[client] <= 10)
+		for(int i = 1; i <= gI_mlsCount[client]; i++)
+			Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][i])
+	else
 		Format(sFullPrint, 256, "%s%s", sFullPrint, gS_mlsPrint[client][i])
 	if(gB_mlstats[gI_mlsBooster[client]])
 	{
