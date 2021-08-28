@@ -67,10 +67,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public Action OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
-	{
-		float vel[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
-		float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		PrintToServer("%f", unitVel)
-	}
+		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
+}
+
+Action SDKSpawnProjectile(int entity)
+{
+	float vel[3]
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
+	float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+	PrintToServer("%f", unitVel)
 }
