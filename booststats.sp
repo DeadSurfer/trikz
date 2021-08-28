@@ -29,6 +29,8 @@
 	your programs, too.
 */
 
+#include <sdkhooks>
+
 float gF_boostTimeStart[MAXPLAYERS + 1]
 float gF_boostTimeEnd[MAXPLAYERS + 1]
 bool gB_boostRead[MAXPLAYERS + 1]
