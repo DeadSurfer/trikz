@@ -2064,7 +2064,7 @@ void SDKEndTouchPost(int entity, int other)
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
-		gH_timerClanTag[other] = CreateTimer(1.0, timer_clantag, other, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
+		gH_timerClanTag[other] = CreateTimer(0.5, timer_clantag, other, TIMER_REPEAT)
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
