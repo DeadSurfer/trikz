@@ -107,12 +107,11 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(GetEntityFlags(client) & FL_ONGROUND)
-	{
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
-	}
-	if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetEntityMoveType(client) == MOVETYPE_LADDER))
-		gI_tickAir[client]++
+	else
+		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
+			gI_tickAir[client]++
 	if(gB_jumped[client])
 	{
 		if(gB_getFirstStrafe[client])
@@ -324,8 +323,8 @@ Action EndTouchProjectile(int entity, int other)
 
 void TouchClient(int client, int other)
 {
-	if(!other && (gB_jumped[client] || !gB_ladder[client]))
-		ResetFactory(client)
+	//if(!other && (gB_jumped[client] || !gB_ladder[client]))
+	//	ResetFactory(client)
 	if(0 < other <= MaxClients)
 	{
 		float clientOrigin[3]
@@ -335,7 +334,7 @@ void TouchClient(int client, int other)
 		float clientMaxs[3]
 		GetClientMaxs(client, clientMaxs)
 		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
-		if(delta == -124.031250)
-			ResetFactory(client)
+		//if(delta == -124.031250)
+		//	ResetFactory(client)
 	}
 }
