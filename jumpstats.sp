@@ -148,7 +148,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		char sZLevel[9]
 		if(origin[2] - gF_origin[client][2] > 1.475586)
 			Format(sZLevel, 9, "[Rise] ")
-		if(origin[2] - gF_origin[client][2] < 0.793945)
+		if(origin[2] - gF_origin[client][2] < 0.124511) 
 			Format(sZLevel, 9, "[Fall] ")
 		char sCJ[7]
 		if(gB_isCountJump[client])
