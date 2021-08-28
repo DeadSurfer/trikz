@@ -1,0 +1,56 @@
+/*
+	GNU GENERAL PUBLIC LICENSE
+
+	VERSION 2, JUNE 1991
+
+	Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+	51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
+
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
+
+	GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
+	Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
+
+							Preamble
+
+	The GNU General Public License is a free, copyleft license for
+	software and other kinds of works.
+
+	The licenses for most software and other practical works are designed
+	to take away your freedom to share and change the works. By contrast,
+	the GNU General Public license is intended to guarantee your freedom to 
+	share and change all versions of a progrm--to make sure it remins free
+	software for all its users. We, the Free Software Foundation, use the
+	GNU General Public license for most of our software; it applies also to
+	any other work released this way by its authors. You can apply it to
+	your programs, too.
+*/
+
+float gF_boostTimeStart[MAXPLAYERS + 1]
+float gF_boostTimeEnd[MAXPLAYERS + 1]
+
+public Plugin myinfo =
+{
+	name = "Boost stats",
+	author = "Smesh",
+	description = "Measures time between attack and jump",
+	version = "0.1",
+	url = "http://www.sourcemod.net/"
+}
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	char sWeapon[32]
+	GetEntPropString(client, Prop_Pata, "m_hActiveWeapon", sWeapon, 32)
+	if(StrEqual(sWeapon, "weapon_flashbang"))
+	{
+		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+			gF_boostTimeStart[client] = GetEngineTime()
+		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP)
+			gF_boostTimeEnd[client] = GetEngineTime()
+		PrintToServer("%f", gF_boostTimeEnd[client] - gF_boostTimeStart[client])
+	}
+}
