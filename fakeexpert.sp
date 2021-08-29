@@ -1086,7 +1086,6 @@ Action cmd_color(int client, int args)
 	return Plugin_Handled
 }
 
-//void Color(int client, bool customSkin, int color = -1)
 void Color(int client, bool customSkin, int color = -1)
 {
 	if(IsClientInGame(client))
@@ -2979,6 +2978,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		int other = Stuck(client)
 		if(0 < other <= MaxClients && IsPlayerAlive(client))
+		{
 			if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 			{
 				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
@@ -2987,7 +2987,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				else
 					SetEntityRenderColor(client, 255, 255, 255, 125)
 			}
+		}
 		if(IsPlayerAlive(client) && other == -1)
+		{
 			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			{
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
@@ -2996,6 +2998,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				else
 					SetEntityRenderColor(client, 255, 255, 255, 255)
 			}
+		}
 	}
 }
 
@@ -3095,13 +3098,13 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					gF_devmap[1]++
 					gI_voters--
-					devmap(false)
+					devmap()
 				}
 				case 1:
 				{
 					gF_devmap[0]++
 					gI_voters--
-					devmap(false)
+					devmap()
 				}
 			}
 		}
@@ -3117,7 +3120,7 @@ Action timer_devmap(Handle timer)
 	return Plugin_Stop
 }
 
-void devmap(bool force)
+void devmap(bool force = false)
 {
 	if(force || !gI_voters)
 	{
@@ -3560,6 +3563,7 @@ void MLStats(int client, bool ground = false)
 		EndMessage()
 	}
 	for(int i = 1; i <= MaxClients; i++)
+	{
 		if(IsClientInGame(i) && IsClientObserver(i))
 		{
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
@@ -3573,6 +3577,7 @@ void MLStats(int client, bool ground = false)
 				EndMessage()
 			}
 		}
+	}
 }
 
 int Stuck(int client)
