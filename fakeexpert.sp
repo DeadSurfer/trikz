@@ -2839,21 +2839,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		else if(gI_boost[client] == 3) // let make loop finish and come back to here.
 		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 			if(gB_groundBoost[client])
 			{
-				//velocity[0] += gF_velEntity[client][0]
-				//velocity[1] += gF_velEntity[client][1]
-				//velocity[2] += gF_velEntity[client][2]
-				velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0]
-				velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1]
-				velocity[2] = gF_velClient[client][1] + gF_velEntity[client][2]
+				velocity[0] += gF_velEntity[client][0]
+				velocity[1] += gF_velEntity[client][1]
+				velocity[2] += gF_velEntity[client][2]
+				//velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0]
+				//velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1]
+				//velocity[2] = gF_velClient[client][1] + gF_velEntity[client][2]
 			}
 			else
 			{
-				//velocity[0] += gF_velEntity[client][0] * 0.135
-				//velocity[1] += gF_velEntity[client][1] * 0.135
-				velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0] * 0.135
-				velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1] * 0.135
+				velocity[0] += gF_velEntity[client][0] * 0.135
+				velocity[1] += gF_velEntity[client][1] * 0.135
+				//velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0] * 0.135
+				//velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1] * 0.135
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
