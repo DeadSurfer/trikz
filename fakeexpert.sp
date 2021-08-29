@@ -2212,8 +2212,8 @@ Action SDKStartTouch(int entity, int other)
 					gF_mateRecord[gI_partner[other]] = gF_Time[other]
 					PrintToChatAll("\x077CFC00New server record!")
 					PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond)
-					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0)
-					FinishMSG(gI_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0)
+					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond)
+					FinishMSG(gI_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond)
 					for(int i = 1; i <= gI_cpCount; i++)
 						if(gB_cp[i][other])
 							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
@@ -2260,7 +2260,7 @@ Action SDKStartTouch(int entity, int other)
 	}
 }
 
-void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, personalSecond, int srHour, int srMinute, int srSecond)
+void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, personalSecond, int srHour = 0, int srMinute = 0, int srSecond = 0)
 {
 	if(onlyCP)
 	{
@@ -2590,8 +2590,8 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		int personalHour = (RoundToFloor(gF_Time[other]) / 3600) % 24
 		int personalMinute = (RoundToFloor(gF_Time[other]) / 60) % 60
 		int personalSecond = RoundToFloor(gF_Time[other]) % 60
-		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
-		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
+		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
+		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
 	}
 }
 
@@ -2629,8 +2629,8 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 	}
 	else
 	{
-		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
-		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0)
+		FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
+		FinishMSG(gI_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond)
 	}
 }
 
