@@ -2824,8 +2824,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_boost[client])
 	{
-		//float velocity[3]
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
+		float velocity[3]
+		//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 		if(gI_boost[client] == 2)
 		{
 			//velocity[0] -= gF_velEntity[client][0]
