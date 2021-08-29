@@ -700,8 +700,6 @@ public void OnClientDisconnect(int client)
 			RemoveEntity(entity)
 	if(partner)
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
-	if(gH_timerClanTag[client] != INVALID_HANDLE)
-		KillTimer(gH_timerClanTag[client])
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -2059,7 +2057,7 @@ void SDKEndTouchPost(int entity, int other)
 		gF_TimeStart[gI_partner[other]] = GetEngineTime()
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
-		gH_timerClanTag[other] = CreateTimer(0.5, timer_clantag, other, TIMER_REPEAT)
+		gH_timerClanTag[other] = CreateTimer(0.5, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
