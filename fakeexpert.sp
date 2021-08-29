@@ -461,12 +461,12 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	{
 		SetEntProp(client, Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 		DispatchKeyValue(client, "skin", "2")
-		SetEntityRenderMode(client, RENDER_TRANSALPHA)
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 	}
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
 	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.	
 	//SetEntityRenderColor(client, 255, 255, 255, 255)
 	//https://forums.alliedmods.net/showthread.php?t=273885
 	//gI_viewmodel[client] = 
@@ -917,7 +917,6 @@ Action Block(int client) //thanks maru for optimization.
 {
 	gB_block[client] = !gB_block[client]
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", gB_block[client] ? 5 : 2)
-	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 	if(gB_color[client])
 		SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 	else
@@ -1097,8 +1096,6 @@ void Color(int client, bool customSkin, int color = -1)
 			PrintToChat(client, "You must have a partner.")
 			return
 		}
-		SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-		SetEntityRenderMode(gI_partner[client], RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 		if(customSkin)
 		{
 			gB_color[client] = true
@@ -1180,7 +1177,6 @@ void Restart(int client)
 					float velNull[3]
 					TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
 					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-					SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
 					if(gB_color[client])
 						SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
 					else
