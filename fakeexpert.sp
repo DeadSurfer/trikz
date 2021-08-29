@@ -3113,7 +3113,6 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 Action timer_devmap(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	//gI_voters = 1
 	devmap(true)
 	return Plugin_Stop
 }
@@ -3208,12 +3207,12 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					gB_afk[param1] = true
 					gI_voters--
-					afk(gI_afkClient, false)
+					afk(gI_afkClient)
 				}
 				case 1:
 				{
 					gI_voters--
-					afk(gI_afkClient, false)
+					afk(gI_afkClient)
 				}
 			}
 		}
@@ -3229,7 +3228,7 @@ Action timer_afk(Handle timer, int client)
 	return Plugin_Stop
 }
 
-void afk(int client, bool force)
+void afk(int client, bool force = false)
 {
 	if(force || !gI_voters)
 		for(int i = 1; i <= MaxClients; i++)
