@@ -106,6 +106,7 @@ int gI_zoneModel[3]
 int gI_laserBeam
 bool gB_isSourceTVchangedFileName = true
 float gF_velEntity[MAXPLAYERS + 1][3]
+float gF_velClient[MAXPLAYERS + 1][3]
 int gI_cpCount
 ConVar gCV_turboPhysics
 float gF_afkTime
@@ -2823,12 +2824,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gI_boost[client])
 	{
-		float velocity[3]
+		//float velocity[3]
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 		if(gI_boost[client] == 2)
 		{
-			velocity[0] -= gF_velEntity[client][0]
-			velocity[1] -= gF_velEntity[client][1]
+			//velocity[0] -= gF_velEntity[client][0]
+			//velocity[1] -= gF_velEntity[client][1]
+			//velocity[2] = gF_velEntity[client][2]
+			velocity[0] = gF_velClient[client][0] - gF_velEntity[client][0]
+			velocity[1] = gF_velClient[client][1] - gF_velEntity[client][1]
 			velocity[2] = gF_velEntity[client][2]
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 			gI_boost[client] = 3
@@ -2837,14 +2841,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(gB_groundBoost[client])
 			{
-				velocity[0] += gF_velEntity[client][0]
-				velocity[1] += gF_velEntity[client][1]
-				velocity[2] += gF_velEntity[client][2]
+				//velocity[0] += gF_velEntity[client][0]
+				//velocity[1] += gF_velEntity[client][1]
+				//velocity[2] += gF_velEntity[client][2]
+				velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0]
+				velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1]
+				velocity[2] = gF_velClient[client][1] + gF_velEntity[client][2]
 			}
 			else
 			{
-				velocity[0] += gF_velEntity[client][0] * 0.135
-				velocity[1] += gF_velEntity[client][1] * 0.135
+				//velocity[0] += gF_velEntity[client][0] * 0.135
+				//velocity[1] += gF_velEntity[client][1] * 0.135
+				velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0] * 0.135
+				velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1] * 0.135
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
@@ -3030,6 +3039,7 @@ Action ProjectileBoostFix(int entity, int other)
 		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", gF_velEntity[other])
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", gF_velClient[other])
 			gF_boostTime[other] = GetEngineTime()
 			gB_groundBoost[other] = gB_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
@@ -3526,6 +3536,8 @@ Action timer_clantag(Handle timer, int client)
 		CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][0])
 		KillTimer(gH_timerClanTag[client])
 	}
+	else if(!IsClientInGame(client))
+		KillTimer(gH_timerClanTag[client])
 }
 
 void MLStats(int client, bool ground = false)
