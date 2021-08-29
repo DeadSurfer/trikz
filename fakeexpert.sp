@@ -2982,7 +2982,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 			{
 				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
-				if(gB_color[client])_
+				if(gB_color[client])
 					SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 125)
 				else
 					SetEntityRenderColor(client, 255, 255, 255, 125)
@@ -2991,7 +2991,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			{
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-				if(gB_color[client])_
+				if(gB_color[client])
 					SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 				else
 					SetEntityRenderColor(client, 255, 255, 255, 255)
