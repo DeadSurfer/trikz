@@ -3238,9 +3238,9 @@ void Hud(int client)
 {
 	float vel[3]
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
-	float unitVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+	float velXY = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 	if(gB_hudVel[client])
-		PrintHintText(client, "%.0f", unitVel)
+		PrintHintText(client, "%.0f", velXY)
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) && !IsPlayerAlive(i))
@@ -3248,7 +3248,7 @@ void Hud(int client)
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 			if(observerMode < 7 && observerTarget == client && gB_hudVel[i])
-				PrintHintText(i, "%.0f", unitVel)
+				PrintHintText(i, "%.0f", velXY)
 		}
 	}
 }
