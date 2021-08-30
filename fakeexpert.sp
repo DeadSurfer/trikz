@@ -1399,6 +1399,12 @@ Action cmd_test(int client, int args)
 		RoundToFloor: 123
 		RoundToNearest: 123
 		RoundToZero: 123
+		
+		RoundFloat: 124
+		RoundToCeil: 124
+		RoundToFloor: 123
+		RoundToNearest: 124
+		RoundToZero: 123
 		*/
 		float x = 0.0
 		if(x)
