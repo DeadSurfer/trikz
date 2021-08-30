@@ -1387,6 +1387,12 @@ Action cmd_test(int client, int args)
 		PrintToServer("RoundToFloor: %i", RoundToFloor(round))
 		PrintToServer("RoundToNearest: %i", RoundToNearest(round))
 		PrintToServer("RoundToZero: %i", RoundToZero(round))
+		round = 123.912
+		PrintToServer("RoundFloat: %i", RoundFloat(round))
+		PrintToServer("RoundToCeil: %i", RoundToCeil(round))
+		PrintToServer("RoundToFloor: %i", RoundToFloor(round))
+		PrintToServer("RoundToNearest: %i", RoundToNearest(round))
+		PrintToServer("RoundToZero: %i", RoundToZero(round))
 		/*
 		RoundFloat: 123
 		RoundToCeil: 124
