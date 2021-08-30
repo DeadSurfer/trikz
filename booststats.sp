@@ -35,7 +35,7 @@ float gF_boostTimeStart[MAXPLAYERS + 1]
 float gF_boostTimeEnd[MAXPLAYERS + 1]
 bool gB_boostRead[MAXPLAYERS + 1]
 float gF_projectileVel[MAXPLAYERS + 1]
-float gF_unitVel[MAXPLAYERS + 1]
+float gF_vel[MAXPLAYERS + 1]
 float gF_duck[MAXPLAYERS + 1]
 bool gB_boostStats[MAXPLAYERS + 1]
 float gF_angles[MAXPLAYERS + 1][3]
@@ -109,7 +109,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_boostTimeStart[client] = GetEngineTime()
 			gB_boostRead[client] = true
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
-			gF_unitVel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+			gF_vel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 			gF_duck[client] = GetEntPropFloat(client, Prop_Data, "m_flDucktime")
 			gF_angles[client][0] = angles[0]
 			gF_angles[client][1] = angles[1]
@@ -126,7 +126,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 Action timer_finalMSG(Handle timer, int client)
 {
 	if(gB_boostStats[client])
-		PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
+		PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_vel[client], gF_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) && IsClientObserver(i))
@@ -134,7 +134,7 @@ Action timer_finalMSG(Handle timer, int client)
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 			if(observerMode < 7 && observerTarget == client && gB_boostStats[i])
-				PrintToChat(i, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_unitVel[client], gF_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
+				PrintToChat(i, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_vel[client], gF_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
 		}
 	}
 }
