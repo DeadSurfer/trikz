@@ -382,7 +382,7 @@ Action hookum_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int play
 	char sText[256]
 	msg.ReadString(sText, 256)
 	if(!gB_msg[client])
-		return Plugin_Stop
+		return Plugin_Handled
 	gB_msg[client] = false
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
@@ -417,7 +417,7 @@ Action hookum_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int play
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
 	dp.WriteString(sText)
 	RequestFrame(frame_SayText2, dp)
-	return Plugin_Stop
+	return Plugin_Handled
 }
 
 void frame_SayText2(DataPack dp)
@@ -1208,7 +1208,6 @@ Action Timer_BlockToggle(Handle timer, int client)
 		if(gB_MenuIsOpen[client])
 			Trikz(client)
 	}
-	return Plugin_Stop
 }
 
 void createstart()
@@ -1350,57 +1349,6 @@ Action cmd_test(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
-		//PrintToServer("observerMode: %i", GetEntProp(client, Prop_Data, "m_iObserverMode"))
-		/**SPEC* Nick Jurevich :  !test
-		observerMode: 4
-		*SPEC* Nick Jurevich :  !test
-		observerMode: 5
-		*SPEC* Nick Jurevich :  !test
-		observerMode: 6
-		Console: Map by Escencia
-		*SPEC* Nick Jurevich :  !test
-		observerMode: 7*/
-		//4, 5, 6 spec the player, 7 free look.
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			//if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i))
-			//if(IsClientInGame(i) && !IsPlayerAlive(i))
-			//if(IsClientInGame(i))
-			if(IsClientInGame(i) && !IsPlayerAlive(i))
-			{
-				PrintToServer("%i %N", i, i)
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-				if(observerMode < 7 && observerTarget == client)
-					PrintToServer("%i %N spectate -> %i %N", i, i, observerTarget, observerTarget)
-			}
-		}
-		if(args)
-		{
-			FinishMSG(client, false, true, false, false, false, 0, 11, 11, 11, 11, 11, 11)
-			PrintToChat(client, "\x077CFC00New server record!")
-			PrintToChat(client, "\x01%N and %N finished map in \x077CFC0011.11.11 \x01(SR \x077CFC00-11.11.11\x01)", client, client)
-			PrintToChat(client, "\x011. Checkpoint: \x077CFC00-11.11.11")
-		}
-		else
-		{
-			FinishMSG(client, false, false, false, false, false, 0, 11, 11, 11, 11, 11, 11)
-			//SetGlobalTransTarget(client)
-			//char sBuff[256]
-			//Format(sBuff, 256, "\x01%N and %N finished map in 11.11.11 (SR \x07FF0000+11.11.11)", client, client)
-			PrintToChat(client, "\x01%N and %N finished map in \x077CFC0011.11.11 \x01(SR \x07FF0000+11.11.11\x01)", client, client)
-			PrintToChat(client, "\x011. Checkpoint: \x07FF0000+11.11.11")
-			//char sVBuff[256]
-			//VFormat(sVBuff, 256, sBuff, 3)
-			//PrintToChat(client, "%s", sVBuff)
-			//Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
-			//BfWriteByte(buf, client)
-			//BfWriteByte(buf, true)
-			//BfWriteString(buf, sVBuff)
-			//BfWriteString(buf, "\x07FF0000(SR \x07008000+11.11.11)")
-			//EndMessage() //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L171-L185
-			//PrintToChat(client, "\x01\x0B\x01%N and %N finished map in 11.11.11 (SR \x07FF0000\x06+11.11.11)", client, client) //https://pastebin.com/kAcPRqmw
-		}
 		KeyValues test = CreateKeyValues("test")
 		//char sCfg[256]
 		//Format(sCfg, 256, "test.txt")
@@ -1472,10 +1420,6 @@ Action cmd_test(int client, int args)
 		-1.000000 == -1.0 | true
 		0.100000 == 0.1 | true
 		*/
-		//char sClanTag[256]
-		CS_SetClientClanTag(client, "test ofc")
-		//CS_GetClientClanTag(client, sClanTag, 256)
-		//PrintToServer("%s", sClanTag)
 	}
 	return Plugin_Handled
 }
@@ -2472,20 +2416,10 @@ Action timer_sourcetv(Handle timer)
 	if(isSourceTV)
 	{
 		ServerCommand("tv_stoprecord")
-		//char sOldFileName[256]
-		//Format(sOldFileName, 256, "%s-%s-%s.dem", gS_date, gS_time, gS_map)
-		//char sNewFileName[256]
-		//Format(sNewFileName, 256, "%s-%s-%s-ServerRecord.dem", gS_date, gS_time, gS_map)
-		//RenameFile(sNewFileName, sOldFileName) //its dont want to work in this case. so try to make timer for it lower.
 		gB_isSourceTVchangedFileName = false
 		CreateTimer(5.0, timer_runSourceTV, _, TIMER_FLAG_NO_MAPCHANGE)
-		//PrintToServer("SourceTV start recording.")
-		//FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
-		//FormatTime(gS_time, 64, "%H-%M-%S", GetTime())
-		//ServerCommand("tv_record %s-%s-%s", gS_date, gS_time, gS_map)
 		gB_isServerRecord = false
 	}
-	return Plugin_Stop
 }
 
 Action timer_runSourceTV(Handle timer)
@@ -2497,7 +2431,7 @@ Action timer_runSourceTV(Handle timer)
 	RenameFile(sNewFileName, sOldFileName)
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://sm.alliedmods.net/new-api/convars/__raw
-	if(isSourceTV && !gB_isSourceTVchangedFileName)
+	if(isSourceTV)
 	{
 		PrintToServer("SourceTV start recording.")
 		FormatTime(gS_date, 64, "%Y-%m-%d", GetTime())
@@ -2820,12 +2754,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gI_boost[client])
 	{
 		float velocity[3]
-		//GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 		if(gI_boost[client] == 2)
 		{
-			//velocity[0] -= gF_velEntity[client][0]
-			//velocity[1] -= gF_velEntity[client][1]
-			//velocity[2] = gF_velEntity[client][2]
 			velocity[0] = gF_velClient[client][0] - gF_velEntity[client][0]
 			velocity[1] = gF_velClient[client][1] - gF_velEntity[client][1]
 			velocity[2] = gF_velEntity[client][2]
@@ -2840,16 +2770,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				velocity[0] += gF_velEntity[client][0]
 				velocity[1] += gF_velEntity[client][1]
 				velocity[2] += gF_velEntity[client][2]
-				//velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0]
-				//velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1]
-				//velocity[2] = gF_velClient[client][1] + gF_velEntity[client][2]
 			}
 			else
 			{
 				velocity[0] += gF_velEntity[client][0] * 0.135
 				velocity[1] += gF_velEntity[client][1] * 0.135
-				//velocity[0] = gF_velClient[client][0] + gF_velEntity[client][0] * 0.135
-				//velocity[1] = gF_velClient[client][1] + gF_velEntity[client][1] * 0.135
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
 			gI_boost[client] = 0
@@ -3017,7 +2942,6 @@ Action timer_removePing(Handle timer, int client)
 		RemoveEntity(gI_pingModel[client])
 		gI_pingModel[client] = 0
 	}
-	return Plugin_Stop
 }
 
 Action ProjectileBoostFix(int entity, int other)
@@ -3121,7 +3045,6 @@ Action timer_devmap(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	devmap(true)
-	return Plugin_Stop
 }
 
 void devmap(bool force = false)
@@ -3152,7 +3075,6 @@ Action timer_changelevel(Handle timer, bool value)
 {
 	gB_isDevmap = value
 	ForceChangeLevel(gS_map, "Reason: Devmap")
-	return Plugin_Stop
 }
 
 Action cmd_top(int client, int args)
@@ -3171,7 +3093,6 @@ Action timer_motd(Handle timer, int client)
 		Format(sTopURLwMap, 256, "%s%s", sTopURL, gS_map)
 		ShowMOTDPanel(client, "Trikz Timer", sTopURLwMap, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	}
-	return Plugin_Stop
 }
 
 Action cmd_afk(int client, int args)
@@ -3232,7 +3153,6 @@ Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	afk(client, true)
-	return Plugin_Stop
 }
 
 void afk(int client, bool force = false)
@@ -3463,7 +3383,6 @@ Action timer_deleteProjectile(Handle timer, int entRef)
 	int entity = EntRefToEntIndex(entRef)
 	if(IsValidEntity(entity))
 		RemoveEntity(entity)
-	return Plugin_Stop
 }
 
 void SDKPlayerSpawnPost(int client)
