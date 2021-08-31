@@ -107,7 +107,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		vel[1] /= length
 		gF_dot[client] = GetVectorDotProduct(eye, vel)
 		//float dot = GetVectorDotProduct(eye, vel)
-		//PrintToServer("%f", dot)
+		PrintToServer("%f", gF_dot[client])
 	}
 }
 
