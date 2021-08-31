@@ -2015,6 +2015,7 @@ void SDKEndTouchPost(int entity, int other)
 		gB_readyToStart[other] = false
 		gB_readyToStart[gI_partner[other]] = false
 		gH_timerClanTag[other] = CreateTimer(0.5, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+		gH_timerClanTag[gI_partner[other]] = CreateTimer(0.5, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 		for(int i = 1; i <= gI_cpCount; i++)
 		{
 			gB_cp[i][other] = false
@@ -3455,14 +3456,10 @@ Action timer_clantag(Handle timer, int client)
 	if(IsClientInGame(client) && gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][1])
-		if(gI_partner[client])
-			CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][1])
 	}
 	else if(!gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][0])
-		if(gI_partner[client])
-			CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][0])
 		KillTimer(gH_timerClanTag[client])
 	}
 	else if(!IsClientInGame(client))
