@@ -178,7 +178,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 			Format(gS_style[client], 32, "Backward")
 		}
-		else if(gF_dot[client] > 0.8) //forward
+		else if(gF_dot[client] > 0.85) //forward
 		{
 			if(mouse[0] > 0)
 			{
