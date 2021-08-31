@@ -127,6 +127,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	else
 		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
+		{
 			if(gI_tickAir[client] < 10)
 			{
 				float eye[3]
@@ -140,6 +141,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gF_dot[client] = GetVectorDotProduct(eye, vel)
 			}
 			gI_tickAir[client]++
+		}
 	if(gB_jumped[client])
 	{
 		if(gF_dot[client] < 0.0) //backward
