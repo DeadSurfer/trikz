@@ -141,7 +141,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gB_jumped[client])
 	{
-		if(gF_dot[client] < 0.0) //backward
+		if(gF_dot[client] < -0.9) //backward
 		{
 			if(mouse[0] > 0)
 			{
