@@ -130,7 +130,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	else
 		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
 		{
-			if(GetEngineTime() - gF_dotTime[client] < 0.15)
+			if(GetEngineTime() - gF_dotTime[client] < 0.2)
 			{
 				float eye[3]
 				GetClientEyeAngles(client, eye)
