@@ -127,6 +127,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	else
 		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
+			if(gI_tickAir[client] < 10)
+			{
+				float eye[3]
+				GetClientEyeAngles(client, eye)
+				eye[0] = Cosine(DegToRad(eye[1]))
+				eye[1] = Sine(DegToRad(eye[1]))
+				eye[2] = 0.0
+				float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+				vel[0] /= length
+				vel[1] /= length
+				gF_dot[client] = GetVectorDotProduct(eye, vel)
+			}
 			gI_tickAir[client]++
 	if(gB_jumped[client])
 	{
