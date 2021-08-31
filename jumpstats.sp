@@ -218,6 +218,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						PrintToChat(i, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0.0 ? "" : "[BW] ", distance, gI_strafeCount[client], pre, sync)
 			}
 		}
+		ResetFactory(client)
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
