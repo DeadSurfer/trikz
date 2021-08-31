@@ -105,6 +105,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][0] = vel[0]
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
+		gF_dotTime[client] = GetEngineTime()
 	}
 }
 
@@ -133,6 +134,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				velExtra[1] /= length
 				velExtra[2] = 0.0
 				gF_dot[client] = GetVectorDotProduct(eye, velExtra) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
+				PrintToServer("%f", gF_dot[client])
 			}
 			gI_tickAir[client]++
 		}
