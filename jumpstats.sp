@@ -130,7 +130,37 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_tickAir[client]++
 	if(gB_jumped[client])
 	{
-		if(gF_dot[client] > 0.8) //forward
+		if(gF_dot[client] < 0.0) //backward
+		{
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_MOVELEFT)
+				{
+					if(!gB_strafeBlockA[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockD[client] = false
+						gB_strafeBlockA[client] = true
+					}
+					gI_syncTick[client]++
+				}
+			}
+			else
+			{
+				if(buttons & IN_MOVERIGHT)
+				{
+					if(!gB_strafeBlockD[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockD[client] = true
+						gB_strafeBlockA[client] = false
+					}
+					gI_syncTick[client]++
+				}
+			}
+			Format(gS_style[client], 32, "Backward")
+		}
+		else if(gF_dot[client] > 0.8) //forward
 		{
 			if(mouse[0] > 0)
 			{
@@ -189,36 +219,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 			Format(gS_style[client], 32, "Sideways")
-		}
-		else if(gF_dot[client] < 0.0) //backward
-		{
-			if(mouse[0] > 0)
-			{
-				if(buttons & IN_MOVELEFT)
-				{
-					if(!gB_strafeBlockA[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = false
-						gB_strafeBlockA[client] = true
-					}
-					gI_syncTick[client]++
-				}
-			}
-			else
-			{
-				if(buttons & IN_MOVERIGHT)
-				{
-					if(!gB_strafeBlockD[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = true
-						gB_strafeBlockA[client] = false
-					}
-					gI_syncTick[client]++
-				}
-			}
-			Format(gS_style[client], 32, "Backward")
 		}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
