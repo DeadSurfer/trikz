@@ -135,7 +135,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				eye[0] = Cosine(DegToRad(eye[1]))
 				eye[1] = Sine(DegToRad(eye[1]))
 				eye[2] = 0.0
-				float velExtra[3] = GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velExtra)
+				float velExtra[3]
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velExtra)
 				float length = SquareRoot(Pow(velExtra[0], 2.0) + Pow(velExtra[1], 2.0))
 				velExtra[0] /= length
 				velExtra[1] /= length
