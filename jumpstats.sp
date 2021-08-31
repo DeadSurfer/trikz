@@ -131,7 +131,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				float length = SquareRoot(Pow(velExtra[0], 2.0) + Pow(velExtra[1], 2.0))
 				velExtra[0] /= length
 				velExtra[1] /= length
-				gF_dot[client] = GetVectorDotProduct(eye, velExtra)
+				gF_dot[client] = GetVectorDotProduct(eye, velExtra) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
 			}
 			gI_tickAir[client]++
 		}
