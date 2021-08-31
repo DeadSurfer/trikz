@@ -42,7 +42,7 @@ bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_getFirstStrafe[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
 int gI_syncTick[MAXPLAYERS + 1][2]
-int gI_tickAir[MAXPLAYERS + 1]
+//int gI_tickAir[MAXPLAYERS + 1]
 bool gB_isCountJump[MAXPLAYERS + 1]
 
 public Plugin myinfo =
@@ -65,7 +65,7 @@ public void OnPluginStart()
 
 public void OnClientPutInServer(int client)
 {
-	SDKHook(client, SDKHook_Touch, TouchClient)
+	//SDKHook(client, SDKHook_Touch, TouchClient)
 	gB_jumpstats[client] = false
 }
 
@@ -110,9 +110,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
 	}
-	else
-		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
-			gI_tickAir[client]++
+	//else
+	//	if(GetEntityMoveType(client) != MOVETYPE_LADDER)
+	//		gI_tickAir[client]++
 	if(gB_jumped[client])
 	{
 		if(gB_getFirstStrafe[client])
@@ -127,20 +127,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
-		if(mouse[0] > 0)
-		{
-			if(buttons & IN_MOVERIGHT)
-				gI_syncTick[client][0]++
-			if(buttons & IN_BACK)
-				gI_syncTick[client][1]++
-		}
-		if(mouse[0] < 0)
-		{
-			if(buttons & IN_MOVELEFT)
-				gI_syncTick[client][0]++
-			if(buttons & IN_FORWARD)
-				gI_syncTick[client][1]++
-		}
+		//if(mouse[0] > 0)
+		//{
+		//	if(buttons & IN_MOVERIGHT)
+		//		gI_syncTick[client][0]++
+		//	if(buttons & IN_BACK)
+		//		gI_syncTick[client][1]++
+		//}
+		//if(mouse[0] < 0)
+		//{
+		//	if(buttons & IN_MOVELEFT)
+		//		gI_syncTick[client][0]++
+		//	if(buttons & IN_FORWARD)
+		//		gI_syncTick[client][1]++
+		//}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -154,21 +154,21 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
-		float sync = -1.0
-		if(gI_SWcount[client] < gI_ADcount[client])
-			sync += float(gI_syncTick[client][0])
-		else if(gI_SWcount[client] > gI_ADcount[client])
-			sync += float(gI_syncTick[client][1])
-		sync /= float(gI_tickAir[client])
-		sync *= 100.0
+		//float sync = -1.0
+		//if(gI_SWcount[client] < gI_ADcount[client])
+		//	sync += float(gI_syncTick[client][0])
+		//else if(gI_SWcount[client] > gI_ADcount[client])
+		//	sync += float(gI_syncTick[client][1])
+		//sync /= float(gI_tickAir[client])
+		//sync *= 100.0
 		if(gB_jumpstats[client])
 		{
 			if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, pre, sync)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, pre)
 			if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_SWcount[client]++, pre, sync)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_SWcount[client]++, pre)
 			if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_ADcount[client]++, pre, sync)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_ADcount[client]++, pre)
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -179,11 +179,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 				{
 					if(1000.0 > distance > 230.0 && !gI_SWcount[client] && !gI_ADcount[client] && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, pre, sync)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: 0, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, pre)
 					if(1000.0 > distance >= 230.0 && gI_SWcount[client] > gI_ADcount[client] && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_SWcount[client]++, pre, sync)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, (S-W) Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_SWcount[client]++, pre)
 					if(1000.0 > distance >= 230.0 && gI_ADcount[client] > gI_SWcount[client] && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s, Sync: %.1f%", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_ADcount[client]++, pre, sync)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, (A-D) Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_ADcount[client]++, pre)
 				}
 			}
 		}
@@ -213,20 +213,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_SWcount[client]++
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
 			gI_ADcount[client]++
-		if(mouse[0] > 0)
-		{
-			if(buttons & IN_MOVERIGHT)
-				gI_syncTick[client][0]++
-			if(buttons & IN_BACK)
-				gI_syncTick[client][1]++
-		}
-		if(mouse[0] < 0)
-		{
-			if(buttons & IN_MOVELEFT)
-				gI_syncTick[client][0]++
-			if(buttons & IN_FORWARD)
-				gI_syncTick[client][1]++
-		}
+		//if(mouse[0] > 0)
+		//{
+		//	if(buttons & IN_MOVERIGHT)
+		//		gI_syncTick[client][0]++
+		//	if(buttons & IN_BACK)
+		//		gI_syncTick[client][1]++
+		//}
+		//if(mouse[0] < 0)
+		//{
+		//	if(buttons & IN_MOVELEFT)
+		//		gI_syncTick[client][0]++
+		//	if(buttons & IN_FORWARD)
+		//		gI_syncTick[client][1]++
+		//}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
@@ -236,21 +236,21 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
 		{
 			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
-			float sync = -1.0
-			if(gI_SWcount[client] < gI_ADcount[client])
-				sync += float(gI_syncTick[client][0])
-			else if(gI_SWcount[client] > gI_ADcount[client])
-				sync += float(gI_syncTick[client][1])
-			sync /= float(gI_tickAir[client])
-			sync *= 100.0
+			//float sync = -1.0
+			//if(gI_SWcount[client] < gI_ADcount[client])
+			//	sync += float(gI_syncTick[client][0])
+			//else if(gI_SWcount[client] > gI_ADcount[client])
+			//	sync += float(gI_syncTick[client][1])
+			//sync /= float(gI_tickAir[client])
+			//sync *= 100.0
 			if(gB_jumpstats[client])
 			{
 				if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
-					PrintToChat(client, "[SM] Ladder: %.1f units, Sync: %.1f%", distance, sync)
+					PrintToChat(client, "[SM] Ladder: %.1f units!", distance)
 				if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
-					PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.1f%", distance, gI_SWcount[client]++, sync)
+					PrintToChat(client, "[SM] Ladder: %.1f units, (S-W) Strafes: %i", distance, gI_SWcount[client]++)
 				if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
-					PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.1f%", distance, gI_ADcount[client]++, sync)
+					PrintToChat(client, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client]++)
 			}
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -261,11 +261,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 					{
 						if(190.0 > distance >= 22.0 && !gI_SWcount[client] && !gI_ADcount[client])
-							PrintToChat(i, "[SM] Ladder: %.1f units, Sync: %.1f%", distance, sync)
+							PrintToChat(i, "[SM] Ladder: %.1f units!", distance)
 						if(190.0 > distance >= 22.0 && gI_SWcount[client] > gI_ADcount[client])
-							PrintToChat(i, "[SM] Ladder: %.1f units, (S-W) Strafes: %i, Sync: %.1f%", distance, gI_SWcount[client]++, sync)
+							PrintToChat(i, "[SM] Ladder: %.1f units, (S-W) Strafes: %i", distance, gI_SWcount[client]++)
 						if(190.0 > distance >= 22.0 && gI_ADcount[client] > gI_SWcount[client])
-							PrintToChat(i, "[SM] Ladder: %.1f units, (A-D) Strafes: %i, Sync: %.1f%", distance, gI_ADcount[client]++, sync)
+							PrintToChat(i, "[SM] Ladder: %.1f units, (A-D) Strafes: %i", distance, gI_ADcount[client]++)
 					}
 				}
 			}
@@ -293,7 +293,7 @@ void ResetFactory(int client)
 	gI_syncTick[client][0] = 0
 	gI_syncTick[client][1] = 0
 	gI_tick[client] = 0
-	gI_tickAir[client] = 0
+	//gI_tickAir[client] = 0
 }
 
 Action StartTouchProjectile(int entity, int other)
@@ -319,7 +319,7 @@ Action EndTouchProjectile(int entity, int other)
 		gB_bouncedOff[entity] = true
 }
 
-void TouchClient(int client, int other)
+/*void TouchClient(int client, int other)
 {
 	if(gB_jumped[client] || gB_ladder[client])
 	{
@@ -338,4 +338,4 @@ void TouchClient(int client, int other)
 				ResetFactory(client)
 		}
 	}
-}
+}*/
