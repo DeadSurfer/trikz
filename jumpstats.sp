@@ -68,8 +68,6 @@ public void OnPluginStart()
 public void OnClientPutInServer(int client)
 {
 	gB_jumpstats[client] = false
-	gB_strafeBlockD[client] = false
-	gB_strafeBlockA[client] = false
 }
 
 Action cmd_jumpstats(int client, int args)
