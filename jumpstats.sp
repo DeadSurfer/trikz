@@ -105,18 +105,6 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][0] = vel[0]
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
-		//float eye[3]
-		//GetClientEyeAngles(client, eye)
-		//eye[0] = Cosine(DegToRad(eye[1]))
-		//eye[1] = Sine(DegToRad(eye[1]))
-		//eye[2] = 0.0
-		//float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		//vel[0] /= length
-		//vel[1] /= length
-		//gF_dot[client] = GetVectorDotProduct(eye, vel)
-		//float dot = GetVectorDotProduct(eye, vel)
-		//PrintToServer("%f", gF_dot[client])
-		gF_dotTime[client] = GetEngineTime()
 	}
 }
 
@@ -128,6 +116,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_tick[client]++
 	}
 	else
+	{
 		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
 		{
 			if(GetEngineTime() - gF_dotTime[client] < 0.4)
@@ -146,6 +135,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 			gI_tickAir[client]++
 		}
+	}
 	if(gB_jumped[client])
 	{
 		if(gF_dot[client] < 0.0) //backward
