@@ -38,6 +38,7 @@ bool gB_ladder[MAXPLAYERS + 1]
 float gF_preVel[MAXPLAYERS + 1][3]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
+bool gB_strafeFirst[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
 int gI_syncTick[MAXPLAYERS + 1]
 int gI_tickAir[MAXPLAYERS + 1]
@@ -226,76 +227,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
-		float eye[3]
-		GetClientEyeAngles(client, eye)
-		eye[0] = Cosine(DegToRad(eye[1]))
-		eye[1] = Sine(DegToRad(eye[1]))
-		eye[2] = 0.0
-		float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		vel[0] /= length
-		vel[1] /= length
-		gF_dot[client] = GetVectorDotProduct(eye, vel)
+		gB_strafeFirst[client] = true
 	}
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
 	{
-		if(gF_dot[client] > 0.0) //forward
+		if(gB_strafeFirst[client])
 		{
-			if(mouse[0] > 0)
-			{
-				if(buttons & IN_MOVERIGHT)
-				{
-					if(!gB_strafeBlockD[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = true
-						gB_strafeBlockA[client] = false
-					}
-					gI_syncTick[client]++
-				}
-			}
-			if(mouse[0] < 0)
-			{
-				if(buttons & IN_MOVELEFT)
-				{
-					if(!gB_strafeBlockA[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = false
-						gB_strafeBlockA[client] = true
-					}
-					gI_syncTick[client]++
-				}
-			}
+			if(mouse[0] && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
+				gI_strafeCount[client]++
+			gB_strafeFirst[client] = false
 		}
-		else //backward
-		{
-			if(mouse[0] > 0)
-			{
-				if(buttons & IN_MOVELEFT)
-				{
-					if(!gB_strafeBlockA[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = false
-						gB_strafeBlockA[client] = true
-					}
-					gI_syncTick[client]++
-				}
-			}
-			else
-			{
-				if(buttons & IN_MOVERIGHT)
-				{
-					if(!gB_strafeBlockD[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = true
-						gB_strafeBlockA[client] = false
-					}
-					gI_syncTick[client]++
-				}
-			}
-		}
+		if(mouse[0] && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
+		GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT))
+			gI_strafeCount[client]++
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
@@ -305,13 +249,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
 		{
 			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
-			float sync = -1.0
-			sync += float(gI_syncTick[client])
-			sync /= float(gI_tickAir[client])
-			sync *= 100.0
 			if(gB_jumpstats[client])
 				if(190.0 > distance >= 22.0)
-					PrintToChat(client, "[SM] Ladder: %.1f units, Strafes: %i, Sync: %.1f", distance, gI_strafeCount[client], sync)
+					PrintToChat(client, "[SM] Ladder: %.1f units, Strafes: %i", distance, gI_strafeCount[client])
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && IsClientObserver(i))
@@ -320,10 +260,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 						if(190.0 > distance >= 22.0)
-							PrintToChat(i, "[SM] Ladder: %.1f units, Strafes: %i, Sync: %.1f", distance, gI_strafeCount[client], sync)
+							PrintToChat(i, "[SM] Ladder: %.1f units, Strafes: %i", distance, gI_strafeCount[client])
 				}
 			}
-			PrintToServer("%f", gF_dot[client])
 		}
 		ResetFactory(client)
 	}
