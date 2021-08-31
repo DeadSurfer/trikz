@@ -204,8 +204,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		float sync = -1.0
 		sync += float(gI_syncTick[client])
+		PrintToServer("sync: %f", sync)
 		sync /= float(gI_tickAir[client])
+		PrintToServer("sync: %f", sync)
 		sync *= 100.0
+		PrintToServer("sync: %f", sync)
 		if(gB_jumpstats[client])
 			if(1000.0 > distance >= 230.0 && pre < 280.0)
 				PrintToChat(client, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0.0 ? "" : "[BW] ", distance, gI_strafeCount[client], pre, sync)
