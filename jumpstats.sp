@@ -46,6 +46,9 @@ bool gB_isCountJump[MAXPLAYERS + 1]
 float gF_dot[MAXPLAYERS + 1]
 bool gB_strafeBlockD[MAXPLAYERS + 1]
 bool gB_strafeBlockA[MAXPLAYERS + 1]
+bool gB_strafeBlockS[MAXPLAYERS + 1]
+bool gB_strafeBlockW[MAXPLAYERS + 1]
+char gS_style[MAXPLAYERS + 1][32]
 
 public Plugin myinfo =
 {
@@ -127,7 +130,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_tickAir[client]++
 	if(gB_jumped[client])
 	{
-		if(gF_dot[client] > 0.0) //forward
+		if(gF_dot[client] > 0.8) //forward
 		{
 			if(mouse[0] > 0)
 			{
@@ -155,8 +158,39 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
+			Format(gS_style[client], 32, "Forward")
 		}
-		else //backward
+		else //sideways
+		{
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_BACK)
+				{
+					if(!gB_strafeBlockS[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockW[client] = true
+						gB_strafeBlockA[client] = false
+					}
+					gI_syncTick[client]++
+				}
+			}
+			else
+			{
+				if(buttons & IN_FORWARD)
+				{
+					if(!gB_strafeBlockW[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockS[client] = false
+						gB_strafeBlockW[client] = true
+					}
+					gI_syncTick[client]++
+				}
+			}
+			Format(gS_style[client], 32, "Sideways")
+		}
+		else if(gF_dot[client] < 0.0) //backward
 		{
 			if(mouse[0] > 0)
 			{
@@ -184,6 +218,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
+			Format(gS_style[client], 32, "Backward")
 		}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
@@ -204,7 +239,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync *= 100.0
 		if(gB_jumpstats[client])
 			if(1000.0 > distance >= 230.0 && pre < 280.0)
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gF_dot[client] > 0.0 ? "Forward" : "Backward")
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
@@ -213,7 +248,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gF_dot[client] > 0.0 ? "Forward" : "Backward")
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			}
 		}
 		ResetFactory(client)
@@ -287,6 +322,8 @@ void ResetFactory(int client)
 	gI_tickAir[client] = 0
 	gB_strafeBlockD[client] = false
 	gB_strafeBlockA[client] = false
+	gB_strafeBlockS[client] = false
+	gB_strafeBlockW[client] = false
 }
 
 Action StartTouchProjectile(int entity, int other)
