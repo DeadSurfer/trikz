@@ -193,6 +193,7 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
+	HookEvent("replay_saved", event_replaysaved)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
 	//PrepSDKCall_SetVirtual(308)
@@ -482,6 +483,11 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 			continue
 		}
 	}*/
+}
+
+Action event_replaysaved(Event event, const char[] name, bool dontBroadcast)
+{
+	PrintToServer("yes")
 }
 
 /*void SDKWeaponSwitchPost(int client, int weapon)
