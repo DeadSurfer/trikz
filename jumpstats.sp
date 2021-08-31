@@ -36,7 +36,6 @@ float gF_origin[MAXPLAYERS + 1][3]
 int gI_strafeCount[MAXPLAYERS + 1]
 bool gB_ladder[MAXPLAYERS + 1]
 float gF_preVel[MAXPLAYERS + 1][3]
-bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
 bool gB_strafeFirst[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
@@ -317,7 +316,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrContains(classname, "projectile") != -1)
 	{
-		gB_bouncedOff[entity] = false
 		SDKHook(entity, SDKHook_StartTouch, StartTouchProjectile)
 		SDKHook(entity, SDKHook_EndTouch, EndTouchProjectile)
 	}
@@ -352,10 +350,4 @@ Action StartTouchProjectile(int entity, int other)
 		if(0.0 < delta < 2.0)
 			ResetFactory(other)
 	}
-}
-
-Action EndTouchProjectile(int entity, int other)
-{
-	if(!other)
-		gB_bouncedOff[entity] = true
 }
