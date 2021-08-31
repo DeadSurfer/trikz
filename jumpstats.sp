@@ -49,6 +49,7 @@ bool gB_strafeBlockA[MAXPLAYERS + 1]
 bool gB_strafeBlockS[MAXPLAYERS + 1]
 bool gB_strafeBlockW[MAXPLAYERS + 1]
 char gS_style[MAXPLAYERS + 1][32]
+float gF_dotTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -104,17 +105,18 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][0] = vel[0]
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
-		float eye[3]
-		GetClientEyeAngles(client, eye)
-		eye[0] = Cosine(DegToRad(eye[1]))
-		eye[1] = Sine(DegToRad(eye[1]))
-		eye[2] = 0.0
-		float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		vel[0] /= length
-		vel[1] /= length
-		gF_dot[client] = GetVectorDotProduct(eye, vel)
+		//float eye[3]
+		//GetClientEyeAngles(client, eye)
+		//eye[0] = Cosine(DegToRad(eye[1]))
+		//eye[1] = Sine(DegToRad(eye[1]))
+		//eye[2] = 0.0
+		//float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		//vel[0] /= length
+		//vel[1] /= length
+		//gF_dot[client] = GetVectorDotProduct(eye, vel)
 		//float dot = GetVectorDotProduct(eye, vel)
-		PrintToServer("%f", gF_dot[client])
+		//PrintToServer("%f", gF_dot[client])
+		gF_dotTime[client] = GetEngineTime()
 	}
 }
 
@@ -128,7 +130,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	else
 		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
 		{
-			if(gI_tickAir[client] < 20)
+			if(GetEngineTime() - gF_dotTime[client] < 0.15)
 			{
 				float eye[3]
 				GetClientEyeAngles(client, eye)
