@@ -144,7 +144,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		if(gB_jumpstats[client])
 			if(1000.0 > distance >= 230.0 && pre < 280.0)
-				PrintToChat(client, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0 ? "" : "[BW] "distance, gI_strafeCount[client], pre)
+				PrintToChat(client, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0 ? "" : "[BW] ", distance, gI_strafeCount[client], pre)
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
@@ -153,7 +153,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0 ? "" : "[BW] "distance, gI_strafeCount[client], pre)
+						PrintToChat(i, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0 ? "" : "[BW] ", distance, gI_strafeCount[client], pre)
 			}
 		}
 		ResetFactory(client)
