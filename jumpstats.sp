@@ -143,7 +143,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
-			else
+			if(mouse[0] < 0)
 			{
 				if(buttons & IN_MOVELEFT)
 				{
@@ -174,7 +174,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
-			else
+			if(mouse[0] < 0)
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
@@ -248,7 +248,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
-			else
+			if(mouse[0] < 0)
 			{
 				if(buttons & IN_MOVELEFT)
 				{
@@ -277,7 +277,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
-			else
+			if(mouse[0] < 0)
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
