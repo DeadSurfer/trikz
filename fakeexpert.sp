@@ -3455,12 +3455,14 @@ Action timer_clantag(Handle timer, int client)
 	if(IsClientInGame(client) && gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][1])
-		CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][1])
+		if(gI_partner[client])
+			CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][1])
 	}
 	else if(!gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][0])
-		CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][0])
+		if(gI_partner[client])
+			CS_SetClientClanTag(gI_partner[client], gS_clanTag[gI_partner[client]][0])
 		KillTimer(gH_timerClanTag[client])
 	}
 	else if(!IsClientInGame(client))
