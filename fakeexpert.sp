@@ -132,8 +132,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				float length = SquareRoot(Pow(velExtra[0], 2.0) + Pow(velExtra[1], 2.0))
 				velExtra[0] /= length
 				velExtra[1] /= length
-				velExtra[2] = 0.0
+				//velExtra[2] = 0.0
 				gF_dot[client] = GetVectorDotProduct(eye, velExtra) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
+				PrintToServer("%f", gF_dot[client])
 			}
 			gI_tickAir[client]++
 		}
@@ -261,7 +262,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			}
 		}
-		PrintToServer("%f", gF_dot[client])
 		ResetFactory(client)
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
