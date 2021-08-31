@@ -138,6 +138,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						gI_strafeCount[client]++
 						gB_strafeBlockD[client] = true
 						gB_strafeBlockA[client] = false
+						PrintToServer("D")
 					}
 					gI_syncTick[client]++
 				}
@@ -151,6 +152,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						gI_strafeCount[client]++
 						gB_strafeBlockD[client] = false
 						gB_strafeBlockA[client] = true
+						PrintToServer("A")
 					}
 					gI_syncTick[client]++
 				}
@@ -167,6 +169,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						gI_strafeCount[client]++
 						gB_strafeBlockD[client] = false
 						gB_strafeBlockA[client] = true
+						PrintToServer("A")
 					}
 					gI_syncTick[client]++
 				}
@@ -180,6 +183,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						gI_strafeCount[client]++
 						gB_strafeBlockD[client] = true
 						gB_strafeBlockA[client] = false
+						PrintToServer("D")
 					}
 					gI_syncTick[client]++
 				}
@@ -251,8 +255,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					if(!gB_strafeBlockA[client])
 					{
 						gI_strafeCount[client]++
-						gB_strafeBlockA[client] = true
 						gB_strafeBlockD[client] = false
+						gB_strafeBlockA[client] = true
 					}
 					gI_syncTick[client]++
 				}
@@ -267,8 +271,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					if(!gB_strafeBlockA[client])
 					{
 						gI_strafeCount[client]++
-						gB_strafeBlockA[client] = true
 						gB_strafeBlockD[client] = false
+						gB_strafeBlockA[client] = true
 					}
 					gI_syncTick[client]++
 				}
