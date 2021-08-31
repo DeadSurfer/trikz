@@ -323,6 +323,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 							PrintToChat(i, "[SM] Ladder: %.1f units, Strafes: %i, Sync: %.1f", distance, gI_strafeCount[client], sync)
 				}
 			}
+			PrintToServer("%f", gF_dot[client])
 		}
 		ResetFactory(client)
 	}
