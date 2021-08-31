@@ -96,6 +96,16 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][0] = vel[0]
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
+		float eye[3]
+		GetClientEyeAngles(client, eye)
+		eye[0] = Cosine(DegToRad(eye[1]))
+		eye[1] = Sine(DegToRad(eye[1]))
+		eye[2] = 0.0
+		float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		vel[0] /= length
+		vel[1] /= length
+		float dot = GetVectorDotProduct(eye, vel)
+		PrintToServer("%f", dot)
 	}
 }
 
@@ -106,22 +116,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
 	}
-	else
-		if(gI_tick[client] != 30)
-		{
-			float eye[3]
-			GetClientEyeAngles(client, eye)
-			eye[0] = Cosine(DegToRad(eye[1]))
-			eye[1] = Sine(DegToRad(eye[1]))
-			eye[2] = 0.0
-			float velExtra[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velExtra)
-			float length = SquareRoot(Pow(velExtra[0], 2.0) + Pow(velExtra[1], 2.0))
-			velExtra[0] /= length
-			velExtra[1] /= length
-			float dot = GetVectorDotProduct(eye, velExtra)
-			PrintToServer("%f", dot)
-		}
 	if(gB_jumped[client])
 	{
 		if(gB_getFirstStrafe[client])
