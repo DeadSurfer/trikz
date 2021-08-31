@@ -38,10 +38,18 @@ bool gB_ladder[MAXPLAYERS + 1]
 float gF_preVel[MAXPLAYERS + 1][3]
 bool gB_bouncedOff[2048]
 bool gB_jumpstats[MAXPLAYERS + 1]
-bool gB_getFirstStrafe[MAXPLAYERS + 1]
+bool gB_strafeFirst[MAXPLAYERS + 1]
 int gI_tick[MAXPLAYERS + 1]
+int gI_syncTick[MAXPLAYERS + 1]
+int gI_tickAir[MAXPLAYERS + 1]
 bool gB_isCountJump[MAXPLAYERS + 1]
 float gF_dot[MAXPLAYERS + 1]
+bool gB_strafeBlockD[MAXPLAYERS + 1]
+bool gB_strafeBlockA[MAXPLAYERS + 1]
+bool gB_strafeBlockS[MAXPLAYERS + 1]
+bool gB_strafeBlockW[MAXPLAYERS + 1]
+char gS_style[MAXPLAYERS + 1][32]
+float gF_dotTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -85,8 +93,8 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
+		ResetFactory(client)
 		gB_jumped[client] = true
-		gB_getFirstStrafe[client] = true
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
 		gF_origin[client][0] = origin[0]
@@ -97,17 +105,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][0] = vel[0]
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
-		float eye[3]
-		GetClientEyeAngles(client, eye)
-		eye[0] = Cosine(DegToRad(eye[1]))
-		eye[1] = Sine(DegToRad(eye[1]))
-		eye[2] = 0.0
-		float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		vel[0] /= length
-		vel[1] /= length
-		gF_dot[client] = GetVectorDotProduct(eye, vel)
-		//float dot = GetVectorDotProduct(eye, vel)
-		PrintToServer("%f", gF_dot[client])
+		gF_dotTime[client] = GetEngineTime()
 	}
 }
 
@@ -118,17 +116,120 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
 	}
+	else
+	{
+		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
+		{
+			if(GetEngineTime() - gF_dotTime[client] < 0.4)
+			{
+				float eye[3]
+				GetClientEyeAngles(client, eye)
+				eye[0] = Cosine(DegToRad(eye[1]))
+				eye[1] = Sine(DegToRad(eye[1]))
+				eye[2] = 0.0
+				float velExtra[3]
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velExtra)
+				float length = SquareRoot(Pow(velExtra[0], 2.0) + Pow(velExtra[1], 2.0))
+				velExtra[0] /= length
+				velExtra[1] /= length
+				velExtra[2] = 0.0
+				gF_dot[client] = GetVectorDotProduct(eye, velExtra) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
+			}
+			gI_tickAir[client]++
+		}
+	}
 	if(gB_jumped[client])
 	{
-		if(gB_getFirstStrafe[client])
+		if(gF_dot[client] < 0.0) //backward
 		{
-			if(mouse[0] && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
-				gI_strafeCount[client]++
-			gB_getFirstStrafe[client] = false
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_MOVELEFT)
+				{
+					if(!gB_strafeBlockA[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockD[client] = false
+						gB_strafeBlockA[client] = true
+					}
+					gI_syncTick[client]++
+				}
+			}
+			else
+			{
+				if(buttons & IN_MOVERIGHT)
+				{
+					if(!gB_strafeBlockD[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockD[client] = true
+						gB_strafeBlockA[client] = false
+					}
+					gI_syncTick[client]++
+				}
+			}
+			Format(gS_style[client], 32, "Backward")
 		}
-		if(mouse[0] && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
-		GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT))
-			gI_strafeCount[client]++
+		else if(gF_dot[client] > 0.9) //forward
+		{
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_MOVERIGHT)
+				{
+					if(!gB_strafeBlockD[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockD[client] = true
+						gB_strafeBlockA[client] = false
+					}
+					gI_syncTick[client]++
+				}
+			}
+			else
+			{
+				if(buttons & IN_MOVELEFT)
+				{
+					if(!gB_strafeBlockA[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockD[client] = false
+						gB_strafeBlockA[client] = true
+					}
+					gI_syncTick[client]++
+				}
+			}
+			Format(gS_style[client], 32, "Forward")
+		}
+		else //sideways
+		{
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_BACK)
+				{
+					if(!gB_strafeBlockS[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockS[client] = true
+						gB_strafeBlockW[client] = false
+					}
+					gI_syncTick[client]++
+				}
+			}
+			else
+			{
+				if(buttons & IN_FORWARD)
+				{
+					if(!gB_strafeBlockW[client])
+					{
+						gI_strafeCount[client]++
+						gB_strafeBlockS[client] = false
+						gB_strafeBlockW[client] = true
+					}
+					gI_syncTick[client]++
+				}
+			}
+			Format(gS_style[client], 32, "Sideways")
+		}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
@@ -142,9 +243,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
+		float sync = -1.0
+		sync += float(gI_syncTick[client])
+		sync /= float(gI_tickAir[client])
+		sync *= 100.0
 		if(gB_jumpstats[client])
 			if(1000.0 > distance >= 230.0 && pre < 280.0)
-				PrintToChat(client, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0 ? "" : "[BW] ", distance, gI_strafeCount[client], pre)
+				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
@@ -153,9 +258,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", gF_dot[client] > 0 ? "" : "[BW] ", distance, gI_strafeCount[client], pre)
+						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			}
 		}
+		//PrintToServer("%f", gF_dot[client])
 		ResetFactory(client)
 	}
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
@@ -166,15 +272,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
-		gB_getFirstStrafe[client] = true
+		gB_strafeFirst[client] = true
 	}
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
 	{
-		if(gB_getFirstStrafe[client])
+		if(gB_strafeFirst[client])
 		{
 			if(mouse[0] && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
 				gI_strafeCount[client]++
-			gB_getFirstStrafe[client] = false
+			gB_strafeFirst[client] = false
 		}
 		if(mouse[0] && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
 		GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT))
@@ -222,7 +328,13 @@ void ResetFactory(int client)
 	gB_jumped[client] = false
 	gB_ladder[client] = false
 	gI_strafeCount[client] = 0
+	gI_syncTick[client] = 0
 	gI_tick[client] = 0
+	gI_tickAir[client] = 0
+	gB_strafeBlockD[client] = false
+	gB_strafeBlockA[client] = false
+	gB_strafeBlockS[client] = false
+	gB_strafeBlockW[client] = false
 }
 
 Action StartTouchProjectile(int entity, int other)
