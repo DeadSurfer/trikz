@@ -96,6 +96,16 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][0] = vel[0]
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
+		float eye[3]
+		GetClientEyeAngles(client, eye)
+		eye[0] = Cosine(DegToRad(eye[1]))
+		eye[1] = Sine(DegToRad(eye[1]))
+		eye[2] = 0.0
+		float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		vel[0] /= lenght
+		vel[1] /= lenght
+		float dot = GetVectorDotProduct(eye, vel)
+		PrintToServer("%f", dot)
 	}
 }
 
@@ -110,11 +120,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(gB_getFirstStrafe[client])
 		{
-			if(mouse[0] != 0 && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
+			if(mouse[0] && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
 				gI_strafeCount[client]++
 			gB_getFirstStrafe[client] = false
 		}
-		if(mouse[0] != 0 && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
+		if(mouse[0] && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
 		GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT))
 			gI_strafeCount[client]++
 	}
@@ -160,11 +170,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(gB_getFirstStrafe[client])
 		{
-			if(mouse[0] != 0 && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
+			if(mouse[0] && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
 				gI_strafeCount[client]++
 			gB_getFirstStrafe[client] = false
 		}
-		if(mouse[0] != 0 && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
+		if(mouse[0] && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
 		GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT))
 			gI_strafeCount[client]++
 	}
