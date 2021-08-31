@@ -315,10 +315,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrContains(classname, "projectile") != -1)
-	{
 		SDKHook(entity, SDKHook_StartTouch, StartTouchProjectile)
-		SDKHook(entity, SDKHook_EndTouch, EndTouchProjectile)
-	}
 }
 
 void ResetFactory(int client)
