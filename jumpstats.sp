@@ -102,8 +102,8 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		eye[1] = Sine(DegToRad(eye[1]))
 		eye[2] = 0.0
 		float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-		vel[0] /= lenght
-		vel[1] /= lenght
+		vel[0] /= length
+		vel[1] /= length
 		float dot = GetVectorDotProduct(eye, vel)
 		PrintToServer("%f", dot)
 	}
