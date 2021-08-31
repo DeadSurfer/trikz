@@ -206,7 +206,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync += float(gI_syncTick[client])
 		PrintToServer("sync: %f", sync)
 		sync /= float(gI_tickAir[client])
-		PrintToServer("sync: %f, gI_tickAir: %f", sync, gI_tickAir[client])
+		PrintToServer("sync: %f, gI_tickAir: %i", sync, gI_tickAir[client])
 		sync *= 100.0
 		PrintToServer("sync: %f", sync)
 		if(gB_jumpstats[client])
