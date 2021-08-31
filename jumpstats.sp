@@ -226,6 +226,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
+		float eye[3]
+		GetClientEyeAngles(client, eye)
+		eye[0] = Cosine(DegToRad(eye[1]))
+		eye[1] = Sine(DegToRad(eye[1]))
+		eye[2] = 0.0
+		float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+		vel[0] /= length
+		vel[1] /= length
+		gF_dot[client] = GetVectorDotProduct(eye, vel)
 	}
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
 	{
