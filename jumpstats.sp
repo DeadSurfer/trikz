@@ -218,7 +218,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					{
 						gI_strafeCount[client]++
 						gB_strafeBlockW[client] = true
-						gB_strafeBlockA[client] = false
+						gB_strafeBlockS[client] = false
 					}
 					gI_syncTick[client]++
 				}
