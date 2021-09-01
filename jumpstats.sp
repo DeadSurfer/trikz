@@ -120,7 +120,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	else
 	{
-		if(!(GetEntityMoveType(client) & MOVETYPE_LADDER))
+		if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && (gB_jumped[client] || gB_ladder[client]))
 		{
 			if(GetEngineTime() - gF_dotTime[client] < 0.4)
 			{
