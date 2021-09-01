@@ -175,6 +175,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_hud", cmd_hud)
 	RegConsoleCmd("sm_mls", cmd_mlstats)
 	RegConsoleCmd("sm_button", cmd_button)
+	RegConsoleCmd("sm_pbutton", cmd_pbutton)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -3283,14 +3284,14 @@ Action cmd_mlstats(int client, int args)
 Action cmd_button(int client, int args)
 {
 	gB_button[client] = !gB_button[client]
-		PrintToChat(client, gB_button[client] ? "Button announcer is on." : "Button announcer is off.")
+	PrintToChat(client, gB_button[client] ? "Button announcer is on." : "Button announcer is off.")
 	return Plugin_Handled
 }
 
 Action cmd_pbutton(int client, int args)
 {
 	gB_pbutton[client] = !gB_pbutton[client]
-		PrintToChat(client, gB_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.")
+	PrintToChat(client, gB_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.")
 	return Plugin_Handled
 }
 
@@ -3347,6 +3348,10 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			cmd_hud(client, 0)
 		else if(StrEqual(sArgs, "mls"))
 			cmd_mlstats(client, 0)
+		else if(StrEqual(sArgs, "button"))
+			cmd_button(client, 0)
+		else if(StrEqual(sArgs, "pbutton"))
+			cmd_pbutton(client, 0)
 	}
 }
 
