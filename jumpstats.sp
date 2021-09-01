@@ -119,6 +119,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
+		if(gB_runboost[client])
+			gB_runboost[client] = false
 	}
 	else
 	{
@@ -386,8 +388,6 @@ Action StartTouchProjectile(int entity, int other)
 
 void TouchClient(int client, int other)
 {
-	if(!other)
-		PrintToServer("yes")
 	if(0 < other <= MaxClients)
 	{
 		float clientOrigin[3]
