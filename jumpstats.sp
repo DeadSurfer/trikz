@@ -270,6 +270,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(GetEntityMoveType(client) & MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
+		ResetFactory(client)
 		gB_ladder[client] = true
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
