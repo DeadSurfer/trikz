@@ -168,7 +168,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
-			Format(gS_style[client], 32, "Backward")
+			if(!StrEqual(gS_style[client], "Backward"))
+				Format(gS_style[client], 32, "Backward")
 		}
 		else if(gF_dot[client] > 0.9) //forward
 		{
@@ -198,7 +199,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
-			Format(gS_style[client], 32, "Forward")
+			if(!StrEqual(gS_style[client], "Forward"))
+				Format(gS_style[client], 32, "Forward")
 		}
 		else //sideways
 		{
@@ -228,7 +230,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					gI_syncTick[client]++
 				}
 			}
-			Format(gS_style[client], 32, "Sideways")
+			if(!StrEqual(gS_style[client], "Sideways"))
+				Format(gS_style[client], 32, "Sideways")
 		}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
