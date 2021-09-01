@@ -49,6 +49,8 @@ bool gB_strafeBlockS[MAXPLAYERS + 1]
 bool gB_strafeBlockW[MAXPLAYERS + 1]
 char gS_style[MAXPLAYERS + 1][32]
 float gF_dotTime[MAXPLAYERS + 1]
+bool gB_runboost[MAXPLAYERS + 1]
+int gI_rbBooster[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -70,6 +72,7 @@ public void OnPluginStart()
 
 public void OnClientPutInServer(int client)
 {
+	SDKHook(client, SDKHook_Touch, TouchClient)
 	gB_jumpstats[client] = false
 }
 
@@ -92,7 +95,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
-		ResetFactory(client)
+		//ResetFactory(client)
 		gB_jumped[client] = true
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
@@ -359,6 +362,7 @@ void ResetFactory(int client)
 	gB_strafeBlockA[client] = false
 	gB_strafeBlockS[client] = false
 	gB_strafeBlockW[client] = false
+	gB_runboost[client] = false
 }
 
 Action StartTouchProjectile(int entity, int other)
@@ -375,5 +379,24 @@ Action StartTouchProjectile(int entity, int other)
 		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2]
 		if(0.0 < delta < 2.0)
 			ResetFactory(other)
+	}
+}
+
+void TouchClient(int client, int other)
+{
+	if(0 < other <= MaxClients)
+	{
+		float clientOrigin[3]
+		GetClientAbsOrigin(client, clientOrigin)
+		float otherOrigin[3]
+		GetClientAbsOrigin(other, otherOrigin)
+		float clientMaxs[3]
+		GetClientMaxs(client, clientMaxs)
+		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
+		if(delta == -124.031250)
+		{
+			gB_runboost[client] = true
+			gI_rbBooster[client] = other
+		}
 	}
 }
