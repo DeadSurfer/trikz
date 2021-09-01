@@ -117,7 +117,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
 		{
 			gF_boostTimeEnd[client] = GetEngineTime()
-			CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
+			if(gF_boostTimeEnd[client] - gF_boostTimeStart[client] < 2.0)
+				CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
 			gB_boostRead[client] = false
 		}
 	}
