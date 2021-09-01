@@ -706,6 +706,7 @@ public void OnClientPutInServer(int client)
 	gB_msg[client] = true
 	gB_hudVel[client] = false
 	gB_mlstats[client] = false
+	ResetFactory(client)
 }
 
 public void OnClientDisconnect(int client)
@@ -723,7 +724,10 @@ public void OnClientDisconnect(int client)
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
 	if(partner)
+	{
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
+		ResetFactory(partner)
+	}
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -1192,9 +1196,7 @@ void Restart(int client)
 			{
 				if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
 				{
-					gB_readyToStart[client] = true
-					gF_Time[client] = 0.0
-					gB_state[client] = false
+					ResetFactory(client)
 					float velNull[3]
 					TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
 					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
@@ -2745,6 +2747,13 @@ void DrawZone(int client, float life)
 	}
 }
 
+void ResetFactory(int client)
+{
+	gB_readyToStart[client] = true
+	gF_Time[client] = 0.0
+	gB_state[client] = false
+}
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	gI_entityFlags[client] = GetEntityFlags(client)
@@ -2763,12 +2772,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		Format(gS_clanTag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second)
 		if(!IsPlayerAlive(client))
 		{
-			gB_readyToStart[client] = true
-			gB_readyToStart[gI_partner[client]] = true
-			gF_Time[client] = 0.0
-			gF_Time[gI_partner[client]] = 0.0
-			gB_state[client] = false
-			gB_state[gI_partner[client]] = false
+			ResetFactory(client)
+			ResetFactory(gI_partner[client])
 		}
 	}
 	if(gI_skyFrame[client])
@@ -3491,11 +3496,11 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 
 Action timer_clantag(Handle timer, int client)
 {
-	if(IsClientInGame(client) && gB_state[client] && gI_partner[client])
+	if(IsClientInGame(client) && gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][1])
 	}
-	else if(IsClientInGame(client) && (gB_state[client] || !gB_state[client]) && !gI_partner[client])
+	else if(IsClientInGame(client) && !gB_state[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][0])
 		KillTimer(gH_timerClanTag[client])
