@@ -120,8 +120,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
 		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-		PrintToServer("%i", groundEntity)
-		if(gB_runboost[client])
+		if(!groundEntity && gB_runboost[client])
 			gB_runboost[client] = false
 	}
 	else
