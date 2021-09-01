@@ -110,7 +110,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gB_boostRead[client] = true
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
 			gF_vel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
-			gB_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
+			gB_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucked"))
 			gF_angles[client][0] = angles[0]
 			gF_angles[client][1] = angles[1]
 		}
