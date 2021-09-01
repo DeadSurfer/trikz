@@ -3491,11 +3491,11 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 
 Action timer_clantag(Handle timer, int client)
 {
-	if(IsClientInGame(client) && gB_state[client])
+	if(IsClientInGame(client) && gB_state[client] && gI_partner[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][1])
 	}
-	else if(IsClientInGame(client) && (gB_state[client] || !gI_partner[client]))
+	else if(IsClientInGame(client) && (gB_state[client] || !gB_state[client]) && !gI_partner[client])
 	{
 		CS_SetClientClanTag(client, gS_clanTag[client][0])
 		KillTimer(gH_timerClanTag[client])
