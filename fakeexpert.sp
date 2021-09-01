@@ -1072,6 +1072,8 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					Color(param1, false)
 					gI_partner[param1] = 0
 					gI_partner[partner] = 0
+					ResetFactory(param1)
+					ResetFactory(partner)
 					PrintToChat(param1, "Partnership is canceled with %N", partner)
 					PrintToChat(partner, "Partnership is canceled by %N", param1)
 				}
