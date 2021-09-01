@@ -120,7 +120,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gI_tick[client] < 30)
 			gI_tick[client]++
 		if(gB_runboost[client])
+		{
 			gB_runboost[client] = false
+			PrintToServer("rb")
+		}
 	}
 	else
 	{
