@@ -248,6 +248,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		float sync = -1.0
 		sync += float(gI_syncTick[client])
+		if(sync == -1.0)
+			sync = 0.0
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		if(gB_jumpstats[client])
@@ -281,12 +283,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(gB_strafeFirst[client])
 		{
 			if(mouse[0] && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
+			{
 				gI_strafeCount[client]++
+				gI_syncTick[client]++
+			}
 			gB_strafeFirst[client] = false
 		}
 		if(mouse[0] && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
 		GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT))
+		{
 			gI_strafeCount[client]++
+			gI_syncTick[client]++
+		}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
@@ -296,9 +304,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
 		{
 			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
+			float sync = -1.0
+			sync += float(gI_syncTick[client])
+			if(sync == -1.0)
+				sync = 0.0
+			sync /= float(gI_tickAir[client])
+			sync *= 100.0
 			if(gB_jumpstats[client])
 				if(190.0 > distance >= 22.0)
-					PrintToChat(client, "[SM] Ladder: %.1f units, Strafes: %i", distance, gI_strafeCount[client])
+					PrintToChat(client, "[SM] Ladder: %.1f units, Strafes: %i, Sync: %.1f", distance, gI_strafeCount[client], sync)
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && IsClientObserver(i))
@@ -307,7 +321,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 						if(190.0 > distance >= 22.0)
-							PrintToChat(i, "[SM] Ladder: %.1f units, Strafes: %i", distance, gI_strafeCount[client])
+							PrintToChat(i, "[SM] Ladder: %.1f units, Strafes: %i, Sync: %.1f", distance, gI_strafeCount[client], sync)
 				}
 			}
 		}
