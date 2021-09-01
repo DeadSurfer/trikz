@@ -261,8 +261,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync /= float(gI_tickAir[client])
 		sync *= 100.0
 		if(gB_jumpstats[client])
+		{
 			if(1000.0 > distance >= 230.0 && pre < 280.0)
+			{
 				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+				if(gB_runboost[client])
+					PrintToChat(gI_rbBooster[client], "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+			}
+		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
