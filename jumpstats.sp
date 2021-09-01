@@ -249,7 +249,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		char sZLevel[9]
 		if(origin[2] - gF_origin[client][2] > 1.475586)
 			Format(sZLevel, 9, "[Rise] ")
-		if(origin[2] - gF_origin[client][2] < -1,285155) //0.017089 without rb
+		if(origin[2] - gF_origin[client][2] < -1.285155) //0.017089 without rb
 			Format(sZLevel, 9, "[Fall] ")
 		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
