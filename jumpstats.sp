@@ -98,9 +98,15 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gB_jumped[client] = true
 		float origin[3]
 		if(gB_runboost[client])
+		{
 			GetClientAbsOrigin(gI_rbBooster[client], origin)
+			PrintToServer("%i %N", gI_rbBooster[client], gI_rbBooster[client])
+		}
 		else
+		{
 			GetClientAbsOrigin(client, origin)
+			PrintToServer("%i %N", client, client)
+		}
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
