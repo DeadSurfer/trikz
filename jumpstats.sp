@@ -117,7 +117,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	else
 	{
-		if(GetEntityMoveType(client) != MOVETYPE_LADDER)
+		if(!(GetEntityMoveType(client) & MOVETYPE_LADDER))
 		{
 			if(GetEngineTime() - gF_dotTime[client] < 0.4)
 			{
@@ -268,7 +268,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		ResetFactory(client)
 	}
-	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
+	if(GetEntityMoveType(client) & MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
 		gB_ladder[client] = true
 		float origin[3]
@@ -280,20 +280,31 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
 	{
-		if(gB_strafeFirst[client])
+		if(mouse[0] > 0)
 		{
-			if(mouse[0] && (buttons & IN_FORWARD || buttons & IN_BACK || buttons & IN_MOVELEFT || buttons & IN_MOVERIGHT))
+			if(buttons & IN_MOVERIGHT)
 			{
-				gI_strafeCount[client]++
+				if(!gB_strafeBlockD[client])
+				{
+					gI_strafeCount[client]++
+					gB_strafeBlockD[client] = true
+					gB_strafeBlockA[client] = false
+				}
 				gI_syncTick[client]++
 			}
-			gB_strafeFirst[client] = false
 		}
-		if(mouse[0] && (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK ||
-		GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT || GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT))
+		else
 		{
-			gI_strafeCount[client]++
-			gI_syncTick[client]++
+			if(buttons & IN_MOVELEFT)
+			{
+				if(!gB_strafeBlockA[client])
+				{
+					gI_strafeCount[client]++
+					gB_strafeBlockD[client] = false
+					gB_strafeBlockA[client] = true
+				}
+				gI_syncTick[client]++
+			}
 		}
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
