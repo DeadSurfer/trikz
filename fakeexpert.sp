@@ -700,7 +700,7 @@ public void OnClientPutInServer(int client)
 	}
 	CancelClientMenu(client)
 	gB_block[client] = true
-	gF_Time[client] = 0.0
+	//gF_Time[client] = 0.0
 	if(!gB_isDevmap)
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
@@ -2752,7 +2752,7 @@ void DrawZone(int client, float life)
 void ResetFactory(int client)
 {
 	gB_readyToStart[client] = true
-	gF_Time[client] = 0.0
+	//gF_Time[client] = 0.0
 	gB_state[client] = false
 }
 
