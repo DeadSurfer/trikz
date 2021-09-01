@@ -136,6 +136,8 @@ char gS_mlsPrint[MAXPLAYERS + 1][100][256]
 int gI_mlsBooster[MAXPLAYERS + 1]
 bool gB_mlstats[MAXPLAYERS + 1]
 float gF_mlsDistance[MAXPLAYERS + 1][2][3]
+bool gB_button[MAXPLAYERS + 1]
+bool gB_pbutton[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -172,6 +174,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_spec", cmd_spec)
 	RegConsoleCmd("sm_hud", cmd_hud)
 	RegConsoleCmd("sm_mls", cmd_mlstats)
+	RegConsoleCmd("sm_button", cmd_button)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
@@ -193,6 +196,7 @@ public void OnPluginStart()
 	AddNormalSoundHook(SoundHook)
 	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
+	HookEntityOutput("func_button", "OnPressed", event_button)
 	//HookEvent("replay_saved", event_replaysaved)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
@@ -483,6 +487,18 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 			continue
 		}
 	}*/
+}
+
+void event_button(const char[] output, int caller, int activator, float delay)
+{
+	if(0 < activator <= MaxClients && IsClientInGame(activator) && GetClientButtons(activator) & IN_USE)
+	{
+		if(gB_button[activator])
+			PrintToChat(activator, "You have pressed a button.")
+		
+		if(gB_pbutton[activator] > 2 && gI_button[activator])
+			PrintToChat(gI_partner[activator], "Your partner have pressed a button.")
+	}
 }
 
 /*Action event_replaysaved(Event event, const char[] name, bool dontBroadcast)
@@ -3261,6 +3277,20 @@ Action cmd_mlstats(int client, int args)
 {
 	gB_mlstats[client] = !gB_mlstats[client]
 	PrintToChat(client, gB_mlstats[client] ? "ML stats is on." : "ML stats is off.")
+	return Plugin_Handled
+}
+
+Action cmd_button(int client, int args)
+{
+	gB_button[client] = !gB_button[client]
+		PrintToChat(client, gB_button[client] ? "Button announcer is on." : "Button announcer is off.")
+	return Plugin_Handled
+}
+
+Action cmd_pbutton(int client, int args)
+{
+	gB_pbutton[client] = !gB_pbutton[client]
+		PrintToChat(client, gB_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.")
 	return Plugin_Handled
 }
 
