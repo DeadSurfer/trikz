@@ -886,7 +886,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 bool TraceRayDontHitSelf(int entity, int mask, any data)
 {
-	//return data != entity && !(0 < entity <= MaxClients)
+	return data != entity
 }
 
 void SDKBoostFix(int client)
