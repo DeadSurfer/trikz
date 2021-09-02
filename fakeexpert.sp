@@ -830,7 +830,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
-				//if(velBooster[2] > 0.0)
+				if(velBooster[2] > 0.0)
 				{
 					float velFlyer[3]
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
@@ -849,6 +849,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614 (0.509765 -114.006614)
 					//PrintToServer("%f %f", GetEngineTime() - gF_skyTime[other], velFlyer[2])
 					//gB_skyTest[other] = false
+					PrintToServer("%f %f", originBooster[2], originFlyer[2])
 					if(GetEngineTime() - gF_skyTime[other] > 0.509765)
 					{
 						gB_skyStep[other] = true
