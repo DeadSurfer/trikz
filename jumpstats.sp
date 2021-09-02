@@ -52,6 +52,7 @@ float gF_dotTime[MAXPLAYERS + 1]
 bool gB_runboost[MAXPLAYERS + 1]
 int gI_rbBooster[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
+float gF_boostTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -395,7 +396,10 @@ Action StartTouchProjectile(int entity, int other)
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", entityMaxs)
 		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2]
 		if(0.0 < delta < 2.0)
+		{
 			ResetFactory(other)
+			gF_boostTime[other] = GetEngineTime()
+		}
 	}
 }
 
@@ -420,7 +424,7 @@ void TouchClient(int client, int other)
 
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND))
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
@@ -431,7 +435,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK))
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
