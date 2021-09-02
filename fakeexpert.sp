@@ -507,6 +507,7 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
+	PrintToServer("%i", groundEntity)
 	if(!groundEntity)
 		gF_skyTime[client] = GetEngineTime()
 }
