@@ -446,8 +446,10 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					velBooster[2] *= 3.0
 					PrintToServer("Sky boost: %.1f", velFlyer[2])
 					if(velFlyer[2] > -300.0)
+					{
 						if(velBooster[2] > 750.0)
 							velFlyer[2] = 750.0
+					}
 					else
 						if(velBooster[2] > 800.0)
 							velFlyer[2] = 800.0
