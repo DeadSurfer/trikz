@@ -3500,17 +3500,23 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 
 Action timer_clantag(Handle timer, int client)
 {
-	if(IsClientInGame(client) && gB_state[client])
+	if(0 < client <= MaxClients)
 	{
-		CS_SetClientClanTag(client, gS_clanTag[client][1])
+		if(IsClientInGame(client) && gB_state[client])
+		{
+			CS_SetClientClanTag(client, gS_clanTag[client][1])
+		}
+		else if(IsClientInGame(client) && !gB_state[client])
+		{
+			CS_SetClientClanTag(client, gS_clanTag[client][0])
+			KillTimer(gH_timerClanTag[client])
+		}
+		else if(!IsClientInGame(client))
+			KillTimer(gH_timerClanTag[client])
 	}
-	else if(IsClientInGame(client) && !gB_state[client])
-	{
-		CS_SetClientClanTag(client, gS_clanTag[client][0])
-		KillTimer(gH_timerClanTag[client])
-	}
-	else if(!IsClientInGame(client))
-		KillTimer(gH_timerClanTag[client])
+	else if(!client)
+		return Plugin_Stop
+	return Plugin_Continue
 }
 
 void MLStats(int client, bool ground = false)
