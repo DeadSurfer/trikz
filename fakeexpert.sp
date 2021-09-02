@@ -845,7 +845,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						if(velBooster[2] > 800.0)
 							gF_skyVel[other][2] = 800.0
 					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614
-					PrintToServer("%f", GetEngineTime() - gF_skyTime[other])
+					PrintToServer("%f %f", GetEngineTime() - gF_skyTime[other], velFlyer[2])
 					//if(GetEngineTime() - gF_skyTime[other] > 0.1)
 					{
 						gB_skyStep[other] = true
