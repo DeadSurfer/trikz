@@ -854,7 +854,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					{
 						float vPlane[3]
 						TR_GetPlaneNormal(null, vPlane)
-						PrintToServer("yes")
+						PrintToServer("yes %f", vPlane[2])
 						if(0.7 <= vPlane[2] < 1.0)
 						{
 							float vLast[3]
