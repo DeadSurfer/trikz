@@ -138,6 +138,7 @@ bool gB_mlstats[MAXPLAYERS + 1]
 float gF_mlsDistance[MAXPLAYERS + 1][2][3]
 bool gB_button[MAXPLAYERS + 1]
 bool gB_pbutton[MAXPLAYERS + 1]
+float gF_skyTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -198,6 +199,7 @@ public void OnPluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
 	HookEntityOutput("func_button", "OnPressed", event_button)
+	HookEvent("player_jump", event_playerjump)
 	//HookEvent("replay_saved", event_replaysaved)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
@@ -500,6 +502,15 @@ void event_button(const char[] output, int caller, int activator, float delay)
 			PrintToChat(gI_partner[activator], "Your partner have pressed a button.")
 	}
 }
+
+Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
+	if(!groundEntity)
+		gF_skyTime[client] = GetEngineTime()
+}
+
 
 /*Action event_replaysaved(Event event, const char[] name, bool dontBroadcast)
 {
@@ -832,61 +843,17 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					else
 						if(velBooster[2] > 800.0)
 							gF_skyVel[other][2] = 800.0
-					if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614
+					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614
+					PrintToServer("%f", GetEngineTime() - gF_skyTime[client])
+					//if(GetEngineTime() - gF_skyTime[client] > 0.1)
 					{
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
-					}
-					float vPos[3]
-					GetClientAbsOrigin(other, vPos)
-					float vMins[3]
-					GetEntPropVector(other, Prop_Send, "m_vecMins", vMins)
-					float vMaxs[3]
-					GetEntPropVector(other, Prop_Send, "m_vecMaxs", vMaxs)
-					float vEndPos[3]
-					vEndPos[0] = vPos[0]
-					vEndPos[1] = vPos[1]
-					ConVar CV_maxvelocity = FindConVar("sv_maxvelocity")
-					vEndPos[2] = vPos[2] - float(CV_maxvelocity.IntValue)
-					PrintToServer("%f %i", float(CV_maxvelocity.IntValue), CV_maxvelocity.IntValue)
-					TR_TraceHullFilter(vPos, vEndPos, vMins, vMaxs, MASK_ALL, TraceRayDontHitSelf, other)
-					if(TR_DidHit())
-					{
-						float vPlane[3]
-						TR_GetPlaneNormal(null, vPlane)
-						PrintToServer("yes %f", vPlane[2])
-						if(0.7 <= vPlane[2] < 1.0)
-						{
-							float vLast[3]
-							GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vLast)
-							ConVar CV_gravity = FindConVar("sv_gravity")
-							vLast[2] -= float(CV_gravity.IntValue) * GetTickInterval() * 0.5
-							PrintToServer("%f %i", float(CV_gravity.IntValue), CV_gravity.IntValue)
-							float fBackOff = GetVectorDotProduct(vLast, vPlane)
-							float vVel[3]
-							for(int i = 0; i <= 1; i++)
-								vVel[i] = vLast[i] - (vPlane[i] * fBackOff)
-							float fAdjust = GetVectorDotProduct(vVel, vPlane)
-							if(fAdjust < 0.0)
-								for(int i = 0; i <= 1; i++)
-									vVel[i] -= vPlane[i] * fAdjust
-							vVel[2] = 0.0
-							vLast[2] = 0.0
-							if(GetVectorLength(vVel) > GetVectorLength(vLast))
-							{
-								PrintToServer("%f", vVel[2])
-							}
-						}
 					}
 				}
 			}
 		}
 	}
-}
-
-bool TraceRayDontHitSelf(int entity, int mask, any data)
-{
-	return data != entity
 }
 
 void SDKBoostFix(int client)
