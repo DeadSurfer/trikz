@@ -199,7 +199,7 @@ public void OnPluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
 	HookEntityOutput("func_button", "OnPressed", event_button)
-	HookEvent("player_jump", event_playerjump, EventHookMode_Pre)
+	//HookEvent("player_jump", event_playerjump, EventHookMode_Pre)
 	//HookEvent("replay_saved", event_replaysaved)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
@@ -503,14 +503,14 @@ void event_button(const char[] output, int caller, int activator, float delay)
 	}
 }
 
-Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
+/*Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 	PrintToServer("%i", groundEntity)
 	if(!groundEntity)
 		gF_skyTime[client] = GetEngineTime()
-}
+}*/
 
 
 /*Action event_replaysaved(Event event, const char[] name, bool dontBroadcast)
@@ -2957,9 +2957,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
+		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 		if(gI_mlsCount[client])
 		{
-			int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
+			//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 			char sClass[32]
 			if(IsValidEntity(groundEntity))
 				GetEntityClassname(groundEntity, sClass, 32)
@@ -2970,6 +2971,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_mlsCount[client] = 0
 			}
 		}
+		//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
+		//PrintToServer("%i", groundEntity)
+		if(!groundEntity)
+			gF_skyTime[client] = GetEngineTime()
 	}
 	int other = Stuck(client)
 	if(0 < other <= MaxClients && IsPlayerAlive(client) && gB_block[other])
