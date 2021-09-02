@@ -2812,9 +2812,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			float vPos[3]
 			GetClientAbsOrigin(client, vPos)
 			float vMins[3]
-			GetEntPropVector(client, Prop_Data, "m_vecMins", vMins)
+			GetEntPropVector(client, Prop_Send, "m_vecMins", vMins)
 			float vMaxs[3]
-			GetEntPropVector(client, Prop_Data, "m_vecMaxs", vMaxs)
+			GetEntPropVector(client, Prop_Send, "m_vecMaxs", vMaxs)
 			float vEndPos[3]
 			vEndPos[0] = vPos[0]
 			vEndPos[1] = vPos[1]
