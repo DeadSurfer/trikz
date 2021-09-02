@@ -867,8 +867,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 							if(fAdjust < 0.0)
 								for(int i = 0; i <= 1; i++)
 									vVel[i] -= vPlane[i] * fAdjust
-							vVel[2] = 0.0
-							vLast[2] = 0.0
+							//vVel[2] = 0.0
+							//vLast[2] = 0.0
 							if(GetVectorLength(vVel, false) > GetVectorLength(vLast, false))
 							{
 								PrintToServer("%f", vVel[2])
