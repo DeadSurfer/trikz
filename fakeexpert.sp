@@ -67,7 +67,7 @@ bool gB_skyStep[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
-int gI_skyFrame[MAXPLAYERS + 1]
+//int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
