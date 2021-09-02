@@ -121,7 +121,10 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(buttons & IN_JUMP)
+	{
 		gI_entityButtons[client] = 1
+		PrintToServer("yes")
+	}
 	else
 		gI_entityButtons[client] = 0
 	if(GetEntityFlags(client) & FL_ONGROUND)
