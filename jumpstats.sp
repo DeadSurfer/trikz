@@ -51,7 +51,6 @@ char gS_style[MAXPLAYERS + 1][32]
 float gF_dotTime[MAXPLAYERS + 1]
 bool gB_runboost[MAXPLAYERS + 1]
 int gI_rbBooster[MAXPLAYERS + 1]
-int gI_entityFlags[MAXPLAYERS + 1]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
@@ -121,7 +120,6 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	gI_entityFlags[client] = GetEntityFlags(client)
 	gI_entityButtons[client] = buttons
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
@@ -428,7 +426,7 @@ void TouchClient(int client, int other)
 
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
@@ -439,40 +437,36 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP)
-			if(!(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] == IN_JUMP)
+			float velBooster[3]
+			GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
+			if(velBooster[2] > 0.0)
 			{
-				float velBooster[3]
-				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
-				if(velBooster[2] > 0.0)
+				float velFlyer[3]
+				GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
+				velBooster[2] *= 3.0
+				if(velFlyer[2] > -700.0)
 				{
-					float velFlyer[3]
-					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
-					velBooster[2] *= 3.0
-					if(velFlyer[2] > -700.0)
+					if(velBooster[2] > 750.0)
+						velFlyer[2] = 750.0
+				}
+				else
+					if(velBooster[2] > 800.0)
+						velFlyer[2] = 800.0
+				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
+				{
+					ConVar CV_gravity = FindConVar("sv_gravity")
+					if(gB_jumpstats[client])
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
+					if(gB_jumpstats[other])
+						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+					for(int i = 1; i <= MaxClients; i++)
 					{
-						if(velBooster[2] > 750.0)
-							velFlyer[2] = 750.0
-					}
-					else
-						if(velBooster[2] > 800.0)
-							velFlyer[2] = 800.0
-					if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
-					{
-						ConVar CV_gravity = FindConVar("sv_gravity")
-						if(gB_jumpstats[client])
-							PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
-						if(gB_jumpstats[other])
-							PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
-						for(int i = 1; i <= MaxClients; i++)
+						if(IsClientInGame(i) && IsClientObserver(i))
 						{
-							if(IsClientInGame(i) && IsClientObserver(i))
-							{
-								int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-								int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-								if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-									PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
-							}
+							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+							if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
 						}
 					}
 				}
