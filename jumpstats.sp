@@ -443,7 +443,6 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				{
 					float velFlyer[3]
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
-					PrintToServer("Sky boost: %.1f", velFlyer[2])
 					velBooster[2] *= 3.0
 					if(FloatAbs(velFlyer[2]) < 300.0)
 						if(velBooster[2] > 750.0)
@@ -453,7 +452,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 							velFlyer[2] = 800.0
 					if(FloatAbs(velFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
 					{
-						PrintToServer("Sky boost: %.1f", velFlyer[2])
+						PrintToServer("Sky boost: %.1f", FloatAbs(velFlyer[2]))
 					}
 				}
 			}
