@@ -837,7 +837,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 					}
-					float vPos[3]
+					/*float vPos[3]
 					GetClientAbsOrigin(other, vPos)
 					float vMins[3]
 					GetEntPropVector(other, Prop_Send, "m_vecMins", vMins)
@@ -874,17 +874,17 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 								PrintToServer("%f", vVel[2])
 							}
 						}
-					}
+					}*/
 				}
 			}
 		}
 	}
 }
 
-bool TraceRayDontHitSelf(int entity, int mask, any data)
-{
+//bool TraceRayDontHitSelf(int entity, int mask, any data)
+//{
 	//return data != entity && !(0 < entity <= MaxClients)
-}
+//}
 
 void SDKBoostFix(int client)
 {
