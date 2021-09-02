@@ -853,6 +853,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					{
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 					}
 				}
 			}
@@ -2819,7 +2820,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(buttons & IN_JUMP)
 		{
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
+			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 			gB_skyStep[client] = false
 			gI_skyFrame[client] = 0
 		}
