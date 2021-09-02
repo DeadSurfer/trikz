@@ -685,7 +685,8 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	//SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	SDKHook(client, SDKHook_Touch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
