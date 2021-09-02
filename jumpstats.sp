@@ -442,7 +442,8 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				if(velBooster[2] > 0.0)
 				{
 					float velFlyer[3]
-					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)			
+					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
+					PrintToServer("Sky boost: %.1f", velFlyer[2])
 					velFlyer[2] = velBooster[2] *= 3.0
 					if(FloatAbs(velFlyer[2]) < 300.0)
 						if(velBooster[2] > 750.0)
