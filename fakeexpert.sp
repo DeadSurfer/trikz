@@ -1366,7 +1366,7 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 	if(results.HasResults == false)
 		PrintToServer("All checkpoints are deleted on current map.")
 	else
-		PrintToServer("No checkpoints to deleted on current map.")
+		PrintToServer("No checkpoints to delete on current map.")
 }
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
