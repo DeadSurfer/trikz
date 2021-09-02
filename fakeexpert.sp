@@ -825,8 +825,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
 			if(gB_skyTest[other])
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
@@ -846,10 +846,10 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					else
 						if(velBooster[2] > 800.0)
 							gF_skyVel[other][2] = 800.0
-					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614
-					PrintToServer("%f %f", GetEngineTime() - gF_skyTime[other], velFlyer[2])
-					gB_skyTest[other] = false
-					//if(GetEngineTime() - gF_skyTime[other] > 0.1)
+					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614 (0.509765 -114.006614)
+					//PrintToServer("%f %f", GetEngineTime() - gF_skyTime[other], velFlyer[2])
+					//gB_skyTest[other] = false
+					if(GetEngineTime() - gF_skyTime[other] > 0.509765)
 					{
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
