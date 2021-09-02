@@ -51,6 +51,7 @@ char gS_style[MAXPLAYERS + 1][32]
 float gF_dotTime[MAXPLAYERS + 1]
 bool gB_runboost[MAXPLAYERS + 1]
 int gI_rbBooster[MAXPLAYERS + 1]
+int gI_entityFlags[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -73,6 +74,7 @@ public void OnPluginStart()
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_Touch, TouchClient)
+	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
 	gB_jumpstats[client] = false
 }
 
@@ -115,6 +117,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
+	gI_entityFlags[client] = GetEntityFlags(client)
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
 		if(gI_tick[client] < 30)
@@ -411,6 +414,44 @@ void TouchClient(int client, int other)
 		{
 			gB_runboost[client] = true
 			gI_rbBooster[client] = other
+		}
+	}
+}
+
+void SDKSkyFix(int client, int other) //client = booster; other = flyer
+{
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND))
+	{
+		float originBooster[3]
+		GetClientAbsOrigin(client, originBooster)
+		float originFlyer[3]
+		GetClientAbsOrigin(other, originFlyer)
+		float maxs[3]
+		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+		float delta = originFlyer[2] - originBooster[2] - maxs[2]
+		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		{
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
+			{
+				float velBooster[3]
+				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
+				if(velBooster[2] > 0.0)
+				{
+					float velFlyer[3]
+					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)			
+					velBooster[2] *= 3.0
+					if(FloatAbs(velFlyer[2]) < 300.0)
+						if(velBooster[2] > 750.0)
+							velFlyer[2] = 750.0
+					if(FloatAbs(velFlyer[2]) >= 300.0)
+						if(velBooster[2] > 800.0)
+							velFlyer[2] = 800.0
+					if(FloatAbs(velFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
+					{
+						PrintToServer("Sky boost: %.1f", velFlyer[2])
+					}
+				}
+			}
 		}
 	}
 }
