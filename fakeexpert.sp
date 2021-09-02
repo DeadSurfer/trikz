@@ -870,7 +870,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 								vVel[i] -= vPlane[i] * fAdjust
 						vVel[2] = 0.0
 						vLast[2] = 0.0
-						if(GetVectorLength(vVel) > GetVectorLength(vLast))
+						if(GetVectorLength(vVel, false) > GetVectorLength(vLast, false))
 						{
 							PrintToServer("%f", vVel[2])
 						}
@@ -883,7 +883,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 bool TraceRayDontHitSelf(int entity, int mask, any data)
 {
-	return data != entity && !(0 < entity <= MaxClients)
+	//return data != entity && !(0 < entity <= MaxClients)
 }
 
 void SDKBoostFix(int client)
