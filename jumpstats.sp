@@ -456,6 +456,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					else
 						if(velBooster[2] > 800.0)
 							velFlyer[2] = 800.0
+					PrintToServer("yes")
 					if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
 					{
 						ConVar CV_gravity = FindConVar("sv_gravity")
