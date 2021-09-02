@@ -814,7 +814,8 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
+	//if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
@@ -826,7 +827,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
-			if(!gB_skyTest[client] && gB_skyTest[other])
+			if(gB_skyTest[other])
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
