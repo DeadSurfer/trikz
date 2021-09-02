@@ -140,6 +140,7 @@ bool gB_button[MAXPLAYERS + 1]
 bool gB_pbutton[MAXPLAYERS + 1]
 float gF_skyTime[MAXPLAYERS + 1]
 bool gB_skyTest[MAXPLAYERS + 1]
+float gF_skyOrigin[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
@@ -200,7 +201,7 @@ public void OnPluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
 	HookEntityOutput("func_button", "OnPressed", event_button)
-	//HookEvent("player_jump", event_playerjump, EventHookMode_Pre)
+	HookEvent("player_jump", event_playerjump)
 	//HookEvent("replay_saved", event_replaysaved)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
@@ -504,14 +505,11 @@ void event_button(const char[] output, int caller, int activator, float delay)
 	}
 }
 
-/*Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
+Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-	PrintToServer("%i", groundEntity)
-	if(!groundEntity)
-		gF_skyTime[client] = GetEngineTime()
-}*/
+	GetClientAbsOrigin(client, gF_skyOrigin[client])
+}
 
 
 /*Action event_replaysaved(Event event, const char[] name, bool dontBroadcast)
@@ -825,12 +823,12 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			//if(gB_skyTest[other])
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
+			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
+			if(gB_skyTest[other])
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
-				if(velBooster[2] > 0.0)
+				//if(velBooster[2] > 0.0)
 				{
 					float velFlyer[3]
 					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
@@ -849,7 +847,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614 (0.509765 -114.006614)
 					//PrintToServer("%f %f", GetEngineTime() - gF_skyTime[other], velFlyer[2])
 					//gB_skyTest[other] = false
-					//PrintToServer("%f %f", originBooster[2], originFlyer[2])
+					PrintToServer("%f %f", gF_skyOrigin[client][2], gF_skyOrigin[other][2])
 					if(GetEngineTime() - gF_skyTime[other] > 0.509765)
 					{
 						gB_skyStep[other] = true
