@@ -845,17 +845,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					else
 						if(velBooster[2] > 800.0)
 							gF_skyVel[other][2] = 800.0
-					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614 (0.509765 -114.006614)
-					//PrintToServer("%f %f", GetEngineTime() - gF_skyTime[other], velFlyer[2])
-					//gB_skyTest[other] = false
-					//PrintToServer("%f %f", gF_skyOrigin[client][2], gF_skyOrigin[other][2])
-					//if(GetEngineTime() - gF_skyTime[other] > 0.509765)
 					if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
-					{
 						gB_skyStep[other] = true
-						//gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
-						//RequestFrame(frame_skyBoost, other)
-					}
 				}
 			}
 		}
@@ -2817,22 +2808,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			ResetFactory(gI_partner[client])
 		}
 	}
-	/*if(gI_skyFrame[client])
-		gI_skyFrame[client]++
-	if(gI_skyFrame[client] == 5)
-	{
-		gI_skyFrame[client] = 0
-		gB_skyStep[client] = false
-	}*/
-	//if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetEngineTime() - gF_boostTime[client] > 0.15)
 	if(gB_skyStep[client])
 	{
-		//if(buttons & IN_JUMP)
-		{
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
-			gB_skyStep[client] = false
-			//gI_skyFrame[client] = 0
-		}
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
+		gB_skyStep[client] = false
 	}
 	if(gI_boost[client])
 	{
