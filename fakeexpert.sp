@@ -3506,15 +3506,15 @@ Action timer_clantag(Handle timer, int client)
 		{
 			CS_SetClientClanTag(client, gS_clanTag[client][1])
 		}
-		else if(IsClientInGame(client) && !gB_state[client])
+		if(IsClientInGame(client) && !gB_state[client])
 		{
 			CS_SetClientClanTag(client, gS_clanTag[client][0])
 			KillTimer(gH_timerClanTag[client])
 		}
-		else if(!IsClientInGame(client))
+		if(!IsClientInGame(client))
 			KillTimer(gH_timerClanTag[client])
 	}
-	else if(!client)
+	if(!client)
 		return Plugin_Stop
 	return Plugin_Continue
 }
