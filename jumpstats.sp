@@ -122,6 +122,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if(buttons & IN_JUMP)
 		gI_entityButtons[client] = IN_JUMP
+	else
+		gI_entityButtons[client] = 0
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
 		if(gI_tick[client] < 30)
@@ -427,8 +429,6 @@ void TouchClient(int client, int other)
 
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(gI_entityButtons[other] & IN_JUMP)
-		PrintToServer("yes")
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
