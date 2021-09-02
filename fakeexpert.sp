@@ -847,7 +847,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				float vEndPos[3]
 				vEndPos[0] = vPos[0]
 				vEndPos[1] = vPos[1]
-				ConVar CV_gravity = FindConVar("sv_maxvelocity")
+				ConVar CV_maxvelocity = FindConVar("sv_maxvelocity")
 				vEndPos[2] = vPos[2] - CV_maxvelocity.FloatValue
 				TR_TraceHullFilter(vPos, vEndPos, vMins, vMaxs, MASK_PLAYERSOLID, TraceRayDontHitSelf, other)
 				if(TR_DidHit())
@@ -858,7 +858,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					{
 						float vLast[3]
 						GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vLast)
-						ConVar CV_gravity = FindConVar("sv_maxvelocity")
+						ConVar CV_gravity = FindConVar("sv_gravity")
 						vLast[2] -= CV_gravity.FloatValue * GetTickInterval() * 0.5
 						float fBackOff = GetVectorDotProduct(vLast, vPlane)
 						float vVel[3] = 0.0
