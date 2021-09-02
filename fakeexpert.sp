@@ -837,7 +837,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 					}
-					/*float vPos[3]
+					float vPos[3]
 					GetClientAbsOrigin(other, vPos)
 					float vMins[3]
 					GetEntPropVector(other, Prop_Send, "m_vecMins", vMins)
@@ -847,7 +847,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					vEndPos[0] = vPos[0]
 					vEndPos[1] = vPos[1]
 					ConVar CV_maxvelocity = FindConVar("sv_maxvelocity")
-					vEndPos[2] = vPos[2] - CV_maxvelocity.FloatValue
+					vEndPos[2] = vPos[2] - float(CV_maxvelocity.IntValue)
 					TR_TraceHullFilter(vPos, vEndPos, vMins, vMaxs, 81931, TraceRayDontHitSelf, other)
 					if(TR_DidHit())
 					{
@@ -858,7 +858,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 							float vLast[3]
 							GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vLast)
 							ConVar CV_gravity = FindConVar("sv_gravity")
-							vLast[2] -= CV_gravity.FloatValue * GetTickInterval() * 0.5
+							vLast[2] -= float(CV_gravity.IntValue) * GetTickInterval() * 0.5
 							float fBackOff = GetVectorDotProduct(vLast, vPlane)
 							float vVel[3]
 							for(int i = 0; i <= 1; i++)
@@ -869,22 +869,22 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 									vVel[i] -= vPlane[i] * fAdjust
 							vVel[2] = 0.0
 							vLast[2] = 0.0
-							if(GetVectorLength(vVel, false) > GetVectorLength(vLast, false))
+							if(GetVectorLength(vVel) > GetVectorLength(vLast))
 							{
 								PrintToServer("%f", vVel[2])
 							}
 						}
-					}*/
+					}
 				}
 			}
 		}
 	}
 }
 
-//bool TraceRayDontHitSelf(int entity, int mask, any data)
-//{
+bool TraceRayDontHitSelf(int entity, int mask, any data)
+{
 	//return data != entity && !(0 < entity <= MaxClients)
-//}
+}
 
 void SDKBoostFix(int client)
 {
