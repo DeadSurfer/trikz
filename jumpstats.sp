@@ -118,117 +118,6 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	GetClientAbsOrigin(client, gF_skyOrigin[client])
 }
 
-public void OnEntityCreated(int entity, const char[] classname)
-{
-	if(StrContains(classname, "projectile") != -1)
-		SDKHook(entity, SDKHook_StartTouch, StartTouchProjectile)
-}
-
-void ResetFactory(int client)
-{
-	gB_jumped[client] = false
-	gB_ladder[client] = false
-	gI_strafeCount[client] = 0
-	gI_syncTick[client] = 0
-	gI_tick[client] = 0
-	gI_tickAir[client] = 0
-	gB_strafeBlockD[client] = false
-	gB_strafeBlockA[client] = false
-	gB_strafeBlockS[client] = false
-	gB_strafeBlockW[client] = false
-	gB_runboost[client] = false
-}
-
-Action StartTouchProjectile(int entity, int other)
-{
-	if(0 < other <= MaxClients && (gB_jumped[other] || gB_ladder[other]))
-	{
-		//https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L220-L231
-		float entityOrigin[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityOrigin)
-		float otherOrigin[3]
-		GetClientAbsOrigin(other, otherOrigin)
-		float entityMaxs[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", entityMaxs)
-		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2]
-		if(0.0 < delta < 2.0)
-		{
-			ResetFactory(other)
-			gF_boostTime[other] = GetEngineTime()
-		}
-	}
-}
-
-void TouchClient(int client, int other)
-{
-	if(0 < other <= MaxClients)
-	{
-		float clientOrigin[3]
-		GetClientAbsOrigin(client, clientOrigin)
-		float otherOrigin[3]
-		GetClientAbsOrigin(other, otherOrigin)
-		float clientMaxs[3]
-		GetClientMaxs(client, clientMaxs)
-		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
-		if(delta == -124.031250)
-		{
-			gB_runboost[client] = true
-			gI_rbBooster[client] = other
-		}
-	}
-}
-
-void SDKSkyJump(int client, int other) //client = booster; other = flyer
-{
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
-	{
-		float originBooster[3]
-		GetClientAbsOrigin(client, originBooster)
-		float originFlyer[3]
-		GetClientAbsOrigin(other, originFlyer)
-		float maxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-		float delta = originFlyer[2] - originBooster[2] - maxs[2]
-		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
-		{
-			float velBooster[3]
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
-			if(velBooster[2] > 0.0)
-			{
-				float velFlyer[3]
-				GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
-				velBooster[2] *= 3.0
-				if(velFlyer[2] > -700.0)
-				{
-					if(velBooster[2] > 750.0)
-						velFlyer[2] = 750.0
-				}
-				else
-					if(velBooster[2] > 800.0)
-						velFlyer[2] = 800.0
-				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
-				{
-					ConVar CV_gravity = FindConVar("sv_gravity")
-					if(gB_jumpstats[client])
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
-					if(gB_jumpstats[other])
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
-					for(int i = 1; i <= MaxClients; i++)
-					{
-						if(IsClientInGame(i) && IsClientObserver(i))
-						{
-							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-							if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	gI_entityButtons[client] = buttons
@@ -472,5 +361,118 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 		ResetFactory(client)
+	}
+}
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	if(StrContains(classname, "projectile") != -1)
+		SDKHook(entity, SDKHook_StartTouch, StartTouchProjectile)
+}
+
+void ResetFactory(int client)
+{
+	gB_jumped[client] = false
+	gB_ladder[client] = false
+	gI_strafeCount[client] = 0
+	gI_syncTick[client] = 0
+	gI_tick[client] = 0
+	gI_tickAir[client] = 0
+	gB_strafeBlockD[client] = false
+	gB_strafeBlockA[client] = false
+	gB_strafeBlockS[client] = false
+	gB_strafeBlockW[client] = false
+	gB_runboost[client] = false
+}
+
+Action StartTouchProjectile(int entity, int other)
+{
+	if(0 < other <= MaxClients && (gB_jumped[other] || gB_ladder[other]))
+	{
+		//https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L220-L231
+		float entityOrigin[3]
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityOrigin)
+		float otherOrigin[3]
+		GetClientAbsOrigin(other, otherOrigin)
+		float entityMaxs[3]
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", entityMaxs)
+		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2]
+		if(0.0 < delta < 2.0)
+		{
+			ResetFactory(other)
+			gF_boostTime[other] = GetEngineTime()
+		}
+	}
+}
+
+void TouchClient(int client, int other)
+{
+	if(0 < other <= MaxClients)
+	{
+		float clientOrigin[3]
+		GetClientAbsOrigin(client, clientOrigin)
+		float otherOrigin[3]
+		GetClientAbsOrigin(other, otherOrigin)
+		float clientMaxs[3]
+		GetClientMaxs(client, clientMaxs)
+		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
+		if(delta == -124.031250)
+		{
+			gB_runboost[client] = true
+			gI_rbBooster[client] = other
+		}
+	}
+}
+
+void SDKSkyJump(int client, int other) //client = booster; other = flyer
+{
+	if(gI_entityButtons[other] & IN_JUMP)
+		PrintToServer("yes")
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
+	{
+		float originBooster[3]
+		GetClientAbsOrigin(client, originBooster)
+		float originFlyer[3]
+		GetClientAbsOrigin(other, originFlyer)
+		float maxs[3]
+		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+		float delta = originFlyer[2] - originBooster[2] - maxs[2]
+		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		{
+			float velBooster[3]
+			GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
+			if(velBooster[2] > 0.0)
+			{
+				float velFlyer[3]
+				GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
+				velBooster[2] *= 3.0
+				if(velFlyer[2] > -700.0)
+				{
+					if(velBooster[2] > 750.0)
+						velFlyer[2] = 750.0
+				}
+				else
+					if(velBooster[2] > 800.0)
+						velFlyer[2] = 800.0
+				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
+				{
+					ConVar CV_gravity = FindConVar("sv_gravity")
+					if(gB_jumpstats[client])
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
+					if(gB_jumpstats[other])
+						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+					for(int i = 1; i <= MaxClients; i++)
+					{
+						if(IsClientInGame(i) && IsClientObserver(i))
+						{
+							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+							if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+						}
+					}
+				}
+			}
+		}
 	}
 }
