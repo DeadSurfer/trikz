@@ -824,7 +824,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					gF_skyVel[other][1] = velFlyer[1]				
 					velBooster[2] *= 3.0
 					gF_skyVel[other][2] = velBooster[2]
-					if(velFlyer[2] > -300.0)
+					if(velFlyer[2] > -500.0)
 					{
 						if(velBooster[2] > 750.0)
 							gF_skyVel[other][2] = 750.0
