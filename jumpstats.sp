@@ -418,7 +418,7 @@ void TouchClient(int client, int other)
 	}
 }
 
-void SDKSkyFix(int client, int other) //client = booster; other = flyer
+void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND))
 	{
