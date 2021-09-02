@@ -429,7 +429,7 @@ void TouchClient(int client, int other)
 
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] == IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
