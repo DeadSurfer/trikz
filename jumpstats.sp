@@ -439,10 +439,9 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			PrintToServer("yes 1")
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP)
+			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP)
+			if(!(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP)
 			{
-				PrintToServer("yes 2")
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
 				if(velBooster[2] > 0.0)
