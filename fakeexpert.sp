@@ -139,7 +139,6 @@ float gF_mlsDistance[MAXPLAYERS + 1][2][3]
 bool gB_button[MAXPLAYERS + 1]
 bool gB_pbutton[MAXPLAYERS + 1]
 float gF_skyTime[MAXPLAYERS + 1]
-bool gB_skyTest[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 
@@ -813,7 +812,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15 && !gB_skyStep[other])
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
@@ -824,30 +823,26 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			//if(gB_skyTest[other])
-			if(!(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && !gB_skyStep[other])
+			float velBooster[3]
+			GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
+			if(velBooster[2] > 0.0)
 			{
-				float velBooster[3]
-				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
-				if(velBooster[2] > 0.0)
+				float velFlyer[3]
+				GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
+				gF_skyVel[other][0] = velFlyer[0]
+				gF_skyVel[other][1] = velFlyer[1]				
+				velBooster[2] *= 3.0
+				gF_skyVel[other][2] = velBooster[2]
+				if(velFlyer[2] > -700.0)
 				{
-					float velFlyer[3]
-					GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
-					gF_skyVel[other][0] = velFlyer[0]
-					gF_skyVel[other][1] = velFlyer[1]				
-					velBooster[2] *= 3.0
-					gF_skyVel[other][2] = velBooster[2]
-					if(velFlyer[2] > -700.0)
-					{
-						if(velBooster[2] > 750.0)
-							gF_skyVel[other][2] = 750.0
-					}
-					else
-						if(velBooster[2] > 800.0)
-							gF_skyVel[other][2] = 800.0
-					if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
-						gB_skyStep[other] = true
+					if(velBooster[2] > 750.0)
+						gF_skyVel[other][2] = 750.0
 				}
+				else
+					if(velBooster[2] > 800.0)
+						gF_skyVel[other][2] = 800.0
+				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
+					gB_skyStep[other] = true
 			}
 		}
 	}
@@ -1487,7 +1482,6 @@ Action cmd_test(int client, int args)
 		-1.000000 == -1.0 | true
 		0.100000 == 0.1 | true
 		*/
-		gB_skyTest[client] = true
 	}
 	return Plugin_Handled
 }
