@@ -455,9 +455,9 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					if(FloatAbs(velFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
 					{
 						if(gB_jumpstats[client])
-							PrintToChat(client, "Sky boost: %.1f u/s", FloatAbs(velFlyer[2]))
+							PrintToChat(client, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), FloatAbs(velFlyer[2]) - 320.0)
 						if(gB_jumpstats[other])
-							PrintToChat(other, "Sky boost: %.1f u/s", FloatAbs(velFlyer[2]))
+							PrintToChat(other, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), FloatAbs(velFlyer[2]) - 320.0)
 						for(int i = 1; i <= MaxClients; i++)
 						{
 							if(IsClientInGame(i) && IsClientObserver(i))
@@ -465,7 +465,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 								int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 								int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 								if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-									PrintToChat(i, "Sky boost: %.1f u/s", FloatAbs(velFlyer[2]))
+									PrintToChat(i, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), FloatAbs(velFlyer[2]) - 320.0)
 							}
 						}
 					}
