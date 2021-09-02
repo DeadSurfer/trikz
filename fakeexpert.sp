@@ -685,8 +685,7 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-	//SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
-	SDKHook(client, SDKHook_Touch, SDKSkyFix)
+	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
@@ -815,8 +814,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	//if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(gI_entityFlags[other] & FL_ONGROUND) && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_boost[client])
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
