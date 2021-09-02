@@ -53,6 +53,8 @@ bool gB_runboost[MAXPLAYERS + 1]
 int gI_rbBooster[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 float gF_boostTime[MAXPLAYERS + 1]
+float gF_skyOrigin[MAXPLAYERS + 1][3]
+int gI_entityButtons[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -114,11 +116,13 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
 		gF_dotTime[client] = GetEngineTime()
 	}
+	GetClientAbsOrigin(client, gF_skyOrigin[client])
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	gI_entityFlags[client] = GetEntityFlags(client)
+	gI_entityButtons[client] = buttons
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
 		if(gI_tick[client] < 30)
@@ -435,7 +439,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK))
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP)
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
@@ -452,7 +456,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					else
 						if(velBooster[2] > 800.0)
 							velFlyer[2] = 800.0
-					if(FloatAbs(velFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
+					if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
 					{
 						ConVar CV_gravity = FindConVar("sv_gravity")
 						if(gB_jumpstats[client])
