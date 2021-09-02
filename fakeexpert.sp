@@ -139,6 +139,7 @@ float gF_mlsDistance[MAXPLAYERS + 1][2][3]
 bool gB_button[MAXPLAYERS + 1]
 bool gB_pbutton[MAXPLAYERS + 1]
 float gF_skyTime[MAXPLAYERS + 1]
+bool gB_skyTest[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -824,7 +825,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
+			//if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && !gB_skyStep[other])
+			if(gB_skyTest[other])
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
@@ -846,6 +848,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 							gF_skyVel[other][2] = 800.0
 					//if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614
 					PrintToServer("%f %f", GetEngineTime() - gF_skyTime[other], velFlyer[2])
+					gB_skyTest[other] = false
 					//if(GetEngineTime() - gF_skyTime[other] > 0.1)
 					{
 						gB_skyStep[other] = true
@@ -1485,6 +1488,7 @@ Action cmd_test(int client, int args)
 		-1.000000 == -1.0 | true
 		0.100000 == 0.1 | true
 		*/
+		gB_skyTest[client] = true
 	}
 	return Plugin_Handled
 }
