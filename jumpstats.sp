@@ -456,9 +456,9 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					{
 						ConVar CV_gravity = FindConVar("sv_gravity")
 						if(gB_jumpstats[client])
-							PrintToChat(client, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * CV_sourcetv.FloatValue)) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
+							PrintToChat(client, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * CV_gravity.FloatValue)) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
 						if(gB_jumpstats[other])
-							PrintToChat(other, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * CV_sourcetv.FloatValue))
+							PrintToChat(other, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * CV_gravity.FloatValue))
 						for(int i = 1; i <= MaxClients; i++)
 						{
 							if(IsClientInGame(i) && IsClientObserver(i))
@@ -466,7 +466,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 								int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 								int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 								if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-									PrintToChat(i, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * CV_sourcetv.FloatValue))
+									PrintToChat(i, "Sky boost: %.1f u/s, ~%f0.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * CV_gravity.FloatValue))
 							}
 						}
 					}
