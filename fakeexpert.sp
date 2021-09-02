@@ -837,6 +837,44 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
 					}
+					float vPos[3]
+					GetClientAbsOrigin(client, vPos)
+					float vMins[3]
+					GetEntPropVector(client, Prop_Send, "m_vecMins", vMins)
+					float vMaxs[3]
+					GetEntPropVector(client, Prop_Send, "m_vecMaxs", vMaxs)
+					float vEndPos[3]
+					vEndPos[0] = vPos[0]
+					vEndPos[1] = vPos[1]
+					ConVar CV_maxvelocity = FindConVar("sv_maxvelocity")
+					vEndPos[2] = vPos[2] - CV_maxvelocity.FloatValue
+					TR_TraceHullFilter(vPos, vEndPos, vMins, vMaxs, MASK_ALL, TraceRayDontHitSelf, client)
+					if(TR_DidHit())
+					{
+						float vPlane[3]
+						TR_GetPlaneNormal(null, vPlane)
+						if(0.7 <= vPlane[2] < 1.0)
+						{
+							float vLast[3]
+							GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vLast)
+							ConVar CV_gravity = FindConVar("sv_gravity")
+							vLast[2] -= CV_gravity.FloatValue * GetTickInterval() * 0.5
+							float fBackOff = GetVectorDotProduct(vLast, vPlane)
+							float vVel[3]
+							for(int i = 0; i <= 1; i++)
+								vVel[i] = vLast[i] - (vPlane[i] * fBackOff)
+							float fAdjust = GetVectorDotProduct(vVel, vPlane)
+							if(fAdjust < 0.0)
+								for(int i = 0; i <= 1; i++)
+									vVel[i] -= vPlane[i] * fAdjust
+							vVel[2] = 0.0
+							vLast[2] = 0.0
+							if(GetVectorLength(vVel, false) > GetVectorLength(vLast, false))
+							{
+								PrintToServer("%f", vVel[2])
+							}
+						}
+					}
 				}
 			}
 		}
@@ -2809,44 +2847,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 			gB_skyStep[client] = false
 			gI_skyFrame[client] = 0
-			float vPos[3]
-			GetClientAbsOrigin(client, vPos)
-			float vMins[3]
-			GetEntPropVector(client, Prop_Send, "m_vecMins", vMins)
-			float vMaxs[3]
-			GetEntPropVector(client, Prop_Send, "m_vecMaxs", vMaxs)
-			float vEndPos[3]
-			vEndPos[0] = vPos[0]
-			vEndPos[1] = vPos[1]
-			ConVar CV_maxvelocity = FindConVar("sv_maxvelocity")
-			vEndPos[2] = vPos[2] - CV_maxvelocity.FloatValue
-			TR_TraceHullFilter(vPos, vEndPos, vMins, vMaxs, MASK_ALL, TraceRayDontHitSelf, client)
-			if(TR_DidHit())
-			{
-				float vPlane[3]
-				TR_GetPlaneNormal(null, vPlane)
-				if(0.7 <= vPlane[2] < 1.0)
-				{
-					float vLast[3]
-					GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vLast)
-					ConVar CV_gravity = FindConVar("sv_gravity")
-					vLast[2] -= CV_gravity.FloatValue * GetTickInterval() * 0.5
-					float fBackOff = GetVectorDotProduct(vLast, vPlane)
-					float vVel[3]
-					for(int i = 0; i <= 1; i++)
-						vVel[i] = vLast[i] - (vPlane[i] * fBackOff)
-					float fAdjust = GetVectorDotProduct(vVel, vPlane)
-					if(fAdjust < 0.0)
-						for(int i = 0; i <= 1; i++)
-							vVel[i] -= vPlane[i] * fAdjust
-					vVel[2] = 0.0
-					vLast[2] = 0.0
-					if(GetVectorLength(vVel, false) > GetVectorLength(vLast, false))
-					{
-						PrintToServer("%f", vVel[2])
-					}
-				}
-			}
 		}
 	}
 	if(gI_boost[client])
