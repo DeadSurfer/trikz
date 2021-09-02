@@ -824,13 +824,15 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					gF_skyVel[other][1] = velFlyer[1]				
 					velBooster[2] *= 3.0
 					gF_skyVel[other][2] = velBooster[2]
-					if(FloatAbs(velFlyer[2]) < 300.0)
+					if(velFlyer[2] > -300.0)
+					{
 						if(velBooster[2] > 750.0)
 							gF_skyVel[other][2] = 750.0
-					if(FloatAbs(velFlyer[2]) >= 300.0)
+					}
+					else
 						if(velBooster[2] > 800.0)
 							gF_skyVel[other][2] = 800.0
-					if(FloatAbs(velFlyer[2]) > 118.006614) // -118.006614 in couch, in normal -106.006614
+					if(velFlyer[2] < -118.006614) // -118.006614 in couch, in normal -106.006614
 					{
 						gB_skyStep[other] = true
 						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
