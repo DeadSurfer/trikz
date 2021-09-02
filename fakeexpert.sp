@@ -849,11 +849,12 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					ConVar CV_maxvelocity = FindConVar("sv_maxvelocity")
 					vEndPos[2] = vPos[2] - float(CV_maxvelocity.IntValue)
 					PrintToServer("%f %i", float(CV_maxvelocity.IntValue), CV_maxvelocity.IntValue)
-					TR_TraceHullFilter(vPos, vEndPos, vMins, vMaxs, 81931, TraceRayDontHitSelf, other)
+					TR_TraceHullFilter(vPos, vEndPos, vMins, vMaxs, MASK_ALL, TraceRayDontHitSelf, other)
 					if(TR_DidHit())
 					{
 						float vPlane[3]
 						TR_GetPlaneNormal(null, vPlane)
+						PrintToServer("yes")
 						if(0.7 <= vPlane[2] < 1.0)
 						{
 							float vLast[3]
