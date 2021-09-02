@@ -852,8 +852,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
 					{
 						gB_skyStep[other] = true
-						gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
-						RequestFrame(frame_skyBoost, other)
+						//gI_skyFrame[other] = 1 //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L121
+						//RequestFrame(frame_skyBoost, other)
 					}
 				}
 			}
@@ -861,11 +861,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	}
 }
 
-void frame_skyBoost(int client)
+/*void frame_skyBoost(int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client))
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
-}
+}*/
 
 void SDKBoostFix(int client)
 {
@@ -2815,20 +2815,21 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			ResetFactory(gI_partner[client])
 		}
 	}
-	if(gI_skyFrame[client])
+	/*if(gI_skyFrame[client])
 		gI_skyFrame[client]++
 	if(gI_skyFrame[client] == 5)
 	{
 		gI_skyFrame[client] = 0
 		gB_skyStep[client] = false
-	}
-	if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetEngineTime() - gF_boostTime[client] > 0.15)
+	}*/
+	//if(gB_skyStep[client] && GetEntityFlags(client) & FL_ONGROUND && GetEngineTime() - gF_boostTime[client] > 0.15)
+	if(gB_skyStep[client])
 	{
-		if(buttons & IN_JUMP)
+		//if(buttons & IN_JUMP)
 		{
-			//TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 			gB_skyStep[client] = false
-			gI_skyFrame[client] = 0
+			//gI_skyFrame[client] = 0
 		}
 	}
 	if(gI_boost[client])
