@@ -199,7 +199,7 @@ public void OnPluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
 	HookEntityOutput("func_button", "OnPressed", event_button)
-	HookEvent("player_jump", event_playerjump)
+	HookEvent("player_jump", event_playerjump, EventHookMode_Pre)
 	//HookEvent("replay_saved", event_replaysaved)
 	//StartPrepSDKCall(SDKCall_Entity)
 	//PrepSDKCall_SetF
