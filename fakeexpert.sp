@@ -141,6 +141,7 @@ bool gB_pbutton[MAXPLAYERS + 1]
 float gF_skyTime[MAXPLAYERS + 1]
 bool gB_skyTest[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
+int gI_entityButtons[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -824,7 +825,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			//if(gB_skyTest[other])
-			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && GetClientButtons(other) & IN_JUMP && !gB_skyStep[other])
+			if(!(GetEntityFlags(client) & FL_ONGROUND) && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && !gB_skyStep[other])
 			{
 				float velBooster[3]
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", velBooster)
@@ -2796,6 +2797,7 @@ void ResetFactory(int client)
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	gI_entityFlags[client] = GetEntityFlags(client)
+	gI_entityButtons[client] = buttons
 	if(buttons & IN_JUMP && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER) && IsPlayerAlive(client)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
