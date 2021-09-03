@@ -361,11 +361,11 @@ public void OnMapStart()
 	//CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
 }
 
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+/*public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
 	return APLRes_Success
-}
+}*/
 
 public void OnMapEnd()
 {
@@ -3607,8 +3607,8 @@ bool TR_donthitself(int entity, int mask, int client)
 	return entity != client && 0 < entity <= MaxClients
 }
 
-int Native_GetClientButtons(Handle plugin, int numParams)
+/*int Native_GetClientButtons(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1)
     return gI_entityButtons[client]
-}
+}*/
