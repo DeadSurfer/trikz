@@ -63,7 +63,7 @@ ConVar gCV_topURL
 bool gB_MenuIsOpen[MAXPLAYERS + 1]
 
 int gI_boost[MAXPLAYERS + 1]
-bool gB_skyStep[MAXPLAYERS + 1]
+bool gB_skyBoost[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
@@ -138,7 +138,6 @@ bool gB_mlstats[MAXPLAYERS + 1]
 float gF_mlsDistance[MAXPLAYERS + 1][2][3]
 bool gB_button[MAXPLAYERS + 1]
 bool gB_pbutton[MAXPLAYERS + 1]
-float gF_skyTime[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 
@@ -812,7 +811,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15 && !gB_skyStep[other])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15 && !gB_skyBoost[other])
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
@@ -842,7 +841,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					if(velBooster[2] > 800.0)
 						gF_skyVel[other][2] = 800.0
 				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
-					gB_skyStep[other] = true
+					gB_skyBoost[other] = true
 			}
 		}
 	}
@@ -2804,10 +2803,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			ResetFactory(gI_partner[client])
 		}
 	}
-	if(gB_skyStep[client])
+	if(gB_skyBoost[client])
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
-		gB_skyStep[client] = false
+		gB_skyBoost[client] = false
 	}
 	if(gI_boost[client])
 	{
@@ -2946,10 +2945,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
-		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 		if(gI_mlsCount[client])
 		{
-			//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
+			int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 			char sClass[32]
 			if(IsValidEntity(groundEntity))
 				GetEntityClassname(groundEntity, sClass, 32)
@@ -2960,10 +2958,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gI_mlsCount[client] = 0
 			}
 		}
-		//int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-		//PrintToServer("%i", groundEntity)
-		if(!groundEntity)
-			gF_skyTime[client] = GetEngineTime()
 	}
 	int other = Stuck(client)
 	if(0 < other <= MaxClients && IsPlayerAlive(client) && gB_block[other])
