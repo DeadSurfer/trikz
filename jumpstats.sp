@@ -422,7 +422,7 @@ void TouchClient(int client, int other)
 		{
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				gB_runboost[i] = 0
+				gB_runboost[i] = false
 				gI_rbBooster[i] = 0
 			}
 			gB_runboost[client] = true
