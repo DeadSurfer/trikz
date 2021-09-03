@@ -54,6 +54,7 @@ int gI_rbBooster[MAXPLAYERS + 1]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
+//native int Trikz_GetClientButtons(int client)
 
 public Plugin myinfo =
 {
@@ -71,6 +72,7 @@ public void OnPluginStart()
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_js", cmd_jumpstats)
+	//MarkNativeAsOptional("Trikz_GetClientButtons")
 }
 
 public void OnClientPutInServer(int client)
