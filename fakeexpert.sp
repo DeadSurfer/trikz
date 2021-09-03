@@ -2811,6 +2811,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	if(gB_skyBoost[client])
 	{
+		float velNull[3]	
+		SetEntPropVector(client, Prop_Data, "m_vecBaseVelocity", velNull)
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 		gB_skyBoost[client] = false
 	}
