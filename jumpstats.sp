@@ -457,9 +457,9 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					PrintToServer("%f", gF_skyOrigin[other][2] - gF_skyOrigin[client][2])
 					ConVar CV_gravity = FindConVar("sv_gravity")
 					if(gB_jumpstats[client])
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), (Pow(FloatAbs(velFlyer[2]), 2.0) / (2.0 * float(CV_gravity.IntValue))) + gF_skyOrigin[other][2] + 16.0 - gF_skyOrigin[client][2]) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), (Pow(FloatAbs(velFlyer[2]), 2.0) / (2.0 * float(CV_gravity.IntValue))) + gF_skyOrigin[other][2] + 16.0 - gF_skyOrigin[client][2] + 16.0) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
 					if(gB_jumpstats[other])
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), (Pow(FloatAbs(velFlyer[2]), 2.0) / (2.0 * float(CV_gravity.IntValue))) + gF_skyOrigin[other][2] + 16.0 - gF_skyOrigin[client][2])
+						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), (Pow(FloatAbs(velFlyer[2]), 2.0) / (2.0 * float(CV_gravity.IntValue))) + gF_skyOrigin[other][2] + 16.0 - gF_skyOrigin[client][2] + 16.0)
 					for(int i = 1; i <= MaxClients; i++)
 					{
 						if(IsClientInGame(i) && IsClientObserver(i))
