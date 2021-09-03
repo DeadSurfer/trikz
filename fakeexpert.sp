@@ -198,7 +198,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(SoundHook)
-	HookUserMessage(GetUserMessageId("SayText2"), hookum_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	HookUserMessage(GetUserMessageId("SayText2"), um_saytext2, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", event_playerspawn)
 	HookEntityOutput("func_button", "OnPressed", event_button)
 	HookEvent("player_jump", event_playerjump)
@@ -381,7 +381,7 @@ public void OnMapEnd()
 	}
 }
 
-Action hookum_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	int client = msg.ReadByte()
 	msg.ReadByte()
