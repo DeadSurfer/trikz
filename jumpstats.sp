@@ -53,8 +53,8 @@ bool gB_runboost[MAXPLAYERS + 1]
 int gI_rbBooster[MAXPLAYERS + 1]
 float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
-int gI_entityButtons[MAXPLAYERS + 1]
-//native int Trikz_GetClientButtons(int client)
+//int gI_entityButtons[MAXPLAYERS + 1]
+native int Trikz_GetClientButtons(int client)
 
 public Plugin myinfo =
 {
@@ -122,7 +122,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	gI_entityButtons[client] = buttons
+	//gI_entityButtons[client] = buttons
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
 		if(gI_tick[client] < 30)
@@ -428,7 +428,7 @@ void TouchClient(int client, int other)
 
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && Trikz_GetClientButtons(other) & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
