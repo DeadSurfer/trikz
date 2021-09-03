@@ -445,24 +445,26 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 			{
 				float velFlyer[3]
 				GetEntPropVector(other, Prop_Data, "m_vecVelocity", velFlyer)
-				PrintToServer("%f", velFlyer[2])
 				velBooster[2] *= 3.0
-				PrintToServer("%f", velBooster[2])
+				float velNew[3]
+				velNew[0] = velFlyer[0]
+				velNew[1] = velFlyer[1]
+				velNew[2] = velBooster[2]
 				if(velFlyer[2] > -700.0)
 				{
 					if(velBooster[2] > 750.0)
-						velFlyer[2] = 750.0
+						velNew[2] = 750.0
 				}
 				else
 					if(velBooster[2] > 800.0)
-						velFlyer[2] = 800.0
+						velNew[2] = 800.0
 				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
 				{
 					ConVar CV_gravity = FindConVar("sv_gravity")
 					if(gB_jumpstats[client])
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velNew[2]), Pow(FloatAbs(velNew[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
 					if(gB_jumpstats[other])
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velNew[2]), Pow(FloatAbs(velNew[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
 					for(int i = 1; i <= MaxClients; i++)
 					{
 						if(IsClientInGame(i) && IsClientObserver(i))
@@ -470,7 +472,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 							if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), Pow(FloatAbs(velFlyer[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velNew[2]), Pow(FloatAbs(velNew[2]), 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
 						}
 					}
 				}
