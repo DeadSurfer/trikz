@@ -2813,7 +2813,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
 		gB_skyBoost[client] = false
-		PrintToServer("%f", gF_skyVel[client][2])
 	}
 	if(gI_boost[client])
 	{
