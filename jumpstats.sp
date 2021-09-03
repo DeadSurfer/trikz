@@ -418,12 +418,14 @@ void TouchClient(int client, int other)
 		float clientMaxs[3]
 		GetClientMaxs(client, clientMaxs)
 		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
-		PrintToServer("%f", delta)
 		if(delta == -124.031250)
 		{
-			gB_runboost[client] = true
 			for(int i = 1; i <= MaxClients; i++)
+			{
+				gB_runboost[i] = 0
 				gI_rbBooster[i] = 0
+			}
+			gB_runboost[client] = true
 			gI_rbBooster[client] = other
 		}
 	}
