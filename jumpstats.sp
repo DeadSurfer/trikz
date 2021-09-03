@@ -454,6 +454,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 						velFlyer[2] = 800.0
 				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
 				{
+					PrintToServer("%f", SquareRoot(Pow(gF_skyOrigin[client][2], 2.0) + Pow(gF_skyOrigin[other][2], 2.0)))
 					ConVar CV_gravity = FindConVar("sv_gravity")
 					if(gB_jumpstats[client])
 						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", FloatAbs(velFlyer[2]), (Pow(FloatAbs(velFlyer[2]), 2.0) / (2.0 * float(CV_gravity.IntValue))) + SquareRoot(Pow(gF_skyOrigin[client][2], 2.0) + Pow(gF_skyOrigin[other][2], 2.0))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
