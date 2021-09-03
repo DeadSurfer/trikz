@@ -417,8 +417,10 @@ void TouchClient(int client, int other)
 		GetClientAbsOrigin(other, otherOrigin)
 		float clientMaxs[3]
 		GetClientMaxs(client, clientMaxs)
-		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
-		if(delta == -124.031250)
+		//float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
+		//if(delta == -124.031250)
+		float delta = otherOrigin[2] - clientOrigin[2]
+		if(delta < 62.0)
 		{
 			gB_runboost[client] = true
 			for(int i = 1; i <= MaxClients; i++)
