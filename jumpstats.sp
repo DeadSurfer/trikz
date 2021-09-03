@@ -421,6 +421,8 @@ void TouchClient(int client, int other)
 		if(delta == -124.031250)
 		{
 			gB_runboost[client] = true
+			for(int i = 1; i <= MaxClients; i++)
+				gI_rbBooster[i] = 0
 			gI_rbBooster[client] = other
 		}
 	}
