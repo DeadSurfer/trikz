@@ -1888,9 +1888,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_originEndZone[0][0]), RoundFloat(gF_originEndZone[0][1]), RoundFloat(gF_originEndZone[0][2]), RoundFloat(gF_originEndZone[1][0]), RoundFloat(gF_originEndZone[1][1]), RoundFloat(gF_originEndZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 			}
-			if(StrEqual(sItem, "2") || StrEqual(sItem, "3") || StrEqual(sItem, "4") || StrEqual(sItem, "5") ||
-			StrEqual(sItem, "6") || StrEqual(sItem, "7") || StrEqual(sItem, "8") || StrEqual(sItem, "9") ||
-			StrEqual(sItem, "10") || StrEqual(sItem, "11") || StrEqual(sItem, "12"))
+			int item = StringToInt(sItem)
+			if(item <= gI_cpCount)
 			{
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
@@ -1958,10 +1957,7 @@ void CPSetup(int client)
 	{
 		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s'", i, gS_map)
 		DataPack dp = new DataPack()
-		if(client)
-			dp.WriteCell(GetClientSerial(client))
-		else
-			dp.WriteCell(0)
+		dp.WriteCell(client ? GetClientSerial(client) : 0)
 		dp.WriteCell(i)
 		gD_mysql.Query(SQLCPSetup, sQuery, dp)
 	}
