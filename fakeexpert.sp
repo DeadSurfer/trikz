@@ -1888,13 +1888,14 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_originEndZone[0][0]), RoundFloat(gF_originEndZone[0][1]), RoundFloat(gF_originEndZone[0][2]), RoundFloat(gF_originEndZone[1][0]), RoundFloat(gF_originEndZone[1][1]), RoundFloat(gF_originEndZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 			}
-			PrintToServer("%i", strlen(sItem))
-			//if(strlen(sItem))
-			int item = StringToInt(sItem)
-			if(item <= gI_cpCount)
+			if(strlen(sItem) == 1)
 			{
-				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
-				//gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
+				int item = StringToInt(sItem)
+				if(item <= gI_cpCount + 2)
+				{
+					Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
+					gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
+				}
 			}
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
