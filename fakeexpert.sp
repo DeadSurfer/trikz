@@ -115,10 +115,10 @@ float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
-int gI_vModelView
-int gI_vModelViewDef
-int gI_wModel
-int gI_wModelDef
+//int gI_vModelView
+//int gI_vModelViewDef
+//int gI_wModel
+//int gI_wModelDef
 float gF_pingTime[MAXPLAYERS + 1]
 bool gB_pingLock[MAXPLAYERS + 1]
 //Handle gH_viewmodel
@@ -201,18 +201,6 @@ public void OnPluginStart()
 	HookEvent("player_spawn", event_playerspawn)
 	HookEntityOutput("func_button", "OnPressed", event_button)
 	HookEvent("player_jump", event_playerjump)
-	//HookEvent("replay_saved", event_replaysaved)
-	//StartPrepSDKCall(SDKCall_Entity)
-	//PrepSDKCall_SetF
-	//PrepSDKCall_SetVirtual(308)
-	//PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer)
-	//gH_viewmodel = EndPrepSDKCall()
-	//StartPrepSDKCall(SDKCall_Player)
-	//PrepSDKCall_SetVirtual(321) //https://forums.alliedmods.net/showthread.php?p=2752343 https://hatebin.com/wsyflqvnqc
-	//PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain)
-	//gH_viewmodel = EndPrepSDKCall()
-	//gSM_char = new StringMap()
-	//HookEvent(""
 }
 
 public void OnMapStart()
@@ -253,10 +241,10 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
-	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
+	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
+	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	//gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -518,128 +506,36 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 	GetClientAbsOrigin(client, gF_skyOrigin[client])
 }
 
-
-/*Action event_replaysaved(Event event, const char[] name, bool dontBroadcast)
-{
-	PrintToServer("yes")
-}*/
-
-void SDKWeaponSwitchPost(int client, int weapon)
+/*void SDKWeaponSwitchPost(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		//SetEntProp(gI_viewmodel[client], Prop_Data, "m_nModelIndex", gI_vModelView)
-		//SetEntData(client, Prop_Data, FindDataMapInfo(client, "m_hViewModel") + 4, gI_vModelView) //https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141
-		//SetEntProp(client, Prop_Send, "m_hViewModel", gI_vModelView)
-		//DispatchSpawn(gI_viewmodel[client])
-		//DispatchKeyValue(client, "skin", "2")
-		//SetEntProp(weapon, Prop_Data, "m_nModelIndex", 0)
-		//SetEntProp(client, Prop_Data, "m_nModelIndex", gI_vModelView)
-		//SetEntProp(weapon, Prop_Data, "m_nViewModelIndex", gI_vModelView)
-		//int pv = CreateEntityByName("predicted_viewmodel")
-		//SetEntPropEnt(pv, Prop_Data, "m_hOwner", client)
-		//int index
-		//while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
-		{
-			//int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-			//if(owner == client)
-			{
-				//RemoveEntity(index)
-				//PrintToServer("%s", sModelName)
-				//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView)
-				//char sModelName[PLATFORM_MAX_PATH] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
-				//SetEntPropString(index, Prop_Data, "m_ModelName", sModelName)
-			}
-		}
-		//int viewmodel = GetEntProp(index, Prop_Data, "m_nViewModelIndex")
-		//SetEntProp(index, Prop_Data, "m_nModelIndex", gI_vModelView) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558
-		//SetEntPropEnt(index, Prop_Send, "m_hWeapon", GetEntPropEnt(index, Prop_Send, "m_hWeapon"))
-		//int index
-		//SDKCall(gH_viewmodel, client, index)
-		//int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel", index)
 		int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
 		if(gB_color[client])
 		{
-			//char sModelName[128]
-			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
-			//PrintToServer("%s", sModelName)
-			//SetEntProp(vm, Prop_Data, "m_fEffects", 16)
-			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView, 2)
-			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
-			//PrintToServer("%s", sModelName)
-			//PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
-			//char sModelName[PLATFORM_MAX_PATH] = "models/fakeexpert/models/weapons/v_eq_flashbang.mdl"
-			//SetEntPropString(vm, Prop_Data, "m_ModelName", sModelName)
-			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, PLATFORM_MAX_PATH)
-			//PrintToServer("%s", sModelName)
-			//SetEntityModel(vm, "models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-			//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelView)
+			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView, 2) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558 https://github.com/bcserv/smlib/blob/master/scripting/include/smlib/entities.inc#L980 https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141 https://forums.alliedmods.net/showthread.php?p=2752343
 			if(gI_colorCount[client] == 1)
 				SetEntProp(vm, Prop_Data, "m_nSkin", 1)
-			//SetEntityRenderColor(index, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 			if(gI_colorCount[client] > 1)	
 				SetEntProp(vm, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
-			//int color[4]
-			//color[0] = 255
-			//color[1] = 0
-			//color[2] = 0
-			//color[3] = 255
-			//SetEntProp(vm, Prop_Data, "m_clrRender", color)
-			//SetEntityRenderMode(vm, RENDER_TRANSALPHA)
-			//SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSCOLOR)
-			//SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSALPHA)
-			//int r = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 0)
-			//int g = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 1)
-			//int b = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 2)
-			//int a = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 3) //https://github.com/HotoCocoaco/Zephyrus-store-fix/blob/ebfc622a67d80655ea3e8954d431d806b4eff4fa/scripting/store/invisibility.sp#L47
-			//PrintToServer("%i %i %i %i", r, g, b, a)
-			//int offset = GetEntSendPropOffs(vm, "m_clrRender")
-			//PrintToServer("%i", offset)
-			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255, 1, true) //https://github.com/alliedmodders/sourcemod/blob/1fbe5e1daaee9ba44164078fe7f59d862786e612/plugins/include/entity_prop_stocks.inc#L447
-			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0, 1, true)
-			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0, 1, true)
-			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255, 1, true) //https://pastebin.com/CiY6ey59
-			//SetEntityRenderColor(vm, 255, 0, 0, 255)
-			//SetEntProp(pv, Prop_Data, "m_fEffects", 16) //https://forums.alliedmods.net/printthread.php?t=134571&pp=40
-			//DispatchKeyValue(vm, "rendercolor", "255 0 0")
-			//Dispat
+			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
 		}
 		else
 		{
 			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelViewDef, 2)
-			//SetEntityModel(vm, "models/weapons/v_eq_flashbang.mdl")
-			//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
+			SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
 		}
-		//char sWeapon[32]
-		//GetEntityClassname(weapon, sWeapon, 32)
-		//if(StrEqual(sWeapon, "weapon_flashbang"))
-		{
-			//int index
-			//while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
-			{
-				//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
-				//DispatchKeyValue(weapon, "skin", "2")
-				//PrintToServer("%i %i", weapon, index)
-			}
-		}
-		CreateTimer(1.0, timer_wModel, weapon, TIMER_FLAG_NO_MAPCHANGE)
-		//int ent
-		//char viewModel[64] //https://forums.alliedmods.net/showthread.php?t=319516&page=2
-		//SDKCall(gH_viewmodel, ent, viewModel, 64) //https://forums.alliedmods.net/showthread.php?t=100404
-		//PrintToServer("%i %s", ent, viewModel)
-		//PrintToServer("%i", GetEntPropEnt(client, Prop_Data, "m_hViewModel")) //https://forums.alliedmods.net/showthread.php?p=2752343
-		//PrintToServer("%i %i", client, index)
-		//PrintToServer("%i", vm)
+		//CreateTimer(1.0, timer_wModel, weapon, TIMER_FLAG_NO_MAPCHANGE)
 	}
-}
+}*/
 
-Action timer_wModel(Handle timer, int weapon)
+/*Action timer_wModel(Handle timer, int weapon)
 {
 	SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
 	DispatchKeyValue(weapon, "skin", "2")
-}
+}*/
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -708,13 +604,13 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public void OnClientPutInServer(int client)
 {
-	SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
+	//SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
+	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
@@ -3482,14 +3378,14 @@ Action timer_deleteProjectile(Handle timer, int entRef)
 		RemoveEntity(entity)
 }
 
-void SDKPlayerSpawnPost(int client)
+/*void SDKPlayerSpawnPost(int client)
 {
 	if(!GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	{
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-}
+}*/
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
