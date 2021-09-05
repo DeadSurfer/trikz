@@ -2173,7 +2173,7 @@ Action SDKStartTouch(int entity, int other)
 				gB_cp[i][other] = true
 				if(gB_cp[i][other] && gB_cp[i][gI_partner[other]] && !gB_cpLock[i][other])
 				{
-					char sQuery[512] //https://stackoverflow.com/questions/9617453 //https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
+					char sQuery[512] //https://stackoverflow.com/questions/9617453 https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
 					int playerid = GetSteamAccountID(other)
 					int partnerid = GetSteamAccountID(gI_partner[other])
 					if(!gB_cpLock[1][other] && gF_mateRecord[other])
