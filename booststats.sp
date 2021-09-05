@@ -105,7 +105,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetEntityClassname(activeWeapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK && gB_projectile[client])
 		{
 			gF_boostTimeStart[client] = GetEngineTime()
 			gB_boostRead[client] = true
@@ -115,14 +115,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gB_duck[client] = view_as<bool>(buttons & IN_DUCK)
 			gF_angles[client][0] = angles[0]
 			gF_angles[client][1] = angles[1]
+			gB_projectile[client] = false
 		}
-		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client] && gB_projectile[client])
+		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
 		{
 			gF_boostTimeEnd[client] = GetEngineTime()
 			if(gF_boostTimeEnd[client] - gF_boostTimeStart[client] < 1.0)
 				CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
 			gB_boostRead[client] = false
-			gB_projectile[client] = false
 		}
 	}
 }
