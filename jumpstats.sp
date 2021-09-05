@@ -485,16 +485,3 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		}
 	}
 }
-
-//https://forums.alliedmods.net/showthread.php?t=98812
-void GetEntityAbsOrigin(int entity, float origin[3])
-{
-	float mins[3]
-	float maxs[3]
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
-	GetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
-	GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
-	origin[0] += (mins[0] + maxs[0]) * 0.5
-	origin[1] += (mins[1] + maxs[1]) * 0.5
-	origin[2] += (mins[2] + maxs[2]) * 0.5
-} 
