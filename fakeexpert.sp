@@ -115,10 +115,10 @@ float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
 //int gI_viewmodel[MAXPLAYERS + 1]
-//int gI_vModelView
-//int gI_vModelViewDef
-//int gI_wModel
-//int gI_wModelDef
+int gI_vModelView
+int gI_vModelViewDef
+int gI_wModel
+int gI_wModelDef
 float gF_pingTime[MAXPLAYERS + 1]
 bool gB_pingLock[MAXPLAYERS + 1]
 //Handle gH_viewmodel
@@ -253,10 +253,10 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
-	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	//gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
+	gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
+	gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
+	gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
+	gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -524,7 +524,7 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 	PrintToServer("yes")
 }*/
 
-/*void SDKWeaponSwitchPost(int client, int weapon)
+void SDKWeaponSwitchPost(int client, int weapon)
 {
 	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
@@ -566,7 +566,7 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			//PrintToServer("%s", sModelName)
 			//SetEntProp(vm, Prop_Data, "m_fEffects", 16)
-			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView)
+			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView, 2)
 			//GetEntPropString(vm, Prop_Data, "m_ModelName", sModelName, 128)
 			//PrintToServer("%s", sModelName)
 			//PrintToServer("%i", GetEntProp(vm, Prop_Data, "m_nViewModelIndex"))
@@ -587,8 +587,9 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 			//color[2] = 0
 			//color[3] = 255
 			//SetEntProp(vm, Prop_Data, "m_clrRender", color)
-			//SetEntityRenderMode(vm, RENDER_TRANSALPHA)
-			SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSCOLOR)
+			SetEntityRenderMode(vm, RENDER_TRANSALPHA)
+			//SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSCOLOR)
+			SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSALPHA)
 			//int r = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 0)
 			//int g = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 1)
 			//int b = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 2)
@@ -607,7 +608,7 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 		}
 		else
 		{
-			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelViewDef)
+			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelViewDef, 2)
 			//SetEntityModel(vm, "models/weapons/v_eq_flashbang.mdl")
 			//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 		}
@@ -619,7 +620,7 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 		//PrintToServer("%i %i", client, index)
 		//PrintToServer("%i", vm)
 	}
-}*/
+}
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -694,7 +695,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
+	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		char sQuery[512]
@@ -3485,18 +3486,18 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-	/*char sWeapon[32]
+	char sWeapon[32]
 	GetEntityClassname(weapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		int index
 		while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
 		{
-			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModel)
+			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModel, 2)
 			DispatchKeyValue(index, "skin", "1")
 			PrintToServer("%i %i", weapon, index)
 		}
-	}*/
+	}
 }
 
 Action SDKWeaponDrop(int client, int weapon)
