@@ -3444,6 +3444,7 @@ Action timer_clantag(Handle timer, int client)
 	if(0 < client <= MaxClients)
 	{
 		if(IsClientInGame(client))
+		{
 			if(gB_state[client])
 				CS_SetClientClanTag(client, gS_clanTag[client][1])
 			else
