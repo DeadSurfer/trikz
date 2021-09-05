@@ -409,7 +409,7 @@ Action StartTouchProjectile(int entity, int other)
 
 void TouchClient(int client, int other)
 {
-	if(0 < other <= MaxClients)
+	if(0 < other <= MaxClients && gI_tick[client] == 30)
 	{
 		float clientOrigin[3]
 		GetClientAbsOrigin(client, clientOrigin)
