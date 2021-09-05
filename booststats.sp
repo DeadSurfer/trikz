@@ -32,12 +32,13 @@
 
 float gF_boostTimeStart[MAXPLAYERS + 1]
 float gF_boostTimeEnd[MAXPLAYERS + 1]
-bool gB_boostRead[MAXPLAYERS + 1][2]
+bool gB_boostRead[MAXPLAYERS + 1]
 float gF_projectileVel[MAXPLAYERS + 1]
 float gF_vel[MAXPLAYERS + 1]
 bool gB_duck[MAXPLAYERS + 1]
 bool gB_boostStats[MAXPLAYERS + 1]
 float gF_angles[MAXPLAYERS + 1][3]
+bool gB_projectile[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -92,6 +93,7 @@ void frame_projectileVel(int ref)
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+		gB_projectile[client] = true
 	}
 }
 
@@ -103,29 +105,24 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetEntityClassname(activeWeapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		//if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
-		if(buttons & IN_ATTACK)
-		{
-			gB_boostRead[client][0] = true
-		}
-		if(!(buttons & IN_ATTACK) && gB_boostRead[client][0])
+		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
 		{
 			gF_boostTimeStart[client] = GetEngineTime()
-			gB_boostRead[client][1] = true
+			gB_boostRead[client] = true
 			float velExtra[3]
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velExtra)
 			gF_vel[client] = SquareRoot(Pow(velExtra[0], 2.0) + Pow(velExtra[1], 2.0))
 			gB_duck[client] = view_as<bool>(buttons & IN_DUCK)
 			gF_angles[client][0] = angles[0]
 			gF_angles[client][1] = angles[1]
-			gB_boostRead[client][0] = false
 		}
-		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client][1])
+		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client] && gB_projectile[client])
 		{
 			gF_boostTimeEnd[client] = GetEngineTime()
 			if(gF_boostTimeEnd[client] - gF_boostTimeStart[client] < 1.0)
 				CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
-			gB_boostRead[client][1] = false
+			gB_boostRead[client] = false
+			gB_projectile[client] = false
 		}
 	}
 }
