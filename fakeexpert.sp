@@ -201,6 +201,7 @@ public void OnPluginStart()
 	HookEvent("player_spawn", event_playerspawn)
 	HookEntityOutput("func_button", "OnPressed", event_button)
 	HookEvent("player_jump", event_playerjump)
+	HookEvent("player_death", event_playerdeath)
 }
 
 public void OnMapStart()
@@ -504,6 +505,13 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	GetClientAbsOrigin(client, gF_skyOrigin[client])
+}
+
+Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	int ragdoll = GetEntPropEnt(client, Prop_Data, "m_hRagdoll")
+	RemoveEntity(ragdoll)
 }
 
 /*void SDKWeaponSwitchPost(int client, int weapon)
