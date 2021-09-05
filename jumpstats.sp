@@ -145,7 +145,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				velNew[1] /= length
 				//velNew[2] = 0.0
 				gF_dot[client] = GetVectorDotProduct(eye, velNew) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
-				//PrintToServer("%f", gF_dot[client])
+				PrintToServer("%f", gF_dot[client])
 			}
 			gI_tickAir[client]++
 		}
