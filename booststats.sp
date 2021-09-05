@@ -38,7 +38,6 @@ float gF_vel[MAXPLAYERS + 1]
 bool gB_duck[MAXPLAYERS + 1]
 bool gB_boostStats[MAXPLAYERS + 1]
 float gF_angles[MAXPLAYERS + 1][3]
-bool gB_projectile[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -81,8 +80,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 Action SDKSpawnProjectile(int entity)
 {
-	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-	gB_projectile[client] = true
 	RequestFrame(frame_projectileVel, EntIndexToEntRef(entity))
 }
 
@@ -106,8 +103,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetEntityClassname(activeWeapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		//if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK && gB_projectile[client])
-		if(buttons & IN_ATTACK && gB_projectile[client])
+		//if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+		if(buttons & IN_ATTACK)
 			gB_boostRead[client][0] = true
 		if(!(buttons & IN_ATTACK) && gB_boostRead[client][0])
 		{
@@ -117,7 +114,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gB_duck[client] = view_as<bool>(buttons & IN_DUCK)
 			gF_angles[client][0] = angles[0]
 			gF_angles[client][1] = angles[1]
-			gB_projectile[client] = false
 			gB_boostRead[client][0] = false
 		}
 		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client][1])
