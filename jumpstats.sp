@@ -116,8 +116,13 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
 		gF_dotTime[client] = GetEngineTime()
+		GetClientAbsOrigin(client, gF_skyOrigin[client])
+		float dir[3]
+		dir[0] = 90.0 //thats right you'd think its a z value - this will point you down 
+		TR_TraceRayEx(gF_skyOrigin[client], dir, MASK_PLAYERSOLID_BRUSHONLY, RayType_Infinite)
+		if(TR_DidHit()) 
+			TR_GetEndPosition(gF_skyOrigin[client])
 	}
-	GetClientAbsOrigin(client, gF_skyOrigin[client])
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -251,6 +256,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
+		float dir[3]
+		dir[0] = 90.0 //thats right you'd think its a z value - this will point you down 
+		TR_TraceRayEx(origin, dir, MASK_PLAYERSOLID_BRUSHONLY, RayType_Infinite)
+		if(TR_DidHit()) 
+			TR_GetEndPosition(origin)
 		char sZLevel[32]
 		if(origin[2] - gF_origin[client][2] > 1.705139) //1.475586 without rb
 			Format(sZLevel, 32, "[Rise|%.1f] ", origin[2] - gF_origin[client][2])
