@@ -621,7 +621,7 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			{
 				SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
 				DispatchKeyValue(weapon, "skin", "2")
-				PrintToServer("%i %i", weapon, index)
+				//PrintToServer("%i %i", weapon, index)
 			}
 		}
 		//int ent
