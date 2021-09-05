@@ -138,11 +138,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetClientEyeAngles(client, eye)
 				eye[0] = Cosine(DegToRad(eye[1]))
 				eye[1] = Sine(DegToRad(eye[1]))
-				eye[2] = 0.0
+				//eye[2] = 0.0
 				float length = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
 				float velNew[3]
-				velNew[0] /= length
-				velNew[1] /= length
+				for(int i = 0; i <= 1; i++)
+				{
+					velNew[i] = vel[i]
+					velNew[i] /= length
+				}
 				//velNew[2] = 0.0
 				gF_dot[client] = GetVectorDotProduct(eye, velNew) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
 				PrintToServer("%f", gF_dot[client])
