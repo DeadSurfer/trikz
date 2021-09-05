@@ -612,6 +612,18 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//SetEntityModel(vm, "models/weapons/v_eq_flashbang.mdl")
 			//SetEntProp(index, Prop_Data, "m_nViewModelIndex", gI_vModelViewDef)
 		}
+		char sWeapon[32]
+		GetEntityClassname(weapon, sWeapon, 32)
+		if(StrEqual(sWeapon, "weapon_flashbang"))
+		{
+			int index
+			while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
+			{
+				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModel, 2)
+				DispatchKeyValue(index, "skin", "2")
+				PrintToServer("%i %i", weapon, index)
+			}
+		}
 		//int ent
 		//char viewModel[64] //https://forums.alliedmods.net/showthread.php?t=319516&page=2
 		//SDKCall(gH_viewmodel, ent, viewModel, 64) //https://forums.alliedmods.net/showthread.php?t=100404
@@ -3486,9 +3498,9 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-	//char sWeapon[32]
-	//GetEntityClassname(weapon, sWeapon, 32)
-	//if(StrEqual(sWeapon, "weapon_flashbang"))
+	/*char sWeapon[32]
+	GetEntityClassname(weapon, sWeapon, 32)
+	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		int index
 		while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
@@ -3497,7 +3509,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 			DispatchKeyValue(index, "skin", "2")
 			PrintToServer("%i %i", weapon, index)
 		}
-	}
+	}*
 }
 
 Action SDKWeaponDrop(int client, int weapon)
