@@ -616,11 +616,11 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//GetEntityClassname(weapon, sWeapon, 32)
 		//if(StrEqual(sWeapon, "weapon_flashbang"))
 		{
-			int index
-			while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
+			//int index
+			//while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
 			{
-				SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModel, 2)
-				DispatchKeyValue(index, "skin", "2")
+				SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
+				DispatchKeyValue(weapon, "skin", "2")
 				PrintToServer("%i %i", weapon, index)
 			}
 		}
