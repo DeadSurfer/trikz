@@ -32,7 +32,7 @@
 
 float gF_boostTimeStart[MAXPLAYERS + 1]
 float gF_boostTimeEnd[MAXPLAYERS + 1]
-bool gB_boostRead[MAXPLAYERS + 1]
+bool gB_boostRead[MAXPLAYERS + 1][2]
 float gF_projectileVel[MAXPLAYERS + 1]
 float gF_vel[MAXPLAYERS + 1]
 bool gB_duck[MAXPLAYERS + 1]
@@ -103,30 +103,36 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetEntityClassname(activeWeapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+		//if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
+		if(buttons & IN_ATTACK))
+		{
+			gB_boostRead[client][0] = true
+		}
+		if(!(buttons & IN_ATTACK) && gB_boostRead[client][0])
 		{
 			gF_boostTimeStart[client] = GetEngineTime()
-			gB_boostRead[client] = true
+			gB_boostRead[client][1] = true
 			float velExtra[3]
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velExtra)
 			gF_vel[client] = SquareRoot(Pow(velExtra[0], 2.0) + Pow(velExtra[1], 2.0))
 			gB_duck[client] = view_as<bool>(buttons & IN_DUCK)
 			gF_angles[client][0] = angles[0]
 			gF_angles[client][1] = angles[1]
+			gB_boostRead[client][0] = false
 		}
-		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client])
+		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client][1])
 		{
 			gF_boostTimeEnd[client] = GetEngineTime()
-			if(gF_boostTimeEnd[client] - gF_boostTimeStart[client] < 2.0)
+			if(gF_boostTimeEnd[client] - gF_boostTimeStart[client] < 1.0)
 				CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
-			gB_boostRead[client] = false
+			gB_boostRead[client][1] = false
 		}
 	}
 }
 
 Action timer_finalMSG(Handle timer, int client)
 {
-	if(gB_boostStats[client])
+	if(IsClientInGame(client) && gB_boostStats[client])
 		PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_vel[client], gB_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
 	for(int i = 1; i <= MaxClients; i++)
 	{
