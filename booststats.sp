@@ -38,6 +38,7 @@ float gF_vel[MAXPLAYERS + 1]
 bool gB_duck[MAXPLAYERS + 1]
 bool gB_boostStats[MAXPLAYERS + 1]
 float gF_angles[MAXPLAYERS + 1][3]
+bool gB_projectile[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -56,6 +57,7 @@ public void OnPluginStart()
 public void OnClientPutInServer(int client)
 {
 	gB_boostStats[client] = false
+	gB_projectile[client] = false
 }
 
 Action cmd_booststats(int client, int args)
@@ -92,6 +94,7 @@ void frame_projectileVel(int ref)
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+		gB_projectile[client] = true
 	}
 }
 
@@ -127,7 +130,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 Action timer_finalMSG(Handle timer, int client)
 {
-	if(IsClientInGame(client) && gB_boostStats[client])
+	if(IsClientInGame(client) && gB_boostStats[client] && gB_projectile[client])
 		PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_vel[client], gB_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -135,8 +138,9 @@ Action timer_finalMSG(Handle timer, int client)
 		{
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-			if(observerMode < 7 && observerTarget == client && gB_boostStats[i])
+			if(observerMode < 7 && observerTarget == client && gB_boostStats[i] && gB_projectile[client])
 				PrintToChat(i, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_vel[client], gB_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
 		}
 	}
+	gB_projectile[client] = false
 }
