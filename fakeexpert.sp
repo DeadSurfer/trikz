@@ -510,7 +510,7 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	int ragdoll = GetEntPropEnt(client, Prop_Data, "m_hRagdoll")
+	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	RemoveEntity(ragdoll)
 }
 
