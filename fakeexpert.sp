@@ -587,23 +587,23 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//color[2] = 0
 			//color[3] = 255
 			//SetEntProp(vm, Prop_Data, "m_clrRender", color)
-			SetEntityRenderMode(vm, RENDER_TRANSALPHA)
+			//SetEntityRenderMode(vm, RENDER_TRANSALPHA)
 			//SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSCOLOR)
-			SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSALPHA)
+			//SetEntProp(vm, Prop_Data, "m_nRenderMode", RENDER_TRANSALPHA)
 			//int r = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 0)
 			//int g = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 1)
 			//int b = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 2)
 			//int a = GetEntProp(vm, Prop_Data, "m_clrRender", 1, 3) //https://github.com/HotoCocoaco/Zephyrus-store-fix/blob/ebfc622a67d80655ea3e8954d431d806b4eff4fa/scripting/store/invisibility.sp#L47
 			//PrintToServer("%i %i %i %i", r, g, b, a)
-			int offset = GetEntSendPropOffs(vm, "m_clrRender")
-			PrintToServer("%i", offset)
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255, 1, true) //https://github.com/alliedmodders/sourcemod/blob/1fbe5e1daaee9ba44164078fe7f59d862786e612/plugins/include/entity_prop_stocks.inc#L447
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0, 1, true)
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0, 1, true)
-			SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255, 1, true) //https://pastebin.com/CiY6ey59
+			//int offset = GetEntSendPropOffs(vm, "m_clrRender")
+			//PrintToServer("%i", offset)
+			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender"), 255, 1, true) //https://github.com/alliedmodders/sourcemod/blob/1fbe5e1daaee9ba44164078fe7f59d862786e612/plugins/include/entity_prop_stocks.inc#L447
+			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 1, 0, 1, true)
+			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 2, 0, 1, true)
+			//SetEntData(vm, FindDataMapInfo(vm, "m_clrRender") + 3, 255, 1, true) //https://pastebin.com/CiY6ey59
 			//SetEntityRenderColor(vm, 255, 0, 0, 255)
 			//SetEntProp(pv, Prop_Data, "m_fEffects", 16) //https://forums.alliedmods.net/printthread.php?t=134571&pp=40
-			DispatchKeyValue(vm, "rendercolor", "255 0 0")
+			//DispatchKeyValue(vm, "rendercolor", "255 0 0")
 			//Dispat
 		}
 		else
