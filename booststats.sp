@@ -103,7 +103,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetEntityClassname(activeWeapon, sWeapon, 32)
 	if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
-		//if(GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK)
 		if(buttons & IN_ATTACK)
 			gB_boostRead[client][0] = true
 		if(!(buttons & IN_ATTACK) && gB_boostRead[client][0])
