@@ -3486,9 +3486,9 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-	char sWeapon[32]
-	GetEntityClassname(weapon, sWeapon, 32)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
+	//char sWeapon[32]
+	//GetEntityClassname(weapon, sWeapon, 32)
+	//if(StrEqual(sWeapon, "weapon_flashbang"))
 	{
 		int index
 		while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
