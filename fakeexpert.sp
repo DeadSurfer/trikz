@@ -346,8 +346,6 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
-	
-	//CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -474,21 +472,6 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 		SetEntityRenderColor(client, 255, 255, 255, 255)
 	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.	
-	//SetEntityRenderColor(client, 255, 255, 255, 255)
-	//https://forums.alliedmods.net/showthread.php?t=273885
-	//gI_viewmodel[client] = 
-	/*int index
-	while((index = FindEntityByClassname(index, "predicted_viewmodel")) > 0)
-	{
-		int owner = GetEntPropEnt(index, Prop_Data, "m_hOwner")
-		if(client == owner)
-		{
-			gI_viewmodel[client] = owner
-			PrintToServer("%i %i", client, owner)
-			continue
-		}
-	}*/
-}
 
 void event_button(const char[] output, int caller, int activator, float delay)
 {
@@ -600,19 +583,18 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 			Checkpoint(param1)
 		}
 		case MenuAction_Cancel: // trikz redux menuaction end
+		{
 			switch(param2)
 			{
 				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
 					Trikz(param1)
 			}
-		//case MenuAction_End:
-		//	delete menu
+		}
 	}
 }
 
 public void OnClientPutInServer(int client)
 {
-	//SDKHook(client, SDKHook_SpawnPost, SDKPlayerSpawnPost)
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
@@ -875,8 +857,6 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			gB_MenuIsOpen[param1] = false //idea from expert zone.
 		case MenuAction_Display:
 			gB_MenuIsOpen[param1] = true
-		//case MenuAction_End:
-		//	delete menu
 	}
 }
 
@@ -959,8 +939,6 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			menu2.AddItem(sItem, "No")
 			menu2.Display(partner, 20)
 		}
-		//case MenuAction_End:
-		//	delete menu
 	}
 }
 
@@ -998,8 +976,6 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 					PrintToChat(param1, "Partnersheep declined with %N.", partner)
 			}
 		}
-		//case MenuAction_End:
-		//	delete menu
 	}
 }
 
@@ -1026,8 +1002,6 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		//case MenuAction_End:
-		//	delete menu
 	}
 }
 
@@ -3019,8 +2993,6 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		//case MenuAction_End:
-		//	delete menu
 	}
 }
 
@@ -3127,8 +3099,6 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
-		//case MenuAction_End:
-		//	delete menu
 	}
 }
 
@@ -3200,8 +3170,6 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 			gB_MenuIsOpen[param1] = false //idea from expert zone.
 		case MenuAction_Display:
 			gB_MenuIsOpen[param1] = true
-		//case MenuAction_End:
-		//	delete menu
 	}
 }
 
@@ -3359,10 +3327,10 @@ Action SDKProjectile(int entity)
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		gB_silentKnife = true
 		FakeClientCommand(client, "use weapon_knife")
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 //https://forums.alliedmods.net/archive/index.php/t-287052.html
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		CreateTimer(1.45, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //sometimes flashbang going to flash, entindextoentref must fix it.
+		CreateTimer(1.45, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //so createtimer not acurate, so we need make faster timings to prevent random blinds.
 	}
 }
 
@@ -3385,15 +3353,6 @@ Action timer_deleteProjectile(Handle timer, int entRef)
 	if(IsValidEntity(entity))
 		RemoveEntity(entity)
 }
-
-/*void SDKPlayerSpawnPost(int client)
-{
-	if(!GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
-	{
-		GivePlayerItem(client, "weapon_flashbang")
-		GivePlayerItem(client, "weapon_flashbang")
-	}
-}*/
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
