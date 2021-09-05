@@ -104,9 +104,9 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gB_jumped[client] = true
 		float origin[3]
 		if(gB_runboost[client])
-			GetClientAbsOrigin(gI_rbBooster[client], origin)
+			GetEntityAbsOrigin(gI_rbBooster[client], origin)
 		else
-			GetClientAbsOrigin(client, origin)
+			GetEntityAbsOrigin(client, origin)
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
@@ -116,12 +116,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
 		gF_dotTime[client] = GetEngineTime()
-		GetClientAbsOrigin(client, gF_skyOrigin[client])
-		float dir[3]
-		dir[0] = 90.0 //thats right you'd think its a z value - this will point you down 
-		TR_TraceRayEx(gF_skyOrigin[client], dir, MASK_PLAYERSOLID_BRUSHONLY, RayType_Infinite)
-		if(TR_DidHit()) 
-			TR_GetEndPosition(gF_skyOrigin[client])
+		GetEntityAbsOrigin(client, gF_skyOrigin[client])
 	}
 }
 
@@ -255,12 +250,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
 	{
 		float origin[3]
-		GetClientAbsOrigin(client, origin)
-		float dir[3]
-		dir[0] = 90.0 //thats right you'd think its a z value - this will point you down 
-		TR_TraceRayEx(origin, dir, MASK_PLAYERSOLID_BRUSHONLY, RayType_Infinite)
-		if(TR_DidHit()) 
-			TR_GetEndPosition(origin)
+		GetEntityAbsOrigin(client, origin)
 		char sZLevel[32]
 		if(origin[2] - gF_origin[client][2] > 1.705139) //1.475586 without rb
 			Format(sZLevel, 32, "[Rise|%.1f] ", origin[2] - gF_origin[client][2])
@@ -308,7 +298,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		ResetFactory(client)
 		gB_ladder[client] = true
 		float origin[3]
-		GetClientAbsOrigin(client, origin)
+		GetEntityAbsOrigin(client, origin)
 		gF_origin[client][0] = origin[0]
 		gF_origin[client][1] = origin[1]
 		gF_origin[client][2] = origin[2]
@@ -346,7 +336,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
 	{
 		float origin[3]
-		GetClientAbsOrigin(client, origin)
+		GetEntityAbsOrigin(client, origin)
 		PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
 		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
 		{
@@ -405,7 +395,7 @@ Action StartTouchProjectile(int entity, int other)
 		float entityOrigin[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityOrigin)
 		float otherOrigin[3]
-		GetClientAbsOrigin(other, otherOrigin)
+		GetEntityAbsOrigin(other, otherOrigin)
 		float entityMaxs[3]
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", entityMaxs)
 		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2]
@@ -422,9 +412,9 @@ void TouchClient(int client, int other)
 	if(0 < other <= MaxClients && gI_tick[client] == 30)
 	{
 		float clientOrigin[3]
-		GetClientAbsOrigin(client, clientOrigin)
+		GetEntityAbsOrigin(client, clientOrigin)
 		float otherOrigin[3]
-		GetClientAbsOrigin(other, otherOrigin)
+		GetEntityAbsOrigin(other, otherOrigin)
 		float clientMaxs[3]
 		GetClientMaxs(client, clientMaxs)
 		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
@@ -446,9 +436,9 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && Trikz_GetClientButtons(other) & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
-		GetClientAbsOrigin(client, originBooster)
+		GetEntityAbsOrigin(client, originBooster)
 		float originFlyer[3]
-		GetClientAbsOrigin(other, originFlyer)
+		GetEntityAbsOrigin(other, originFlyer)
 		float maxs[3]
 		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 		float delta = originFlyer[2] - originBooster[2] - maxs[2]
@@ -495,3 +485,16 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		}
 	}
 }
+
+//https://forums.alliedmods.net/showthread.php?t=98812
+void GetEntityAbsOrigin(int entity, float origin[3])
+{
+	float mins[3]
+	float maxs[3]
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
+	GetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
+	GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
+	origin[0] += (mins[0] + maxs[0]) * 0.5
+	origin[1] += (mins[1] + maxs[1]) * 0.5
+	origin[2] += (mins[2] + maxs[2]) * 0.5
+} 
