@@ -619,11 +619,12 @@ void SDKWeaponSwitchPost(int client, int weapon)
 			//int index
 			//while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
 			{
-				SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
-				DispatchKeyValue(weapon, "skin", "2")
+				//SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
+				//DispatchKeyValue(weapon, "skin", "2")
 				//PrintToServer("%i %i", weapon, index)
 			}
 		}
+		CreateTimer(1.0, timer_wModel, weapon, TIMER_FLAG_NO_MAPCHANGE)
 		//int ent
 		//char viewModel[64] //https://forums.alliedmods.net/showthread.php?t=319516&page=2
 		//SDKCall(gH_viewmodel, ent, viewModel, 64) //https://forums.alliedmods.net/showthread.php?t=100404
@@ -632,6 +633,12 @@ void SDKWeaponSwitchPost(int client, int weapon)
 		//PrintToServer("%i %i", client, index)
 		//PrintToServer("%i", vm)
 	}
+}
+
+Action timer_wModel(Handle timer, int weapon)
+{
+	SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
+	DispatchKeyValue(weapon, "skin", "2")
 }
 
 Action cmd_checkpoint(int client, int args)
