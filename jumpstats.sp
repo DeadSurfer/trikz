@@ -491,7 +491,7 @@ void GetEntityAbsOrigin(int entity, float origin[3])
 {
 	float mins[3]
 	float maxs[3]
-	GetEntPropVector(entity, Prop_Send, "m_vecAbsOrigin", origin)
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", origin)
 	GetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
 	GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	origin[0] += (mins[0] + maxs[0]) * 0.5
