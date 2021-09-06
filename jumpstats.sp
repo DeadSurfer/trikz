@@ -104,34 +104,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
 {
-	//if(!GetEntProp(caller, Prop_Data, "m_bDisabled"))
 	gB_teleported[activator] = true
-	PrintToServer("test")
-	/*PrintToServer("%i %i %f %i", 
-	GetEntPropEnt(caller, Prop_Data, "m_hActivator"), 
-	caller,
-	GetEntPropFloat(caller, Prop_Data, "m_flMoveDistance"),
-	GetEntProp(caller, Prop_Data, "m_hTouchingEntities"))*/
-	//char sTarget[64]
-	//GetEntPropString(activator, Prop_Data, "m_target", sTarget, 64)
-	//PrintToServer("%s", sTarget)
-	/*char sEntityFilter[64]
-	GetEntPropString(caller, Prop_Data, "m_iFilterName", sEntityFilter, 64)
-	PrintToServer("Trigger filter name: %s", sEntityFilter)
-	int filter
-	char sName[64]
-	while((filter = FindEntityByClassname(filter, "filter_activator_name")) > 0)
-	{
-		GetEntPropString(filter, Prop_Data, "m_iName", sName, 64)
-		if(StrEqual(sName, sEntityFilter))
-			continue
-	}
-	char sFilter[64]
-	GetEntPropString(filter, Prop_Data, "m_iFilterName", sFilter, 64) //filtername
-	PrintToServer("filter_activator_name filtername: %s", sFilter)
-	char sClientName[64]
-	GetEntPropString(activator, Prop_Data, "m_iName", sClientName, 64)
-	PrintToServer("Client Filter: %s", sClientName)*/
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
