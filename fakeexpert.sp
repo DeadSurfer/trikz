@@ -480,7 +480,7 @@ void event_button(const char[] output, int caller, int activator, float delay)
 	{
 		if(gB_button[activator])
 			PrintToChat(activator, "You have pressed a button.")
-		if(gB_pbutton[gI_partner[activator]] && gI_partner[activator])
+		if(gB_pbutton[gI_partner[activator]])
 			PrintToChat(gI_partner[activator], "Your partner have pressed a button.")
 	}
 }
