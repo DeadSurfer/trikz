@@ -136,6 +136,7 @@ bool gB_button[MAXPLAYERS + 1]
 bool gB_pbutton[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
+bool gB_teleported[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -198,6 +199,12 @@ public void OnPluginStart()
 	HookEntityOutput("func_button", "OnPressed", event_button)
 	HookEvent("player_jump", event_playerjump)
 	HookEvent("player_death", event_playerdeath)
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
+	for(int i = 0; i < sizeof(sOutputs); i++)
+	{
+		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
+		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+	}
 }
 
 public void OnMapStart()
@@ -491,6 +498,11 @@ Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	RemoveEntity(ragdoll)
+}
+
+void output_teleport(const char[] output, int caller, int activator, float delay)
+{
+	gB_teleported[activator] = true
 }
 
 /*void SDKWeaponSwitchPost(int client, int weapon)
@@ -3399,7 +3411,8 @@ void MLStats(int client, bool ground = false)
 	{
 		float x = gF_mlsDistance[client][1][0] - gF_mlsDistance[client][0][0]
 		float y = gF_mlsDistance[client][1][1] - gF_mlsDistance[client][0][1]
-		Format(sFullPrint, 256, "%s\nDistance: %.1f units", sFullPrint, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0)
+		Format(sFullPrint, 256, "%s\nDistance: %.1f units %s", sFullPrint, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, gB_teleported[client] ? "[TP] " : "")
+		gB_teleported[client] = false
 	}
 	if(gB_mlstats[gI_mlsBooster[client]])
 	{
