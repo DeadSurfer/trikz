@@ -3393,8 +3393,9 @@ Action timer_clantag(Handle timer, int client)
 			}
 		}
 		else
-			KillTimer(gH_timerClanTag[client])
+			return Plugin_Handled
 	}
+	return Plugin_Continue
 }
 
 void MLStats(int client, bool ground = false)
