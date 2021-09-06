@@ -111,7 +111,7 @@ void output_teleport(const char[] output, int caller, int activator, float delay
 {
 	if(!GetEntProp(caller, Prop_Data, "m_bDisabled"))
 		gB_teleported[activator] = true
-	PrintToServer("%i", GetEntPropEnt(caller, Prop_Data, "m_hActivator"))
+	PrintToServer("%i %i", GetEntPropEnt(caller, Prop_Data, "m_hActivator"), caller)
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
