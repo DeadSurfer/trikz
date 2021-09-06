@@ -116,9 +116,18 @@ void output_teleport(const char[] output, int caller, int activator, float delay
 	caller,
 	GetEntPropFloat(caller, Prop_Data, "m_flMoveDistance"),
 	GetEntProp(caller, Prop_Data, "m_hTouchingEntities"))*/
-	char sTarget[64]
-	GetEntPropString(activator, Prop_Data, "m_target", sTarget, 64)
-	PrintToServer("%s", sTarget)
+	//char sTarget[64]
+	//GetEntPropString(activator, Prop_Data, "m_target", sTarget, 64)
+	//PrintToServer("%s", sTarget)
+	char sEntityFilter[64]
+	GetEntPropString(caller, Prop_Data, "m_iFilterName", sEntityFilter, 64)
+	int filter = FindEntityByClassname(sEntityFilter)
+	char sFilter[64]
+	GetEntPropString(filter, Prop_Data, "m_iFilterName", sFilter, 64) //filtername
+	PrintToServer("Trigger filter: %s", sFilter)
+	char sClientName[64]
+	GetEntDataString(activator, Prop_Data, "m_iName", sClientName, 64)
+	PrintToServer("Client Filter: %s", sClientName)
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
