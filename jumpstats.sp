@@ -133,7 +133,7 @@ void output_teleport(const char[] output, int caller, int activator, float delay
 	GetEntPropString(filter, Prop_Data, "m_iFilterName", sFilter, 64) //filtername
 	PrintToServer("Trigger filter: %s", sFilter)
 	char sClientName[64]
-	GetEntDataString(activator, Prop_Data, "m_iName", sClientName, 64)
+	GetEntPropString(activator, Prop_Data, "m_iName", sClientName, 64)
 	PrintToServer("Client Filter: %s", sClientName)
 }
 
