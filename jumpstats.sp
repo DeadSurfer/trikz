@@ -74,7 +74,7 @@ public void OnPluginStart()
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_js", cmd_jumpstats)
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
-	for(int i = 0; i <= sizeof(sOutputs); i++)
+	for(int i = 0; i < sizeof(sOutputs); i++)
 	{
 		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
 		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
