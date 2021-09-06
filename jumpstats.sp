@@ -73,17 +73,12 @@ public void OnPluginStart()
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_js", cmd_jumpstats)
-	HookEntityOutput("trigger_teleport", "OnStartTouch", output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
-	HookEntityOutput("trigger_teleport", "OnEndTouchAll", output_teleport)
-	HookEntityOutput("trigger_teleport", "OnTouching", output_teleport)
-	HookEntityOutput("trigger_teleport", "OnStartTouch", output_teleport)
-	HookEntityOutput("trigger_teleport", "OnTrigger", output_teleport)
-	
-	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
-	HookEntityOutput("trigger_teleport_relative", "OnEndTouchAll", output_teleport)
-	HookEntityOutput("trigger_teleport_relative", "OnTouching", output_teleport)
-	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", output_teleport)
-	HookEntityOutput("trigger_teleport_relative", "OnTrigger", output_teleport)
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
+	for(int i = 0; i <= sizeof(sOutputs); i++)
+	{
+		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
+		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+	}
 }
 
 public void OnClientPutInServer(int client)
@@ -119,7 +114,7 @@ void output_teleport(const char[] output, int caller, int activator, float delay
 	//char sTarget[64]
 	//GetEntPropString(activator, Prop_Data, "m_target", sTarget, 64)
 	//PrintToServer("%s", sTarget)
-	char sEntityFilter[64]
+	/*char sEntityFilter[64]
 	GetEntPropString(caller, Prop_Data, "m_iFilterName", sEntityFilter, 64)
 	PrintToServer("Trigger filter name: %s", sEntityFilter)
 	int filter
@@ -135,7 +130,7 @@ void output_teleport(const char[] output, int caller, int activator, float delay
 	PrintToServer("filter_activator_name filtername: %s", sFilter)
 	char sClientName[64]
 	GetEntPropString(activator, Prop_Data, "m_iName", sClientName, 64)
-	PrintToServer("Client Filter: %s", sClientName)
+	PrintToServer("Client Filter: %s", sClientName)*/
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
@@ -143,6 +138,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
+		ResetFactory(client)
 		gB_jumped[client] = true
 		float origin[3]
 		if(gB_runboost[client])
