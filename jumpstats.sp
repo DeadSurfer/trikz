@@ -55,6 +55,7 @@ float gF_boostTime[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
 //int gI_entityButtons[MAXPLAYERS + 1]
 native int Trikz_GetClientButtons(int client)
+bool gB_teleported[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -72,6 +73,17 @@ public void OnPluginStart()
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_js", cmd_jumpstats)
+	HookEntityOutput("trigger_teleport", "OnStartTouch", output_teleport)
+	HookEntityOutput("trigger_teleport", "OnEndTouchAll", output_teleport)
+	HookEntityOutput("trigger_teleport", "OnTouching", output_teleport)
+	HookEntityOutput("trigger_teleport", "OnStartTouch", output_teleport)
+	HookEntityOutput("trigger_teleport", "OnTrigger", output_teleport)
+	
+	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", output_teleport)
+	HookEntityOutput("trigger_teleport_relative", "OnEndTouchAll", output_teleport)
+	HookEntityOutput("trigger_teleport_relative", "OnTouching", output_teleport)
+	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", output_teleport)
+	HookEntityOutput("trigger_teleport_relative", "OnTrigger", output_teleport)
 }
 
 public void OnClientPutInServer(int client)
@@ -93,6 +105,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	if(!IsChatTrigger())
 		if(StrEqual(sArgs, "js"))
 			cmd_jumpstats(client, 0)
+}
+
+void output_teleport(const char[] output, int caller, int activator, float delay)
+{
+	gB_teleported[activator] = true
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
@@ -268,7 +285,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(1000.0 > distance >= 230.0 && pre < 280.0)
 			{
-				PrintToChat(client, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+				PrintToChat(client, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 				if(gB_runboost[client])
 					PrintToChat(gI_rbBooster[client], "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			}
@@ -281,7 +298,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+						PrintToChat(i, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			}
 		}
 		ResetFactory(client)
@@ -348,7 +365,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			sync *= 100.0
 			if(gB_jumpstats[client])
 				if(190.0 > distance >= 22.0)
-					PrintToChat(client, "[SM] Ladder: %.1f units, Strafes: %i, Sync: %.1f", distance, gI_strafeCount[client], sync)
+					PrintToChat(client, "[SM] %sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && IsClientObserver(i))
@@ -357,7 +374,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 						if(190.0 > distance >= 22.0)
-							PrintToChat(i, "[SM] Ladder: %.1f units, Strafes: %i, Sync: %.1f", distance, gI_strafeCount[client], sync)
+							PrintToChat(i, "[SM] %sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
 				}
 			}
 		}
@@ -384,6 +401,7 @@ void ResetFactory(int client)
 	gB_strafeBlockS[client] = false
 	gB_strafeBlockW[client] = false
 	gB_runboost[client] = false
+	gB_teleported[client] = false
 }
 
 Action StartTouchProjectile(int entity, int other)
