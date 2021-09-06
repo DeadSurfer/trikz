@@ -292,7 +292,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(!groundEntity && gB_runboost[client])
 			gB_runboost[client] = false
 	}
-	if(GetEntityMoveType(client) & MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
+	if(GetEntityMoveType(client) & MOVETYPE_LADDER && !(GetEntityMoveType(client) & MOVETYPE_NOCLIP) && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
 		ResetFactory(client)
 		gB_ladder[client] = true
