@@ -125,7 +125,7 @@ void output_teleport(const char[] output, int caller, int activator, float delay
 	char sName[64]
 	while((filter = FindEntityByClassname(filter, "filter_activator_name")) > 0)
 	{
-		GetEntPropString(entity, Prop_Data, "m_iName", sName, 64)
+		GetEntPropString(filter, Prop_Data, "m_iName", sName, 64)
 		if(StrEqual(sName, sEntityFilter))
 			continue
 	}
