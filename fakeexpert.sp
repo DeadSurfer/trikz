@@ -67,7 +67,6 @@ bool gB_skyBoost[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
-//int gI_skyFrame[MAXPLAYERS + 1]
 int gI_entityFlags[MAXPLAYERS + 1]
 float gF_devmap[2]
 bool gB_isDevmap
@@ -114,16 +113,13 @@ bool gB_afk[MAXPLAYERS + 1]
 float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
-//int gI_viewmodel[MAXPLAYERS + 1]
 //int gI_vModelView
 //int gI_vModelViewDef
 //int gI_wModel
 //int gI_wModelDef
 float gF_pingTime[MAXPLAYERS + 1]
 bool gB_pingLock[MAXPLAYERS + 1]
-//Handle gH_viewmodel
 bool gB_msg[MAXPLAYERS + 1]
-//StringMap gSM_char
 int gI_voters
 int gI_afkClient
 bool gB_hudVel[MAXPLAYERS + 1]
@@ -214,7 +210,6 @@ public void OnMapStart()
 		if(gB_isDevmap)
 			gB_zoneFirst[i] = false
 	}
-			
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool isSourceTV = CV_sourcetv.BoolValue //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 	if(isSourceTV)
@@ -456,11 +451,11 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	GetClientModel(client, sModel, PLATFORM_MAX_PATH)
 	if(StrEqual(sModel, "models/player/ct_urban.mdl"))
 		gI_class[client] = 1
-	if(StrEqual(sModel, "models/player/ct_gsg9.mdl"))
+	else if(StrEqual(sModel, "models/player/ct_gsg9.mdl"))
 		gI_class[client] = 2
-	if(StrEqual(sModel, "models/player/ct_sas.mdl"))
+	else if(StrEqual(sModel, "models/player/ct_sas.mdl"))
 		gI_class[client] = 3
-	if(StrEqual(sModel, "models/player/ct_gign.mdl"))
+	else if(StrEqual(sModel, "models/player/ct_gign.mdl"))
 		gI_class[client] = 4
 	if(gB_color[client])
 	{
@@ -762,12 +757,6 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 	}
 }
 
-/*void frame_skyBoost(int client)
-{
-	if(IsClientInGame(client) && IsPlayerAlive(client))
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
-}*/
-
 void SDKBoostFix(int client)
 {
 	if(gI_boost[client] == 1)
@@ -1031,7 +1020,7 @@ Action cmd_color(int client, int args)
 		color = 8
 	if(0 <= color <= 8)
 		Color(client, true, color)
-	else
+	else if(!color)
 		Color(client, true)
 	return Plugin_Handled
 }
@@ -1059,7 +1048,7 @@ void Color(int client, bool customSkin, int color = -1)
 				gI_colorCount[client] = 0
 				gI_colorCount[gI_partner[client]] = 0
 			}
-			if(0 <= color <= 8)
+			else if(0 <= color <= 8)
 			{
 				gI_colorCount[client] = color
 				gI_colorCount[gI_partner[client]] = color
@@ -1614,7 +1603,7 @@ void ZoneEditor2(int client)
 			menu.AddItem(sCP, sFormat)
 		}
 	}
-	if(!gB_haveZone[0] && !gB_haveZone[1] && !gI_cpCount)
+	else if(!gB_haveZone[0] && !gB_haveZone[1] && !gI_cpCount)
 		menu.AddItem("-1", "No zones are setup.", ITEMDRAW_DISABLED)
 	menu.Display(client, MENU_TIME_FOREVER)
 }
@@ -1709,39 +1698,39 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			menu.GetItem(param2, sItem, 16)
 			if(StrEqual(sItem, "00"))
 				TeleportEntity(param1, gF_center[0], NULL_VECTOR, NULL_VECTOR)
-			if(StrEqual(sItem, "01"))
+			else if(StrEqual(sItem, "01"))
 				gF_originStartZone[0][0] += 16.0
-			if(StrEqual(sItem, "02"))
+			else if(StrEqual(sItem, "02"))
 				gF_originStartZone[0][0] -= 16.0
-			if(StrEqual(sItem, "03"))
+			else if(StrEqual(sItem, "03"))
 				gF_originStartZone[0][1] += 16.0
-			if(StrEqual(sItem, "04"))
+			else if(StrEqual(sItem, "04"))
 				gF_originStartZone[0][1] -= 16.0
-			if(StrEqual(sItem, "05"))
+			else if(StrEqual(sItem, "05"))
 				gF_originStartZone[1][0] += 16.0
-			if(StrEqual(sItem, "06"))
+			else if(StrEqual(sItem, "06"))
 				gF_originStartZone[1][0] -= 16.0
-			if(StrEqual(sItem, "07"))
+			else if(StrEqual(sItem, "07"))
 				gF_originStartZone[1][1] += 16.0
-			if(StrEqual(sItem, "08"))
+			else if(StrEqual(sItem, "08"))
 				gF_originStartZone[1][1] -= 16.0
-			if(StrEqual(sItem, "10"))
+			else if(StrEqual(sItem, "10"))
 				TeleportEntity(param1, gF_center[1], NULL_VECTOR, NULL_VECTOR)
-			if(StrEqual(sItem, "11"))
+			else if(StrEqual(sItem, "11"))
 				gF_originEndZone[0][0] += 16.0
-			if(StrEqual(sItem, "12"))
+			else if(StrEqual(sItem, "12"))
 				gF_originEndZone[0][0] -= 16.0
-			if(StrEqual(sItem, "13"))
+			else if(StrEqual(sItem, "13"))
 				gF_originEndZone[0][1] += 16.0
-			if(StrEqual(sItem, "14"))
+			else if(StrEqual(sItem, "14"))
 				gF_originEndZone[0][1] -= 16.0
-			if(StrEqual(sItem, "15"))
+			else if(StrEqual(sItem, "15"))
 				gF_originEndZone[1][0] += 16.0
-			if(StrEqual(sItem, "16"))
+			else if(StrEqual(sItem, "16"))
 				gF_originEndZone[1][0] -= 16.0
-			if(StrEqual(sItem, "17"))
+			else if(StrEqual(sItem, "17"))
 				gF_originEndZone[1][1] += 16.0
-			if(StrEqual(sItem, "18"))
+			else if(StrEqual(sItem, "18"))
 				gF_originEndZone[1][1] -= 16.0
 			char sExploded[16][16]
 			ExplodeString(sItem, ";", sExploded, 16, 16)
@@ -1782,7 +1771,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_originStartZone[0][0]), RoundFloat(gF_originStartZone[0][1]), RoundFloat(gF_originStartZone[0][2]), RoundFloat(gF_originStartZone[1][0]), RoundFloat(gF_originStartZone[1][1]), RoundFloat(gF_originStartZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 0)
 			}
-			if(StrEqual(sItem, "1"))
+			else if(StrEqual(sItem, "1"))
 			{
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_originEndZone[0][0]), RoundFloat(gF_originEndZone[0][1]), RoundFloat(gF_originEndZone[0][2]), RoundFloat(gF_originEndZone[1][0]), RoundFloat(gF_originEndZone[1][1]), RoundFloat(gF_originEndZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 1)
@@ -2271,18 +2260,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				{
 					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-					if(observerMode < 7 && observerTarget == client)
-					{
-						SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
-						ShowHudText(i, 1, "MAP FINISHED!")
-						SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
-						ShowHudText(i, 2, "NEW SERVER RECORD!")
-						SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
-						ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-						SetHudTextParams(-1.0, -0.6, 5.0, 255, 0, 0, 255)
-						ShowHudText(i, 4, "+00:00:00")
-					}
-					if(IsClientSourceTV(i))
+					if(IsClientSourceTV(i) || (observerMode < 7 && observerTarget == client))
 					{
 						SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
 						ShowHudText(i, 1, "MAP FINISHED!")
@@ -2314,18 +2292,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					{
 						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-						if(observerMode < 7 && observerTarget == client)
-						{
-							SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
-							ShowHudText(i, 1, "MAP FINISHED!")
-							SetHudTextParams(-1.0, -0.75, 5.0, 0, 255, 0, 255)
-							ShowHudText(i, 2, "NEW SERVER RECORD!")
-							SetHudTextParams(-1.0, -0.63, 5.0, 255, 255, 255, 255)
-							ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
-							SetHudTextParams(-1.0, -0.6, 5.0, 0, 255, 0, 255)
-							ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
-						}
-						if(IsClientSourceTV(i))
+						if(IsClientSourceTV(i) || (observerMode < 7 && observerTarget == client))
 						{
 							SetHudTextParams(-1.0, -0.8, 5.0, 0, 255, 255, 255)
 							ShowHudText(i, 1, "MAP FINISHED!")
@@ -2664,7 +2631,7 @@ void DrawZone(int client, float life)
 		int modelType
 		if(i == 1)
 			modelType = 1
-		if(i > 1)
+		else if(i > 1)
 			modelType = 2
 		for(int j = 0; j <= 3; j++)
 		{
@@ -2819,7 +2786,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-			if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+			else if(!gB_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 		}
 	}
@@ -2875,7 +2842,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntityRenderColor(other, 255, 255, 255, 125)
 		}
 	}
-	if(IsPlayerAlive(client) && other == -1 && gB_block[client])
+	else if(IsPlayerAlive(client) && other == -1 && gB_block[client])
 	{
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 		{
