@@ -73,13 +73,13 @@ public void OnPluginStart()
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_js", cmd_jumpstats)
-	HookEntityOutput("trigger_teleport", "OnStartTouch", output_teleport)
+	HookEntityOutput("trigger_teleport", "OnStartTouch", output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
 	HookEntityOutput("trigger_teleport", "OnEndTouchAll", output_teleport)
 	HookEntityOutput("trigger_teleport", "OnTouching", output_teleport)
 	HookEntityOutput("trigger_teleport", "OnStartTouch", output_teleport)
 	HookEntityOutput("trigger_teleport", "OnTrigger", output_teleport)
 	
-	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", output_teleport)
+	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	HookEntityOutput("trigger_teleport_relative", "OnEndTouchAll", output_teleport)
 	HookEntityOutput("trigger_teleport_relative", "OnTouching", output_teleport)
 	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", output_teleport)
