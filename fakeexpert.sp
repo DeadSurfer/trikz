@@ -3385,17 +3385,15 @@ Action timer_clantag(Handle timer, int client)
 		if(IsClientInGame(client))
 		{
 			if(gB_state[client])
-				CS_SetClientClanTag(client, gS_clanTag[client][1])
-			else
 			{
-				CS_SetClientClanTag(client, gS_clanTag[client][0])
-				KillTimer(gH_timerClanTag[client])
+				CS_SetClientClanTag(client, gS_clanTag[client][1])
+				return Plugin_Continue
 			}
+			else
+				CS_SetClientClanTag(client, gS_clanTag[client][0])
 		}
-		else
-			return Plugin_Stop
 	}
-	return Plugin_Continue
+	return Plugin_Stop
 }
 
 void MLStats(int client, bool ground = false)
