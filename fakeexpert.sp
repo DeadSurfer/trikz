@@ -3393,7 +3393,7 @@ Action timer_clantag(Handle timer, int client)
 			}
 		}
 		else
-			return Plugin_Handled
+			return Plugin_Stop
 	}
 	return Plugin_Continue
 }
