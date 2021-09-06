@@ -104,8 +104,9 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
 {
-	if(!GetEntProp(caller, Prop_Data, "m_bDisabled"))
-		gB_teleported[activator] = true
+	//if(!GetEntProp(caller, Prop_Data, "m_bDisabled"))
+	gB_teleported[activator] = true
+	PrintToServer("test")
 	/*PrintToServer("%i %i %f %i", 
 	GetEntPropEnt(caller, Prop_Data, "m_hActivator"), 
 	caller,
