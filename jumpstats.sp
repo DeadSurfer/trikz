@@ -112,8 +112,8 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
-		ResetFactory(client)
 		gB_jumped[client] = true
+		gB_teleported[client] = false
 		float origin[3]
 		if(gB_runboost[client])
 			GetClientAbsOrigin(gI_rbBooster[client], origin)
