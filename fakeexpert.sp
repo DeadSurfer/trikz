@@ -475,10 +475,12 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	gB_msg[client] = false
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
-	//if(gI_points[client] < 1000)
-	//	Format(sPoints, 32, "%i", gI_points[client])
-	//else if(gI_points[client] > 999)
-	//	Format(sPoints, 32, "%i", gI_points[client])
+	if(gI_points[client] < 1000)
+		Format(sPoints, 32, "%i", gI_points[client])
+	else if(gI_points[client] > 999)
+		Format(sPoints, 32, "%fK", float(gI_points[client]) / 1000.0)
+	else if(gI_points[client] > 999999)
+		Format(sPoints, 32, "%fM", float(gI_points[client]) / 1000000.0)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
 		Format(sText, 256, "\x01*SPEC* [%i] \x07CCCCCC%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
