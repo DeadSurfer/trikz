@@ -422,11 +422,10 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i AND steamid = %i", points, playerid, partnerid)
 		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
-		PrintToServer("1. %i %i %i", points, playerid, partnerid)
 	}
 }
 
-void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
