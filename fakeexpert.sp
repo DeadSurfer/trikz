@@ -138,6 +138,7 @@ float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
+int gI_totalRecords
 
 public Plugin myinfo =
 {
@@ -353,12 +354,23 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT tier, map FROM tier")
+		Format(sQuery, 512, "SELECT COUNT(*) FROM records")
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
 
 void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		gI_totalRecords = results.FetchInt(0)
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT tier, map FROM tier")
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery)
+	}
+}
+
+void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
 {
 	while(results.FetchRow())
 	{
@@ -370,11 +382,11 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		DataPack dp = new DataPack()
 		dp.WriteCell(tier)
 		dp.WriteString(sMap)
-		gD_mysql.Query(SQLRecalculatePoints2, sQuery, dp)
+		gD_mysql.Query(SQLRecalculatePoints3, sQuery, dp)
 	}
 }
 
-void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
 	int tier = dp.ReadCell()
@@ -385,22 +397,12 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 	while(results.FetchRow())
 	{
 		int rowCount = results.FetchInt(0)
-		PrintToServer("%i", rowCount)
 		float points = float(tier) * (float(rowCount) / float(place)) //thanks to DeadSurfer
 		int id = results.FetchInt(1)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
-		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
-		place++
-	}
-}
-
-void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.HasResults == false)
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = 0")
 		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
+		place++
+		gI_totalRecords--
 	}
 }
 
@@ -408,13 +410,26 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 {
 	if(results.HasResults == false)
 	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM records")
-		gD_mysql.Query(SQLRecalculatePoints5, sQuery)
+		if(!gI_totalRecords)
+		{
+			char sQuery[512]
+			Format(sQuery, 512, "UPDATE users SET points = 0")
+			gD_mysql.Query(SQLRecalculatePoints5, sQuery)
+		}
 	}
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.HasResults == false)
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT * FROM records")
+		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+	}
+}
+
+void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
 {
 	while(results.FetchRow())
 	{
@@ -423,13 +438,13 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 		int points = results.FetchInt(16)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints7, sQuery)
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, partnerid)
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints7, sQuery)
 	}
 }
 
-void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints7(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
