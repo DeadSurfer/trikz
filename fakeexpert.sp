@@ -354,12 +354,24 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT COUNT(*) FROM records")
+		Format(sQuery, 512, "SELECT map FROM tier")
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
 
 void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
+{
+	while(results.FetchRow())
+	{
+		char sMap[192]
+		results.FetchString(0, sMap, 192)
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT COUNT(*) FROM records WHERE map = '%s'", sMap)
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery)
+	}
+}
+
+void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.FetchRow())
 	{
@@ -368,11 +380,11 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		PrintToServer("%i", gI_totalRecords[0])
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier, map FROM tier")
-		gD_mysql.Query(SQLRecalculatePoints2, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 	}
 }
 
-void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
 {
 	while(results.FetchRow())
 	{
@@ -385,11 +397,11 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		DataPack dp = new DataPack()
 		dp.WriteCell(tier)
 		dp.WriteString(sMap)
-		gD_mysql.Query(SQLRecalculatePoints3, sQuery, dp)
+		gD_mysql.Query(SQLRecalculatePoints4, sQuery, dp)
 	}
 }
 
-void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
 	int tier = dp.ReadCell()
@@ -402,23 +414,10 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		float points = float(tier) * (float(gI_totalRecords[1]) / float(place)) //thanks to DeadSurfer
 		int id = results.FetchInt(0)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
-		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints5, sQuery)
 		place++
 		gI_totalRecords[0]--
 		PrintToServer("%i", gI_totalRecords[0])
-	}
-}
-
-void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.HasResults == false)
-	{
-		if(!gI_totalRecords[0])
-		{
-			char sQuery[512]
-			Format(sQuery, 512, "UPDATE users SET points = 0")
-			gD_mysql.Query(SQLRecalculatePoints5, sQuery)
-		}
 	}
 }
 
@@ -426,13 +425,26 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 {
 	if(results.HasResults == false)
 	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM records")
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+		if(!gI_totalRecords[0])
+		{
+			char sQuery[512]
+			Format(sQuery, 512, "UPDATE users SET points = 0")
+			gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+		}
 	}
 }
 
 void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.HasResults == false)
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT * FROM records")
+		gD_mysql.Query(SQLRecalculatePoints7, sQuery)
+	}
+}
+
+void SQLRecalculatePoints7(Database db, DBResultSet results, const char[] error, any data)
 {
 	while(results.FetchRow())
 	{
@@ -442,13 +454,13 @@ void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error,
 		PrintToServer("%i", points)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
-		gD_mysql.Query(SQLRecalculatePoints7, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints8, sQuery)
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, partnerid)
-		gD_mysql.Query(SQLRecalculatePoints7, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints8, sQuery)
 	}
 }
 
-void SQLRecalculatePoints7(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints8(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
