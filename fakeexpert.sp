@@ -366,7 +366,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sMap[192]
 		results.FetchString(1, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT COUNT(*), * FROM records WHERE map = '%s' ORDER BY time", sMap)
+		Format(sQuery, 512, "SELECT COUNT(*), id FROM records WHERE map = '%s' ORDER BY time", sMap)
 		DataPack dp = new DataPack()
 		dp.WriteCell(tier)
 		dp.WriteString(sMap)
@@ -387,7 +387,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		int rowCount = results.FetchInt(0)
 		PrintToServer("%i", rowCount)
 		float points = float(tier) * (float(rowCount) / float(place)) //thanks to DeadSurfer
-		int id = results.FetchInt(0)
+		int id = results.FetchInt(1)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 		place++
