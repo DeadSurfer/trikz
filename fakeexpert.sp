@@ -395,9 +395,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		int id = results.FetchInt(1)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i", RoundFloat(points), id)
 		place++
-		gD_mysql.Query(SQLRecalculatePoints3, sQuery, gI_totalRecords[0])
-		gI_totalRecords[0]--
-		gI_totalRecords[1]--
+		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 	}
 }
 
@@ -405,7 +403,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 {
 	if(results.HasResults == false)
 	{
-		if(!data)
+		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
 			gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0")
 	}
 }
