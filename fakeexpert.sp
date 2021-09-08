@@ -409,7 +409,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	/*dp.Reset()
+	dp.Reset()
 	int tier = dp.ReadCell()
 	char sMap[192]
 	dp.ReadString(sMap, 192)
@@ -426,7 +426,7 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 		PrintToServer("place: %i", place)
 		place++
 		PrintToServer("gI_totalRecords: %i, count: %i", gI_totalRecords[count], count)
-	}*/
+	}
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
