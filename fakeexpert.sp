@@ -378,6 +378,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		int tier = results.FetchInt(0)
 		char sMap[192]
 		results.FetchString(1, sMap, 192)
+		PrintToServer("%s", sMap)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT COUNT(*), id FROM records WHERE map = '%s' ORDER BY time", sMap)
 		DataPack dp = new DataPack()
