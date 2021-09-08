@@ -366,7 +366,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, rowCount)
-		PrintToServer("%i", rowCount)
+		//PrintToServer("%i", rowCount)
 	}
 }
 
@@ -398,7 +398,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, gS_map)
 		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
 		place++
-		PrintToServer("%i %i %s", RoundFloat(points), id, gS_map)
+		//PrintToServer("%i %i %s", RoundFloat(points), id, gS_map)
 	}
 }
 
@@ -422,7 +422,7 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i AND steamid = %i", points, playerid, partnerid)
 		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
-		PrintToServer("%i %i %s", points, playerid, partnerid)
+		PrintToServer("1. %i %i %s", points, playerid, partnerid)
 	}
 }
 
