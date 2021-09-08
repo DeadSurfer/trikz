@@ -364,6 +364,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 	if(results.FetchRow())
 	{
 		gI_totalRecords[0] = results.FetchInt(0)
+		gI_totalRecords[1] = gI_totalRecords[0]
 		PrintToServer("%i", gI_totalRecords[0])
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier, map FROM tier")
