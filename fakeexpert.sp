@@ -404,6 +404,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
 		place++
 		gI_totalRecords--
+		PrintToServer("%i", gI_totalRecords)
 	}
 }
 
