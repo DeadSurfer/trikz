@@ -362,7 +362,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 {
 	if(results.RowCount)
 	{
-		PrintToServer("%i", rowCount)
+		PrintToServer("%i", results.RowCount)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, results.RowCount)
