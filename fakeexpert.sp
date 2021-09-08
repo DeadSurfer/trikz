@@ -362,7 +362,8 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 {
 	if(results.FetchRow())
 	{
-		int rowCount = results.FetchInt(0)
+		int rowCount = results.FetchInt(0) //RowCount 
+		PrintToServer("%i", rowCount)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, rowCount)
@@ -420,7 +421,7 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 	}
 }
 
-void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
 {
 	while(results.FetchRow())
 	{
