@@ -369,9 +369,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		results.FetchString(2, sMap, 192)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT COUNT(*), id, map FROM records WHERE map = '%s'", sMap)
-		DataPack dp = new DataPack()
-		dp.WriteCell(tier)
-		gD_mysql.Query(SQLRecalculatePoints2, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery, tier)
 	}
 }
 
@@ -409,10 +407,10 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 	}
 }*/
 
-void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
 {
-	dp.Reset()
-	int tier = dp.ReadCell()
+	//dp.Reset()
+	//int tier = dp.ReadCell()
 	//char sMap[192]
 	//dp.ReadString(sMap, 192)
 	//int count = dp.ReadCell()
@@ -427,7 +425,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 			rowCount = results.FetchInt(0)
 			once = true
 		}
-		float points = float(tier) * (float(rowCount) / float(place)) //thanks to DeadSurfer
+		float points = float(data) * (float(rowCount) / float(place)) //thanks to DeadSurfer
 		int id = results.FetchInt(1)
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
