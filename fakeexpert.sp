@@ -360,12 +360,12 @@ public void OnMapStart()
 
 void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.RowCount)
+	if(results.FetchRow())
 	{
-		PrintToServer("%i", results.RowCount)
+		PrintToServer("%i", results.FetchInt(0))
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
-		gD_mysql.Query(SQLRecalculatePoints2, sQuery, results.RowCount)
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery, results.FetchInt(0))
 	}
 }
 
