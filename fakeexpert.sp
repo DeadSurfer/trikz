@@ -1251,7 +1251,7 @@ void Restart(int client)
 					GivePlayerItem(client, "weapon_usp")
 				}
 			}
-			else
+			else if(IsPlayerAlive(client) && !gI_partner[client])
 				PrintToChat(client, "You must have a partner.")
 		}
 	}
