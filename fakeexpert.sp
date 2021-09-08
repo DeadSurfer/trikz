@@ -2364,7 +2364,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255)
 							ShowHudText(i, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 							SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255)
-							ShowHudText(i, 1, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+							ShowHudText(i, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 						}
 					}
 				}
@@ -2440,9 +2440,9 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255)
 				ShowHudText(client, 1, "MAP FINISHED!")
 				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255)
-				ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+				ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 				SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255)
-				ShowHudText(client, 4, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+				ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) && IsClientObserver(i))
@@ -2454,9 +2454,9 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255)
 							ShowHudText(i, 1, "MAP FINISHED!")
 							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255)
-							ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
+							ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond)
 							SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255)
-							ShowHudText(i, 4, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
+							ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond)
 						}
 					}
 				}
