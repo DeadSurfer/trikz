@@ -401,7 +401,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
+	if(results.HasResults == false)
 	{
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT * FROM records")
@@ -479,9 +479,9 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	else if(StrEqual(sMsg, "Cstrike_Chat_All"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(sText, 256, "[%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
+			Format(sText, 256, "\x01[%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
 		else if(GetClientTeam(client) == 3)
-			Format(sText, 256, "[%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
+			Format(sText, 256, "\x01[%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
 	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_AllDead"))
 	{
@@ -786,7 +786,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		return
 	if(IsClientInGame(client))
 	{
-		if(results.FetchRow())
+		if(results.HasResults == false)
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
