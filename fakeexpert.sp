@@ -393,7 +393,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		int tier = results.FetchInt(1)
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
-		PrintToServer("%s", sMap)
+		//PrintToServer("%s", sMap)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time", sMap)
 		DataPack dp = new DataPack()
@@ -408,7 +408,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
-	/*int tier = dp.ReadCell()
+	int tier = dp.ReadCell()
 	char sMap[192]
 	dp.ReadString(sMap, 192)
 	int count = dp.ReadCell()
@@ -423,7 +423,7 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 		gD_mysql.Query(SQLRecalculatePoints5, sQuery, gI_totalRecords[count])
 		place++
 		PrintToServer("%i", gI_totalRecords[count])
-	}*/
+	}
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
@@ -434,7 +434,7 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 		{
 			char sQuery[512]
 			Format(sQuery, 512, "UPDATE users SET points = 0")
-			gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+			//gD_mysql.Query(SQLRecalculatePoints6, sQuery)
 		}
 	}
 }
