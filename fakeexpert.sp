@@ -372,7 +372,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), id, map FROM records WHERE map = '%s'", sMap, sMap) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), id FROM records WHERE map = '%s'", sMap, sMap) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, tier)
 	}
 }
@@ -393,9 +393,8 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		}
 		float points = float(data) * (float(gI_totalRecords[1]) / float(place)) //thanks to DeadSurfer
 		int id = results.FetchInt(1)
-		char sMap[192]
-		results.FetchString(2, sMap, 192)
-		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
+		PrintToServer("%i", RoundFloat(points))
+		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i", RoundFloat(points), id)
 		gI_totalRecords[0]--
 		gI_totalRecords[1]--
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery, gI_totalRecords[0])
