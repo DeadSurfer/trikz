@@ -2146,6 +2146,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
+							gF_ServerRecord = gF_Time[other]
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
 						}
 						else if(gF_ServerRecord < gF_Time[other] > gF_mateRecord[other])
@@ -2201,6 +2202,7 @@ Action SDKStartTouch(int entity, int other)
 							gF_mateRecord[other] = gF_Time[other]
 							gF_mateRecord[gI_partner[other]] = gF_Time[other]
 							gB_isServerRecord = true
+							gF_ServerRecord = gF_Time[other]
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
 						}
 						else
