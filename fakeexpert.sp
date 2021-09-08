@@ -430,6 +430,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		int id = results.FetchInt(1)
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
+		PrintToServer("%s", sMap)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
 		gI_totalRecords--
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery, gI_totalRecords)
