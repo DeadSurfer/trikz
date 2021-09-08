@@ -475,6 +475,7 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	gB_msg[client] = false
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
+	char sPoints[32]
 	if(gI_points[client] < 1000)
 		Format(sPoints, 32, "%i", gI_points[client])
 	else if(gI_points[client] > 999)
@@ -482,31 +483,31 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	else if(gI_points[client] > 999999)
 		Format(sPoints, 32, "%fM", float(gI_points[client]) / 1000000.0)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
-		Format(sText, 256, "\x01*SPEC* [%i] \x07CCCCCC%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
+		Format(sText, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", sPoints, sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
-		Format(sText, 256, "\x01(Spectator) [%i] \x07CCCCCC%s \x01:  %s", gI_points[client], sName, sText)
+		Format(sText, 256, "\x01(Spectator) [%s] \x07CCCCCC%s \x01:  %s", sPoints, sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_All"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(sText, 256, "\x01[%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
+			Format(sText, 256, "\x01[%s] \x07FF4040%s \x01:  %s", sPoints, sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
 		else if(GetClientTeam(client) == 3)
-			Format(sText, 256, "\x01[%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
+			Format(sText, 256, "\x01[%s] \x0799CCFF%s \x01:  %s", sPoints, sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
 	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_AllDead"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(sText, 256, "\x01*DEAD* [%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText)
+			Format(sText, 256, "\x01*DEAD* [%s] \x07FF4040%s \x01:  %s", sPoints, sName, sText)
 		else if(GetClientTeam(client) == 3)
-			Format(sText, 256, "\x01*DEAD* [%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText)
+			Format(sText, 256, "\x01*DEAD* [%s] \x0799CCFF%s \x01:  %s", sPoints, sName, sText)
 	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_CT"))
-		Format(sText, 256, "\x01(Counter-Terrorist) [%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText)
+		Format(sText, 256, "\x01(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", sPoints, sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_CT_Dead"))
-		Format(sText, 256, "\x01*DEAD*(Counter-Terrorist) [%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText)
+		Format(sText, 256, "\x01*DEAD*(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", sPoints, sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_T"))
-		Format(sText, 256, "\x01(Terrorist) [%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
+		Format(sText, 256, "\x01(Terrorist) [%s] \x07FF4040%s \x01:  %s", sPoints, sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
 	else if(StrEqual(sMsg, "Cstrike_Chat_T_Dead"))
-		Format(sText, 256, "\x01*DEAD*(Terrorist) [%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText)
+		Format(sText, 256, "\x01*DEAD*(Terrorist) [%s] \x07FF4040%s \x01:  %s", sPoints, sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
