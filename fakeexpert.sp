@@ -377,8 +377,10 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 {
 	if(results.FetchRow())
 	{
+		char sMap[192]
+		results.FetchString(1, sMap, 192)
 		gI_totalRecords[data] = results.FetchInt(0)
-		PrintToServer("%i", gI_totalRecords[data])
+		PrintToServer("%i %s", gI_totalRecords[data], sMap)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT * FROM tier")
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
@@ -407,7 +409,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
-	dp.Reset()
+	/*dp.Reset()
 	int tier = dp.ReadCell()
 	char sMap[192]
 	dp.ReadString(sMap, 192)
@@ -424,7 +426,7 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 		PrintToServer("place: %i", place)
 		place++
 		PrintToServer("gI_totalRecords: %i, count: %i", gI_totalRecords[count], count)
-	}
+	}*/
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
