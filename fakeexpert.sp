@@ -368,7 +368,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT COUNT(*), id, map FROM records WHERE map = '%s'", sMap)
+		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), id, map FROM records WHERE map = '%s'", sMap, sMap) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, tier)
 	}
 }
