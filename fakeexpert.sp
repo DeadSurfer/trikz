@@ -371,7 +371,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		dp.WriteCell(data)
 		dp.WriteCell(tier)
 		dp.WriteString(sMap)
-		gD_mysql.Query(SQLRecalculatePoints23, sQuery, dp)
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery, dp)
 	}
 }
 
