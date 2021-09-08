@@ -384,17 +384,16 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 	bool once
 	while(results.FetchRow())
 	{
-		int rowCount
 		if(!once)
 		{
-			rowCount = results.FetchInt(0)
+			int rowCount = results.FetchInt(0)
 			gI_totalRecords[1] = rowCount
 			once = true
 		}
 		float points = float(data) * (float(gI_totalRecords[1]) / float(place)) //thanks to DeadSurfer
+		place++
 		int id = results.FetchInt(1)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i", RoundFloat(points), id)
-		place++
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 	}
 }
