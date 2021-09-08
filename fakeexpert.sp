@@ -408,7 +408,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
-	int tier = dp.ReadCell()
+	/*int tier = dp.ReadCell()
 	char sMap[192]
 	dp.ReadString(sMap, 192)
 	int count = dp.ReadCell()
@@ -423,7 +423,7 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 		gD_mysql.Query(SQLRecalculatePoints5, sQuery, gI_totalRecords[count])
 		place++
 		PrintToServer("%i", gI_totalRecords[count])
-	}
+	}*/
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
