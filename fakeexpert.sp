@@ -353,20 +353,19 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s'", gS_map)
+		Format(sQuery, 512, "SELECT COUNT(*) FROM records WHERE map = '%s'", gS_map)
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
 
 void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
+	if(results.RowCount)
 	{
-		int rowCount = results.RowCount
 		PrintToServer("%i", rowCount)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
-		gD_mysql.Query(SQLRecalculatePoints2, sQuery, rowCount)
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery, results.RowCount)
 	}
 }
 
