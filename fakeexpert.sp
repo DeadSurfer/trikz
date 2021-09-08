@@ -137,6 +137,7 @@ bool gB_pbutton[MAXPLAYERS + 1]
 float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
+int gI_points[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -348,6 +349,81 @@ public void OnMapStart()
 	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
+	
+	if(gB_passDB)
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT COUNT(*) FROM records WHERE map = '%s'", gS_map)
+		gD_mysql.Query(SQLRecalculatePoints, sQuery)
+	}
+}
+
+void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		int rowCount = results.FetchInt(0)
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery, rowCount)
+	}
+}
+
+void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		int tier = results.FetchInt(0)
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time", gS_map)
+		DataPack dp = new DataPack()
+		dp.WriteCell(data)
+		dp.WriteCell(tier)
+		gD_mysql.Query(SQLRecalculatePoints3, sQuery, dp)
+	}
+}
+
+void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
+	dp.Reset()
+	int rowCount = dp.ReadCell()
+	int tier = dp.ReadCell()
+	char sQuery[512]
+	int place = 1
+	while(results.FetchRow())
+	{
+		int id = results.FetchInt(0)
+		Format(sQuery, 512, "UPDATE records SET points = %.0f WHERE id = %i AND map = '%s'", float(tier) * (float(rowCount) / float(place)), id, gS_map)
+		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
+		place++
+	}
+}
+
+void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT * FROM records")
+		gD_mysql.Query(SQLRecalculatePoints5, sQuery)
+	}
+}
+
+void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
+	while(results.FetchRow())
+	{
+		int playerid = results.FetchInt(1)
+		int partnerid = results.FetchInt(2)
+		int points = results.FetchInt(16)
+		char sQuery[512]
+		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i AND steamid = %i", points, playerid, partnerid)
+		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+	}
+}
+
+void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -392,32 +468,36 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	gB_msg[client] = false
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
+	//if(gI_points[client] < 1000)
+	//	Format(sPoints, 32, "%i", gI_points[client])
+	//else if(gI_points[client] > 999)
+	//	Format(sPoints, 32, "%i", gI_points[client])
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
-		Format(sText, 256, "\x01*SPEC* \x07CCCCCC%s \x01:  %s", sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
+		Format(sText, 256, "\x01*SPEC* [%i] \x07CCCCCC%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
-		Format(sText, 256, "\x01(Spectator) \x07CCCCCC%s \x01:  %s", sName, sText)
+		Format(sText, 256, "\x01(Spectator) [%i] \x07CCCCCC%s \x01:  %s", gI_points[client], sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_All"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(sText, 256, "\x07FF4040%s \x01:  %s", sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
+			Format(sText, 256, "[%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
 		else if(GetClientTeam(client) == 3)
-			Format(sText, 256, "\x0799CCFF%s \x01:  %s", sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
+			Format(sText, 256, "[%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
 	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_AllDead"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(sText, 256, "\x01*DEAD* \x07FF4040%s \x01:  %s", sName, sText)
+			Format(sText, 256, "\x01*DEAD* [%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText)
 		else if(GetClientTeam(client) == 3)
-			Format(sText, 256, "\x01*DEAD* \x0799CCFF%s \x01:  %s", sName, sText)
+			Format(sText, 256, "\x01*DEAD* [%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText)
 	}
 	else if(StrEqual(sMsg, "Cstrike_Chat_CT"))
-		Format(sText, 256, "\x01(Counter-Terrorist) \x0799CCFF%s \x01:  %s", sName, sText)
+		Format(sText, 256, "\x01(Counter-Terrorist) [%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_CT_Dead"))
-		Format(sText, 256, "\x01*DEAD*(Counter-Terrorist) \x0799CCFF%s \x01:  %s", sName, sText)
+		Format(sText, 256, "\x01*DEAD*(Counter-Terrorist) [%i] \x0799CCFF%s \x01:  %s", gI_points[client], sName, sText)
 	else if(StrEqual(sMsg, "Cstrike_Chat_T"))
-		Format(sText, 256, "\x01(Terrorist) \x07FF4040%s \x01:  %s", sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
+		Format(sText, 256, "\x01(Terrorist) [%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText) //https://forums.alliedmods.net/showthread.php?t=185016
 	else if(StrEqual(sMsg, "Cstrike_Chat_T_Dead"))
-		Format(sText, 256, "\x01*DEAD*(Terrorist) \x07FF4040%s \x01:  %s", sName, sText)
+		Format(sText, 256, "\x01*DEAD*(Terrorist) [%i] \x07FF4040%s \x01:  %s", gI_points[client], sName, sText)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(sMsg, "_All") != -1)
@@ -695,12 +775,40 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
 		else
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
-		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery)
+		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery, GetClientSerial(data))
 	}
 }
 
 void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] error, any data)
 {
+	int client = GetClientFromSerial(data)
+	if(!client)
+		return
+	if(IsClientInGame(client))
+	{
+		if(results.FetchRow())
+		{
+			char sQuery[512]
+			int steamid = GetSteamAccountID(client)
+			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", steamid)
+			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
+		}
+	}
+}
+
+void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data)
+{
+	int client = GetClientFromSerial(data)
+	if(!client)
+		return
+	if(IsClientInGame(client))
+	{
+		if(results.FetchRow())
+		{
+			int points = results.FetchInt(0)
+			gI_points[client] = points
+		}
+	}
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
@@ -1949,7 +2057,7 @@ void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any 
 Action cmd_createrecords(int args)
 {
 	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, map VARCHAR(192), date INT, PRIMARY KEY(id))")
+	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, points INT, map VARCHAR(192), date INT, PRIMARY KEY(id))")
 	gD_mysql.Query(SQLRecordsTable, sQuery)
 }
 
@@ -2134,8 +2242,8 @@ Action SDKStartTouch(int entity, int other)
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
-				Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
-				gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
+				//Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
+				//gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
 				gB_state[other] = false
 				gB_state[gI_partner[other]] = false
 			}
@@ -2388,7 +2496,7 @@ Action timer_runSourceTV(Handle timer)
 	}
 }
 
-void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
+/*void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
 {
 	int other = GetClientFromSerial(data)
 	if(!other)
@@ -2449,7 +2557,7 @@ void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, D
 
 void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any data)
 {
-}
+}*/
 
 void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
 {
