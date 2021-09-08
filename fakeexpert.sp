@@ -353,50 +353,56 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT COUNT(*) FROM records WHERE map = '%s'", gS_map)
+		char sMap[192]
+		results.FetchString(17, sMap, 192)
+		Format(sQuery, 512, "SELECT tier, map FROM tier WHERE map = '%s'", sMap)
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
 
 void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.FetchRow())
-	{
-		PrintToServer("%i", results.FetchInt(0))
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
-		gD_mysql.Query(SQLRecalculatePoints2, sQuery, results.FetchInt(0))
-	}
-}
-
-void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.FetchRow())
+	while(results.FetchRow())
 	{
 		int tier = results.FetchInt(0)
+		char sMap[192]
+		results.FetchString(1, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time", gS_map)
+		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time", sMap)
 		DataPack dp = new DataPack()
 		dp.WriteCell(data)
 		dp.WriteCell(tier)
-		gD_mysql.Query(SQLRecalculatePoints3, sQuery, dp)
+		dp.WriteString(sMap)
+		gD_mysql.Query(SQLRecalculatePoints23, sQuery, dp)
 	}
 }
 
-void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, DataPack dp)
+void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, DataPack dp)
 {
 	dp.Reset()
 	int rowCount = dp.ReadCell()
 	int tier = dp.ReadCell()
+	char sMap[192]
+	dp.ReadString(sMap, 192)
 	char sQuery[512]
 	int place = 1
 	while(results.FetchRow())
 	{
 		float points = float(tier) * (float(rowCount) / float(place)) //thanks to DeadSurfer
 		int id = results.FetchInt(0)
-		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, gS_map)
-		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
+		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
+		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 		place++
+	}
+}
+
+void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.HasResults == false)
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "UPDATE users SET points = 0")
+		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
 	}
 }
 
@@ -405,22 +411,12 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 	if(results.HasResults == false)
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = 0")
+		Format(sQuery, 512, "SELECT * FROM records")
 		gD_mysql.Query(SQLRecalculatePoints5, sQuery)
 	}
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.HasResults == false)
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM records")
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
-	}
-}
-
-void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
 {
 	while(results.FetchRow())
 	{
@@ -429,13 +425,13 @@ void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error,
 		int points = results.FetchInt(16)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
-		gD_mysql.Query(SQLRecalculatePoints7, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, partnerid)
-		gD_mysql.Query(SQLRecalculatePoints7, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
 	}
 }
 
-void SQLRecalculatePoints7(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
