@@ -354,7 +354,7 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM tier")
+		Format(sQuery, 512, "SELECT * FROM tier ORDER BY map")
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
@@ -382,7 +382,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		gI_totalRecords[data] = results.FetchInt(0)
 		PrintToServer("%i %s", gI_totalRecords[data], sMap)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM tier")
+		Format(sQuery, 512, "SELECT * FROM tier ORDER BY map")
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 	}
 }
