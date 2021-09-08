@@ -397,7 +397,6 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		int id = results.FetchInt(1)
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
-		PrintToServer("%i %s %i", id, sMap, gI_totalRecords[1])
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
 		gI_totalRecords[0]--
 		gI_totalRecords[1]--
@@ -436,11 +435,8 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 		int playerid = results.FetchInt(1)
 		int partnerid = results.FetchInt(2)
 		int points = results.FetchInt(16)
-		PrintToServer("%i", points)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
-		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, partnerid)
+		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i AND steamid = %i", points, playerid, partnerid)
 		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
 	}
 }
