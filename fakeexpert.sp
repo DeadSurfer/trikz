@@ -366,7 +366,6 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, rowCount)
-		//PrintToServer("%i", rowCount)
 	}
 }
 
@@ -398,7 +397,6 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, gS_map)
 		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
 		place++
-		//PrintToServer("%i %i %s", RoundFloat(points), id, gS_map)
 	}
 }
 
@@ -420,9 +418,7 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 		int partnerid = results.FetchInt(2)
 		int points = results.FetchInt(16)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
-		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, partnerid)
+		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i AND steamid = %i", points, playerid, partnerid)
 		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
 	}
 }
@@ -797,6 +793,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 			int steamid = GetSteamAccountID(client)
 			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
+			PrintToServer("yes")
 		}
 	}
 }
