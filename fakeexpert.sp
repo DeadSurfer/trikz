@@ -775,7 +775,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
 		else
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
-		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery, GetClientSerial(data))
+		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery, GetClientSerial(client))
 	}
 }
 
