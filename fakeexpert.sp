@@ -396,7 +396,8 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 	dp.ReadString(sMap, 192)
 	char sQuery[512]
 	int place = 1
-	while(results.FetchRow())
+	//while(results.FetchRow())
+	for(int i = 1; i <= gI_totalRecords; i++)
 	{
 		int rowCount = results.FetchInt(0)
 		float points = float(tier) * (float(rowCount) / float(place)) //thanks to DeadSurfer
