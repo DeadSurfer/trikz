@@ -368,7 +368,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT id, map, (SELECT COUNT(*) FROM records WHERE map = '%s') FROM records WHERE map = '%s'", sMap, sMap)
+		Format(sQuery, 512, "SELECT COUNT(*), id, map FROM records WHERE map = '%s'", sMap)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, tier)
 	}
 }
@@ -423,14 +423,14 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		int rowCount
 		if(!once)
 		{
-			rowCount = results.FetchInt(2)
+			rowCount = results.FetchInt(0)
 			gI_totalRecords = rowCount
 			once = true
 		}
 		float points = float(data) * (float(gI_totalRecords) / float(place)) //thanks to DeadSurfer
-		int id = results.FetchInt(0)
+		int id = results.FetchInt(1)
 		char sMap[192]
-		results.FetchString(1, sMap, 192)
+		results.FetchString(2, sMap, 192)
 		PrintToServer("%i %s %i", id, sMap, gI_totalRecords)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
 		gI_totalRecords--
