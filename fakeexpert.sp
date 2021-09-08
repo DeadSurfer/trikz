@@ -417,6 +417,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 			char sQuery[512]
 			Format(sQuery, 512, "UPDATE users SET points = 0")
 			gD_mysql.Query(SQLRecalculatePoints4, sQuery)
+			PrintToServer("yes")
 		}
 	}
 }
