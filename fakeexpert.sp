@@ -354,10 +354,10 @@ public void OnMapStart()
 	
 	if(gB_passDB)
 	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT (SELECT * FROM records), tier, map FROM tier")
-		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 		gB_allRecords = false
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
+		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
 
