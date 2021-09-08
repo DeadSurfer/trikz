@@ -353,9 +353,7 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		char sQuery[512]
-		char sMap[192]
-		results.FetchString(17, sMap, 192)
-		Format(sQuery, 512, "SELECT tier, map FROM tier WHERE map = '%s'", sMap)
+		Format(sQuery, 512, "SELECT tier, map FROM tier")
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
