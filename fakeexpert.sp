@@ -392,8 +392,9 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 	int place = 1
 	while(results.FetchRow())
 	{
+		float points = float(tier) * (float(rowCount) / float(place))
 		int id = results.FetchInt(0)
-		Format(sQuery, 512, "UPDATE records SET points = %.0f WHERE id = %i AND map = '%s'", float(tier) * (float(rowCount) / float(place)), id, gS_map)
+		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, gS_map)
 		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
 		place++
 	}
