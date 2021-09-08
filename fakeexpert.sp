@@ -355,9 +355,7 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		gB_recordsOnce = false
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
-		gD_mysql.Query(SQLRecalculatePoints, sQuery)
+		gD_mysql.Query(SQLRecalculatePoints, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
 	}
 }
 
@@ -410,22 +408,14 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 	if(results.HasResults == false)
 	{
 		if(!data)
-		{
-			char sQuery[512]
-			Format(sQuery, 512, "UPDATE users SET points = 0")
-			gD_mysql.Query(SQLRecalculatePoints4, sQuery)
-		}
+			gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0")
 	}
 }
 
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.HasResults == false)
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM records")
-		gD_mysql.Query(SQLRecalculatePoints5, sQuery)
-	}
+		gD_mysql.Query(SQLRecalculatePoints5, "SELECT * FROM records")
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
