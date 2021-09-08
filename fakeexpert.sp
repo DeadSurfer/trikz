@@ -402,10 +402,8 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.HasResults == false)
-	{
 		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
 			gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0")
-	}
 }
 
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
@@ -1760,7 +1758,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu2.AddItem("08", "-y/maxs")
 				menu2.AddItem("0", "Update start zone")
 			}
-			if(StrEqual(sItem, "1"))
+			else if(StrEqual(sItem, "1"))
 			{
 				menu2.SetTitle("Zone editor - End zone")
 				menu2.AddItem("10", "Teleport to end zone")
@@ -1774,39 +1772,36 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				menu2.AddItem("18", "-y/maxs")
 				menu2.AddItem("1", "Update start zone")
 			}
-			if(gI_cpCount)
+			for(int i = 1; i <= gI_cpCount; i++)
 			{
-				for(int i = 1; i <= gI_cpCount; i++)
+				char sCP[16]
+				IntToString(i + 1, sCP, 16)
+				if(StrEqual(sItem, sCP))
 				{
-					char sCP[16]
-					IntToString(i + 1, sCP, 16)
-					if(StrEqual(sItem, sCP))
-					{
-						menu2.SetTitle("Zone editor - CP nr. %i zone", i)
-						char sItemCP[16]
-						Format(sItemCP, 16, "%i;0", i + 1)
-						char sButton[32]
-						Format(sButton, 32, "Teleport to CP nr. %i zone", i)
-						menu2.AddItem(sItemCP, sButton)
-						Format(sItemCP, 16, "%i;1", i + 1)
-						menu2.AddItem(sItemCP, "+x/mins")
-						Format(sItemCP, 16, "%i;2", i + 1)
-						menu2.AddItem(sItemCP, "-x/mins")
-						Format(sItemCP, 16, "%i;3", i + 1)
-						menu2.AddItem(sItemCP, "+y/mins")
-						Format(sItemCP, 16, "%i;4", i + 1)
-						menu2.AddItem(sItemCP, "-y/mins")
-						Format(sItemCP, 16, "%i;5", i + 1)
-						menu2.AddItem(sItemCP, "+x/maxs")
-						Format(sItemCP, 16, "%i;6", i + 1)
-						menu2.AddItem(sItemCP, "-x/maxs")
-						Format(sItemCP, 16, "%i;7", i + 1)
-						menu2.AddItem(sItemCP, "+y/maxs")
-						Format(sItemCP, 16, "%i;8", i + 1)
-						menu2.AddItem(sItemCP, "-y/maxs")
-						Format(sButton, 32, "Update CP nr. %i zone", i)
-						menu2.AddItem(sCP, sButton)
-					}
+					menu2.SetTitle("Zone editor - CP nr. %i zone", i)
+					char sItemCP[16]
+					Format(sItemCP, 16, "%i;0", i + 1)
+					char sButton[32]
+					Format(sButton, 32, "Teleport to CP nr. %i zone", i)
+					menu2.AddItem(sItemCP, sButton)
+					Format(sItemCP, 16, "%i;1", i + 1)
+					menu2.AddItem(sItemCP, "+x/mins")
+					Format(sItemCP, 16, "%i;2", i + 1)
+					menu2.AddItem(sItemCP, "-x/mins")
+					Format(sItemCP, 16, "%i;3", i + 1)
+					menu2.AddItem(sItemCP, "+y/mins")
+					Format(sItemCP, 16, "%i;4", i + 1)
+					menu2.AddItem(sItemCP, "-y/mins")
+					Format(sItemCP, 16, "%i;5", i + 1)
+					menu2.AddItem(sItemCP, "+x/maxs")
+					Format(sItemCP, 16, "%i;6", i + 1)
+					menu2.AddItem(sItemCP, "-x/maxs")
+					Format(sItemCP, 16, "%i;7", i + 1)
+					menu2.AddItem(sItemCP, "+y/maxs")
+					Format(sItemCP, 16, "%i;8", i + 1)
+					menu2.AddItem(sItemCP, "-y/maxs")
+					Format(sButton, 32, "Update CP nr. %i zone", i)
+					menu2.AddItem(sCP, sButton)
 				}
 			}
 			menu2.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
@@ -2717,7 +2712,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(gB_state[client] && gI_partner[client])
 	{
 		gF_Time[client] = GetEngineTime() - gF_TimeStart[client]
-		//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+		//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
 		int hour = (RoundToFloor(gF_Time[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		int minute = (RoundToFloor(gF_Time[client]) / 60) % 60
 		int second = RoundToFloor(gF_Time[client]) % 60
@@ -2790,7 +2785,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gI_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 			SetEntityModel(gI_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
 			DispatchSpawn(gI_pingModel[client])
-			SetEntProp(gI_pingModel[client], Prop_Data, "m_fEffects", 16) //https://pastebin.com/SdNC88Ma //https://developer.valvesoftware.com/wiki/Effect_flags
+			SetEntProp(gI_pingModel[client], Prop_Data, "m_fEffects", 16) //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
 			float start[3]
 			float angle[3]
 			float end[3]
@@ -2851,7 +2846,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gF_engineTime = GetEngineTime()
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsClientInGame(i))
-						DrawZone(i, 0.1)
+					DrawZone(i, 0.1)
 		}
 	}
 	if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
