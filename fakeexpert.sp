@@ -421,8 +421,9 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
 		gI_totalRecords[count]--
 		gD_mysql.Query(SQLRecalculatePoints5, sQuery, gI_totalRecords[count])
+		PrintToServer("place: %i", place)
 		place++
-		PrintToServer("%i", gI_totalRecords[count])
+		PrintToServer("gI_totalRecords: %i, count: %i", gI_totalRecords[count], count)
 	}
 }
 
