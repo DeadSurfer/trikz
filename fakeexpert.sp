@@ -2265,8 +2265,6 @@ Action SDKStartTouch(int entity, int other)
 					Format(sQuery, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], gS_map, GetTime())
 					gD_mysql.Query(SQLInsertRecord, sQuery)
 				}
-				//Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
-				//gD_mysql.Query(SQLGetMapTier, sQuery, GetClientSerial(other))
 				gB_state[other] = false
 				gB_state[gI_partner[other]] = false
 			}
@@ -2518,69 +2516,6 @@ Action timer_runSourceTV(Handle timer)
 		gB_isSourceTVchangedFileName = true
 	}
 }
-
-/*void SQLGetMapTier(Database db, DBResultSet results, const char[] error, any data)
-{
-	int other = GetClientFromSerial(data)
-	if(!other)
-		return
-	int clientid = GetSteamAccountID(other)
-	int partnerid = GetSteamAccountID(gI_partner[other])
-	if(results.FetchRow())
-	{
-		int tier = results.FetchInt(0)
-		int points = tier * 20
-		DataPack dp = new DataPack()
-		dp.WriteCell(points)
-		dp.WriteCell(clientid)
-		dp.WriteCell(other)
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", clientid)
-		gD_mysql.Query(SQLGetPoints, sQuery, dp)
-		DataPack dp2 = new DataPack()
-		dp2.WriteCell(points)
-		dp2.WriteCell(partnerid)
-		dp2.WriteCell(other)
-		Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", partnerid)
-		gD_mysql.Query(SQLGetPointsPartner, sQuery, dp2)
-	}
-}
-
-void SQLGetPoints(Database db, DBResultSet results, const char[] error, DataPack dp)
-{
-	dp.Reset()
-	int earnedpoints = dp.ReadCell()
-	int clientid = dp.ReadCell()
-	//int other = dp.ReadCell()
-	if(results.FetchRow())
-	{
-		int points = results.FetchInt(0)
-		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, clientid)
-		gD_mysql.Query(SQLEarnedPoints, sQuery)
-		//PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
-	}
-}
-
-void SQLGetPointsPartner(Database db, DBResultSet results, const char[] error, DataPack dp)
-{
-	dp.Reset()
-	int earnedpoints = dp.ReadCell()
-	int partnerid = dp.ReadCell()
-	//int other = dp.ReadCell()
-	if(results.FetchRow())
-	{
-		int points = results.FetchInt(0)
-		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = %i + %i WHERE steamid = %i", points, earnedpoints, partnerid)
-		gD_mysql.Query(SQLEarnedPoints, sQuery)
-		//PrintToChat(other, "You recived %i points. You have %i points.", earnedpoints, points + earnedpoints)
-	}
-}
-
-void SQLEarnedPoints(Database db, DBResultSet results, const char[] error, any data)
-{
-}*/
 
 void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
 {
