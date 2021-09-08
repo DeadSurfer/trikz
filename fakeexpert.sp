@@ -138,7 +138,7 @@ float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
-int gI_totalRecords[999]
+int gI_totalRecords
 
 public Plugin myinfo =
 {
@@ -423,6 +423,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		if(!once)
 		{
 			rowCount = results.FetchInt(0)
+			gI_totalRecords = rowCount
 			once = true
 		}
 		float points = float(data) * (float(rowCount) / float(place)) //thanks to DeadSurfer
@@ -430,8 +431,8 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
-		gI_totalRecords[rowCount]--
-		gD_mysql.Query(SQLRecalculatePoints3, sQuery, gI_totalRecords[rowCount])
+		gI_totalRecords--
+		gD_mysql.Query(SQLRecalculatePoints3, sQuery, gI_totalRecords)
 		//PrintToServer("place: %i", place)
 		place++
 		//PrintToServer("gI_totalRecords: %i, count: %i", gI_totalRecords[count], count)
