@@ -367,7 +367,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT COUNT(*), map FROM records WHERE map = '%s'", sMap)
+		Format(sQuery, 512, "SELECT COUNT(*), map FROM records WHERE map = '%s' ORDER BY map", sMap)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, count)
 		count++
 	}
@@ -397,7 +397,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		results.FetchString(2, sMap, 192)
 		//PrintToServer("%s", sMap)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time", sMap)
+		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time, map", sMap)
 		DataPack dp = new DataPack()
 		dp.WriteCell(tier)
 		dp.WriteString(sMap)
