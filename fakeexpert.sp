@@ -138,7 +138,7 @@ float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
-int gI_totalRecords
+int gI_totalRecords[2]
 
 public Plugin myinfo =
 {
@@ -363,8 +363,8 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 {
 	if(results.FetchRow())
 	{
-		gI_totalRecords = results.FetchInt(0)
-		PrintToServer("%i", gI_totalRecords)
+		gI_totalRecords[0] = results.FetchInt(0)
+		PrintToServer("%i", gI_totalRecords[0])
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier, map FROM tier")
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery)
@@ -380,7 +380,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		results.FetchString(1, sMap, 192)
 		PrintToServer("%s", sMap)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT COUNT(*), id FROM records WHERE map = '%s' ORDER BY time", sMap)
+		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time", sMap)
 		DataPack dp = new DataPack()
 		dp.WriteCell(tier)
 		dp.WriteString(sMap)
@@ -396,17 +396,15 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 	dp.ReadString(sMap, 192)
 	char sQuery[512]
 	int place = 1
-	//while(results.FetchRow())
-	for(int i = 1; i <= gI_totalRecords; i++)
+	while(results.FetchRow())
 	{
-		int rowCount = results.FetchInt(0)
-		float points = float(tier) * (float(rowCount) / float(place)) //thanks to DeadSurfer
-		int id = results.FetchInt(1)
+		float points = float(tier) * (float(gI_totalRecords[1]) / float(place)) //thanks to DeadSurfer
+		int id = results.FetchInt(0)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
 		gD_mysql.Query(SQLRecalculatePoints4, sQuery)
 		place++
-		gI_totalRecords--
-		PrintToServer("%i", gI_totalRecords)
+		gI_totalRecords[0]--
+		PrintToServer("%i", gI_totalRecords[0])
 	}
 }
 
@@ -414,7 +412,7 @@ void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error,
 {
 	if(results.HasResults == false)
 	{
-		if(!gI_totalRecords)
+		if(!gI_totalRecords[0])
 		{
 			char sQuery[512]
 			Format(sQuery, 512, "UPDATE users SET points = 0")
