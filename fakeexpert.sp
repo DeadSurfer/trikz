@@ -368,7 +368,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char sMap[192]
 		results.FetchString(2, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT id, map, COUNT(*) FROM records WHERE map = '%s'", sMap)
+		Format(sQuery, 512, "SELECT id, map, (SELECT COUNT(*) FROM records WHERE map = '%s') FROM records WHERE map = '%s'", sMap, sMap)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, tier)
 	}
 }
@@ -417,6 +417,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 	char sQuery[512]
 	int place = 1
 	bool once
+	//PrintToServer("%i", results.FetchRow())
 	while(results.FetchRow())
 	{
 		int rowCount
@@ -430,7 +431,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		int id = results.FetchInt(0)
 		char sMap[192]
 		results.FetchString(1, sMap, 192)
-		PrintToServer("%s", sMap)
+		PrintToServer("%i %i %s", id, sMap, rowCount)
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i AND map = '%s'", RoundFloat(points), id, sMap)
 		gI_totalRecords--
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery, gI_totalRecords)
@@ -448,7 +449,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		{
 			char sQuery[512]
 			Format(sQuery, 512, "UPDATE users SET points = 0")
-			gD_mysql.Query(SQLRecalculatePoints4, sQuery)
+			//gD_mysql.Query(SQLRecalculatePoints4, sQuery)
 		}
 	}
 }
