@@ -139,7 +139,7 @@ int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 int gI_totalRecords[2]
-bool gB_allRecords
+bool gB_recordsOnce
 
 public Plugin myinfo =
 {
@@ -354,7 +354,7 @@ public void OnMapStart()
 	
 	if(gB_passDB)
 	{
-		gB_allRecords = false
+		gB_recordsOnce = false
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
@@ -365,10 +365,10 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 {
 	while(results.FetchRow())
 	{
-		if(!gB_allRecords)
+		if(!gB_recordsOnce)
 		{
 			gI_totalRecords[0] = results.FetchInt(0)
-			gB_allRecords = true
+			gB_recordsOnce = true
 		}
 		int tier = results.FetchInt(1)
 		char sMap[192]
@@ -402,9 +402,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		gI_totalRecords[0]--
 		gI_totalRecords[1]--
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery, gI_totalRecords[0])
-		//PrintToServer("place: %i", place)
 		place++
-		//PrintToServer("gI_totalRecords: %i, count: %i", gI_totalRecords[count], count)
 	}
 }
 
@@ -417,7 +415,6 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 			char sQuery[512]
 			Format(sQuery, 512, "UPDATE users SET points = 0")
 			gD_mysql.Query(SQLRecalculatePoints4, sQuery)
-			PrintToServer("yes")
 		}
 	}
 }
