@@ -436,7 +436,9 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 		int partnerid = results.FetchInt(2)
 		int points = results.FetchInt(16)
 		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i, steamid = %i", points, playerid, partnerid)
+		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
+		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
+		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, partnerid)
 		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
 	}
 }
