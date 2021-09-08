@@ -701,10 +701,9 @@ public void OnClientPutInServer(int client)
 	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT * FROM users")
-		gD_mysql.Query(SQLAddUser, sQuery, GetClientSerial(client))
+		gD_mysql.Query(SQLAddUser, "SELECT * FROM users", GetClientSerial(client))
 		int steamid = GetSteamAccountID(client)
+		char sQuery[512]
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
@@ -1948,9 +1947,7 @@ void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any dat
 
 Action cmd_createcp(int args)
 {
-	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx INT, cpy INT, cpz INT, cpx2 INT, cpy2 INT, cpz2 INT, map VARCHAR(192), PRIMARY KEY(id))")
-	gD_mysql.Query(SQLCreateCPTable, sQuery)
+	gD_mysql.Query(SQLCreateCPTable, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx INT, cpy INT, cpz INT, cpx2 INT, cpy2 INT, cpz2 INT, map VARCHAR(192), PRIMARY KEY(id))")
 }
 
 void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any data)
@@ -1960,9 +1957,7 @@ void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any 
 
 Action cmd_createtier(int args)
 {
-	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS tier (id INT AUTO_INCREMENT, tier INT, map VARCHAR(192), PRIMARY KEY(id))")
-	gD_mysql.Query(SQLCreateTierTable, sQuery)
+	gD_mysql.Query(SQLCreateTierTable, "CREATE TABLE IF NOT EXISTS tier (id INT AUTO_INCREMENT, tier INT, map VARCHAR(192), PRIMARY KEY(id))")
 }
 
 void SQLCreateTierTable(Database db, DBResultSet results, const char[] error, any data)
@@ -2047,17 +2042,13 @@ void createcp(int cpnum)
 
 Action cmd_createusers(int args)
 {
-	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))")
-	gD_mysql.Query(SQLCreateUserTable, sQuery)
+	gD_mysql.Query(SQLCreateUserTable, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))")
 }
 
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("Successfuly created user table.")
-	char sQuery[512]
-	Format(sQuery, 512, "INSERT INTO user (points) VALUES (0)")
-	gD_mysql.Query(SQLAddFakePoints, sQuery)
+	gD_mysql.Query(SQLAddFakePoints, "INSERT INTO user (points) VALUES (0)")
 }
 
 void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any data)
@@ -2066,9 +2057,7 @@ void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any 
 
 Action cmd_createrecords(int args)
 {
-	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, points INT DEFAULT 0, map VARCHAR(192), date INT, PRIMARY KEY(id))")
-	gD_mysql.Query(SQLRecordsTable, sQuery)
+	gD_mysql.Query(SQLRecordsTable, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, points INT DEFAULT 0, map VARCHAR(192), date INT, PRIMARY KEY(id))")
 }
 
 void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
@@ -2575,9 +2564,7 @@ void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
 
 Action cmd_createzones(int args)
 {
-	char sQuery[512]
-	Format(sQuery, 512, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x2 INT, possition_y2 INT, possition_z2 INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
-	gD_mysql.Query(SQLCreateZonesTable, sQuery)
+	gD_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x2 INT, possition_y2 INT, possition_z2 INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
 }
 
 void SQLConnect(Database db, const char[] error, any data)
