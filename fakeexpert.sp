@@ -354,7 +354,7 @@ public void OnMapStart()
 	if(gB_passDB)
 	{
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT map FROM tier")
+		Format(sQuery, 512, "SELECT * FROM tier")
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
@@ -365,7 +365,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 	while(results.FetchRow())
 	{
 		char sMap[192]
-		results.FetchString(0, sMap, 192)
+		results.FetchString(2, sMap, 192)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT COUNT(*), map FROM records WHERE map = '%s'", sMap)
 		gD_mysql.Query(SQLRecalculatePoints2, sQuery, count)
@@ -380,7 +380,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		gI_totalRecords[data] = results.FetchInt(0)
 		PrintToServer("%i", gI_totalRecords[data])
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT tier, map FROM tier")
+		Format(sQuery, 512, "SELECT * FROM tier")
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 	}
 }
@@ -390,9 +390,9 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 	int count
 	while(results.FetchRow())
 	{
-		int tier = results.FetchInt(0)
+		int tier = results.FetchInt(1)
 		char sMap[192]
-		results.FetchString(1, sMap, 192)
+		results.FetchString(2, sMap, 192)
 		PrintToServer("%s", sMap)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT * FROM records WHERE map = '%s' ORDER BY time", sMap)
