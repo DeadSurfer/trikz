@@ -362,7 +362,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 {
 	if(results.FetchRow())
 	{
-		int rowCount = results.FetchInt(0) //RowCount 
+		int rowCount = results.RowCount
 		PrintToServer("%i", rowCount)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT tier FROM tier WHERE map = '%s'", gS_map)
