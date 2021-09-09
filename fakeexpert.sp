@@ -140,7 +140,7 @@ bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 int gI_totalRecords[2]
 bool gB_recordsOnce
-float gF_queryTime
+float gF_queryTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -357,7 +357,7 @@ public void OnMapStart()
 	{
 		gB_recordsOnce = false
 		gD_mysql.Query(SQLRecalculatePoints, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
-		gF_queryTime = GetEngineTime()
+		gF_queryTime[0] = GetEngineTime()
 	}
 }
 
@@ -405,7 +405,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 	if(results.HasResults == false)
 		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
 		{
-			PrintToServer("%f", GetEngineTime() - gF_queryTime)
+			PrintToServer("%f", GetEngineTime() - gF_queryTime[0])
 			//gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0 WHERE points > 0") //https://stackoverflow.com/questions/5064977/detect-if-value-is-number-in-mysql
 		}
 }
@@ -804,6 +804,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 			//Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
 			Format(sQuery, 512, "SELECT SUM(points) FROM records WHERE playerid = %i OR partnerid = %i", steamid, steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
+			gF_queryTime[client] = GetEngineTime()
 		}
 	}
 }
@@ -819,6 +820,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 		{
 			int points = results.FetchInt(0)
 			gI_points[client] = points
+			PrintToServer("%f %N", gF_queryTime[client] - GetEngineTime(), client)
 		}
 	}
 }
