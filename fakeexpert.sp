@@ -820,7 +820,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 		{
 			int points = results.FetchInt(0)
 			gI_points[client] = points
-			PrintToServer("%f %N", gF_queryTime[client] - GetEngineTime(), client)
+			PrintToServer("%f %N", GetEngineTime() - gF_queryTime[client], client)
 		}
 	}
 }
