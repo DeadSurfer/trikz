@@ -402,22 +402,22 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 {
 	if(results.HasResults == false)
 		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
-			gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0")
+			gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0 WHERE points > 0") //https://stackoverflow.com/questions/5064977/detect-if-value-is-number-in-mysql
 }
 
 void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.HasResults == false)
-		gD_mysql.Query(SQLRecalculatePoints5, "SELECT * FROM records")
+		gD_mysql.Query(SQLRecalculatePoints5, "SELECT playerid, partnerid, points FROM records") //https://www.cloudways.com/blog/mysql-performance-tuning/
 }
 
 void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
 {
 	while(results.FetchRow())
 	{
-		int playerid = results.FetchInt(1)
-		int partnerid = results.FetchInt(2)
-		int points = results.FetchInt(16)
+		int playerid = results.FetchInt(0)
+		int partnerid = results.FetchInt(1)
+		int points = results.FetchInt(2)
 		char sQuery[512]
 		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
 		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
@@ -698,7 +698,7 @@ public void OnClientPutInServer(int client)
 	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
-		gD_mysql.Query(SQLAddUser, "SELECT * FROM users", GetClientSerial(client))
+		gD_mysql.Query(SQLAddUser, "SELECT id FROM users", GetClientSerial(client))
 		int steamid = GetSteamAccountID(client)
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
