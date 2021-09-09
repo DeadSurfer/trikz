@@ -698,10 +698,10 @@ public void OnClientPutInServer(int client)
 	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
-		gD_mysql.Query(SQLAddUser, "SELECT id FROM users", GetClientSerial(client))
+		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client))
 		int steamid = GetSteamAccountID(client)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
+		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' LIMIT 1", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
 	gB_MenuIsOpen[client] = false
@@ -796,7 +796,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i", steamid)
+			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
 		}
 	}
@@ -830,7 +830,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
 		{
-			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i", steamid)
+			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid)
 			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
 		}
 		else
@@ -1084,7 +1084,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						if(gB_MenuIsOpen[partner])
 							Trikz(partner)
 						char sQuery[512]
-						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), gS_map)
+						Format(sQuery, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), gS_map)
 						gD_mysql.Query(SQLGetPartnerRecord, sQuery, GetClientSerial(param1))
 					}
 					else
@@ -1967,7 +1967,7 @@ void CPSetup(int client)
 	char sQuery[512]
 	for(int i = 1; i <= 10; i++)
 	{
-		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s'", i, gS_map)
+		Format(sQuery, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, gS_map)
 		DataPack dp = new DataPack()
 		dp.WriteCell(client ? GetClientSerial(client) : 0)
 		dp.WriteCell(i)
@@ -2264,7 +2264,7 @@ Action SDKStartTouch(int entity, int other)
 					gB_cpLock[i][gI_partner[other]] = true
 					gF_TimeCP[i][other] = gF_Time[other]
 					gF_TimeCP[i][gI_partner[other]] = gF_Time[other]
-					Format(sQuery, 512, "SELECT cp%i FROM records", i)
+					Format(sQuery, 512, "SELECT cp%i FROM records LIMIT 1", i)
 					DataPack dp = new DataPack()
 					dp.WriteCell(GetClientSerial(other))
 					dp.WriteCell(i)
@@ -2576,14 +2576,14 @@ void SQLConnect(Database db, const char[] error, any data)
 	ForceZonesSetup() //https://sm.alliedmods.net/new-api/dbi/__raw
 	gB_passDB = true //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s'", gS_map)
+	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s' LIMIT 1", gS_map)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
 
 void ForceZonesSetup()
 {
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0", gS_map)
+	Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", gS_map)
 	gD_mysql.Query(SQLSetZoneStart, sQuery)
 }
 
@@ -2599,7 +2599,7 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 		gF_originStartZone[1][2] = results.FetchFloat(5)
 		createstart()
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1", gS_map)
+		Format(sQuery, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", gS_map)
 		gD_mysql.Query(SQLSetZoneEnd, sQuery)
 	}
 }
