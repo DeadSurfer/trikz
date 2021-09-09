@@ -995,37 +995,65 @@ void Partner(int client)
 		PrintToChat(client, "Turn off devmap.")
 	else
 	{
-		if(!gI_partner[client])
+		if(IsPlayerAlive(client))
 		{
-			Menu menu = new Menu(partner_handler)
-			menu.SetTitle("Choose partner")
-			char sName[MAX_NAME_LENGTH]
-			for(int i = 1; i <= MaxClients; i++)
+			if(!gI_partner[client])
 			{
-				if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i]) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
+				Menu menu = new Menu(partner_handler)
+				menu.SetTitle("Choose partner")
+				char sName[MAX_NAME_LENGTH]
+				for(int i = 1; i <= MaxClients; i++)
 				{
-					GetClientName(i, sName, MAX_NAME_LENGTH)
-					char sNameID[32]
-					IntToString(i, sNameID, 32)
-					menu.AddItem(sNameID, sName)
+					if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i]) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
+					{
+						GetClientName(i, sName, MAX_NAME_LENGTH)
+						char sNameID[32]
+						IntToString(i, sNameID, 32)
+						menu.AddItem(sNameID, sName)
+					}
+					if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i])
+					{
+						PrintToChat(client, "No alive, free player.")
+						continue
+					}
 				}
-				if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i])
-				{
-					PrintToChat(client, "No alive, free player.")
-					continue
-				}
+				menu.Display(client, 20)
 			}
-			menu.Display(client, 20)
+			else
+			{
+				Menu menu = new Menu(cancelpartner_handler)
+				menu.SetTitle("Cancel partnership with %N", gI_partner[client])
+				char sPartner[32]
+				IntToString(gI_partner[client], sPartner, 32)
+				menu.AddItem(sPartner, "Yes")
+				menu.AddItem("", "No")
+				menu.Display(client, 20)
+			}
 		}
 		else
 		{
-			Menu menu = new Menu(cancelpartner_handler)
-			menu.SetTitle("Cancel partnership with %N", gI_partner[client])
-			char sPartner[32]
-			IntToString(gI_partner[client], sPartner, 32)
-			menu.AddItem(sPartner, "Yes")
-			menu.AddItem("", "No")
-			menu.Display(client, 20)
+			int entity
+			bool ct
+			bool t
+			while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
+			{
+				ct = true
+				continue
+			}
+			while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
+			{
+				t = true
+				continue
+			}
+			if(ct && t)
+			{
+				PrintToChat(client, "Join Counter-Terrorist or Terrorist team.")
+				return
+			}
+			else if(ct)
+				PrintToChat(client, "Join Counter-Terrorist team.")
+			else if(t)
+				PrintToChat(client, "Join Terrorist team.")
 		}
 	}
 }
