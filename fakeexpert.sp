@@ -1004,27 +1004,29 @@ void Partner(int client)
 				char sName[MAX_NAME_LENGTH]
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) && !IsFakeClient(i) && client != i && !gI_partner[i]) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
+					if(IsClientInGame(i) && !IsFakeClient(i)) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
 					{
 						if(IsPlayerAlive(i))
 						{
-							GetClientName(i, sName, MAX_NAME_LENGTH)
-							char sNameID[32]
-							IntToString(i, sNameID, 32)
-							menu.AddItem(sNameID, sName)
-							PrintToServer("1")
+							if(client != i)
+							{
+								GetClientName(i, sName, MAX_NAME_LENGTH)
+								char sNameID[32]
+								IntToString(i, sNameID, 32)
+								menu.AddItem(sNameID, sName)
+							}
+							if(i == 1 && !gI_partner[i])
+							{
+								PrintToChat(client, "No alive, free player.")
+								PrintToServer("2")
+								continue
+							}
+							else if(i > 1 && !gI_partner[i])
+							{
+								PrintToChat(client, "No free player.")
+								continue
+							}
 						}
-						else
-						{
-							PrintToChat(client, "No alive, free player.")
-							PrintToServer("2")
-							continue
-						}
-						//if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i])
-						//{
-						//	PrintToChat(client, "No free player.")
-						//	continue
-						//}
 					}
 				}
 				menu.Display(client, 20)
