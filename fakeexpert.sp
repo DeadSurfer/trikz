@@ -140,6 +140,7 @@ bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 int gI_totalRecords[2]
 bool gB_recordsOnce
+float gF_queryTime
 
 public Plugin myinfo =
 {
@@ -356,6 +357,7 @@ public void OnMapStart()
 	{
 		gB_recordsOnce = false
 		gD_mysql.Query(SQLRecalculatePoints, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
+		gF_queryTime = GetEngineTime()
 	}
 }
 
@@ -400,9 +402,12 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 
 void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
 {
-	//if(results.HasResults == false)
-		//if(gI_totalRecords[0]-- && !gI_totalRecords[0])
+	if(results.HasResults == false)
+		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
+		{
+			PrintToServer("%f", GetEngineTime() - gF_queryTime)
 			//gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0 WHERE points > 0") //https://stackoverflow.com/questions/5064977/detect-if-value-is-number-in-mysql
+		}
 }
 
 /*void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
