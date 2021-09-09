@@ -3404,18 +3404,15 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 
 Action timer_clantag(Handle timer, int client)
 {
-	if(0 < client <= MaxClients)
+	if(IsClientInGame(client))
 	{
-		if(IsClientInGame(client))
+		if(gB_state[client])
 		{
-			if(gB_state[client])
-			{
-				CS_SetClientClanTag(client, gS_clanTag[client][1])
-				return Plugin_Continue
-			}
-			else
-				CS_SetClientClanTag(client, gS_clanTag[client][0])
+			CS_SetClientClanTag(client, gS_clanTag[client][1])
+			return Plugin_Continue
 		}
+		else
+			CS_SetClientClanTag(client, gS_clanTag[client][0])
 	}
 	return Plugin_Stop
 }
