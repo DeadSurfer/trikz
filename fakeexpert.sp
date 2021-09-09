@@ -1009,9 +1009,9 @@ void Partner(int client)
 					{
 						if(IsPlayerAlive(i))
 						{
-							if(noPlayers == 1 && !gI_partner[i])
+							if(gI_partner[i])
 								noPlayers++
-							else if(noPlayers > 1 && gI_partner[i])
+							else
 								noPlayers++
 							if(client != i && !gI_partner[i])
 							{
