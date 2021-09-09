@@ -731,6 +731,7 @@ public void OnClientPutInServer(int client)
 	gB_button[client] = false
 	gB_pbutton[client] = false
 	ResetFactory(client)
+	gI_points[client] = 0
 }
 
 public void OnClientDisconnect(int client)
