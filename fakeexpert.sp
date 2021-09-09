@@ -402,38 +402,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 
 void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.HasResults == false)
-		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
-		{
-			PrintToServer("%f", GetEngineTime() - gF_queryTime[0])
-			//gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0 WHERE points > 0") //https://stackoverflow.com/questions/5064977/detect-if-value-is-number-in-mysql
-		}
 }
-
-/*void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.HasResults == false)
-		gD_mysql.Query(SQLRecalculatePoints5, "SELECT playerid, partnerid, points FROM records") //https://www.cloudways.com/blog/mysql-performance-tuning/
-}
-
-void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error, any data)
-{
-	while(results.FetchRow())
-	{
-		int playerid = results.FetchInt(0)
-		int partnerid = results.FetchInt(1)
-		int points = results.FetchInt(2)
-		char sQuery[512]
-		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, playerid)
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
-		Format(sQuery, 512, "UPDATE users SET points = points + %i WHERE steamid = %i", points, partnerid)
-		gD_mysql.Query(SQLRecalculatePoints6, sQuery)
-	}
-}
-
-void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
-{
-}*/
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
@@ -797,14 +766,8 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 	if(!client)
 		return
 	if(IsClientInGame(client))
-	{
 		if(results.HasResults == false)
-		{
-			//char sQuery[512]
 			gD_mysql.Query(SQLGetPoints, "SELECT map FROM tier", GetClientSerial(client))
-			//gF_queryTime[client] = GetEngineTime()
-		}
-	}
 }
 
 void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data)
@@ -832,14 +795,8 @@ void SQLGetPoints2(Database db, DBResultSet results, const char[] error, any dat
 	if(!client)
 		return
 	if(IsClientInGame(client))
-	{
 		if(results.FetchRow())
-		{
-			int points = results.FetchInt(0)
-			gI_points[client] += points
-			//PrintToServer("%f %N", GetEngineTime() - gF_queryTime[client], client)
-		}
-	}
+			gI_points[client] += results.FetchInt(0)
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
