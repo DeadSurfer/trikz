@@ -398,7 +398,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 	}
 }
 
-void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
+/*void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.HasResults == false)
 		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
@@ -428,7 +428,7 @@ void SQLRecalculatePoints5(Database db, DBResultSet results, const char[] error,
 
 void SQLRecalculatePoints6(Database db, DBResultSet results, const char[] error, any data)
 {
-}
+}*/
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
@@ -796,7 +796,8 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
+			//Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
+			Format(sQuery, 512, "SELECT SUM(DISTINCT points) FROM records WHERE playerid = %i OR partnerid = %i", steamid, steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
 		}
 	}
