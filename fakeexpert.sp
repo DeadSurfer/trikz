@@ -802,10 +802,8 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
-			//Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
-			Format(sQuery, 512, "SELECT SUM(points) FROM records WHERE playerid = %i OR partnerid = %i", steamid, steamid)
-			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
-			gF_queryTime[client] = GetEngineTime()
+			gD_mysql.Query(SQLGetPoints, "SELECT map FROM tier", GetClientSerial(client))
+			//gF_queryTime[client] = GetEngineTime()
 		}
 	}
 }
@@ -817,11 +815,29 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 		return
 	if(IsClientInGame(client))
 	{
+		while(results.FetchRow())
+		{
+			char sMap[192]
+			results.FetchString(0, sMap, 192)
+			char sQuery[512]
+			Format(sQuery, 512, "SELECT points FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, sMap)
+			gD_mysql.Query(SQLGetPoints2, sQuery, GetClientSerial(client))
+		}
+	}
+}
+
+void SQLGetPoints2(Database db, DBResultSet results, const char[] error, any data)
+{
+	int client = GetClientFromSerial(data)
+	if(!client)
+		return
+	if(IsClientInGame(client))
+	{
 		if(results.FetchRow())
 		{
 			int points = results.FetchInt(0)
-			gI_points[client] = points
-			PrintToServer("%f %N", GetEngineTime() - gF_queryTime[client], client)
+			gI_points[client] += points
+			//PrintToServer("%f %N", GetEngineTime() - gF_queryTime[client], client)
 		}
 	}
 }
