@@ -800,7 +800,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 	{
 		if(results.HasResults == false)
 		{
-			char sQuery[512]
+			//char sQuery[512]
 			gD_mysql.Query(SQLGetPoints, "SELECT map FROM tier", GetClientSerial(client))
 			//gF_queryTime[client] = GetEngineTime()
 		}
