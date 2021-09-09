@@ -801,7 +801,6 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		if(results.HasResults == false)
 		{
 			char sQuery[512]
-			int steamid = GetSteamAccountID(client)
 			gD_mysql.Query(SQLGetPoints, "SELECT map FROM tier", GetClientSerial(client))
 			//gF_queryTime[client] = GetEngineTime()
 		}
@@ -820,6 +819,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 			char sMap[192]
 			results.FetchString(0, sMap, 192)
 			char sQuery[512]
+			int steamid = GetSteamAccountID(client)
 			Format(sQuery, 512, "SELECT points FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, sMap)
 			gD_mysql.Query(SQLGetPoints2, sQuery, GetClientSerial(client))
 		}
