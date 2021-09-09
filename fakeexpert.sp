@@ -706,7 +706,7 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client))
 		int steamid = GetSteamAccountID(client)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time", steamid, steamid, gS_map)
+		Format(sQuery, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
 	gB_MenuIsOpen[client] = false
