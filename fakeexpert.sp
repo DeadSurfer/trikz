@@ -1024,6 +1024,7 @@ void Partner(int client)
 						}
 					}
 				}
+				noPlayers = 3
 				switch(noPlayers)
 				{
 					case 1:
