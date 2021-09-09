@@ -1011,9 +1011,14 @@ void Partner(int client)
 						IntToString(i, sNameID, 32)
 						menu.AddItem(sNameID, sName)
 					}
-					if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i])
+					if(IsClientInGame(i) && client != i && !IsPlayerAlive(i) && !IsFakeClient(i) && !gI_partner[i])
 					{
 						PrintToChat(client, "No alive, free player.")
+						continue
+					}
+					if(IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i) && client != i && !gI_partner[i])
+					{
+						PrintToChat(client, "No free player.")
 						continue
 					}
 				}
