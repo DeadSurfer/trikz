@@ -3452,7 +3452,7 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 
 Action timer_clantag(Handle timer, int client)
 {
-	if(IsClientInGame(client))
+	if(0 < client <= MaxClients && IsClientInGame(client))
 	{
 		if(gB_state[client])
 		{
