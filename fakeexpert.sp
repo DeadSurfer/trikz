@@ -1010,9 +1010,9 @@ void Partner(int client)
 						if(IsPlayerAlive(i))
 						{
 							if(gI_partner[i])
-								noPlayers++
+								noPlayers = 2
 							else
-								noPlayers++
+								noPlayers = 1
 							if(client != i && !gI_partner[i])
 							{
 								GetClientName(i, sName, MAX_NAME_LENGTH)
@@ -1024,7 +1024,6 @@ void Partner(int client)
 						}
 					}
 				}
-				noPlayers = 3
 				switch(noPlayers)
 				{
 					case 1:
