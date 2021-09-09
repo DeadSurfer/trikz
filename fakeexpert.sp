@@ -706,7 +706,7 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client))
 		int steamid = GetSteamAccountID(client)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
+		Format(sQuery, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
 	gB_MenuIsOpen[client] = false
@@ -2585,7 +2585,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	ForceZonesSetup() //https://sm.alliedmods.net/new-api/dbi/__raw
 	gB_passDB = true //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 	char sQuery[512]
-	Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE map = '%s' LIMIT 1", gS_map)
+	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
 }
 
