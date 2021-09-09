@@ -701,7 +701,7 @@ public void OnClientPutInServer(int client)
 		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client))
 		int steamid = GetSteamAccountID(client)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' LIMIT 1", steamid, steamid, gS_map)
+		Format(sQuery, 512, "SELECT MIN(time) FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s'", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
 	gB_MenuIsOpen[client] = false
@@ -2257,7 +2257,7 @@ Action SDKStartTouch(int entity, int other)
 					int partnerid = GetSteamAccountID(gI_partner[other])
 					if(!gB_cpLock[1][other] && gF_mateRecord[other])
 					{
-						Format(sQuery, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
+						Format(sQuery, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, gS_map)
 						gD_mysql.Query(SQLSetTries, sQuery)
 					}
 					gB_cpLock[i][other] = true
