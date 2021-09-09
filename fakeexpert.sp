@@ -1026,9 +1026,9 @@ void Partner(int client)
 				}
 				switch(noPlayers)
 				{
-					case 0:
-						PrintToChat(client, "No alive, free player.")
 					case 1:
+						PrintToChat(client, "No alive, free player.")
+					case 2:
 						PrintToChat(client, "No free player.")
 				}
 				menu.Display(client, 20)
