@@ -3297,7 +3297,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		{
 			Restart(client)
-			Restart(gI_partner[client])
+			if(gI_partner[client])
+				Restart(gI_partner[client])
 		}
 		//else if(StrEqual(sArgs, "time"))
 		//	cmd_time(client, 0)
