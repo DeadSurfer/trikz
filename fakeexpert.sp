@@ -1455,33 +1455,6 @@ Action cmd_test(int client, int args)
 	GetConVarString(gCV_steamid, sSteamID, 64)
 	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
 	{
-		KeyValues test = CreateKeyValues("test")
-		//char sCfg[256]
-		//Format(sCfg, 256, "test.txt")
-		test.ImportFromFile("test.txt")
-		char sKVString[256]
-		char sKVString2[256]
-		test.GetString("1", sKVString, 256)
-		int newClient = StringToInt(sKVString)
-		//if(newClient == 1)
-		//	newClient = client
-		test.GetString("2", sKVString2, 256)
-		int kvINT = 256
-		int newKVINT = StringToInt(sKVString2)
-		//if(newClient == 1)
-		//	newClient = client
-		//if(newClient == 2)
-		//	newKVINT = kvINT
-		if(newClient == 1)
-			newClient = 10
-		if(newClient == 2)
-			newClient = kvINT
-		if(newKVINT == 1)
-			newKVINT = 20
-		if(newKVINT == 2)
-			newKVINT = kvINT
-		PrintToServer("%i %i", newClient, newKVINT) // so we can customize in this way all chats. alot secuences but its okey.
-		//PrintToServer("%i %i", newKVINT, newClient)
 		PrintToServer("TickCount: %i", GetGameTickCount())
 		PrintToServer("GetTime: %i", GetTime())
 		PrintToServer("GetGameTime: %f", GetGameTime())
@@ -1493,6 +1466,11 @@ Action cmd_test(int client, int args)
 		PrintToServer("RoundToFloor: %i", RoundToFloor(round))
 		PrintToServer("RoundToNearest: %i", RoundToNearest(round))
 		PrintToServer("RoundToZero: %i", RoundToZero(round))
+		/*RoundFloat: 123
+		RoundToCeil: 124
+		RoundToFloor: 123
+		RoundToNearest: 123
+		RoundToZero: 123*/
 		round = 123.912
 		PrintToServer("RoundFloat: %i", RoundFloat(round))
 		PrintToServer("RoundToCeil: %i", RoundToCeil(round))
@@ -1500,12 +1478,6 @@ Action cmd_test(int client, int args)
 		PrintToServer("RoundToNearest: %i", RoundToNearest(round))
 		PrintToServer("RoundToZero: %i", RoundToZero(round))
 		/*
-		RoundFloat: 123
-		RoundToCeil: 124
-		RoundToFloor: 123
-		RoundToNearest: 123
-		RoundToZero: 123
-		
 		RoundFloat: 124
 		RoundToCeil: 124
 		RoundToFloor: 123
