@@ -847,6 +847,8 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
+	if(!(0 < other <= MaxClients)) //0, > MaxClients
+		GetClientAbsOrigin(client, gF_skyOrigin[client])
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15 && !gB_skyBoost[other])
 	{
 		float originBooster[3]
