@@ -866,11 +866,8 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 Action SDKSkyFix2(int client, int other)
 {
-	if(!(0 < other <= MaxClients)) //0, > MaxClients
-	{
+	if(0 < client <= MaxClients && !(0 < other <= MaxClients)) //0, > MaxClients
 		GetClientAbsOrigin(client, gF_skyOrigin[client])
-		PrintToServer("yes")
-	}
 }
 
 void SDKBoostFix(int client)
