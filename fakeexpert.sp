@@ -393,7 +393,7 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 		float points = float(data) * (float(gI_totalRecords[1]) / float(place)) //thanks to DeadSurfer
 		place++
 		int id = results.FetchInt(1)
-		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i", RoundFloat(points), id)
+		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", RoundFloat(points), id)
 		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
 	}
 }
@@ -752,7 +752,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 		GetClientName(client, sName, MAX_NAME_LENGTH)
 		int steamid = GetSteamAccountID(client)
 		if(results.FetchRow())
-			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i", sName, GetTime(), steamid)
+			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i LIMIT 1", sName, GetTime(), steamid)
 		else
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
 		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery, GetClientSerial(client))
@@ -1587,7 +1587,7 @@ Action cmd_maptier(int client, int args)
 			{
 				PrintToServer("[Args] Tier: %i", tier)
 				char sQuery[512]
-				Format(sQuery, 512, "DELETE FROM tier WHERE map = '%s'", gS_map)
+				Format(sQuery, 512, "DELETE FROM tier WHERE map = '%s' LIMIT 1", gS_map)
 				gD_mysql.Query(SQLTierRemove, sQuery, tier)
 			}
 		}
@@ -1633,7 +1633,7 @@ Action cmd_startmaxs(int client, int args)
 	{
 		GetClientAbsOrigin(client, gF_originStartZone[1])
 		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 0", gS_map)
+		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", gS_map)
 		gD_mysql.Query(SQLDeleteStartZone, sQuery)
 		gB_zoneFirst[0] = false
 	}
@@ -1651,7 +1651,7 @@ Action cmd_endmaxs(int client, int args)
 	{
 		GetClientAbsOrigin(client, gF_originEndZone[1])
 		char sQuery[512]
-		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1", gS_map)
+		Format(sQuery, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", gS_map)
 		gD_mysql.Query(SQLDeleteEndZone, sQuery)
 		gB_zoneFirst[1] = false
 	}
@@ -2077,11 +2077,6 @@ Action cmd_createusers(int args)
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	PrintToServer("Successfuly created user table.")
-	gD_mysql.Query(SQLAddFakePoints, "INSERT INTO user (points) VALUES (0)")
-}
-
-void SQLAddFakePoints(Database db, DBResultSet results, const char[] error, any data)
-{
 }
 
 Action cmd_createrecords(int args)
@@ -2154,7 +2149,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							gF_haveRecord[other] = gF_Time[other]
 							gF_haveRecord[gI_partner[other]] = gF_Time[other]
@@ -2173,7 +2168,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", playerid, partnerid, partnerid, playerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 						}
 						else if(gF_ServerRecord < gF_Time[other] < gF_mateRecord[other])
@@ -2185,7 +2180,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, gI_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(gI_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(sQuery, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s'", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
+							Format(sQuery, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", gF_Time[other], gF_TimeCP[1][other], gF_TimeCP[2][other], gF_TimeCP[3][other], gF_TimeCP[4][other], gF_TimeCP[5][other], gF_TimeCP[6][other], gF_TimeCP[7][other], gF_TimeCP[8][other], gF_TimeCP[9][other], gF_TimeCP[10][other], GetTime(), playerid, partnerid, partnerid, playerid, gS_map)
 							gD_mysql.Query(SQLUpdateRecord, sQuery)
 							if(gF_haveRecord[other] > gF_Time[other])
 								gF_haveRecord[other] = gF_Time[other]
