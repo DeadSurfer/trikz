@@ -398,14 +398,14 @@ void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error,
 	}
 }
 
-/*void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
 {
-	if(results.HasResults == false)
-		if(gI_totalRecords[0]-- && !gI_totalRecords[0])
-			gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0 WHERE points > 0") //https://stackoverflow.com/questions/5064977/detect-if-value-is-number-in-mysql
+	//if(results.HasResults == false)
+		//if(gI_totalRecords[0]-- && !gI_totalRecords[0])
+			//gD_mysql.Query(SQLRecalculatePoints4, "UPDATE users SET points = 0 WHERE points > 0") //https://stackoverflow.com/questions/5064977/detect-if-value-is-number-in-mysql
 }
 
-void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
+/*void SQLRecalculatePoints4(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(results.HasResults == false)
 		gD_mysql.Query(SQLRecalculatePoints5, "SELECT playerid, partnerid, points FROM records") //https://www.cloudways.com/blog/mysql-performance-tuning/
