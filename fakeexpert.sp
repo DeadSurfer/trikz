@@ -140,7 +140,6 @@ bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 int gI_totalRecords[2]
 bool gB_recordsOnce
-float gF_queryTime[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -357,7 +356,6 @@ public void OnMapStart()
 	{
 		gB_recordsOnce = false
 		gD_mysql.Query(SQLRecalculatePoints, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
-		gF_queryTime[0] = GetEngineTime()
 	}
 }
 
@@ -666,6 +664,7 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	SDKHook(client, SDKHook_Touch, SDKSkyFix2)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
@@ -829,8 +828,6 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(!(0 < other <= MaxClients)) //0, > MaxClients
-		GetClientAbsOrigin(client, gF_skyOrigin[client])
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15 && !gB_skyBoost[other])
 	{
 		float originBooster[3]
@@ -865,6 +862,12 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			}
 		}
 	}
+}
+
+Action SDKSkyFix(int client, int other)
+{
+	if(!(0 < other <= MaxClients)) //0, > MaxClients
+		GetClientAbsOrigin(client, gF_skyOrigin[client])
 }
 
 void SDKBoostFix(int client)
