@@ -40,8 +40,8 @@ bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
-int gI_countEntity[2048 + 1]
-int gI_totalEntity
+//int gI_countEntity[2048 + 1]
+//int gI_totalEntity
 forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
 
@@ -150,8 +150,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 			}
-			gI_totalEntity++
-			gI_countEntity[gI_totalEntity] = entity
+			//gI_totalEntity++
+			//gI_countEntity[gI_totalEntity] = entity
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
@@ -225,7 +225,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
-	PrintToServer("Total entities in proccess: %i", gI_totalEntity)
+	//PrintToServer("Total entities in proccess: %i", gI_totalEntity)
 }
 
 void Reset(int client)
@@ -259,8 +259,13 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
-	if(activator < 1)
-		return MRES_Ignored
+	//if(activator < 1)
+	//	return MRES_Ignored
+    /*if(0 > activator || activator > MaxClients)
+    {
+        DHookSetReturn(hReturn, false)
+        return MRES_Supercede
+    }*/
 	//int caller = DHookGetParam(hParams, 3)
 	//int outputid = DHookGetParam(hParams, 5)
 	//if(0 < activator <= MaxClients)
@@ -349,6 +354,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 
 Action TouchTrigger(int entity, int other)
 {
+	PrintToServer("yes")
 	if(0 < other <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(other)
