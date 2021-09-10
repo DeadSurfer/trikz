@@ -118,7 +118,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					AcceptEntityInput(entity, "Enable")
 				else if (i == 1)
 					AcceptEntityInput(entity, "Toggle")
-				else if (i < 7)
+				if (i < 7)
 					gI_countTriggers[gI_totalTriggers++] = entity
 				else if(i == 7)
 				{
