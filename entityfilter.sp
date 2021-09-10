@@ -106,7 +106,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-			if(1 < i < 7)
+			else if(1 < i < 7)
 				SDKHook(entity, SDKHook_Touch, TouchTrigger)
 			/*if(i == 3)
 			{
@@ -129,9 +129,9 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}*/
 			if(!i || 1 < i < 7)
 				AcceptEntityInput(entity, "Enable")
-			if (i == 1)
+			else if (i == 1)
 				AcceptEntityInput(entity, "Toggle")
-			if(i == 7)
+			else if(i == 7)
 			{
 				SDKHook(entity, SDKHook_Use, HookButton)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
@@ -143,8 +143,9 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
 				gI_countEntity[gI_totalEntity++] = entity
+				PrintToServer("%i", gI_totalEntity)
 			}
-			if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
+			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
