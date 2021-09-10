@@ -208,6 +208,7 @@ public void OnPluginStart()
 		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
 		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
+	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 }
 
 public void OnMapStart()
@@ -498,7 +499,7 @@ void frame_SayText2(DataPack dp)
 		int count
 		int team = GetClientTeam(client)
 		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i) && (allchat || GetClientTeam(i) == team))
+			if(IsClientSourceTV(i) || (IsClientInGame(i) && (allchat || GetClientTeam(i) == team)))
 				clients[count++] = i
 		Handle hSayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS)
 		BfWrite bfmsg = UserMessageToBfWrite(hSayText2)
@@ -1510,6 +1511,7 @@ Action cmd_test(int client, int args)
 		-1.000000 == -1.0 | true
 		0.100000 == 0.1 | true
 		*/
+		PrintToChat(client, "[SM] %t", "Hello", "FakeExpert!")
 	}
 	return Plugin_Handled
 }
