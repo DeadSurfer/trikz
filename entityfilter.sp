@@ -32,6 +32,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <trikz>
+#include <outputinfo>
 
 Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
@@ -92,11 +93,12 @@ public void OnPluginStart()
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int entity
-	char sClassName[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
+	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_totalEntity = 0
-	for(int i = 0; i < sizeof(sClassName); i++)
+	bool gB_once
+	for(int i = 0; i < sizeof(sClassname); i++)
 	{
-		while((entity = FindEntityByClassname(entity, sClassName)) > 0)
+		while((entity = FindEntityByClassname(entity, sClassname)) > 0)
 		{
 			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
@@ -161,6 +163,65 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 				gI_countEntity[gI_totalEntity++] = entity
+			}
+			if(!gB_once)
+			{
+				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
+				for(int i = 0; i < sizeof(sOutputs); i++)
+				{
+					int count = GetOutputActionCount(breakable, sOutputs[i])
+					char sTarget[256]
+					for(int i = 0; i < count; i++)
+					{
+						int breakable
+						GetOutputActionTarget(entity, sOutputs[i], i, sTarget, 256)
+						char sName[64]
+						while((breakable = FindEntityByClassname(breakable, "func_breakable")) > 0)
+						{
+							if(StrEqual(sTarget, "!self") && breakable == -1)
+								break
+							if(GetEntPropString(breakable, Prop_Data, "m_iName", sName, 64))
+								if(!strlen(sName))	
+									continue
+							if(StrEqual(sName, sTarget))
+								break
+							int template
+							bool bBreak
+							while((template = FindEntityByClassname(template, "point_template")) > 0)
+							{
+								//char sName[64]
+								for(int i = 0; i <= 16; i++)
+								{
+									Format(sName, 64, "m_iszTemplateEntityNames[%i]", i)
+									GetEntPropString(template, Prop_Data, sName, sName, 64)
+									//char sTarget[64]
+									GetOutputActionTarget(entity, "m_OnBreak", i, sTarget, 64)
+									if(StrEqual(sName, sTarget))
+										break
+								}
+							}
+							count = GetOutputActionCount(breakable, "m_OnBreak")
+							char sOutput[3][256]
+							for(int i = 0; i < count; i++)
+							{
+								GetOutputActionTarget(iTarget, "m_OnBreak", i, sOutput[0], 256)
+								GetOutputActionTargetInput(iTarget, "m_OnBreak", i, sOutput[1], 256)
+								GetOutputActionParameter(iTarget, "m_OnBreak", i, sOutput[2], 256)
+								float iOutputDelay = GetOutputActionDelay(iTarget, "m_OnBreak", i)
+								int iOutputTimesToFire = GetOutputActionTimesToFire(iTarget, "m_OnBreak", i)
+								Format(sOutput[0], 256, "OnUser4 %s:%s:%s:%f:%i", sOutput[0], sOutput[1], sOutput[2], iOutputDelay, iOutputTimesToFire)
+								SetVariantString(sOutput[0])
+								AcceptEntityInput(iTarget, "AddOutput")
+							}
+							DHookEntity(gH_AcceptInput, false, entity)
+							SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+							gB_stateDefaultDisabled[breakable] = false
+							gB_stateDisabled[0][breakable] = false
+							gI_countEntity[gI_totalEntity++] = breakable
+							gB_once = true
+						}
+					}
+				}
 			}
 		}
 	}
@@ -237,6 +298,17 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				else
 					gB_stateDisabled[0][pThis] = false
 			}
+		}
+		else if(StrEqual(sInput, "Break"))
+		{
+			AcceptEntityInput(pThis, "FireUser4", activator, pThis)
+			if(partner > 0)
+			{
+				gB_stateDisabled[activator][pThis] = false
+				gB_stateDisabled[partner][pThis] = false
+			}
+			else if(partner < 1)
+				gB_stateDisabled[0][pThis] = false
 		}
 	}
 	/*char sClassname[32]
@@ -352,4 +424,15 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	//PrintToServer("ent1 %i, ent2 %i", ent1, ent2)
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
+}
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	if(StrEqual(classname, "func_breakable"))
+		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnPost)
+}
+
+void SDKSpawnPost(int entity)
+{
+	AcceptEntityInput(entity, "Kill")
 }
