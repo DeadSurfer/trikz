@@ -264,7 +264,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	int partner = Trikz_FindPartner(activator)
 	if(partner > 0)
 	{
-		if(0.0 < gF_buttonReady[activator][entity] > GetGameTime())
+		if(gF_buttonReady[activator][entity] > GetGameTime())
 			return Plugin_Handled
 		if(gB_stateDisabled[activator][entity])
 			return Plugin_Handled
@@ -273,7 +273,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	}
 	else if(partner < 1)
 	{
-		if(0.0 < gF_buttonReady[0][entity] > GetGameTime())
+		if(gF_buttonReady[0][entity] > GetGameTime())
 			return Plugin_Handled
 		if(gB_stateDisabled[0][entity])
 			return Plugin_Handled
