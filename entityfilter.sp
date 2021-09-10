@@ -40,6 +40,10 @@ bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
+int gI_countTriggers[2048 + 1]
+int gI_countButtons[2048 + 1]
+int gI_totalTriggers
+int gI_totalButtons
 
 public Plugin myinfo =
 {
@@ -98,11 +102,10 @@ public void OnPluginStart()
 
 public void OnClientPutInServer(int client)
 {
-	for(int i = 1; i <= 2048; i++)
-	{
-		gB_stateDisabled[client][i] = gB_stateDisabled[0][i]
-		gF_buttonReady[client][i] = 0.0
-	}
+	for(int i = 1; i <= gI_countTriggers[gI_totalTriggers]; i++)
+		gB_stateDisabled[client][gI_countTriggers[i]] = gB_stateDisabled[0][i]
+	for(int i = 1; i <= gI_countTriggers[gI_totalButtons]; i++)
+		gF_buttonReady[client][[gI_countButtons[i]] = 0.0
 }
 
 public void Trikz_OnPartner(int client, int partner)
@@ -141,6 +144,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int entity
 	char sClassName[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
+	gI_totalTriggers = 0
+	gI_totalButtons = 0
 	for(int i = 0; i < sizeof(sClassName); i++)
 	{
 		while((entity = FindEntityByClassname(entity, sClassName)) > 0)
@@ -150,6 +155,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
+				if(i == 7)
+					gI_countTriggers[gI_totalTriggers++] = entity
+				else
+					gI_countButtons[gI_totalButtons++] = entity
 				if(!i || 1 < i < 7)
 					AcceptEntityInput(entity, "Enable")
 				else if (i == 1)
@@ -167,6 +176,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
+				if(i == 7)
+					gI_countTriggers[gI_totalTriggers++] = entity
+				else
+					gI_countButtons[gI_totalButtons++] = entity
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 			}
@@ -185,6 +198,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			HookEntityOutput("trigger_gravity", sOutputs[i], TriggerOutputHook) //make able to work !self
 		}
 	}
+	PrintToServer("Total triggers in process: %i. Total buttons in proccess: %i", gI_totalTriggers, gI_totalButtons)
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
