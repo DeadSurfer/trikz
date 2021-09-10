@@ -230,10 +230,15 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 void Reset(int client)
 {
-	for(int i = 1; i <= gI_totalEntity; i++)
+	//for(int i = 1; i <= gI_totalEntity; i++)
+	//{
+	//	gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
+	//	gF_buttonReady[client][gI_countEntity[i]] = 0.0
+	//}
+	for(int i = 1; i <= 2048; i++)
 	{
-		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
-		gF_buttonReady[client][gI_countEntity[i]] = 0.0
+		gB_stateDisabled[client][i] = gB_stateDefaultDisabled[i]
+		gF_buttonReady[client][i] = 0.0
 	}
 }
 
