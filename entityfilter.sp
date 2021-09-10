@@ -461,7 +461,7 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	return MRES_Supercede
 }
 
-public void OnEntityCreated(int entity, const char[] classname)
+/*public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "func_breakable"))
 		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnPost)
@@ -470,4 +470,4 @@ public void OnEntityCreated(int entity, const char[] classname)
 void SDKSpawnPost(int entity)
 {
 	AcceptEntityInput(entity, "Kill")
-}
+}*/
