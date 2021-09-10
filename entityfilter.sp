@@ -198,7 +198,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			HookEntityOutput("trigger_gravity", sOutputs[i], TriggerOutputHook) //make able to work !self
 		}
 	}
-	PrintToServer("Total triggers in process: %i. Total buttons in proccess: %i", gI_totalTriggers, gI_totalButtons)
+	PrintToServer("Total triggers in proccess: %i. Total buttons in proccess: %i", gI_totalTriggers, gI_totalButtons)
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
