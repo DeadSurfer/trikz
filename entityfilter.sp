@@ -93,7 +93,7 @@ public void OnPluginStart()
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int entity
-	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
+	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	gI_totalEntity = 0
 	bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
@@ -164,7 +164,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDisabled[0][entity] = false
 				gI_countEntity[gI_totalEntity++] = entity
 			}
-			if(!gB_once)
+			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
 				for(int i = 0; i < sizeof(sOutputs); i++)
@@ -222,6 +222,14 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 						}
 					}
 				}
+			}*/
+			else if(i == 8)
+			{
+				DHookEntity(gH_AcceptInput, false, entity)
+				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+				gB_stateDefaultDisabled[entity] = false
+				gB_stateDisabled[0][entity] = false
+				gI_countEntity[gI_totalEntity++] = entity
 			}
 		}
 	}
@@ -309,6 +317,16 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = false
+		}
+		else if(StrEqual(sInput, "ForceSpawn"))
+		{
+			if(partner > 0)
+			{
+				gB_stateDisabled[activator][pThis] = true
+				gB_stateDisabled[partner][pThis] = true
+			}
+			else if(partner < 1)
+				gB_stateDisabled[0][pThis] = true
 		}
 	}
 	/*char sClassname[32]
