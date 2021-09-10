@@ -354,7 +354,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 
 Action TouchTrigger(int entity, int other)
 {
-	PrintToServer("yes")
 	if(0 < other <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(other)
