@@ -163,13 +163,15 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 				}
 				gB_stateDefaultDisabled[entity] = true
+				gB_stateDisabled[0][entity] = true
 			}
 			else
+			{
 				gB_stateDefaultDisabled[entity] = false
+				gB_stateDisabled[0][entity] = false
+			}
 		}
 	}
-	for(int i = 1; i <= 2048; i++)
-		gB_stateDisabled[0][i] = gB_stateDefaultDisabled[i]
 	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnStartTouch", "OnStartTouchAll"}
 	for(int i = 0; i < sizeof(sOutputs); i++)
