@@ -400,8 +400,10 @@ Action EntityVisibleTransmit(int entity, int client)
 Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
 	int partner = Trikz_GetClientPartner(activator)
+	PrintToServer("%N", partner)
 	if(partner > 0)
 	{
+		PrintToServer("%N", partner)
 		//if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
 		if(0.0 < gF_buttonReady[activator][entity] > GetGameTime())
 			return Plugin_Handled
