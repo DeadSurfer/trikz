@@ -39,10 +39,8 @@ bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
-int gI_countTriggers[2048 + 1]
-int gI_countButtons[2048 + 1]
-int gI_totalTriggers
-int gI_totalButtons
+int gI_countEntity[2048 + 1]
+int gI_totalEntity
 
 public Plugin myinfo =
 {
@@ -110,27 +108,22 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					AcceptEntityInput(entity, "Enable")
 				else if (i == 1)
 					AcceptEntityInput(entity, "Toggle")
-				if (i < 7)
-					gI_countTriggers[gI_totalTriggers++] = entity
 				else if(i == 7)
 				{
 					SDKHook(entity, SDKHook_Use, HookButton)
 					SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
 					gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 					SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
-					gI_countButtons[gI_totalButtons++] = entity
 				}
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
+				gI_countEntity[gI_totalEntity++] = entity
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				if(i == 7)
-					gI_countButtons[gI_totalButtons++] = entity
-				else
-					gI_countTriggers[gI_totalTriggers++] = entity
+				gI_countEntity[gI_totalEntity++] = entity
 			}
 		}
 	}
@@ -139,15 +132,16 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int i = 0; i < sizeof(sOutputs); i++)
 			HookEntityOutput(sTriggers[i], sOutputs[i], TriggerOutputHook) //make able to work !self
-	PrintToServer("Total triggers in proccess: %i. Total buttons in proccess: %i", gI_totalTriggers, gI_totalButtons)
+	PrintToServer("Total entities in proccess: %i.", gI_totalEntity)
 }
 
 void Reset(int clinet)
 {
-	for(int i = 1; i <= gI_countTriggers[gI_totalTriggers]; i++)
-		gB_stateDisabled[client][gI_countTriggers[i]] = gB_stateDefaultDisabled[gI_countTriggers[i]]
-	for(int i = 1; i <= gI_countTriggers[gI_totalButtons]; i++)
-		gF_buttonReady[client][[gI_countButtons[i]] = 0.0
+	for(int i = 1; i <= gI_countEntity[gI_totalEntity]; i++)
+	{
+		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
+		gF_buttonReady[client][[gI_countEntity[i]] = 0.0
+	}
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
