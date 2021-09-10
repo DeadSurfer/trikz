@@ -75,7 +75,7 @@ public void OnPluginStart()
 	DHookAddParam(gH_AcceptInput, HookParamType_Int)
 	HookEvent("round_start", Event_RoundStart)
 	hGamedata = LoadGameConfigFile("collisionhook")
-	if(hGamedata == null)
+	if(!hGamedata)
 	{
 		SetFailState("Failed to load \"collisionhook.txt\" gamedata.")
 		delete hGamedata
