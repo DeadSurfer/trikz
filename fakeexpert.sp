@@ -1511,7 +1511,7 @@ Action cmd_test(int client, int args)
 		-1.000000 == -1.0 | true
 		0.100000 == 0.1 | true
 		*/
-		PrintToChat(client, "[SM] %t", "Hello", "FakeExpert!")
+		PrintToChat(client, "[SM] %T", "Hello", client, "FakeExpert!")
 	}
 	return Plugin_Handled
 }
