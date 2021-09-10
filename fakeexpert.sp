@@ -673,8 +673,8 @@ public void OnClientPutInServer(int client)
 	if(IsClientInGame(client) && gB_passDB)
 	{
 		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client))
-		int steamid = GetSteamAccountID(client)
 		char sQuery[512]
+		int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, gS_map)
 		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
@@ -724,21 +724,32 @@ public void OnClientDisconnect(int client)
 	}
 }
 
-void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(results.FetchRow())
-		gF_ServerRecord = results.FetchFloat(0)
-	else
-		gF_ServerRecord = 0.0
-}
-
-void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data)
-	if(results.FetchRow())
-		gF_haveRecord[client] = results.FetchFloat(0)
-	else
-		gF_haveRecord[client] = 0.0
+	if(!client)
+		return
+	if(IsClientInGame(client))
+	{
+		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
+		char sName[MAX_NAME_LENGTH]
+		GetClientName(client, sName, MAX_NAME_LENGTH)
+		int steamid = GetSteamAccountID(client)
+		if(results.FetchRow())
+		{
+			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid)
+			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
+		}
+		else
+		{
+			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
+			gD_mysql.Query(SQLUserAdded, sQuery)
+		}
+	}
+}
+
+void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
@@ -799,32 +810,21 @@ void SQLGetPoints2(Database db, DBResultSet results, const char[] error, any dat
 			gI_points[client] += results.FetchInt(0)
 }
 
-void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
-	int client = GetClientFromSerial(data)
-	if(!client)
-		return
-	if(IsClientInGame(client))
-	{
-		char sQuery[512] //https://forums.alliedmods.net/showthread.php?t=261378
-		char sName[MAX_NAME_LENGTH]
-		GetClientName(client, sName, MAX_NAME_LENGTH)
-		int steamid = GetSteamAccountID(client)
-		if(results.FetchRow())
-		{
-			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid)
-			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
-		}
-		else
-		{
-			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
-			gD_mysql.Query(SQLUserAdded, sQuery)
-		}
-	}
+	if(results.FetchRow())
+		gF_ServerRecord = results.FetchFloat(0)
+	else
+		gF_ServerRecord = 0.0
 }
 
-void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
 {
+	int client = GetClientFromSerial(data)
+	if(results.FetchRow())
+		gF_haveRecord[client] = results.FetchFloat(0)
+	else
+		gF_haveRecord[client] = 0.0
 }
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
