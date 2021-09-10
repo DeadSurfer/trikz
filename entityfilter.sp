@@ -134,9 +134,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			if(i == 7)
 			{
 				SDKHook(entity, SDKHook_Use, HookButton)
-				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
+				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+				PrintToServer("but1")
 			}
 			//if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			if(((i == 0) && GetEntProp(entity, Prop_Data, "m_iDisabled") == 1) || ((i == 1) && GetEntProp(entity, Prop_Data, "m_spawnflags") == 1) || ((1 < i < 7) && GetEntProp(entity, Prop_Data, "m_bDisabled") == 1))
