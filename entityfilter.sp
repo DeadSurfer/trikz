@@ -124,7 +124,6 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					AcceptEntityInput(entity, "Toggle")
 				else if(i == 7)
 				{
-					DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
 					SDKHook(entity, SDKHook_Use, HookButton)
 					SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
 					gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
@@ -182,7 +181,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		//int caller = DHookGetParam(hParams, 3)
 		int partner = Trikz_FindPartner(activator)
 		//int outputid = DHookGetParam(hParams, 5)
-		if(StrEqual(sInput, "Enable"))
+		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Unlock"))
 		{
 			if(partner > 0)
 			{
@@ -192,7 +191,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = false
 		}
-		else if(StrEqual(sInput, "Disable"))
+		else if(StrEqual(sInput, "Disable") || StrEqual(sInput, "Lock"))
 		{
 			if(partner > 0)
 			{
@@ -237,44 +236,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	PrintToServer("AcceptInput (%s | %s) pThis: %i input: %s activator: %N (%i) caller: %i (%s | %s) outputid: %i", sClassname, sName, pThis, sInput, activator, activator, caller, sCClassname, sCName, outputid)*/
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
-}
-
-MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
-{
-	//if(pThis < 0)
-	//	pThis = EntRefToEntIndex(pThis)
-	char sInput[32]
-	DHookGetParamString(hParams, 1, sInput, 32)
-	if(DHookIsNullParam(hParams, 2))
-		return MRES_Ignored
-	int activator = DHookGetParam(hParams, 2)
-	if(0 < activator <= MaxClients)
-	{
-		//int caller = DHookGetParam(hParams, 3)
-		int partner = Trikz_FindPartner(activator)
-		//int outputid = DHookGetParam(hParams, 5)
-		if(StrEqual(sInput, "Unlock"))
-		{
-			if(partner > 0)
-			{
-				gB_stateDisabled[activator][pThis] = false
-				gB_stateDisabled[partner][pThis] = false
-			}
-			else if(partner < 1)
-				gB_stateDisabled[0][pThis] = false
-		}
-		else if(StrEqual(sInput, "Lock"))
-		{
-			if(partner > 0)
-			{
-				gB_stateDisabled[activator][pThis] = true
-				gB_stateDisabled[partner][pThis] = true
-			}
-			else if(partner < 1)
-				gB_stateDisabled[0][pThis] = true
-		}
-	}
-	return MRES_Ignored
 }
 
 Action TouchTrigger(int entity, int other)
