@@ -272,9 +272,11 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
+	if(activator < 1)
+		return MRES_Ignored
 	//int caller = DHookGetParam(hParams, 3)
 	//int outputid = DHookGetParam(hParams, 5)
-	if(0 < activator <= MaxClients)
+	//if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
 		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Unlock"))
