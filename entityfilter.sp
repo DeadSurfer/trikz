@@ -95,7 +95,8 @@ public void OnPluginStart()
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int entity
-	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
+	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
+	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_totalEntity = 0
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
@@ -105,7 +106,9 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
+			else if(1 < i < 7)
+				SDKHook(entity, SDKHook_Touch, TouchTrigger)
+			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				/*if(i == 3)
 				{
@@ -128,7 +131,6 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				}*/
 				if(!i || 1 < i < 7)
 				{
-					SDKHook(entity, SDKHook_Touch, TouchTrigger)
 					AcceptEntityInput(entity, "Enable")
 				}
 				else if (i == 1)
@@ -144,7 +146,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDisabled[0][entity] = true
 				gI_countEntity[gI_totalEntity++] = entity
 			}
-			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
+			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				/*if(i == 3)
 				{
@@ -287,8 +289,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				gB_stateDisabled[partner][pThis] = false
 				PrintToServer("1")
 			}
-			else if(partner < 1)
-				gB_stateDisabled[0][pThis] = false
+			//else if(partner < 1)
+			//	gB_stateDisabled[0][pThis] = false
 		}
 		else if(StrEqual(sInput, "Disable") || StrEqual(sInput, "Lock"))
 		{
@@ -297,8 +299,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				gB_stateDisabled[activator][pThis] = true
 				gB_stateDisabled[partner][pThis] = true
 			}
-			else if(partner < 1)
-				gB_stateDisabled[0][pThis] = true
+			//else if(partner < 1)
+			//	gB_stateDisabled[0][pThis] = true
 		}
 		else if(StrEqual(sInput, "Toggle"))
 		{
@@ -315,15 +317,15 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 					gB_stateDisabled[partner][pThis] = false
 				}
 			}
-			else if(partner < 1)
+			/*else if(partner < 1)
 			{
 				if(gB_stateDisabled[0][pThis])
 					gB_stateDisabled[0][pThis] = true
 				else
 					gB_stateDisabled[0][pThis] = false
-			}
+			}*/
 		}
-		else if(StrEqual(sInput, "Break"))
+		/*else if(StrEqual(sInput, "Break"))
 		{
 			//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 			if(partner > 0)
@@ -343,7 +345,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = true
-		}
+		}*/
 		//DHookSetReturn(hReturn, false)
 		//return MRES_Supercede
 	}
