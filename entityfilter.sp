@@ -97,7 +97,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	int entity
 	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
-	gI_totalEntity = 0
+	gI_totalEntity = 1
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
@@ -143,7 +143,6 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
 				gI_countEntity[gI_totalEntity++] = entity
-				PrintToServer("%i %i", gI_countEntity[0], gI_countEntity[1])
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
