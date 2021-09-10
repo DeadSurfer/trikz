@@ -105,7 +105,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
+			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				/*if(i == 3)
 				{
@@ -144,7 +144,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDisabled[0][entity] = true
 				gI_countEntity[gI_totalEntity++] = entity
 			}
-			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
+			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				/*if(i == 3)
 				{
@@ -228,13 +228,13 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					}
 				}
 			}*/
-			else if(i == 8)
+			/*else if(i == 8)
 			{
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 				gI_countEntity[gI_totalEntity++] = entity
-			}
+			}*/
 		}
 	}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
