@@ -40,8 +40,8 @@ bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
-int gI_countEntity[2][2048 + 1]
-int gI_totalEntity[2]
+int gI_countEntity[2048 + 1]
+int gI_totalEntity
 forward void Trikz_Start(int client, int partner)
 native int Trikz_GetClientPartner(int client)
 
@@ -96,8 +96,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int entity
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
-	gI_totalEntity[0] = 0
-	gI_totalEntity[1] = 0
+	gI_totalEntity = 0
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
@@ -143,7 +142,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				}
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
-				gI_countEntity[1][gI_totalEntity[1]++] = entity
+				gI_countEntity[gI_totalEntity++] = entity
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
@@ -168,7 +167,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				}
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				gI_countEntity[0][gI_totalEntity[0]++] = entity
+				gI_countEntity[gI_totalEntity++] = entity
 			}
 			/*if(!gB_once)
 			{
@@ -234,7 +233,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				gI_countEntity[0][gI_totalEntity[0]++] = entity
+				gI_countEntity[gI_totalEntity++] = entity
 			}
 		}
 	}
@@ -248,13 +247,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 void Reset(int client)
 {
-	for(int i = 0; i <= 1; i++)
+	for(int i = 1; i <= gI_countEntity[gI_totalEntity]; i++)
 	{
-		for(int j = 1; j <= gI_countEntity[i][gI_totalEntity[i]]; j++)
-		{
-			gB_stateDisabled[client][gI_countEntity[i][j]] = gB_stateDefaultDisabled[gI_countEntity[i][j]]
-			gF_buttonReady[client][gI_countEntity[i][j]] = 0.0
-		}
+		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
+		gF_buttonReady[client][gI_countEntity[i]] = 0.0
 	}
 }
 
@@ -371,9 +367,9 @@ Action TouchTrigger(int entity, int other)
 			if(gB_stateDisabled[other][entity])
 				return Plugin_Handled
 		}
-		else if(partner < 1)
-			if(gB_stateDisabled[0][entity])
-				return Plugin_Handled
+		//else if(partner < 1)
+		//	if(gB_stateDisabled[0][entity])
+		//		return Plugin_Handled
 	}
 	return Plugin_Continue
 }
@@ -388,9 +384,9 @@ Action EntityVisibleTransmit(int entity, int client)
 			if(gB_stateDisabled[client][entity])
 				return Plugin_Handled
 		}
-		else if(partner < 1)
-			if(gB_stateDisabled[0][entity])
-				return Plugin_Handled
+		//else if(partner < 1)
+		//	if(gB_stateDisabled[0][entity])
+		//		return Plugin_Handled
 	}
 	return Plugin_Continue
 }
@@ -431,9 +427,9 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 			if(gB_stateDisabled[activator][caller])
 				return Plugin_Handled
 		}
-		else if(partner < 1)
-			if(gB_stateDisabled[0][caller])
-				return Plugin_Handled
+		//else if(partner < 1)
+		//	if(gB_stateDisabled[0][caller])
+		//		return Plugin_Handled
 	}
 	return Plugin_Continue
 }
