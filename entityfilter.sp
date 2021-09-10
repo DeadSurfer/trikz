@@ -107,7 +107,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
-				if(i == 3)
+				/*if(i == 3)
 				{
 					char sTarget[64]
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
@@ -125,7 +125,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 								break
 						}
 					}
-				}
+				}*/
 				if(!i || 1 < i < 7)
 				{
 					SDKHook(entity, SDKHook_Touch, TouchTrigger)
@@ -146,7 +146,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
-				if(i == 3)
+				/*if(i == 3)
 				{
 					char sTarget[64]
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
@@ -164,7 +164,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 								break
 						}
 					}
-				}
+				}*/
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 				gI_countEntity[gI_totalEntity++] = entity
@@ -401,12 +401,12 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
 	}
-	else if(partner < 1)
+	/*else if(partner < 1)
 	{
 		if(gF_buttonReady[0][entity] > GetGameTime() || gB_stateDisabled[0][entity])
 			return Plugin_Handled
 		gF_buttonReady[0][entity] = gF_buttonReady[activator][entity]
-	}
+	}*/
 	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
 		AcceptEntityInput(entity, "Unlock")
 	return Plugin_Continue
