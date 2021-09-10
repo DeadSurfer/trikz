@@ -101,7 +101,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
-		while((entity = FindEntityByClassname(entity, sClassname[i])) > 0)
+		PrintToServer("%s", sClassname[i])
+		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
 			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
