@@ -243,7 +243,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
-	PrintToServer("Total entities in proccess: %i.", gI_totalEntity)
+	PrintToServer("Total entities in proccess: %i", gI_totalEntity)
 }
 
 void Reset(int client)
@@ -320,7 +320,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else if(StrEqual(sInput, "Break"))
 		{
-			AcceptEntityInput(pThis, "FireUser4", activator, pThis)
+			//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 			if(partner > 0)
 			{
 				gB_stateDisabled[activator][pThis] = false
