@@ -94,13 +94,13 @@ public void OnPluginStart()
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	int entity
 	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	//gI_totalEntity = 0
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
+		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
 			DHookEntity(gH_AcceptInput, false, entity)
