@@ -142,16 +142,14 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			{
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
-				gI_totalEntity++
-				gI_countEntity[gI_totalEntity] = entity
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				gI_totalEntity++
-				gI_countEntity[gI_totalEntity] = entity
 			}
+			gI_totalEntity++
+			gI_countEntity[gI_totalEntity] = entity
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
