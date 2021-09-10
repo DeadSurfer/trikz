@@ -107,15 +107,15 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				{
 					char sTarget[64]
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
-					if(!strlen(sTarget))
-						continue
+					if(strlen(sTarget))
+						break
 					int destination
 					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
 					{
 						char sName[64]
 						GetEntPropString(destination, Prop_Data, "m_iName", destination, 64)
-						if(!StrEqual(sTarget, sName))
-							continue
+						if(StrEqual(sTarget, sName))
+							break
 					}
 				}
 				if(!i || 1 < i < 7)
@@ -139,15 +139,15 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				{
 					char sTarget[64]
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
-					if(!strlen(sTarget))
-						continue
+					if(strlen(sTarget))
+						break
 					int destination
 					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
 					{
 						char sName[64]
 						GetEntPropString(destination, Prop_Data, "m_iName", destination, 64)
-						if(!StrEqual(sTarget, sName))
-							continue
+						if(StrEqual(sTarget, sName))
+							break
 					}
 				}
 				gB_stateDefaultDisabled[entity] = false
