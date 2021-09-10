@@ -160,6 +160,14 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	PrintToServer("Total triggers in proccess: %i. Total buttons in proccess: %i", gI_totalTriggers, gI_totalButtons)
 }
 
+void Reset(int clinet)
+{
+	for(int i = 1; i <= gI_countTriggers[gI_totalTriggers]; i++)
+		gB_stateDisabled[client][gI_countTriggers[i]] = gB_stateDefaultDisabled[gI_countTriggers[i]]
+	for(int i = 1; i <= gI_countTriggers[gI_totalButtons]; i++)
+		gF_buttonReady[client][[gI_countButtons[i]] = 0.0
+}
+
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 {
 	//if(pThis < 0)
