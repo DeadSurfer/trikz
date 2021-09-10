@@ -110,7 +110,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					if(strlen(sTarget))
 						break
 					int destination
-					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
+					while((destination = FindEntityByClassname(destination, "info_teleport_destination")) > 0)
 					{
 						char sName[64]
 						GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
@@ -142,7 +142,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					if(strlen(sTarget))
 						break
 					int destination
-					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
+					while((destination = FindEntityByClassname(destination, "info_teleport_destination")) > 0)
 					{
 						char sName[64]
 						GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
