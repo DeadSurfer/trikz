@@ -103,6 +103,19 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
+				if(i == 3)
+				{
+					char sTarget[64]
+					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
+					int destination
+					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
+					{
+						char sName[64]
+						GetEntPropString(destination, Prop_Data, "m_iName", destination, 64)
+						if(!StrEqual(sTarget, sName))
+							continue
+					}
+				}
 				if(!i || 1 < i < 7)
 					AcceptEntityInput(entity, "Enable")
 				else if (i == 1)
@@ -120,6 +133,19 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
+				if(i == 3)
+				{
+					char sTarget[64]
+					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
+					int destination
+					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
+					{
+						char sName[64]
+						GetEntPropString(destination, Prop_Data, "m_iName", destination, 64)
+						if(!StrEqual(sTarget, sName))
+							continue
+					}
+				}
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 				gI_countEntity[gI_totalEntity++] = entity
