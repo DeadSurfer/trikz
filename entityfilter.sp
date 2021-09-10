@@ -114,10 +114,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					if(strlen(sTarget))
 						break
 					char sDestination[][] = {"info_teleport_destination", "point_teleport"}
-					for(i = 0; i < sizeof(sDestination); i++)
+					for(int j = 0; j < sizeof(sDestination); j++)
 					{
 						int destination
-						while((destination = FindEntityByClassname(destination, sDestination[i])) > 0)
+						while((destination = FindEntityByClassname(destination, sDestination[j])) > 0)
 						{
 							char sName[64]
 							GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
@@ -153,10 +153,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					if(strlen(sTarget))
 						break
 					char sDestination[][] = {"info_teleport_destination", "point_teleport"}
-					for(i = 0; i < sizeof(sDestination); i++)
+					for(int j = 0; j < sizeof(sDestination); j++)
 					{
 						int destination
-						while((destination = FindEntityByClassname(destination, sDestination[i])) > 0)
+						while((destination = FindEntityByClassname(destination, sDestination[j])) > 0)
 						{
 							char sName[64]
 							GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
@@ -241,8 +241,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger", "OnStartTouchAll"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
-		for(i = 0; i < sizeof(sOutputs); i++)
-			HookEntityOutput(sTriggers[i], sOutputs[i], TriggerOutputHook) //make able to work !self
+		for(int j = 0; j < sizeof(sOutputs); j++)
+			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total entities in proccess: %i.", gI_totalEntity)
 }
 
