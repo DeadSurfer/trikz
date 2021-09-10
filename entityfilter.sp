@@ -32,7 +32,6 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <trikz>
-#include <shavit>
 
 Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
