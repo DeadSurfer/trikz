@@ -162,12 +162,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 {
 	//if(pThis < 0)
 	//	pThis = EntRefToEntIndex(pThis)
-	if(DHookIsNullParam(hParams, 1))
+	if(DHookIsNullParam(hParams, 1) || DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
-	if(DHookIsNullParam(hParams, 2))
-		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	//int caller = DHookGetParam(hParams, 3)
 	//int outputid = DHookGetParam(hParams, 5)
