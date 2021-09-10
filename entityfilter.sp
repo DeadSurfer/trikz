@@ -282,6 +282,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			{
 				gB_stateDisabled[activator][pThis] = false
 				gB_stateDisabled[partner][pThis] = false
+				PrintToServer("1")
 			}
 			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = false
