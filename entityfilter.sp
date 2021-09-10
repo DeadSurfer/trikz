@@ -107,6 +107,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				{
 					char sTarget[64]
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
+					if(!strlen(sTarget))
+						continue
 					int destination
 					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
 					{
@@ -137,6 +139,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				{
 					char sTarget[64]
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
+					if(!strlen(sTarget))
+						continue
 					int destination
 					while((destination = FindEntityByClassname(entity, "info_teleport_destination")) > 0)
 					{
