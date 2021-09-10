@@ -341,6 +341,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = true
 		}
+		DHookSetReturn(hReturn, false)
+		return MRES_Supercede
 	}
 	/*char sClassname[32]
 	char sName[32]
@@ -351,8 +353,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	GetEntPropString(caller, Prop_Data, "m_iClassname", sCClassname, 32)
 	GetEntPropString(caller, Prop_Data, "m_iName", sCName, 32)
 	PrintToServer("AcceptInput (%s | %s) pThis: %i input: %s activator: %N (%i) caller: %i (%s | %s) outputid: %i", sClassname, sName, pThis, sInput, activator, activator, caller, sCClassname, sCName, outputid)*/
-	DHookSetReturn(hReturn, false)
-	return MRES_Supercede
+	return MRES_Ignored
 }
 
 Action TouchTrigger(int entity, int other)
