@@ -105,13 +105,8 @@ public void OnClientPutInServer(int client)
 
 public void Trikz_OnPartner(int client, int partner)
 {
-	for(int i = 1; i <= 2048; i++)
-	{
-		gB_stateDisabled[client][i] = gB_stateDefaultDisabled[i]
-		gB_stateDisabled[partner][i] = gB_stateDefaultDisabled[i]
-		gF_buttonReady[client][i] = 0.0
-		gF_buttonReady[partner][i] = 0.0
-	}
+	OnClientPutInServer(client)
+	OnClientPutInServer(partner)
 }
 
 public void Trikz_OnBreakPartner(int client, int partner)
@@ -126,7 +121,10 @@ public void Shavit_OnEnterZonePartnerMode(int client, int type, int track, int i
 	{
 		int partner = Trikz_FindPartner(client)
 		if(partner != -1)
-			Trikz_OnPartner(client, partner)
+		{
+			OnClientPutInServer(client)
+			OnClientPutInServer(partner)
+		}
 	}
 }
 
@@ -171,14 +169,17 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 1; i <= 2048; i++)
 		gB_stateDisabled[0][i] = gB_stateDefaultDisabled[i]
 	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnStartTouch"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnStartTouch", "OnStartTouchAll"}
 	for(int i = 0; i < sizeof(sOutputs); i++)
 	{
 		HookEntityOutput("trigger_multiple", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_teleport", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_teleport_relative", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_push", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_gravity", sOutputs[i], TriggerOutputHook) //make able to work !self
+		if(i < 3)
+		{
+			HookEntityOutput("trigger_teleport", sOutputs[i], TriggerOutputHook) //make able to work !self
+			HookEntityOutput("trigger_teleport_relative", sOutputs[i], TriggerOutputHook) //make able to work !self
+			HookEntityOutput("trigger_push", sOutputs[i], TriggerOutputHook) //make able to work !self
+			HookEntityOutput("trigger_gravity", sOutputs[i], TriggerOutputHook) //make able to work !self
+		}
 	}
 }
 
