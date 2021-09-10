@@ -140,6 +140,7 @@ bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 int gI_totalRecords[2]
 bool gB_recordsOnce
+Handle gH_start
 
 public Plugin myinfo =
 {
@@ -209,6 +210,7 @@ public void OnPluginStart()
 		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
 	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
+	gH_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell, Param_Cell)
 }
 
 public void OnMapStart()
@@ -406,6 +408,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
+	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
 	return APLRes_Success
 }
 
@@ -1110,6 +1113,10 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 					{
 						gI_partner[param1] = partner
 						gI_partner[partner] = param1
+						Call_StartForward(gH_start)
+						Call_PushCell(param1)
+						Call_PushCell(partner)
+						Call_Finish()
 						PrintToChat(param1, "Partnersheep agreed with %N.", partner) //reciever
 						PrintToChat(partner, "You have %N as partner.", param1) //sender
 						Restart(param1)
@@ -3511,4 +3518,10 @@ int Native_GetClientButtons(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1)
     return gI_entityButtons[client]
+}
+
+int Native_GetClientPartner(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1)
+    return gI_partner[client]
 }
