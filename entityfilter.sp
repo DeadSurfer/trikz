@@ -181,7 +181,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				gB_stateDisabled[activator][pThis] = false
 				gB_stateDisabled[partner][pThis] = false
 			}
-			else
+			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = false
 		}
 		else if(StrEqual(sInput, "Disable"))
@@ -191,7 +191,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				gB_stateDisabled[activator][pThis] = true
 				gB_stateDisabled[partner][pThis] = true
 			}
-			else
+			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = true
 		}
 		else if(StrEqual(sInput, "Toggle"))
@@ -209,7 +209,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 					gB_stateDisabled[partner][pThis] = false
 				}
 			}
-			else
+			else if(partner < 1)
 			{
 				if(gB_stateDisabled[0][pThis])
 					gB_stateDisabled[0][pThis] = true
@@ -252,7 +252,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 				gB_stateDisabled[activator][pThis] = false
 				gB_stateDisabled[partner][pThis] = false
 			}
-			else
+			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = false
 		}
 		else if(StrEqual(sInput, "Lock"))
@@ -262,7 +262,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 				gB_stateDisabled[activator][pThis] = true
 				gB_stateDisabled[partner][pThis] = true
 			}
-			else
+			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = true
 		}
 	}
@@ -277,7 +277,7 @@ Action TouchTrigger(int entity, int other)
 		if(partner > 0)
 			if(gB_stateDisabled[other][entity])
 				return Plugin_Handled
-		else
+		else if(partner < 1)
 			if(gB_stateDisabled[0][entity])
 				return Plugin_Handled
 	}
@@ -286,13 +286,16 @@ Action TouchTrigger(int entity, int other)
 
 Action EntityVisibleTransmit(int entity, int client)
 {
-	int partner = Trikz_FindPartner(client)
-	if(partner > 0)
-		if(0 < client <= MaxClients && gB_stateDisabled[client][entity])
-			return Plugin_Handled
-	else
-		if(0 < client <= MaxClients && gB_stateDisabled[0][entity])
-			return Plugin_Handled
+	if(0 < client <= MaxClients)
+	{
+		int partner = Trikz_FindPartner(client)
+		if(partner > 0)
+			if(gB_stateDisabled[client][entity])
+				return Plugin_Handled
+		else if(partner < 1)
+			if(gB_stateDisabled[0][entity])
+				return Plugin_Handled
+	}
 	return Plugin_Continue
 }
 
@@ -308,7 +311,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
 	}
-	else
+	else if(partner < 1)
 	{
 		if(0.0 < gF_buttonReady[0][entity] > GetGameTime())
 			return Plugin_Handled
@@ -334,7 +337,7 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 		if(partner > 0)
 			if(gB_stateDisabled[activator][caller])
 				return Plugin_Handled
-		else
+		else if(partner < 1)
 			if(gB_stateDisabled[0][caller])
 				return Plugin_Handled
 	}
