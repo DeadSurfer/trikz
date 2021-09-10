@@ -114,32 +114,31 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
-				if(i == 7)
-					gI_countTriggers[gI_totalTriggers++] = entity
-				else
-					gI_countButtons[gI_totalButtons++] = entity
 				if(!i || 1 < i < 7)
 					AcceptEntityInput(entity, "Enable")
 				else if (i == 1)
 					AcceptEntityInput(entity, "Toggle")
+				else if (i < 7)
+					gI_countTriggers[gI_totalTriggers++] = entity
 				else if(i == 7)
 				{
 					SDKHook(entity, SDKHook_Use, HookButton)
 					SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
 					gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 					SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+					gI_countButtons[gI_totalButtons++] = entity
 				}
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
-				if(i == 7)
-					gI_countTriggers[gI_totalTriggers++] = entity
-				else
-					gI_countButtons[gI_totalButtons++] = entity
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
+				if(i == 7)
+					gI_countButtons[gI_totalButtons++] = entity
+				else
+					gI_countTriggers[gI_totalTriggers++] = entity
 			}
 		}
 	}
