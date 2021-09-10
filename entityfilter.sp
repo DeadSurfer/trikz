@@ -109,13 +109,17 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
 					if(strlen(sTarget))
 						break
-					int destination
-					while((destination = FindEntityByClassname(destination, "info_teleport_destination")) > 0)
+					char sDestination[][] = {"info_teleport_destination", "point_teleport"}
+					for(int i = 0; i < sizeof(sDestination); i++)
 					{
-						char sName[64]
-						GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
-						if(StrEqual(sTarget, sName))
-							break
+						int destination
+						while((destination = FindEntityByClassname(destination, sDestination)) > 0)
+						{
+							char sName[64]
+							GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
+							if(StrEqual(sTarget, sName))
+								break
+						}
 					}
 				}
 				if(!i || 1 < i < 7)
@@ -141,13 +145,17 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
 					if(strlen(sTarget))
 						break
-					int destination
-					while((destination = FindEntityByClassname(destination, "info_teleport_destination")) > 0)
+					char sDestination[][] = {"info_teleport_destination", "point_teleport"}
+					for(int i = 0; i < sizeof(sDestination); i++)
 					{
-						char sName[64]
-						GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
-						if(StrEqual(sTarget, sName))
-							break
+						int destination
+						while((destination = FindEntityByClassname(destination, sDestination)) > 0)
+						{
+							char sName[64]
+							GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
+							if(StrEqual(sTarget, sName))
+								break
+						}
 					}
 				}
 				gB_stateDefaultDisabled[entity] = false
