@@ -42,7 +42,7 @@ float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
 int gI_countEntity[2048 + 1]
 int gI_totalEntity
-forward void Trikz_Start(int client, int partner)
+forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
 
 public Plugin myinfo =
