@@ -96,7 +96,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int entity
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
-	gI_totalEntity = 0
+	gI_totalEntity[0] = 0
+	gI_totalEntity[1] = 0
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
