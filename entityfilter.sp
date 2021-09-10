@@ -393,14 +393,14 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	int partner = Trikz_GetClientPartner(activator)
 	if(partner > 0)
 	{
-		if(gF_buttonReady[activator][entity] > GetGameTime() && gB_stateDisabled[activator][entity])
+		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
 	}
 	else if(partner < 1)
 	{
-		if(gF_buttonReady[0][entity] > GetGameTime() && gB_stateDisabled[0][entity])
+		if(gF_buttonReady[0][entity] > GetGameTime() || gB_stateDisabled[0][entity])
 			return Plugin_Handled
 		gF_buttonReady[0][entity] = gF_buttonReady[activator][entity]
 	}
