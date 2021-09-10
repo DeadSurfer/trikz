@@ -31,8 +31,8 @@
 #include <dhooks>
 #include <sdktools>
 #include <sdkhooks>
-#include <trikz>
-#include <outputinfo>
+//#include <trikz>
+//#include <outputinfo>
 
 Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
@@ -42,6 +42,8 @@ float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
 int gI_countEntity[2048 + 1]
 int gI_totalEntity
+forward void Trikz_Start(int client, int partner)
+native int Trikz_GetClientPartner(int client)
 
 public Plugin myinfo =
 {
@@ -95,10 +97,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	int entity
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	gI_totalEntity = 0
-	bool gB_once
+	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
-		while((entity = FindEntityByClassname(entity, sClassname)) > 0)
+		while((entity = FindEntityByClassname(entity, sClassname[i])) > 0)
 		{
 			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
@@ -112,10 +114,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					if(strlen(sTarget))
 						break
 					char sDestination[][] = {"info_teleport_destination", "point_teleport"}
-					for(int i = 0; i < sizeof(sDestination); i++)
+					for(i = 0; i < sizeof(sDestination); i++)
 					{
 						int destination
-						while((destination = FindEntityByClassname(destination, sDestination)) > 0)
+						while((destination = FindEntityByClassname(destination, sDestination[i])) > 0)
 						{
 							char sName[64]
 							GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
@@ -125,7 +127,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					}
 				}
 				if(!i || 1 < i < 7)
+				{
+					SDKHook(entity, SDKHook_Touch, TouchTrigger)
 					AcceptEntityInput(entity, "Enable")
+				}
 				else if (i == 1)
 					AcceptEntityInput(entity, "Toggle")
 				else if(i == 7)
@@ -148,10 +153,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					if(strlen(sTarget))
 						break
 					char sDestination[][] = {"info_teleport_destination", "point_teleport"}
-					for(int i = 0; i < sizeof(sDestination); i++)
+					for(i = 0; i < sizeof(sDestination); i++)
 					{
 						int destination
-						while((destination = FindEntityByClassname(destination, sDestination)) > 0)
+						while((destination = FindEntityByClassname(destination, sDestination[i])) > 0)
 						{
 							char sName[64]
 							GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
@@ -236,18 +241,24 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger", "OnStartTouchAll"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
-		for(int i = 0; i < sizeof(sOutputs); i++)
+		for(i = 0; i < sizeof(sOutputs); i++)
 			HookEntityOutput(sTriggers[i], sOutputs[i], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total entities in proccess: %i.", gI_totalEntity)
 }
 
-void Reset(int clinet)
+void Reset(int client)
 {
 	for(int i = 1; i <= gI_countEntity[gI_totalEntity]; i++)
 	{
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
-		gF_buttonReady[client][[gI_countEntity[i]] = 0.0
+		gF_buttonReady[client][gI_countEntity[i]] = 0.0
 	}
+}
+
+public void Trikz_Start(int client, int partner)
+{
+	Reset(client)
+	Reset(partner)
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
@@ -263,7 +274,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	//int outputid = DHookGetParam(hParams, 5)
 	if(0 < activator <= MaxClients)
 	{
-		int partner = Trikz_FindPartner(activator)
+		int partner = Trikz_GetClientPartner(activator)
 		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Unlock"))
 		{
 			if(partner > 0)
@@ -346,10 +357,12 @@ Action TouchTrigger(int entity, int other)
 {
 	if(0 < other <= MaxClients)
 	{
-		int partner = Trikz_FindPartner(other)
+		int partner = Trikz_GetClientPartner(other)
 		if(partner > 0)
+		{
 			if(gB_stateDisabled[other][entity])
 				return Plugin_Handled
+		}
 		else if(partner < 1)
 			if(gB_stateDisabled[0][entity])
 				return Plugin_Handled
@@ -361,10 +374,12 @@ Action EntityVisibleTransmit(int entity, int client)
 {
 	if(0 < client <= MaxClients)
 	{
-		int partner = Trikz_FindPartner(client)
+		int partner = Trikz_GetClientPartner(client)
 		if(partner > 0)
+		{
 			if(gB_stateDisabled[client][entity])
 				return Plugin_Handled
+		}
 		else if(partner < 1)
 			if(gB_stateDisabled[0][entity])
 				return Plugin_Handled
@@ -374,7 +389,7 @@ Action EntityVisibleTransmit(int entity, int client)
 
 Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
-	int partner = Trikz_FindPartner(activator)
+	int partner = Trikz_GetClientPartner(activator)
 	if(partner > 0)
 	{
 		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
@@ -402,10 +417,12 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 {
 	if(0 < activator <= MaxClients)
 	{
-		int partner = Trikz_FindPartner(activator)
+		int partner = Trikz_GetClientPartner(activator)
 		if(partner > 0)
+		{
 			if(gB_stateDisabled[activator][caller])
 				return Plugin_Handled
+		}
 		else if(partner < 1)
 			if(gB_stateDisabled[0][caller])
 				return Plugin_Handled
