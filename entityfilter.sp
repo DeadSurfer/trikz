@@ -108,7 +108,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 			else if(1 < i < 7)
 				SDKHook(entity, SDKHook_Touch, TouchTrigger)
-			if(i == 3)
+			/*if(i == 3)
 			{
 				char sTarget[64]
 				GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
@@ -126,11 +126,9 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 							break
 					}
 				}
-			}
+			}*/
 			if(!i || 1 < i < 7)
-			{
 				AcceptEntityInput(entity, "Enable")
-			}
 			else if (i == 1)
 				AcceptEntityInput(entity, "Toggle")
 			else if(i == 7)
@@ -139,6 +137,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
 				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+				PrintToServer("%i", i)
 			}
 			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
@@ -146,7 +145,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDisabled[0][entity] = true
 				gI_countEntity[gI_totalEntity++] = entity
 			}
-			if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
+			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
@@ -222,9 +221,9 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger", "OnStartTouchAll"}
-	for(int i = 0; i < sizeof(sTriggers); i++)
-		for(int j = 0; j < sizeof(sOutputs); j++)
-			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
+	//for(int i = 0; i < sizeof(sTriggers); i++)
+	//	for(int j = 0; j < sizeof(sOutputs); j++)
+	//		HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total entities in proccess: %i", gI_totalEntity)
 }
 
