@@ -134,15 +134,11 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}
 		}
 	}
+	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger", "OnStartTouchAll"}
-	for(int i = 0; i < sizeof(sOutputs); i++)
-	{
-		HookEntityOutput("trigger_multiple", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_teleport", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_teleport_relative", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_push", sOutputs[i], TriggerOutputHook) //make able to work !self
-		HookEntityOutput("trigger_gravity", sOutputs[i], TriggerOutputHook) //make able to work !self
-	}
+	for(int i = 0; i < sizeof(sTriggers); i++)
+		for(int i = 0; i < sizeof(sOutputs); i++)
+			HookEntityOutput(sTriggers[i], sOutputs[i], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total triggers in proccess: %i. Total buttons in proccess: %i", gI_totalTriggers, gI_totalButtons)
 }
 
