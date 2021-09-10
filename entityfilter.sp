@@ -143,12 +143,14 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			{
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
+				PrintToServer("1")
 			}
 			//else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			if(((i == 0) && GetEntProp(entity, Prop_Data, "m_iDisabled") == 0) || ((i == 1) && GetEntProp(entity, Prop_Data, "m_spawnflags") == 0) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled") == 0))
 			{
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
+				PrintToServer("2")
 			}
 			//gI_totalEntity++
 			//gI_countEntity[gI_totalEntity] = entity
