@@ -93,8 +93,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int entity
 	char sClassName[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
-	gI_totalTriggers = 0
-	gI_totalButtons = 0
+	gI_totalEntity = 0
 	for(int i = 0; i < sizeof(sClassName); i++)
 	{
 		while((entity = FindEntityByClassname(entity, sClassName)) > 0)
