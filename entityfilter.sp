@@ -235,11 +235,10 @@ void Reset(int client)
 	}
 }
 
-public void Trikz_Start(int client, int partner)
+public void Trikz_Start(int client)
 {
 	Reset(client)
-	Reset(partner)
-	PrintToServer("%N %N %N", client, partner, Trikz_GetClientPartner(client))
+	Reset(Trikz_GetClientPartner(client))
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
