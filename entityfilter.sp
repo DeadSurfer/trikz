@@ -101,13 +101,12 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
-		PrintToServer("%s", sClassname[i])
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
 			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-			else if(1 < i < 7)
+			if(1 < i < 7)
 				SDKHook(entity, SDKHook_Touch, TouchTrigger)
 			/*if(i == 3)
 			{
@@ -128,11 +127,11 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					}
 				}
 			}*/
-			if(!i || 1 < i < 7)
+			if(i == 0 || (1 < i < 7))
 				AcceptEntityInput(entity, "Enable")
-			else if (i == 1)
+			if (i == 1)
 				AcceptEntityInput(entity, "Toggle")
-			else if(i == 7)
+			if(i == 7)
 			{
 				SDKHook(entity, SDKHook_Use, HookButton)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
@@ -140,13 +139,13 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 			}
 			//if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
-			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")))
+			if(((i == 0) && GetEntProp(entity, Prop_Data, "m_iDisabled") == 1) || ((i == 1) && GetEntProp(entity, Prop_Data, "m_spawnflags") == 1) || ((1 < i < 7) && GetEntProp(entity, Prop_Data, "m_bDisabled") == 1))
 			{
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
 			}
 			//else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
-			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")))
+			if(((i == 0) && GetEntProp(entity, Prop_Data, "m_iDisabled") == 0) || ((i == 1) && GetEntProp(entity, Prop_Data, "m_spawnflags") == 0) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled") == 0))
 			{
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
