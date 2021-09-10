@@ -141,6 +141,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
 					gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 					SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+					PrintToServer("%i", i)
 				}
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
