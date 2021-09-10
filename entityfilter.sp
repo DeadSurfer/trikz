@@ -40,8 +40,8 @@ bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
-int gI_countEntity[2048 + 1]
-int gI_totalEntity
+int gI_countEntity[2][2048 + 1]
+int gI_totalEntity[2]
 forward void Trikz_Start(int client, int partner)
 native int Trikz_GetClientPartner(int client)
 
@@ -142,7 +142,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				}
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
-				gI_countEntity[gI_totalEntity++] = entity
+				gI_countEntity[1][gI_totalEntity[1]++] = entity
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
@@ -167,7 +167,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				}
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				gI_countEntity[gI_totalEntity++] = entity
+				gI_countEntity[0][gI_totalEntity[0]++] = entity
 			}
 			/*if(!gB_once)
 			{
@@ -233,7 +233,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				gI_countEntity[gI_totalEntity++] = entity
+				gI_countEntity[0][gI_totalEntity[0]++] = entity
 			}
 		}
 	}
@@ -247,10 +247,13 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 void Reset(int client)
 {
-	for(int i = 1; i <= gI_countEntity[gI_totalEntity]; i++)
+	for(int i = 0; i <= 1; i++)
 	{
-		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
-		gF_buttonReady[client][gI_countEntity[i]] = 0.0
+		for(int j = 1; j <= gI_countEntity[i][gI_totalEntity[i]]; j++)
+		{
+			gB_stateDisabled[client][gI_countEntity[i][j]] = gB_stateDefaultDisabled[gI_countEntity[i][j]]
+			gF_buttonReady[client][gI_countEntity[i][j]] = 0.0
+		}
 	}
 }
 
