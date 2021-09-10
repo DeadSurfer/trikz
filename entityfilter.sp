@@ -56,13 +56,13 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
-	if(hGamedata == null)
+	if(!hGamedata)
 	{
 		SetFailState("Failed to load \"sdktools.games\" gamedata.")
 		delete hGamedata
 	}
 	int offset = GameConfGetOffset(hGamedata, "AcceptInput")
-	if(offset == 0)
+	if(!offset)
 	{
 		SetFailState("Failed to load \"AcceptInput\", invalid offset.")
 		delete hGamedata
@@ -83,17 +83,9 @@ public void OnPluginStart()
 	}
 	gH_PassServerEntityFilter = DHookCreateFromConf(hGamedata, "PassServerEntityFilter")
 	if(!gH_PassServerEntityFilter)
-	{
 		SetFailState("Failed to setup detour PassServerEntityFilter.")
-		delete hGamedata
-		delete gH_PassServerEntityFilter
-	}
 	if(!DHookEnableDetour(gH_PassServerEntityFilter, false, PassServerEntityFilter))
-	{
 		SetFailState("Failed to load detour PassServerEntityFilter.")
-		delete hGamedata
-		delete gH_PassServerEntityFilter
-	}
 	delete hGamedata
 	delete gH_PassServerEntityFilter
 	gH_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell)
