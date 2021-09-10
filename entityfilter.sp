@@ -139,133 +139,47 @@ public void Shavit_OnEnterZone(int client, int type, int track, int id, int enti
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	int entity = -1
-	while((entity = FindEntityByClassname(entity, "func_brush")) != -1)
+	int entity
+	char sClassName[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
+	for(int i = 0; i < sizeof(sClassName); i++)
 	{
-		DHookEntity(gH_AcceptInput, false, entity)
-		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-		if(GetEntProp(entity, Prop_Data, "m_iDisabled") == 0)
+		while((entity = FindEntityByClassname(entity, sClassName)) > 0)
 		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			AcceptEntityInput(entity, "Enable")
-			gB_stateDefaultDisabled[entity] = true
-		}
-	}
-	while((entity = FindEntityByClassname(entity, "func_wall_toggle")) != -1)
-	{
-		DHookEntity(gH_AcceptInput, false, entity)
-		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-		if(GetEntProp(entity, Prop_Data, "m_spawnflags") == 0)
-		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			AcceptEntityInput(entity, "Toggle")
-			gB_stateDefaultDisabled[entity] = true
-		}
-	}
-	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1)
-	{
-		DHookEntity(gH_AcceptInput, false, entity)
-		SDKHook(entity, SDKHook_Touch, TouchTrigger)
-		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
-		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			AcceptEntityInput(entity, "Enable")
-			gB_stateDefaultDisabled[entity] = true
-		}
-	}
-	while((entity = FindEntityByClassname(entity, "trigger_teleport")) != -1)
-	{
-		DHookEntity(gH_AcceptInput, false, entity)
-		SDKHook(entity, SDKHook_Touch, TouchTrigger)
-		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
-		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			AcceptEntityInput(entity, "Enable")
-			gB_stateDefaultDisabled[entity] = true
-		}
-	}
-	while((entity = FindEntityByClassname(entity, "trigger_teleport_relative")) != -1)
-	{
-		DHookEntity(gH_AcceptInput, false, entity)
-		SDKHook(entity, SDKHook_Touch, TouchTrigger)
-		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
-		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			AcceptEntityInput(entity, "Enable")
-			gB_stateDefaultDisabled[entity] = true
-		}
-	}
-	while((entity = FindEntityByClassname(entity, "trigger_push")) != -1)
-	{
-		DHookEntity(gH_AcceptInput, false, entity)
-		SDKHook(entity, SDKHook_Touch, TouchTrigger)
-		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
-		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			AcceptEntityInput(entity, "Enable")
-			gB_stateDefaultDisabled[entity] = true
-		}
-	}
-	while((entity = FindEntityByClassname(entity, "trigger_gravity")) != -1)
-	{
-		DHookEntity(gH_AcceptInput, false, entity)
-		SDKHook(entity, SDKHook_Touch, TouchTrigger)
-		if(GetEntProp(entity, Prop_Data, "m_bDisabled") == 0)
-		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			AcceptEntityInput(entity, "Enable")
-			gB_stateDefaultDisabled[entity] = true
-		}
-	}
-	while((entity = FindEntityByClassname(entity, "func_button")) != -1)
-	{
-		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
-		SDKHook(entity, SDKHook_Use, HookButton)
-		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
-		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
-		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
-		if(GetEntProp(entity, Prop_Data, "m_bLocked") == 0)
-		{
-			gB_stateDefaultDisabled[entity] = false
-		}
-		else
-		{
-			gB_stateDefaultDisabled[entity] = true
+			DHookEntity(gH_AcceptInput, false, entity)
+			if(i < 2)
+				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
+			{
+				if(!i || 1 < i < 7)
+					AcceptEntityInput(entity, "Enable")
+				else if (i == 1)
+					AcceptEntityInput(entity, "Toggle")
+				else if(i == 7)
+				{
+					DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
+					SDKHook(entity, SDKHook_Use, HookButton)
+					SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
+					gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
+					SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+				}
+				gB_stateDefaultDisabled[entity] = true
+			}
+			else
+				gB_stateDefaultDisabled[entity] = false
 		}
 	}
 	for(int i = 1; i <= 2048; i++)
 		gB_stateDisabled[0][i] = gB_stateDefaultDisabled[i]
-	HookEntityOutput("trigger_multiple", "OnStartTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_teleport", "OnStartTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_teleport_relative", "OnStartTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_push", "OnStartTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_gravity", "OnStartTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_multiple", "OnEndTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_teleport", "OnEndTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_teleport_relative", "OnEndTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_push", "OnEndTouch", TriggerOutputHook) //make able to work !self
-	HookEntityOutput("trigger_gravity", "OnEndTouch", TriggerOutputHook) //make able to work !self
+	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnStartTouch"}
+	for(int i = 0; i < sizeof(sOutputs); i++)
+	{
+		HookEntityOutput("trigger_multiple", sOutputs[i], TriggerOutputHook) //make able to work !self
+		HookEntityOutput("trigger_teleport", sOutputs[i], TriggerOutputHook) //make able to work !self
+		HookEntityOutput("trigger_teleport_relative", sOutputs[i], TriggerOutputHook) //make able to work !self
+		HookEntityOutput("trigger_push", sOutputs[i], TriggerOutputHook) //make able to work !self
+		HookEntityOutput("trigger_gravity", sOutputs[i], TriggerOutputHook) //make able to work !self
+	}
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
@@ -277,37 +191,55 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	if(1 > activator || activator > MaxClients)
-		return MRES_Ignored
-	//int caller = DHookGetParam(hParams, 3)
-	int partner = Trikz_FindPartner(activator)
-	//int outputid = DHookGetParam(hParams, 5)
-	if(StrEqual(sInput, "Enable"))
-		if(partner != -1)
+	if(0 < activator <= MaxClients)
+	{
+		//int caller = DHookGetParam(hParams, 3)
+		int partner = Trikz_FindPartner(activator)
+		//int outputid = DHookGetParam(hParams, 5)
+		if(StrEqual(sInput, "Enable"))
 		{
-			gB_stateDisabled[activator][pThis] = false
-			gB_stateDisabled[partner][pThis] = false
+			if(partner != -1)
+			{
+				gB_stateDisabled[activator][pThis] = false
+				gB_stateDisabled[partner][pThis] = false
+			}
+			else
+				gB_stateDisabled[0][pThis] = false
 		}
-		else
+		else if(StrEqual(sInput, "Disable"))
 		{
-			gB_stateDisabled[0][pThis] = false
-			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
-					gB_stateDisabled[i][pThis] = false
+			if(partner != -1)
+			{
+				gB_stateDisabled[activator][pThis] = true
+				gB_stateDisabled[partner][pThis] = true
+			}
+			else
+				gB_stateDisabled[0][pThis] = true
 		}
-	if(StrEqual(sInput, "Disable"))
-		if(partner != -1)
+		else if(StrEqual(sInput, "Toggle"))
 		{
-			gB_stateDisabled[activator][pThis] = true
-			gB_stateDisabled[partner][pThis] = true
+			if(partner != -1)
+			{
+				if(gB_stateDisabled[activator][pThis])
+				{
+					gB_stateDisabled[activator][pThis] = true
+					gB_stateDisabled[partner][pThis] = true
+				}
+				else
+				{
+					gB_stateDisabled[activator][pThis] = false
+					gB_stateDisabled[partner][pThis] = false
+				}
+			}
+			else
+			{
+				if(gB_stateDisabled[0][pThis])
+					gB_stateDisabled[0][pThis] = true
+				else
+					gB_stateDisabled[0][pThis] = false
+			}
 		}
-		else
-		{
-			gB_stateDisabled[0][pThis] = true
-			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
-					gB_stateDisabled[i][pThis] = true
-		}
+	}
 	/*char sClassname[32]
 	char sName[32]
 	char sCClassname[32]
@@ -330,69 +262,83 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	if(activator < 1)
-		return MRES_Ignored
-	//int caller = DHookGetParam(hParams, 3)
-	int partner = Trikz_FindPartner(activator)
-	//int outputid = DHookGetParam(hParams, 5)
-	if(StrEqual(sInput, "Unlock"))
-		if(partner != -1)
+	if(0 < activator <= MaxClients)
+	{
+		//int caller = DHookGetParam(hParams, 3)
+		int partner = Trikz_FindPartner(activator)
+		//int outputid = DHookGetParam(hParams, 5)
+		if(StrEqual(sInput, "Unlock"))
 		{
-			gB_stateDisabled[activator][pThis] = false
-			gB_stateDisabled[partner][pThis] = false
+			if(partner != -1)
+			{
+				gB_stateDisabled[activator][pThis] = false
+				gB_stateDisabled[partner][pThis] = false
+			}
+			else
+				gB_stateDisabled[0][pThis] = false
 		}
-		else
+		else if(StrEqual(sInput, "Lock"))
 		{
-			gB_stateDisabled[0][pThis] = false
-			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
-					gB_stateDisabled[i][pThis] = false
+			if(partner != -1)
+			{
+				gB_stateDisabled[activator][pThis] = true
+				gB_stateDisabled[partner][pThis] = true
+			}
+			else
+				gB_stateDisabled[0][pThis] = true
 		}
-	if(StrEqual(sInput, "Lock"))
-		if(partner != -1)
-		{
-			gB_stateDisabled[activator][pThis] = true
-			gB_stateDisabled[partner][pThis] = true
-		}
-		else
-		{
-			gB_stateDisabled[0][pThis] = true
-			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
-					gB_stateDisabled[i][pThis] = true
-		}
+	}
 	return MRES_Ignored
 }
 
 Action TouchTrigger(int entity, int other)
 {
-	if(0 < other <= MaxClients && gB_stateDisabled[other][entity])
-		return Plugin_Handled
+	if(0 < other <= MaxClients)
+	{
+		int partner = Trikz_FindPartner(other)
+		if(partner != -1)
+			if(gB_stateDisabled[other][entity])
+				return Plugin_Handled
+		else
+			if(gB_stateDisabled[0][entity])
+				return Plugin_Handled
+	}
 	return Plugin_Continue
 }
 
 Action EntityVisibleTransmit(int entity, int client)
 {
-	if(gB_stateDisabled[client][entity])
-		return Plugin_Handled
+	int partner = Trikz_FindPartner(client)
+	if(partner != -1)
+		if(0 < client <= MaxClients && gB_stateDisabled[client][entity])
+			return Plugin_Handled
+	else
+		if(0 < client <= MaxClients && gB_stateDisabled[0][entity])
+			return Plugin_Handled
 	return Plugin_Continue
 }
 
 Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
-	if(0.0 < gF_buttonReady[activator][entity] > GetGameTime())
-		return Plugin_Handled
-	if(gB_stateDisabled[activator][entity])
-		return Plugin_Handled
-	gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 	int partner = Trikz_FindPartner(activator)
 	if(partner != -1)
+	{
+		if(0.0 < gF_buttonReady[activator][entity] > GetGameTime())
+			return Plugin_Handled
+		if(gB_stateDisabled[activator][entity])
+			return Plugin_Handled
+		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
+	}
 	else
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i) && Trikz_FindPartner(i) == -1)
-				gF_buttonReady[i][entity] = gF_buttonReady[activator][entity]
-	if(GetEntProp(entity, Prop_Data, "m_bLocked") == 1)
+	{
+		if(0.0 < gF_buttonReady[0][entity] > GetGameTime())
+			return Plugin_Handled
+		if(gB_stateDisabled[0][entity])
+			return Plugin_Handled
+		gF_buttonReady[0][entity] = gF_buttonReady[activator][entity]
+	}
+	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
 		AcceptEntityInput(entity, "Unlock")
 	return Plugin_Continue
 }
@@ -404,8 +350,16 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action TriggerOutputHook(const char[] output, int caller, int activator, float delay)
 {
-	if(gB_stateDisabled[activator][caller])
-		return Plugin_Handled
+	if(0 < activator <= MaxClients)
+	{
+		int partner = Trikz_FindPartner(activator)
+		if(partner != -1)
+			if(gB_stateDisabled[activator][caller])
+				return Plugin_Handled
+		else
+			if(gB_stateDisabled[0][caller])
+				return Plugin_Handled
+	}
 	return Plugin_Continue
 }
 
