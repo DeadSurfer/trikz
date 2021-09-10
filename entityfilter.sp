@@ -230,7 +230,6 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}*/
 			else if(i == 8)
 			{
-				DHookEntity(gH_AcceptInput, false, entity)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
