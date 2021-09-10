@@ -228,7 +228,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 void Reset(int client)
 {
-	for(int i = 1; i <= gI_countEntity[gI_totalEntity]; i++)
+	for(int i = 1; i <= gI_totalEntity; i++)
 	{
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
 		gF_buttonReady[client][gI_countEntity[i]] = 0.0
@@ -253,11 +253,11 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
-	//if(activator < 1)
-	//	return MRES_Ignored
+	if(activator < 1)
+		return MRES_Ignored
 	//int caller = DHookGetParam(hParams, 3)
 	//int outputid = DHookGetParam(hParams, 5)
-	if(0 < activator <= MaxClients)
+	//if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
 		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Unlock"))
@@ -266,7 +266,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			{
 				gB_stateDisabled[activator][pThis] = false
 				gB_stateDisabled[partner][pThis] = false
-				PrintToServer("1")
 			}
 			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = false
@@ -325,8 +324,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			else if(partner < 1)
 				gB_stateDisabled[0][pThis] = true
 		}*/
-		DHookSetReturn(hReturn, false)
-		return MRES_Supercede
+		//DHookSetReturn(hReturn, false)
+		//return MRES_Supercede
 	}
 	/*char sClassname[32]
 	char sName[32]
@@ -337,9 +336,9 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	GetEntPropString(caller, Prop_Data, "m_iClassname", sCClassname, 32)
 	GetEntPropString(caller, Prop_Data, "m_iName", sCName, 32)
 	PrintToServer("AcceptInput (%s | %s) pThis: %i input: %s activator: %N (%i) caller: %i (%s | %s) outputid: %i", sClassname, sName, pThis, sInput, activator, activator, caller, sCClassname, sCName, outputid)*/
-	return MRES_Ignored
-	//DHookSetReturn(hReturn, false)
-	//return MRES_Supercede
+	//return MRES_Ignored
+	DHookSetReturn(hReturn, false)
+	return MRES_Supercede
 }
 
 Action TouchTrigger(int entity, int other)
