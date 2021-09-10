@@ -103,7 +103,7 @@ public void OnPluginStart()
 public void OnClientPutInServer(int client)
 {
 	for(int i = 1; i <= gI_countTriggers[gI_totalTriggers]; i++)
-		gB_stateDisabled[client][gI_countTriggers[i]] = gB_stateDisabled[0][i]
+		gB_stateDisabled[client][gI_countTriggers[i]] = gB_stateDisabled[0][gI_countTriggers[i]]
 	for(int i = 1; i <= gI_countTriggers[gI_totalButtons]; i++)
 		gF_buttonReady[client][[gI_countButtons[i]] = 0.0
 }
@@ -136,8 +136,7 @@ public void Shavit_OnEnterZonePartnerMode(int client, int type, int track, int i
 public void Shavit_OnEnterZone(int client, int type, int track, int id, int entity, int data)
 {
 	if(type == Zone_Start && track == Track_Solobonus)
-		for(int i = 1; i <= 2048; i++)
-			OnClientPutInServer(client)
+		OnClientPutInServer(client)
 }
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
