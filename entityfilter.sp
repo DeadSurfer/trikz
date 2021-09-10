@@ -403,7 +403,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	if(partner > 0)
 	{
 		//if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
-		if(gF_buttonReady[activator][entity] > GetGameTime())
+		if(0.0 < gF_buttonReady[activator][entity] > GetGameTime())
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
