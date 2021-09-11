@@ -81,6 +81,7 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_Touch, TouchClient)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
+	SDKHook(client, SDKHook_Touch, SDKSkyFix2)
 	gB_jumpstats[client] = false
 }
 
@@ -403,6 +404,12 @@ void TouchClient(int client, int other)
 	}
 }
 
+Action SDKSkyFix2(int client, int other)
+{
+	if(0 < client <= MaxClients && !(0 < other <= MaxClients)) //0, > MaxClients
+		GetClientAbsOrigin(client, gF_skyOrigin[client])
+}
+
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && Trikz_GetClientButtons(other) & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
@@ -435,7 +442,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						velNew[2] = 800.0
-				if(gF_skyOrigin[client][2] < gF_skyOrigin[other][2])
+				if((gF_skyOrigin[client][2] < gF_skyOrigin[other][2]) || (gF_skyOrigin[client][2] > gF_skyOrigin[other][2]))
 				{
 					ConVar CV_gravity = FindConVar("sv_gravity")
 					if(gB_jumpstats[client])
