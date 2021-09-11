@@ -103,7 +103,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
-			DHookEntity(gH_AcceptInput, false, entity)
+			if(i != 7)
+				DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 			else if(1 < i < 7)
@@ -133,6 +134,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				AcceptEntityInput(entity, "Toggle")
 			else if(i == 7)
 			{
+				DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
 				SDKHook(entity, SDKHook_Use, HookButton)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
