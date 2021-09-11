@@ -253,6 +253,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
+	if(1 > activator || activator > MaxClients)
+		return MRES_Ignored
 	//if(activator < 1)
 	//	return MRES_Ignored
     /*if(0 > activator || activator > MaxClients)
@@ -260,12 +262,12 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
         DHookSetReturn(hReturn, false)
         return MRES_Supercede
     }*/
+	int partner = Trikz_GetClientPartner(activator)
 	//int caller = DHookGetParam(hParams, 3)
 	//int outputid = DHookGetParam(hParams, 5)
-	if(0 < activator <= MaxClients)
+	//if(0 < activator <= MaxClients)
 	{
-		int partner = Trikz_GetClientPartner(activator)
-		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Unlock"))
+		if(StrEqual(sInput, "Enable"))
 		{
 			if(partner)
 			{
@@ -275,7 +277,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			else
 				gB_stateDisabled[0][pThis] = false
 		}
-		else if(StrEqual(sInput, "Disable") || StrEqual(sInput, "Lock"))
+		else if(StrEqual(sInput, "Disable"))
 		{
 			if(partner)
 			{
@@ -341,9 +343,46 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	GetEntPropString(caller, Prop_Data, "m_iClassname", sCClassname, 32)
 	GetEntPropString(caller, Prop_Data, "m_iName", sCName, 32)
 	PrintToServer("AcceptInput (%s | %s) pThis: %i input: %s activator: %N (%i) caller: %i (%s | %s) outputid: %i", sClassname, sName, pThis, sInput, activator, activator, caller, sCClassname, sCName, outputid)*/
+	//return MRES_Ignored
+	DHookSetReturn(hReturn, false)
+	return MRES_Supercede
+}
+
+MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
+{
+	//if(pThis < 0)
+	//	pThis = EntRefToEntIndex(pThis)
+	char sInput[32]
+	DHookGetParamString(hParams, 1, sInput, 32)
+	if(DHookIsNullParam(hParams, 2))
+		return MRES_Ignored
+	int activator = DHookGetParam(hParams, 2)
+	if(activator < 1)
+		return MRES_Ignored
+	//int caller = DHookGetParam(hParams, 3)
+	int partner = Trikz_GetClientPartner(activator)
+	//int outputid = DHookGetParam(hParams, 5)
+	if(StrEqual(sInput, "Unlock"))
+	{
+		if(partner)
+		{
+			gB_stateDisabled[activator][pThis] = false
+			gB_stateDisabled[partner][pThis] = false
+		}
+		else
+			gB_stateDisabled[0][pThis] = false
+	}
+	if(StrEqual(sInput, "Lock"))
+	{
+		if(partner)
+		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+		}
+		else
+			gB_stateDisabled[0][pThis] = true
+	}
 	return MRES_Ignored
-	//DHookSetReturn(hReturn, false)
-	//return MRES_Supercede
 }
 
 Action TouchTrigger(int entity, int other)
