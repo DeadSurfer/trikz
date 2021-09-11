@@ -40,9 +40,9 @@ bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
-//int gI_countEntity[2048 + 1]
-//int gI_totalEntity
-forward void Trikz_Start(int client)
+int gI_countEntity[2048 + 1]
+int gI_totalEntity
+//forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
 
 public Plugin myinfo =
@@ -96,18 +96,17 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
-	//gI_totalEntity = 0
+	gI_totalEntity = 0
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
 		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
-			//DHookEntity(gH_AcceptInput, false, entity)
-			DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInput)
+			DHookEntity(gH_AcceptInput, false, entity)
 			if(i < 2)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-			if(1 < i < 7)
+			else if(1 < i < 7)
 				SDKHook(entity, SDKHook_Touch, TouchTrigger)
 			if(i == 3)
 			{
@@ -128,34 +127,29 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					}
 				}
 			}
-			if(i == 0 || (1 < i < 7))
+			if(!i || 1 < i < 7)
 				AcceptEntityInput(entity, "Enable")
-			if (i == 1)
+			else if(i == 1)
 				AcceptEntityInput(entity, "Toggle")
-			if(i == 7)
+			else if(i == 7)
 			{
 				SDKHook(entity, SDKHook_Use, HookButton)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
-				PrintToServer("but1")
 			}
-			//if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
-			if(((i == 0) && GetEntProp(entity, Prop_Data, "m_iDisabled") == 1) || ((i == 1) && GetEntProp(entity, Prop_Data, "m_spawnflags") == 1) || ((1 < i < 7) && GetEntProp(entity, Prop_Data, "m_bDisabled") == 1))
+			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
-				//PrintToServer("1")
 			}
-			//else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
-			if(((i == 0) && GetEntProp(entity, Prop_Data, "m_iDisabled") == 0) || ((i == 1) && GetEntProp(entity, Prop_Data, "m_spawnflags") == 0) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled") == 0))
+			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				//PrintToServer("2")
 			}
-			//gI_totalEntity++
-			//gI_countEntity[gI_totalEntity] = entity
+			gI_totalEntity++
+			gI_countEntity[gI_totalEntity] = entity
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
@@ -229,20 +223,15 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
-	//PrintToServer("Total entities in proccess: %i", gI_totalEntity)
+	PrintToServer("Total entities in proccess: %i", gI_totalEntity)
 }
 
 void Reset(int client)
 {
-	//for(int i = 1; i <= gI_totalEntity; i++)
-	//{
-	//	gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
-	//	gF_buttonReady[client][gI_countEntity[i]] = 0.0
-	//}
-	for(int i = 1; i <= 2048; i++)
+	for(int i = 1; i <= gI_totalEntity; i++)
 	{
-		gB_stateDisabled[client][i] = gB_stateDefaultDisabled[i]
-		gF_buttonReady[client][i] = 0.0
+		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
+		gF_buttonReady[client][gI_countEntity[i]] = 0.0
 	}
 }
 
@@ -250,6 +239,7 @@ public void Trikz_Start(int client)
 {
 	Reset(client)
 	Reset(Trikz_GetClientPartner(client))
+	PrintToServer("yes forward")
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
@@ -272,7 +262,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
     }*/
 	//int caller = DHookGetParam(hParams, 3)
 	//int outputid = DHookGetParam(hParams, 5)
-	//if(0 < activator <= MaxClients)
+	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
 		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Unlock"))
@@ -351,9 +341,9 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	GetEntPropString(caller, Prop_Data, "m_iClassname", sCClassname, 32)
 	GetEntPropString(caller, Prop_Data, "m_iName", sCName, 32)
 	PrintToServer("AcceptInput (%s | %s) pThis: %i input: %s activator: %N (%i) caller: %i (%s | %s) outputid: %i", sClassname, sName, pThis, sInput, activator, activator, caller, sCClassname, sCName, outputid)*/
-	//return MRES_Ignored
-	DHookSetReturn(hReturn, false)
-	return MRES_Supercede
+	return MRES_Ignored
+	//DHookSetReturn(hReturn, false)
+	//return MRES_Supercede
 }
 
 Action TouchTrigger(int entity, int other)
@@ -390,15 +380,14 @@ Action EntityVisibleTransmit(int entity, int client)
 	return Plugin_Continue
 }
 
-public Action HookButton(int entity, int activator, int caller, UseType type, float value)
+Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
 	PrintToServer("but")
 	int partner = Trikz_GetClientPartner(activator)
 	if(partner)
 	{
-		//if(0.0 < gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
-		//if(gF_buttonReady[activator][entity] > GetGameTime())
-			//return Plugin_Handled
+		if(0.0 < gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
+			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
 	}
