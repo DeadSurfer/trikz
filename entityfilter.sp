@@ -360,6 +360,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 						gB_stateDisabled[partner][pThis] = true
 					}
 					gB_toggleAble[activator][pThis] = false
+					gB_toggleAble[partner][pThis] = false
 				}
 			}
 			else
