@@ -294,7 +294,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
-				gB_toggled[activator][pThis] = true
 				if(gB_toggled[activator][pThis])
 				{
 					if(gB_stateDisabled[activator][pThis])
@@ -304,8 +303,11 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 					}
 					else
 					{
-						gB_stateDisabled[activator][pThis] = true
-						gB_stateDisabled[partner][pThis] = true
+						if(gB_toggled[activator][pThis])
+						{
+							gB_stateDisabled[activator][pThis] = true
+							gB_stateDisabled[partner][pThis] = true
+						}
 					}
 				}
 			}
@@ -460,6 +462,7 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 		int partner = Trikz_GetClientPartner(activator)
 		if(partner)
 		{
+			gB_toggled[activator][caller] = true
 			if(gB_stateDisabled[activator][caller])
 				return Plugin_Handled
 		}
