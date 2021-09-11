@@ -140,7 +140,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}
 			if(!i || 1 < i < 7)
 				AcceptEntityInput(entity, "Enable")
-			else if(i == 1)
+			else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
 				AcceptEntityInput(entity, "Toggle")
 			if(0 < i < 7)
 			{
