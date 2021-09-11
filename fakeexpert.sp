@@ -3515,12 +3515,12 @@ bool TR_donthitself(int entity, int mask, int client)
 
 int Native_GetClientButtons(Handle plugin, int numParams)
 {
-    int client = GetNativeCell(1)
-    return gI_entityButtons[client]
+	int client = GetNativeCell(1)
+	return gI_entityButtons[client]
 }
 
 int Native_GetClientPartner(Handle plugin, int numParams)
 {
-    int client = GetNativeCell(1)
-    return gI_partner[client]
+	int client = GetNativeCell(1)
+	return gI_partner[client]
 }
