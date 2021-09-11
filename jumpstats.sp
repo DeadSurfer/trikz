@@ -100,7 +100,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
 {
-	gB_teleported[activator] = true
+	if(0 < activator <= MaxClients)
+		gB_teleported[activator] = true
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
