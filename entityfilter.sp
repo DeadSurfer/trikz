@@ -241,7 +241,6 @@ public void Trikz_Start(int client)
 {
 	Reset(client)
 	Reset(Trikz_GetClientPartner(client))
-	PrintToServer("yes forward")
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
@@ -295,21 +294,21 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			{
 				if(gB_stateDisabled[activator][pThis])
 				{
-					gB_stateDisabled[activator][pThis] = true
-					gB_stateDisabled[partner][pThis] = true
+					gB_stateDisabled[activator][pThis] = false
+					gB_stateDisabled[partner][pThis] = false
 				}
 				else
 				{
-					gB_stateDisabled[activator][pThis] = false
-					gB_stateDisabled[partner][pThis] = false
+					gB_stateDisabled[activator][pThis] = true
+					gB_stateDisabled[partner][pThis] = true
 				}
 			}
 			else
 			{
 				if(gB_stateDisabled[0][pThis])
-					gB_stateDisabled[0][pThis] = true
-				else
 					gB_stateDisabled[0][pThis] = false
+				else
+					gB_stateDisabled[0][pThis] = true
 			}
 		}
 		/*else if(StrEqual(sInput, "Break"))
@@ -374,7 +373,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 		else
 			gB_stateDisabled[0][pThis] = false
 	}
-	if(StrEqual(sInput, "Lock"))
+	else if(StrEqual(sInput, "Lock"))
 	{
 		if(partner)
 		{
