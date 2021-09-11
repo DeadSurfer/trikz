@@ -44,7 +44,7 @@ int gI_countEntity[2048 + 1]
 int gI_totalEntity
 //forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
-bool gB_toggled[MAXPLAYERS + 1][2048 + 1]
+//bool gB_toggled[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -235,7 +235,7 @@ void Reset(int client)
 	{
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
 		gF_buttonReady[client][gI_countEntity[i]] = 0.0
-		gB_toggled[client][gI_countEntity[i]] = false
+		//gB_toggled[client][gI_countEntity[i]] = false
 	}
 }
 
@@ -294,23 +294,17 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
-				if(gB_toggled[activator][pThis])
+				if(gB_stateDisabled[activator][pThis])
 				{
-					if(gB_stateDisabled[activator][pThis])
-					{
-						gB_stateDisabled[activator][pThis] = false
-						gB_stateDisabled[partner][pThis] = false
-					}
-					else
-					{
-						if(gB_toggled[activator][pThis])
-						{
-							gB_stateDisabled[activator][pThis] = true
-							gB_stateDisabled[partner][pThis] = true
-						}
-					}
+					gB_stateDisabled[activator][pThis] = false
+					gB_stateDisabled[partner][pThis] = false
 				}
-			}
+				else
+				{
+					gB_stateDisabled[activator][pThis] = true
+					gB_stateDisabled[partner][pThis] = true
+				}
+		}
 			else
 			{
 				if(gB_stateDisabled[0][pThis])
@@ -438,8 +432,6 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
-		gB_toggled[activator][entity] = true
-		gB_toggled[partner][entity] = true
 	}
 	else
 	{
@@ -464,8 +456,6 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 		int partner = Trikz_GetClientPartner(activator)
 		if(partner)
 		{
-			gB_toggled[activator][caller] = true
-			gB_toggled[partner][caller] = true
 			if(gB_stateDisabled[activator][caller] && gB_stateDisabled[partner][caller])
 				return Plugin_Handled
 		}
