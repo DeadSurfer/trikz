@@ -32,7 +32,7 @@
 #include <sdktools>
 #include <sdkhooks>
 //#include <trikz>
-//#include <outputinfo>
+#include <outputinfo>
 
 Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
@@ -44,7 +44,10 @@ int gI_countEntity[2048 + 1]
 int gI_totalEntity
 //forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
-//bool gB_toggled[MAXPLAYERS + 1][2048 + 1]
+bool gB_linkedTogglesDefault[2048 + 1]
+int gI_countLinkedEntity[2048 + 1][2048 + 1]
+bool gB_linkedToggles[MAXPLAYERS + 1][2048 + 1]
+int gI_countMaxLinks[2048 + 1]
 
 public Plugin myinfo =
 {
@@ -58,7 +61,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	Handle hGamedata = LoadGameConfigFile("sdktools.games")
-	if(hGamedata == null)
+	if(!hGamedata)
 	{
 		SetFailState("Failed to load \"sdktools.games\" gamedata.")
 		delete hGamedata
@@ -77,7 +80,7 @@ public void OnPluginStart()
 	DHookAddParam(gH_AcceptInput, HookParamType_Int)
 	HookEvent("round_start", Event_RoundStart)
 	hGamedata = LoadGameConfigFile("collisionhook")
-	if(hGamedata == null)
+	if(!hGamedata)
 	{
 		SetFailState("Failed to load \"collisionhook.txt\" gamedata.")
 		delete hGamedata
@@ -98,11 +101,13 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_totalEntity = 0
+	for(int i = 0; i <= 2048; i++)
+		gI_countMaxLinks[i] = 0
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
 		int entity
-		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
+		while((entity = FindEntityByClassname(entity, sClassname[i])) > 0)
 		{
 			if(i != 7)
 				DHookEntity(gH_AcceptInput, false, entity)
@@ -133,6 +138,12 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				AcceptEntityInput(entity, "Enable")
 			else if(i == 1)
 				AcceptEntityInput(entity, "Toggle")
+			if(0 < i < 7)
+			{
+				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll"}
+				for(int j = 0; j < sizeof(sOutput); j++)
+					LinkToggles(entity, sOutput[j])
+			}
 			else if(i == 7)
 			{
 				DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
@@ -140,6 +151,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+				LinkToggles(entity, "m_OnPressed")
+
 			}
 			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
@@ -229,13 +242,46 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	PrintToServer("Total entities in proccess: %i", gI_totalEntity)
 }
 
+void LinkToggles(int entity, char[] output)
+{
+	int count = GetOutputActionCount(entity, output)
+	char sInput[64]
+	for(int i = 0; i < count; i++)
+	{
+		GetOutputActionTargetInput(entity, output, i, sInput, 64)
+		if(StrEqual(sInput, "Toggle"))
+		{
+			char sTarget[64]
+			GetOutputActionTarget(entity, output, i, sTarget, 64)
+			char sName[64]
+			char sClassnameToggle[][] = {"func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
+			for(int j = 0; j < sizeof(sClassnameToggle); j++)
+			{
+				int toggle
+				int countToggles
+				while((toggle = FindEntityByClassname(toggle, sClassnameToggle[j])) > 0)
+				{
+					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
+					if(StrEqual(sTarget, sName))
+					{
+						countToggles++
+						gI_countLinkedEntity[countToggles][entity] = toggle
+						gI_countMaxLinks[entity]++
+						gB_linkedTogglesDefault[toggle] = false
+					}
+				}
+			}
+		}
+	}
+}
+
 void Reset(int client)
 {
 	for(int i = 1; i <= gI_totalEntity; i++)
 	{
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
 		gF_buttonReady[client][gI_countEntity[i]] = 0.0
-		//gB_toggled[client][gI_countEntity[i]] = false
+		gB_linkedToggles[client][gI_countEntity[i]] = gB_linkedTogglesDefault[gI_countEntity[i]]
 	}
 }
 
@@ -294,17 +340,20 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
-				if(gB_stateDisabled[activator][pThis])
+				if(gB_linkedToggles[activator][pThis])
 				{
-					gB_stateDisabled[activator][pThis] = false
-					gB_stateDisabled[partner][pThis] = false
+					if(gB_stateDisabled[activator][pThis])
+					{
+						gB_stateDisabled[activator][pThis] = false
+						gB_stateDisabled[partner][pThis] = false
+					}
+					else
+					{
+						gB_stateDisabled[activator][pThis] = true
+						gB_stateDisabled[partner][pThis] = true
+					}
 				}
-				else
-				{
-					gB_stateDisabled[activator][pThis] = true
-					gB_stateDisabled[partner][pThis] = true
-				}
-		}
+			}
 			else
 			{
 				if(gB_stateDisabled[0][pThis])
@@ -424,7 +473,6 @@ Action EntityVisibleTransmit(int entity, int client)
 
 Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
-	PrintToServer("but")
 	int partner = Trikz_GetClientPartner(activator)
 	if(partner)
 	{
@@ -432,6 +480,12 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
+		for(int i = 0; i <= gI_countMaxLinks[entity]; i++)
+		{
+			gB_linkedToggles[activator][gI_countLinkedEntity[i][entity]] = true
+			gB_linkedToggles[partner][gI_countLinkedEntity[i][entity]] = true
+			PrintToServer("%i %i", i, gI_countLinkedEntity[i][entity])
+		}
 	}
 	else
 	{
