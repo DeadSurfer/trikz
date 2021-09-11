@@ -44,6 +44,7 @@ int gI_countEntity[2048 + 1]
 int gI_totalEntity
 //forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
+bool gB_toggled[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -234,6 +235,7 @@ void Reset(int client)
 	{
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
 		gF_buttonReady[client][gI_countEntity[i]] = 0.0
+		gB_toggled[client][gI_countEntity[i]] = false
 	}
 }
 
@@ -292,15 +294,19 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
-				if(gB_stateDisabled[activator][pThis])
+				gB_toggled[activator][pThis] = true
+				if(gB_toggled[activator][pThis])
 				{
-					gB_stateDisabled[activator][pThis] = false
-					gB_stateDisabled[partner][pThis] = false
-				}
-				else
-				{
-					gB_stateDisabled[activator][pThis] = true
-					gB_stateDisabled[partner][pThis] = true
+					if(gB_stateDisabled[activator][pThis])
+					{
+						gB_stateDisabled[activator][pThis] = false
+						gB_stateDisabled[partner][pThis] = false
+					}
+					else
+					{
+						gB_stateDisabled[activator][pThis] = true
+						gB_stateDisabled[partner][pThis] = true
+					}
 				}
 			}
 			else
