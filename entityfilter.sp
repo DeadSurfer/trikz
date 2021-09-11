@@ -446,6 +446,11 @@ Action TouchTrigger(int entity, int other)
 		{
 			if(gB_stateDisabled[other][entity])
 				return Plugin_Handled
+			for(int i = 0; i <= gI_countMaxLinks[entity]; i++)
+			{
+				gB_linkedToggles[other][gI_countLinkedEntity[i][entity]] = true
+				gB_linkedToggles[partner][gI_countLinkedEntity[i][entity]] = true
+			}
 		}
 		else
 			if(gB_stateDisabled[0][entity])
@@ -484,7 +489,6 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 		{
 			gB_linkedToggles[activator][gI_countLinkedEntity[i][entity]] = true
 			gB_linkedToggles[partner][gI_countLinkedEntity[i][entity]] = true
-			PrintToServer("%i %i", i, gI_countLinkedEntity[i][entity])
 		}
 	}
 	else
