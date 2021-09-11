@@ -565,7 +565,8 @@ Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
 {
-	gB_teleported[activator] = true
+	if(0 < activator <= MaxClients)
+		gB_teleported[activator] = true
 }
 
 /*void SDKWeaponSwitchPost(int client, int weapon)
