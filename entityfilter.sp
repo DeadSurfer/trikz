@@ -150,7 +150,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_Use, HookButton)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
-				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+				//SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 				char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
 				for(int j = 0; j < sizeof(sOutput); j++)
 					LinkToggles(entity, sOutput[j])
@@ -282,7 +282,7 @@ void Reset(int client)
 	for(int i = 1; i <= gI_totalEntity; i++)
 	{
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
-		gF_buttonReady[client][gI_countEntity[i]] = 0.0
+		gF_buttonReady[client][gI_countEntity[i]] = gF_buttonDefaultDelay[gI_countEntity[i]]
 		gB_linkedToggles[client][gI_countEntity[i]] = gB_linkedTogglesDefault[gI_countEntity[i]]
 	}
 }
@@ -483,7 +483,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	int partner = Trikz_GetClientPartner(activator)
 	if(partner)
 	{
-		if(0.0 < gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
+		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
@@ -495,7 +495,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	}
 	else
 	{
-		if(0.0 < gF_buttonReady[0][entity] > GetGameTime() || gB_stateDisabled[0][entity])
+		if(gF_buttonReady[0][entity] > GetGameTime() || gB_stateDisabled[0][entity])
 			return Plugin_Handled
 		gF_buttonReady[0][entity] = gF_buttonReady[activator][entity]
 	}
