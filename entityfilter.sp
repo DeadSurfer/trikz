@@ -459,8 +459,8 @@ Action TouchTrigger(int entity, int other)
 			{
 				gB_linkedToggles[other][gI_countLinkedEntity[i][entity]] = true
 				gB_linkedToggles[partner][gI_countLinkedEntity[i][entity]] = true
-				gB_toggleAble[other][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i]][entity]
-				gB_toggleAble[partner][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i]][entity]
+				gB_toggleAble[other][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i][entity]][entity]
+				gB_toggleAble[partner][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i][entity]][entity]
 			}
 		}
 		else
@@ -500,8 +500,8 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 		{
 			gB_linkedToggles[activator][gI_countLinkedEntity[i][entity]] = true
 			gB_linkedToggles[partner][gI_countLinkedEntity[i][entity]] = true
-			gB_toggleAble[activator][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i]][entity]
-			gB_toggleAble[partner][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i]][entity]
+			gB_toggleAble[activator][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i][entity]][entity]
+			gB_toggleAble[partner][entity] = gB_toggleAbleDefault[gI_countLinkedEntity[i][entity]][entity]
 		}
 	}
 	else
