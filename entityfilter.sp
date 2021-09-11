@@ -109,7 +109,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 			if(1 < i < 7)
 				SDKHook(entity, SDKHook_Touch, TouchTrigger)
-			/*if(i == 3)
+			if(i == 3)
 			{
 				char sTarget[64]
 				GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
@@ -127,7 +127,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 							break
 					}
 				}
-			}*/
+			}
 			if(i == 0 || (1 < i < 7))
 				AcceptEntityInput(entity, "Enable")
 			if (i == 1)
@@ -390,7 +390,7 @@ Action EntityVisibleTransmit(int entity, int client)
 	return Plugin_Continue
 }
 
-Action HookButton(int entity, int activator, int caller, UseType type, float value)
+public Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
 	PrintToServer("but")
 	int partner = Trikz_GetClientPartner(activator)
