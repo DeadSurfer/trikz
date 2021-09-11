@@ -438,6 +438,8 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
+		gB_toggled[activator][entity] = true
+		gB_toggled[partner][entity] = true
 	}
 	else
 	{
@@ -463,7 +465,8 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 		if(partner)
 		{
 			gB_toggled[activator][caller] = true
-			if(gB_stateDisabled[activator][caller])
+			gB_toggled[partner][caller] = true
+			if(gB_stateDisabled[activator][caller] && gB_stateDisabled[partner][caller])
 				return Plugin_Handled
 		}
 		else
