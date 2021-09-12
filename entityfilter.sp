@@ -49,9 +49,9 @@ native int Trikz_GetClientPartner(int client)
 int gI_linkedEntities[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
-bool gB_wasRestart[MAXPLAYERS + 1]
+//bool gB_wasRestart[MAXPLAYERS + 1]
 //int gI_outsideToggles[MAXPLAYERS + 1][2048 + 1]
-bool gB_isLinkedToggle[MAXPLAYERS + 1][2048 + 1]
+//bool gB_isLinkedToggle[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -450,23 +450,6 @@ Action TouchTrigger(int entity, int other)
 		{
 			if(gB_stateDisabled[other][entity])
 				return Plugin_Handled
-			for(int i = 1; i <= gI_maxLinks[entity]; i++)
-			{
-				//if(!gI_linkedToggles[other][gI_linkedEntities[i][entity]])
-				//gB_isLinkedToggle[other][i][entity] = true
-				//if(gB_isLinkedToggle[other][i][entity])
-				{
-					//gI_linkedToggles[other][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
-					//gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
-					//if(!gI_isLinkedToggle[other][1])
-					{
-						//gB_isLinkedToggle[other][i] = true
-						//gI_linkedToggles[other][gI_linkedEntities[i][entity]]++
-						//gI_linkedToggles[partner][gI_linkedEntities[i][entity]]++
-					}
-					//PrintToServer("%i %i", gI_linkedToggles[other][gI_linkedEntities[i][entity]], gI_linkedEntities[i][entity])
-				}
-			}
 		}
 		else
 			if(gB_stateDisabled[0][entity])
@@ -532,30 +515,14 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 		{
 			if(gB_stateDisabled[activator][caller])
 				return Plugin_Handled
-			//PrintToServer("%i maxlinks", gI_maxLinks[caller])
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 				if(gI_linkedToggles[activator][gI_linkedEntities[i][caller]])
 					return Plugin_Handled
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
-				//if(!gI_linkedToggles[other][gI_linkedEntities[i][entity]])
-				//gB_isLinkedToggle[other][i][entity] = true
-				//if(gB_isLinkedToggle[other][i][entity])
-				{
-					//gI_linkedToggles[other][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
-					//gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
-					//if(!gI_isLinkedToggle[other][1])
-					{
-						//gB_isLinkedToggle[other][i] = true
-						//if(gB_maxLinks[activator][i])
-						{
-							gI_linkedToggles[activator][gI_linkedEntities[i][caller]]++
-							gI_linkedToggles[partner][gI_linkedEntities[i][caller]]++
-							//gB_maxLinks[activator][i] = true
-						}
-					}
-					PrintToServer("%i %i", gI_linkedToggles[activator][gI_linkedEntities[i][caller]], gI_linkedEntities[i][caller])
-				}
+				gI_linkedToggles[activator][gI_linkedEntities[i][caller]]++
+				gI_linkedToggles[partner][gI_linkedEntities[i][caller]]++
+				PrintToServer("%i %i", gI_linkedToggles[activator][gI_linkedEntities[i][caller]], gI_linkedEntities[i][caller])
 			}
 		}
 		else
