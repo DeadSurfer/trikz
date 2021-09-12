@@ -276,6 +276,7 @@ void LinkToggles(int entity, char[] output)
 						gI_maxLinks[entity]++
 						gI_linkedEntities[gI_maxLinks[entity]][entity] = toggle
 						gI_linkedTogglesOutputs[GetOutput(output)][toggle]++
+						PrintToServer("%s, %i", output, GetOutput(output))
 						//PrintToServer("%i %i %s %s %s", entity, toggle, sTarget, sName, sInput)
 						//gI_linkedTogglesDefault[countToggles][toggle] = toggle
 					}
@@ -507,7 +508,7 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker)
 }
 
-Action TriggerOutputHook(const char[] output, int caller, int activator, float delay)
+Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
 	{
@@ -519,11 +520,13 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 				if(gI_linkedToggles[activator][gI_linkedEntities[i][caller]])
 					return Plugin_Handled
+			char sOrigOutput[32]
+			Format(sOrigOutput, 32, "m_%s", output)
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
-				gI_linkedToggles[activator][gI_linkedEntities[i][caller]] += gI_linkedTogglesOutputs[GetOutput(output)][gI_linkedEntities[i][caller]]
-				gI_linkedToggles[partner][gI_linkedEntities[i][caller]] += gI_linkedTogglesOutputs[GetOutput(output)][gI_linkedEntities[i][caller]]
-				PrintToServer("%i %i %s", gI_linkedToggles[activator][gI_linkedEntities[i][caller]], gI_linkedEntities[i][caller], output)
+				gI_linkedToggles[activator][gI_linkedEntities[i][caller]] = gI_linkedTogglesOutputs[GetOutput(sOrigOutput)][gI_linkedEntities[i][caller]]
+				gI_linkedToggles[partner][gI_linkedEntities[i][caller]] = gI_linkedTogglesOutputs[GetOutput(sOrigOutput)][gI_linkedEntities[i][caller]]
+				PrintToServer("%i %i %s %i", gI_linkedToggles[activator][gI_linkedEntities[i][caller]], gI_linkedEntities[i][caller], sOrigOutput, gI_linkedTogglesOutputs[GetOutput(sOrigOutput)][gI_linkedEntities[i][caller]])
 			}
 		}
 		else
