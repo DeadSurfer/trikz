@@ -31,9 +31,7 @@
 #include <dhooks>
 #include <sdktools>
 #include <sdkhooks>
-//#include <trikz>
 #include <outputinfo>
-//#pragma dynamic 9000000
 
 Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
@@ -41,9 +39,8 @@ bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
-int gI_entityStore[2048 + 1]
+int gI_entityID[2048 + 1]
 int gI_entityTotalCount
-//forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
 int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
@@ -168,7 +165,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDisabled[0][entity] = false
 			}
 			gI_entityTotalCount++
-			gI_entityStore[gI_entityTotalCount] = entity
+			gI_entityID[gI_entityTotalCount] = entity
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
@@ -222,7 +219,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 							SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 							gB_stateDefaultDisabled[breakable] = false
 							gB_stateDisabled[0][breakable] = false
-							gI_entityStore[gI_entityTotalCount++] = breakable
+							gI_entityID[gI_entityTotalCount++] = breakable
 							gB_once = true
 						}
 					}
@@ -233,7 +230,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
-				gI_entityStore[gI_entityTotalCount++] = entity
+				gI_entityID[gI_entityTotalCount++] = entity
 			}*/
 		}
 	}
@@ -280,9 +277,9 @@ void Reset(int client)
 {
 	for(int i = 1; i <= gI_entityTotalCount; i++)
 	{
-		gB_stateDisabled[client][gI_entityStore[i]] = gB_stateDefaultDisabled[gI_entityStore[i]]
-		gF_buttonReady[client][gI_entityStore[i]] = 0.0
-		gI_linkedToggles[client][gI_entityStore[i]] = 0
+		gB_stateDisabled[client][gI_entityID[i]] = gB_stateDefaultDisabled[gI_entityID[i]]
+		gF_buttonReady[client][gI_entityID[i]] = 0.0
+		gI_linkedToggles[client][gI_entityID[i]] = 0
 	}
 }
 
