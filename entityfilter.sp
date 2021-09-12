@@ -144,7 +144,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				AcceptEntityInput(entity, "Toggle")
 			if(0 < i < 7)
 			{
-				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll"}
+				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
 					LinkToggles(entity, sOutput[j])
 			}
@@ -241,7 +241,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		}
 	}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger", "OnStartTouchAll"}
+	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnStartTouchAll"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
@@ -253,6 +254,7 @@ void LinkToggles(int entity, char[] output)
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
 	//int countToggles[2048 + 1]
+	//PrintToServer("count %i", count)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
@@ -273,7 +275,7 @@ void LinkToggles(int entity, char[] output)
 						//countToggles[toggle]++
 						gI_maxLinks[entity]++
 						gI_linkedEntities[gI_maxLinks[entity]][entity] = toggle
-						//PrintToServer("%i %i", entity, toggle)
+						//PrintToServer("%i %i %s %s %s", entity, toggle, sTarget, sName, sInput)
 						//gI_linkedTogglesDefault[countToggles][toggle] = toggle
 					}
 				}
@@ -456,9 +458,13 @@ Action TouchTrigger(int entity, int other)
 				{
 					//gI_linkedToggles[other][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
 					//gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
-					gI_linkedToggles[other][gI_linkedEntities[i][entity]]++
-					gI_linkedToggles[partner][gI_linkedEntities[i][entity]]++
-					PrintToServer("%i %i", gI_linkedToggles[other][gI_linkedEntities[i][entity]], gI_linkedEntities[i][entity])
+					//if(!gI_isLinkedToggle[other][1])
+					{
+						//gB_isLinkedToggle[other][i] = true
+						//gI_linkedToggles[other][gI_linkedEntities[i][entity]]++
+						//gI_linkedToggles[partner][gI_linkedEntities[i][entity]]++
+					}
+					//PrintToServer("%i %i", gI_linkedToggles[other][gI_linkedEntities[i][entity]], gI_linkedEntities[i][entity])
 				}
 			}
 		}
@@ -526,6 +532,31 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 		{
 			if(gB_stateDisabled[activator][caller])
 				return Plugin_Handled
+			//PrintToServer("%i maxlinks", gI_maxLinks[caller])
+			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+				if(gI_linkedToggles[activator][gI_linkedEntities[i][caller]])
+					return Plugin_Handled
+			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+			{
+				//if(!gI_linkedToggles[other][gI_linkedEntities[i][entity]])
+				//gB_isLinkedToggle[other][i][entity] = true
+				//if(gB_isLinkedToggle[other][i][entity])
+				{
+					//gI_linkedToggles[other][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
+					//gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
+					//if(!gI_isLinkedToggle[other][1])
+					{
+						//gB_isLinkedToggle[other][i] = true
+						//if(gB_maxLinks[activator][i])
+						{
+							gI_linkedToggles[activator][gI_linkedEntities[i][caller]]++
+							gI_linkedToggles[partner][gI_linkedEntities[i][caller]]++
+							//gB_maxLinks[activator][i] = true
+						}
+					}
+					PrintToServer("%i %i", gI_linkedToggles[activator][gI_linkedEntities[i][caller]], gI_linkedEntities[i][caller])
+				}
+			}
 		}
 		else
 			if(gB_stateDisabled[0][caller])
