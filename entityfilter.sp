@@ -170,8 +170,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 			}
-			gI_totalEntity++
-			gI_countEntity[gI_totalEntity] = entity
+			gI_countEntity[++gI_totalEntity] = entity
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
@@ -246,6 +245,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total entities in proccess: %i", gI_totalEntity)
+	int q,r
+	PrintToServer("%i %i", q++, ++r)
 }
 
 void LinkToggles(int entity, char[] output)
@@ -255,6 +256,7 @@ void LinkToggles(int entity, char[] output)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
+		//PrintToServer("%s", sInput)
 		//int isToggleEnt = 0
 		if(StrEqual(sInput, "Toggle"))
 		{
@@ -269,13 +271,16 @@ void LinkToggles(int entity, char[] output)
 				int toggle
 				while((toggle = FindEntityByClassname(toggle, sClassnameToggle[j])) > 0)
 				{
+					//PrintToServer("%i")
 					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
 					//if(StrEqual(sTarget, sName) || (StrEqual(sName, "!self") && isToggleEnt == -1))
 					if(StrEqual(sTarget, sName))
 					{
-						countToggles++
-						gI_linkedEntities[countToggles][entity] = toggle
+						//PrintToServer("%s %s", sTarget, sName)
+						//countToggles++
+						gI_linkedEntities[++countToggles][entity] = toggle
 						gI_maxLinks[entity]++
+						//PrintToServer("ml %i", gI_maxLinks[entity])
 						gI_linkedTogglesDefault[toggle]++
 						//gB_toggleAbleDefault[toggle] = true
 					}
@@ -358,6 +363,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				{
 					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
+					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
+					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 					gI_linkedToggles[activator][pThis]--
 					gI_linkedToggles[partner][pThis]--
 					gI_outsideToggles[activator][pThis] = gI_linkedToggles[activator][pThis]
@@ -365,7 +372,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				}
 			}
 			else
+			{
 				gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
+				PrintToServer("%i [0]", pThis)
+			}
 		}
 		/*else if(StrEqual(sInput, "Break"))
 		{
@@ -462,18 +472,8 @@ Action TouchTrigger(int entity, int other)
 			}
 		}
 		else
-		{
 			if(gB_stateDisabled[0][entity])
 				return Plugin_Handled
-			for(int i = 1; i <= gI_maxLinks[entity]; i++)
-			{
-				if(!gI_linkedToggles[0][gI_linkedEntities[i][entity]])
-				{
-					gI_linkedToggles[0][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
-					PrintToServer("once %i", gI_linkedEntities[i][entity])
-				}
-			}
-		}
 	}
 	return Plugin_Continue
 }
@@ -503,7 +503,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
-		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
+		gF_buttonReady[partner][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		for(int i = 1; i <= gI_maxLinks[entity]; i++)
 		{
 			gI_linkedToggles[activator][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
@@ -526,8 +526,6 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 		if(gF_buttonReady[0][entity] > GetGameTime() || gB_stateDisabled[0][entity])
 			return Plugin_Handled
 		gF_buttonReady[0][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
-		for(int i = 1; i <= gI_maxLinks[entity]; i++)
-			gI_linkedToggles[0][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
 	}
 	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
 		AcceptEntityInput(entity, "Unlock")
