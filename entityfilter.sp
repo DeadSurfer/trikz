@@ -267,18 +267,11 @@ void LinkToggles(int entity, char[] output)
 				while((toggle = FindEntityByClassname(toggle, sClassnameToggle[j])) != INVALID_ENT_REFERENCE)
 				{
 					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
-					if(StrEqual(sTarget, sName))
+					if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && toggle == entity))
 					{
 						gI_linkedEntities[++countToggles][entity] = toggle
 						gI_maxLinks[entity]++
 						gI_linkedTogglesDefault[toggle]++
-					}
-					else if(StrEqual(sTarget, "!self") && toggle == entity)
-					{
-						gI_linkedEntities[++countToggles][entity] = toggle
-						gI_maxLinks[entity]++
-						gI_linkedTogglesDefault[toggle]++
-						break
 					}
 				}
 			}
