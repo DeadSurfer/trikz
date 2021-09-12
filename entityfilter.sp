@@ -351,12 +351,12 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			{
 				if(gI_linkedToggles[activator][pThis])
 				{
-					PrintToServer("%i %i", gI_linkedToggles[activator][pThis])
+					PrintToServer("%i", gI_linkedToggles[activator][pThis])
 					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 					gI_linkedToggles[activator][pThis]--
 					gI_linkedToggles[partner][pThis]--
-					PrintToServer("%i %i", gI_linkedToggles[activator][pThis])
+					PrintToServer("%i", gI_linkedToggles[activator][pThis])
 					//gI_outsideToggles[activator][pThis] = pThis
 					//gI_outsideToggles[partner][pThis] = pThis
 				}
