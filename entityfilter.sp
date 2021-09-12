@@ -251,6 +251,7 @@ void LinkToggles(int entity, char[] output)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
+	int countToggles
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
@@ -260,7 +261,6 @@ void LinkToggles(int entity, char[] output)
 			GetOutputActionTarget(entity, output, i, sTarget, 64)
 			char sName[64]
 			char sClassnameToggle[][] = {"func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
-			int countToggles
 			for(int j = 0; j < sizeof(sClassnameToggle); j++)
 			{
 				int toggle
