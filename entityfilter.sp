@@ -269,7 +269,7 @@ void LinkToggles(int entity, char[] output)
 					{
 						gI_linkedEntities[++countToggles][entity] = toggle
 						gI_maxLinks[entity]++
-						gI_linkedTogglesDefault[toggle]++
+						gI_linkedTogglesDefault[toggle] = toggle
 					}
 				}
 			}
@@ -349,8 +349,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 					gI_linkedToggles[activator][pThis] -= pThis
 					gI_linkedToggles[partner][pThis] -= pThis
-					gI_outsideToggles[activator][pThis] = gI_linkedToggles[activator][pThis]
-					gI_outsideToggles[partner][pThis] = gI_linkedToggles[partner][pThis]
+					gI_outsideToggles[activator][pThis] = pThis
+					gI_outsideToggles[partner][pThis] = pThis
 				}
 			}
 			else
