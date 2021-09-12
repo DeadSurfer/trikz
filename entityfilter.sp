@@ -33,6 +33,7 @@
 #include <sdkhooks>
 //#include <trikz>
 #include <outputinfo>
+//#pragma dynamic 9000000
 
 Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
@@ -44,12 +45,13 @@ int gI_countEntity[2048 + 1]
 int gI_totalEntity
 //forward void Trikz_Start(int client)
 native int Trikz_GetClientPartner(int client)
-int gI_linkedTogglesDefault[2048 + 1]
+//int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedEntities[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 bool gB_wasRestart[MAXPLAYERS + 1]
-int gI_outsideToggles[MAXPLAYERS + 1][2048 + 1]
+//int gI_outsideToggles[MAXPLAYERS + 1][2048 + 1]
+bool gB_isLinkedToggle[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -168,7 +170,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 			}
-			gI_countEntity[++gI_totalEntity] = entity
+			gI_totalEntity++
+			gI_countEntity[gI_totalEntity] = entity
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
@@ -249,7 +252,7 @@ void LinkToggles(int entity, char[] output)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
-	int countToggles
+	//int countToggles[2048 + 1]
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
@@ -267,9 +270,11 @@ void LinkToggles(int entity, char[] output)
 					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
 					if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && toggle == entity))
 					{
-						gI_linkedEntities[++countToggles][entity] = toggle
+						//countToggles[toggle]++
 						gI_maxLinks[entity]++
-						gI_linkedTogglesDefault[toggle] = toggle
+						gI_linkedEntities[gI_maxLinks[entity]][entity] = toggle
+						//PrintToServer("%i %i", entity, toggle)
+						//gI_linkedTogglesDefault[countToggles][toggle] = toggle
 					}
 				}
 			}
@@ -284,7 +289,8 @@ void Reset(int client)
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
 		gF_buttonReady[client][gI_countEntity[i]] = 0.0
 		gI_linkedToggles[client][gI_countEntity[i]] = 0
-		gB_wasRestart[client] = true
+		//gI_linkedToggles[other][gI_countEntity[i]] -= gI_outsideToggles[other][gI_countEntity[i]]
+		//gI_linkedToggles[partner][gI_linkedEntities[i][entity]] -= gI_outsideToggles[partner][gI_linkedEntities[i][entity]]
 	}
 }
 
@@ -345,12 +351,14 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			{
 				if(gI_linkedToggles[activator][pThis])
 				{
+					PrintToServer("%i %i", gI_linkedToggles[activator][pThis])
 					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
-					gI_linkedToggles[activator][pThis] -= pThis
-					gI_linkedToggles[partner][pThis] -= pThis
-					gI_outsideToggles[activator][pThis] = pThis
-					gI_outsideToggles[partner][pThis] = pThis
+					gI_linkedToggles[activator][pThis]--
+					gI_linkedToggles[partner][pThis]--
+					PrintToServer("%i %i", gI_linkedToggles[activator][pThis])
+					//gI_outsideToggles[activator][pThis] = pThis
+					//gI_outsideToggles[partner][pThis] = pThis
 				}
 			}
 			else
@@ -442,10 +450,15 @@ Action TouchTrigger(int entity, int other)
 				return Plugin_Handled
 			for(int i = 1; i <= gI_maxLinks[entity]; i++)
 			{
-				if(!gI_linkedToggles[other][gI_linkedEntities[i][entity]])
+				//if(!gI_linkedToggles[other][gI_linkedEntities[i][entity]])
+				//gB_isLinkedToggle[other][i][entity] = true
+				//if(gB_isLinkedToggle[other][i][entity])
 				{
-					gI_linkedToggles[other][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
-					gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
+					//gI_linkedToggles[other][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
+					//gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedEntities[i][entity]
+					gI_linkedToggles[other][gI_linkedEntities[i][entity]]++
+					gI_linkedToggles[partner][gI_linkedEntities[i][entity]]++
+					PrintToServer("%i %i", gI_linkedToggles[other][gI_linkedEntities[i][entity]], gI_linkedEntities[i][entity])
 				}
 			}
 		}
@@ -484,15 +497,8 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 		gF_buttonReady[partner][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		for(int i = 1; i <= gI_maxLinks[entity]; i++)
 		{
-			gI_linkedToggles[activator][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
-			gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
-			if(gB_wasRestart[activator])
-			{
-				gI_linkedToggles[activator][gI_linkedEntities[i][entity]] -= gI_outsideToggles[activator][gI_linkedEntities[i][entity]]
-				gI_linkedToggles[partner][gI_linkedEntities[i][entity]] -= gI_outsideToggles[partner][gI_linkedEntities[i][entity]]
-				gB_wasRestart[activator] = false
-				gB_wasRestart[partner] = false
-			}
+			gI_linkedToggles[activator][gI_linkedEntities[i][entity]]++
+			gI_linkedToggles[partner][gI_linkedEntities[i][entity]]++
 		}
 	}
 	else
@@ -544,10 +550,10 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 		DHookSetReturn(hReturn, false)
 		return MRES_Supercede
 	}
-	int partner
-	if(0 < ent2 <= MaxClients)
-		partner = Trikz_GetClientPartner(ent2)
-	if(partner)
+	//int partner
+	//if(0 < ent2 <= MaxClients)
+	//	partner = Trikz_GetClientPartner(ent2)
+	//if(partner)
 	{
 		if(0 < ent2 <= MaxClients && !gB_stateDisabled[ent2][ent1])
 			return MRES_Ignored
@@ -560,7 +566,7 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 				return MRES_Ignored
 		}
 	}
-	else
+	//else
 	{
 		if(0 < ent2 <= MaxClients && !gB_stateDisabled[0][ent1])
 			return MRES_Ignored
