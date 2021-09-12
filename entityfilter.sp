@@ -263,10 +263,10 @@ void LinkToggles(int entity, char[] output)
 			GetOutputActionTarget(entity, output, i, sTarget, 64)
 			char sName[64]
 			char sClassnameToggle[][] = {"func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
+			int countToggles
 			for(int j = 0; j < sizeof(sClassnameToggle); j++)
 			{
 				int toggle
-				int countToggles
 				while((toggle = FindEntityByClassname(toggle, sClassnameToggle[j])) > 0)
 				{
 					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
@@ -451,7 +451,7 @@ Action TouchTrigger(int entity, int other)
 		{
 			if(gB_stateDisabled[other][entity])
 				return Plugin_Handled
-			for(int i = 0; i <= gI_maxLinks[entity]; i++)
+			for(int i = 1; i <= gI_maxLinks[entity]; i++)
 			{
 				if(!gI_linkedToggles[other][gI_linkedEntities[i][entity]])
 				{
@@ -459,22 +459,21 @@ Action TouchTrigger(int entity, int other)
 					gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
 					PrintToServer("once %i", gI_linkedEntities[i][entity])
 				}
-				if(gB_wasRestart[other])
-				{
-					gI_linkedToggles[other][gI_linkedEntities[i][entity]] -= gI_outsideToggles[other][gI_linkedEntities[i][entity]]
-					gI_linkedToggles[partner][gI_linkedEntities[i][entity]] -= gI_outsideToggles[partner][gI_linkedEntities[i][entity]]
-					PrintToServer("z %i", gI_linkedToggles[other][gI_linkedEntities[i][entity]])
-					gB_wasRestart[other] = false
-					gB_wasRestart[partner] = false
-				}
-				//gI_toggleAble[other][gI_linkedEntities[i][entity]] = gI_linkedEntities[i][entity]
-				//gI_toggleAble[partner][gI_linkedEntities[i][entity]] = gI_linkedEntities[i][entity]
-				//PrintToServer("%i %i", gI_linkedToggles[other][gI_linkedEntities[i][entity]], gI_linkedEntities[i][entity])
 			}
 		}
 		else
+		{
 			if(gB_stateDisabled[0][entity])
 				return Plugin_Handled
+			for(int i = 1; i <= gI_maxLinks[entity]; i++)
+			{
+				if(!gI_linkedToggles[0][gI_linkedEntities[i][entity]])
+				{
+					gI_linkedToggles[0][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
+					PrintToServer("once %i", gI_linkedEntities[i][entity])
+				}
+			}
+		}
 	}
 	return Plugin_Continue
 }
@@ -505,7 +504,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = gF_buttonReady[activator][entity]
-		for(int i = 0; i <= gI_maxLinks[entity]; i++)
+		for(int i = 1; i <= gI_maxLinks[entity]; i++)
 		{
 			gI_linkedToggles[activator][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
 			gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
@@ -526,7 +525,9 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	{
 		if(gF_buttonReady[0][entity] > GetGameTime() || gB_stateDisabled[0][entity])
 			return Plugin_Handled
-		gF_buttonReady[0][entity] = gF_buttonReady[activator][entity]
+		gF_buttonReady[0][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
+		for(int i = 1; i <= gI_maxLinks[entity]; i++)
+			gI_linkedToggles[0][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
 	}
 	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
 		AcceptEntityInput(entity, "Unlock")
@@ -571,15 +572,34 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 		DHookSetReturn(hReturn, false)
 		return MRES_Supercede
 	}
-	if(0 < ent2 <= MaxClients && !gB_stateDisabled[ent2][ent1])
-		return MRES_Ignored
-	char classname[32]
-	GetEntPropString(ent2, Prop_Data, "m_iClassname", classname, 32)
-	if(StrContains(classname, "projectile") != -1)
+	int partner
+	if(0 < ent2 <= MaxClients)
+		partner = Trikz_GetClientPartner(ent2)
+	if(partner)
 	{
-		int ent2owner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
-		if(0 < ent2owner <= MaxClients && !gB_stateDisabled[ent2owner][ent1])
+		if(0 < ent2 <= MaxClients && !gB_stateDisabled[ent2][ent1])
 			return MRES_Ignored
+		char classname[32]
+		GetEntPropString(ent2, Prop_Data, "m_iClassname", classname, 32)
+		if(StrContains(classname, "projectile") != -1)
+		{
+			int ent2owner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
+			if(0 < ent2owner <= MaxClients && !gB_stateDisabled[ent2owner][ent1])
+				return MRES_Ignored
+		}
+	}
+	else
+	{
+		if(0 < ent2 <= MaxClients && !gB_stateDisabled[0][ent1])
+			return MRES_Ignored
+		char classname[32]
+		GetEntPropString(ent2, Prop_Data, "m_iClassname", classname, 32)
+		if(StrContains(classname, "projectile") != -1)
+		{
+			int ent2owner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
+			if(0 < ent2owner <= MaxClients && !gB_stateDisabled[0][ent1])
+				return MRES_Ignored
+		}
 	}
 	//PrintToServer("ent1 %i, ent2 %i", ent1, ent2)
 	DHookSetReturn(hReturn, false)
