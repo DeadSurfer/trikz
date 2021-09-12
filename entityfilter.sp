@@ -111,7 +111,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
 		int entity
-		while((entity = FindEntityByClassname(entity, sClassname[i])) > 0)
+		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
 			if(i != 7)
 				DHookEntity(gH_AcceptInput, false, entity)
@@ -129,7 +129,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				for(int j = 0; j < sizeof(sDestination); j++)
 				{
 					int destination
-					while((destination = FindEntityByClassname(destination, sDestination[j])) > 0)
+					while((destination = FindEntityByClassname(destination, sDestination[j])) != INVALID_ENT_REFERENCE)
 					{
 						char sName[64]
 						GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
@@ -183,7 +183,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 						int breakable
 						GetOutputActionTarget(entity, sOutputs[i], i, sTarget, 256)
 						char sName[64]
-						while((breakable = FindEntityByClassname(breakable, "func_breakable")) > 0)
+						while((breakable = FindEntityByClassname(breakable, "func_breakable")) != INVALID_ENT_REFERENCE)
 						{
 							if(StrEqual(sTarget, "!self") && breakable == -1)
 								break
@@ -194,7 +194,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 								break
 							int template
 							bool bBreak
-							while((template = FindEntityByClassname(template, "point_template")) > 0)
+							while((template = FindEntityByClassname(template, "point_template")) != INVALID_ENT_REFERENCE)
 							{
 								//char sName[64]
 								for(int i = 0; i <= 16; i++)
@@ -256,33 +256,32 @@ void LinkToggles(int entity, char[] output)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
-		//PrintToServer("%s", sInput)
-		//int isToggleEnt = 0
 		if(StrEqual(sInput, "Toggle"))
 		{
-			//isToggleEnt = entity
 			char sTarget[64]
 			GetOutputActionTarget(entity, output, i, sTarget, 64)
+			PrintToServer("%s %s", output, sTarget)
 			char sName[64]
 			char sClassnameToggle[][] = {"func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
 			int countToggles
 			for(int j = 0; j < sizeof(sClassnameToggle); j++)
 			{
 				int toggle
-				while((toggle = FindEntityByClassname(toggle, sClassnameToggle[j])) > 0)
+				while((toggle = FindEntityByClassname(toggle, sClassnameToggle[j])) != INVALID_ENT_REFERENCE)
 				{
-					//PrintToServer("%i")
 					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
-					//if(StrEqual(sTarget, sName) || (StrEqual(sName, "!self") && isToggleEnt == -1))
 					if(StrEqual(sTarget, sName))
 					{
-						//PrintToServer("%s %s", sTarget, sName)
-						//countToggles++
 						gI_linkedEntities[++countToggles][entity] = toggle
 						gI_maxLinks[entity]++
-						//PrintToServer("ml %i", gI_maxLinks[entity])
 						gI_linkedTogglesDefault[toggle]++
-						//gB_toggleAbleDefault[toggle] = true
+					}
+					else if(StrEqual(sTarget, "!self") && toggle == entity)
+					{
+						gI_linkedEntities[++countToggles][entity] = toggle
+						gI_maxLinks[entity]++
+						gI_linkedTogglesDefault[toggle]++
+						break
 					}
 				}
 			}
@@ -295,9 +294,8 @@ void Reset(int client)
 	for(int i = 1; i <= gI_totalEntity; i++)
 	{
 		gB_stateDisabled[client][gI_countEntity[i]] = gB_stateDefaultDisabled[gI_countEntity[i]]
-		gF_buttonReady[client][gI_countEntity[i]] = gF_buttonDefaultDelay[gI_countEntity[i]]
+		gF_buttonReady[client][gI_countEntity[i]] = 0.0
 		gI_linkedToggles[client][gI_countEntity[i]] = 0
-		//gI_toggleAble[client][gI_countEntity[i]] = 0
 		gB_wasRestart[client] = true
 	}
 }
@@ -357,25 +355,19 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
-				//if(gB_linkedToggles[activator][pThis])
-				PrintToServer("%i - %i", pThis, gI_linkedToggles[activator][pThis])
 				if(gI_linkedToggles[activator][pThis])
 				{
-					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
-					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 					gI_linkedToggles[activator][pThis]--
 					gI_linkedToggles[partner][pThis]--
 					gI_outsideToggles[activator][pThis] = gI_linkedToggles[activator][pThis]
 					gI_outsideToggles[partner][pThis] = gI_linkedToggles[partner][pThis]
+
 				}
 			}
 			else
-			{
 				gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
-				PrintToServer("%i [0]", pThis)
-			}
 		}
 		/*else if(StrEqual(sInput, "Break"))
 		{
@@ -467,7 +459,6 @@ Action TouchTrigger(int entity, int other)
 				{
 					gI_linkedToggles[other][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
 					gI_linkedToggles[partner][gI_linkedEntities[i][entity]] += gI_linkedTogglesDefault[gI_linkedEntities[i][entity]]
-					PrintToServer("once %i", gI_linkedEntities[i][entity])
 				}
 			}
 		}
@@ -514,11 +505,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 				gI_linkedToggles[partner][gI_linkedEntities[i][entity]] -= gI_outsideToggles[partner][gI_linkedEntities[i][entity]]
 				gB_wasRestart[activator] = false
 				gB_wasRestart[partner] = false
-				PrintToServer("z %i", gI_linkedToggles[activator][gI_linkedEntities[i][entity]])
 			}
-			//gI_toggleAble[activator][gI_linkedEntities[i][entity]] = gI_linkedEntities[i][entity]
-			//gI_toggleAble[partner][gI_linkedEntities[i][entity]] = gI_linkedEntities[i][entity]
-			//PrintToServer("%i %i", gI_linkedToggles[activator][gI_linkedEntities[i][entity]], gI_linkedEntities[i][entity])
 		}
 	}
 	else
