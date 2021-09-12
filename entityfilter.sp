@@ -245,8 +245,6 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total entities in proccess: %i", gI_totalEntity)
-	int q,r
-	PrintToServer("%i %i", q++, ++r)
 }
 
 void LinkToggles(int entity, char[] output)
@@ -260,7 +258,6 @@ void LinkToggles(int entity, char[] output)
 		{
 			char sTarget[64]
 			GetOutputActionTarget(entity, output, i, sTarget, 64)
-			PrintToServer("%s %s", output, sTarget)
 			char sName[64]
 			char sClassnameToggle[][] = {"func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
 			int countToggles
