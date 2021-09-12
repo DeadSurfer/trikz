@@ -48,8 +48,6 @@ int gI_linkedTogglesDefault[2048 + 1]
 int gI_linkedEntities[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
-//int gI_toggleAbleDefault[2048 + 1]
-//int gI_toggleAble[MAXPLAYERS + 1][2048 + 1]
 bool gB_wasRestart[MAXPLAYERS + 1]
 int gI_outsideToggles[MAXPLAYERS + 1][2048 + 1]
 
@@ -349,11 +347,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				{
 					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
-					gI_linkedToggles[activator][pThis]--
-					gI_linkedToggles[partner][pThis]--
+					gI_linkedToggles[activator][pThis] -= pThis
+					gI_linkedToggles[partner][pThis] -= pThis
 					gI_outsideToggles[activator][pThis] = gI_linkedToggles[activator][pThis]
 					gI_outsideToggles[partner][pThis] = gI_linkedToggles[partner][pThis]
-
 				}
 			}
 			else
