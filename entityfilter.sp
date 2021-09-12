@@ -77,10 +77,10 @@ public void OnPluginStart()
 	DHookAddParam(gH_AcceptInput, HookParamType_Object, 20, DHookPass_ByVal|DHookPass_ODTOR|DHookPass_OCTOR|DHookPass_OASSIGNOP) //varaint_t is a union of 12 (float[3]) plus two int type params 12 + 8 = 20
 	DHookAddParam(gH_AcceptInput, HookParamType_Int)
 	HookEvent("round_start", Event_RoundStart)
-	hGamedata = LoadGameConfigFile("collisionhook")
+	hGamedata = LoadGameConfigFile("entityfilter")
 	if(!hGamedata)
 	{
-		SetFailState("Failed to load \"collisionhook.txt\" gamedata.")
+		SetFailState("Failed to load \"entityfilter.txt\" gamedata.")
 		delete hGamedata
 		delete gH_PassServerEntityFilter
 	}
