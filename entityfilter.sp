@@ -164,8 +164,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				gB_stateDefaultDisabled[entity] = false
 				gB_stateDisabled[0][entity] = false
 			}
-			gI_entityTotalCount++
-			gI_entityID[gI_entityTotalCount] = entity
+			gI_entityID[++gI_entityTotalCount] = entity
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
@@ -263,7 +262,6 @@ void LinkToggles(int entity, char[] output)
 					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
 					if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && toggle == entity))
 					{
-						gI_maxLinks[entity]++
 						gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
 						gI_entityOutput[GetOutput(output)][toggle]++
 					}
