@@ -52,6 +52,7 @@ int gI_maxLinks[2048 + 1]
 //bool gB_wasRestart[MAXPLAYERS + 1]
 //int gI_outsideToggles[MAXPLAYERS + 1][2048 + 1]
 //bool gB_isLinkedToggle[MAXPLAYERS + 1][2048 + 1]
+int gI_linkedTogglesOutputs[7][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -241,8 +242,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		}
 	}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
-	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnStartTouchAll"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
@@ -275,6 +275,7 @@ void LinkToggles(int entity, char[] output)
 						//countToggles[toggle]++
 						gI_maxLinks[entity]++
 						gI_linkedEntities[gI_maxLinks[entity]][entity] = toggle
+						gI_linkedTogglesOutputs[GetOutput(output)][toggle]++
 						//PrintToServer("%i %i %s %s %s", entity, toggle, sTarget, sName, sInput)
 						//gI_linkedTogglesDefault[countToggles][toggle] = toggle
 					}
@@ -520,9 +521,9 @@ Action TriggerOutputHook(const char[] output, int caller, int activator, float d
 					return Plugin_Handled
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
-				gI_linkedToggles[activator][gI_linkedEntities[i][caller]]++
-				gI_linkedToggles[partner][gI_linkedEntities[i][caller]]++
-				PrintToServer("%i %i", gI_linkedToggles[activator][gI_linkedEntities[i][caller]], gI_linkedEntities[i][caller])
+				gI_linkedToggles[activator][gI_linkedEntities[i][caller]] += gI_linkedTogglesOutputs[GetOutput(output)][gI_linkedEntities[i][caller]]
+				gI_linkedToggles[partner][gI_linkedEntities[i][caller]] += gI_linkedTogglesOutputs[GetOutput(output)][gI_linkedEntities[i][caller]]
+				PrintToServer("%i %i %s", gI_linkedToggles[activator][gI_linkedEntities[i][caller]], gI_linkedEntities[i][caller], output)
 			}
 		}
 		else
@@ -592,3 +593,21 @@ void SDKSpawnPost(int entity)
 {
 	AcceptEntityInput(entity, "Kill")
 }*/
+
+int GetOutput(char[] output)
+{
+	if(StrEqual(output, "m_OnStartTouch"))
+		return 0
+	else if(StrEqual(output, "m_OnEndTouchAll"))
+		return 1
+	else if(StrEqual(output, "m_OnTouching"))
+		return 2
+	else if(StrEqual(output, "m_OnEndTouch"))
+		return 3
+	else if(StrEqual(output, "m_OnTrigger"))
+		return 4
+	else if(StrEqual(output, "m_OnStartTouchAll"))
+		return 5
+	else
+		return 6
+}
