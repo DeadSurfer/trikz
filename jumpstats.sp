@@ -43,6 +43,10 @@ int gI_syncTick[MAXPLAYERS + 1]
 int gI_tickAir[MAXPLAYERS + 1]
 bool gB_isCountJump[MAXPLAYERS + 1]
 float gF_dot[MAXPLAYERS + 1]
+bool gB_strafeBlockD[MAXPLAYERS + 1]
+bool gB_strafeBlockA[MAXPLAYERS + 1]
+bool gB_strafeBlockS[MAXPLAYERS + 1]
+bool gB_strafeBlockW[MAXPLAYERS + 1]
 char gS_style[MAXPLAYERS + 1][32]
 float gF_dotTime[MAXPLAYERS + 1]
 bool gB_runboost[MAXPLAYERS + 1]
@@ -165,15 +169,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(gF_dot[client] < -0.9) //backward
 		{
-			bool prevent
 			if(mouse[0] > 0)
 			{
 				if(buttons & IN_MOVELEFT)
 				{
-					if(!prevent)
+					if(!gB_strafeBlockA[client])
 					{
 						gI_strafeCount[client]++
-						prevent = true
+						gB_strafeBlockD[client] = false
+						gB_strafeBlockA[client] = true
 					}
 					gI_syncTick[client]++
 				}
@@ -182,10 +186,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
-					if(!prevent)
+					if(!gB_strafeBlockD[client])
 					{
 						gI_strafeCount[client]++
-						prevent = true
+						gB_strafeBlockD[client] = true
+						gB_strafeBlockA[client] = false
 					}
 					gI_syncTick[client]++
 				}
@@ -195,15 +200,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		else if(gF_dot[client] > 0.9) //forward
 		{
-			bool prevent
 			if(mouse[0] > 0)
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
-					if(!prevent)
+					if(!gB_strafeBlockD[client])
 					{
 						gI_strafeCount[client]++
-						prevent = true
+						gB_strafeBlockD[client] = true
+						gB_strafeBlockA[client] = false
 					}
 					gI_syncTick[client]++
 				}
@@ -212,10 +217,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_MOVELEFT)
 				{
-					if(!prevent)
+					if(!gB_strafeBlockA[client])
 					{
 						gI_strafeCount[client]++
-						prevent = true
+						gB_strafeBlockD[client] = false
+						gB_strafeBlockA[client] = true
 					}
 					gI_syncTick[client]++
 				}
@@ -225,15 +231,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		else //sideways
 		{
-			bool prevent
 			if(mouse[0] > 0)
 			{
 				if(buttons & IN_BACK)
 				{
-					if(!prevent)
+					if(!gB_strafeBlockS[client])
 					{
 						gI_strafeCount[client]++
-						prevent = true
+						gB_strafeBlockS[client] = true
+						gB_strafeBlockW[client] = false
 					}
 					gI_syncTick[client]++
 				}
@@ -242,10 +248,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_FORWARD)
 				{
-					if(!prevent)
+					if(!gB_strafeBlockW[client])
 					{
 						gI_strafeCount[client]++
-						prevent = true
+						gB_strafeBlockS[client] = false
+						gB_strafeBlockW[client] = true
 					}
 					gI_syncTick[client]++
 				}
@@ -315,8 +322,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(buttons & IN_MOVERIGHT)
 			{
-				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
+				if(!gB_strafeBlockD[client])
+				{
 					gI_strafeCount[client]++
+					gB_strafeBlockD[client] = true
+					gB_strafeBlockA[client] = false
+				}
 				gI_syncTick[client]++
 			}
 		}
@@ -324,8 +335,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(buttons & IN_MOVELEFT)
 			{
-				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT)
+				if(!gB_strafeBlockA[client])
+				{
 					gI_strafeCount[client]++
+					gB_strafeBlockD[client] = false
+					gB_strafeBlockA[client] = true
+				}
 				gI_syncTick[client]++
 			}
 		}
@@ -377,6 +392,10 @@ void ResetFactory(int client)
 	gI_syncTick[client] = 0
 	gI_tick[client] = 0
 	gI_tickAir[client] = 0
+	gB_strafeBlockD[client] = false
+	gB_strafeBlockA[client] = false
+	gB_strafeBlockS[client] = false
+	gB_strafeBlockW[client] = false
 	gB_runboost[client] = false
 	gB_teleported[client] = false
 }
