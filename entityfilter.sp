@@ -124,7 +124,7 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		{
 			int input[6]
 			int haveInput
-			if(1 < i < 7)
+			if(0 <= i < 7)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
