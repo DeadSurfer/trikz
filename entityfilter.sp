@@ -95,6 +95,11 @@ public void OnPluginStart()
 	gH_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell)
 }
 
+public void OnClientPutInServer(int client)
+{
+	SDKHook(client, SDKHook_SetTransmit, Hook_SetTransmitHide)
+}
+
 Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
@@ -624,4 +629,17 @@ int GetOutput(char[] output)
 		return 5
 	else
 		return 6
+}
+
+Action Hook_SetTransmitHide(int entity, int client) //entity - me, client - loop all clients
+{	
+	if(client != entity && 0 < entity <= MaxClients && IsPlayerAlive(client))
+	{
+		if(Trikz_GetClientPartner(entity) == client) //make visible partner
+			return Plugin_Continue
+		if(!Trikz_GetClientPartner(entity) && !Trikz_GetClientPartner(client)) //make visible no mates for no mate
+			return Plugin_Continue
+		return Plugin_Handled
+	}
+	return Plugin_Continue
 }
