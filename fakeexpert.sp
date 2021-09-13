@@ -141,6 +141,7 @@ int gI_points[MAXPLAYERS + 1]
 int gI_totalRecords[2]
 bool gB_recordsOnce
 Handle gH_start
+native bool Trikz_GetThisPlugin()
 
 public Plugin myinfo =
 {
@@ -2908,27 +2909,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 	}
-	int other = Stuck(client)
-	if(0 < other <= MaxClients && IsPlayerAlive(client) && gB_block[other])
+	if(!Trikz_GetThisPlugin())
 	{
-		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
+		int other = Stuck(client)
+		if(0 < other <= MaxClients && IsPlayerAlive(client) && gB_block[other])
 		{
-			SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
-			if(gB_color[other])
-				SetEntityRenderColor(other, gI_color[other][0], gI_color[other][1], gI_color[other][2], 125)
-			else
-				SetEntityRenderColor(other, 255, 255, 255, 125)
+			if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
+			{
+				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
+				if(gB_color[other])
+					SetEntityRenderColor(other, gI_color[other][0], gI_color[other][1], gI_color[other][2], 125)
+				else
+					SetEntityRenderColor(other, 255, 255, 255, 125)
+			}
 		}
-	}
-	else if(IsPlayerAlive(client) && other == -1 && gB_block[client])
-	{
-		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+		else if(IsPlayerAlive(client) && other == -1 && gB_block[client])
 		{
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-			if(gB_color[client])
-				SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
-			else
-				SetEntityRenderColor(client, 255, 255, 255, 255)
+			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+			{
+				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+				if(gB_color[client])
+					SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+				else
+					SetEntityRenderColor(client, 255, 255, 255, 255)
+			}
 		}
 	}
 }
