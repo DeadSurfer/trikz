@@ -119,15 +119,9 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				for(int j = 0; j < sizeof(sOutput); j++)
 					input[j] = LinkToggles(entity, sOutput[j])
 				for(int j = 0; j < sizeof(sOutput); j++)
-				{
-					if(input[j])
-					{
-						haveInput += input[j]
-						break
-					}
-				}
-				if(!haveInput)
-					continue
+					haveInput += input[j]
+				if(haveInput)
+					break
 			}
 			if(i == 3)
 			{
@@ -154,15 +148,9 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				for(int j = 0; j < sizeof(sOutput); j++)
 					input[j] = LinkToggles(entity, sOutput[j])
 				for(int j = 0; j < sizeof(sOutput); j++)
-				{
-					if(input[j])
-					{
-						haveInput += input[j]
-						break
-					}
-				}
-				if(!haveInput)
-					continue
+					haveInput += input[j]
+				if(haveInput)
+					break
 				DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
 				SDKHook(entity, SDKHook_Use, HookButton)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
