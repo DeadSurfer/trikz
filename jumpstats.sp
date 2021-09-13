@@ -165,12 +165,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(gF_dot[client] < -0.9) //backward
 		{
+			bool prevent
 			if(mouse[0] > 0)
 			{
 				if(buttons & IN_MOVELEFT)
 				{
-					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT)
+					if(!prevent)
+					{
 						gI_strafeCount[client]++
+						prevent = true
+					}
 					gI_syncTick[client]++
 				}
 			}
@@ -178,8 +182,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
-					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
+					if(!prevent)
+					{
 						gI_strafeCount[client]++
+						prevent = true
+					}
 					gI_syncTick[client]++
 				}
 			}
@@ -188,12 +195,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		else if(gF_dot[client] > 0.9) //forward
 		{
+			bool prevent
 			if(mouse[0] > 0)
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
-					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVERIGHT)
+					if(!prevent)
+					{
 						gI_strafeCount[client]++
+						prevent = true
+					}
 					gI_syncTick[client]++
 				}
 			}
@@ -201,8 +212,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_MOVELEFT)
 				{
-					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_MOVELEFT)
+					if(!prevent)
+					{
 						gI_strafeCount[client]++
+						prevent = true
+					}
 					gI_syncTick[client]++
 				}
 			}
@@ -211,12 +225,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		else //sideways
 		{
+			bool prevent
 			if(mouse[0] > 0)
 			{
 				if(buttons & IN_BACK)
 				{
-					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_BACK)
+					if(!prevent)
+					{
 						gI_strafeCount[client]++
+						prevent = true
+					}
 					gI_syncTick[client]++
 				}
 			}
@@ -224,8 +242,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_FORWARD)
 				{
-					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_FORWARD)
+					if(!prevent)
+					{
 						gI_strafeCount[client]++
+						prevent = true
+					}
 					gI_syncTick[client]++
 				}
 			}
