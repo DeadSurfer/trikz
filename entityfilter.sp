@@ -122,13 +122,11 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
-			//int input[6]
-			//int haveInput
 			if(1 < i < 7)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
-					LinkToggles(entity, sOutput[j], i)
+					LinkToggles(entity, sOutput[j])
 			}
 			/*if(i == 3)
 			{
@@ -153,7 +151,7 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
 				for(int j = 0; j < sizeof(sOutput); j++)
-					LinkToggles(entity, sOutput[j], i)
+					LinkToggles(entity, sOutput[j])
 			}
 			/*if(!gB_once)
 			{
@@ -232,10 +230,12 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue
 }
 
-void LinkToggles(int entity, char[] output, int num)
+void LinkToggles(int entity, char[] output)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
+	if(count)
+		IsOutputOrInput(entity, output)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
@@ -268,77 +268,57 @@ void LinkToggles(int entity, char[] output, int num)
 					}
 				}
 			}
-			//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
-			/*int i
-			switch(output)
-			{
-				case 0:
-					i = 0
-				case 1:
-					i = 1
-				case 2:
-					i = 2
-				case 3:
-					i = 3
-				case 4:
-					i = 4
-				case 5:
-					i = 5
-				case 6:
-					i = 6
-				case 7:
-					i = 7
-			}*/
-			if(i == 3)
-			{
-				//char sTarget[64]
-				GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
-				if(strlen(sTarget))
-					break
-				char sDestination[][] = {"info_teleport_destination", "point_teleport"}
-				for(int j = 0; j < sizeof(sDestination); j++)
-				{
-					int destination
-					while((destination = FindEntityByClassname(destination, sDestination[j])) != INVALID_ENT_REFERENCE)
-					{
-						//char sName[64]
-						GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
-						if(StrEqual(sTarget, sName))
-							break
-					}
-				}
-			}
-			if(num != 7)
-				DHookEntity(gH_AcceptInput, false, entity)
-			else
-			{
-				DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
-				SDKHook(entity, SDKHook_Use, HookButton)
-				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
-				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
-				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
-			}
-			if(num < 2)
-				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-			else if(1 < num < 7)
-				SDKHook(entity, SDKHook_Touch, TouchTrigger)
-			if(!num || 1 < num < 7)
-				AcceptEntityInput(entity, "Enable")
-			else if(num == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
-				AcceptEntityInput(entity, "Toggle")
-			if((!num && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (num == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < num < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (num == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
-			{
-				gB_stateDefaultDisabled[entity] = true
-				gB_stateDisabled[0][entity] = true
-			}
-			else if((!num && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (num == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < num < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (num == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
-			{
-				gB_stateDefaultDisabled[entity] = false
-				gB_stateDisabled[0][entity] = false
-			}
-			gI_entityID[++gI_entityTotalCount] = entity
+			IsOutputOrInput(entity, output)
 		}
 	}
+}
+
+void IsOutputOrInput(int entity, char[] output)
+{
+	int i
+	if(StrEqual(output, "m_OnStartTouch"))
+		i = 0
+	else if(StrEqual(output, "m_OnTouching"))
+		i = 1
+	else if(StrEqual(output, "m_OnEndTouch"))
+		i = 2
+	else if(StrEqual(output, "m_OnTrigger"))
+		i = 3
+	else if(StrEqual(output, "m_OnStartTouchAll"))
+		i = 4
+	else if(StrEqual(output, "m_OnPressed"))
+		i = 5
+	else if(StrEqual(output, "m_OnDamaged"))
+		i = 6
+	if(i != 7)
+		DHookEntity(gH_AcceptInput, false, entity)
+	else
+	{
+		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
+		SDKHook(entity, SDKHook_Use, HookButton)
+		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
+		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
+		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+	}
+	if(i < 2)
+		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+	else if(1 < i < 7)
+		SDKHook(entity, SDKHook_Touch, TouchTrigger)
+	if(!i || 1 < i < 7)
+		AcceptEntityInput(entity, "Enable")
+	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
+		AcceptEntityInput(entity, "Toggle")
+	if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
+	{
+		gB_stateDefaultDisabled[entity] = true
+		gB_stateDisabled[0][entity] = true
+	}
+	else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
+	{
+		gB_stateDefaultDisabled[entity] = false
+		gB_stateDisabled[0][entity] = false
+	}
+	gI_entityID[++gI_entityTotalCount] = entity
 }
 
 void Reset(int client)
