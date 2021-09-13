@@ -117,9 +117,10 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
+				{
 					input[j] = LinkToggles(entity, sOutput[j])
-				for(int j = 0; j < sizeof(sOutput); j++)
 					haveInput += input[j]
+				}
 				if(haveInput)
 					break
 			}
@@ -146,9 +147,10 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
 				for(int j = 0; j < sizeof(sOutput); j++)
+				{
 					input[j] = LinkToggles(entity, sOutput[j])
-				for(int j = 0; j < sizeof(sOutput); j++)
 					haveInput += input[j]
+				}
 				if(haveInput)
 					break
 				DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
