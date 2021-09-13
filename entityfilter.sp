@@ -122,7 +122,7 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				{
 					if(input[j])
 					{
-						haveInput = input[j]
+						haveInput += input[j]
 						break
 					}
 				}
@@ -157,7 +157,7 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				{
 					if(input[j])
 					{
-						haveInput = input[j]
+						haveInput += input[j]
 						break
 					}
 				}
