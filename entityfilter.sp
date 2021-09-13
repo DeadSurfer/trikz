@@ -173,6 +173,8 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			{
 				gB_stateDefaultDisabled[entity] = true
 				gB_stateDisabled[0][entity] = true
+				if(!i != 7)
+					PrintToServer("test")
 			}
 			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 			{
@@ -266,9 +268,8 @@ int LinkToggles(int entity, char[] output)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
 		//if(StrEqual(sInput, "Toggle") || StrEqual(sInput, "Lock") || StrEqual(sInput, "Unlock"))
+		//if( || StrEqual(sInput, "Toggle"))
 		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle"))
-			input++
-		if(StrEqual(sInput, "Toggle"))
 		{
 			char sTarget[64]
 			GetOutputActionTarget(entity, output, i, sTarget, 64)
@@ -283,8 +284,12 @@ int LinkToggles(int entity, char[] output)
 					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
 					if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && toggle == entity))
 					{
-						gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
-						gI_entityOutput[GetOutput(output)][toggle]++
+						if(StrEqual(sInput, "Toggle"))
+						{
+							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
+							gI_entityOutput[GetOutput(output)][toggle]++
+						}
+						input++
 						/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 						{
 							gB_button[toggle] = true
