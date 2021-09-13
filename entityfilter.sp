@@ -747,10 +747,10 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 		if(GetEntProp(ent2, Prop_Data, "m_CollisionGroup") == 2)
 			return Plugin_Handled
 		//make able for nomate to collide with nomate.
-		if(Trikz_GetClientPartner(ent2) == Trikz_GetClientPartner(ent1))
+		else if(Trikz_GetClientPartner(ent2) == Trikz_GetClientPartner(ent1))
 			return Plugin_Continue
 		//make collide for mate.
-		if(Trikz_GetClientPartner(ent2) != ent1 && Trikz_GetClientPartner(ent1) != ent2)
+		else if(Trikz_GetClientPartner(ent2) != ent1 && Trikz_GetClientPartner(ent1) != ent2)
 			return Plugin_Handled
 	}
 	return Plugin_Continue
