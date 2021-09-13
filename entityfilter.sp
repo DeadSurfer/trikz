@@ -95,7 +95,7 @@ public void OnPluginStart()
 	gH_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell)
 }
 
-void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
+Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
@@ -111,140 +111,151 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
-			char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed", "m_OnDamaged"}
-			for(int j = 0; j < sizeof(sOutput); j++)
+			int input[6]
+			int haveInput
+			if(0 < i < 7)
 			{
-				int count = GetOutputActionCount(entity, sOutput[j])
-				if(count)
+				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
+				for(int j = 0; j < sizeof(sOutput); j++)
+					input[j] = LinkToggles(entity, sOutput[j])
+				for(int j = 0; j < sizeof(sOutput); j++)
 				{
-					if(i != 7)
-						DHookEntity(gH_AcceptInput, false, entity)
-					if(i < 2)
-						SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-					else if(1 < i < 7)
-						SDKHook(entity, SDKHook_Touch, TouchTrigger)
-					if(i == 3)
+					if(input[j])
 					{
-						char sTarget[64]
-						GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
-						if(strlen(sTarget))
+						haveInput = input[j]
+						break
+					}
+				}
+				if(!haveInput)
+					continue
+			}
+			if(i == 3)
+			{
+				char sTarget[64]
+				GetEntPropString(entity, Prop_Data, "m_target", sTarget, 64)
+				if(strlen(sTarget))
+					break
+				char sDestination[][] = {"info_teleport_destination", "point_teleport"}
+				for(int j = 0; j < sizeof(sDestination); j++)
+				{
+					int destination
+					while((destination = FindEntityByClassname(destination, sDestination[j])) != INVALID_ENT_REFERENCE)
+					{
+						char sName[64]
+						GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
+						if(StrEqual(sTarget, sName))
 							break
-						char sDestination[][] = {"info_teleport_destination", "point_teleport"}
-						for(int k = 0; k < sizeof(sDestination); k++)
-						{
-							int destination
-							while((destination = FindEntityByClassname(destination, sDestination[k])) != INVALID_ENT_REFERENCE)
-							{
-								char sName[64]
-								GetEntPropString(destination, Prop_Data, "m_iName", sName, 64)
-								if(StrEqual(sTarget, sName))
-									break
-							}
-						}
 					}
-					if(!i || 1 < i < 7)
-						AcceptEntityInput(entity, "Enable")
-					else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
-						AcceptEntityInput(entity, "Toggle")
-					if(0 < i < 7)
-					{
-						//char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
-						//for(int j = 0; j < sizeof(sOutput); j++)
-						if(j < 6)
-							LinkToggles(entity, sOutput[j])
-					}
-					else if(i == 7)
-					{
-						DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
-						SDKHook(entity, SDKHook_Use, HookButton)
-						SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
-						gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
-						SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
-						//char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
-						//for(int j = 0; j < sizeof(sOutput); j++)
-						if(j > 5)
-							LinkToggles(entity, sOutput[j])
-
-					}
-					if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
-					{
-						gB_stateDefaultDisabled[entity] = true
-						gB_stateDisabled[0][entity] = true
-					}
-					else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
-					{
-						gB_stateDefaultDisabled[entity] = false
-						gB_stateDisabled[0][entity] = false
-					}
-					gI_entityID[++gI_entityTotalCount] = entity
-					/*if(!gB_once)
-					{
-						char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
-						for(int i = 0; i < sizeof(sOutputs); i++)
-						{
-							int count = GetOutputActionCount(breakable, sOutputs[i])
-							char sTarget[256]
-							for(int i = 0; i < count; i++)
-							{
-								int breakable
-								GetOutputActionTarget(entity, sOutputs[i], i, sTarget, 256)
-								char sName[64]
-								while((breakable = FindEntityByClassname(breakable, "func_breakable")) != INVALID_ENT_REFERENCE)
-								{
-									if(StrEqual(sTarget, "!self") && breakable == -1)
-										break
-									if(GetEntPropString(breakable, Prop_Data, "m_iName", sName, 64))
-										if(!strlen(sName))	
-											continue
-									if(StrEqual(sName, sTarget))
-										break
-									int template
-									bool bBreak
-									while((template = FindEntityByClassname(template, "point_template")) != INVALID_ENT_REFERENCE)
-									{
-										//char sName[64]
-										for(int i = 0; i <= 16; i++)
-										{
-											Format(sName, 64, "m_iszTemplateEntityNames[%i]", i)
-											GetEntPropString(template, Prop_Data, sName, sName, 64)
-											//char sTarget[64]
-											GetOutputActionTarget(entity, "m_OnBreak", i, sTarget, 64)
-											if(StrEqual(sName, sTarget))
-												break
-										}
-									}
-									count = GetOutputActionCount(breakable, "m_OnBreak")
-									char sOutput[3][256]
-									for(int i = 0; i < count; i++)
-									{
-										GetOutputActionTarget(iTarget, "m_OnBreak", i, sOutput[0], 256)
-										GetOutputActionTargetInput(iTarget, "m_OnBreak", i, sOutput[1], 256)
-										GetOutputActionParameter(iTarget, "m_OnBreak", i, sOutput[2], 256)
-										float iOutputDelay = GetOutputActionDelay(iTarget, "m_OnBreak", i)
-										int iOutputTimesToFire = GetOutputActionTimesToFire(iTarget, "m_OnBreak", i)
-										Format(sOutput[0], 256, "OnUser4 %s:%s:%s:%f:%i", sOutput[0], sOutput[1], sOutput[2], iOutputDelay, iOutputTimesToFire)
-										SetVariantString(sOutput[0])
-										AcceptEntityInput(iTarget, "AddOutput")
-									}
-									DHookEntity(gH_AcceptInput, false, entity)
-									SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-									gB_stateDefaultDisabled[breakable] = false
-									gB_stateDisabled[0][breakable] = false
-									gI_entityID[gI_entityTotalCount++] = breakable
-									gB_once = true
-								}
-							}
-						}
-					}*/
-					/*else if(i == 8)
-					{
-						SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-						gB_stateDefaultDisabled[entity] = false
-						gB_stateDisabled[0][entity] = false
-						gI_entityID[gI_entityTotalCount++] = entity
-					}*/
 				}
 			}
+			else if(i == 7)
+			{
+				char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
+				for(int j = 0; j < sizeof(sOutput); j++)
+					input[j] = LinkToggles(entity, sOutput[j])
+				for(int j = 0; j < sizeof(sOutput); j++)
+				{
+					if(input[j])
+					{
+						haveInput = input[j]
+						break
+					}
+				}
+				if(!haveInput)
+					continue
+				DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
+				SDKHook(entity, SDKHook_Use, HookButton)
+				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
+				gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
+				SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+			}
+			if(i != 7)
+				DHookEntity(gH_AcceptInput, false, entity)
+			if(i < 2)
+				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+			else if(1 < i < 7)
+				SDKHook(entity, SDKHook_Touch, TouchTrigger)
+			if(!i || 1 < i < 7)
+				AcceptEntityInput(entity, "Enable")
+			else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
+				AcceptEntityInput(entity, "Toggle")
+			if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
+			{
+				gB_stateDefaultDisabled[entity] = true
+				gB_stateDisabled[0][entity] = true
+			}
+			else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
+			{
+				gB_stateDefaultDisabled[entity] = false
+				gB_stateDisabled[0][entity] = false
+			}
+			gI_entityID[++gI_entityTotalCount] = entity
+			/*if(!gB_once)
+			{
+				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
+				for(int i = 0; i < sizeof(sOutputs); i++)
+				{
+					int count = GetOutputActionCount(breakable, sOutputs[i])
+					char sTarget[256]
+					for(int i = 0; i < count; i++)
+					{
+						int breakable
+						GetOutputActionTarget(entity, sOutputs[i], i, sTarget, 256)
+						char sName[64]
+						while((breakable = FindEntityByClassname(breakable, "func_breakable")) != INVALID_ENT_REFERENCE)
+						{
+							if(StrEqual(sTarget, "!self") && breakable == -1)
+								break
+							if(GetEntPropString(breakable, Prop_Data, "m_iName", sName, 64))
+								if(!strlen(sName))	
+									continue
+							if(StrEqual(sName, sTarget))
+								break
+							int template
+							bool bBreak
+							while((template = FindEntityByClassname(template, "point_template")) != INVALID_ENT_REFERENCE)
+							{
+								//char sName[64]
+								for(int i = 0; i <= 16; i++)
+								{
+									Format(sName, 64, "m_iszTemplateEntityNames[%i]", i)
+									GetEntPropString(template, Prop_Data, sName, sName, 64)
+									//char sTarget[64]
+									GetOutputActionTarget(entity, "m_OnBreak", i, sTarget, 64)
+									if(StrEqual(sName, sTarget))
+										break
+								}
+							}
+							count = GetOutputActionCount(breakable, "m_OnBreak")
+							char sOutput[3][256]
+							for(int i = 0; i < count; i++)
+							{
+								GetOutputActionTarget(iTarget, "m_OnBreak", i, sOutput[0], 256)
+								GetOutputActionTargetInput(iTarget, "m_OnBreak", i, sOutput[1], 256)
+								GetOutputActionParameter(iTarget, "m_OnBreak", i, sOutput[2], 256)
+								float iOutputDelay = GetOutputActionDelay(iTarget, "m_OnBreak", i)
+								int iOutputTimesToFire = GetOutputActionTimesToFire(iTarget, "m_OnBreak", i)
+								Format(sOutput[0], 256, "OnUser4 %s:%s:%s:%f:%i", sOutput[0], sOutput[1], sOutput[2], iOutputDelay, iOutputTimesToFire)
+								SetVariantString(sOutput[0])
+								AcceptEntityInput(iTarget, "AddOutput")
+							}
+							DHookEntity(gH_AcceptInput, false, entity)
+							SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+							gB_stateDefaultDisabled[breakable] = false
+							gB_stateDisabled[0][breakable] = false
+							gI_entityID[gI_entityTotalCount++] = breakable
+							gB_once = true
+						}
+					}
+				}
+			}*/
+			/*else if(i == 8)
+			{
+				SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+				gB_stateDefaultDisabled[entity] = false
+				gB_stateDisabled[0][entity] = false
+				gI_entityID[gI_entityTotalCount++] = entity
+			}*/
 		}
 	}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
@@ -253,16 +264,20 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total entities in proccess: %i", gI_entityTotalCount)
+	return Plugin_Continue
 }
 
-void LinkToggles(int entity, char[] output)
+int LinkToggles(int entity, char[] output)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
+	int input
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
 		//if(StrEqual(sInput, "Toggle") || StrEqual(sInput, "Lock") || StrEqual(sInput, "Unlock"))
+		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle"))
+			input++
 		if(StrEqual(sInput, "Toggle"))
 		{
 			char sTarget[64]
@@ -290,6 +305,7 @@ void LinkToggles(int entity, char[] output)
 			}
 		}
 	}
+	return input
 }
 
 void Reset(int client)
