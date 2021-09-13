@@ -1535,6 +1535,7 @@ Action cmd_test(int client, int args)
 			Call_StartForward(gH_start)
 			Call_PushCell(client)
 			Call_Finish()
+			Restart(client)
 		}
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
