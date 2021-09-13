@@ -113,7 +113,7 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		{
 			int input[6]
 			int haveInput
-			if(0 < i < 7)
+			if(1 < i < 7)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
@@ -121,8 +121,8 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					input[j] = LinkToggles(entity, sOutput[j])
 					haveInput += input[j]
 				}
-				if(haveInput)
-					break
+				if(!haveInput)
+					continue
 			}
 			if(i == 3)
 			{
@@ -151,8 +151,8 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					input[j] = LinkToggles(entity, sOutput[j])
 					haveInput += input[j]
 				}
-				if(haveInput)
-					break
+				if(!haveInput)
+					continue
 				DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
 				SDKHook(entity, SDKHook_Use, HookButton)
 				SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
