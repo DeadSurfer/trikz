@@ -209,7 +209,7 @@ public void OnPluginStart()
 		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
 		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
-	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
+	//LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 	gH_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell)
 }
 
@@ -721,6 +721,7 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
+	CS_SetClientClanTag(client, gS_clanTag[client][0])
 	if(partner)
 	{
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
@@ -1523,7 +1524,14 @@ Action cmd_test(int client, int args)
 		//char sNewText[256]
 		//VFormat(sNewText, 256, sText, 3)
 		//PrintToChat(client, sNewText)
-		PrintToChat(client, "\x01%t", "Hello", "FakeExpert!")
+		//PrintToChat(client, "\x01%t", "Hello", "FakeExpert!")
+		if(!gI_partner[client])
+		{
+			gI_partner[client] = client
+			Call_StartForward(gH_start)
+			Call_PushCell(client)
+			Call_Finish()
+		}
 	}
 	return Plugin_Handled
 }
