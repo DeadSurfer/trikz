@@ -74,7 +74,7 @@ public void OnPluginStart()
 	DHookAddParam(gH_AcceptInput, HookParamType_CharPtr)
 	DHookAddParam(gH_AcceptInput, HookParamType_CBaseEntity)
 	DHookAddParam(gH_AcceptInput, HookParamType_CBaseEntity)
-	DHookAddParam(gH_AcceptInput, HookParamType_Object, 20, DHookPass_ByVal|DHookPass_ODTOR|DHookPass_OCTOR|DHookPass_OASSIGNOP) //varaint_t is a union of 12 (float[3]) plus two int type params 12 + 8 = 20
+	DHookAddParam(gH_AcceptInput, HookParamType_Object, 20, DHookPass_ByVal | DHookPass_ODTOR | DHookPass_OCTOR | DHookPass_OASSIGNOP) //varaint_t is a union of 12 (float[3]) plus two int type params 12 + 8 = 20
 	DHookAddParam(gH_AcceptInput, HookParamType_Int)
 	HookEvent("round_start", Event_RoundStart)
 	hGamedata = LoadGameConfigFile("entityfilter")
