@@ -1525,6 +1525,9 @@ Action cmd_test(int client, int args)
 		//VFormat(sNewText, 256, sText, 3)
 		//PrintToChat(client, sNewText)
 		//PrintToChat(client, "\x01%t", "Hello", "FakeExpert!")
+		char sArgString[256]
+		GetCmdArgString(sArgString, 256)
+		client = StringToInt(sArgString)
 		if(!gI_partner[client])
 		{
 			gI_partner[client] = client
@@ -1532,6 +1535,9 @@ Action cmd_test(int client, int args)
 			Call_PushCell(client)
 			Call_Finish()
 		}
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i))
+				PrintToServer("(%i %N)", i, i)
 	}
 	return Plugin_Handled
 }
