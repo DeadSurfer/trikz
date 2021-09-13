@@ -265,9 +265,9 @@ int LinkToggles(int entity, char[] output)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
-		//if(StrEqual(sInput, "Toggle") || StrEqual(sInput, "Lock") || StrEqual(sInput, "Unlock"))
-		//if( || StrEqual(sInput, "Toggle"))
-		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle"))
+		input++
+		//if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle"))
+		if(StrEqual(sInput, "Toggle"))
 		{
 			char sTarget[64]
 			GetOutputActionTarget(entity, output, i, sTarget, 64)
@@ -287,7 +287,6 @@ int LinkToggles(int entity, char[] output)
 							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
 							gI_entityOutput[GetOutput(output)][toggle]++
 						}
-						input++
 						/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 						{
 							gB_button[toggle] = true
