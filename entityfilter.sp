@@ -745,7 +745,7 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	{
 		//make collide for mate.
 		//make able for nomate to collide with nomate.
-		if((ent2Partner != ent1 && ent1Partner != ent2) || (ent1Partner && ent2Partner)
+		if((ent2Partner != ent1 && ent1Partner != ent2) || (ent1Partner && ent2Partner))
 			return Plugin_Handled
 		//make no collide with all players.
 		if(GetEntProp(ent2, Prop_Data, "m_CollisionGroup") == 2)
