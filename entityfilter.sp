@@ -643,3 +643,26 @@ Action Hook_SetTransmitHide(int entity, int client) //entity - me, client - loop
 	}
 	return Plugin_Continue
 }
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	if(IsValidEntity(entity) && StrContains(classname, "_projectile") != -1)
+		SDKHook(entity, SDKHook_SetTransmit, Hook_SetTransmitHideNade)
+}
+
+Action Hook_SetTransmitHideNade(int entity, int client) //entity - nade, client - loop all clients
+{	
+	int entOwner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
+	int partner = Trikz_FindPartner(entOwner)
+	if(IsPlayerAlive(client))
+	{		
+		if(entOwner == client) //make visible own nade
+			return Plugin_Continue
+		if(partner == client) //make visible partner
+			return Plugin_Continue
+		if(!partner && !Trikz_GetClientPartner(client)) //make visible nade only for no mates
+			return Plugin_Continue
+		return Plugin_Handled
+	}
+	return Plugin_Continue
+}
