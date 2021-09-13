@@ -653,7 +653,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 Action Hook_SetTransmitHideNade(int entity, int client) //entity - nade, client - loop all clients
 {	
 	int entOwner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	int partner = Trikz_FindPartner(entOwner)
+	int partner = Trikz_GetClientPartner(entOwner)
 	if(IsPlayerAlive(client))
 	{		
 		if(entOwner == client) //make visible own nade
