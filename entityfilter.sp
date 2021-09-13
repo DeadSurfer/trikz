@@ -95,6 +95,12 @@ public void OnPluginStart()
 	gH_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell)
 }
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	CreateNative("Trikz_GetThisPlugin", Native_GetThisPlugin)
+	return APLRes_Success
+}
+
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SetTransmit, TransmitPlayer)
@@ -754,4 +760,9 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 			return Plugin_Handled
 	}
 	return Plugin_Continue
+}
+
+int Native_GetThisPlugin(Handle plugin, int numParams)
+{
+	return true
 }
