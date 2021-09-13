@@ -47,7 +47,6 @@ int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_entityOutput[9][2048 + 1]
 //bool gB_button[2048 + 1]
-//bool gI_entityGlobal[2048 + 1][9]
 
 public Plugin myinfo =
 {
@@ -220,11 +219,7 @@ void LinkToggles(int entity, char[] output, char[] classname)
 	char sInput[64]
 	if(count)
 	{
-		//if(!gI_entityGlobal[entity][GetOutput(output)])
-		{
-			//gI_entityGlobal[entity] = true
-			IsOutputOrInput(entity, classname)
-		}
+		IsOutputOrInput(entity, classname)
 	}
 	for(int i = 0; i < count; i++)
 	{
@@ -249,7 +244,6 @@ void LinkToggles(int entity, char[] output, char[] classname)
 							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
 							gI_entityOutput[GetOutput(output)][toggle]++
 							IsOutputOrInput(toggle, sClassnameToggle[j])
-							//PrintToServer("%i", toggle)
 						}
 						/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 						{
@@ -259,14 +253,8 @@ void LinkToggles(int entity, char[] output, char[] classname)
 					}
 				}
 			}
-			//if(!gI_entityGlobal[entity])
-			{
-				//gI_entityGlobal[entity] = true
-				//IsOutputOrInput(entity, classname)
-			}
 		}
 	}
-	//IsOutputOrInput(entity, classname)
 }
 
 void IsOutputOrInput(int entity, char[] output)
@@ -367,7 +355,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			{
 				gB_stateDisabled[activator][pThis] = false
 				gB_stateDisabled[partner][pThis] = false
-				PrintToServer("E 1. %i", gB_stateDisabled[activator][pThis])
 			}
 			else
 				gB_stateDisabled[0][pThis] = false
@@ -376,7 +363,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
-				PrintToServer("D 1. %i", gB_stateDisabled[activator][pThis])
 				gB_stateDisabled[activator][pThis] = true
 				gB_stateDisabled[partner][pThis] = true
 			}
@@ -387,7 +373,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
-				PrintToServer("1. %i", gI_linkedToggles[activator][pThis])
 				if(gI_linkedToggles[activator][pThis])
 				{
 					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
@@ -395,7 +380,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 					gI_linkedToggles[activator][pThis]--
 					gI_linkedToggles[partner][pThis]--
 				}
-				PrintToServer("1. %i", gI_linkedToggles[activator][pThis])
 			}
 			else
 				gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
