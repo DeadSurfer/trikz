@@ -295,8 +295,8 @@ int LinkToggles(int entity, char[] output)
 						{
 							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
 							gI_entityOutput[GetOutput(output)][toggle]++
+							//PrintToServer("%i", toggle)
 						}
-						input++
 						/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 						{
 							gB_button[toggle] = true
@@ -306,6 +306,8 @@ int LinkToggles(int entity, char[] output)
 				}
 			}
 		}
+		if(i == 1)
+			input = 1
 	}
 	return input
 }
@@ -332,6 +334,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	//	pThis = EntRefToEntIndex(pThis)
 	//if(DHookIsNullParam(hParams, 1) || DHookIsNullParam(hParams, 2))
 	//	return MRES_Ignored
+	//PrintToServer("test")
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	char sInput[32]
@@ -357,6 +360,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			{
 				gB_stateDisabled[activator][pThis] = false
 				gB_stateDisabled[partner][pThis] = false
+				PrintToServer("E 1. %i", gB_stateDisabled[activator][pThis])
 			}
 			else
 				gB_stateDisabled[0][pThis] = false
@@ -365,6 +369,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
+				PrintToServer("D 1. %i", gB_stateDisabled[activator][pThis])
 				gB_stateDisabled[activator][pThis] = true
 				gB_stateDisabled[partner][pThis] = true
 			}
@@ -375,6 +380,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(partner)
 			{
+				PrintToServer("1. %i", gI_linkedToggles[activator][pThis])
 				if(gI_linkedToggles[activator][pThis])
 				{
 					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
@@ -382,6 +388,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 					gI_linkedToggles[activator][pThis]--
 					gI_linkedToggles[partner][pThis]--
 				}
+				PrintToServer("1. %i", gI_linkedToggles[activator][pThis])
 			}
 			else
 				gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
