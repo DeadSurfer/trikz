@@ -150,7 +150,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					{
 						//char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 						//for(int j = 0; j < sizeof(sOutput); j++)
-						if(j < sOutput[6])
+						if(j < 6)
 							LinkToggles(entity, sOutput[j])
 					}
 					else if(i == 7)
@@ -162,7 +162,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 						SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 						//char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
 						//for(int j = 0; j < sizeof(sOutput); j++)
-						if(j > sOutput[5])
+						if(j > 5)
 							LinkToggles(entity, sOutput[j])
 
 					}
