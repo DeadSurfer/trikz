@@ -441,6 +441,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	if(!StrEqual(sInput, "Enable") || !StrEqual(sInput, "Disable") || !StrEqual(sInput, "Toggle") || !StrEqual(sInput, "Break") || !StrEqual(sInput, "ForceSpawn"))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	//if(1 > activator || activator > MaxClients)
 	//	return MRES_Ignored
