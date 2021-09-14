@@ -232,7 +232,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
-	if(count && !StrEqual(classname, "math_counter"))
+	if(count)
 		OutputsOrInputs(entity, classname)
 	//PrintToServer("%s", output)
 	for(int i = 0; i < count; i++)
@@ -277,7 +277,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 							if(StrEqual(sClassnameToggle[j], "math_counter"))
 							{
 								if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
-									OutputsOrInputs(entity2, sClassnameToggle[j])
+									OutputsOrInputs(entity, sClassnameToggle[j], entity2)
 							}
 							else
 								OutputsOrInputs(entity2, sClassnameToggle[j])
@@ -294,7 +294,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 	}
 }
 
-void OutputsOrInputs(int entity, char[] output)
+void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 {
 	int i
 	if(StrEqual(output, "func_brush"))
@@ -330,20 +330,20 @@ void OutputsOrInputs(int entity, char[] output)
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 	}
-	else if(i == 9)
+	/*else if(i == 9)
 	{
 		//PrintToServer("%f", GetEntPropFloat(entity2, Prop_Data, "m_OutValue"))
-		PrintToServer("%f", GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue")))
+		//PrintToServer("%f", GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue")))
 		//PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMin"))
 		//PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMax"))
-		gF_mathValueDefault[entity] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
-		gF_mathMin[entity] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
-		gF_mathMax[entity] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
+		gF_mathValueDefault[entity] = GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue"))
+		gF_mathMin[entity] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
+		gF_mathMax[entity] = GetEntPropFloat(entity2, Prop_Data, "m_flMax")
 		OutputChange(entity, "m_OnHitMmin", "OnUser3")
 		OutputChange(entity, "m_OnHitMax", "OnUser4")
-		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
-		PrintToServer("%i", entity)
-	}
+		DHookEntity(gH_AcceptInput, false, entity2, INVALID_FUNCTION, AcceptInputMath)
+		PrintToServer("%i %i", entity, entity2)
+	}*/
 	if(i < 2)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 	else if(1 < i < 7)
@@ -364,10 +364,17 @@ void OutputsOrInputs(int entity, char[] output)
 		AcceptEntityInput(entity, "Toggle")
 	if(i == 9)
 	{
-		for(int j = 1; j <= gI_mathTotalCount; j++)
-			if(gI_mathID[j] == entity)
+		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue"))
+		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
+		gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMax")
+		OutputChange(entity2, "m_OnHitMmin", "OnUser3")
+		OutputChange(entity2, "m_OnHitMax", "OnUser4")
+		DHookEntity(gH_AcceptInput, false, entity2, INVALID_FUNCTION, AcceptInputMath)
+		PrintToServer("%i %i", entity, entity2)
+		for(int j = 0; j <= gI_mathTotalCount; j++)
+			if(gI_mathID[j] == entity2)
 				continue
-		gI_mathID[++gI_mathTotalCount] = entity
+		gI_mathID[gI_mathTotalCount++] = entity2
 	}
 	else
 	{
@@ -403,7 +410,7 @@ void Reset(int client)
 		gF_buttonReady[client][gI_entityID[i]] = 0.0
 		gI_linkedToggles[client][gI_entityID[i]] = 0
 	}
-	for(int i = 1; i <= gI_mathTotalCount; i++)
+	for(int i = 0; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
 }
 
@@ -571,7 +578,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, sValue, 64)
 	float flValue = StringToFloat(sValue)
 	int pThisIndex
-	for(int i = 1; i <= gI_mathTotalCount; i++)
+	for(int i = 0; i <= gI_mathTotalCount; i++)
 	{
 		if(gI_mathID[i] == pThis)
 		{
