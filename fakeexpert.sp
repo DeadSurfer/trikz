@@ -723,7 +723,8 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
-	CS_SetClientClanTag(client, gS_clanTag[client][0])
+	if(IsValidEntity(client))
+		CS_SetClientClanTag(client, gS_clanTag[client][0])
 	if(partner)
 	{
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
