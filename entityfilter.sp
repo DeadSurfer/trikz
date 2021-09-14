@@ -259,11 +259,11 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 						if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && entity2 == entity))
 						{
 							//if(StrEqual(sInput, "Toggle") && !StrEqual(sClassnameToggle[j], "math_counter"))
-							if(StrEqual(sInput, "Toggle") && !StrEqual(sClassnameToggle[j], "math_counter"))
+							if(StrEqual(sInput, "Toggle"))
 							{
 								if(1 < j < 7)
 									HookEntityOutput(sClassnameToggle[j], output, TriggerOutputHook)
-								if(0 <= j < 8)
+								//if(0 <= j < 11)
 								{
 									gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entity2
 									gI_entityOutput[GetOutput(output)][entity2]++
@@ -274,12 +274,12 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 							//{
 
 							//}
-							if(StrEqual(sClassnameToggle[j], "math_counter"))
+							//if(StrEqual(sClassnameToggle[j], "math_counter"))
 							{
 								if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 									OutputsOrInputs(entity, sClassnameToggle[j], entity2)
 							}
-							else
+							//else
 								OutputsOrInputs(entity2, sClassnameToggle[j])
 							/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 							{
@@ -317,10 +317,10 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 		i = 8
 	else if(StrEqual(output, "math_counter"))
 		i = 9
-	if(i == 9)
+	bool bReturn
+	if(i == 9 && entity2 != 0)
 	{
 		//PrintToServer("%i %i", entity, entity2)
-		bool bReturn
 		for(int j = 1; j <= gI_mathTotalCount; j++)
 		{
 			if(gI_mathID[j] == entity2)
@@ -335,15 +335,22 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity2, FindDataMapInfo(entity2, "m_OutValue"))
 		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
 		gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMax")
-		OutputChange(entity2, "m_OnHitMmin", "OnUser3")
+		OutputChange(entity2, "m_OnHitMin", "OnUser3")
 		OutputChange(entity2, "m_OnHitMax", "OnUser4")
 		DHookEntity(gH_AcceptInput, false, entity2, INVALID_FUNCTION, AcceptInputMath)
 	}
 	else
 	{
 		for(int j = 1; j <= gI_entityTotalCount; j++)
+		{
 			if(gI_entityID[j] == entity)
-				continue
+			{
+				bReturn = true
+				break
+			}
+		}
+		if(bReturn)
+			return
 		gI_entityID[++gI_entityTotalCount] = entity
 	}
 	if(i < 7)
@@ -521,8 +528,8 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	//	pThis = EntRefToEntIndex(pThis)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
-	//if(DHookIsNullParam(hParams, 2))
-	//	return MRES_Ignored
+	if(DHookIsNullParam(hParams, 2))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	//if(activator < 1)
 	//	return MRES_Ignored
@@ -556,8 +563,8 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 			else
 				gB_stateDisabled[0][pThis] = true
 		}
-		//DHookSetReturn(hReturn, false)
-		//return MRES_Supercede
+		DHookSetReturn(hReturn, false)
+		return MRES_Supercede
 	}
 	//return MRES_Ignored
 }
@@ -580,6 +587,8 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			break
 		}
 	}
+	if(!pThisIndex)
+		return MRES_Ignored
 	if(StrEqual(sInput, "Add"))
 	{
 		if(gF_mathValue[activator][pThisIndex] < gF_mathMax[pThisIndex])
@@ -587,7 +596,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			if(partner)
 			{
 				gF_mathValue[activator][pThisIndex] += flValue
-				gF_mathValue[activator][partner] += flValue
+				gF_mathValue[partner][pThisIndex] += flValue
 				if(gF_mathValue[activator][pThisIndex] >= gF_mathMax[pThisIndex])
 				{
 					gF_mathValue[activator][pThisIndex] = gF_mathMax[pThisIndex]
@@ -613,7 +622,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			if(partner)
 			{
 				gF_mathValue[activator][pThisIndex] -= flValue
-				gF_mathValue[activator][partner] -= flValue
+				gF_mathValue[partner][pThisIndex] -= flValue
 				if(gF_mathValue[activator][pThisIndex] <= gF_mathMax[pThisIndex])
 				{
 					gF_mathValue[activator][pThisIndex] = gF_mathMax[pThisIndex]
