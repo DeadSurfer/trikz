@@ -320,6 +320,7 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 	if(i == 9)
 	{
 		PrintToServer("%i %i", entity, entity2)
+		bool bReturn
 		for(int j = 1; j <= gI_mathTotalCount; j++)
 		{
 			if(gI_mathID[j] == entity2)
