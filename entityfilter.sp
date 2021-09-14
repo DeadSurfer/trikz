@@ -274,7 +274,11 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 							//{
 
 							//}
-							OutputsOrInputs(entity2, sClassnameToggle[j])
+							if(StrEqual(sClassnameToggle[j], "math_counter"))
+								if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
+									OutputsOrInputs(entity2, sClassnameToggle[j])
+							else
+								OutputsOrInputs(entity2, sClassnameToggle[j])
 							/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 							{
 								gB_button[toggle] = true
