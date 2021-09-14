@@ -54,6 +54,8 @@ float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
 float gF_mathMax[2048 + 1]
 bool gB_entityUsed[2048 + 1]
+//bool gB_buttonLockedDefault[2048 + 1]
+//bool gB_buttonLocked[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -367,6 +369,8 @@ void OutputsOrInputs(int entity, char[] output)
 		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+		if(GetEntProp(entity, Prop_Data, "m_bLocked"))
+			AcceptEntityInput(entity, "Unlock")
 	}
 	if(i < 2)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
@@ -412,6 +416,7 @@ void Reset(int client)
 		gB_stateDisabled[client][gI_entityID[i]] = gB_stateDefaultDisabled[gI_entityID[i]]
 		gF_buttonReady[client][gI_entityID[i]] = 0.0
 		gI_linkedToggles[client][gI_entityID[i]] = 0
+		//gB_buttonLocked[client][gI_entityID[i]] = gB_buttonLockedDefault[gI_entityID[i]]
 	}
 	for(int i = 1; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
@@ -565,10 +570,10 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 			else
 				gB_stateDisabled[0][pThis] = true
 		}
-		//DHookSetReturn(hReturn, false)
-		//return MRES_Supercede
+		DHookSetReturn(hReturn, false)
+		return MRES_Supercede
 	}
-	return MRES_Ignored
+	//return MRES_Ignored
 }
 
 MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
@@ -737,8 +742,8 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[0][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 	}
-	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
-		AcceptEntityInput(entity, "Unlock")
+	//if(GetEntProp(entity, Prop_Data, "m_bLocked"))
+	//	AcceptEntityInput(entity, "Unlock")
 	return Plugin_Continue
 }
 
