@@ -81,6 +81,12 @@ public void OnPluginStart()
 	}
 }
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("Trikz_GetClientButtons")
+	return APLRes_Success
+}
+
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_Touch, TouchClient)
