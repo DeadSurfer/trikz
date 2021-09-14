@@ -583,7 +583,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 		if(gI_mathID[i] == pThis)
 		{
 			pThisIndex = gI_mathID[i]
-			break
+			continue
 		}
 	}
 	if(StrEqual(sInput, "Add"))
