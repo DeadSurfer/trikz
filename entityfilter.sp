@@ -440,6 +440,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		return MRES_Ignored
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
+	if(!StrEqual(sInput, "Enable") || !StrEqual(sInput, "Disable") || !StrEqual(sInput, "Toggle") || !StrEqual(sInput, "Break") || !StrEqual(sInput, "ForceSpawn"))
 	int activator = DHookGetParam(hParams, 2)
 	//if(1 > activator || activator > MaxClients)
 	//	return MRES_Ignored
@@ -728,7 +729,6 @@ Action EntityVisibleTransmit(int entity, int client)
 Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
 	int partner = Trikz_GetClientPartner(activator)
-	//PrintToServer("123s")
 	if(partner)
 	{
 		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
@@ -747,8 +747,6 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[0][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 	}
-	//if(GetEntProp(entity, Prop_Data, "m_bLocked"))
-	//	AcceptEntityInput(entity, "Unlock")
 	return Plugin_Continue
 }
 
