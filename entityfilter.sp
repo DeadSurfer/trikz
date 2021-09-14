@@ -48,14 +48,10 @@ int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_entityOutput[9][2048 + 1]
-//bool gB_button[2048 + 1]
 float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
 float gF_mathMax[2048 + 1]
-//bool gB_entityUsed[2048 + 1]
-//bool gB_buttonLockedDefault[2048 + 1]
-//bool gB_buttonLocked[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -125,8 +121,6 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		gI_maxLinks[i] = 0
 		gI_entityID[i] = 0
 		gI_mathID[i] = 0
-		//gB_entityUsed[i] = false
-		//gB_button[i] = false
 	}
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
@@ -225,6 +219,11 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}*/
 		}
 	}
+	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll"}
+	for(int i = 0; i < sizeof(sTriggers); i++)
+		for(int j = 0; j < sizeof(sOutputs); j++)
+			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook)
 	PrintToServer("Total entities in proccess: %i. Math counters: %i", gI_entityTotalCount, gI_mathTotalCount)
 }
 
@@ -250,17 +249,13 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 					parent = entity
 				while((entityLinked = FindLinkedEntities(entityLinked, sLinkedClassname[j], sTarget, parent)) != INVALID_ENT_REFERENCE)
 				{
-					//if(!gB_entityUsed[entityLinked])
+					if(StrEqual(sInput, "Toggle"))
 					{
-						if(StrEqual(sInput, "Toggle"))
-						{
-							HookEntityOutput(sLinkedClassname[j], output, TriggerOutputHook)
-							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
-							gI_entityOutput[GetOutput(output)][entityLinked]++
-						}
-						OutputsOrInputs(entityLinked, sLinkedClassname[j])
-						//gB_entityUsed[entityLinked] = true
+						gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
+						gI_entityOutput[GetOutput(output)][entityLinked]++
+						PrintToServer("%i %i", entityLinked, gI_entityOutput[GetOutput(output)][entityLinked])
 					}
+					OutputsOrInputs(entityLinked, sLinkedClassname[j])
 				}
 			}
 		}
@@ -318,41 +313,26 @@ void OutputsOrInputs(int entity, char[] output)
 		i = 8
 	else if(StrEqual(output, "math_counter"))
 		i = 9
-	bool bReturn
 	if(i == 9)
 	{
 		for(int j = 1; j <= gI_mathTotalCount; j++)
-		{
 			if(gI_mathID[j] == entity)
-			{
-				bReturn = true
-				break
-			}
-		}
-		if(!bReturn)
-		{
-			gI_mathID[++gI_mathTotalCount] = entity
-			gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
-			gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
-			gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
-			OutputChange(entity, "m_OnHitMin", "OnUser4")
-			OutputChange(entity, "m_OnHitMax", "OnUser3")
-			DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
-			PrintToServer("1")
-		}
+				return
+		gI_mathID[++gI_mathTotalCount] = entity
+		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
+		gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
+		OutputChange(entity, "m_OnHitMin", "OnUser4")
+		OutputChange(entity, "m_OnHitMax", "OnUser3")
+		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
+		PrintToServer("1")
 	}
 	else
 	{
 		for(int j = 1; j <= gI_entityTotalCount; j++)
-		{
 			if(gI_entityID[j] == entity)
-			{
-				bReturn = true
-				break
-			}
-		}
-		if(!bReturn)
-			gI_entityID[++gI_entityTotalCount] = entity
+				return
+		gI_entityID[++gI_entityTotalCount] = entity
 	}
 	if(i < 7)
 		DHookEntity(gH_AcceptInput, false, entity)
@@ -457,12 +437,15 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(partner)
 		{
+			PrintToServer("%i", gI_linkedToggles[activator][pThis])
 			if(gI_linkedToggles[activator][pThis])
 			{
+				PrintToServer("%i", gI_linkedToggles[activator][pThis])
 				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 				gI_linkedToggles[activator][pThis]--
 				gI_linkedToggles[partner][pThis]--
+				PrintToServer("%i", gI_linkedToggles[activator][pThis])
 			}
 		}
 		else
