@@ -106,10 +106,9 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SetTransmit, TransmitPlayer)
 }
 
-Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
+void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	//char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
-	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
+	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable", "func_button", "math_counter"}
 	gI_entityTotalCount = 0
 	for(int i = 0; i <= 2048; i++)
 	{
@@ -127,16 +126,23 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
-					LinkToggles(entity, sOutput[j], sClassname[i])
+					LinkedEntities(entity, sOutput[j], sClassname[i])
 			}
-			else if(i == 7)
+			else if(i == 8)
 			{
 				char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
 				for(int j = 0; j < sizeof(sOutput); j++)
-					LinkToggles(entity, sOutput[j], sClassname[i])
+					LinkedEntities(entity, sOutput[j], sClassname[i])
 			}
-			else
-				IsOutputOrInput(entity, sClassname[i])
+			else if(i == 9)
+			{
+				char sOutput[][] = {"m_OnHitMin", "m_OnHitMax"}
+				for(int j = 0; j < sizeof(sOutput); j++)
+					if(GetOutputActionCount(entity, "m_OutValue") || GetOutputActionCount(entity, "m_OnGetValue") || GetOutputActionCount(entity, "m_OnUser3") || GetOutputActionCount(entity, "m_OnUser4"))
+						LinkedEntities(entity, sOutput[j], sClassname[i])
+			}
+			//else
+			//	IsOutputOrInput(entity, sClassname[i])
 			/*if(!gB_once)
 			{
 				char sOutputs[][] = {"m_OnEndTouchAll", "m_OnTouching", "m_OnStartTouch", "m_OnTrigger", "m_OnStartTouchAll", "m_OnPressed"}
@@ -205,50 +211,63 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}*/
 		}
 	}
-	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll"}
-	for(int i = 0; i < sizeof(sTriggers); i++)
-		for(int j = 0; j < sizeof(sOutputs); j++)
-			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
+	//char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
+	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll"}
+	//for(int i = 0; i < sizeof(sTriggers); i++)
+		//for(int j = 0; j < sizeof(sOutputs); j++)
+			//HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
 	PrintToServer("Total entities in proccess: %i", gI_entityTotalCount)
-	return Plugin_Continue
+	//return Plugin_Continue
 }
 
-void LinkToggles(int entity, char[] output, char[] classname)
+void LinkedEntities(int entity, char[] output, char[] classname)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
-	if(count)
-		IsOutputOrInput(entity, classname)
+	//if(count)
+	//	IsOutputOrInput(entity, classname)
+	//PrintToServer("%s", output)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
-		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle"))
+		//PrintToServer("%s", sInput)
+		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break") || StrEqual(sInput, "Lock") || StrEqual(sInput, "Unlock") || StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
 			char sTarget[64]
 			GetOutputActionTarget(entity, output, i, sTarget, 64)
+			//PrintToServer("%s", sTarget)
 			char sName[64]
 			//char sClassnameToggle[][] = {"func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
-			char sClassnameToggle[][] = {"func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity"}
+			char sClassnameToggle[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable", "func_button", "math_counter"}
 			for(int j = 0; j < sizeof(sClassnameToggle); j++)
 			{
-				int toggle
-				while((toggle = FindEntityByClassname(toggle, sClassnameToggle[j])) != INVALID_ENT_REFERENCE)
+				int entity2
+				while((entity2 = FindEntityByClassname(entity2, sClassnameToggle[j])) != INVALID_ENT_REFERENCE)
 				{
-					GetEntPropString(toggle, Prop_Data, "m_iName", sName, 64)
-					if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && toggle == entity))
+					//if(IsValidEntity(entity2) || (StrEqual(sClassnameToggle[j], "math_counter") && (GetOutputActionCount(entity, "m_OutValue") || GetOutputActionCount(entity, "m_OnGetValue") || GetOutputActionCount(entity, "m_OnUser3") || GetOutputActionCount(entity, "m_OnUser4"))))
+					//if(IsValidEntity(entity2))
 					{
-						if(StrEqual(sInput, "Toggle"))
+						GetEntPropString(entity2, Prop_Data, "m_iName", sName, 64)
+						if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && entity2 == entity))
 						{
-							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
-							gI_entityOutput[GetOutput(output)][toggle]++
+							//if(StrEqual(sInput, "Toggle") && !StrEqual(sClassnameToggle[j], "math_counter"))
+							if(StrEqual(sInput, "Toggle"))
+							{
+								if(1 < j < 7)
+									HookEntityOutput(sClassnameToggle[j], output, TriggerOutputHook)
+								if(0 <= j < 8)
+								{
+									gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entity2
+									gI_entityOutput[GetOutput(output)][entity2]++
+								}
+							}
+							HaveInput(entity2, sClassnameToggle[j])
+							/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
+							{
+								gB_button[toggle] = true
+								DHookEntity(gH_AcceptInput, false, toggle, INVALID_FUNCTION, AcceptInputButton)
+							}*/
 						}
-						IsOutputOrInput(toggle, sClassnameToggle[j])
-						/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
-						{
-							gB_button[toggle] = true
-							DHookEntity(gH_AcceptInput, false, toggle, INVALID_FUNCTION, AcceptInputButton)
-						}*/
 					}
 				}
 			}
@@ -256,7 +275,7 @@ void LinkToggles(int entity, char[] output, char[] classname)
 	}
 }
 
-void IsOutputOrInput(int entity, char[] output)
+void HaveInput(int entity, char[] output)
 {
 	int i
 	if(StrEqual(output, "func_brush"))
@@ -273,11 +292,18 @@ void IsOutputOrInput(int entity, char[] output)
 		i = 5
 	else if(StrEqual(output, "trigger_gravity"))
 		i = 6
-	else if(StrEqual(output, "func_button"))
+	else if(StrEqual(output, "func_breakable"))
 		i = 7
-	if(i != 7)
+	else if(StrEqual(output, "func_button"))
+		i = 8
+	else if(StrEqual(output, "math_counter"))
+		i = 9
+	if(i != 8 || i != 9)
 		DHookEntity(gH_AcceptInput, false, entity)
-	else
+	else if(i == 7)
+	{
+	}
+	else if(i == 8)
 	{
 		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
 		SDKHook(entity, SDKHook_Use, HookButton)
@@ -285,16 +311,19 @@ void IsOutputOrInput(int entity, char[] output)
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 	}
+	else if(i == 9)
+	{
+	}
 	if(i < 2)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 	else if(1 < i < 7)
 		SDKHook(entity, SDKHook_Touch, TouchTrigger)
-	if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && GetEntProp(entity, Prop_Data, "m_bLocked")))
+	if((!i && GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked")))
 	{
 		gB_stateDefaultDisabled[entity] = true
 		gB_stateDisabled[0][entity] = true
 	}
-	else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 7 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
+	else if((!i && !GetEntProp(entity, Prop_Data, "m_iDisabled")) || (i == 1 && !GetEntProp(entity, Prop_Data, "m_spawnflags")) || (1 < i < 7 && !GetEntProp(entity, Prop_Data, "m_bDisabled")) || (i == 8 && !GetEntProp(entity, Prop_Data, "m_bLocked")))
 	{
 		gB_stateDefaultDisabled[entity] = false
 		gB_stateDisabled[0][entity] = false
@@ -303,9 +332,10 @@ void IsOutputOrInput(int entity, char[] output)
 		AcceptEntityInput(entity, "Enable")
 	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
 		AcceptEntityInput(entity, "Toggle")
-	for(int j = 1; j <= 2048; j++)
-		if(gI_entityID[j] != entity)
-			gI_entityID[++gI_entityTotalCount] = entity
+	for(int j = 1; j <= gI_entityTotalCount; j++)
+		if(gI_entityID[j] == entity)
+			continue
+	gI_entityID[++gI_entityTotalCount] = entity
 }
 
 void Reset(int client)
