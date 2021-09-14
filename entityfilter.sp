@@ -232,7 +232,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
-	if(count)
+	if(count && !StrEqual(classname, "math_counter"))
 		OutputsOrInputs(entity, classname)
 	//PrintToServer("%s", output)
 	for(int i = 0; i < count; i++)
