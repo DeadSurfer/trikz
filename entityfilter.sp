@@ -218,9 +218,7 @@ void LinkToggles(int entity, char[] output, char[] classname)
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
 	if(count)
-	{
 		IsOutputOrInput(entity, classname)
-	}
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
@@ -243,8 +241,8 @@ void LinkToggles(int entity, char[] output, char[] classname)
 						{
 							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = toggle
 							gI_entityOutput[GetOutput(output)][toggle]++
-							IsOutputOrInput(toggle, sClassnameToggle[j])
 						}
+						IsOutputOrInput(toggle, sClassnameToggle[j])
 						/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 						{
 							gB_button[toggle] = true
