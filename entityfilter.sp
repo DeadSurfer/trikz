@@ -53,7 +53,7 @@ float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
 float gF_mathMax[2048 + 1]
-bool gB_entityUsed[2048 + 1]
+//bool gB_entityUsed[2048 + 1]
 //bool gB_buttonLockedDefault[2048 + 1]
 //bool gB_buttonLocked[MAXPLAYERS + 1][2048 + 1]
 
@@ -125,7 +125,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		gI_maxLinks[i] = 0
 		gI_entityID[i] = 0
 		gI_mathID[i] = 0
-		gB_entityUsed[i] = false
+		//gB_entityUsed[i] = false
 		//gB_button[i] = false
 	}
 	//bool gB_once
@@ -250,7 +250,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 					parent = entity
 				while((entityLinked = FindLinkedEntities(entityLinked, sLinkedClassname[j], sTarget, parent)) != INVALID_ENT_REFERENCE)
 				{
-					if(!gB_entityUsed[entityLinked])
+					//if(!gB_entityUsed[entityLinked])
 					{
 						if(StrEqual(sInput, "Toggle"))
 						{
@@ -259,7 +259,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 							gI_entityOutput[GetOutput(output)][entityLinked]++
 						}
 						OutputsOrInputs(entityLinked, sLinkedClassname[j])
-						gB_entityUsed[entityLinked] = true
+						//gB_entityUsed[entityLinked] = true
 					}
 				}
 			}
