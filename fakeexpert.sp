@@ -212,6 +212,7 @@ public void OnPluginStart()
 	}
 	//LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 	gH_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell)
+	gB_entityfilter = LibraryExists("entityfilter")
 }
 
 public void OnMapStart()
@@ -410,6 +411,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
 	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
+	MarkNativeAsOptional("Trikz_GetThisPlugin")
 	return APLRes_Success
 }
 
