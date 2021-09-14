@@ -114,6 +114,7 @@ Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 0; i <= 2048; i++)
 	{
 		gI_maxLinks[i] = 0
+		gI_entityID[i] = 0
 		//gB_button[i] = false
 	}
 	//bool gB_once
