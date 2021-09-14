@@ -252,8 +252,6 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 				{
 					if(!gB_entityUsed[entityLinked])
 					{
-						//if(StrContains(sLinkedClassname[j], "trigger") != -1)
-						//	continue
 						if(StrEqual(sInput, "Toggle"))
 						{
 							HookEntityOutput(sLinkedClassname[j], output, TriggerOutputHook)
@@ -275,8 +273,9 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 		if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
 			int entityLinked = FindLinkedEntities(entityLinked, "math_counter", sTarget)
-			if(GetOutputActionCount(entityLinked, "m_OutValue") || GetOutputActionCount(entityLinked, "m_OnGetValue") || GetOutputActionCount(entityLinked, "m_OnUser3") || GetOutputActionCount(entityLinked, "m_OnUser4")) //thanks to george for original code.
-				OutputsOrInputs(entityLinked, "math_counter")
+			if(IsValidEntity(entityLinked))
+				if(GetOutputActionCount(entityLinked, "m_OutValue") || GetOutputActionCount(entityLinked, "m_OnGetValue") || GetOutputActionCount(entityLinked, "m_OnUser3") || GetOutputActionCount(entityLinked, "m_OnUser4")) //thanks to george for original code.
+					OutputsOrInputs(entityLinked, "math_counter")
 		}
 	}
 }
@@ -339,9 +338,10 @@ void OutputsOrInputs(int entity, char[] output)
 			OutputChange(entity, "m_OnHitMin", "OnUser4")
 			OutputChange(entity, "m_OnHitMax", "OnUser3")
 			DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
+			PrintToServer("1")
 		}
 	}
-	else if(i != 9)
+	else
 	{
 		for(int j = 1; j <= gI_entityTotalCount; j++)
 		{
@@ -414,7 +414,6 @@ void Reset(int client)
 		gB_stateDisabled[client][gI_entityID[i]] = gB_stateDefaultDisabled[gI_entityID[i]]
 		gF_buttonReady[client][gI_entityID[i]] = 0.0
 		gI_linkedToggles[client][gI_entityID[i]] = 0
-		//gB_buttonLocked[client][gI_entityID[i]] = gB_buttonLockedDefault[gI_entityID[i]]
 	}
 	for(int i = 1; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
@@ -428,111 +427,74 @@ public void Trikz_Start(int client)
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 {
-	//if(pThis < 0)
-	//	pThis = EntRefToEntIndex(pThis)
-	//if(DHookIsNullParam(hParams, 1) || DHookIsNullParam(hParams, 2))
-	//	return MRES_Ignored
-	//PrintToServer("test")
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
-	//if(!StrEqual(sInput, "Enable") || !StrEqual(sInput, "Disable") || !StrEqual(sInput, "Toggle") || !StrEqual(sInput, "Break") || !StrEqual(sInput, "ForceSpawn"))
-	//	return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	//if(1 > activator || activator > MaxClients)
-	//	return MRES_Ignored
-	//if(activator < 1)
-	//	return MRES_Ignored
-    /*if(0 > activator || activator > MaxClients)
-    {
-        DHookSetReturn(hReturn, false)
-        return MRES_Supercede
-    }*/
 	int partner = Trikz_GetClientPartner(activator)
-	//int caller = DHookGetParam(hParams, 3)
-	//int outputid = DHookGetParam(hParams, 5)
-	//if(0 < activator <= MaxClients)
+	if(StrEqual(sInput, "Enable"))
 	{
-		if(StrEqual(sInput, "Enable"))
+		if(partner)
 		{
-			if(partner)
-			{
-				gB_stateDisabled[activator][pThis] = false
-				gB_stateDisabled[partner][pThis] = false
-			}
-			else
-				gB_stateDisabled[0][pThis] = false
+			gB_stateDisabled[activator][pThis] = false
+			gB_stateDisabled[partner][pThis] = false
 		}
-		else if(StrEqual(sInput, "Disable"))
-		{
-			if(partner)
-			{
-				gB_stateDisabled[activator][pThis] = true
-				gB_stateDisabled[partner][pThis] = true
-			}
-			else
-				gB_stateDisabled[0][pThis] = true
-		}
-		else if(StrEqual(sInput, "Toggle"))
-		{
-			if(partner)
-			{
-				if(gI_linkedToggles[activator][pThis])
-				{
-					gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
-					gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
-					gI_linkedToggles[activator][pThis]--
-					gI_linkedToggles[partner][pThis]--
-				}
-			}
-			else
-				gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
-		}
-		/*else if(StrEqual(sInput, "Break"))
-		{
-			//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
-			if(partner > 0)
-			{
-				gB_stateDisabled[activator][pThis] = false
-				gB_stateDisabled[partner][pThis] = false
-			}
-			else if(partner < 1)
-				gB_stateDisabled[0][pThis] = false
-		}
-		else if(StrEqual(sInput, "ForceSpawn"))
-		{
-			if(partner > 0)
-			{
-				gB_stateDisabled[activator][pThis] = true
-				gB_stateDisabled[partner][pThis] = true
-			}
-			else if(partner < 1)
-				gB_stateDisabled[0][pThis] = true
-		}*/
-		DHookSetReturn(hReturn, false)
-		return MRES_Supercede
+		else
+			gB_stateDisabled[0][pThis] = false
 	}
-	/*char sClassname[32]
-	char sName[32]
-	char sCClassname[32]
-	char sCName[32]
-	GetEntPropString(pThis, Prop_Data, "m_iClassname", sClassname, 32)
-	GetEntPropString(pThis, Prop_Data, "m_iName", sName, 32)
-	GetEntPropString(caller, Prop_Data, "m_iClassname", sCClassname, 32)
-	GetEntPropString(caller, Prop_Data, "m_iName", sCName, 32)
-	PrintToServer("AcceptInput (%s | %s) pThis: %i input: %s activator: %N (%i) caller: %i (%s | %s) outputid: %i", sClassname, sName, pThis, sInput, activator, activator, caller, sCClassname, sCName, outputid)*/
-	//return MRES_Ignored
-	//DHookSetReturn(hReturn, false)
-	//return MRES_Supercede
+	else if(StrEqual(sInput, "Disable"))
+	{
+		if(partner)
+		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+		}
+		else
+			gB_stateDisabled[0][pThis] = true
+	}
+	else if(StrEqual(sInput, "Toggle"))
+	{
+		if(partner)
+		{
+			if(gI_linkedToggles[activator][pThis])
+			{
+				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
+				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
+				gI_linkedToggles[activator][pThis]--
+				gI_linkedToggles[partner][pThis]--
+			}
+		}
+		else
+			gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
+	}
+	/*else if(StrEqual(sInput, "Break"))
+	{
+		//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
+		if(partner > 0)
+		{
+			gB_stateDisabled[activator][pThis] = false
+			gB_stateDisabled[partner][pThis] = false
+		}
+		else if(partner < 1)
+			gB_stateDisabled[0][pThis] = false
+	}
+	else if(StrEqual(sInput, "ForceSpawn"))
+	{
+		if(partner > 0)
+		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+		}
+		else if(partner < 1)
+			gB_stateDisabled[0][pThis] = true
+	}*/
+	DHookSetReturn(hReturn, false)
+	return MRES_Supercede
 }
 
 MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
-	//if(!gB_button[pThis])
-	//	return MRES_Ignored
-	//if(pThis < 0)
-	//	pThis = EntRefToEntIndex(pThis)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	if(DHookIsNullParam(hParams, 2))
@@ -540,43 +502,29 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	if(!StrEqual(sInput, "Lock") || !StrEqual(sInput, "Unlock"))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	//if(activator < 1)
-	//	return MRES_Ignored
-	//int caller = DHookGetParam(hParams, 3)
 	int partner = Trikz_GetClientPartner(activator)
-	//int outputid = DHookGetParam(hParams, 5)
-	//if(activator < 0 || activator > MaxClients)
-	//{
-	//	DHookSetReturn(hReturn, false)
-	//	return MRES_Supercede
-	//}
-	//PrintToServer("yes")
-	//if(0 < activator <= MaxClients)
+	if(StrEqual(sInput, "Unlock"))
 	{
-		if(StrEqual(sInput, "Unlock"))
+		if(partner)
 		{
-			if(partner)
-			{
-				gB_stateDisabled[activator][pThis] = false
-				gB_stateDisabled[partner][pThis] = false
-			}
-			else
-				gB_stateDisabled[0][pThis] = false
+			gB_stateDisabled[activator][pThis] = false
+			gB_stateDisabled[partner][pThis] = false
 		}
-		else if(StrEqual(sInput, "Lock"))
-		{
-			if(partner)
-			{
-				gB_stateDisabled[activator][pThis] = true
-				gB_stateDisabled[partner][pThis] = true
-			}
-			else
-				gB_stateDisabled[0][pThis] = true
-		}
-		DHookSetReturn(hReturn, false)
-		return MRES_Supercede
+		else
+			gB_stateDisabled[0][pThis] = false
 	}
-	//return MRES_Ignored
+	else if(StrEqual(sInput, "Lock"))
+	{
+		if(partner)
+		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+		}
+		else
+			gB_stateDisabled[0][pThis] = true
+	}
+	DHookSetReturn(hReturn, false)
+	return MRES_Supercede
 }
 
 MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
