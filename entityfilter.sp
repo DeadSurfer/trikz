@@ -49,6 +49,10 @@ int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_entityOutput[9][2048 + 1]
 //bool gB_button[2048 + 1]
+float gF_mathValueDefault[2048 + 1]
+float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
+float gF_mathMin[2048 + 1]
+float gF_mathMax[2048 + 1]
 
 public Plugin myinfo =
 {
@@ -255,7 +259,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 						if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && entity2 == entity))
 						{
 							//if(StrEqual(sInput, "Toggle") && !StrEqual(sClassnameToggle[j], "math_counter"))
-							if(StrEqual(sInput, "Toggle") && !StrEqual(classname, "math_counter"))
+							if(StrEqual(sInput, "Toggle") && !StrEqual(sClassnameToggle[j], "math_counter"))
 							{
 								if(1 < j < 7)
 									HookEntityOutput(sClassnameToggle[j], output, TriggerOutputHook)
@@ -265,6 +269,11 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 									gI_entityOutput[GetOutput(output)][entity2]++
 								}
 							}
+							//else if((StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract")) && StrEqual(classname, "math_counter"))
+							//else if((StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract")) && StrEqual(sClassnameToggle[j], "math_counter"))
+							//{
+
+							//}
 							OutputsOrInputs(entity2, sClassnameToggle[j])
 							/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 							{
@@ -317,6 +326,14 @@ void OutputsOrInputs(int entity, char[] output)
 	}
 	else if(i == 9)
 	{
+		//PrintToServer("%f", GetEntPropFloat(entity2, Prop_Data, "m_OutValue"))
+		PrintToServer("%f", GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue")))
+		PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMin"))
+		PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMax"))
+		OutputChange(entity, "m_OnHitMmin", "OnUser3")
+		OutputChange(entity, "m_OnHitMax", "OnUser4")
+		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
+		PrintToServer("%i", entity)
 	}
 	if(i < 2)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
@@ -349,6 +366,23 @@ void OutputsOrInputs(int entity, char[] output)
 			if(gI_entityID[j] == entity)
 				continue
 		gI_entityID[++gI_entityTotalCount] = entity
+	}
+}
+
+void OutputChange(int entity, char[] output, char[] outputtype)
+{
+	int count = GetOutputActionCount(entity, "output")
+	char sOutput[4][256]
+	for(int i = 0; i < count; i++)
+	{
+		GetOutputActionTarget(entity, output, i, sOutput[0], 256)
+		GetOutputActionTargetInput(entity, output, i, sOutput[1], 256)
+		GetOutputActionParameter(entity, output, i, sOutput[2], 256)
+		float delay = GetOutputActionDelay(entity, output, i)
+		int fire = GetOutputActionTimesToFire(entity, output, i)
+		Format(sOutput[3], 256, "%s %s:%s:%s:%f:%i", outputtype, sOutput[0], sOutput[1], sOutput[2], delay, fire)
+		SetVariantString(sOutput[3])
+		AcceptEntityInput(entity, "AddOutput")
 	}
 }
 
@@ -514,6 +548,80 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 		//return MRES_Supercede
 	}
 	//return MRES_Ignored
+}
+
+MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
+{
+	char sInput[32]
+	DHookGetParamString(hParams, 1, sInput, 32)
+	int activator = DHookGetParam(hParams, 2)
+	int partner = Trikz_GetClientPartner(activator)
+	char sValue[64]
+	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, sValue, 64)
+	float flValue = StringToFloat(sValue)
+	int pThisIndex
+	for(int i = 1; i <= gI_mathTotalCount; i++)
+	{
+		if(gI_mathID[i] == pThis)
+		{
+			pThisIndex = gI_mathID[i]
+			break
+		}
+	}
+	if(StrEqual(sInput, "Add"))
+	{
+		if(gF_mathValue[activator][pThisIndex] < gF_mathMax[pThisIndex])
+		{
+			if(partner)
+			{
+				gF_mathValue[activator][pThisIndex] += flValue
+				gF_mathValue[activator][partner] += flValue
+				if(gF_mathValue[activator][pThisIndex] >= gF_mathMax[pThisIndex])
+				{
+					gF_mathValue[activator][pThisIndex] = gF_mathMax[pThisIndex]
+					gF_mathValue[partner][pThisIndex] = gF_mathMax[pThisIndex]
+					AcceptEntityInput(pThis, "FireUser3", activator, activator)
+				}
+			}
+			else
+			{
+				gF_mathValue[0][pThisIndex] += flValue
+				if(gF_mathValue[0][pThisIndex] >= gF_mathMax[pThisIndex])
+				{
+					gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]
+					AcceptEntityInput(pThis, "FireUser3", activator, activator)
+				}
+			}
+		}
+	}
+	else if(StrEqual(sInput, "Subtract"))
+	{
+		if(gF_mathValue[activator][pThisIndex] > gF_mathMax[pThisIndex])
+		{
+			if(partner)
+			{
+				gF_mathValue[activator][pThisIndex] -= flValue
+				gF_mathValue[activator][partner] -= flValue
+				if(gF_mathValue[activator][pThisIndex] <= gF_mathMax[pThisIndex])
+				{
+					gF_mathValue[activator][pThisIndex] = gF_mathMax[pThisIndex]
+					gF_mathValue[partner][pThisIndex] = gF_mathMax[pThisIndex]
+					AcceptEntityInput(pThis, "FireUser4", activator, activator)
+				}
+			}
+			else
+			{
+				gF_mathValue[0][pThisIndex] += flValue
+				if(gF_mathValue[0][pThisIndex] >= gF_mathMax[pThisIndex])
+				{
+					gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]
+					AcceptEntityInput(pThis, "FireUser4", activator, activator)
+				}
+			}
+		}
+	}
+	DHookSetReturn(hReturn, false)
+	return MRES_Supercede
 }
 
 Action TouchTrigger(int entity, int other)
