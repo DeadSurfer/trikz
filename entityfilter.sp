@@ -319,7 +319,7 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 		i = 9
 	if(i == 9)
 	{
-		PrintToServer("%i %i", entity, entity2)
+		//PrintToServer("%i %i", entity, entity2)
 		bool bReturn
 		for(int j = 1; j <= gI_mathTotalCount; j++)
 		{
@@ -332,7 +332,7 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 		if(bReturn)
 			return
 		gI_mathID[++gI_mathTotalCount] = entity2
-		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue"))
+		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity2, FindDataMapInfo(entity2, "m_OutValue"))
 		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
 		gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMax")
 		OutputChange(entity2, "m_OnHitMmin", "OnUser3")
