@@ -267,7 +267,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 		if(StrEqual(sInput, "Unlock") || StrEqual(sInput, "Lock"))
 		{
 			int entityLinked
-			while((entityLinked = FindLinkedEntities(entityLinked, "func_button")) != INVALID_ENT_REFERENCE)
+			while((entityLinked = FindLinkedEntities(entityLinked, "func_button", sTarget)) != INVALID_ENT_REFERENCE)
 			{
 				PrintToServer("%i", entityLinked)
 				OutputsOrInputs(entityLinked, "func_button")
@@ -275,7 +275,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 		}
 		if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
-			int entityLinked = FindLinkedEntities(entityLinked, "math_counter")) != INVALID_ENT_REFERENCE)
+			int entityLinked = FindLinkedEntities(entityLinked, "math_counter", sTarget)) != INVALID_ENT_REFERENCE)
 			{
 				PrintToServer("%i", entityLinked)
 				OutputsOrInputs(entityLinked, "math_counter")
