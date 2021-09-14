@@ -317,6 +317,27 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 		i = 8
 	else if(StrEqual(output, "math_counter"))
 		i = 9
+	if(i == 9)
+	{
+		PrintToServer("%i %i", entity, entity2)
+		for(int j = 1; j <= gI_mathTotalCount; j++)
+			if(gI_mathID[j] == entity2)
+				continue
+		gI_mathID[++gI_mathTotalCount] = entity2
+		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue"))
+		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
+		gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMax")
+		OutputChange(entity2, "m_OnHitMmin", "OnUser3")
+		OutputChange(entity2, "m_OnHitMax", "OnUser4")
+		DHookEntity(gH_AcceptInput, false, entity2, INVALID_FUNCTION, AcceptInputMath)
+	}
+	else
+	{
+		for(int j = 1; j <= gI_entityTotalCount; j++)
+			if(gI_entityID[j] == entity)
+				continue
+		gI_entityID[++gI_entityTotalCount] = entity
+	}
 	if(i < 7)
 		DHookEntity(gH_AcceptInput, false, entity)
 	else if(i == 7)
@@ -330,20 +351,6 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 	}
-	/*else if(i == 9)
-	{
-		//PrintToServer("%f", GetEntPropFloat(entity2, Prop_Data, "m_OutValue"))
-		//PrintToServer("%f", GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue")))
-		//PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMin"))
-		//PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMax"))
-		gF_mathValueDefault[entity] = GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue"))
-		gF_mathMin[entity] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
-		gF_mathMax[entity] = GetEntPropFloat(entity2, Prop_Data, "m_flMax")
-		OutputChange(entity, "m_OnHitMmin", "OnUser3")
-		OutputChange(entity, "m_OnHitMax", "OnUser4")
-		DHookEntity(gH_AcceptInput, false, entity2, INVALID_FUNCTION, AcceptInputMath)
-		PrintToServer("%i %i", entity, entity2)
-	}*/
 	if(i < 2)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 	else if(1 < i < 7)
@@ -362,27 +369,6 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 		AcceptEntityInput(entity, "Enable")
 	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
 		AcceptEntityInput(entity, "Toggle")
-	if(i == 9)
-	{
-		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue"))
-		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
-		gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMax")
-		OutputChange(entity2, "m_OnHitMmin", "OnUser3")
-		OutputChange(entity2, "m_OnHitMax", "OnUser4")
-		DHookEntity(gH_AcceptInput, false, entity2, INVALID_FUNCTION, AcceptInputMath)
-		PrintToServer("%i %i", entity, entity2)
-		for(int j = 0; j <= gI_mathTotalCount; j++)
-			if(gI_mathID[j] == entity2)
-				continue
-		gI_mathID[gI_mathTotalCount++] = entity2
-	}
-	else
-	{
-		for(int j = 1; j <= gI_entityTotalCount; j++)
-			if(gI_entityID[j] == entity)
-				continue
-		gI_entityID[++gI_entityTotalCount] = entity
-	}
 }
 
 void OutputChange(int entity, char[] output, char[] outputtype)
@@ -410,7 +396,7 @@ void Reset(int client)
 		gF_buttonReady[client][gI_entityID[i]] = 0.0
 		gI_linkedToggles[client][gI_entityID[i]] = 0
 	}
-	for(int i = 0; i <= gI_mathTotalCount; i++)
+	for(int i = 1; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
 }
 
@@ -578,11 +564,11 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, sValue, 64)
 	float flValue = StringToFloat(sValue)
 	int pThisIndex
-	for(int i = 0; i <= gI_mathTotalCount; i++)
+	for(int i = 1; i <= gI_mathTotalCount; i++)
 	{
 		if(gI_mathID[i] == pThis)
 		{
-			pThisIndex = gI_mathID[i]
+			pThisIndex = gI_mathTotalCount
 			continue
 		}
 	}
