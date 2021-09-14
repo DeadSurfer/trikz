@@ -270,16 +270,13 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 		{
 			int entityLinked
 			while((entityLinked = FindLinkedEntities(entityLinked, "func_button", sTarget)) != INVALID_ENT_REFERENCE)
-			{
-				PrintToServer("%i", entityLinked)
 				OutputsOrInputs(entityLinked, "func_button")
-			}
 		}
 		if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
 			int entityLinked = FindLinkedEntities(entityLinked, "math_counter", sTarget)
-			PrintToServer("%i", entityLinked)
-			OutputsOrInputs(entityLinked, "math_counter")
+			if(GetOutputActionCount(entityLinked, "m_OutValue") || GetOutputActionCount(entityLinked, "m_OnGetValue") || GetOutputActionCount(entityLinked, "m_OnUser3") || GetOutputActionCount(entityLinked, "m_OnUser4")) //thanks to george for original code.
+				OutputsOrInputs(entityLinked, "math_counter")
 		}
 	}
 }
@@ -440,8 +437,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		return MRES_Ignored
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
-	if(!StrEqual(sInput, "Enable") || !StrEqual(sInput, "Disable") || !StrEqual(sInput, "Toggle") || !StrEqual(sInput, "Break") || !StrEqual(sInput, "ForceSpawn"))
-		return MRES_Ignored
+	//if(!StrEqual(sInput, "Enable") || !StrEqual(sInput, "Disable") || !StrEqual(sInput, "Toggle") || !StrEqual(sInput, "Break") || !StrEqual(sInput, "ForceSpawn"))
+	//	return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	//if(1 > activator || activator > MaxClients)
 	//	return MRES_Ignored
