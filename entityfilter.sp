@@ -369,6 +369,7 @@ void OutputsOrInputs(int entity, char[] output)
 		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
+		//SetEntProp(entity, Prop_Data, "m_fStayPushed", 0)
 		if(GetEntProp(entity, Prop_Data, "m_bLocked"))
 			AcceptEntityInput(entity, "Unlock")
 	}
@@ -537,6 +538,8 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamString(hParams, 1, sInput, 32)
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
+	if(!StrEqual(sInput, "Lock") || !StrEqual(sInput, "Unlock"))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	//if(activator < 1)
 	//	return MRES_Ignored
@@ -548,7 +551,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	//	DHookSetReturn(hReturn, false)
 	//	return MRES_Supercede
 	//}
-	PrintToServer("yes")
+	//PrintToServer("yes")
 	//if(0 < activator <= MaxClients)
 	{
 		if(StrEqual(sInput, "Unlock"))
@@ -725,6 +728,7 @@ Action EntityVisibleTransmit(int entity, int client)
 Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
 	int partner = Trikz_GetClientPartner(activator)
+	//PrintToServer("123s")
 	if(partner)
 	{
 		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
