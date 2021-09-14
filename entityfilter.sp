@@ -275,11 +275,9 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 		}
 		if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
-			int entityLinked = FindLinkedEntities(entityLinked, "math_counter", sTarget)) != INVALID_ENT_REFERENCE)
-			{
-				PrintToServer("%i", entityLinked)
-				OutputsOrInputs(entityLinked, "math_counter")
-			}
+			int entityLinked = FindLinkedEntities(entityLinked, "math_counter", sTarget)
+			PrintToServer("%i", entityLinked)
+			OutputsOrInputs(entityLinked, "math_counter")
 		}
 	}
 }
