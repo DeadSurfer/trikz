@@ -328,8 +328,11 @@ void OutputsOrInputs(int entity, char[] output)
 	{
 		//PrintToServer("%f", GetEntPropFloat(entity2, Prop_Data, "m_OutValue"))
 		PrintToServer("%f", GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue")))
-		PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMin"))
-		PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMax"))
+		//PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMin"))
+		//PrintToServer("%f", GetEntPropFloat(entity, Prop_Data, "m_flMax"))
+		gF_mathValueDefault[entity] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+		gF_mathMin[entity] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
+		gF_mathMax[entity] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
 		OutputChange(entity, "m_OnHitMmin", "OnUser3")
 		OutputChange(entity, "m_OnHitMax", "OnUser4")
 		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
@@ -394,6 +397,8 @@ void Reset(int client)
 		gF_buttonReady[client][gI_entityID[i]] = 0.0
 		gI_linkedToggles[client][gI_entityID[i]] = 0
 	}
+	for(int i = 1; i <= gI_mathTotalCount; i++)
+		gF_mathValue[client][i] = gF_mathValueDefault[i]
 }
 
 public void Trikz_Start(int client)
