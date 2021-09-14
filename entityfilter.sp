@@ -548,19 +548,10 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	//	DHookSetReturn(hReturn, false)
 	//	return MRES_Supercede
 	//}
+	PrintToServer("yes")
 	//if(0 < activator <= MaxClients)
 	{
 		if(StrEqual(sInput, "Unlock"))
-		{
-			if(partner)
-			{
-				gB_stateDisabled[activator][pThis] = true
-				gB_stateDisabled[partner][pThis] = true
-			}
-			else
-				gB_stateDisabled[0][pThis] = true
-		}
-		else if(StrEqual(sInput, "Lock"))
 		{
 			if(partner)
 			{
@@ -569,6 +560,16 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 			}
 			else
 				gB_stateDisabled[0][pThis] = false
+		}
+		else if(StrEqual(sInput, "Lock"))
+		{
+			if(partner)
+			{
+				gB_stateDisabled[activator][pThis] = true
+				gB_stateDisabled[partner][pThis] = true
+			}
+			else
+				gB_stateDisabled[0][pThis] = true
 		}
 		DHookSetReturn(hReturn, false)
 		return MRES_Supercede
