@@ -302,7 +302,9 @@ void IsOutputOrInput(int entity, char[] output)
 		AcceptEntityInput(entity, "Enable")
 	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
 		AcceptEntityInput(entity, "Toggle")
-	gI_entityID[++gI_entityTotalCount] = entity
+	for(int i = 1; i <= 2048; i++)
+		if(gI_entityID[i] != entity)
+			gI_entityID[++gI_entityTotalCount] = entity
 }
 
 void Reset(int client)
