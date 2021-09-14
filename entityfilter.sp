@@ -53,6 +53,7 @@ float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
 float gF_mathMax[2048 + 1]
+bool gB_entityUsed[2048 + 1]
 
 public Plugin myinfo =
 {
@@ -114,7 +115,7 @@ public void OnClientPutInServer(int client)
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable", "func_button", "math_counter"}
+	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
 	for(int i = 0; i <= 2048; i++)
@@ -122,6 +123,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		gI_maxLinks[i] = 0
 		gI_entityID[i] = 0
 		gI_mathID[i] = 0
+		gB_entityUsed[i] = false
 		//gB_button[i] = false
 	}
 	//bool gB_once
@@ -130,19 +132,19 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
-			if(1 < i < 7)
+			if(i < 5)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
 					LinkedEntities(entity, sOutput[j], sClassname[i])
 			}
-			else if(i == 8)
+			else if(i == 5)
 			{
 				char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
 				for(int j = 0; j < sizeof(sOutput); j++)
 					LinkedEntities(entity, sOutput[j], sClassname[i])
 			}
-			else if(i == 9)
+			/*else if(i == 9)
 			{
 				if(GetOutputActionCount(entity, "m_OutValue") || GetOutputActionCount(entity, "m_OnGetValue") || GetOutputActionCount(entity, "m_OnUser3") || GetOutputActionCount(entity, "m_OnUser4"))
 				{
@@ -150,7 +152,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 					for(int j = 0; j < sizeof(sOutput); j++)
 						LinkedEntities(entity, sOutput[j], sClassname[i])
 				}
-			}
+			}*/
 			//else
 			//	IsOutputOrInput(entity, sClassname[i])
 			/*if(!gB_once)
@@ -233,67 +235,71 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
-		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break") || StrEqual(sInput, "Lock") || StrEqual(sInput, "Unlock") || StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
+		char sTarget[64]
+		GetOutputActionTarget(entity, output, i, sTarget, 64)
+		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break"))
 		{
-			char sTarget[64]
-			GetOutputActionTarget(entity, output, i, sTarget, 64)
-			char sLinkedClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable", "func_button", "math_counter"}
+			char sLinkedClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable"}
 			for(int j = 0; j < sizeof(sLinkedClassname); j++)
 			{
-				if(1 < i < 7)
+				int entityLinked
+				int parent
+				if(StrEqual(sInput, "Toggle"))
+					parent = entity
+				while((entityLinked = FindLinkedEntities(entityLinked, sLinkedClassname[j], sTarget, parent)) != INVALID_ENT_REFERENCE)
 				{
-					int entity2
-					while((entity2 = FindLinkedEntities(entity2, sLinkedClassname[j], sTarget)) != INVALID_ENT_REFERENCE)
+					if(!gB_entityUsed[entityLinked])
 					{
+						//if(StrContains(sLinkedClassname[j], "trigger") != -1)
+						//	continue
 						if(StrEqual(sInput, "Toggle"))
 						{
-							if(1 < j < 7)
-								HookEntityOutput(sLinkedClassname[j], output, TriggerOutputHook)
-							if(entity > 0)
-								gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entity2
-							gI_entityOutput[GetOutput(output)][entity2]++
-							OutputsOrInputs(entity2, sLinkedClassname[j])
+							HookEntityOutput(sLinkedClassname[j], output, TriggerOutputHook)
+							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
+							gI_entityOutput[GetOutput(output)][entityLinked]++
 						}
+						OutputsOrInputs(entityLinked, sLinkedClassname[j])
+						gB_entityUsed[entityLinked] = true
 					}
 				}
-				if(i == 8)
-				{
-					int entity2
-					while((entity2 = FindLinkedEntities(entity2, sLinkedClassname[j], sTarget)) != INVALID_ENT_REFERENCE)
-					{
-						if(StrEqual(sLinkedClassname[j], "func_button") && (StrEqual(sInput, "Unlock") || StrEqual(sInput, "Lock")))
-						{
-							if(1 < j < 7)
-								HookEntityOutput(sLinkedClassname[j], output, TriggerOutputHook)
-							if(entity > 0)
-								gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entity2
-							gI_entityOutput[GetOutput(output)][entity2]++
-							OutputsOrInputs(entity2, sLinkedClassname[j])
-						}
-					}
-				}
+			}
+		}
+		if(StrEqual(sInput, "Unlock") || StrEqual(sInput, "Lock"))
+		{
+			int entityLinked
+			while((entityLinked = FindLinkedEntities(entityLinked, "func_button")) != INVALID_ENT_REFERENCE)
+			{
+				PrintToServer("%i", entityLinked)
+				OutputsOrInputs(entityLinked, "func_button")
+			}
+		}
+		if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
+		{
+			int entityLinked = FindLinkedEntities(entityLinked, "math_counter")) != INVALID_ENT_REFERENCE)
+			{
+				PrintToServer("%i", entityLinked)
+				OutputsOrInputs(entityLinked, "math_counter")
 			}
 		}
 	}
 }
 
-int FindLinkedEntities(int entity, char[] classname, char[] target)
+int FindLinkedEntities(int entity, char[] classname, char[] target, int parent = 0)
 {
-	int index
 	char sName[64]
-	while((index = FindEntityByClassname(index, classname)) != INVALID_ENT_REFERENCE)
+	while((entity = FindEntityByClassname(entity, classname)) != INVALID_ENT_REFERENCE)
 	{
-		if(StrEqual(target, "!self") && index == entity)
-			return index
-		if(GetEntPropString(index, Prop_Data, "m_iName", sName, 64))
+		if(StrEqual(target, "!self") && entity == parent)
+			return entity
+		if(!GetEntPropString(entity, Prop_Data, "m_iName", sName, 64))
 			continue
 		if(StrEqual(target, sName))
-			return index
+			return entity
 	}
 	return INVALID_ENT_REFERENCE
 }
 
-void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
+void OutputsOrInputs(int entity, char[] output)
 {
 	int i
 	if(StrEqual(output, "func_brush"))
