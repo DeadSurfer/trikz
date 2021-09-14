@@ -321,8 +321,15 @@ void OutputsOrInputs(int entity, char[] output, int entity2 = 0)
 	{
 		PrintToServer("%i %i", entity, entity2)
 		for(int j = 1; j <= gI_mathTotalCount; j++)
+		{
 			if(gI_mathID[j] == entity2)
-				continue
+			{
+				bReturn = true
+				break
+			}
+		}
+		if(bReturn)
+			return
 		gI_mathID[++gI_mathTotalCount] = entity2
 		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity2, "m_OutValue"))
 		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity2, Prop_Data, "m_flMin")
