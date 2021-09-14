@@ -41,6 +41,8 @@ float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
 int gI_entityID[2048 + 1]
 int gI_entityTotalCount
+int gI_mathID[2048 + 1]
+int gI_mathTotalCount
 native int Trikz_GetClientPartner(int client)
 int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
@@ -110,10 +112,12 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable", "func_button", "math_counter"}
 	gI_entityTotalCount = 0
+	gI_mathTotalCount = 0
 	for(int i = 0; i <= 2048; i++)
 	{
 		gI_maxLinks[i] = 0
 		gI_entityID[i] = 0
+		gI_mathID[i] = 0
 		//gB_button[i] = false
 	}
 	//bool gB_once
@@ -216,7 +220,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	//for(int i = 0; i < sizeof(sTriggers); i++)
 		//for(int j = 0; j < sizeof(sOutputs); j++)
 			//HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook) //make able to work !self
-	PrintToServer("Total entities in proccess: %i", gI_entityTotalCount)
+	PrintToServer("Total entities in proccess: %i. Math counters: %i", gI_entityTotalCount, gI_mathTotalCount)
 	//return Plugin_Continue
 }
 
@@ -224,8 +228,8 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
-	//if(count)
-	//	IsOutputOrInput(entity, classname)
+	if(count)
+		OutputsOrInputs(entity, classname)
 	//PrintToServer("%s", output)
 	for(int i = 0; i < count; i++)
 	{
@@ -251,7 +255,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 						if(StrEqual(sTarget, sName) || (StrEqual(sTarget, "!self") && entity2 == entity))
 						{
 							//if(StrEqual(sInput, "Toggle") && !StrEqual(sClassnameToggle[j], "math_counter"))
-							if(StrEqual(sInput, "Toggle"))
+							if(StrEqual(sInput, "Toggle") && !StrEqual(classname, "math_counter"))
 							{
 								if(1 < j < 7)
 									HookEntityOutput(sClassnameToggle[j], output, TriggerOutputHook)
@@ -261,7 +265,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 									gI_entityOutput[GetOutput(output)][entity2]++
 								}
 							}
-							HaveInput(entity2, sClassnameToggle[j])
+							OutputsOrInputs(entity2, sClassnameToggle[j])
 							/*if(StrEqual(sClassnameToggle[j], sClassnameToggle[6]))
 							{
 								gB_button[toggle] = true
@@ -275,7 +279,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 	}
 }
 
-void HaveInput(int entity, char[] output)
+void OutputsOrInputs(int entity, char[] output)
 {
 	int i
 	if(StrEqual(output, "func_brush"))
@@ -298,7 +302,7 @@ void HaveInput(int entity, char[] output)
 		i = 8
 	else if(StrEqual(output, "math_counter"))
 		i = 9
-	if(i != 8 || i != 9)
+	if(i < 7)
 		DHookEntity(gH_AcceptInput, false, entity)
 	else if(i == 7)
 	{
@@ -332,10 +336,20 @@ void HaveInput(int entity, char[] output)
 		AcceptEntityInput(entity, "Enable")
 	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
 		AcceptEntityInput(entity, "Toggle")
-	for(int j = 1; j <= gI_entityTotalCount; j++)
-		if(gI_entityID[j] == entity)
-			continue
-	gI_entityID[++gI_entityTotalCount] = entity
+	if(i == 9)
+	{
+		for(int j = 1; j <= gI_mathTotalCount; j++)
+			if(gI_mathID[j] == entity)
+				continue
+		gI_mathID[++gI_mathTotalCount] = entity
+	}
+	else
+	{
+		for(int j = 1; j <= gI_entityTotalCount; j++)
+			if(gI_entityID[j] == entity)
+				continue
+		gI_entityID[++gI_entityTotalCount] = entity
+	}
 }
 
 void Reset(int client)
