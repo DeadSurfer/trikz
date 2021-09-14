@@ -141,7 +141,7 @@ int gI_points[MAXPLAYERS + 1]
 int gI_totalRecords[2]
 bool gB_recordsOnce
 Handle gH_start
-native bool Trikz_GetThisPlugin()
+//native bool Trikz_GetThisPlugin()
 
 public Plugin myinfo =
 {
@@ -410,7 +410,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
 	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
-	MarkNativeAsOptional("Trikz_GetThisPlugin")
+	//MarkNativeAsOptional("Trikz_GetThisPlugin")
 	return APLRes_Success
 }
 
@@ -2911,7 +2911,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 	}
-	if(!Trikz_GetThisPlugin())
+	//if(!Trikz_GetThisPlugin())
 	{
 		int other = Stuck(client)
 		if(0 < other <= MaxClients && IsPlayerAlive(client) && gB_block[other])
