@@ -259,19 +259,20 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 				}
 			}
 		}
-		if(StrEqual(sInput, "Unlock") || StrEqual(sInput, "Lock"))
+		else if(StrEqual(sInput, "Unlock") || StrEqual(sInput, "Lock"))
 		{
 			int entityLinked
 			while((entityLinked = FindLinkedEntities(entityLinked, "func_button", sTarget)) != INVALID_ENT_REFERENCE)
 				OutputsOrInputs(entityLinked, "func_button")
 		}
-		if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
+		else if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
 			int entityLinked = FindLinkedEntities(entityLinked, "math_counter", sTarget)
 			if(IsValidEntity(entityLinked))
 				if(GetOutputActionCount(entityLinked, "m_OutValue") || GetOutputActionCount(entityLinked, "m_OnGetValue") || GetOutputActionCount(entityLinked, "m_OnUser3") || GetOutputActionCount(entityLinked, "m_OnUser4")) //thanks to george for original code.
 					OutputsOrInputs(entityLinked, "math_counter")
 		}
+		OutputsOrInputs(0, "math_counter")
 	}
 }
 
@@ -315,17 +316,20 @@ void OutputsOrInputs(int entity, char[] output)
 		i = 9
 	if(i == 9)
 	{
-		for(int j = 1; j <= gI_mathTotalCount; j++)
-			if(gI_mathID[j] == entity)
-				return
-		gI_mathID[++gI_mathTotalCount] = entity
-		gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
-		gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
-		gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
-		OutputChange(entity, "m_OnHitMin", "OnUser4")
-		OutputChange(entity, "m_OnHitMax", "OnUser3")
-		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
-		PrintToServer("1")
+		while((entity = FindEntityByClassname(entity, "math_counter")) != INVALID_ENT_REFERENCE)
+		{
+			for(int j = 1; j <= gI_mathTotalCount; j++)
+				if(gI_mathID[j] == entity)
+					return
+			gI_mathID[++gI_mathTotalCount] = entity
+			gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+			gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
+			gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
+			OutputChange(entity, "m_OnHitMin", "OnUser4")
+			OutputChange(entity, "m_OnHitMax", "OnUser3")
+			DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
+			//PrintToServer("1")
+		}
 	}
 	else
 	{
@@ -692,6 +696,9 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 		int partner = Trikz_GetClientPartner(activator)
 		if(partner)
 		{
+			//if(caller < 0)
+			//	for(int j = 1; j <= gI_mathTotalCount; j++)
+			//		if(gI_mathID[j] == caller)
 			if(gB_stateDisabled[activator][caller])
 				return Plugin_Handled
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
