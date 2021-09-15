@@ -466,15 +466,12 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(partner)
 		{
-			PrintToServer("x1 %i %i %i", activator, pThis, gI_linkedToggles[activator][pThis])
 			if(gI_linkedToggles[activator][pThis])
 			{
-				PrintToServer("x3 %i", gI_linkedToggles[activator][pThis])
 				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 				gI_linkedToggles[activator][pThis]--
 				gI_linkedToggles[partner][pThis]--
-				PrintToServer("x2 %i", gI_linkedToggles[activator][pThis])
 			}
 		}
 		else
@@ -561,7 +558,6 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	}
 	if(!pThisIndex)
 		return MRES_Ignored
-	PrintToServer("yes")
 	if(StrEqual(sInput, "Add"))
 	{
 		if(gF_mathValue[activator][pThisIndex] < gF_mathMax[pThisIndex])
