@@ -46,8 +46,11 @@ int gI_mathTotalCount
 native int Trikz_GetClientPartner(int client)
 int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
+int gI_linkedMathTogglesDefault[2048 + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
-int gI_entityOutput[9][2048 + 1]
+int gI_maxMathLinks[2048 + 1]
+int gI_entityOutput[11][2048 + 1]
+int gI_mathOutput[11][2048 + 1]
 float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
@@ -119,6 +122,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int i = 0; i <= 2048; i++)
 	{
 		gI_maxLinks[i] = 0
+		gI_maxMathLinks[i] = 0
 		gI_entityID[i] = 0
 		gI_mathID[i] = 0
 	}
@@ -136,9 +140,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}
 			else if(i == 5)
 			{
-				char sOutput[][] = {"m_OnPressed", "m_OnDamaged"}
-				for(int j = 0; j < sizeof(sOutput); j++)
-					LinkedEntities(entity, sOutput[j], sClassname[i])
+				LinkedEntities(entity, "m_OnPressed", sClassname[i])
+				LinkedEntities(entity, "m_OnDamaged", sClassname[i])
 			}
 			/*else if(i == 6)
 			{
@@ -221,7 +224,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	}
 	//char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "math_counter"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
+	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnHitMin", "OnHitMax"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook)
@@ -252,8 +256,23 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 				{
 					if(StrEqual(sInput, "Toggle"))
 					{
-						gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
-						gI_entityOutput[GetOutput(output)][entityLinked]++
+						if(entity > 0)
+						{
+							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
+							gI_entityOutput[GetOutput(output)][entityLinked]++
+						}
+						else
+						{
+							for(int k = 1; k <= gI_mathTotalCount; k++)
+							{
+								if(gI_mathID[k] == entity)
+								{
+									int math = k
+									gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+									gI_mathOutput[GetOutput(output)][entityLinked]++
+								}
+							}
+						}
 					}
 					OutputsOrInputs(entityLinked, sLinkedClassname[j])
 				}
@@ -318,17 +337,23 @@ void OutputsOrInputs(int entity, char[] output)
 	{
 		while((entity = FindEntityByClassname(entity, "math_counter")) != INVALID_ENT_REFERENCE)
 		{
-			for(int j = 1; j <= gI_mathTotalCount; j++)
-				if(gI_mathID[j] == entity)
-					return
-			gI_mathID[++gI_mathTotalCount] = entity
-			gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
-			gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
-			gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
-			OutputChange(entity, "m_OnHitMin", "OnUser4")
-			OutputChange(entity, "m_OnHitMax", "OnUser3")
-			DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
-			//PrintToServer("1")
+			//if(GetOutputActionCount(entity, "m_OutValue") || GetOutputActionCount(entity, "m_OnGetValue") || GetOutputActionCount(entity, "m_OnUser3") || GetOutputActionCount(entity, "m_OnUser4"))
+			{
+				for(int j = 1; j <= gI_mathTotalCount; j++)
+					if(gI_mathID[j] == entity)
+						return
+				gI_mathID[++gI_mathTotalCount] = entity
+				gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+				gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
+				gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
+				OutputChange(entity, "m_OnHitMin", "OnUser4")
+				OutputChange(entity, "m_OnHitMax", "OnUser3")
+				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
+				//PrintToServer("1 %i", entity)
+				LinkedEntities(entity, "m_OnHitMin", "math_counter")
+				LinkedEntities(entity, "m_OnHitMax", "math_counter")
+				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
+			}
 		}
 	}
 	else
@@ -441,15 +466,15 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(partner)
 		{
-			PrintToServer("%i %i %i", activator, pThis, gI_linkedToggles[activator][pThis])
+			PrintToServer("x1 %i %i %i", activator, pThis, gI_linkedToggles[activator][pThis])
 			if(gI_linkedToggles[activator][pThis])
 			{
-				PrintToServer("%i", gI_linkedToggles[activator][pThis])
+				PrintToServer("x3 %i", gI_linkedToggles[activator][pThis])
 				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 				gI_linkedToggles[activator][pThis]--
 				gI_linkedToggles[partner][pThis]--
-				PrintToServer("%i", gI_linkedToggles[activator][pThis])
+				PrintToServer("x2 %i", gI_linkedToggles[activator][pThis])
 			}
 		}
 		else
@@ -696,20 +721,40 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 		int partner = Trikz_GetClientPartner(activator)
 		if(partner)
 		{
-			//if(caller < 0)
-			//	for(int j = 1; j <= gI_mathTotalCount; j++)
-			//		if(gI_mathID[j] == caller)
-			if(gB_stateDisabled[activator][caller])
-				return Plugin_Handled
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
-				if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
-					return Plugin_Handled
-			char sOrigOutput[32]
-			Format(sOrigOutput, 32, "m_%s", output)
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+			if(caller > 0)
 			{
-				gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
-				gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
+				if(gB_stateDisabled[activator][caller])
+					return Plugin_Handled
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
+					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
+						return Plugin_Handled
+				char sOrigOutput[32]
+				Format(sOrigOutput, 32, "m_%s", output)
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
+				{
+					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
+					gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
+				}
+			}
+			else
+			{
+				for(int i = 1; i <= gI_mathTotalCount; i++)
+				{
+					if(gI_mathID[i] == caller)
+					{
+						int math = i
+						for(int k = 1; k <= gI_maxMathLinks[math]; k++)
+							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]])
+								return Plugin_Handled
+						char sOrigOutput[32]
+						Format(sOrigOutput, 32, "m_%s", output)
+						for(int k = 1; k <= gI_maxMathLinks[math]; k++)
+						{
+							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
+							gI_linkedToggles[partner][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
+						}
+					}
+				}
 			}
 		}
 		else
@@ -782,8 +827,12 @@ int GetOutput(char[] output)
 		return 6
 	else if(StrEqual(output, "m_OnDamaged"))
 		return 7
-	else
+	else if(StrEqual(output, "m_OnHitMin"))
 		return 8
+	else if(StrEqual(output, "m_OnHitMax"))
+		return 9
+	else
+		return 10
 }
 
 Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
