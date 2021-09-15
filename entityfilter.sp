@@ -685,7 +685,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
-		for(int i = 1; i <= gI_maxLinks[math]; i++)
+		for(int i = 1; i <= gI_maxLinks[caller]; i++)
 		{
 			gI_linkedToggles[activator][gI_linkedTogglesDefault[i][entity]]++
 			gI_linkedToggles[partner][gI_linkedTogglesDefault[i][entity]]++
@@ -716,12 +716,12 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 			{
 				if(gB_stateDisabled[activator][caller])
 					return Plugin_Handled
-				for(int i = 1; i <= gI_maxLinks[math]; i++)
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
 					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
 					return Plugin_Handled
 				char sOrigOutput[32]
 				Format(sOrigOutput, 32, "m_%s", output)
-				for(int i = 1; i <= gI_maxLinks[math]; i++)
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
 				{
 					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
 					gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
