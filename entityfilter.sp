@@ -685,7 +685,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
-		for(int i = 1; i <= gI_maxLinks[caller]; i++)
+		for(int i = 1; i <= gI_maxLinks[entity]; i++)
 		{
 			gI_linkedToggles[activator][gI_linkedTogglesDefault[i][entity]]++
 			gI_linkedToggles[partner][gI_linkedTogglesDefault[i][entity]]++
