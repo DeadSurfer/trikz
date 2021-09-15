@@ -219,8 +219,9 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			}*/
 		}
 	}
-	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "OnPressed", "OnDamaged"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnUser3", "OnUser4"}
+	//char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
+	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "math_counter"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook)
@@ -529,6 +530,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	}
 	if(!pThisIndex)
 		return MRES_Ignored
+	PrintToServer("yes")
 	if(StrEqual(sInput, "Add"))
 	{
 		if(gF_mathValue[activator][pThisIndex] < gF_mathMax[pThisIndex])
