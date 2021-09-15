@@ -140,7 +140,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 				for(int j = 0; j < sizeof(sOutput); j++)
 					LinkedEntities(entity, sOutput[j], sClassname[i])
 			}
-			/*else if(i == 9)
+			/*else if(i == 6)
 			{
 				if(GetOutputActionCount(entity, "m_OutValue") || GetOutputActionCount(entity, "m_OnGetValue") || GetOutputActionCount(entity, "m_OnUser3") || GetOutputActionCount(entity, "m_OnUser4"))
 				{
@@ -253,7 +253,6 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 					{
 						gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
 						gI_entityOutput[GetOutput(output)][entityLinked]++
-						PrintToServer("%i %i", entityLinked, gI_entityOutput[GetOutput(output)][entityLinked])
 					}
 					OutputsOrInputs(entityLinked, sLinkedClassname[j])
 				}
