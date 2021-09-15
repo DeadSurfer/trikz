@@ -417,7 +417,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
-	//PrintToServer("%i", pThis)
+	//PrintToServer("%i", pThis, activator)
 	if(StrEqual(sInput, "Enable"))
 	{
 		if(partner)
@@ -721,6 +721,8 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 {
+	if(activator > MaxClients)
+		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
