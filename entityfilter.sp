@@ -162,7 +162,6 @@ Action timer_load(Handle timer)
 		}
 	}
 	OutputsOrInputs(0, "math_counter")
-	//OutputsOrInputs(0, "func_breakable")
 	//char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "math_counter"}
 	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
@@ -275,7 +274,6 @@ void OutputsOrInputs(int entity, char[] output)
 		i = 9
 	if(i == 7)
 	{
-		PrintToServer("v 3")
 		int template
 		bool bBreak
 		while((template = FindEntityByClassname(template, "point_template")) != INVALID_ENT_REFERENCE)
@@ -287,17 +285,14 @@ void OutputsOrInputs(int entity, char[] output)
 				GetEntPropString(template, Prop_Data, sName, sName, 64)
 				char sTarget[64]
 				GetOutputActionTarget(template, "m_OnBreak", j, sTarget, 64)
-				//PrintToServer("%s %s", sName, sTarget)
 				if(StrEqual(sName, sTarget))
 				{
-					for(int k = 1; k <= gI_breakTotalCount; k++)
-						if(gI_breakID[k] == template)
-							return
+					//for(int k = 1; k <= gI_breakTotalCount; k++)
+					//	if(gI_breakID[k] == template)
+					//		return
 					gI_breakID[++gI_breakTotalCount] = template
 					gB_stateBreakDefaultDisabled[gI_breakTotalCount] = false
 					gB_stateBreakDisabled[0][gI_breakTotalCount] = false
-					//PrintToServer("%i", template)
-					//gI_entityID[++gI_entityTotalCount] = template
 					DHookEntity(gH_AcceptInput, false, template)
 					bBreak = true
 					break
@@ -305,12 +300,11 @@ void OutputsOrInputs(int entity, char[] output)
 			}
 			if(bBreak)
 				break
-			PrintToServer("v 4")
-			DHookEntity(gH_AcceptInput, false, entity)
-			SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-			OutputChange(entity, "m_OnBreak", "OnUser4")
-			PrintToServer("v %i", entity)
 		}
+		gB_stateDefaultDisabled[entity] = false
+		DHookEntity(gH_AcceptInput, false, entity)
+		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+		OutputChange(entity, "m_OnBreak", "OnUser4")
 	}
 	if(i == 9)
 	{
@@ -337,7 +331,7 @@ void OutputsOrInputs(int entity, char[] output)
 	}
 	else
 	{
-		if(i != 7 || i != 9)
+		//if(i != 7 || i != 9)
 		{
 			for(int j = 1; j <= gI_entityTotalCount; j++)
 				if(gI_entityID[j] == entity)
@@ -423,7 +417,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
-	PrintToServer("%i", pThis)
+	//PrintToServer("%i", pThis)
 	if(StrEqual(sInput, "Enable"))
 	{
 		if(partner)
@@ -464,16 +458,36 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 		if(partner)
 		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+		}
+		else
+			gB_stateDisabled[0][pThis] = true
+		//PrintToServer("Break")
+	}
+	else
+	{
+		/*int pThisIndex
+		for(int i = 1; i <= gI_breakTotalCount; i++)
+		{
+			if(gI_breakID[i] == pThis)
+			{
+				pThisIndex = i
+				break
+			}
+		}
+		if(!pThisIndex)
+			return MRES_Ignored*/
+		if(partner)
+		{
 			gB_stateDisabled[activator][pThis] = false
 			gB_stateDisabled[partner][pThis] = false
 		}
 		else
 			gB_stateDisabled[0][pThis] = false
-	}
-	else
-	{
 		gB_spawnBreakable = false
 		CreateTimer(0.1, timer_breakable, _, TIMER_FLAG_NO_MAPCHANGE)
+		//PrintToServer("ForceSpawn")
 		return MRES_Ignored
 	}
 	/*else if(StrEqual(sInput, "ForceSpawn"))
@@ -495,7 +509,7 @@ Action timer_breakable(Handle timer)
 	gB_spawnBreakable = true
 }
 
-MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
+public MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
@@ -529,7 +543,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Supercede
 }
 
-MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
+public MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
@@ -784,7 +798,6 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 		if(0 < ent2owner <= MaxClients && ((!gB_stateDisabled[ent2owner][ent1] && partner) || (!gB_stateDisabled[0][ent1] && !partner)))
 			return MRES_Ignored
 	}
-	//PrintToServer("ent1 %i, ent2 %i", ent1, ent2)
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }
@@ -800,7 +813,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 void SDKSpawnPost(int entity)
 {
 	if(!gB_spawnBreakable)
-		AcceptEntityInput(entity, "Kill")
+		AcceptEntityInput(entity, "Kill") //kill fully animation
 }
 
 int GetOutput(char[] output)
@@ -841,12 +854,6 @@ Action TransmitPlayer(int entity, int client) //entity - me, client - loop all c
 	}
 	return Plugin_Continue
 }
-
-/*public void OnEntityCreated(int entity, const char[] classname)
-{
-	if(IsValidEntity(entity) && StrContains(classname, "_projectile") != -1)
-		SDKHook(entity, SDKHook_SetTransmit, TransmitNade)
-}*/
 
 Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
 {	
