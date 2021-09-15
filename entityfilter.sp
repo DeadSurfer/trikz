@@ -225,7 +225,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	//char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "math_counter"}
 	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnHitMin", "OnHitMax"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnHitMin", "OnHitMax", "OnUser3", "OnUser4"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook)
@@ -547,6 +547,8 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	int partner = Trikz_GetClientPartner(activator)
 	char sValue[64]
 	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, sValue, 64)
+	//if(!StrEqual(sInput, "Add") && !StrEqual(sInput, "Subtract"))
+	//	return MRES_Ignored
 	float flValue = StringToFloat(sValue)
 	int pThisIndex
 	for(int i = 1; i <= gI_mathTotalCount; i++)
@@ -694,11 +696,8 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 			return Plugin_Handled
 		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 		gF_buttonReady[partner][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
-		for(int i = 1; i <= gI_maxLinks[entity]; i++)
-		{
-			gI_linkedToggles[activator][gI_linkedTogglesDefault[i][entity]]++
-			gI_linkedToggles[partner][gI_linkedTogglesDefault[i][entity]]++
-		}
+		gI_linkedToggles[activator][gI_linkedTogglesDefault[gI_maxLinks[entity]][entity]]++
+		gI_linkedToggles[partner][gI_linkedTogglesDefault[gI_maxLinks[entity]][entity]]++
 	}
 	else
 	{
@@ -725,16 +724,12 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 			{
 				if(gB_stateDisabled[activator][caller])
 					return Plugin_Handled
-				for(int i = 1; i <= gI_maxLinks[caller]; i++)
-					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
-						return Plugin_Handled
+				if(gI_linkedToggles[activator][gI_linkedTogglesDefault[gI_maxLinks[caller]][caller]])
+					return Plugin_Handled
 				char sOrigOutput[32]
 				Format(sOrigOutput, 32, "m_%s", output)
-				for(int i = 1; i <= gI_maxLinks[caller]; i++)
-				{
-					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
-					gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
-				}
+				gI_linkedToggles[activator][gI_linkedTogglesDefault[gI_maxLinks[caller]][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[gI_maxLinks[caller]][caller]]
+				gI_linkedToggles[partner][gI_linkedTogglesDefault[gI_maxLinks[caller]][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[gI_maxLinks[caller]][caller]]
 			}
 			else
 			{
@@ -743,16 +738,12 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 					if(gI_mathID[i] == caller)
 					{
 						int math = i
-						for(int k = 1; k <= gI_maxMathLinks[math]; k++)
-							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]])
-								return Plugin_Handled
+						if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[gI_maxMathLinks[math]][math]])
+							return Plugin_Handled
 						char sOrigOutput[32]
 						Format(sOrigOutput, 32, "m_%s", output)
-						for(int k = 1; k <= gI_maxMathLinks[math]; k++)
-						{
-							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
-							gI_linkedToggles[partner][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
-						}
+						gI_linkedToggles[activator][gI_linkedMathTogglesDefault[gI_maxMathLinks[math]][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[gI_maxMathLinks[math]][math]]
+						gI_linkedToggles[partner][gI_linkedMathTogglesDefault[gI_maxMathLinks[math]][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[gI_maxMathLinks[math]][math]]
 					}
 				}
 			}
