@@ -110,7 +110,7 @@ public void OnPluginStart()
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	CreateNative("Trikz_GetThisPlugin", Native_GetThisPlugin)
+	RegPluginLibrary("fakeexpert-entityfilter")
 	return APLRes_Success
 }
 
@@ -410,7 +410,6 @@ void Reset(int client)
 public void Trikz_Start(int client)
 {
 	Reset(client)
-	Reset(Trikz_GetClientPartner(client))
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
@@ -965,9 +964,4 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 			return Plugin_Handled
 	}
 	return Plugin_Continue
-}
-
-int Native_GetThisPlugin(Handle plugin, int numParams)
-{
-	return true
 }
