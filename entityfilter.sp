@@ -343,7 +343,7 @@ void OutputsOrInputs(int entity, char[] output)
 		DHookEntity(gH_AcceptInput, false, entity)
 	else if(i == 8)
 	{
-		//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
+		DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputButton)
 		SDKHook(entity, SDKHook_Use, HookButton)
 		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
@@ -509,14 +509,14 @@ Action timer_breakable(Handle timer)
 	gB_spawnBreakable = true
 }
 
-public MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
+MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
-	//if(!StrEqual(sInput, "Lock") && !StrEqual(sInput, "Unlock"))
-	//	return MRES_Ignored
+	if(!StrEqual(sInput, "Lock") || !StrEqual(sInput, "Unlock"))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
 	if(StrEqual(sInput, "Unlock"))
