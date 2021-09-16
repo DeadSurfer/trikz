@@ -287,13 +287,17 @@ void OutputsOrInputs(int entity, char[] output)
 				GetOutputActionTarget(template, "m_OnBreak", j, sTarget, 64)
 				if(StrEqual(sName, sTarget))
 				{
-					//for(int k = 1; k <= gI_breakTotalCount; k++)
-					//	if(gI_breakID[k] == template)
-					//		return
-					gI_breakID[++gI_breakTotalCount] = template
-					gB_stateBreakDefaultDisabled[gI_breakTotalCount] = false
-					gB_stateBreakDisabled[0][gI_breakTotalCount] = false
-					DHookEntity(gH_AcceptInput, false, template)
+					bool templateExist
+					for(int k = 1; k <= gI_breakTotalCount; k++)
+						if(gI_breakID[k] == template)
+							templateExist = true
+					if(!templateExist)
+					{
+						gI_breakID[++gI_breakTotalCount] = template
+						gB_stateBreakDefaultDisabled[gI_breakTotalCount] = false
+						gB_stateBreakDisabled[0][gI_breakTotalCount] = false
+						DHookEntity(gH_AcceptInput, false, template)
+					}
 					bBreak = true
 					break
 				}
