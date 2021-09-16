@@ -125,9 +125,9 @@ public void OnClientPutInServer(int client)
 }
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	CreateTimer(1.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE) //func_breakable...
+	CreateTimer(2.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE) //Make work logic_auto on delay.
 }
-//void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
+
 Action timer_load(Handle timer)
 {
 	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
