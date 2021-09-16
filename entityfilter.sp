@@ -106,12 +106,7 @@ public void OnPluginStart()
 	delete hGamedata
 	delete gH_PassServerEntityFilter
 	gH_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell)
-}
-
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
-{
 	RegPluginLibrary("fakeexpert-entityfilter")
-	return APLRes_Success
 }
 
 public void OnMapStart()
