@@ -1540,6 +1540,7 @@ Action cmd_test(int client, int args)
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
 				PrintToServer("(%i %N)", i, i)
+		PrintToServer("LibraryExists (fakeexpert-filterentity): %i", LibraryExists("fakeexpert-filterentity"))
 	}
 	return Plugin_Handled
 }
