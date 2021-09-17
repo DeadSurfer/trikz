@@ -136,6 +136,8 @@ Action timer_load(Handle timer)
 		gI_entityID[i] = 0
 		gI_mathID[i] = 0
 		gI_breakID[i] = 0
+		for(int j = 0; j <= 10; j++)
+			gI_entityOutput[j][i] = 0
 	}
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
@@ -330,13 +332,10 @@ void OutputsOrInputs(int entity, char[] output)
 	}
 	else
 	{
-		//if(i != 7 || i != 9)
-		{
-			for(int j = 1; j <= gI_entityTotalCount; j++)
-				if(gI_entityID[j] == entity)
-					return
-			gI_entityID[++gI_entityTotalCount] = entity
-		}
+		for(int j = 1; j <= gI_entityTotalCount; j++)
+			if(gI_entityID[j] == entity)
+				return
+		gI_entityID[++gI_entityTotalCount] = entity
 	}
 	if(i < 7)
 		DHookEntity(gH_AcceptInput, false, entity)
@@ -440,12 +439,15 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(partner)
 		{
+			PrintToServer("%i %i", gI_linkedToggles[activator][pThis], pThis)
 			if(gI_linkedToggles[activator][pThis])
 			{
+				PrintToServer("%i %i", gI_linkedToggles[activator][pThis], pThis)
 				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 				gI_linkedToggles[activator][pThis]--
 				gI_linkedToggles[partner][pThis]--
+				PrintToServer("%i %i", gI_linkedToggles[activator][pThis], pThis)
 			}
 		}
 		else
@@ -476,13 +478,16 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		if(!pThisIndex)
 			return MRES_Ignored*/
-		if(partner)
+		if(pThis > 0)
 		{
-			gB_stateDisabled[activator][pThis] = false
-			gB_stateDisabled[partner][pThis] = false
+			if(partner)
+			{
+				gB_stateDisabled[activator][pThis] = false
+				gB_stateDisabled[partner][pThis] = false
+			}
+			else
+				gB_stateDisabled[0][pThis] = false
 		}
-		else
-			gB_stateDisabled[0][pThis] = false
 		gB_spawnBreakable = false
 		CreateTimer(0.1, timer_breakable, _, TIMER_FLAG_NO_MAPCHANGE)
 		//PrintToServer("ForceSpawn")
