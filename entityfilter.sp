@@ -37,8 +37,6 @@ Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
 bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
-//bool gB_stateBreakDefaultDisabled[2048 + 1]
-//bool gB_stateBreakDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
 int gI_entityID[2048 + 1]
@@ -46,7 +44,6 @@ int gI_entityTotalCount
 int gI_mathID[2048 + 1]
 int gI_mathTotalCount
 int gI_breakID[2048 + 1]
-//int gI_breakTotalCount
 native int Trikz_GetClientPartner(int client)
 int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
@@ -128,7 +125,6 @@ Action timer_load(Handle timer)
 	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
-	//gI_breakTotalCount = 0
 	for(int i = 0; i <= 2048; i++)
 	{
 		gI_maxLinks[i] = 0
@@ -288,17 +284,11 @@ void OutputsOrInputs(int entity, char[] output)
 				GetOutputActionTarget(template, "m_OnBreak", j, sTarget, 64)
 				if(StrEqual(sName, sTarget))
 				{
-					bool templateExist
 					for(int k = 1; k <= gI_entityTotalCount; k++)
 						if(gI_breakID[k] == template)
-							templateExist = true
-					if(!templateExist)
-					{
-						gI_breakID[gI_entityTotalCount] = template
-						//gB_stateBreakDefaultDisabled[gI_breakTotalCount] = false
-						//gB_stateBreakDisabled[0][gI_breakTotalCount] = false
-						DHookEntity(gH_AcceptInput, false, template)
-					}
+							break
+					gI_breakID[gI_entityTotalCount] = template
+					DHookEntity(gH_AcceptInput, false, template)
 					bBreak = true
 					break
 				}
@@ -306,12 +296,9 @@ void OutputsOrInputs(int entity, char[] output)
 			if(bBreak)
 				break
 		}
-		OutputChange(entity, "m_OnBreak", "OnUser4")
 		gB_stateDefaultDisabled[entity] = false
 		DHookEntity(gH_AcceptInput, false, entity)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-		//OutputChange(entity, "m_OnBreak", "OnUser4")
-		PrintToServer("%i %i", entity, gI_entityID[gI_entityTotalCount])
 	}
 	if(i == 9)
 	{
@@ -406,8 +393,6 @@ void Reset(int client)
 	}
 	for(int i = 1; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
-	//for(int i = 1; i <= gI_breakTotalCount; i++)
-	//	gB_stateBreakDisabled[client][i] = gB_stateBreakDefaultDisabled[i]
 }
 
 public void Trikz_Start(int client)
