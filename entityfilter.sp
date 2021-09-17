@@ -37,8 +37,8 @@ Handle gH_AcceptInput
 Handle gH_PassServerEntityFilter
 bool gB_stateDefaultDisabled[2048 + 1]
 bool gB_stateDisabled[MAXPLAYERS + 1][2048 + 1]
-bool gB_stateBreakDefaultDisabled[2048 + 1]
-bool gB_stateBreakDisabled[MAXPLAYERS + 1][2048 + 1]
+//bool gB_stateBreakDefaultDisabled[2048 + 1]
+//bool gB_stateBreakDisabled[MAXPLAYERS + 1][2048 + 1]
 float gF_buttonDefaultDelay[2048 + 1]
 float gF_buttonReady[MAXPLAYERS + 1][2048 + 1]
 int gI_entityID[2048 + 1]
@@ -46,7 +46,7 @@ int gI_entityTotalCount
 int gI_mathID[2048 + 1]
 int gI_mathTotalCount
 int gI_breakID[2048 + 1]
-int gI_breakTotalCount
+//int gI_breakTotalCount
 native int Trikz_GetClientPartner(int client)
 int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
@@ -128,7 +128,7 @@ Action timer_load(Handle timer)
 	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
-	gI_breakTotalCount = 0
+	//gI_breakTotalCount = 0
 	for(int i = 0; i <= 2048; i++)
 	{
 		gI_maxLinks[i] = 0
@@ -271,6 +271,10 @@ void OutputsOrInputs(int entity, char[] output)
 		i = 9
 	if(i == 7)
 	{
+		for(int j = 1; j <= gI_entityTotalCount; j++)
+			if(gI_entityID[j] == entity)
+				return
+		gI_entityID[++gI_entityTotalCount] = entity
 		int template
 		bool bBreak
 		while((template = FindEntityByClassname(template, "point_template")) != INVALID_ENT_REFERENCE)
@@ -285,14 +289,14 @@ void OutputsOrInputs(int entity, char[] output)
 				if(StrEqual(sName, sTarget))
 				{
 					bool templateExist
-					for(int k = 1; k <= gI_breakTotalCount; k++)
+					for(int k = 1; k <= gI_entityTotalCount; k++)
 						if(gI_breakID[k] == template)
 							templateExist = true
 					if(!templateExist)
 					{
-						gI_breakID[++gI_breakTotalCount] = template
-						gB_stateBreakDefaultDisabled[gI_breakTotalCount] = false
-						gB_stateBreakDisabled[0][gI_breakTotalCount] = false
+						gI_breakID[gI_entityTotalCount] = template
+						//gB_stateBreakDefaultDisabled[gI_breakTotalCount] = false
+						//gB_stateBreakDisabled[0][gI_breakTotalCount] = false
 						DHookEntity(gH_AcceptInput, false, template)
 					}
 					bBreak = true
@@ -302,10 +306,12 @@ void OutputsOrInputs(int entity, char[] output)
 			if(bBreak)
 				break
 		}
+		OutputChange(entity, "m_OnBreak", "OnUser4")
 		gB_stateDefaultDisabled[entity] = false
 		DHookEntity(gH_AcceptInput, false, entity)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
-		OutputChange(entity, "m_OnBreak", "OnUser4")
+		//OutputChange(entity, "m_OnBreak", "OnUser4")
+		PrintToServer("%i %i", entity, gI_entityID[gI_entityTotalCount])
 	}
 	if(i == 9)
 	{
@@ -332,10 +338,13 @@ void OutputsOrInputs(int entity, char[] output)
 	}
 	else
 	{
-		for(int j = 1; j <= gI_entityTotalCount; j++)
-			if(gI_entityID[j] == entity)
-				return
-		gI_entityID[++gI_entityTotalCount] = entity
+		if(i != 7)
+		{
+			for(int j = 1; j <= gI_entityTotalCount; j++)
+				if(gI_entityID[j] == entity)
+					return
+			gI_entityID[++gI_entityTotalCount] = entity
+		}
 	}
 	if(i < 7)
 		DHookEntity(gH_AcceptInput, false, entity)
@@ -397,8 +406,8 @@ void Reset(int client)
 	}
 	for(int i = 1; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
-	for(int i = 1; i <= gI_breakTotalCount; i++)
-		gB_stateBreakDisabled[client][i] = gB_stateBreakDefaultDisabled[i]
+	//for(int i = 1; i <= gI_breakTotalCount; i++)
+	//	gB_stateBreakDisabled[client][i] = gB_stateBreakDefaultDisabled[i]
 }
 
 public void Trikz_Start(int client)
@@ -452,7 +461,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	}
 	else if(StrEqual(sInput, "Break"))
 	{
-		AcceptEntityInput(pThis, "FireUser4", activator, pThis)
+		//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 		if(partner)
 		{
 			gB_stateDisabled[activator][pThis] = true
@@ -461,34 +470,33 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		else
 			gB_stateDisabled[0][pThis] = true
 		//PrintToServer("Break")
+		//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 	}
 	else
 	{
-		/*int pThisIndex
-		for(int i = 1; i <= gI_breakTotalCount; i++)
+		int pThisIndex
+		for(int i = 1; i <= gI_entityTotalCount; i++)
 		{
 			if(gI_breakID[i] == pThis)
 			{
-				pThisIndex = i
+				pThisIndex = gI_entityID[i]
 				break
 			}
 		}
 		if(!pThisIndex)
-			return MRES_Ignored*/
-		if(pThis > 0)
+			return MRES_Ignored
+		if(partner)
 		{
-			if(partner)
-			{
-				gB_stateDisabled[activator][pThis] = false
-				gB_stateDisabled[partner][pThis] = false
-			}
-			else
-				gB_stateDisabled[0][pThis] = false
+			gB_stateDisabled[activator][pThisIndex] = false
+			gB_stateDisabled[partner][pThisIndex] = false
 		}
-		gB_spawnBreakable = false
-		CreateTimer(0.1, timer_breakable, _, TIMER_FLAG_NO_MAPCHANGE)
+		else
+			gB_stateDisabled[0][pThisIndex] = false
+		//PrintToServer("%i %i %s", pThis, pThisIndex, sInput)
+		//gB_spawnBreakable = false
+		//CreateTimer(0.02, timer_breakable, _, TIMER_FLAG_NO_MAPCHANGE)
 		//PrintToServer("ForceSpawn")
-		return MRES_Ignored
+		//return MRES_Ignored
 	}
 	/*else if(StrEqual(sInput, "ForceSpawn"))
 	{
@@ -504,10 +512,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Supercede
 }
 
-Action timer_breakable(Handle timer)
+/*Action timer_breakable(Handle timer)
 {
 	gB_spawnBreakable = true
-}
+}*/
 
 MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
