@@ -133,7 +133,10 @@ Action timer_load(Handle timer)
 		gI_mathID[i] = 0
 		gI_breakID[i] = 0
 		for(int j = 0; j <= 10; j++)
+		{
 			gI_entityOutput[j][i] = 0
+			gI_mathOutput[j][i] = 0
+		}
 	}
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
