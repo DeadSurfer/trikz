@@ -125,7 +125,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_load(Handle timer)
 {
-	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
+	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
 	gI_breakTotalCount = 0
@@ -172,8 +172,6 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
 	if(count)
-		OutputsOrInputs(entity, classname)
-	else if(StrEqual(classname, "func_breakable"))
 		OutputsOrInputs(entity, classname)
 	for(int i = 0; i < count; i++)
 	{
@@ -765,8 +763,9 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 			}
 		}
 		else
-			if(gB_stateDisabled[0][caller])
-				return Plugin_Handled
+			if(caller > 0)
+				if(gB_stateDisabled[0][caller])
+					return Plugin_Handled
 	}
 	return Plugin_Continue
 }
