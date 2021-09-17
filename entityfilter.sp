@@ -732,7 +732,7 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 					return Plugin_Handled
 				for(int i = 1; i <= gI_maxLinks[caller]; i++)
 					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
-					return Plugin_Handled
+						return Plugin_Handled
 				char sOrigOutput[32]
 				Format(sOrigOutput, 32, "m_%s", output)
 				for(int i = 1; i <= gI_maxLinks[caller]; i++)
