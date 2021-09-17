@@ -145,16 +145,16 @@ Action timer_load(Handle timer)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
-					LinkedEntities(entity, sOutput[j], sClassname[i])
+					EntityLinked(entity, sOutput[j], sClassname[i])
 			}
 			else if(i == 5)
 			{
-				LinkedEntities(entity, "m_OnPressed", sClassname[i])
-				LinkedEntities(entity, "m_OnDamaged", sClassname[i])
+				EntityLinked(entity, "m_OnPressed", sClassname[i])
+				EntityLinked(entity, "m_OnDamaged", sClassname[i])
 			}
 		}
 	}
-	OutputsOrInputs(0, "math_counter")
+	OutputInput(0, "math_counter")
 	//char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "math_counter"}
 	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
@@ -165,12 +165,12 @@ Action timer_load(Handle timer)
 	PrintToServer("Total entities in proccess: %i. Math counters: %i", gI_entityTotalCount, gI_mathTotalCount)
 }
 
-void LinkedEntities(int entity, char[] output, char[] classname)
+void EntityLinked(int entity, char[] output, char[] classname)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
 	if(count)
-		OutputsOrInputs(entity, classname)
+		OutputInput(entity, classname)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
@@ -185,7 +185,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 				int parent
 				if(StrEqual(sInput, "Toggle"))
 					parent = entity
-				while((entityLinked = FindLinkedEntities(entityLinked, sLinkedClassname[j], sTarget, parent)) != INVALID_ENT_REFERENCE)
+				while((entityLinked = FindLinkedEntity(entityLinked, sLinkedClassname[j], sTarget, parent)) != INVALID_ENT_REFERENCE)
 				{
 					if(StrEqual(sInput, "Toggle"))
 					{
@@ -207,27 +207,27 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 							}
 						}
 					}
-					OutputsOrInputs(entityLinked, sLinkedClassname[j], sTarget)
+					OutputInput(entityLinked, sLinkedClassname[j], sTarget)
 				}
 			}
 		}
 		else if(StrEqual(sInput, "Unlock") || StrEqual(sInput, "Lock"))
 		{
 			int entityLinked
-			while((entityLinked = FindLinkedEntities(entityLinked, "func_button", sTarget)) != INVALID_ENT_REFERENCE)
-				OutputsOrInputs(entityLinked, "func_button")
+			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", sTarget)) != INVALID_ENT_REFERENCE)
+				OutputInput(entityLinked, "func_button")
 		}
 		else if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
-			int entityLinked = FindLinkedEntities(entityLinked, "math_counter", sTarget)
+			int entityLinked = FindLinkedEntity(entityLinked, "math_counter", sTarget)
 			if(IsValidEntity(entityLinked))
 				if(GetOutputActionCount(entityLinked, "m_OutValue") || GetOutputActionCount(entityLinked, "m_OnGetValue") || GetOutputActionCount(entityLinked, "m_OnUser3") || GetOutputActionCount(entityLinked, "m_OnUser4")) //thanks to george for original code.
-					OutputsOrInputs(entityLinked, "math_counter")
+					OutputInput(entityLinked, "math_counter")
 		}
 	}
 }
 
-int FindLinkedEntities(int entity, char[] classname, char[] target, int parent = 0)
+int FindLinkedEntity(int entity, char[] classname, char[] target, int parent = 0)
 {
 	char sName[64]
 	while((entity = FindEntityByClassname(entity, classname)) != INVALID_ENT_REFERENCE)
@@ -242,7 +242,7 @@ int FindLinkedEntities(int entity, char[] classname, char[] target, int parent =
 	return INVALID_ENT_REFERENCE
 }
 
-void OutputsOrInputs(int entity, char[] output, char[] target = "")
+void OutputInput(int entity, char[] output, char[] target = "")
 {
 	int i
 	if(StrEqual(output, "func_brush"))
@@ -312,8 +312,8 @@ void OutputsOrInputs(int entity, char[] output, char[] target = "")
 				//AddOutput(entity, "m_OnHitMax", "OnUser3")
 				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 				//PrintToServer("1 %i", entity)
-				LinkedEntities(entity, "m_OnHitMin", "math_counter")
-				LinkedEntities(entity, "m_OnHitMax", "math_counter")
+				EntityLinked(entity, "m_OnHitMin", "math_counter")
+				EntityLinked(entity, "m_OnHitMax", "math_counter")
 				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 			}
 		}
@@ -403,7 +403,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
-	//PrintToServer("%i", pThis, activator)
 	if(StrEqual(sInput, "Enable"))
 	{
 		if(partner)
@@ -441,7 +440,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	}
 	else if(StrEqual(sInput, "Break"))
 	{
-		//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 		if(partner)
 		{
 			gB_stateDisabled[activator][pThis] = true
@@ -449,8 +447,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else
 			gB_stateDisabled[0][pThis] = true
-		//PrintToServer("Break")
-		//AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 	}
 	else
 	{
@@ -472,30 +468,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else
 			gB_stateDisabled[0][pThisIndex] = false
-		//PrintToServer("%i %i %s", pThis, pThisIndex, sInput)
-		//gB_spawnBreakable = false
-		//CreateTimer(0.02, timer_breakable, _, TIMER_FLAG_NO_MAPCHANGE)
-		//PrintToServer("ForceSpawn")
-		//return MRES_Ignored
 	}
-	/*else if(StrEqual(sInput, "ForceSpawn"))
-	{
-		if(partner > 0)
-		{
-			gB_stateDisabled[activator][pThis] = true
-			gB_stateDisabled[partner][pThis] = true
-		}
-		else if(partner < 1)
-			gB_stateDisabled[0][pThis] = true
-	}*/
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }
-
-/*Action timer_breakable(Handle timer)
-{
-	gB_spawnBreakable = true
-}*/
 
 MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
@@ -539,8 +515,6 @@ public MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	int partner = Trikz_GetClientPartner(activator)
 	char sValue[64]
 	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, sValue, 64)
-	//if(!StrEqual(sInput, "Add") && !StrEqual(sInput, "Subtract"))
-	//	return MRES_Ignored
 	float flValue = StringToFloat(sValue)
 	int pThisIndex
 	for(int i = 1; i <= gI_mathTotalCount; i++)
