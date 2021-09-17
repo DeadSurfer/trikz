@@ -207,7 +207,7 @@ void LinkedEntities(int entity, char[] output, char[] classname)
 							}
 						}
 					}
-					OutputsOrInputs(entityLinked, sLinkedClassname[j])
+					OutputsOrInputs(entityLinked, sLinkedClassname[j], sTarget)
 				}
 			}
 		}
@@ -242,7 +242,7 @@ int FindLinkedEntities(int entity, char[] classname, char[] target, int parent =
 	return INVALID_ENT_REFERENCE
 }
 
-void OutputsOrInputs(int entity, char[] output)
+void OutputsOrInputs(int entity, char[] output, char[] target = "")
 {
 	int i
 	if(StrEqual(output, "func_brush"))
@@ -280,13 +280,8 @@ void OutputsOrInputs(int entity, char[] output)
 			{
 				Format(sName, 64, "m_iszTemplateEntityNames[%i]", j)
 				GetEntPropString(template, Prop_Data, sName, sName, 64)
-				char sTarget[64]
-				GetOutputActionTarget(template, "m_OnBreak", j, sTarget, 64)
-				if(StrEqual(sName, sTarget))
+				if(StrEqual(target, sName))
 				{
-					for(int k = 1; k <= gI_entityTotalCount; k++)
-						if(gI_breakID[k] == template)
-							break
 					gI_breakID[gI_entityTotalCount] = template
 					DHookEntity(gH_AcceptInput, false, template)
 					bBreak = true
