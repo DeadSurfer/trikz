@@ -313,8 +313,8 @@ void OutputsOrInputs(int entity, char[] output)
 				gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
 				//gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
 				//gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
-				//OutputChange(entity, "m_OnHitMin", "OnUser4")
-				//OutputChange(entity, "m_OnHitMax", "OnUser3")
+				//AddOutput(entity, "m_OnHitMin", "OnUser4")
+				//AddOutput(entity, "m_OnHitMax", "OnUser3")
 				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 				//PrintToServer("1 %i", entity)
 				LinkedEntities(entity, "m_OnHitMin", "math_counter")
@@ -366,7 +366,7 @@ void OutputsOrInputs(int entity, char[] output)
 		AcceptEntityInput(entity, "Toggle")
 }
 
-void OutputChange(int entity, char[] output, char[] outputtype)
+public void AddOutput(int entity, char[] output, char[] outputtype)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sOutput[4][256]
