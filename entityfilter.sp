@@ -56,7 +56,6 @@ float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
 float gF_mathMax[2048 + 1]
-bool gB_spawnBreakable
 
 public Plugin myinfo =
 {
@@ -104,11 +103,6 @@ public void OnPluginStart()
 	delete gH_PassServerEntityFilter
 	gH_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell)
 	RegPluginLibrary("fakeexpert-entityfilter")
-}
-
-public void OnMapStart()
-{
-	gB_spawnBreakable = true
 }
 
 public void OnClientPutInServer(int client)
@@ -772,16 +766,8 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "func_breakable"))
-		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnPost)
 	if(IsValidEntity(entity) && StrContains(classname, "_projectile") != -1)
 		SDKHook(entity, SDKHook_SetTransmit, TransmitNade)
-}
-
-void SDKSpawnPost(int entity)
-{
-	if(!gB_spawnBreakable)
-		AcceptEntityInput(entity, "Kill") //kill fully animation
 }
 
 int GetOutput(char[] output)
