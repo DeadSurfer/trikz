@@ -3528,7 +3528,9 @@ int Stuck(int client)
 
 bool TR_donthitself(int entity, int mask, int client)
 {
-	return entity != client && 0 < (LibraryExists("fakeexpert-entityfilter") ? gI_partner[entity] : entity) <= MaxClients
+	if(client == gI_partner[gI_partner[client]] || !gI_partner[client])
+		return entity != client && 0 < entity <= MaxClients
+	return false
 }
 
 int Native_GetClientButtons(Handle plugin, int numParams)
