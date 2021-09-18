@@ -2911,30 +2911,27 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 	}
-	if(!LibraryExists("fakeexpert-entityfilter"))
+	int other = Stuck(client)
+	if(0 < other <= MaxClients && IsPlayerAlive(client) && gB_block[other])
 	{
-		int other = Stuck(client)
-		if(0 < other <= MaxClients && IsPlayerAlive(client) && gB_block[other])
+		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 		{
-			if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
-			{
-				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
-				if(gB_color[other])
-					SetEntityRenderColor(other, gI_color[other][0], gI_color[other][1], gI_color[other][2], 125)
-				else
-					SetEntityRenderColor(other, 255, 255, 255, 125)
-			}
+			SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
+			if(gB_color[other])
+				SetEntityRenderColor(other, gI_color[other][0], gI_color[other][1], gI_color[other][2], 125)
+			else
+				SetEntityRenderColor(other, 255, 255, 255, 125)
 		}
-		else if(IsPlayerAlive(client) && other == -1 && gB_block[client])
+	}
+	else if(IsPlayerAlive(client) && other == -1 && gB_block[client])
+	{
+		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 		{
-			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
-			{
-				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-				if(gB_color[client])
-					SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
-				else
-					SetEntityRenderColor(client, 255, 255, 255, 255)
-			}
+			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+			if(gB_color[client])
+				SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
+			else
+				SetEntityRenderColor(client, 255, 255, 255, 255)
 		}
 	}
 }
@@ -3531,7 +3528,7 @@ int Stuck(int client)
 
 bool TR_donthitself(int entity, int mask, int client)
 {
-	return entity != client && 0 < entity <= MaxClients
+	return entity != client && 0 < (LibraryExists("fakeexpert-entityfilter") ? gI_partner[entity] : entity) <= MaxClients
 }
 
 int Native_GetClientButtons(Handle plugin, int numParams)
