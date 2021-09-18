@@ -356,7 +356,7 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		AcceptEntityInput(entity, "Toggle")
 }
 
-public void AddOutput(int entity, char[] output, char[] outputtype)
+void AddOutput(int entity, char[] output, char[] outputtype)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sOutput[4][256]
