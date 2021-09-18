@@ -3528,7 +3528,12 @@ int Stuck(int client)
 
 bool TR_donthitself(int entity, int mask, int client)
 {
-	if(client == gI_partner[gI_partner[client]] || !gI_partner[client])
+	if(LibraryExists("fakeexpert-entityfilter"))
+	{
+		if(client == gI_partner[gI_partner[client]] || !gI_partner[client])
+			return entity != client && 0 < entity <= MaxClients
+	}
+	else
 		return entity != client && 0 < entity <= MaxClients
 	return false
 }
