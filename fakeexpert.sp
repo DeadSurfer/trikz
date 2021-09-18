@@ -1529,7 +1529,7 @@ Action cmd_test(int client, int args)
 		char sArgString[256]
 		GetCmdArgString(sArgString, 256)
 		client = StringToInt(sArgString)
-		if(!gI_partner[client])
+		if(client && !gI_partner[client])
 		{
 			gI_partner[client] = client
 			Call_StartForward(gH_start)
@@ -1538,8 +1538,13 @@ Action cmd_test(int client, int args)
 			Restart(client)
 		}
 		for(int i = 1; i <= MaxClients; i++)
+		{
 			if(IsClientInGame(i))
+			{
 				PrintToServer("(%i %N)", i, i)
+				PrintToServer("CollisionGroup: %i %N", GetEntProp(i, Prop_Data, "m_CollisionGroup"), i)
+			}
+		}
 		PrintToServer("LibraryExists (fakeexpert-entityfilter): %i", LibraryExists("fakeexpert-entityfilter"))
 	}
 	return Plugin_Handled
@@ -3530,7 +3535,7 @@ bool TR_donthitself(int entity, int mask, int client)
 {
 	if(LibraryExists("fakeexpert-entityfilter"))
 	{
-		if(client == gI_partner[gI_partner[client]] || !gI_partner[client])
+		if(gI_partner[client] == gI_partner[entity])
 			return entity != client && 0 < entity <= MaxClients
 	}
 	else
