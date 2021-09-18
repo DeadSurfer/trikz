@@ -697,8 +697,8 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 				Format(sOrigOutput, 32, "m_%s", output)
 				for(int i = 1; i <= gI_maxLinks[caller]; i++)
 				{
-					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] += gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
-					gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] += gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
+					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
+					gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedTogglesDefault[i][caller]]
 				}
 			}
 			else
@@ -715,8 +715,8 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 						Format(sOrigOutput, 32, "m_%s", output)
 						for(int k = 1; k <= gI_maxMathLinks[math]; k++)
 						{
-							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]] += gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
-							gI_linkedToggles[partner][gI_linkedMathTogglesDefault[k][math]] += gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
+							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
+							gI_linkedToggles[partner][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
 						}
 					}
 				}
