@@ -1526,7 +1526,7 @@ Action cmd_test(int client, int args)
 		//VFormat(sNewText, 256, sText, 3)
 		//PrintToChat(client, sNewText)
 		//PrintToChat(client, "\x01%t", "Hello", "FakeExpert!")
-		/*char sArgString[256]
+		char sArgString[256]
 		GetCmdArgString(sArgString, 256)
 		client = StringToInt(sArgString)
 		if(!gI_partner[client])
@@ -1539,7 +1539,7 @@ Action cmd_test(int client, int args)
 		}
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
-				PrintToServer("(%i %N)", i, i)*/
+				PrintToServer("(%i %N)", i, i)
 		PrintToServer("LibraryExists (fakeexpert-entityfilter): %i", LibraryExists("fakeexpert-entityfilter"))
 	}
 	return Plugin_Handled
