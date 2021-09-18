@@ -442,7 +442,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else
 			gB_stateDisabled[0][pThis] = true
-		AcceptEntityInput(pThis, "FireUser4", activator, pThis)
+		AcceptEntityInput(pThis, "FireUser4", activator, pThis) //make fire brush with output
 	}
 	else
 	{
