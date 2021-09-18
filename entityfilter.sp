@@ -116,6 +116,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_load(Handle timer)
 {
+	//char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
@@ -262,12 +263,15 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		i = 8
 	else if(StrEqual(output, "math_counter"))
 		i = 9
-	if(i == 7)
+	if(i != 9)
 	{
 		for(int j = 1; j <= gI_entityTotalCount; j++)
 			if(gI_entityID[j] == entity)
 				return
 		gI_entityID[++gI_entityTotalCount] = entity
+	}
+	if(i == 7)
+	{
 		int template
 		bool bBreak
 		while((template = FindEntityByClassname(template, "point_template")) != INVALID_ENT_REFERENCE)
@@ -279,6 +283,7 @@ void OutputInput(int entity, char[] output, char[] target = "")
 				GetEntPropString(template, Prop_Data, sName, sName, 64)
 				if(StrEqual(target, sName))
 				{
+					//PrintToServer("%s", sName)
 					gI_breakID[gI_entityTotalCount] = template
 					DHookEntity(gH_AcceptInput, false, template)
 					bBreak = true
@@ -289,8 +294,10 @@ void OutputInput(int entity, char[] output, char[] target = "")
 				break
 		}
 		gB_stateDefaultDisabled[entity] = false
-		DHookEntity(gH_AcceptInput, false, entity)
+		gB_stateDefaultDisabled[0] = false
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
+		AddOutput(entity, "m_OnBreak", "OnUser4")
+		DHookEntity(gH_AcceptInput, false, entity)
 	}
 	if(i == 9)
 	{
@@ -302,27 +309,17 @@ void OutputInput(int entity, char[] output, char[] target = "")
 					if(gI_mathID[j] == entity)
 						return
 				gI_mathID[++gI_mathTotalCount] = entity
-				gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+				//gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+				//gF_mathValue[0][gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
 				//gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
 				//gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
 				//AddOutput(entity, "m_OnHitMin", "OnUser4")
 				//AddOutput(entity, "m_OnHitMax", "OnUser3")
-				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 				//PrintToServer("1 %i", entity)
 				EntityLinked(entity, "m_OnHitMin", "math_counter")
 				EntityLinked(entity, "m_OnHitMax", "math_counter")
 				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 			}
-		}
-	}
-	else
-	{
-		if(i != 7)
-		{
-			for(int j = 1; j <= gI_entityTotalCount; j++)
-				if(gI_entityID[j] == entity)
-					return
-			gI_entityID[++gI_entityTotalCount] = entity
 		}
 	}
 	if(i < 7)
@@ -445,6 +442,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else
 			gB_stateDisabled[0][pThis] = true
+		AcceptEntityInput(pThis, "FireUser4", activator, pThis)
 	}
 	else
 	{
