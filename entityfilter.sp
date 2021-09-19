@@ -132,6 +132,8 @@ Action timer_load(Handle timer)
 			gI_entityOutput[j][i] = 0
 			gI_mathOutput[j][i] = 0
 		}
+		for(int j = 1; j <= MaxClients; j++)
+			gI_linkedToggles[j][i] = 0
 	}
 	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
