@@ -120,7 +120,7 @@ Action timer_load(Handle timer)
 	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
-	for(int i = 0; i <= 2048; i++)
+	for(int i = 1; i <= 2048; i++)
 	{
 		gI_maxLinks[i] = 0
 		gI_maxMathLinks[i] = 0
@@ -283,7 +283,6 @@ void OutputInput(int entity, char[] output, char[] target = "")
 				GetEntPropString(template, Prop_Data, sName, sName, 64)
 				if(StrEqual(target, sName))
 				{
-					//PrintToServer("%s", sName)
 					gI_breakID[gI_entityTotalCount] = template
 					DHookEntity(gH_AcceptInput, false, template)
 					bBreak = true
