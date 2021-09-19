@@ -3528,16 +3528,15 @@ int Stuck(int client)
 	GetClientMaxs(client, maxs)
 	GetClientAbsOrigin(client, origin)
 	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //skiper, gurman idea, plugin 2020
-	if(-1 <= TR_GetEntityIndex() <= MaxClients)
-		return TR_GetEntityIndex()
+	return TR_GetEntityIndex()
 }
 
 bool TR_donthitself(int entity, int mask, int client)
 {
 	if(LibraryExists("fakeexpert-entityfilter"))
 	{
-		if(gI_partner[client] == gI_partner[entity])
-			return entity != client && 0 < entity <= MaxClients
+		if(entity != client && gI_partner[client] == gI_partner[entity])
+			return 0 < entity <= MaxClients
 	}
 	else
 		return entity != client && 0 < entity <= MaxClients
