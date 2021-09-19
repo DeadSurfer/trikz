@@ -3536,7 +3536,7 @@ bool TR_donthitself(int entity, int mask, int client)
 	if(LibraryExists("fakeexpert-entityfilter"))
 	{
 		if(entity != client && 0 < entity <= MaxClients && gI_partner[client] == gI_partner[entity])
-			return entity
+			return true
 	}
 	else
 		return entity != client && 0 < entity <= MaxClients
