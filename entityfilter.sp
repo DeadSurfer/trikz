@@ -293,7 +293,7 @@ void OutputInput(int entity, char[] output, char[] target = "")
 				break
 		}
 		gB_stateDefaultDisabled[entity] = false
-		gB_stateDefault[0][entity] = false
+		gB_stateDisabled[0][entity] = false
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
 		AddOutput(entity, "m_OnBreak", "OnUser4")
 		DHookEntity(gH_AcceptInput, false, entity)
