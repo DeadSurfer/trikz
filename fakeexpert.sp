@@ -3537,7 +3537,6 @@ bool TR_donthitself(int entity, int mask, int client)
 		return entity != client && 0 < entity <= MaxClients && gI_partner[entity] == gI_partner[client]
 	else
 		return entity != client && 0 < entity <= MaxClients
-	return false
 }
 
 int Native_GetClientButtons(Handle plugin, int numParams)
