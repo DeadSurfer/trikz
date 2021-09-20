@@ -751,9 +751,9 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 		partner = Trikz_GetClientPartner(ent2)
 	if(0 < ent2 <= MaxClients && ((!gB_stateDisabled[ent2][ent1] && partner) || (!gB_stateDisabled[0][ent1] && !partner)))
 		return MRES_Ignored
-	char classname[32]
-	GetEntityClassname(ent2, classname, 32)
-	if(StrContains(classname, "projectile") != -1)
+	char sClassname[32]
+	GetEntityClassname(ent2, sClassname, 32)
+	if(StrContains(sClassname, "projectile") != -1)
 	{
 		int ent2owner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
 		if(0 < ent2owner <= MaxClients && ((!gB_stateDisabled[ent2owner][ent1] && partner) || (!gB_stateDisabled[0][ent1] && !partner)))
