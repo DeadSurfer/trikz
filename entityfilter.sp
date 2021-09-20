@@ -168,8 +168,6 @@ void EntityLinked(int entity, char[] output, char[] classname)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
-	if(count)
-		OutputInput(entity, classname)
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
@@ -398,6 +396,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
+	PrintToServer("%i", pThis)
 	if(StrEqual(sInput, "Enable"))
 	{
 		if(partner)
