@@ -138,13 +138,13 @@ Action timer_load(Handle timer)
 		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
-			if(i < 5)
+			if(i != 5)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
 					EntityLinked(entity, sOutput[j])
 			}
-			else if(i == 5)
+			else
 			{
 				EntityLinked(entity, "m_OnPressed")
 				EntityLinked(entity, "m_OnDamaged")
