@@ -310,8 +310,8 @@ void OutputInput(int entity, char[] output, char[] target = "")
 				//AddOutput(entity, "m_OnHitMin", "OnUser4")
 				//AddOutput(entity, "m_OnHitMax", "OnUser3")
 				//PrintToServer("1 %i", entity)
-				EntityLinked(entity, "m_OnHitMin", "math_counter")
-				EntityLinked(entity, "m_OnHitMax", "math_counter")
+				EntityLinked(entity, "m_OnHitMin")
+				EntityLinked(entity, "m_OnHitMax")
 				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 			}
 		}
