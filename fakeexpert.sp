@@ -1526,20 +1526,23 @@ Action cmd_test(int client, int args)
 		int team = GetClientTeam(client)
 		char sTeam[32]
 		char sTeamColor[32]
-		if(team == 1)
+		switch(team)
 		{
-			Format(sTeam, 32, "Spectator")
-			Format(sTeamColor, 32, "\x07CCCCCC")
-		}
-		else if(team == 2)
-		{
-			Format(sTeam, 32, "Terrorist")
-			Format(sTeamColor, 32, "\x07FF4040")
-		}
-		else if(team == 3)
-		{
-			Format(sTeam, 32, "Counter-Terrorist")
-			Format(sTeamColor, 32, "\x0799CCFF")
+			case: 1
+			{
+				Format(sTeam, 32, "Spectator")
+				Format(sTeamColor, 32, "\x07CCCCCC")
+			}
+			case: 2
+			{
+				Format(sTeam, 32, "Terrorist")
+				Format(sTeamColor, 32, "\x07FF4040")
+			}
+			case: 3
+			{
+				Format(sTeam, 32, "Counter-Terrorist")
+				Format(sTeamColor, 32, "\x0799CCFF")
+			}
 		}
 		Format(sText, 256, "\x01%T", "Hello", client, "FakeExpert", sName, sTeam)
 		ReplaceString(sText, 256, ";#", "\x07")
