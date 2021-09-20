@@ -142,12 +142,12 @@ Action timer_load(Handle timer)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
-					EntityLinked(entity, sOutput[j], sClassname[i])
+					EntityLinked(entity, sOutput[j])
 			}
 			else if(i == 5)
 			{
-				EntityLinked(entity, "m_OnPressed", sClassname[i])
-				EntityLinked(entity, "m_OnDamaged", sClassname[i])
+				EntityLinked(entity, "m_OnPressed")
+				EntityLinked(entity, "m_OnDamaged")
 			}
 		}
 	}
@@ -160,7 +160,7 @@ Action timer_load(Handle timer)
 	PrintToServer("Total entities in proccess: %i. Math counters: %i", gI_entityTotalCount, gI_mathTotalCount)
 }
 
-void EntityLinked(int entity, char[] output, char[] classname)
+void EntityLinked(int entity, char[] output)
 {
 	int count = GetOutputActionCount(entity, output)
 	char sInput[64]
