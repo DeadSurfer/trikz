@@ -209,7 +209,7 @@ public void OnPluginStart()
 		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
 		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
-	//LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
+	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 	gH_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell)
 }
 
@@ -1520,12 +1520,32 @@ Action cmd_test(int client, int args)
 		-1.000000 == -1.0 | true
 		0.100000 == 0.1 | true
 		*/
-		//char sText[256]
-		//Format(sText, 256, "[SM] %T", "Hello", client, "FakeExpert!")
-		//char sNewText[256]
-		//VFormat(sNewText, 256, sText, 3)
-		//PrintToChat(client, sNewText)
-		//PrintToChat(client, "\x01%t", "Hello", "FakeExpert!")
+		char sText[256]
+		char sName[MAX_NAME_LENGTH]
+		GetClientName(client, sName, MAX_NAME_LENGTH)
+		int team = GetClientTeam(client)
+		char sTeam[32]
+		char sTeamColor[32]
+		if(team == 1)
+		{
+			Format(sTeam, 32, "Spectator")
+			Format(sTeamColor, 32, "\x07CCCCCC")
+		}
+		else if(team == 2)
+		{
+			Format(sTeam, 32, "Terrorist")
+			Format(sTeamColor, 32, "\x07FF4040")
+		}
+		else if(team == 3)
+		{
+			Format(sTeam, 32, "Counter-Terrorist")
+			Format(sTeamColor, 32, "\x0799CCFF")
+		}
+		Format(sText, 256, "\x01%T", "Hello", client, "FakeExpert", sName, sTeam)
+		ReplaceString(sText, 256, ";#", "\x07")
+		ReplaceString(sText, 256, "{default}", "\x01")
+		ReplaceString(sText, 256, "{teamcolor}", sTeamColor)
+		PrintToChat(client, "%s", sText)
 		char sArgString[256]
 		GetCmdArgString(sArgString, 256)
 		client = StringToInt(sArgString)
