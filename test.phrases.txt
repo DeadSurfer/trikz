@@ -1,0 +1,9 @@
+"Phrases"
+{
+	//Example: "Hello, Bail! Welcome to FakeExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
+	"Hello"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"Hello, ;#FF5733{2}! {default}Welcome to ;#FF4040{1}. {default}Your team is {teamcolor}{3}."
+	}
+}
