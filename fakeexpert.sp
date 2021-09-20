@@ -211,6 +211,7 @@ public void OnPluginStart()
 	}
 	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 	gH_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell)
+	RegPluginLibrary("fakeexpert")
 }
 
 public void OnMapStart()
