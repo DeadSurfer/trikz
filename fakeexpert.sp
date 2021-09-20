@@ -1528,17 +1528,17 @@ Action cmd_test(int client, int args)
 		char sTeamColor[32]
 		switch(team)
 		{
-			case: 1
+			case 1:
 			{
 				Format(sTeam, 32, "Spectator")
 				Format(sTeamColor, 32, "\x07CCCCCC")
 			}
-			case: 2
+			case 2:
 			{
 				Format(sTeam, 32, "Terrorist")
 				Format(sTeamColor, 32, "\x07FF4040")
 			}
-			case: 3
+			case 3:
 			{
 				Format(sTeam, 32, "Counter-Terrorist")
 				Format(sTeamColor, 32, "\x0799CCFF")
