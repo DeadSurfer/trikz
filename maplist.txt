@@ -9,6 +9,7 @@ trikz_blue
 trikz_cyrus
 trikz_daemon
 trikz_Desert_b7
+trikz_devision
 trikz_diversity_final
 trikz_dust_final
 trikz_eonia
