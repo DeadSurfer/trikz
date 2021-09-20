@@ -117,7 +117,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_load(Handle timer)
 {
-	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
+	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
 	for(int i = 1; i <= 2048; i++)
@@ -138,20 +138,24 @@ Action timer_load(Handle timer)
 		int entity
 		while((entity = FindEntityByClassname(entity, sClassname[i])) != INVALID_ENT_REFERENCE)
 		{
-			if(i != 5)
+			if(i < 5)
 			{
 				char sOutput[][] = {"m_OnStartTouch", "m_OnEndTouchAll", "m_OnTouching", "m_OnEndTouch", "m_OnTrigger", "m_OnStartTouchAll"}
 				for(int j = 0; j < sizeof(sOutput); j++)
 					EntityLinked(entity, sOutput[j])
 			}
-			else
+			else if(i == 5)
 			{
 				EntityLinked(entity, "m_OnPressed")
 				EntityLinked(entity, "m_OnDamaged")
 			}
+			else if(i == 6)
+			{
+				EntityLinked(entity, "m_OnHitMin")
+				EntityLinked(entity, "m_OnHitMax")
+			}
 		}
 	}
-	OutputInput(0, "math_counter")
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
@@ -213,9 +217,7 @@ void EntityLinked(int entity, char[] output)
 		else if(StrEqual(sInput, "Add") || StrEqual(sInput, "Subtract"))
 		{
 			int entityLinked = FindLinkedEntity(entityLinked, "math_counter", sTarget)
-			if(IsValidEntity(entityLinked))
-				if(GetOutputActionCount(entityLinked, "m_OutValue") || GetOutputActionCount(entityLinked, "m_OnGetValue") || GetOutputActionCount(entityLinked, "m_OnUser3") || GetOutputActionCount(entityLinked, "m_OnUser4")) //thanks to george for original code.
-					OutputInput(entityLinked, "math_counter")
+			OutputInput(entityLinked, "math_counter")
 		}
 	}
 }
@@ -258,12 +260,19 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		i = 8
 	else if(StrEqual(output, "math_counter"))
 		i = 9
-	if(i != 9)
+	if(entity > 0)
 	{
 		for(int j = 1; j <= gI_entityTotalCount; j++)
 			if(gI_entityID[j] == entity)
 				return
 		gI_entityID[++gI_entityTotalCount] = entity
+	}
+	else
+	{
+		for(int j = 1; j <= gI_mathTotalCount; j++)
+			if(gI_mathID[j] == entity)
+				return
+		gI_mathID[++gI_mathTotalCount] = entity
 	}
 	if(i == 7)
 	{
@@ -295,25 +304,17 @@ void OutputInput(int entity, char[] output, char[] target = "")
 	}
 	if(i == 9)
 	{
-		while((entity = FindEntityByClassname(entity, "math_counter")) != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(entity) && (!GetOutputActionCount(entity, "m_OutValue") || !GetOutputActionCount(entity, "m_OnGetValue") || !GetOutputActionCount(entity, "m_OnUser3") || !GetOutputActionCount(entity, "m_OnUser4"))) //thanks to george for original code.
 		{
-			//if(GetOutputActionCount(entity, "m_OutValue") || GetOutputActionCount(entity, "m_OnGetValue") || GetOutputActionCount(entity, "m_OnUser3") || GetOutputActionCount(entity, "m_OnUser4"))
-			{
-				for(int j = 1; j <= gI_mathTotalCount; j++)
-					if(gI_mathID[j] == entity)
-						return
-				gI_mathID[++gI_mathTotalCount] = entity
-				//gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
-				//gF_mathValue[0][gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
-				//gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
-				//gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
-				//AddOutput(entity, "m_OnHitMin", "OnUser4")
-				//AddOutput(entity, "m_OnHitMax", "OnUser3")
-				//PrintToServer("1 %i", entity)
-				EntityLinked(entity, "m_OnHitMin")
-				EntityLinked(entity, "m_OnHitMax")
-				//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
-			}
+			gF_mathValueDefault[gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+			gF_mathValue[0][gI_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"))
+			gF_mathMin[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin")
+			gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
+			AddOutput(entity, "m_OnHitMin", "OnUser4")
+			AddOutput(entity, "m_OnHitMax", "OnUser3")
+			//EntityLinked(entity, "m_OnHitMin")
+			//EntityLinked(entity, "m_OnHitMax")
+			//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 		}
 	}
 	if(i < 7)
@@ -501,6 +502,8 @@ public MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
+	if(!StrEqual(sInput, "Add") && !StrEqual(sInput, "Subtract") && !StrEqual(sInput, "SetValue") && !StrEqual(sInput, "SetValueNoFire"))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
 	char sValue[64]
@@ -674,7 +677,7 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 {
 	char sClassname[32]
-	GetEntPropString(activator, Prop_Data, "m_iClassname", sClassname, 32)
+	GetEntityClassname(activator, sClassname, 32)
 	if(StrContains(sClassname, "projectile") != -1)
 		if(activator > MaxClients)
 			activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
@@ -749,7 +752,7 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	if(0 < ent2 <= MaxClients && ((!gB_stateDisabled[ent2][ent1] && partner) || (!gB_stateDisabled[0][ent1] && !partner)))
 		return MRES_Ignored
 	char classname[32]
-	GetEntPropString(ent2, Prop_Data, "m_iClassname", classname, 32)
+	GetEntityClassname(ent2, classname, 32)
 	if(StrContains(classname, "projectile") != -1)
 	{
 		int ent2owner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
