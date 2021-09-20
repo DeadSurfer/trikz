@@ -117,7 +117,6 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_load(Handle timer)
 {
-	//char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "func_breakable"}
 	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
@@ -134,7 +133,6 @@ Action timer_load(Handle timer)
 			gI_mathOutput[j][i] = 0
 		}
 	}
-	//bool gB_once
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
 		int entity
@@ -154,10 +152,8 @@ Action timer_load(Handle timer)
 		}
 	}
 	OutputInput(0, "math_counter")
-	//char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
-	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "math_counter"}
-	//char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnHitMin", "OnHitMax", "OnUser3", "OnUser4"}
+	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
+	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"}
 	for(int i = 0; i < sizeof(sTriggers); i++)
 		for(int j = 0; j < sizeof(sOutputs); j++)
 			HookEntityOutput(sTriggers[i], sOutputs[j], TriggerOutputHook)
@@ -677,8 +673,11 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 {
-	if(activator > MaxClients)
-		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
+	char sClassname[32]
+	GetEntPropString(activator, Prop_Data, "m_iClassname", sClassname, 32)
+	if(StrContains(sClassname, "projectile") != -1)
+		if(activator > MaxClients)
+			activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
