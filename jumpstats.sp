@@ -458,7 +458,7 @@ Action SDKSkyFix2(int client, int other)
 
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && LibraryExists("fakeexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("fakeexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : gI_entityButtons[other] & IN_JUMP) && GetEngineTime() - gF_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
