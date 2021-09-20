@@ -109,6 +109,7 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SetTransmit, TransmitPlayer)
 }
+
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	CreateTimer(2.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE) //Make work logic_auto on delay.
