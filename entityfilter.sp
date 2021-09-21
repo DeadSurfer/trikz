@@ -312,8 +312,6 @@ void OutputInput(int entity, char[] output, char[] target = "")
 			gF_mathMax[gI_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax")
 			AddOutput(entity, "m_OnHitMin", "OnUser4")
 			AddOutput(entity, "m_OnHitMax", "OnUser3")
-			//EntityLinked(entity, "m_OnHitMin")
-			//EntityLinked(entity, "m_OnHitMax")
 			DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 		}
 	}
@@ -498,12 +496,10 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Supercede
 }
 
-public MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
+MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
-	if(!StrEqual(sInput, "Add") && !StrEqual(sInput, "Subtract") && !StrEqual(sInput, "SetValue") && !StrEqual(sInput, "SetValueNoFire"))
-		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
 	char sValue[64]
