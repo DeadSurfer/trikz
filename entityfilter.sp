@@ -646,15 +646,19 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
 				if(partner)
+				{
 					if(gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
 						return Plugin_Handled
+				}
 				else
 					if(gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
 						return Plugin_Handled
 			}
 			if(partner)
+			{
 				if(gF_buttonReady[activator][caller] > GetGameTime() || gB_stateDisabled[activator][caller])
 					return Plugin_Handled
+			}
 			else
 				if(gF_buttonReady[partner][caller] > GetGameTime() || gB_stateDisabled[partner][caller])
 					return Plugin_Handled
@@ -679,8 +683,10 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					int math = i
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
 					if(partner)
+					{
 						if(gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
 							return Plugin_Handled
+					}
 					else
 						if(gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]])
 							return Plugin_Handled
