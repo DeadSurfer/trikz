@@ -613,8 +613,11 @@ Action EntityVisibleTransmit(int entity, int client)
 		{
 			int target = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 			if(0 < target <= MaxClients)
-				if(gB_stateDisabled[target][entity])
+			{
+				int partner = Trikz_GetClientPartner(target)
+				if(gB_stateDisabled[partner][entity])
 					return Plugin_Handled
+			}
 		}
 		int partner = Trikz_GetClientPartner(client)
 		if(gB_stateDisabled[partner][entity])
@@ -640,19 +643,35 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 		int partner = Trikz_GetClientPartner(activator)
 		if(caller > 0)
 		{
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
-				if(gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
-					return Plugin_Handled
-			if(gF_buttonReady[activator][caller] > GetGameTime() || gB_stateDisabled[activator][caller])
-				return Plugin_Handled
-			gF_buttonReady[activator][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
-			gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
-			char sOrigOutput[32]
-			Format(sOrigOutput, 32, "m_%s", output)
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+			if(partner)
 			{
-				gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedEntitiesDefault[i][caller]]
-				gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedEntitiesDefault[i][caller]]
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
+					if(gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
+						return Plugin_Handled
+				if(gF_buttonReady[activator][caller] > GetGameTime() || gB_stateDisabled[activator][caller])
+					return Plugin_Handled
+				gF_buttonReady[activator][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
+				gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
+				char sOrigOutput[32]
+				Format(sOrigOutput, 32, "m_%s", output)
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
+				{
+					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedEntitiesDefault[i][caller]]
+					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedEntitiesDefault[i][caller]]
+				}
+			}
+			else
+			{
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
+					if(gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
+						return Plugin_Handled
+				if(gF_buttonReady[activator][caller] > GetGameTime() || gB_stateDisabled[partner][caller])
+					return Plugin_Handled
+				gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
+				char sOrigOutput[32]
+				Format(sOrigOutput, 32, "m_%s", output)
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
+					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOrigOutput)][gI_linkedEntitiesDefault[i][caller]]
 			}
 		}
 		else
@@ -661,19 +680,36 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			{
 				if(gI_mathID[i] == caller)
 				{
-					int math = i
-					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
-						if(gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
-							return Plugin_Handled
-					char sOrigOutput[32]
-					if(StrEqual(output, "OnUser3"))
-						Format(sOrigOutput, 32, "m_OnHitMax", output)
-					else if(StrEqual(output, "OnUser4"))
-						Format(sOrigOutput, 32, "m_OnHitMin", output)
-					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
+					if(partner)
 					{
-						gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathEntitiesDefault[j][math]]
-						gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathEntitiesDefault[j][math]]
+						int math = i
+						for(int j = 1; j <= gI_maxMathLinks[math]; j++)
+							if(gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
+								return Plugin_Handled
+						char sOrigOutput[32]
+						if(StrEqual(output, "OnUser3"))
+							Format(sOrigOutput, 32, "m_OnHitMax", output)
+						else if(StrEqual(output, "OnUser4"))
+							Format(sOrigOutput, 32, "m_OnHitMin", output)
+						for(int j = 1; j <= gI_maxMathLinks[math]; j++)
+						{
+							gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathEntitiesDefault[j][math]]
+							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathEntitiesDefault[j][math]]
+						}
+					}
+					else
+					{
+						int math = i
+						for(int j = 1; j <= gI_maxMathLinks[math]; j++)
+							if(gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]])
+								return Plugin_Handled
+						char sOrigOutput[32]
+						if(StrEqual(output, "OnUser3"))
+							Format(sOrigOutput, 32, "m_OnHitMax", output)
+						else if(StrEqual(output, "OnUser4"))
+							Format(sOrigOutput, 32, "m_OnHitMin", output)
+						for(int j = 1; j <= gI_maxMathLinks[math]; j++)
+							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathEntitiesDefault[j][math]]
 					}
 				}
 			}
