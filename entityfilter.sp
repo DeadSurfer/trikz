@@ -175,11 +175,11 @@ void EntityLinked(int entity, char[] output)
 		GetOutputActionTarget(entity, output, i, sTarget, 64)
 		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break"))
 		{
-			char sLinkedClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable"}
-			for(int j = 0; j < sizeof(sLinkedClassname); j++)
+			char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable"}
+			for(int j = 0; j < sizeof(sClassname); j++)
 			{
 				int entityLinked
-				while((entityLinked = FindLinkedEntity(entityLinked, sLinkedClassname[j], sTarget, entity)) != INVALID_ENT_REFERENCE)
+				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, entity)) != INVALID_ENT_REFERENCE)
 				{
 					if(entity > 0)
 					{
@@ -198,7 +198,7 @@ void EntityLinked(int entity, char[] output)
 							}
 						}
 					}
-					OutputInput(entityLinked, sLinkedClassname[j], sTarget)
+					OutputInput(entityLinked, sClassname[j], sTarget)
 					if(StrEqual(output, "m_OnPressed") || StrEqual(output, "m_OnDamaged"))
 						OutputInput(entity, "func_button")
 				}
@@ -464,17 +464,17 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		if(!pThisIndex)
 			return MRES_Ignored
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(gI_linkedEntities[activator][pThisIndex] && partner)
 		{
-			gB_stateDisabled[activator][pThis] = false
-			gB_stateDisabled[partner][pThis] = false
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
+			gB_stateDisabled[activator][pThisIndex] = false
+			gB_stateDisabled[partner][pThisIndex] = false
+			gI_linkedEntities[activator][pThisIndex]--
+			gI_linkedEntities[partner][pThisIndex]--
 		}
-		if(gI_linkedEntities[0][pThis])
+		if(gI_linkedEntities[0][pThisIndex])
 		{
-			gB_stateDisabled[0][pThis] = false
-			gI_linkedEntities[0][pThis]--
+			gB_stateDisabled[0][pThisIndex] = false
+			gI_linkedEntities[0][pThisIndex]--
 		}
 	}
 	DHookSetReturn(hReturn, false)
@@ -529,6 +529,8 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
+	if(!StrEqual(sInput, "Add") && !StrEqual(sInput, "Subtract") && !StrEqual(sInput, "SetValue") && !StrEqual(sInput, "SetValueNoFire"))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
 	char sValue[64]
@@ -753,7 +755,7 @@ Action TransmitPlayer(int entity, int client) //entity - me, client - loop all c
 	{
 		if(Trikz_GetClientPartner(entity) == client) //make visible partner
 			return Plugin_Continue
-		if(!Trikz_GetClientPartner(entity) && !Trikz_GetClientPartner(client)) //make visible no mates for no mate
+		else if(!Trikz_GetClientPartner(entity) && !Trikz_GetClientPartner(client)) //make visible no mates for no mate
 			return Plugin_Continue
 		return Plugin_Handled
 	}
@@ -768,9 +770,9 @@ Action TransmitNade(int entity, int client) //entity - nade, client - loop all c
 	{		
 		if(entOwner == client) //make visible own nade
 			return Plugin_Continue
-		if(partner == client) //make visible partner
+		if(partner == client) //make visible partner nade
 			return Plugin_Continue
-		if(!partner && !Trikz_GetClientPartner(client)) //make visible nade only for no mates
+		else if(!partner && !Trikz_GetClientPartner(client)) //make visible nade only for no mates
 			return Plugin_Continue
 		return Plugin_Handled
 	}
