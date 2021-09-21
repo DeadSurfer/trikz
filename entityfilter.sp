@@ -464,18 +464,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		if(!pThisIndex)
 			return MRES_Ignored
-		if(gI_linkedEntities[activator][pThisIndex] && partner)
-		{
-			gB_stateDisabled[activator][pThisIndex] = false
-			gB_stateDisabled[partner][pThisIndex] = false
-			gI_linkedEntities[activator][pThisIndex]--
-			gI_linkedEntities[partner][pThisIndex]--
-		}
-		if(gI_linkedEntities[0][pThisIndex])
-		{
-			gB_stateDisabled[0][pThisIndex] = false
-			gI_linkedEntities[0][pThisIndex]--
-		}
+		gB_stateDisabled[activator][pThisIndex] = false
+		gB_stateDisabled[partner][pThisIndex] = false
 	}
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
