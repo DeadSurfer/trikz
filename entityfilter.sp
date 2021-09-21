@@ -314,7 +314,7 @@ void OutputInput(int entity, char[] output, char[] target = "")
 			AddOutput(entity, "m_OnHitMax", "OnUser3")
 			//EntityLinked(entity, "m_OnHitMin")
 			//EntityLinked(entity, "m_OnHitMax")
-			//DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
+			DHookEntity(gH_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath)
 		}
 	}
 	if(i < 7)
@@ -708,15 +708,18 @@ Action TriggerOutputHook(char[] output, int caller, int activator, float delay)
 					if(gI_mathID[i] == caller)
 					{
 						int math = i
-						for(int k = 1; k <= gI_maxMathLinks[math]; k++)
-							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]])
+						for(int j = 1; j <= gI_maxMathLinks[math]; j++)
+							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][math]])
 								return Plugin_Handled
 						char sOrigOutput[32]
-						Format(sOrigOutput, 32, "m_%s", output)
-						for(int k = 1; k <= gI_maxMathLinks[math]; k++)
+						if(StrEqual(output, "OnUser3"))
+							Format(sOrigOutput, 32, "m_OnHitMax", output)
+						else if(StrEqual(output, "OnUser4"))
+							Format(sOrigOutput, 32, "m_OnHitMin", output)
+						for(int j = 1; j <= gI_maxMathLinks[math]; j++)
 						{
-							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
-							gI_linkedToggles[partner][gI_linkedMathTogglesDefault[k][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[k][math]]
+							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[j][math]]
+							gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[j][math]]
 						}
 					}
 				}
