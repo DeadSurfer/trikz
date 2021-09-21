@@ -450,8 +450,12 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		if(!pThisIndex)
 			return MRES_Ignored
-		gB_stateDisabled[activator][pThisIndex] = false
-		gB_stateDisabled[partner][pThisIndex] = false
+		if(partner)
+		{
+			gB_stateDisabled[activator][pThisIndex] = false
+			gB_stateDisabled[partner][pThisIndex] = false
+		}
+		gB_stateDisabled[0][pThisIndex] = false
 	}
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
