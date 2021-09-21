@@ -45,9 +45,9 @@ int gI_mathID[2048 + 1]
 int gI_mathTotalCount
 int gI_breakID[2048 + 1]
 native int Trikz_GetClientPartner(int client)
-int gI_linkedEntitiesDefault[2048 + 1][2048 + 1]
-int gI_linkedEntities[MAXPLAYERS + 1][2048 + 1]
-int gI_linkedMathEntitiesDefault[2048 + 1][2048 + 1]
+int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
+int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
+int gI_linkedMathTogglesDefault[2048 + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_maxMathLinks[2048 + 1]
 int gI_entityOutput[11][2048 + 1]
@@ -179,22 +179,25 @@ void EntityLinked(int entity, char[] output)
 			for(int j = 0; j < sizeof(sClassname); j++)
 			{
 				int entityLinked
-				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, entity)) != INVALID_ENT_REFERENCE)
+				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, StrEqual(sInput, "Toggle") ? entity : 0)) != INVALID_ENT_REFERENCE)
 				{
-					if(entity > 0)
+					if(StrEqual(sInput, "Toggle"))
 					{
-						gI_linkedEntitiesDefault[++gI_maxLinks[entity]][entity] = entityLinked
-						gI_entityOutput[GetOutput(output)][entityLinked]++
-					}
-					else
-					{
-						for(int k = 1; k <= gI_mathTotalCount; k++)
+						if(entity > 0)
 						{
-							if(gI_mathID[k] == entity)
+							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
+							gI_entityOutput[GetOutput(output)][entityLinked]++
+						}
+						else
+						{
+							for(int k = 1; k <= gI_mathTotalCount; k++)
 							{
-								int math = k
-								gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
-								gI_mathOutput[GetOutput(output)][entityLinked]++
+								if(gI_mathID[k] == entity)
+								{
+									int math = k
+									gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+									gI_mathOutput[GetOutput(output)][entityLinked]++
+								}
 							}
 						}
 					}
@@ -320,6 +323,7 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		DHookEntity(gH_AcceptInput, false, entity)
 	else if(i == 8)
 	{
+		SDKHook(entity, SDKHook_Use, HookButton)
 		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage)
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		gF_buttonReady[0][entity] = 0.0
@@ -371,7 +375,7 @@ void Reset(int client)
 	{
 		gB_stateDisabled[client][gI_entityID[i]] = gB_stateDefaultDisabled[gI_entityID[i]]
 		gF_buttonReady[client][gI_entityID[i]] = 0.0
-		gI_linkedEntities[client][gI_entityID[i]] = 0
+		gI_linkedToggles[client][gI_entityID[i]] = 0
 	}
 	for(int i = 1; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
@@ -392,63 +396,45 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	int partner = Trikz_GetClientPartner(activator)
 	if(StrEqual(sInput, "Enable"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(partner)
 		{
 			gB_stateDisabled[activator][pThis] = false
 			gB_stateDisabled[partner][pThis] = false
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
 		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = false
-			gI_linkedEntities[0][pThis]--
-		}
+		gB_stateDisabled[0][pThis] = false
 	}
 	else if(StrEqual(sInput, "Disable"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(partner)
 		{
 			gB_stateDisabled[activator][pThis] = true
 			gB_stateDisabled[partner][pThis] = true
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
 		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = true
-			gI_linkedEntities[0][pThis]--
-		}
+		gB_stateDisabled[0][pThis] = true
 	}
 	else if(StrEqual(sInput, "Toggle"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(gI_linkedToggles[activator][pThis] && partner)
 		{
 			gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 			gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
+			gI_linkedToggles[activator][pThis]--
+			gI_linkedToggles[partner][pThis]--
 		}
-		if(gI_linkedEntities[0][pThis])
+		if(gI_linkedToggles[0][pThis])
 		{
 			gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
-			gI_linkedEntities[0][pThis]--
+			gI_linkedToggles[0][pThis]--
 		}
 	}
 	else if(StrEqual(sInput, "Break"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(partner)
 		{
 			gB_stateDisabled[activator][pThis] = true
 			gB_stateDisabled[partner][pThis] = true
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
 		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = true
-			gI_linkedEntities[0][pThis]--
-		}
+		gB_stateDisabled[0][pThis] = true
 		AcceptEntityInput(pThis, "FireUser4", activator, pThis) //make fire brush with output
 	}
 	else
@@ -483,33 +469,21 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	int partner = Trikz_GetClientPartner(activator)
 	if(StrEqual(sInput, "Unlock"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(partner)
 		{
 			gB_stateDisabled[activator][pThis] = false
 			gB_stateDisabled[partner][pThis] = false
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
 		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = false
-			gI_linkedEntities[0][pThis]--
-		}
+		gB_stateDisabled[0][pThis] = false
 	}
 	else if(StrEqual(sInput, "Lock"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(partner)
 		{
 			gB_stateDisabled[activator][pThis] = true
 			gB_stateDisabled[partner][pThis] = true
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
 		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = true
-			gI_linkedEntities[0][pThis]--
-		}
+		gB_stateDisabled[0][pThis] = true
 	}
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
@@ -642,6 +616,20 @@ Action EntityVisibleTransmit(int entity, int client)
 	return Plugin_Continue
 }
 
+Action HookButton(int entity, int activator, int caller, UseType type, float value)
+{
+	int partner = Trikz_GetClientPartner(activator)
+	if(partner)
+	{
+		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
+			return Plugin_Handled
+	}
+	else
+		if(gF_buttonReady[partner][entity] > GetGameTime() || gB_stateDisabled[partner][entity])
+			return Plugin_Handled
+	return Plugin_Continue
+}
+
 Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
 {
 	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker)
@@ -663,11 +651,11 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			{
 				if(partner)
 				{
-					if(gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
+					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
 						return Plugin_Handled
 				}
 				else
-					if(gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
+					if(gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]])
 						return Plugin_Handled
 			}
 			if(partner)
@@ -686,8 +674,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
 				if(partner)
-					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-				gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
+				gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
 			}
 		}
 		else
@@ -700,11 +688,11 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
 					if(partner)
 					{
-						if(gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
+						if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][math]])
 							return Plugin_Handled
 					}
 					else
-						if(gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]])
+						if(gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][math]])
 							return Plugin_Handled
 					char sOutput[32]
 					if(StrEqual(output, "OnUser3"))
@@ -714,8 +702,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
 					{
 						if(partner)
-							gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
-						gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][math]]
+						gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][math]]
 					}
 				}
 			}
