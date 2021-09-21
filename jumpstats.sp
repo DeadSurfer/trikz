@@ -290,7 +290,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_jumpstats[client])
 				PrintToChat(client, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			if(gB_runboost[client] && gB_jumpstats[gI_rbBooster[client]])
-				PrintToChat(gI_rbBooster[client], "[SM] %s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+				PrintToChat(gI_rbBooster[client], "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
