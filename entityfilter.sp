@@ -47,7 +47,7 @@ int gI_breakID[2048 + 1]
 native int Trikz_GetClientPartner(int client)
 int gI_linkedEntitiesDefault[2048 + 1][2048 + 1]
 int gI_linkedEntities[MAXPLAYERS + 1][2048 + 1]
-int gI_linkedMathTogglesDefault[2048 + 1][2048 + 1]
+int gI_linkedMathEntitiesDefault[2048 + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_maxMathLinks[2048 + 1]
 int gI_entityOutput[11][2048 + 1]
@@ -193,7 +193,7 @@ void EntityLinked(int entity, char[] output)
 							if(gI_mathID[k] == entity)
 							{
 								int math = k
-								gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+								gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
 								gI_mathOutput[GetOutput(output)][entityLinked]++
 							}
 						}
@@ -661,7 +661,7 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				{
 					int math = i
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
-						if(gI_linkedEntities[activator][gI_linkedMathTogglesDefault[j][math]])
+						if(gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
 							return Plugin_Handled
 					char sOrigOutput[32]
 					if(StrEqual(output, "OnUser3"))
@@ -670,8 +670,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 						Format(sOrigOutput, 32, "m_OnHitMin", output)
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
 					{
-						gI_linkedEntities[activator][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[j][math]]
-						gI_linkedEntities[partner][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathTogglesDefault[j][math]]
+						gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathEntitiesDefault[j][math]]
+						gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_mathOutput[GetOutput(sOrigOutput)][gI_linkedMathEntitiesDefault[j][math]]
 					}
 				}
 			}
