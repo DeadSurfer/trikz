@@ -566,7 +566,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			if(gF_mathValue[0][pThisIndex] >= gF_mathMax[pThisIndex])
 			{
 				gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]
-				AcceptEntityInput(pThis, "FireUser3", 0, 0)
+				AcceptEntityInput(pThis, "FireUser3", activator, activator)
 			}
 		}
 	}
@@ -589,7 +589,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			if(gF_mathValue[0][pThisIndex] <= gF_mathMin[pThisIndex])
 			{
 				gF_mathValue[0][pThisIndex] = gF_mathMin[pThisIndex]
-				AcceptEntityInput(pThis, "FireUser4", 0, 0)
+				AcceptEntityInput(pThis, "FireUser4", activator, activator)
 			}
 		}
 	}
