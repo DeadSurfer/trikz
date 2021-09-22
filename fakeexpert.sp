@@ -798,7 +798,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 
 void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data)
 {
-		int client = GetClientFromSerial(data)
+	int client = GetClientFromSerial(data)
 	if(!client)
 		return
 	if(IsClientInGame(client))
