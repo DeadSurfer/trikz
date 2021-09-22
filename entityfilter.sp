@@ -784,119 +784,38 @@ int GetOutput(char[] output)
 }
 
 Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
-{	
+{
+	//make visible only partner
 	if(client != entity && 0 < entity <= MaxClients && IsPlayerAlive(client))
-	{
-		if(Trikz_GetClientPartner(entity) == client) //make visible partner
-			return Plugin_Continue
-		else if(!Trikz_GetClientPartner(entity) && !Trikz_GetClientPartner(client)) //make visible no mates for no mate
-			return Plugin_Continue
-		return Plugin_Handled
-	}
+		if(Trikz_GetClientPartner(entity) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+			return Plugin_Handled
 	return Plugin_Continue
 }
 
 Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
-{	
-	int entOwner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	int partner = Trikz_GetClientPartner(entOwner)
-	if(IsPlayerAlive(client))
-	{		
-		if(entOwner == client) //make visible own nade
-			return Plugin_Continue
-		if(partner == client) //make visible partner nade
-			return Plugin_Continue
-		else if(!partner && !Trikz_GetClientPartner(client)) //make visible nade only for no mates
-			return Plugin_Continue
+{
+	//make visible nade only for partner
+	if(IsPlayerAlive(client) && GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
 		return Plugin_Handled
-	}
 	return Plugin_Continue
 }
 
 public Action Trikz_CheckSolidity(int ent1, int ent2)
 {	
-	int ent1Partner
-	int ent2Partner
-	int entOwner
-	int entOwnerPartner
 	if(0 < ent1 <= MaxClients && 0 < ent2 <= MaxClients && IsFakeClient(ent1) && IsFakeClient(ent2)) //make no collide with bot
 		return Plugin_Handled //result = false
 	char sClassname[32]
-	GetEntityClassname(ent1, sClassname, 32)
-	int iPreventNadeBoostAndFallThroughBrush
+	GetEntityClassname(ent2, sClassname, 32)
 	if(StrContains(sClassname, "projectile") != -1)
-		iPreventNadeBoostAndFallThroughBrush = GetMaxEntities()
-	else
-		iPreventNadeBoostAndFallThroughBrush = MaxClients
-	if(0 < ent1 <= iPreventNadeBoostAndFallThroughBrush)
-	{
-		if(0 < ent2 <= MaxClients && !IsFakeClient(ent2))
-			ent2Partner = Trikz_GetClientPartner(ent2)
-		entOwner = GetEntPropEnt(ent1, Prop_Send, "m_hOwnerEntity")
-		if(0 < entOwner <= MaxClients && !IsFakeClient(entOwner))
-			entOwnerPartner = Trikz_GetClientPartner(entOwner)
-		GetEntityClassname(ent1, sClassname, 32)
-		if(StrContains(sClassname, "projectile") != -1)
-		{			
-			//make nade collide for all nomates.
-			if(!entOwnerPartner && !ent2Partner)
-			{
-				//make nade no collide for owner.
-				if(entOwner == ent2)
-					return Plugin_Handled
-				return Plugin_Continue
-			}
-			//make nade no colide if target is not mate.
-			if(entOwner != ent2Partner)
-				return Plugin_Handled
-			//make nade collide for mate.
-			if(entOwnerPartner && entOwnerPartner == ent2)
-			{
-				//make nade no collide for owner.
-				if(entOwner == ent2)
-					return Plugin_Handled
-				return Plugin_Continue
-			}
-		}
-		GetEntityClassname(ent2, sClassname, 32)
-		if(StrContains(sClassname, "projectile") != -1)
-		{
-			if(0 < ent1 <= MaxClients && !IsFakeClient(ent1))
-				ent1Partner = Trikz_GetClientPartner(ent1)
-			entOwner = GetEntPropEnt(ent2, Prop_Send, "m_hOwnerEntity")
-			if(0 < entOwner <= MaxClients && !IsFakeClient(entOwner))
-				entOwnerPartner = Trikz_GetClientPartner(entOwner)
-			//make nade collide for all nomates.
-			if(!entOwnerPartner && !ent1Partner)
-			{
-				//make nade no collide for owner.
-				if(entOwner == ent1)
-					return Plugin_Handled
-				return Plugin_Continue
-			}
-			//make nade no colide if target is not mate.
-			if(entOwner != ent1Partner)
-				return Plugin_Handled
-			//make nade collide for mate.
-			if(entOwnerPartner && entOwnerPartner == ent1)
-			{
-				//make nade no collide for owner.
-				if(entOwner == ent1)
-					return Plugin_Handled
-				return Plugin_Continue
-			}
-		}
-	}
+		if(!IsFakeClient(ent1) && Trikz_GetClientPartner(GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
+			return Plugin_Handled
 	if(0 < ent1 <= MaxClients && 0 < ent2 <= MaxClients)
 	{
 		//make no collide with all players.
 		if(GetEntProp(ent2, Prop_Data, "m_CollisionGroup") == 2)
 			return Plugin_Handled
-		//make able for nomate to collide with nomate.
-		else if(Trikz_GetClientPartner(ent2) == Trikz_GetClientPartner(ent1))
-			return Plugin_Continue
-		//make collide for mate.
-		else if(Trikz_GetClientPartner(ent2) != ent1 && Trikz_GetClientPartner(ent1) != ent2)
+		//colide for partner
+		if(Trikz_GetClientPartner(ent2) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
 			return Plugin_Handled
 	}
 	return Plugin_Continue
