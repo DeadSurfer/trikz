@@ -45,9 +45,9 @@ int gI_mathID[2048 + 1]
 int gI_mathTotalCount
 int gI_breakID[2048 + 1]
 native int Trikz_GetClientPartner(int client)
-int gI_linkedTogglesDefault[2048 + 1]
+int gI_linkedTogglesDefault[2048 + 1][2048 + 1]
 int gI_linkedToggles[MAXPLAYERS + 1][2048 + 1]
-int gI_linkedMathTogglesDefault[2048 + 1]
+int gI_linkedMathTogglesDefault[2048 + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_maxMathLinks[2048 + 1]
 int gI_entityOutput[11][2048 + 1]
@@ -185,7 +185,7 @@ void EntityLinked(int entity, char[] output)
 					{
 						if(entity > 0)
 						{
-							gI_linkedTogglesDefault[++gI_maxLinks[entity]] = entityLinked
+							gI_linkedTogglesDefault[++gI_maxLinks[entity]][entity] = entityLinked
 							gI_entityOutput[GetOutput(output)][entityLinked]++
 						}
 						else
@@ -195,7 +195,7 @@ void EntityLinked(int entity, char[] output)
 								if(gI_mathID[k] == entity)
 								{
 									int math = k
-									gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]] = entityLinked
+									gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
 									gI_mathOutput[GetOutput(output)][entityLinked]++
 								}
 							}
@@ -655,11 +655,11 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			{
 				if(partner)
 				{
-					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i]])
+					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
 						return Plugin_Handled
 				}
 				else
-					if(gI_linkedToggles[partner][gI_linkedTogglesDefault[i]])
+					if(gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]])
 						return Plugin_Handled
 			}
 			if(partner)
@@ -678,8 +678,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
 				if(partner)
-					gI_linkedToggles[activator][gI_linkedTogglesDefault[i]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i]]
-				gI_linkedToggles[partner][gI_linkedTogglesDefault[i]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i]]
+					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
+				gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
 			}
 		}
 		else
@@ -690,14 +690,16 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				{
 					int math = i
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
-					if(partner)
 					{
-						if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j]])
-							return Plugin_Handled
+						if(partner)
+						{
+							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][math]])
+								return Plugin_Handled
+						}
+						else
+							if(gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][math]])
+								return Plugin_Handled
 					}
-					else
-						if(gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j]])
-							return Plugin_Handled
 					char sOutput[32]
 					if(StrEqual(output, "OnUser3"))
 						Format(sOutput, 32, "m_OnHitMax", output)
@@ -706,8 +708,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
 					{
 						if(partner)
-							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j]]
-						gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j]]
+							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][math]]
+						gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][math]] = gI_mathOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][math]]
 					}
 				}
 			}
