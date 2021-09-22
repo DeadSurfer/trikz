@@ -537,6 +537,7 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
 	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	CS_SetClientClanTag(client, gS_clanTag[client][0])
 	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.	
 }
 
