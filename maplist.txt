@@ -6,6 +6,7 @@ trikz_alpha
 trikz_asdfsda_final
 trikz_autist
 trikz_blue
+trikz_cool
 trikz_cyrus
 trikz_daemon
 trikz_Desert_b7
@@ -29,6 +30,8 @@ trikz_minecraft
 trikz_MoscowDno
 trikz_move
 trikz_noxious
+trikz_overdriver
+trikz_p
 trikz_penguin
 trikz_proud
 trikz_RandomRaider
@@ -46,3 +49,4 @@ trikz_TinTin
 trikz_unorthodox
 trikz_VICTORY
 trikz_vintage_final
+trikz_visuals
