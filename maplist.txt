@@ -49,4 +49,3 @@ trikz_TinTin
 trikz_unorthodox
 trikz_VICTORY
 trikz_vintage_final
-trikz_visuals
