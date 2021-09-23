@@ -1751,9 +1751,9 @@ void ZoneEditor2(int client)
 	Menu menu = new Menu(zones_handler)
 	menu.SetTitle("Zone editor")
 	if(gB_haveZone[0])
-		menu.AddItem("0", "Start zone")
+		menu.AddItem("start", "Start zone")
 	if(gB_haveZone[1])
-		menu.AddItem("1", "End zone")
+		menu.AddItem("end", "End zone")
 	char sFormat[32]
 	if(gI_cpCount)
 	{
@@ -1761,7 +1761,7 @@ void ZoneEditor2(int client)
 		{
 			Format(sFormat, 32, "CP nr. %i zone", i)
 			char sCP[16]
-			Format(sCP, 16, "%i", i + 1)
+			Format(sCP, 16, "%i", i)
 			menu.AddItem(sCP, sFormat)
 		}
 	}
@@ -1779,64 +1779,65 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			char sItem[16]
 			menu.GetItem(param2, sItem, 16)
 			Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
-			if(StrEqual(sItem, "0"))
+			if(StrEqual(sItem, "start"))
 			{
 				menu2.SetTitle("Zone editor - Start zone")
-				menu2.AddItem("00", "Teleport to start zone")
-				menu2.AddItem("01", "+x/mins")
-				menu2.AddItem("02", "-x/mins")
-				menu2.AddItem("03", "+y/mins")
-				menu2.AddItem("04", "-y/mins")
-				menu2.AddItem("05", "+x/maxs")
-				menu2.AddItem("06", "-x/maxs")
-				menu2.AddItem("07", "+y/maxs")
-				menu2.AddItem("08", "-y/maxs")
-				menu2.AddItem("0", "Update start zone")
+				menu2.AddItem("starttp", "Teleport to start zone")
+				menu2.AddItem("start+xmins", "+x/mins")
+				menu2.AddItem("start-xmins", "-x/mins")
+				menu2.AddItem("start+ymins", "+y/mins")
+				menu2.AddItem("start-ymins", "-y/mins")
+				menu2.AddItem("start+xmaxs", "+x/maxs")
+				menu2.AddItem("start-xmaxs", "-x/maxs")
+				menu2.AddItem("start+ymaxs", "+y/maxs")
+				menu2.AddItem("start-ymaxs", "-y/maxs")
+				menu2.AddItem("startupdate", "Update start zone")
 			}
-			else if(StrEqual(sItem, "1"))
+			else if(StrEqual(sItem, "end"))
 			{
 				menu2.SetTitle("Zone editor - End zone")
-				menu2.AddItem("10", "Teleport to end zone")
-				menu2.AddItem("11", "+x/mins")
-				menu2.AddItem("12", "-x/mins")
-				menu2.AddItem("13", "+y/mins")
-				menu2.AddItem("14", "-y/mins")
-				menu2.AddItem("15", "+x/maxs")
-				menu2.AddItem("16", "-x/maxs")
-				menu2.AddItem("17", "+y/maxs")
-				menu2.AddItem("18", "-y/maxs")
-				menu2.AddItem("1", "Update start zone")
+				menu2.AddItem("endtp", "Teleport to end zone")
+				menu2.AddItem("end+xmins", "+x/mins")
+				menu2.AddItem("end-xmins", "-x/mins")
+				menu2.AddItem("end+ymins", "+y/mins")
+				menu2.AddItem("end-ymins", "-y/mins")
+				menu2.AddItem("end+xmaxs", "+x/maxs")
+				menu2.AddItem("end-xmaxs", "-x/maxs")
+				menu2.AddItem("end+ymaxs", "+y/maxs")
+				menu2.AddItem("end-ymaxs", "-y/maxs")
+				menu2.AddItem("endupdate", "Update start zone")
 			}
 			for(int i = 1; i <= gI_cpCount; i++)
 			{
 				char sCP[16]
-				IntToString(i + 1, sCP, 16)
+				IntToString(i, sCP, 16)
+				Format(sCP, 16, "%i", i)
 				if(StrEqual(sItem, sCP))
 				{
 					menu2.SetTitle("Zone editor - CP nr. %i zone", i)
-					char sItemCP[16]
-					Format(sItemCP, 16, "%i;0", i + 1)
 					char sButton[32]
 					Format(sButton, 32, "Teleport to CP nr. %i zone", i)
+					char sItemCP[16]
+					Format(sItemCP, 16, "%i;tp", i)
 					menu2.AddItem(sItemCP, sButton)
-					Format(sItemCP, 16, "%i;1", i + 1)
+					Format(sItemCP, 16, "%i;1", i)
 					menu2.AddItem(sItemCP, "+x/mins")
-					Format(sItemCP, 16, "%i;2", i + 1)
+					Format(sItemCP, 16, "%i;2", i)
 					menu2.AddItem(sItemCP, "-x/mins")
-					Format(sItemCP, 16, "%i;3", i + 1)
+					Format(sItemCP, 16, "%i;3", i)
 					menu2.AddItem(sItemCP, "+y/mins")
-					Format(sItemCP, 16, "%i;4", i + 1)
+					Format(sItemCP, 16, "%i;4", i)
 					menu2.AddItem(sItemCP, "-y/mins")
-					Format(sItemCP, 16, "%i;5", i + 1)
+					Format(sItemCP, 16, "%i;5", i)
 					menu2.AddItem(sItemCP, "+x/maxs")
-					Format(sItemCP, 16, "%i;6", i + 1)
+					Format(sItemCP, 16, "%i;6", i)
 					menu2.AddItem(sItemCP, "-x/maxs")
-					Format(sItemCP, 16, "%i;7", i + 1)
+					Format(sItemCP, 16, "%i;7", i)
 					menu2.AddItem(sItemCP, "+y/maxs")
-					Format(sItemCP, 16, "%i;8", i + 1)
+					Format(sItemCP, 16, "%i;8", i)
 					menu2.AddItem(sItemCP, "-y/maxs")
 					Format(sButton, 32, "Update CP nr. %i zone", i)
-					menu2.AddItem(sCP, sButton)
+					menu2.AddItem("cpupdate", sButton)
 				}
 			}
 			menu2.ExitBackButton = true //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
@@ -1855,94 +1856,88 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[16]
 			menu.GetItem(param2, sItem, 16)
-			if(StrEqual(sItem, "00"))
+			if(StrEqual(sItem, "starttp"))
 				TeleportEntity(param1, gF_center[0], NULL_VECTOR, NULL_VECTOR)
-			else if(StrEqual(sItem, "01"))
+			else if(StrEqual(sItem, "start+xmins"))
 				gF_originStartZone[0][0] += 16.0
-			else if(StrEqual(sItem, "02"))
+			else if(StrEqual(sItem, "start-xmins"))
 				gF_originStartZone[0][0] -= 16.0
-			else if(StrEqual(sItem, "03"))
+			else if(StrEqual(sItem, "start+ymins"))
 				gF_originStartZone[0][1] += 16.0
-			else if(StrEqual(sItem, "04"))
+			else if(StrEqual(sItem, "start-ymins"))
 				gF_originStartZone[0][1] -= 16.0
-			else if(StrEqual(sItem, "05"))
+			else if(StrEqual(sItem, "start+xmaxs"))
 				gF_originStartZone[1][0] += 16.0
-			else if(StrEqual(sItem, "06"))
+			else if(StrEqual(sItem, "start-xmaxs"))
 				gF_originStartZone[1][0] -= 16.0
-			else if(StrEqual(sItem, "07"))
+			else if(StrEqual(sItem, "start+ymaxs"))
 				gF_originStartZone[1][1] += 16.0
-			else if(StrEqual(sItem, "08"))
+			else if(StrEqual(sItem, "start-ymaxs"))
 				gF_originStartZone[1][1] -= 16.0
-			else if(StrEqual(sItem, "10"))
+			else if(StrEqual(sItem, "endtp"))
 				TeleportEntity(param1, gF_center[1], NULL_VECTOR, NULL_VECTOR)
-			else if(StrEqual(sItem, "11"))
+			else if(StrEqual(sItem, "end+xmins"))
 				gF_originEndZone[0][0] += 16.0
-			else if(StrEqual(sItem, "12"))
+			else if(StrEqual(sItem, "end-xmins"))
 				gF_originEndZone[0][0] -= 16.0
-			else if(StrEqual(sItem, "13"))
+			else if(StrEqual(sItem, "end+ymins"))
 				gF_originEndZone[0][1] += 16.0
-			else if(StrEqual(sItem, "14"))
+			else if(StrEqual(sItem, "end-ymins"))
 				gF_originEndZone[0][1] -= 16.0
-			else if(StrEqual(sItem, "15"))
+			else if(StrEqual(sItem, "end+xmaxs"))
 				gF_originEndZone[1][0] += 16.0
-			else if(StrEqual(sItem, "16"))
+			else if(StrEqual(sItem, "end-xmaxs"))
 				gF_originEndZone[1][0] -= 16.0
-			else if(StrEqual(sItem, "17"))
+			else if(StrEqual(sItem, "end+ymaxs"))
 				gF_originEndZone[1][1] += 16.0
-			else if(StrEqual(sItem, "18"))
+			else if(StrEqual(sItem, "end-ymaxs"))
 				gF_originEndZone[1][1] -= 16.0
 			char sExploded[16][16]
 			ExplodeString(sItem, ";", sExploded, 16, 16)
-			char sFormat[16]
-			Format(sFormat, 16, "%s", sExploded[0])
-			int cpnum = StringToInt(sFormat)
+			int cpnum = StringToInt(sExploded[0])
 			char sFormatCP[16]
-			Format(sFormatCP, 16, "%i;0", cpnum)
+			Format(sFormatCP, 16, "%i;tp", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				TeleportEntity(param1, gF_center[cpnum], NULL_VECTOR, NULL_VECTOR)
+				TeleportEntity(param1, gF_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR)
 			Format(sFormatCP, 16, "%i;1", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[0][cpnum - 1][0] += 16.0
+				gF_originCP[0][cpnum][0] += 16.0
 			Format(sFormatCP, 16, "%i;2", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[0][cpnum - 1][0] -= 16.0
+				gF_originCP[0][cpnum][0] -= 16.0
 			Format(sFormatCP, 16, "%i;3", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[0][cpnum - 1][1] += 16.0
+				gF_originCP[0][cpnum][1] += 16.0
 			Format(sFormatCP, 16, "%i;4", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[0][cpnum - 1][1] -= 16.0
+				gF_originCP[0][cpnum][1] -= 16.0
 			Format(sFormatCP, 16, "%i;5", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[1][cpnum - 1][0] += 16.0
+				gF_originCP[1][cpnum][0] += 16.0
 			Format(sFormatCP, 16, "%i;6", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[1][cpnum - 1][0] -= 16.0
+				gF_originCP[1][cpnum][0] -= 16.0
 			Format(sFormatCP, 16, "%i;7", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[1][cpnum - 1][1] += 16.0
+				gF_originCP[1][cpnum][1] += 16.0
 			Format(sFormatCP, 16, "%i;8", cpnum)
 			if(StrEqual(sItem, sFormatCP))
-				gF_originCP[1][cpnum - 1][1] -= 16.0
+				gF_originCP[1][cpnum][1] -= 16.0
 			char sQuery[512]
-			if(StrEqual(sItem, "0"))
+			if(StrEqual(sItem, "startupdate"))
 			{
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(gF_originStartZone[0][0]), RoundFloat(gF_originStartZone[0][1]), RoundFloat(gF_originStartZone[0][2]), RoundFloat(gF_originStartZone[1][0]), RoundFloat(gF_originStartZone[1][1]), RoundFloat(gF_originStartZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 0)
 			}
-			else if(StrEqual(sItem, "1"))
+			else if(StrEqual(sItem, "endupdate"))
 			{
 				Format(sQuery, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(gF_originEndZone[0][0]), RoundFloat(gF_originEndZone[0][1]), RoundFloat(gF_originEndZone[0][2]), RoundFloat(gF_originEndZone[1][0]), RoundFloat(gF_originEndZone[1][1]), RoundFloat(gF_originEndZone[1][2]), gS_map)
 				gD_mysql.Query(SQLUpdateZone, sQuery, 1)
 			}
-			if(strlen(sItem) == 1)
+			else if(StrEqual(sItem, "cpupdate"))
 			{
-				int item = StringToInt(sItem)
-				if(item <= gI_cpCount + 2)
-				{
-					Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum - 1][0]), RoundFloat(gF_originCP[0][cpnum - 1][1]), RoundFloat(gF_originCP[0][cpnum - 1][2]), RoundFloat(gF_originCP[1][cpnum - 1][0]), RoundFloat(gF_originCP[1][cpnum - 1][1]), RoundFloat(gF_originCP[1][cpnum - 1][2]), cpnum - 1, gS_map)
-					gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
-				}
+				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum][0]), RoundFloat(gF_originCP[0][cpnum][1]), RoundFloat(gF_originCP[0][cpnum][2]), RoundFloat(gF_originCP[1][cpnum][0]), RoundFloat(gF_originCP[1][cpnum][1]), RoundFloat(gF_originCP[1][cpnum][2]), cpnum, gS_map)
+				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
 			}
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
