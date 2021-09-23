@@ -632,10 +632,15 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	{
 		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
 			return Plugin_Handled
+		gF_buttonReady[activator][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
+		gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
 	}
 	else
+	{
 		if(gF_buttonReady[partner][entity] > GetGameTime() || gB_stateDisabled[partner][entity])
 			return Plugin_Handled
+		gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
+	}
 	return Plugin_Continue
 }
 
@@ -662,17 +667,6 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					if(gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]])
 						return Plugin_Handled
 			}
-			if(partner)
-			{
-				if(gF_buttonReady[activator][caller] > GetGameTime() || gB_stateDisabled[activator][caller])
-					return Plugin_Handled
-			}
-			else
-				if(gF_buttonReady[partner][caller] > GetGameTime() || gB_stateDisabled[partner][caller])
-					return Plugin_Handled
-			if(partner)
-				gF_buttonReady[activator][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
-			gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
 			char sOutput[32]
 			Format(sOutput, 32, "m_%s", output)
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
