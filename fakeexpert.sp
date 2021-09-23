@@ -433,9 +433,9 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	if(gI_points[client] < 1000)
 		Format(sPoints, 32, "%i", gI_points[client])
 	else if(gI_points[client] > 999)
-		Format(sPoints, 32, "%fK", float(gI_points[client]) / 1000.0)
+		Format(sPoints, 32, "%.3fK", float(gI_points[client]) / 1000.0)
 	else if(gI_points[client] > 999999)
-		Format(sPoints, 32, "%fM", float(gI_points[client]) / 1000000.0)
+		Format(sPoints, 32, "%.3fM", float(gI_points[client]) / 1000000.0)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
 		Format(sText, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", sPoints, sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
@@ -770,7 +770,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", steamid, steamid)
+			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
 		}
 	}
@@ -782,8 +782,35 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 	if(!client)
 		return
 	if(IsClientInGame(client))
+	{
+		if(results.FetchRow())
+			gI_points[client] = results.FetchInt(0)
+		char sQuery[512]
+		int steamid = GetSteamAccountID(client)
+		Format(sQuery, 512, "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", steamid, steamid)
+		gD_mysql.Query(SQLRecalculateUserPoints, sQuery, GetClientSerial(client))
+	}
+}
+
+void SQLRecalculateUserPoints(Database db, DBResultSet results, const char[] error, any data)
+{
+	int client = GetClientFromSerial(data)
+	if(!client)
+		return
+	if(IsClientInGame(client))
+	{
+		int points
 		while(results.FetchRow())
-			gI_points[client] += results.FetchInt(0)
+			points += results.FetchInt(0)
+		char sQuery[512]
+		int steamid = GetSteamAccountID(client)
+		Format(sQuery, 512, "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, steamid)
+		gD_mysql.Query(SQLUpdateUserPoints, sQuery)
+	}
+}
+
+void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
