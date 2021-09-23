@@ -21,6 +21,7 @@ trikz_greg
 trikz_hammer
 trikz_krepix
 trikz_kyoto_final
+trikz_learn
 trikz_learn_hard
 trikz_legends_b1
 trikz_measuregeneric
@@ -39,7 +40,9 @@ trikz_short
 trikz_shutthefuckup
 trikz_skyway_fixed
 trikz_soft
+trikz_sun
 trikz_tanyaisawhore
 trikz_TinTin
+trikz_unorthodox
 trikz_VICTORY
 trikz_vintage_final
