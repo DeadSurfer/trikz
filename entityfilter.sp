@@ -806,7 +806,7 @@ Action TransmitNade(int entity, int client) //entity - nade, client - loop all c
 }
 
 public Action Trikz_CheckSolidity(int ent1, int ent2)
-{	
+{
 	if(0 < ent1 <= MaxClients && 0 < ent2 <= MaxClients && IsFakeClient(ent1) && IsFakeClient(ent2)) //make no collide with bot
 		return Plugin_Handled //result = false
 	char sClassname[32]
