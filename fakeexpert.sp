@@ -433,9 +433,9 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	if(gI_points[client] < 1000)
 		Format(sPoints, 32, "%i", gI_points[client])
 	else if(gI_points[client] > 999)
-		Format(sPoints, 32, "%.3fK", float(gI_points[client]) / 1000.0)
+		Format(sPoints, 32, "%.0fK", float(gI_points[client]) / 1000.0)
 	else if(gI_points[client] > 999999)
-		Format(sPoints, 32, "%.3fM", float(gI_points[client]) / 1000000.0)
+		Format(sPoints, 32, "%.0fM", float(gI_points[client]) / 1000000.0)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
 		Format(sText, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", sPoints, sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
@@ -1548,10 +1548,10 @@ Action cmd_test(int client, int args)
 		PrintToChat(client, "%s", sText)
 		char sArgString[256]
 		GetCmdArgString(sArgString, 256)
-		client = StringToInt(sArgString)
-		if(client && !gI_partner[client])
+		int partner = StringToInt(sArgString)
+		if(partner && !gI_partner[client])
 		{
-			gI_partner[client] = client
+			gI_partner[client] = partner
 			Call_StartForward(gH_start)
 			Call_PushCell(client)
 			Call_Finish()
