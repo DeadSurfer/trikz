@@ -379,7 +379,6 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		float points = float(results.FetchInt(1)) * (float(results.FetchInt(0)) / float(++place)) //thanks to DeadSurfer
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", RoundFloat(points), results.FetchInt(2))
 		gD_mysql.Query(SQLRecalculatePointsFinished, sQuery)
-		PrintToServer("%f", points)
 	}
 }
 
