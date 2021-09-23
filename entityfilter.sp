@@ -395,6 +395,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
+	char sClassname[32]
+	GetEntityClassname(activator, sClassname, 32)
+	if(StrContains(sClassname, "projectile") != -1)
+		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
@@ -646,11 +650,6 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 {
-	char sClassname[32]
-	GetEntityClassname(activator, sClassname, 32)
-	if(StrContains(sClassname, "projectile") != -1)
-		if(activator > MaxClients)
-			activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
