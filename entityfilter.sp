@@ -398,7 +398,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
-		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "CancelPending"))
+		if(StrEqual(sInput, "Enable"))
 		{
 			if(partner)
 			{
@@ -407,7 +407,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 			gB_stateDisabled[0][pThis] = false
 		}
-		else if(StrEqual(sInput, "Disable") || StrEqual(sInput, "Trigger"))
+		else if(StrEqual(sInput, "Disable"))
 		{
 			if(partner)
 			{
