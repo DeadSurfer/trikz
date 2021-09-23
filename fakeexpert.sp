@@ -365,7 +365,7 @@ void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const char[] 
 		char sMap[192]
 		results.FetchString(0, sMap, 192)
 		char sQuery[512]
-		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s'", sMap, sMap, sMap) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' ORDER BY time", sMap, sMap, sMap) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 		gD_mysql.Query(SQLRecalculatePoints, sQuery)
 	}
 }
