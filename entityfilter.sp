@@ -117,7 +117,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_load(Handle timer)
 {
-	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
+	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter", "logic_relay"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
 	for(int i = 1; i <= 2048; i++)
@@ -154,6 +154,8 @@ Action timer_load(Handle timer)
 				EntityLinked(entity, "m_OnHitMin")
 				EntityLinked(entity, "m_OnHitMax")
 			}
+			else if(i == 7)
+				EntityLinked(entity, "m_OnTrigger")
 		}
 	}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
@@ -173,7 +175,7 @@ void EntityLinked(int entity, char[] output)
 		GetOutputActionTargetInput(entity, output, i, sInput, 64)
 		char sTarget[64]
 		GetOutputActionTarget(entity, output, i, sTarget, 64)
-		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break"))
+		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break") || StrEqual(sInput, "Trigger") || StrEqual(sInput, "CancelPending"))
 		{
 			char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable"}
 			for(int j = 0; j < sizeof(sClassname); j++)
@@ -396,7 +398,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
-		if(StrEqual(sInput, "Enable"))
+		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "CancelPending"))
 		{
 			if(partner)
 			{
@@ -405,7 +407,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 			gB_stateDisabled[0][pThis] = false
 		}
-		else if(StrEqual(sInput, "Disable"))
+		else if(StrEqual(sInput, "Disable") || StrEqual(sInput, "Trigger"))
 		{
 			if(partner)
 			{
