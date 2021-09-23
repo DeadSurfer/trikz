@@ -138,8 +138,6 @@ float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
-int gI_totalRecords[2]
-bool gB_recordsOnce
 Handle gH_start
 
 public Plugin myinfo =
@@ -357,52 +355,35 @@ public void OnMapStart()
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
 	
 	if(gB_passDB)
+		gD_mysql.Query(SQLRecalculatePoints_GetMap, "SELECT map FROM tier")
+}
+
+void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const char[] error, any data)
+{
+	while(results.FetchRow())
 	{
-		gB_recordsOnce = false
-		gD_mysql.Query(SQLRecalculatePoints, "SELECT (SELECT COUNT(*) FROM records), tier, map FROM tier")
+		char sMap[192]
+		results.FetchString(0, sMap, 192)
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s'", sMap, sMap, sMap) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+		gD_mysql.Query(SQLRecalculatePoints, sQuery, tier)
 	}
 }
 
 void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
 {
-	while(results.FetchRow())
-	{
-		if(!gB_recordsOnce)
-		{
-			gI_totalRecords[0] = results.FetchInt(0)
-			gB_recordsOnce = true
-		}
-		int tier = results.FetchInt(1)
-		char sMap[192]
-		results.FetchString(2, sMap, 192)
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), id FROM records WHERE map = '%s'", sMap, sMap) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
-		gD_mysql.Query(SQLRecalculatePoints2, sQuery, tier)
-	}
-}
-
-void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
-{
 	char sQuery[512]
-	int place = 1
-	bool once
+	int place
 	while(results.FetchRow())
 	{
-		if(!once)
-		{
-			int rowCount = results.FetchInt(0)
-			gI_totalRecords[1] = rowCount
-			once = true
-		}
-		float points = float(data) * (float(gI_totalRecords[1]) / float(place)) //thanks to DeadSurfer
-		place++
-		int id = results.FetchInt(1)
-		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", RoundFloat(points), id)
-		gD_mysql.Query(SQLRecalculatePoints3, sQuery)
+		float points = float(results.FetchInt(1)) * (float(results.FetchInt(0)) / float(++place)) //thanks to DeadSurfer
+		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", RoundFloat(points), results.FetchInt(2))
+		gD_mysql.Query(SQLRecalculatePointsFinished, sQuery)
+		PrintToServer("%f", points)
 	}
 }
 
-void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePointsFinished(Database db, DBResultSet results, const char[] error, any data)
 {
 }
 
