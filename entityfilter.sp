@@ -809,8 +809,9 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	char sClassname[32]
 	GetEntityClassname(ent2, sClassname, 32)
 	if(StrContains(sClassname, "projectile") != -1)
-		if(Trikz_GetClientPartner(GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
-			return Plugin_Handled
+		if(0 < ent1 <= MaxClients)
+			if(Trikz_GetClientPartner(GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
+				return Plugin_Handled
 	if(0 < ent1 <= MaxClients && 0 < ent2 <= MaxClients)
 	{
 		//make no collide with all players.
