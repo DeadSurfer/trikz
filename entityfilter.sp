@@ -393,69 +393,72 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
 	int activator = DHookGetParam(hParams, 2)
-	int partner = Trikz_GetClientPartner(activator)
-	if(StrEqual(sInput, "Enable"))
+	if(0 < activator <= MaxClients)
 	{
-		if(partner)
+		int partner = Trikz_GetClientPartner(activator)
+		if(StrEqual(sInput, "Enable"))
 		{
-			gB_stateDisabled[activator][pThis] = false
-			gB_stateDisabled[partner][pThis] = false
-		}
-		gB_stateDisabled[0][pThis] = false
-	}
-	else if(StrEqual(sInput, "Disable"))
-	{
-		if(partner)
-		{
-			gB_stateDisabled[activator][pThis] = true
-			gB_stateDisabled[partner][pThis] = true
-		}
-		gB_stateDisabled[0][pThis] = true
-	}
-	else if(StrEqual(sInput, "Toggle"))
-	{
-		if(gI_linkedToggles[activator][pThis] && partner)
-		{
-			gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
-			gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
-			gI_linkedToggles[activator][pThis]--
-			gI_linkedToggles[partner][pThis]--
-		}
-		if(gI_linkedToggles[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
-			gI_linkedToggles[0][pThis]--
-		}
-	}
-	else if(StrEqual(sInput, "Break"))
-	{
-		if(partner)
-		{
-			gB_stateDisabled[activator][pThis] = true
-			gB_stateDisabled[partner][pThis] = true
-		}
-		gB_stateDisabled[0][pThis] = true
-		AcceptEntityInput(pThis, "FireUser4", activator, pThis) //make fire brush with output
-	}
-	else
-	{
-		int pThisIndex
-		for(int i = 1; i <= gI_entityTotalCount; i++)
-		{
-			if(gI_breakID[i] == pThis)
+			if(partner)
 			{
-				pThisIndex = gI_entityID[i]
-				break
+				gB_stateDisabled[activator][pThis] = false
+				gB_stateDisabled[partner][pThis] = false
+			}
+			gB_stateDisabled[0][pThis] = false
+		}
+		else if(StrEqual(sInput, "Disable"))
+		{
+			if(partner)
+			{
+				gB_stateDisabled[activator][pThis] = true
+				gB_stateDisabled[partner][pThis] = true
+			}
+			gB_stateDisabled[0][pThis] = true
+		}
+		else if(StrEqual(sInput, "Toggle"))
+		{
+			if(gI_linkedToggles[activator][pThis] && partner)
+			{
+				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
+				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
+				gI_linkedToggles[activator][pThis]--
+				gI_linkedToggles[partner][pThis]--
+			}
+			if(gI_linkedToggles[0][pThis])
+			{
+				gB_stateDisabled[0][pThis] = !gB_stateDisabled[0][pThis]
+				gI_linkedToggles[0][pThis]--
 			}
 		}
-		if(!pThisIndex)
-			return MRES_Ignored
-		if(partner)
+		else if(StrEqual(sInput, "Break"))
 		{
-			gB_stateDisabled[activator][pThisIndex] = false
-			gB_stateDisabled[partner][pThisIndex] = false
+			if(partner)
+			{
+				gB_stateDisabled[activator][pThis] = true
+				gB_stateDisabled[partner][pThis] = true
+			}
+			gB_stateDisabled[0][pThis] = true
+			AcceptEntityInput(pThis, "FireUser4", activator, pThis) //make fire brush with output
 		}
-		gB_stateDisabled[0][pThisIndex] = false
+		else
+		{
+			int pThisIndex
+			for(int i = 1; i <= gI_entityTotalCount; i++)
+			{
+				if(gI_breakID[i] == pThis)
+				{
+					pThisIndex = gI_entityID[i]
+					break
+				}
+			}
+			if(!pThisIndex)
+				return MRES_Ignored
+			if(partner)
+			{
+				gB_stateDisabled[activator][pThisIndex] = false
+				gB_stateDisabled[partner][pThisIndex] = false
+			}
+			gB_stateDisabled[0][pThisIndex] = false
+		}
 	}
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
