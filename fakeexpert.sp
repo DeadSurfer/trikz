@@ -1589,7 +1589,6 @@ Action cmd_test(int client, int args)
 		color |= (255 & 255) << 8 // 255 blue
 		color |= (50 & 255) << 0 // 50 alpha
 		PrintToChat(client, "\x08%08XCOLOR", color)
-		gI_points[client] = partner
 	}
 	return Plugin_Handled
 }
