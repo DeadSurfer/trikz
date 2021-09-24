@@ -402,7 +402,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	PrintToServer("%i %s", pThis, sInput)
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
@@ -759,8 +758,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(IsValidEntity(entity) && StrContains(classname, "_projectile") != -1)
 		SDKHook(entity, SDKHook_SetTransmit, TransmitNade)
-	if(StrEqual(classname, "func_breakable"))
-		SDKHook(entity, SDKHook_SpawnPost, breakables)
 }
 
 int GetOutput(char[] output)
