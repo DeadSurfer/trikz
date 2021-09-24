@@ -432,15 +432,15 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	Format(sMsgFormated, 32, "%s", sMsg)
 	char sPoints[32]
 	//https://www.skillsyouneed.com/num/percent-change.html
-	float increase = (gI_points[client] - gI_pointsMaxs) / gI_pointsMaxs * 255.0
+	int increase = (gI_points[client] - gI_pointsMaxs) / gI_pointsMaxs * 255
 	if(!increase)
-		increase = 255.0
-	else if(increase < 0.0)
-		increase *= -1.0
-	float decrease = (gI_pointsMaxs - gI_points[client]) / gI_pointsMaxs * 255.0
+		increase = 255
+	else if(increase < 0)
+		increase *= -1
+	int decrease = (gI_pointsMaxs - gI_points[client]) / gI_pointsMaxs * 255
 	int color
-	color |= (RoundFloat(increase) & 255) << 24 //5 red
-	color |= (RoundFloat(decrease) & 255) << 16 // 200 green
+	color |= (increase & 255) << 24 //5 red
+	color |= (decrease & 255) << 16 // 200 green
 	color |= (0 & 255) << 8 // 255 blue
 	color |= (255 & 255) << 0 // 50 alpha
 	if(gI_points[client] < 1000)
@@ -1584,10 +1584,10 @@ Action cmd_test(int client, int args)
 		PrintToServer("LibraryExists (fakeexpert-entityfilter): %i", LibraryExists("fakeexpert-entityfilter"))
 		//https://forums.alliedmods.net/showthread.php?t=187746
 		int color
-		color |= (0 & 255) << 24 //5 red
-		color |= (255 & 255) << 16 // 200 green
-		color |= (0 & 255) << 8 // 255 blue
-		color |= (255 & 255) << 0 // 50 alpha
+		color |= (5 & 255) << 24 //5 red
+		color |= (200 & 255) << 16 // 200 green
+		color |= (255 & 255) << 8 // 255 blue
+		color |= (50 & 255) << 0 // 50 alpha
 		PrintToChat(client, "\x08%08XCOLOR", color)
 	}
 	return Plugin_Handled
