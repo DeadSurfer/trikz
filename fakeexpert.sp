@@ -139,6 +139,7 @@ int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 Handle gH_start
+int gI_pointsRange[2]
 
 public Plugin myinfo =
 {
@@ -376,8 +377,8 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 	int place
 	while(results.FetchRow())
 	{
-		float points = float(results.FetchInt(1)) * (float(results.FetchInt(0)) / float(++place)) //thanks to DeadSurfer
-		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", RoundFloat(points), results.FetchInt(2))
+		int points = results.FetchInt(1) * results.FetchInt(0) / ++place //thanks to DeadSurfer
+		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2))
 		gD_mysql.Query(SQLRecalculatePointsFinished, sQuery)
 	}
 }
@@ -430,12 +431,24 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	char sMsgFormated[32]
 	Format(sMsgFormated, 32, "%s", sMsg)
 	char sPoints[32]
+	//https://www.skillsyouneed.com/num/percent-change.html
+	float increase = (gI_points[client] - gI_pointsRange[0]) / gI_pointsRange[0] * 255.0
+	if(!increase)
+		increase = 255.0
+	else if(increase < 0.0)
+		increase *= -1.0
+	float decrease = (gI_pointsRange[0] - gI_points[client]) / gI_pointsRange[0] * 255.0
+	int color
+	color |= (RoundFloat(increase) & 255) << 24 //5 red
+	color |= (RoundFloat(decrease) & 255) << 16 // 200 green
+	color |= (0 & 255) << 8 // 255 blue
+	color |= (255 & 255) << 0 // 50 alpha
 	if(gI_points[client] < 1000)
-		Format(sPoints, 32, "%i", gI_points[client])
+		Format(sPoints, 32, "\x08%08X%i\x01", color, gI_points[client])
 	else if(gI_points[client] > 999)
-		Format(sPoints, 32, "%.0fK", float(gI_points[client]) / 1000.0)
+		Format(sPoints, 32, "\x08%08X%.0fK\x01", color, float(gI_points[client]) / 1000.0)
 	else if(gI_points[client] > 999999)
-		Format(sPoints, 32, "%.0fM", float(gI_points[client]) / 1000000.0)
+		Format(sPoints, 32, "\x08%08X%.0fM\x01", color, float(gI_points[client]) / 1000000.0)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
 		Format(sText, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", sPoints, sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
@@ -770,7 +783,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
+			Format(sQuery, 512, "SELECT points, (SELECT MAX(points) FROM users), (SELECT MIN(points) FROM users) FROM users WHERE steamid = %i LIMIT 1", steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
 		}
 	}
@@ -784,7 +797,11 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 	if(IsClientInGame(client))
 	{
 		if(results.FetchRow())
+		{
 			gI_points[client] = results.FetchInt(0)
+			gI_pointsRange[0] = results.FetchInt(1)
+			gI_pointsRange[1] = results.FetchInt(2)
+		}
 		char sQuery[512]
 		int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", steamid, steamid)
@@ -1566,6 +1583,13 @@ Action cmd_test(int client, int args)
 			}
 		}
 		PrintToServer("LibraryExists (fakeexpert-entityfilter): %i", LibraryExists("fakeexpert-entityfilter"))
+		//https://forums.alliedmods.net/showthread.php?t=187746
+		int color
+		color |= (0 & 255) << 24 //5 red
+		color |= (255 & 255) << 16 // 200 green
+		color |= (0 & 255) << 8 // 255 blue
+		color |= (255 & 255) << 0 // 50 alpha
+		PrintToChat(client, "\x08%08XCOLOR", color)
 	}
 	return Plugin_Handled
 }
