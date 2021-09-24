@@ -169,10 +169,10 @@ Action timer_load(Handle timer)
 void EntityLinked(int entity, char[] output)
 {
 	int count = GetOutputActionCount(entity, output)
-	char sInput[64]
+	char sInput[32]
 	for(int i = 0; i < count; i++)
 	{
-		GetOutputActionTargetInput(entity, output, i, sInput, 64)
+		GetOutputActionTargetInput(entity, output, i, sInput, 32)
 		char sTarget[64]
 		GetOutputActionTarget(entity, output, i, sTarget, 64)
 		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break") || StrEqual(sInput, "Trigger") || StrEqual(sInput, "CancelPending"))
@@ -196,14 +196,21 @@ void EntityLinked(int entity, char[] output)
 						else
 						{
 							int math
+							bool mathExist
 							for(int k = 1; k <= gI_mathTotalCount; k++)
 							{
 								math = k
 								if(gI_mathID[math] == entity)
+								{
+									mathExist = true
 									break
+								}
 							}
-							gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
-							gI_mathOutput[GetOutput(output)][entityLinked]++
+							if(mathExist)
+							{
+								gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+								gI_mathOutput[GetOutput(output)][entityLinked]++
+							}
 						}
 					}
 				}
@@ -390,11 +397,12 @@ public void Trikz_Start(int client)
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 {
-	if(DHookIsNullParam(hParams, 2))
-		return MRES_Ignored
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
+	if(DHookIsNullParam(hParams, 2))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
+	PrintToServer("%i %s", pThis, sInput)
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
@@ -751,6 +759,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(IsValidEntity(entity) && StrContains(classname, "_projectile") != -1)
 		SDKHook(entity, SDKHook_SetTransmit, TransmitNade)
+	if(StrEqual(classname, "func_breakable"))
+		SDKHook(entity, SDKHook_SpawnPost, breakables)
 }
 
 int GetOutput(char[] output)
