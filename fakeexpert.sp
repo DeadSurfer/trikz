@@ -432,17 +432,17 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	Format(sMsgFormated, 32, "%s", sMsg)
 	char sPoints[32]
 	//https://www.skillsyouneed.com/num/percent-change.html
-	int increase = (gI_points[client] - gI_pointsMaxs) / gI_pointsMaxs * 255
+	int increase = RoundToFloor((float(gI_points[client]) - float(gI_pointsMaxs)) / float(gI_pointsMaxs) * 255.0)
 	if(!increase)
 		increase = 255
 	else if(increase < 0)
-		increase *= -1
-	int decrease = (gI_pointsMaxs - gI_points[client]) / gI_pointsMaxs * 255
+		increase = 255 - (increase * -1)
+	int decrease = RoundToFloor((float(gI_pointsMaxs) - float(gI_points[client])) / float(gI_pointsMaxs) * 255.0)
 	int color
-	color |= (increase & 255) << 24 //5 red
-	color |= (decrease & 255) << 16 // 200 green
-	color |= (0 & 255) << 8 // 255 blue
-	color |= (255 & 255) << 0 // 50 alpha
+	color |= increase << 24 //5 red
+	color |= decrease << 16 // 200 green
+	color |= 0 << 8 // 255 blue
+	color |= 255 << 0 // 50 alpha
 	if(gI_points[client] < 1000)
 		Format(sPoints, 32, "\x08%08X%i\x01", color, gI_points[client])
 	else if(gI_points[client] > 999)
@@ -1565,7 +1565,7 @@ Action cmd_test(int client, int args)
 		char sArgString[256]
 		GetCmdArgString(sArgString, 256)
 		int partner = StringToInt(sArgString)
-		if(partner && !gI_partner[client])
+		if(partner <= MaxClients && !gI_partner[client])
 		{
 			gI_partner[client] = partner
 			Call_StartForward(gH_start)
@@ -1589,6 +1589,7 @@ Action cmd_test(int client, int args)
 		color |= (255 & 255) << 8 // 255 blue
 		color |= (50 & 255) << 0 // 50 alpha
 		PrintToChat(client, "\x08%08XCOLOR", color)
+		gI_points[client] = partner
 	}
 	return Plugin_Handled
 }
