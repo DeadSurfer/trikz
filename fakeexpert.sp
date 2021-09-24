@@ -139,7 +139,7 @@ int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 Handle gH_start
-int gI_pointsRange[2]
+int gI_pointsMaxs
 
 public Plugin myinfo =
 {
@@ -432,12 +432,12 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	Format(sMsgFormated, 32, "%s", sMsg)
 	char sPoints[32]
 	//https://www.skillsyouneed.com/num/percent-change.html
-	float increase = (gI_points[client] - gI_pointsRange[0]) / gI_pointsRange[0] * 255.0
+	float increase = (gI_points[client] - gI_pointsMaxs) / gI_pointsMaxs * 255.0
 	if(!increase)
 		increase = 255.0
 	else if(increase < 0.0)
 		increase *= -1.0
-	float decrease = (gI_pointsRange[0] - gI_points[client]) / gI_pointsRange[0] * 255.0
+	float decrease = (gI_pointsMaxs - gI_points[client]) / gI_pointsMaxs * 255.0
 	int color
 	color |= (RoundFloat(increase) & 255) << 24 //5 red
 	color |= (RoundFloat(decrease) & 255) << 16 // 200 green
@@ -783,7 +783,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "SELECT points, (SELECT MAX(points) FROM users), (SELECT MIN(points) FROM users) FROM users WHERE steamid = %i LIMIT 1", steamid)
+			Format(sQuery, 512, "SELECT points, (SELECT MAX(points) FROM users) FROM users WHERE steamid = %i LIMIT 1", steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
 		}
 	}
@@ -799,8 +799,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 		if(results.FetchRow())
 		{
 			gI_points[client] = results.FetchInt(0)
-			gI_pointsRange[0] = results.FetchInt(1)
-			gI_pointsRange[1] = results.FetchInt(2)
+			gI_pointsMaxs = results.FetchInt(1)
 		}
 		char sQuery[512]
 		int steamid = GetSteamAccountID(client)
