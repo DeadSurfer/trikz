@@ -183,6 +183,9 @@ void EntityLinked(int entity, char[] output)
 				int entityLinked
 				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, StrEqual(sInput, "Toggle") ? entity : 0)) != INVALID_ENT_REFERENCE)
 				{
+					OutputInput(entityLinked, sClassname[j], sTarget)
+					if(StrEqual(output, "m_OnPressed") || StrEqual(output, "m_OnDamaged"))
+						OutputInput(entity, "func_button")
 					if(StrEqual(sInput, "Toggle"))
 					{
 						if(entity > 0)
@@ -192,20 +195,17 @@ void EntityLinked(int entity, char[] output)
 						}
 						else
 						{
+							int math
 							for(int k = 1; k <= gI_mathTotalCount; k++)
 							{
-								if(gI_mathID[k] == entity)
-								{
-									int math = k
-									gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
-									gI_mathOutput[GetOutput(output)][entityLinked]++
-								}
+								math = k
+								if(gI_mathID[math] == entity)
+									break
 							}
+							gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+							gI_mathOutput[GetOutput(output)][entityLinked]++
 						}
 					}
-					OutputInput(entityLinked, sClassname[j], sTarget)
-					if(StrEqual(output, "m_OnPressed") || StrEqual(output, "m_OnDamaged"))
-						OutputInput(entity, "func_button")
 				}
 			}
 		}
