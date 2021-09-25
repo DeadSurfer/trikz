@@ -639,14 +639,14 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	{
 		if(gF_buttonReady[activator][entity] > GetGameTime() || gB_stateDisabled[activator][entity])
 			return Plugin_Handled
-		gF_buttonReady[activator][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
-		gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
+		gF_buttonReady[activator][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
+		gF_buttonReady[partner][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 	}
 	else
 	{
 		if(gF_buttonReady[partner][entity] > GetGameTime() || gB_stateDisabled[partner][entity])
 			return Plugin_Handled
-		gF_buttonReady[partner][caller] = GetGameTime() + gF_buttonDefaultDelay[caller]
+		gF_buttonReady[partner][entity] = GetGameTime() + gF_buttonDefaultDelay[entity]
 	}
 	return Plugin_Continue
 }
