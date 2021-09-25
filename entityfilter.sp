@@ -337,7 +337,6 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		gF_buttonReady[0][entity] = 0.0
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
-		//SetEntProp(entity, Prop_Data, "m_fStayPushed", 0)
 		gB_stateDefaultDisabled[entity] = false
 		gB_stateDisabled[0][entity] = false
 	}
