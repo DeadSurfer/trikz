@@ -678,18 +678,15 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			{
 				if(partner)
 				{
-					if(gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
-						return Plugin_Handled
+					if(!gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]])
+					{
+						gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
+						gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
+					}
 				}
 				else
-					if(gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]])
-						return Plugin_Handled
-			}
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
-			{
-				if(partner)
-					gI_linkedToggles[activator][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
-				gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
+					if(!gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]])
+						gI_linkedToggles[partner][gI_linkedTogglesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedTogglesDefault[i][caller]]
 			}
 		}
 		else
@@ -708,18 +705,15 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						if(partner)
 						{
-							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][caller]])
-								return Plugin_Handled
+							if(!gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][caller]])
+							{
+								gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
+								gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
+							}
 						}
 						else
-							if(gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][caller]])
-								return Plugin_Handled
-					}
-					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
-					{
-						if(partner)
-							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
-						gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
+							if(!gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][caller]])
+								gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
 					}
 				}
 			}
