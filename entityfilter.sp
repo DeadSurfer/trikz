@@ -47,7 +47,7 @@ int gI_breakID[2048 + 1]
 native int Trikz_GetClientPartner(int client)
 int gI_linkedEntitiesDefault[2048 + 1][2048 + 1]
 int gI_linkedEntities[MAXPLAYERS + 1][2048 + 1]
-int gI_linkedMathTogglesDefault[2048 + 1][2048 + 1]
+int gI_linkedMathEntitiesDefault[2048 + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_maxMathLinks[2048 + 1]
 int gI_entityOutput[11][2048 + 1]
@@ -208,7 +208,7 @@ void EntityLinked(int entity, char[] output)
 						}
 						if(mathExist)
 						{
-							gI_linkedMathTogglesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+							gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
 							gI_mathOutput[GetOutput(output)][entityLinked]++
 						}
 					}
@@ -733,15 +733,15 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						if(partner)
 						{
-							if(!gI_linkedEntities[activator][gI_linkedMathTogglesDefault[j][caller]])
+							if(!gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][caller]])
 							{
-								gI_linkedEntities[activator][gI_linkedMathTogglesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
-								gI_linkedEntities[partner][gI_linkedMathTogglesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
+								gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][caller]]
+								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][caller]]
 							}
 						}
 						else
-							if(!gI_linkedEntities[partner][gI_linkedMathTogglesDefault[j][caller]])
-								gI_linkedEntities[partner][gI_linkedMathTogglesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
+							if(!gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][caller]])
+								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][caller]]
 					}
 				}
 			}
