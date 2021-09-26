@@ -556,6 +556,7 @@ Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	RemoveEntity(ragdoll)
+	CS_SetClientClanTag(client, gS_clanTag[client][0])
 }
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
