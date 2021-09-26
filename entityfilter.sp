@@ -127,6 +127,8 @@ Action timer_load(Handle timer)
 		gI_entityID[i] = 0
 		gI_mathID[i] = 0
 		gI_breakID[i] = 0
+		gB_stateDefaultDisabled[i] = false
+		gB_stateDisabled[0][i] = false
 		for(int j = 0; j <= 10; j++)
 		{
 			gI_entityOutput[j][i] = 0
