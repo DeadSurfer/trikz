@@ -708,18 +708,18 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						if(partner)
 						{
-							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[i][caller]])
+							if(gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][caller]])
 								return Plugin_Handled
 						}
 						else
-							if(gI_linkedToggles[partner][gI_linkedMathTogglesDefault[i][caller]])
+							if(gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][caller]])
 								return Plugin_Handled
 					}
 					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
 					{
 						if(partner)
-							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[math][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[math][caller]]
-						gI_linkedToggles[partner][gI_linkedMathTogglesDefault[math][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[math][caller]]
+							gI_linkedToggles[activator][gI_linkedMathTogglesDefault[j][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
+						gI_linkedToggles[partner][gI_linkedMathTogglesDefault[j][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathTogglesDefault[j][caller]]
 					}
 				}
 			}
