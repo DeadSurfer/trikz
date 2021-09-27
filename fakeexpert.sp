@@ -755,6 +755,7 @@ public void OnClientDisconnect(int client)
 			RemoveEntity(entity)
 	if(partner)
 		ResetFactory(partner)
+	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
