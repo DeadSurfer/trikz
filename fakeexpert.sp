@@ -140,6 +140,7 @@ bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 Handle gH_start
 int gI_pointsMaxs
+int gI_lastQuery
 
 public Plugin myinfo =
 {
@@ -379,12 +380,55 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 	{
 		int points = results.FetchInt(1) * results.FetchInt(0) / ++place //thanks to DeadSurfer
 		Format(sQuery, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2))
-		gD_mysql.Query(SQLRecalculatePointsFinished, sQuery)
+		gI_lastQuery++
+		gD_mysql.Query(SQLRecalculatePoints2, sQuery)
 	}
 }
 
-void SQLRecalculatePointsFinished(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
 {
+	if(gI_lastQuery-- && !gI_lastQuery)
+		gD_mysql.Query(SQLRecalculatePoints3, "SELECT steamid FROM users")
+}
+
+void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
+{
+	while(results.FetchRow())
+	{
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0))
+		gD_mysql.Query(SQLRecalculateUserPoints, sQuery, results.FetchInt(0))
+	}
+}
+
+void SQLRecalculateUserPoints(Database db, DBResultSet results, const char[] error, any data)
+{
+	int points
+	while(results.FetchRow())
+		points += results.FetchInt(0)
+	char sQuery[512]
+	Format(sQuery, 512, "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, data)
+	gI_lastQuery++
+	gD_mysql.Query(SQLUpdateUserPoints, sQuery)
+}
+
+void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.HasResults == false)
+	{
+		if(gI_lastQuery-- && !gI_lastQuery)
+		{
+			char sQuery[512]
+			Format(sQuery, 512, "SELECT points FROM users ORDER BY points ASC LIMIT 1")
+			gD_mysql.Query(SQLGetPointsMaxs, sQuery)
+		}
+	}
+}
+
+void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+		gI_pointsMaxs = results.FetchInt(0)
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -784,7 +828,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 		{
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "SELECT points, (SELECT MAX(points) FROM users) FROM users WHERE steamid = %i LIMIT 1", steamid)
+			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
 			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
 		}
 	}
@@ -795,39 +839,8 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 	int client = GetClientFromSerial(data)
 	if(!client)
 		return
-	if(IsClientInGame(client))
-	{
-		if(results.FetchRow())
-		{
-			gI_points[client] = results.FetchInt(0)
-			gI_pointsMaxs = results.FetchInt(1)
-		}
-		char sQuery[512]
-		int steamid = GetSteamAccountID(client)
-		Format(sQuery, 512, "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", steamid, steamid)
-		gD_mysql.Query(SQLRecalculateUserPoints, sQuery, GetClientSerial(client))
-	}
-}
-
-void SQLRecalculateUserPoints(Database db, DBResultSet results, const char[] error, any data)
-{
-	int client = GetClientFromSerial(data)
-	if(!client)
-		return
-	if(IsClientInGame(client))
-	{
-		int points
-		while(results.FetchRow())
-			points += results.FetchInt(0)
-		char sQuery[512]
-		int steamid = GetSteamAccountID(client)
-		Format(sQuery, 512, "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, steamid)
-		gD_mysql.Query(SQLUpdateUserPoints, sQuery)
-	}
-}
-
-void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, any data)
-{
+	if(results.FetchRow())
+		gI_points[client] = results.FetchInt(0)
 }
 
 void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
