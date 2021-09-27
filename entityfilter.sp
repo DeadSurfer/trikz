@@ -733,15 +733,15 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						if(partner)
 						{
-							if(!gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][caller]])
+							if(!gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
 							{
-								gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][caller]]
-								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][caller]]
+								gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 							}
 						}
 						else
-							if(!gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][caller]])
-								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][caller]]
+							if(!gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]])
+								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 					}
 				}
 			}
