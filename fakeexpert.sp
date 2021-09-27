@@ -567,8 +567,8 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
-	CS_SetClientClanTag(client, gS_clanTag[client][0])
-	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.	
+	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
+	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 }
 
 void event_button(const char[] output, int caller, int activator, float delay)
@@ -755,7 +755,7 @@ public void OnClientDisconnect(int client)
 			RemoveEntity(entity)
 	if(partner)
 		ResetFactory(partner)
-	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	CS_SetClientClanTag(partner, gS_clanTag[partner][0])
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
