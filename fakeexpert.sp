@@ -1189,25 +1189,25 @@ Action cmd_color(int client, int args)
 	GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
 	int color = StringToInt(sArgString)
 	if(StrEqual(sArgString, "white"))
-		color = 1
+		color = 0
 	else if(StrEqual(sArgString, "red"))
-		color = 2
+		color = 1
 	else if(StrEqual(sArgString, "orange"))
-		color = 3
+		color = 2
 	else if(StrEqual(sArgString, "yellow"))
-		color = 4
+		color = 3
 	else if(StrEqual(sArgString, "lime"))
-		color = 5
+		color = 4
 	else if(StrEqual(sArgString, "aqua"))
-		color = 6
+		color = 5
 	else if(StrEqual(sArgString, "deep sky blue"))
-		color = 7
+		color = 6
 	else if(StrEqual(sArgString, "blue"))
-		color = 8
+		color = 7
 	else if(StrEqual(sArgString, "magenta"))
-		color = 9
-	if(1 <= color <= 9)
-		Color(client, true, color - 1)
+		color = 8
+	if(strlen(sArgString) && 0 <= color <= 8)
+		Color(client, true, color)
 	else if(!color)
 		Color(client, true)
 	return Plugin_Handled
