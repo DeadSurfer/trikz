@@ -567,7 +567,6 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	}
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
-	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 	CS_SetClientClanTag(client, gS_clanTag[client][0])
 	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.	
 }
@@ -594,7 +593,6 @@ Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	RemoveEntity(ragdoll)
-	CS_SetClientClanTag(client, gS_clanTag[client][0])
 }
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
@@ -755,13 +753,8 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
-	if(IsValidEntity(client))
-		CS_SetClientClanTag(client, gS_clanTag[client][0])
 	if(partner)
-	{
-		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
 		ResetFactory(partner)
-	}
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
@@ -2801,10 +2794,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int second = RoundToFloor(gF_Time[client]) % 60
 		Format(gS_clanTag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second)
 		if(!IsPlayerAlive(client))
-		{
 			ResetFactory(client)
-			ResetFactory(gI_partner[client])
-		}
 	}
 	if(gB_skyBoost[client])
 	{
