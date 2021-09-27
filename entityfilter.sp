@@ -51,7 +51,6 @@ int gI_linkedMathEntitiesDefault[2048 + 1][2048 + 1]
 int gI_maxLinks[2048 + 1]
 int gI_maxMathLinks[2048 + 1]
 int gI_entityOutput[11][2048 + 1]
-int gI_mathOutput[11][2048 + 1]
 float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
@@ -130,10 +129,7 @@ Action timer_load(Handle timer)
 		gB_stateDefaultDisabled[i] = false
 		gB_stateDisabled[0][i] = false
 		for(int j = 0; j <= 10; j++)
-		{
 			gI_entityOutput[j][i] = 0
-			gI_mathOutput[j][i] = 0
-		}
 	}
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
@@ -183,7 +179,7 @@ void EntityLinked(int entity, char[] output)
 			for(int j = 0; j < sizeof(sClassname); j++)
 			{
 				int entityLinked
-				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, StrEqual(sInput, "Toggle") ? entity : 0)) != INVALID_ENT_REFERENCE)
+				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, entity)) != INVALID_ENT_REFERENCE)
 				{
 					OutputInput(entityLinked, sClassname[j], sTarget)
 					if(StrEqual(output, "m_OnPressed") || StrEqual(output, "m_OnDamaged"))
@@ -209,7 +205,7 @@ void EntityLinked(int entity, char[] output)
 						if(mathExist)
 						{
 							gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
-							gI_mathOutput[GetOutput(output)][entityLinked]++
+							gI_entityOutput[GetOutput(output)][entityLinked]++
 						}
 					}
 				}
@@ -494,28 +490,13 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
-	if(DHookIsNullParam(hParams, 2))
-		return MRES_Ignored
 	if(!StrEqual(sInput, "Lock") || !StrEqual(sInput, "Unlock"))
+		return MRES_Ignored
+	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
 	if(StrEqual(sInput, "Unlock"))
-	{
-		if(gI_linkedEntities[activator][pThis] && partner)
-		{
-			gB_stateDisabled[activator][pThis] = false
-			gB_stateDisabled[partner][pThis] = false
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
-		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = false
-			gI_linkedEntities[0][pThis]--
-		}
-	}
-	else if(StrEqual(sInput, "Lock"))
 	{
 		if(gI_linkedEntities[activator][pThis] && partner)
 		{
@@ -527,6 +508,21 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 		if(gI_linkedEntities[0][pThis])
 		{
 			gB_stateDisabled[0][pThis] = true
+			gI_linkedEntities[0][pThis]--
+		}
+	}
+	else if(StrEqual(sInput, "Lock"))
+	{
+		if(gI_linkedEntities[activator][pThis] && partner)
+		{
+			gB_stateDisabled[activator][pThis] = false
+			gB_stateDisabled[partner][pThis] = false
+			gI_linkedEntities[activator][pThis]--
+			gI_linkedEntities[partner][pThis]--
+		}
+		if(gI_linkedEntities[0][pThis])
+		{
+			gB_stateDisabled[0][pThis] = false
 			gI_linkedEntities[0][pThis]--
 		}
 	}
@@ -569,7 +565,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 				AcceptEntityInput(pThis, "FireUser3", activator, activator)
 			}
 		}
-		if(gF_mathValue[0][pThisIndex] < gF_mathMax[pThisIndex])
+		/*if(gF_mathValue[0][pThisIndex] < gF_mathMax[pThisIndex])
 		{
 			gF_mathValue[0][pThisIndex] += flValue
 			if(gF_mathValue[0][pThisIndex] >= gF_mathMax[pThisIndex])
@@ -577,7 +573,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 				gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]
 				AcceptEntityInput(pThis, "FireUser3", activator, activator)
 			}
-		}
+		}*/
 	}
 	else if(StrEqual(sInput, "Subtract"))
 	{
@@ -592,7 +588,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 				AcceptEntityInput(pThis, "FireUser4", activator, activator)
 			}
 		}
-		if(gF_mathValue[0][pThisIndex] > gF_mathMin[pThisIndex])
+		/*if(gF_mathValue[0][pThisIndex] > gF_mathMin[pThisIndex])
 		{
 			gF_mathValue[0][pThisIndex] -= flValue
 			if(gF_mathValue[0][pThisIndex] <= gF_mathMin[pThisIndex])
@@ -600,7 +596,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 				gF_mathValue[0][pThisIndex] = gF_mathMin[pThisIndex]
 				AcceptEntityInput(pThis, "FireUser4", activator, activator)
 			}
-		}
+		}*/
 	}
 	else
 	{
@@ -619,11 +615,11 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 				gF_mathValue[partner][pThisIndex] = gF_mathMax[pThisIndex]
 			}
 		}
-		gF_mathValue[0][pThisIndex] = flValue
+		/*gF_mathValue[0][pThisIndex] = flValue
 		if(gF_mathValue[0][pThisIndex] < gF_mathMin[pThisIndex])
 			gF_mathValue[0][pThisIndex] = gF_mathMin[pThisIndex]
 		else if(gF_mathValue[0][pThisIndex] > gF_mathMax[pThisIndex])
-			gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]
+			gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]*/
 	}
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
