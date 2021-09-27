@@ -217,8 +217,6 @@ void EntityLinked(int entity, char[] output)
 			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", sTarget)) != INVALID_ENT_REFERENCE)
 			{
 				OutputInput(entityLinked, "func_button")
-				if(GetEntProp(entityLinked, Prop_Data, "m_bLocked"))
-					AcceptEntityInput(entityLinked, "Unlock")
 				DHookEntity(gH_AcceptInput, false, entityLinked, INVALID_FUNCTION, AcceptInputButton)
 			}
 		}
@@ -334,6 +332,8 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
 		gB_stateDefaultDisabled[entity] = false
 		gB_stateDisabled[0][entity] = false
+		if(GetEntProp(entity, Prop_Data, "m_bLocked"))
+			AcceptEntityInput(entity, "Unlock")
 	}
 	if(i < 2)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
@@ -500,21 +500,6 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(gI_linkedEntities[activator][pThis] && partner)
 		{
-			gB_stateDisabled[activator][pThis] = true
-			gB_stateDisabled[partner][pThis] = true
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
-		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = true
-			gI_linkedEntities[0][pThis]--
-		}
-	}
-	else if(StrEqual(sInput, "Lock"))
-	{
-		if(gI_linkedEntities[activator][pThis] && partner)
-		{
 			gB_stateDisabled[activator][pThis] = false
 			gB_stateDisabled[partner][pThis] = false
 			gI_linkedEntities[activator][pThis]--
@@ -523,6 +508,21 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 		if(gI_linkedEntities[0][pThis])
 		{
 			gB_stateDisabled[0][pThis] = false
+			gI_linkedEntities[0][pThis]--
+		}
+	}
+	else if(StrEqual(sInput, "Lock"))
+	{
+		if(gI_linkedEntities[activator][pThis] && partner)
+		{
+			gB_stateDisabled[activator][pThis] = true
+			gB_stateDisabled[partner][pThis] = true
+			gI_linkedEntities[activator][pThis]--
+			gI_linkedEntities[partner][pThis]--
+		}
+		if(gI_linkedEntities[0][pThis])
+		{
+			gB_stateDisabled[0][pThis] = true
 			gI_linkedEntities[0][pThis]--
 		}
 	}
