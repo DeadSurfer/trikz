@@ -754,8 +754,10 @@ public void OnClientDisconnect(int client)
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
 	if(partner)
+	{
 		ResetFactory(partner)
-	CS_SetClientClanTag(partner, gS_clanTag[partner][0])
+		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
+	}
 }
 
 void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
