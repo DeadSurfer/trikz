@@ -710,7 +710,7 @@ public void OnClientPutInServer(int client)
 	//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 	if(IsClientInGame(client) && gB_passDB)
 	{
-		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client))
+		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High)
 		char sQuery[512]
 		int steamid = GetSteamAccountID(client)
 		Format(sQuery, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, gS_map)
@@ -778,7 +778,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		if(results.FetchRow())
 		{
 			Format(sQuery, 512, "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid)
-			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client))
+			gD_mysql.Query(SQLUpdateUsername, sQuery, GetClientSerial(client), DBPrio_High)
 		}
 		else
 		{
@@ -807,7 +807,7 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			Format(sQuery, 512, "UPDATE users SET username = '%s', lastjoin = %i WHERE steamid = %i LIMIT 1", sName, GetTime(), steamid)
 		else
 			Format(sQuery, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%s', %i, %i, %i)", sName, steamid, GetTime(), GetTime())
-		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery, GetClientSerial(client))
+		gD_mysql.Query(SQLUpdateUsernameSuccess, sQuery, GetClientSerial(client), DBPrio_High)
 	}
 }
 
@@ -823,7 +823,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 			char sQuery[512]
 			int steamid = GetSteamAccountID(client)
 			Format(sQuery, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
-			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client))
+			gD_mysql.Query(SQLGetPoints, sQuery, GetClientSerial(client), DBPrio_High)
 		}
 	}
 }
