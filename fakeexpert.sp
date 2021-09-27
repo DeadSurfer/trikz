@@ -416,7 +416,7 @@ void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, a
 {
 	if(results.HasResults == false)
 		if(gI_lastQuery-- && !gI_lastQuery)
-			gD_mysql.Query(SQLGetPointsMaxs, "SELECT points FROM users ORDER BY points LIMIT 1")
+			gD_mysql.Query(SQLGetPointsMaxs, "SELECT points FROM users ORDER BY points DESC LIMIT 1")
 }
 
 void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any data)
