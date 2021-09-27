@@ -416,7 +416,7 @@ void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, a
 {
 	if(results.HasResults == false)
 		if(gI_lastQuery-- && !gI_lastQuery)
-			gD_mysql.Query(SQLGetPointsMaxs, "SELECT points FROM users ORDER BY points ASC LIMIT 1")
+			gD_mysql.Query(SQLGetPointsMaxs, "SELECT points FROM users ORDER BY points LIMIT 1")
 }
 
 void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any data)
@@ -2794,7 +2794,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int second = RoundToFloor(gF_Time[client]) % 60
 		Format(gS_clanTag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second)
 		if(!IsPlayerAlive(client))
+		{
 			ResetFactory(client)
+			ResetFactory(gI_partner[client])
+		}
 	}
 	if(gB_skyBoost[client])
 	{
