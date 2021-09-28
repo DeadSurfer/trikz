@@ -3419,29 +3419,33 @@ public void OnEntityCreated(int entity, const char[] classname)
 Action SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	if(IsValidEntity(entity) || IsPlayerAlive(client))
+	if(IsValidEntity(client))
 	{
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		gB_silentKnife = true
 		FakeClientCommand(client, "use weapon_knife")
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 https://forums.alliedmods.net/archive/index.php/t-287052.html
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //thanks to alliedmodders. 2019 https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true)
+		RequestFrame(frame_blockExplosion, entity)
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
 
+void frame_blockExplosion(int entity)
+{
+	SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+}
+
 Action timer_deleteProjectile(Handle timer, int entity)
 {
-	if(IsValidEntity(entity))
-		RemoveEntity(entity)
+	RemoveEntity(entity)
 }
 
 void SDKProjectilePost(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	if(IsValidEntity(entity) || IsPlayerAlive(client))
+	if(IsValidEntity(client))
 	{
 		if(gB_color[client])
 		{
@@ -3482,8 +3486,7 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 
 Action SDKWeaponDrop(int client, int weapon)
 {
-	if(IsValidEntity(weapon))
-		RemoveEntity(weapon)
+	RemoveEntity(weapon)
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
