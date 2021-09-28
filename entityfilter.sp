@@ -554,7 +554,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 		return MRES_Ignored
 	if(StrEqual(sInput, "Add"))
 	{
-		if(gF_mathValue[activator][pThisIndex] < gF_mathMax[pThisIndex] && partner)
+		if(gF_mathValue[activator][pThisIndex] < gF_mathMax[pThisIndex])
 		{
 			gF_mathValue[activator][pThisIndex] += flValue
 			gF_mathValue[partner][pThisIndex] += flValue
@@ -565,19 +565,10 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 				AcceptEntityInput(pThis, "FireUser3", activator, activator)
 			}
 		}
-		/*if(gF_mathValue[0][pThisIndex] < gF_mathMax[pThisIndex])
-		{
-			gF_mathValue[0][pThisIndex] += flValue
-			if(gF_mathValue[0][pThisIndex] >= gF_mathMax[pThisIndex])
-			{
-				gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]
-				AcceptEntityInput(pThis, "FireUser3", activator, activator)
-			}
-		}*/
 	}
 	else if(StrEqual(sInput, "Subtract"))
 	{
-		if(gF_mathValue[activator][pThisIndex] > gF_mathMin[pThisIndex] && partner)
+		if(gF_mathValue[activator][pThisIndex] > gF_mathMin[pThisIndex])
 		{
 			gF_mathValue[activator][pThisIndex] -= flValue
 			gF_mathValue[partner][pThisIndex] -= flValue
@@ -588,38 +579,21 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 				AcceptEntityInput(pThis, "FireUser4", activator, activator)
 			}
 		}
-		/*if(gF_mathValue[0][pThisIndex] > gF_mathMin[pThisIndex])
-		{
-			gF_mathValue[0][pThisIndex] -= flValue
-			if(gF_mathValue[0][pThisIndex] <= gF_mathMin[pThisIndex])
-			{
-				gF_mathValue[0][pThisIndex] = gF_mathMin[pThisIndex]
-				AcceptEntityInput(pThis, "FireUser4", activator, activator)
-			}
-		}*/
 	}
 	else
 	{
-		if(partner)
+		gF_mathValue[activator][pThisIndex] = flValue
+		gF_mathValue[partner][pThisIndex] = flValue
+		if(gF_mathValue[activator][pThisIndex] < gF_mathMin[pThisIndex])
 		{
-			gF_mathValue[activator][pThisIndex] = flValue
-			gF_mathValue[partner][pThisIndex] = flValue
-			if(gF_mathValue[activator][pThisIndex] < gF_mathMin[pThisIndex])
-			{
-				gF_mathValue[activator][pThisIndex] = gF_mathMin[pThisIndex]
-				gF_mathValue[partner][pThisIndex] = gF_mathMin[pThisIndex]
-			}
-			else if(gF_mathValue[activator][pThisIndex] > gF_mathMax[pThisIndex])
-			{
-				gF_mathValue[activator][pThisIndex] = gF_mathMax[pThisIndex]
-				gF_mathValue[partner][pThisIndex] = gF_mathMax[pThisIndex]
-			}
+			gF_mathValue[activator][pThisIndex] = gF_mathMin[pThisIndex]
+			gF_mathValue[partner][pThisIndex] = gF_mathMin[pThisIndex]
 		}
-		/*gF_mathValue[0][pThisIndex] = flValue
-		if(gF_mathValue[0][pThisIndex] < gF_mathMin[pThisIndex])
-			gF_mathValue[0][pThisIndex] = gF_mathMin[pThisIndex]
-		else if(gF_mathValue[0][pThisIndex] > gF_mathMax[pThisIndex])
-			gF_mathValue[0][pThisIndex] = gF_mathMax[pThisIndex]*/
+		else if(gF_mathValue[activator][pThisIndex] > gF_mathMax[pThisIndex])
+		{
+			gF_mathValue[activator][pThisIndex] = gF_mathMax[pThisIndex]
+			gF_mathValue[partner][pThisIndex] = gF_mathMax[pThisIndex]
+		}
 	}
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
