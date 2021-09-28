@@ -3427,7 +3427,8 @@ Action SDKProjectile(int entity)
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		CreateTimer(1.45, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE) //so createtimer not acurate, so we need make faster timings to prevent random blinds.
+		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
 
