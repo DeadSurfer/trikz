@@ -3427,8 +3427,14 @@ Action SDKProjectile(int entity)
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 0) //thanks to alliedmodders. 2019 https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", 1)
-		CreateTimer(1.45, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE) //so createtimer not acurate, so we need make faster timings to prevent random blinds.
+		CreateTimer(1.45, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE) //so createtimer not acurate, so we need make faster timings to prevent random blinds.
 	}
+}
+
+Action timer_deleteProjectile(Handle timer, int entity)
+{
+	if(IsValidEntity(entity))
+		RemoveEntity(entity)
 }
 
 void SDKProjectilePost(int entity)
@@ -3443,12 +3449,6 @@ void SDKProjectilePost(int entity)
 			SetEntityRenderColor(entity, gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 		}
 	}
-}
-Action timer_deleteProjectile(Handle timer, int entRef)
-{
-	int entity = EntRefToEntIndex(entRef)
-	if(IsValidEntity(entity))
-		RemoveEntity(entity)
 }
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
