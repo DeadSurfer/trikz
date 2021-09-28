@@ -704,13 +704,13 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				{
 					if(!gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
 					{
-						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 					}
 				}
 				else
 					if(!gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
-						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 			}
 		}
 		else
@@ -731,13 +731,13 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 						{
 							if(!gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
 							{
-								gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
-								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+								gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 							}
 						}
 						else
 							if(!gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]])
-								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 					}
 				}
 			}
