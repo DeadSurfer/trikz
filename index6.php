@@ -20,7 +20,7 @@ $back = $eu - $limit;
 $next = $eu + $limit;
 //We have to find out the total number of records exists in our table with the condition specified in the query. Based on this number we can break the pages
 //Step1
-$dbo = mysqli_connect('78.84.184.120','root','SaulesStars292mysql','fakeexpert')
+$dbo = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert')
 or die('Error connecting to MySQL server.');
 $nume = $dbo->query("SELECT COUNT(id) FROM records")->fetchColumn();
 //Now let us do some formatting and display the table headers. We have used style sheet you can edit that to match your requirments
