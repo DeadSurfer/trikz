@@ -2,19 +2,20 @@
 //https://stackoverflow.com/questions/4146647/destroy-php-session-on-closing
 //session_set_cookie_params(0);
 session_start();
-?> 
+?>
 <html>
 <!--<head>Trikz Timer</head>-->
 <style>
 .styled-table2
 {
-    border-collapse: collapse;
+	border-collapse: collapse;
 	<!--border-collapse: seperate;-->
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 64px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	margin: 25px 0;
+	font-size: 0.9em;
+	font-family: sans-serif;
+	min-width: 64px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	<!--ursor: none;--> <!--https://stackoverflow.com/questions/1071356/is-it-possible-to-hide-the-cursor-in-a-webpage-using-css-or-javascript-->
 	<!--background-color: rgba(0,0,0,.5);--> <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
 	<!--border-radius: 25px;-->
 	<!--border: 2px solid #73AD21;-->
@@ -368,7 +369,7 @@ session_start();
 		//$row0 = mysqli_fetch_field($result0);
 		//mysqli_fetch_column
 		//$rowx = mysqli_fetch_assoc($resultx);
-		$count = $start + 1;
+		$count = $start;
 		//echo "<table class='styled-table'>";
 		//echo "<thead><tr>";
 		//echo "<th>Place</th>";
@@ -384,7 +385,7 @@ session_start();
 		//echo "<td>";
 		//$countx = $countx + 1;
 		//$countx++;
-		$serverRecord = 0;
+		$serverRecord;
 		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
 		//mysqli_query($db, $query0) or die('Error querying in table. [2]');
 		//$result0 = mysqli_query($db, $query0);
@@ -409,7 +410,7 @@ session_start();
 			$secs = floor($row['time'] % 60);
 			$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
 			$timeDiff;
-			if($serverRecord == 0)
+			if(!$serverRecord)
 				$serverRecord = $row['time'];
 			$timeDiff = $row['time'] - $serverRecord;
 			$timeDiffHours = floor($timeDiff / 3600);
@@ -427,6 +428,7 @@ session_start();
 			$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
 			$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
 			//https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
+			$count++;
 			if($count == 1)
 				echo "<tr><td><center><img src=/topplace/gold_icon.png width=25 height=35></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			else if($count == 2)
@@ -436,7 +438,7 @@ session_start();
 			else
 				echo "<tr><td><center>$count</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			//$countx = $countx + 1;
-			$count++;
+			//$count++;
 			//echo "<td>$row2x[username]</td>";
 			//echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
 			
