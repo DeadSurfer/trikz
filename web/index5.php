@@ -385,7 +385,7 @@ session_start();
 		//echo "<td>";
 		//$countx = $countx + 1;
 		//$countx++;
-		$serverRecord;
+		$serverRecord = 0;
 		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
 		//mysqli_query($db, $query0) or die('Error querying in table. [2]');
 		//$result0 = mysqli_query($db, $query0);
@@ -402,7 +402,7 @@ session_start();
 		//if(empty($result))
 		//	echo "yes";
 		if(!mysqli_num_rows($result))
-			echo "<tr><td><center>No records found!</center></td></tr>";
+			echo "<td><center>No records found!</center></td>";
 		//$testx1 = mysqli_num_rows($result);
 		//echo $testx1;
 		while($row = mysqli_fetch_assoc($result))
@@ -928,6 +928,10 @@ session_start();
 		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
 	?><!--</td>-->
 	  <!--</tr>-->
+		<!--<?php
+			if(!mysqli_num_rows($result))
+				echo "<center>No records found!</center>";
+		?>-->
 	</tbody>
 	</table>
 	<?php
