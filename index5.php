@@ -426,7 +426,7 @@ session_start();
 			$stamid64beforefirstuser = 76561197960265728; //so first user will be with + 1
 			$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
 			$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
-			echo "<tr><td><center>$count</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+			echo "<tr><td><center>$count</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			//$countx = $countx + 1;
 			$count++;
 			//echo "<td>$row2x[username]</td>";
