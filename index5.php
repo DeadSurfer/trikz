@@ -423,8 +423,9 @@ session_start();
 			//else
 			//https://www.w3schools.com/html/html_colors.asp
 			//https://www.tutorialspoint.com/html/html_colors.htm
-			$player1steamid64 = 76561197960265728 + $row[playerid];
-			$player2steamid64 = 76561197960265728 + $row[partnerid];
+			$stamid64beforefirstuser = 76561197960265728; //so first user will be with + 1
+			$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
+			$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
 			echo "<tr><td><center>$count</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 			//$countx = $countx + 1;
 			$count++;
