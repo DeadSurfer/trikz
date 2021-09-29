@@ -3486,7 +3486,8 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 
 Action SDKWeaponDrop(int client, int weapon)
 {
-	RemoveEntity(weapon)
+	if(IsValidEntity(weapon))
+		RemoveEntity(weapon)
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
