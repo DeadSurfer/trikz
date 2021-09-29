@@ -395,8 +395,21 @@ session_start();
 		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
 		// set the default timezone to use.
 		date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
+		//$numrows = mysql_num_rows($result);
+		//numrows = 
+		//if(!mysqli_fetch_assoc($result)) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql
+		//	echo "No records found!";
+		//if(empty($result))
+		//	echo "yes";
+		if(!mysqli_num_rows($result))
+			echo "<tr><td><center>No records found!</center></td></tr>";
+		//$testx1 = mysqli_num_rows($result);
+		//echo $testx1;
 		while($row = mysqli_fetch_assoc($result))
 		{
+			//if(is_array($row))
+			//if(empty($row))
+			//	echo "No records found!";
 			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
 			mysqli_query($db, $query2) or die('Error querying in table. [3]');
 			$result2 = mysqli_query($db, $query2);
@@ -410,7 +423,8 @@ session_start();
 			$secs = floor($row['time'] % 60);
 			$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
 			//$timeDiff;
-			if($serverRecord == 0)
+			//$serverRecord = 0;
+			if(!$serverRecord)
 				$serverRecord = $row['time'];
 			$timeDiff = $row['time'] - $serverRecord;
 			$timeDiffHours = floor($timeDiff / 3600);
@@ -439,6 +453,7 @@ session_start();
 				echo "<tr><td><center>$count</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			//$countx = $countx + 1;
 			//$count++;
+			//echo $count;
 			//echo "<td>$row2x[username]</td>";
 			//echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
 			
