@@ -409,8 +409,8 @@ session_start();
 			$mins = floor($row['time'] / 60 % 60);
 			$secs = floor($row['time'] % 60);
 			$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
-			$timeDiff;
-			if(!$serverRecord)
+			//$timeDiff;
+			if($serverRecord == 0)
 				$serverRecord = $row['time'];
 			$timeDiff = $row['time'] - $serverRecord;
 			$timeDiffHours = floor($timeDiff / 3600);
