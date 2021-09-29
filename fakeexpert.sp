@@ -1593,6 +1593,9 @@ Action cmd_test(int client, int args)
 		color |= (255 & 255) << 8 // 255 blue
 		color |= (50 & 255) << 0 // 50 alpha
 		PrintToChat(client, "\x08%08XCOLOR", color)
+		char sAuth64[64]
+		GetClientAuthId(client, AuthId_SteamID64, sAuth64, 64)
+		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", sAuth64, steamid) //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 	}
 	return Plugin_Handled
 }
