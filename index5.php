@@ -214,7 +214,7 @@ session_start();
 	<a href="<?php //echo $previous_page;?>"><button>BACK</button></a>-->
 	<?php
 		//Step1
-		$db = mysqli_connect('78.84.184.120','root','SaulesStars292mysql','fakeexpert')
+		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert')
 		or die('Error connecting to MySQL server.');
 	?>
 		<!--<form method="post">
@@ -423,7 +423,9 @@ session_start();
 			//else
 			//https://www.w3schools.com/html/html_colors.asp
 			//https://www.tutorialspoint.com/html/html_colors.htm
-			echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
+			$player1steamid64 = 76561197960265728 + $row[playerid];
+			$player2steamid64 = 76561197960265728 + $row[partnerid];
+			echo "<tr><td><center>$count</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
 			//$countx = $countx + 1;
 			$count++;
 			//echo "<td>$row2x[username]</td>";
