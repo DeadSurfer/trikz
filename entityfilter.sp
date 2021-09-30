@@ -133,7 +133,10 @@ Action timer_load(Handle timer)
 		for(int j = 0; j <= 10; j++)
 			gI_entityOutput[j][i] = 0
 		for(int j = 0; j <= MaxClients; j++)
+		{
+			gB_stateDisabled[j][i] = false
 			gI_linkedEntities[j][i] = 0
+		}
 	}
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
