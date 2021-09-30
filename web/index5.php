@@ -313,50 +313,50 @@ session_start();
 				if(isset($_GET['l']))
 				{
 					if($_GET['l'] == 1)
-						echo "<th><center>Place <a href=$page?start=$_GET[start]&l=0><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Place <a href=$page?start=$_GET[start]&l=0><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 					else if($_GET['l'] == 0)
-						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 					else
-						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				}
 				else
-					echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+					echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 				echo "<th>Team</th>"; //<!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
 				echo "<th><center>Time</center></th>";
 				if(isset($_GET['l']))
 				{
 					if($_GET['l'] == 3)
-						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=2><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=2><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 					else if($_GET['l'] == 2)
-						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=3><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=3><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 					else
-						echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+						echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				}
 				else
-					echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+					echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				if(isset($_GET['l']))
 				{
 					if($_GET['l'] == 5)
-						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=4><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=4><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 					else if($_GET['l'] == 4)
-						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=5><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=5><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 					else
-						echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+						echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				}
 				else
-					echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+					echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				//<!--<th>Map</th>-->
 				if(isset($_GET['l']))
 				{
 					if($_GET['l'] == 7)
-						echo "<th><center>Date <a href=$page?start=$_GET[start]&l=6><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Date <a href=$page?start=$_GET[start]&l=6><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 					else if($_GET['l'] == 6)
-						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 					else
-						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				}
 				else
-					echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+					echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				?>
 			</tr>
 		</thead>
