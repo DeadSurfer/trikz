@@ -128,8 +128,12 @@ Action timer_load(Handle timer)
 		gI_breakID[i] = 0
 		gB_stateDefaultDisabled[i] = false
 		gB_stateDisabled[0][i] = false
+		gI_linkedEntitiesDefault[i][i] = 0
+		gI_linkedMathEntitiesDefault[i][i] = 0
 		for(int j = 0; j <= 10; j++)
 			gI_entityOutput[j][i] = 0
+		for(int j = 1; j <= MaxClients; j++)
+			gI_linkedEntities[j][i] = 0
 	}
 	for(int i = 0; i < sizeof(sClassname); i++)
 	{
