@@ -132,7 +132,7 @@ Action timer_load(Handle timer)
 		gI_linkedMathEntitiesDefault[i][i] = 0
 		for(int j = 0; j <= 10; j++)
 			gI_entityOutput[j][i] = 0
-		for(int j = 1; j <= MaxClients; j++)
+		for(int j = 0; j <= MaxClients; j++)
 			gI_linkedEntities[j][i] = 0
 	}
 	for(int i = 0; i < sizeof(sClassname); i++)
