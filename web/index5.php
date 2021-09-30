@@ -308,13 +308,56 @@ session_start();
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
 			<tr>
-				<th><center>Place</center></th>
-				<th>Team</th> <!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
-				<th><center>Time</center></th>
-				<th><center>Finishes</center></th>
-				<th><center>Tries</center></th>
-				<!--<th>Map</th>-->
-				<th><center>Date</center></th>
+				<?php
+				$page = basename($_SERVER['PHP_SELF']);
+				if(isset($_GET['l']))
+				{
+					if($_GET['l'] == 1)
+						echo "<th><center>Place <a href=$page?start=$_GET[start]&l=0><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+					else if($_GET['l'] == 0)
+						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+					else
+						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+				}
+				else
+					echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+				echo "<th>Team</th>"; //<!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
+				echo "<th><center>Time</center></th>";
+				if(isset($_GET['l']))
+				{
+					if($_GET['l'] == 3)
+						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=2><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+					else if($_GET['l'] == 2)
+						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=3><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+					else
+						echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+				}
+				else
+					echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+				if(isset($_GET['l']))
+				{
+					if($_GET['l'] == 5)
+						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=4><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+					else if($_GET['l'] == 4)
+						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=5><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+					else
+						echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+				}
+				else
+					echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+				//<!--<th>Map</th>-->
+				if(isset($_GET['l']))
+				{
+					if($_GET['l'] == 7)
+						echo "<th><center>Date <a href=$page?start=$_GET[start]&l=6><img src=/sort/sort-amount-down-solid.png width=15 height=15></a></center></th>";
+					else if($_GET['l'] == 6)
+						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down-alt-solid.png width=15 height=15></a></center></th>";
+					else
+						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+				}
+				else
+					echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down.png width=6 height=15></a></center></th>";
+				?>
 			</tr>
 		</thead>
 		<tbody>
@@ -336,6 +379,7 @@ session_start();
 		//	$start = 0;
 		if(isset($_POST['submit']))
 			$start = 0;
+			//$l = 0;
 		//if(strlen($start) == 0)
 		//	$start = 0;
 		//echo $page;
@@ -346,22 +390,54 @@ session_start();
 		$thisp = $start + $limit;
 		$back = $start - $limit;
 		$next = $start + $limit;
+		//$ff;
+		if(isset($_GET['l']))
+			$l = (int) $_GET['l'];
+		else
+			$l = 0;
 		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC")->fetchColumn();
 		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
 		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
-		$query0 = "SELECT COUNT(id) FROM records WHERE map = '$_SESSION[map]'";
+		$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
 		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC";
-		$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC LIMIT $start, $limit";
+		$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
+		//echo $l;
+		$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
+		if($l == 1)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
+		if(!$l)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC LIMIT $start, $limit";
+		if($l == 3)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
+		if($l == 2)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes ASC LIMIT $start, $limit";
+		if($l == 5)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
+		if($l == 4)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries ASC LIMIT $start, $limit";
+		if($l == 7)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
+		if($l == 6)
+			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date ASC LIMIT $start, $limit";
+		//$getRecordCount = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
 		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
 		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
+		mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
 		mysqli_query($db, $query) or die('Error querying database. [1]');
+		//mysqli_query($db, $getRecordCount) or die('Error querying database. [getRecordCount]');
+			mysqli_query($db, $getSR) or die('Error querying database. [getSR]');
 		mysqli_query($db, $query0) or die('Error querying database. [2]');
 		//if(strlen($name) > 0)
 			//echo $name . ' ';
 		//Step3
+		$resultRank = mysqli_query($db, $queryRank);
 		$result = mysqli_query($db, $query);
 		$result0 = mysqli_query($db, $query0);
+		$resultGetSR = mysqli_query($db, $getSR);
+		//$resultGetRecordCount = mysqli_query($db, $getRecordCount);
+		$rowGetSR = mysqli_fetch_array($resultGetSR);
+		//$rowGetRecordCount = mysqli_fetch_array($resultGetRecordCount);
 		//$row0 = mysqli_fetch_column($result0);
 		$row0 = mysqli_fetch_array($result0); //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
 		//echo $row0[0]; //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
@@ -369,7 +445,7 @@ session_start();
 		//$row0 = mysqli_fetch_field($result0);
 		//mysqli_fetch_column
 		//$rowx = mysqli_fetch_assoc($resultx);
-		$count = $start;
+		//$count = $start;
 		//echo "<table class='styled-table'>";
 		//echo "<thead><tr>";
 		//echo "<th>Place</th>";
@@ -405,11 +481,24 @@ session_start();
 			echo "<td><center>No records found!</center></td>";
 		//$testx1 = mysqli_num_rows($result);
 		//echo $testx1;
+		//if()
+		//$count = $l ? $row0[0] - $start : $start;
+		//$rankx;
 		while($row = mysqli_fetch_assoc($result))
 		{
 			//if(is_array($row))
 			//if(empty($row))
 			//	echo "No records found!";
+			$rank;
+			//$rankx = 0;
+			$resultRank = mysqli_query($db, $queryRank);
+			while($rank = mysqli_fetch_assoc($resultRank))
+				if($rank['id'] == $row['id'])
+					break;
+			//echo $rankx['id'];
+			//echo "-";
+			//echo $row['id'];
+			//echo "x";
 			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
 			mysqli_query($db, $query2) or die('Error querying in table. [3]');
 			$result2 = mysqli_query($db, $query2);
@@ -425,7 +514,7 @@ session_start();
 			//$timeDiff;
 			//$serverRecord = 0;
 			if(!$serverRecord)
-				$serverRecord = $row['time'];
+				$serverRecord = $rowGetSR['time'];
 			$timeDiff = $row['time'] - $serverRecord;
 			$timeDiffHours = floor($timeDiff / 3600);
 			$timeDiffMins = floor($timeDiff / 60 % 60);
@@ -442,17 +531,21 @@ session_start();
 			$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
 			$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
 			//https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
-			$count++;
-			if($count == 1)
+			//if($l)
+			//	$count = $row[0];
+			//if(!$l)
+				//$count++;
+			if($rank['rank'] == 1)
 				echo "<tr><td><center><img src=/topplace/gold_icon.png width=25 height=35></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-			else if($count == 2)
+			else if($rank['rank'] == 2)
 				echo "<tr><td><center><img src=/topplace/silver_icon.png width=25 height=35></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-			else if($count == 3)
+			else if($rank['rank'] == 3)
 				echo "<tr><td><center><img src=/topplace/bronze_icon.png width=25 height=35></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			else
-				echo "<tr><td><center>$count</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+				echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			//$countx = $countx + 1;
-			//$count++;
+			//if($l)
+				//$count--;
 			//echo $count;
 			//echo "<td>$row2x[username]</td>";
 			//echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
@@ -938,9 +1031,9 @@ session_start();
 		echo "<table class='styled-table2'><thead><tr>";
 		if($back >= 0)
 			//print "<a href='$page?start=$back'>Previous</a>";
-			print "<th><center><a href='$page?start=$back' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html
+			print "<th><center><a href='$page?start=$back&l=$l' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html
 		if($start + $limit < $row0[0])
-			print "<th><center><a href='$page?start=$next' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+			print "<th><center><a href='$page?start=$next&l=$l' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
 		echo "</tr></thead></table><br>";
 		/*//Step2
 		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
