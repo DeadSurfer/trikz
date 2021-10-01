@@ -277,17 +277,19 @@
 				else
 					echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			}
-			echo "<table class='styled-table2'><thead><tr>";
-			if($back >= 0)
-				print "<th><center><a href='$page?start=$back&l=$l' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
-			if($start + $limit < $row0[0])
-				print "<th><center><a href='$page?start=$next&l=$l' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
-			echo "</tr></thead></table>";
-			$year = "Copyleft fakeexpert 2021 -";
-			echo $year . ' ' . date("Y") . ' year.'; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
 		?>
 	</tbody>
 	</table>
+	<?php
+		echo "<table class='styled-table2'><thead><tr>";
+		if($back >= 0)
+			print "<th><center><a href='$page?start=$back&l=$l' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
+		if($start + $limit < $row0[0])
+			print "<th><center><a href='$page?start=$next&l=$l' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+		echo "</tr></thead></table>";
+		$year = "Copyleft fakeexpert 2021 -";
+		echo $year . ' ' . date("Y") . ' year.'; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
+	?>
 </body>
 <!--https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
 https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
