@@ -1468,7 +1468,7 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
-	if(gB_isDevmap)
+	if(!gB_isDevmap)
 	{
 		char sCmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
 		kv.GetSectionName(sCmd, 64)
