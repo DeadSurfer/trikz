@@ -2148,7 +2148,7 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 
 void SDKEndTouchPost(int entity, int other)
 {
-	if(0 < other <= MaxClients && gB_readyToStart[other])
+	if(0 < other <= MaxClients && gB_readyToStart[other] && gI_partner[other])
 	{
 		gB_state[other] = true
 		gB_state[gI_partner[other]] = true
