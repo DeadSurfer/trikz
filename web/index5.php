@@ -3,57 +3,13 @@
 ?>
 <html>
 <style>
-.styled-table2
-{
-	border-collapse: collapse;
-	margin: 25px 0;
-	font-size: 0.9em;
-	font-family: sans-serif;
-	min-width: 64px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.styled-table2 thead tr
-{
-	background-color: #009879;
-	color: #ffffff;
-	text-align: center;
-}
-
-.styled-table2 th,
-.styled-table2 td
-{
-	padding: 12px 15px;
-}
-
-.styled-table2 tbody tr
-{
-	border-bottom: 1px solid #dddddd;
-}
-
-.styled-table2 tbody tr:nth-of-type(even)
-{
-	background-color: #f3f3f3;
-}
-
-.styled-table2 tbody tr:last-of-type
-{
-	border-bottom: 2px solid #009879;
-}
-
-.styled-table2 tbody tr.active-row
-{
-	font-weight: bold;
-	color: #009879;
-}
-
 .styled-table
 {
 	border-collapse: collapse;
 	margin: 25px 0;
 	font-size: 0.9em;
 	font-family: sans-serif;
-	min-width: 400px;
+	min-width: 64px;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -127,7 +83,7 @@
 		}
 		else
 			$name = "trikz_adventure";
-		echo "<table class='styled-table2'><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
+		echo "<table class='styled-table'><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
@@ -281,7 +237,7 @@
 	</tbody>
 	</table>
 	<?php
-		echo "<table class='styled-table2'><thead><tr>";
+		echo "<table class='styled-table'><thead><tr>";
 		if($back >= 0)
 			print "<th><center><a href='$page?start=$back&l=$l' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
 		if($start + $limit < $row0[0])
