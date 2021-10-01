@@ -133,6 +133,7 @@
 		<thead>
 			<tr>
 				<?php
+					$page = basename($_SERVER['PHP_SELF']);
 					if(isset($_GET['l']))
 					{
 						if($_GET['l'] == 1)
@@ -248,6 +249,10 @@
 				mysqli_query($db, $query3) or die('Error querying in table. [4]');
 				$result3 = mysqli_query($db, $query3);
 				$row3 = mysqli_fetch_array($result3);
+				$hours = floor($row['time'] / 3600);
+				$mins = floor($row['time'] / 60 % 60);
+				$secs = floor($row['time'] % 60);
+				$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
 				if(!$serverRecord)
 					$serverRecord = $rowGetSR['time'];
 				$timeDiff = $row['time'] - $serverRecord;
