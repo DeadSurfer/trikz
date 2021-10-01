@@ -1076,22 +1076,22 @@ void Partner(int client)
 			while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
 			{
 				ct = true
-				continue
+				break
 			}
 			while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
 			{
 				t = true
-				continue
+				break
 			}
 			if(ct && t)
 			{
-				PrintToChat(client, "Join Counter-Terrorist or Terrorist team.")
+				PrintToChat(client, "Join to Counter-Terrorist or Terrorist team.")
 				return
 			}
 			else if(ct)
-				PrintToChat(client, "Join Counter-Terrorist team.")
+				PrintToChat(client, "Join to Counter-Terrorist team.")
 			else if(t)
-				PrintToChat(client, "Join Terrorist team.")
+				PrintToChat(client, "Join to Terrorist team.")
 		}
 	}
 }
