@@ -1,1105 +1,294 @@
 <?php
-//https://stackoverflow.com/questions/4146647/destroy-php-session-on-closing
-//session_set_cookie_params(0);
-session_start();
+	session_start(); //https://stackoverflow.com/questions/4146647/destroy-php-session-on-closing
 ?>
 <html>
-<!--<head>Trikz Timer</head>-->
 <style>
 .styled-table2
 {
 	border-collapse: collapse;
-	<!--border-collapse: seperate;-->
 	margin: 25px 0;
 	font-size: 0.9em;
 	font-family: sans-serif;
 	min-width: 64px;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-	<!--ursor: none;--> <!--https://stackoverflow.com/questions/1071356/is-it-possible-to-hide-the-cursor-in-a-webpage-using-css-or-javascript-->
-	<!--background-color: rgba(0,0,0,.5);--> <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
-	<!--border-radius: 25px;-->
-	<!--border: 2px solid #73AD21;-->
-	<!--padding: 20px;-->
-	<!--width: 200px;-->
-	<!--height: 150px;-->
 }
+
 .styled-table2 thead tr
 {
-    background-color: #009879;
-    color: #ffffff;
-    text-align: center;
+	background-color: #009879;
+	color: #ffffff;
+	text-align: center;
 }
+
 .styled-table2 th,
 .styled-table2 td
 {
-    padding: 12px 15px;
-	<!--aligin: center;-->
-	<!--color: #ffffff;-->
-	<!--background-color: #ffffff;-->
+	padding: 12px 15px;
 }
+
 .styled-table2 tbody tr
 {
-    border-bottom: 1px solid #dddddd;
-	<!--background-color: #00CCA2;-->
-	<!--background-color: rgba(0.0,204.0,162.0,0.5);
-	background-color: transparent-->
+	border-bottom: 1px solid #dddddd;
 }
 
 .styled-table2 tbody tr:nth-of-type(even)
 {
-    background-color: #f3f3f3;
+	background-color: #f3f3f3;
 }
 
 .styled-table2 tbody tr:last-of-type
 {
-    border-bottom: 2px solid #009879;
+	border-bottom: 2px solid #009879;
 }
+
 .styled-table2 tbody tr.active-row
 {
-    font-weight: bold;
-    color: #009879;
+	font-weight: bold;
+	color: #009879;
 }
+
 .styled-table
 {
-    border-collapse: collapse;
-	<!--border-collapse: seperate;-->
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-	<!--background-color: rgba(0,0,0,.5);--> <!--// Sets to 50% transparent https://stackoverflow.com/questions/3222961/how-to-make-a-transparent-background-without-background-image-->
-	<!--border-radius: 25px;-->
-	<!--border: 2px solid #73AD21;-->
-	<!--padding: 20px;-->
-	<!--width: 200px;-->
-	<!--height: 150px;-->
-	<!--background-color: #009879;-->
+	border-collapse: collapse;
+	margin: 25px 0;
+	font-size: 0.9em;
+	font-family: sans-serif;
+	min-width: 400px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
+
 .styled-table thead tr
 {
-    background-color: #009879;
-    color: #ffffff;
-	<!--color: #009879;-->
-    text-align: left;
+	background-color: #009879;
+	color: #ffffff;
+	text-align: left;
 }
+
 .styled-table th,
 .styled-table td
 {
 	text-align: left;
-    padding: 12px 15px;
-	<!--background-color: #009879;-->
-	<!--background-color: #f30000;-->
+	padding: 12px 15px;
 }
+
 .styled-table tbody tr
 {
 	background-color: #ffffff;
-    border-bottom: 1px solid #dddddd;
-	<!--background-color: #00CCA2;-->
-	<!--background-color: rgba(0.0,204.0,162.0,0.5);
-	background-color: transparent-->
-	<!--background-color: #F30000;-->
-	<!--background-color: #009879;-->
-	<!--background-color: #009879;-->
+	border-bottom: 1px solid #dddddd;
 }
 
-<!--.styled-table tbody tr:nth-of-type(even)
+.styled-table tbody tr:nth-of-type(even) <!--https://css-tricks.com/almanac/selectors/n/nth-of-type/--> <!--https://www.w3schools.com/cssref/sel_nth-of-type.asp--> <!--https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type#basic_example-->
 {
-}-->
-<!--https://css-tricks.com/almanac/selectors/n/nth-of-type/-->
-<!--.styled-table tbody tr
-{
-	background-color: #009879;
-}-->
-
-.styled-table tbody tr:nth-of-type(even)
-{
-    background-color: #f3f3f3;
+	background-color: #f3f3f3;
 }
-
-<!--https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type#basic_example-->
-<!--.styled-table tbody tr:nth-child(odd)
-{
-    background-color: #009879;
-}-->
-
-<!--https://www.w3schools.com/cssref/sel_nth-of-type.asp-->
-<!--.styled-table tbody tr:nth-of-type(odd)
-{
-    background-color: #009879;
-}-->
-
-<!--.styled-table tbody tr:nth-of-type(an-plus-b)
-{
-    background-color: #009879;
-}-->
 
 .styled-table tbody tr:last-of-type
 {
-    border-bottom: 2px solid #009879;
-	<!--background-color: #F30000;-->
+	border-bottom: 2px solid #009879;
 }
+
 .styled-table tbody tr.active-row
 {
-    font-weight: bold;
-    color: #009879;
+	font-weight: bold;
+	color: #009879;
 }
+
 .styled-table tbody td.active-row
 {
-    font-weight: bold;
-    color: #009879;
+	font-weight: bold;
+	color: #009879;
 }
 </style>
-<!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
-<body style="background-color:#ffffff">
-	<h1>Trikz Timer</h1> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. -->
-	<!--<form action="" method="post">
-	<label>Please enter your Name:</label>
-	<input type="text" name="Name" value='<?php// echo $name; ?>'/>
-	<br><br>
-	<input name="form" type="submit" value="Submit"/><br><br> //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html
-	</form> //https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D.
-	
-	<form method="post">
-	Enter Map name : <input type="text" name="id"><br/>
-	<input type="submit" value="SELECT" name="Submit1"> <br/>-->
-	<!--<a href = "index.php?page=<?//= $page + 20 ?>">Next</a><br>--> <!--https://stackoverflow.com/questions/10436017/previous-next-buttons-->
-	<!--<?// if ($page > 1) : ?>
-	   <a href="index.php?page=<?//= $page - 25 ?>">Prev</a>
-	<? //endif ?>
-	<?// if (//$page != $maxPages) : ?>
-	   <a href="index.php?page=<?//= $page + 25 ?>">Next</a>
-	<? //endif ?>-->
-	<!--<a <?php //$next = $next + 25; echo $next; ?> class = "next">Next</a>-->
+<body style="background-color:#ffffff"> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
+	<h1>Trikz Timer</h1> 
 	<?php
-	//session_start();
-	//$url = basename($_SERVER['PHP_SELF']);
-	//$query = $_SERVER['QUERY_STRING'];
-	//$queryurl = 1
-	//if($queryurl)
-	//{
-		//$url .= "?".$queryurl;
-	//}
-	//$_SESSION['current_page'] = $url;
-	//if(isset($_POST['Submit1']))
-	//{ 
-	//$username = "root";
-	//$password = "";
-	//$hostname = "localhost"; 
-	//$database="fakexpert";
-
-	//connection to the mysql database,
-	//$dbhandle = mysqli_connect($hostname, $username, $password,$database);
-
-	//if(!empty($_POST["id"]))
-	//{
-	//$result = mysqli_query($db, "SELECT * FROM records where ORDER BY map ASC map=".$_POST["id"]);
-	//}
-	//else
-	//{ 
-	//$result = mysqli_query($dbhandle, "SELECT ID, Name, City FROM StudentMst" );
-	//}
-
-
-	//fetch tha data from the database 
-	//while ($row = mysqli_fetch_array($result)) {
-	//echo "ID:" .$row{'ID'}." Name:".$row{'Name'}." City: ". $row{'City'}."<br>";
-	//}
-	//close the connection
-	//mysqli_close($dbhandle);
-	//}
-	//<a href = 
-	//https://codetyrant.wordpress.com/2015/07/22/go-back-to-the-previous-page-in-php/
+		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert') or die ('Error connecting to MySQL server.');
 	?>
-	<!--<a href="<?php //echo $current_page;?>"><button>Next</button></a>
-	<a href="<?php //echo $previous_page;?>"><button>BACK</button></a>-->
-	<?php
-		//Step1
-		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert')
-		or die('Error connecting to MySQL server.');
-	?>
-		<!--<form method="post">
-		Enter map name : <input type="text" name="submit"><br/>
-		<input type="submit" value="SELECT" name="Submit1"> <br/>
-		</form>-->
-		<!--<label for="submit">Please choose map</label><br/>-->
-				<form method = "post" action = "">
-					<select id="submit" name="submit">
-						<option value="">Select a map</option>
-						<?php
-							$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
-							$rs = mysqli_query($db, $sql);
-							while($rows = mysqli_fetch_assoc($rs))
-							{
-								echo '<option value="'.$rows['map'].'">'.$rows['map'].'</option>';
-							}
-						?>
-					</select>
+		<form method = "post" action = ""> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. --> <!-- //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html--> <!-- https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D. -->
+			<select id="submit" name="submit">
+				<option value="">Select a map</option> <!--//https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/-->
+				<?php
+					$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+					$rs = mysqli_query($db, $sql);
+					while($rows = mysqli_fetch_assoc($rs))
+						echo '<option value="'.$rows['map'].'">'.$rows['map'].'</option>';
+				?>
+			</select>
 		<input type = submit value = Submit></form>
-		<!--https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/<br>-->
 	<?php
-	//$next = $_POST['next'];
-	//$next = 0;
-	//$prev = $_POST['prev'];
-	//if($_POST['submit'] != NULL)
-	//$chosedMap[$_SERVER[REMOTE_ADDR]] = "yes";
-	//https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
-	//session_start();
-	//function endSession
-	//$_SESSION['map'] = $_GET['map'];
-	//echo $_GET['map'];
-	if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp
-	{
-		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
-		//$name = $_SERVER['QUERY_STRING'];
-		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
-		$_SESSION['map'] = $_GET['map'];
-		//print "<a href='$page?$_SESSION['map']'>Previous</a>";
-		//print "<a href='?$_SESSION[map]'></a>";
-		//return $_SERVER['QUERY_STRING'];
-		//echo "<a href='?$_SESSION[map]'></a>";
-		//echo '<a href="index.php?$_SESSION[map]"></a>';
-	}
-	if(!isset($_SESSION['map']))
-		$_SESSION['map'] = "trikz_adventure";
-	if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
-	{	
-		$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
-        //$chosedMap[$_SERVER['REMOTE_ADDR']] = $name; //https://www.codexworld.com/how-to/get-user-ip-address-php/
-		//$_POST['data'] = $name;
-		//$_SESSION['data'] = $_POST['data']; //https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page
-		$_SESSION['map'] = $_POST['submit'];
-		//$start = 0;
-		//$chosedMap[]
-		//if($_SERVER['QUERY_STRING'] != null)
-		//if(str$_SESSION['map'])
-		//	$_SERVER['QUERY_STRING'] = "";
-		//if(strlen($_SERVER['QUERY_STRING']) > 0)
-		//	$_SESSION['map'] = $_SERVER['QUERY_STRING'];
-		//$_SESSION['map'] = 
-	}
-	else
-		$name = "trikz_adventure";
-	//if(strlen($_SERVER['QUERY_STRING']) > 0 && strlen($_SESSION['map']) == 0)
-	//if(isset($_GET['map']))
-	//if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp
-	//{
-		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
-		//$name = $_SERVER['QUERY_STRING'];
-		//$_SESSION['map'] = $_SERVER['QUERY_STRING'];
-		//$_SESSION['map'] = $_GET['map'];
-		//print "<a href='$page?$_SESSION['map']'>Previous</a>";
-		//print "<a href='?$_SESSION[map]'></a>";
-		//return $_SERVER['QUERY_STRING'];
-		//echo "<a href='?$_SESSION[map]'></a>";
-		//echo '<a href="index.php?$_SESSION[map]"></a>';
-	//}
-	//$name = $_POST
-    //echo $chosedMap[$_SERVER['REMOTE_ADDR']];
-	//echo $_SERVER['REMOTE_ADDR'];
-	//echo $_SESSION['data'];
-	//echo $_SESSION['map'];
-	?>
-	<?php
-	//echo "Map: $name";
-	//echo "<table class='styled-table2'><thead><tr><th>Map: $name</th></tr></thead></table>";
-	echo "<table class='styled-table2'><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
+		if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page https://www.w3schools.com/PHP/php_superglobals_get.asp
+			$_SESSION['map'] = $_GET['map'];
+		if(!isset($_SESSION['map']))
+			$_SESSION['map'] = "trikz_adventure";
+		if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
+		{	
+			$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
+			$_SESSION['map'] = $_POST['submit'];
+		}
+		else
+			$name = "trikz_adventure";
+		echo "<table class='styled-table2'><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
 			<tr>
 				<?php
-				$page = basename($_SERVER['PHP_SELF']);
-				if(isset($_GET['l']))
-				{
-					if($_GET['l'] == 1)
-						echo "<th><center>Place <a href=$page?start=$_GET[start]&l=0><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-					else if($_GET['l'] == 0)
-						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+					if(isset($_GET['l']))
+					{
+						if($_GET['l'] == 1)
+							echo "<th><center>Place <a href=$page?start=$_GET[start]&l=0><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+						else if($_GET['l'] == 0)
+							echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+						else
+							echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+					}
 					else
-						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-				}
-				else
-					echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
-				echo "<th>Team</th>"; //<!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
-				echo "<th><center>Time</center></th>";
-				if(isset($_GET['l']))
-				{
-					if($_GET['l'] == 3)
-						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=2><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-					else if($_GET['l'] == 2)
-						echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=3><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+					echo "<th>Team</th>"; //<!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
+					echo "<th><center>Time</center></th>";
+					if(isset($_GET['l']))
+					{
+						if($_GET['l'] == 3)
+							echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=2><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+						else if($_GET['l'] == 2)
+							echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=3><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+						else
+							echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+					}
 					else
 						echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-				}
-				else
-					echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-				if(isset($_GET['l']))
-				{
-					if($_GET['l'] == 5)
-						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=4><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-					else if($_GET['l'] == 4)
-						echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=5><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+					if(isset($_GET['l']))
+					{
+						if($_GET['l'] == 5)
+							echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=4><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+						else if($_GET['l'] == 4)
+							echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=5><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+						else
+							echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+					}
 					else
 						echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-				}
-				else
-					echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-				//<!--<th>Map</th>-->
-				if(isset($_GET['l']))
-				{
-					if($_GET['l'] == 7)
-						echo "<th><center>Date <a href=$page?start=$_GET[start]&l=6><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-					else if($_GET['l'] == 6)
-						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+					if(isset($_GET['l']))
+					{
+						if($_GET['l'] == 7)
+							echo "<th><center>Date <a href=$page?start=$_GET[start]&l=6><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+						else if($_GET['l'] == 6)
+							echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+						else
+							echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+					}
 					else
 						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-				}
-				else
-					echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 				?>
 			</tr>
 		</thead>
 		<tbody>
-		<!--<tr>-->
-		<!--<td>-->
-		<!--<td>-->
 		<?php
-		//Step2
-		//https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531
-		$page = basename($_SERVER['PHP_SELF']);
-		//if(strlen($_GET['start']) > 6)
-		//	$_GET['start'] = 0;
-		//$start = 0;
-		if(isset($_GET['start'])) //https://www.stechies.com/undefined-index-error-php/
-			$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
-		else
-			$start = 0;
-		//if(strlen($start) > 6)
-		//	$start = 0;
-		if(isset($_POST['submit']))
-			$start = 0;
-			//$l = 0;
-		//if(strlen($start) == 0)
-		//	$start = 0;
-		//echo $page;
-		//echo $start;
-		//echo $_SERVER['QUERY_STRING']; //https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
-		//$eu = $start - 0;
-		$limit = 10;
-		$thisp = $start + $limit;
-		$back = $start - $limit;
-		$next = $start + $limit;
-		//$ff;
-		if(isset($_GET['l']))
-			$l = (int) $_GET['l'];
-		else
-			$l = 0;
-		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC")->fetchColumn();
-		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
-		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name' ORDER BY time ASC";
-		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC LIMIT $eu, $limit";
-		$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
-		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC";
-		$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
-		//echo $l;
-		$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
-		if($l == 1)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
-		if(!$l)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC LIMIT $start, $limit";
-		if($l == 3)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
-		if($l == 2)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes ASC LIMIT $start, $limit";
-		if($l == 5)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
-		if($l == 4)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries ASC LIMIT $start, $limit";
-		if($l == 7)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
-		if($l == 6)
-			$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date ASC LIMIT $start, $limit";
-		//$getRecordCount = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
-		//$query = "SELECT * FROM records WHERE map = '$name' ORDER BY time ASC";
-		//$queryx = "SELECT * FROM records WHERE map = ".$_POST['id']"' ORDER BY time ASC"; //https://meeraacademy.com/select-query-in-php-mysql-with-example/
-		mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
-		mysqli_query($db, $query) or die('Error querying database. [1]');
-		//mysqli_query($db, $getRecordCount) or die('Error querying database. [getRecordCount]');
-			mysqli_query($db, $getSR) or die('Error querying database. [getSR]');
-		mysqli_query($db, $query0) or die('Error querying database. [2]');
-		//if(strlen($name) > 0)
-			//echo $name . ' ';
-		//Step3
-		$resultRank = mysqli_query($db, $queryRank);
-		$result = mysqli_query($db, $query);
-		$result0 = mysqli_query($db, $query0);
-		$resultGetSR = mysqli_query($db, $getSR);
-		//$resultGetRecordCount = mysqli_query($db, $getRecordCount);
-		$rowGetSR = mysqli_fetch_array($resultGetSR);
-		//$rowGetRecordCount = mysqli_fetch_array($resultGetRecordCount);
-		//$row0 = mysqli_fetch_column($result0);
-		$row0 = mysqli_fetch_array($result0); //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
-		//echo $row0[0]; //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
-		//$row0 = mysqli_fetch_column($result0);
-		//$row0 = mysqli_fetch_field($result0);
-		//mysqli_fetch_column
-		//$rowx = mysqli_fetch_assoc($resultx);
-		//$count = $start;
-		//echo "<table class='styled-table'>";
-		//echo "<thead><tr>";
-		//echo "<th>Place</th>";
-		//echo "<th>Team</th>";
-		//echo "<th>Time</th>";
-		//echo "<th>Completions</th>";
-		//echo "<th>Date</th>";
-		//echo "</tr></thead>";
-		//echo "<tbody><tr>";
-		//echo "<td>$countx</td>";
-		//echo "<tbody><tr><td>$countx</td></tr></tbody>";
-		//echo "<tbody><tr>";
-		//echo "<td>";
-		//$countx = $countx + 1;
-		//$countx++;
-		$serverRecord = 0;
-		//$query0 = "SELECT COUNT(id) FROM records WHERE map = '$name'";
-		//mysqli_query($db, $query0) or die('Error querying in table. [2]');
-		//$result0 = mysqli_query($db, $query0);
-		//$row0 = mysqli_fetch_array($result0);
-		//$row0 = mysqli_fet
-		//$num = 
-		//$row0 = $db->query("SELECT COUNT(id) FROM records WHERE map = '$name'")->fetchColumn();
-		// set the default timezone to use.
-		date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
-		//$numrows = mysql_num_rows($result);
-		//numrows = 
-		//if(!mysqli_fetch_assoc($result)) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql
-		//	echo "No records found!";
-		//if(empty($result))
-		//	echo "yes";
-		if(!mysqli_num_rows($result))
-			echo "<td><center>No records found!</center></td>";
-		//$testx1 = mysqli_num_rows($result);
-		//echo $testx1;
-		//if()
-		//$count = $l ? $row0[0] - $start : $start;
-		//$rankx;
-		while($row = mysqli_fetch_assoc($result))
-		{
-			//if(is_array($row))
-			//if(empty($row))
-			//	echo "No records found!";
-			$rank;
-			//$rankx = 0;
-			$resultRank = mysqli_query($db, $queryRank);
-			while($rank = mysqli_fetch_assoc($resultRank))
-				if($rank['id'] == $row['id'])
-					break;
-			//echo $rankx['id'];
-			//echo "-";
-			//echo $row['id'];
-			//echo "x";
-			$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
-			mysqli_query($db, $query2) or die('Error querying in table. [3]');
-			$result2 = mysqli_query($db, $query2);
-			$row2 = mysqli_fetch_array($result2);
-			$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
-			mysqli_query($db, $query3) or die('Error querying in table. [4]');
-			$result3 = mysqli_query($db, $query3);
-			$row3 = mysqli_fetch_array($result3);
-			$hours = floor($row['time'] / 3600);
-			$mins = floor($row['time'] / 60 % 60);
-			$secs = floor($row['time'] % 60);
-			$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
-			//$timeDiff;
-			//$serverRecord = 0;
-			if(!$serverRecord)
-				$serverRecord = $rowGetSR['time'];
-			$timeDiff = $row['time'] - $serverRecord;
-			$timeDiffHours = floor($timeDiff / 3600);
-			$timeDiffMins = floor($timeDiff / 60 % 60);
-			$timeDiffSecs = floor($timeDiff % 60);
-			$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
-			$formatedDateYmd = date("Y-m-d", $row["date"]);
-			$formatedDateHis = date("H:i:s", $row['date']);
-			//if($count == 1)
-				//echo "<tr><td><center>$count</center></td><td>$row2[username] [U:1:$row[playerid]]<br>$row3[username] [U:1:$row[partnerid]]</td><td><center>$time</center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>";
-			//else
-			//https://www.w3schools.com/html/html_colors.asp
-			//https://www.tutorialspoint.com/html/html_colors.htm
-			$stamid64beforefirstuser = 76561197960265728; //so first user will be with + 1
-			$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
-			$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
-			//https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
-			//if($l)
-			//	$count = $row[0];
-			//if(!$l)
-				//$count++;
-			if($rank['rank'] == 1)
-				echo "<tr><td><center><img src=/topplace/gold_icon.png width=25 height=35></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-			else if($rank['rank'] == 2)
-				echo "<tr><td><center><img src=/topplace/silver_icon.png width=25 height=35></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-			else if($rank['rank'] == 3)
-				echo "<tr><td><center><img src=/topplace/bronze_icon.png width=25 height=35></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+			$page = basename($_SERVER['PHP_SELF']); //https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531 https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
+			if(isset($_GET['start'])) //https://www.stechies.com/undefined-index-error-php/
+				$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
 			else
-				echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-			//$countx = $countx + 1;
-			//if($l)
-				//$count--;
-			//echo $count;
-			//echo "<td>$row2x[username]</td>";
-			//echo "<tbody><tr><td>$row2x[username]</td></tr></tbody>";
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			//$formatedDate = date("Y-m-d H:i:s", (int)$rowx['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			//$countx = 1;
-			//echo $countx . '.<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
-			//echo "<td>$countx</td>";
-			//$countx = $countx + 1;
-			//$countx++;
-			//$someVar="value";
-			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
-			/*function clipboard_copy($text) //https://stackoverflow.com/questions/33926038/copy-to-clipboard-from-php-command-line-script-in-windows-7 //bugs.php.net/bug.php?id=19545
+				$start = 0;
+			if(isset($_POST['submit']))
+				$start = 0;
+			$limit = 10;
+			$thisp = $start + $limit;
+			$back = $start - $limit;
+			$next = $start + $limit;
+			if(isset($_GET['l']))
+				$l = (int) $_GET['l'];
+			else
+				$l = 0;
+			$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
+			$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
+			$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
+			if($l == 1)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
+			else if(!$l)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC LIMIT $start, $limit";
+			else if($l == 3)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
+			else if($l == 2)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes ASC LIMIT $start, $limit";
+			else if($l == 5)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
+			else if($l == 4)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries ASC LIMIT $start, $limit";
+			else if($l == 7)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
+			else if($l == 6)
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date ASC LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
+			mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
+			mysqli_query($db, $query) or die('Error querying database. [1]');
+			mysqli_query($db, $getSR) or die('Error querying database. [getSR]');
+			mysqli_query($db, $query0) or die('Error querying database. [2]');
+			$resultRank = mysqli_query($db, $queryRank);
+			$result = mysqli_query($db, $query);
+			$result0 = mysqli_query($db, $query0);
+			$resultGetSR = mysqli_query($db, $getSR);
+			$rowGetSR = mysqli_fetch_array($resultGetSR);
+			$row0 = mysqli_fetch_array($result0); //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
+			$serverRecord = 0;
+			// set the default timezone to use.
+			date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
+			if(!mysqli_num_rows($result)) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
+				echo "<td><center>No records found!</center></td>";
+			while($row = mysqli_fetch_assoc($result))
 			{
-				$ie = new COM('InternetExplorer.Application');
-				$ie->Navigate('about:blank');
-				while ($ie->ReadyState != 4)
-				{
-					sleep(0.1);
-				}
-				$ie->document->ParentWindow->ClipboardData->SetData("text", 
-		$text);
-				$ie->Quit();
-			}
-
-			clipboard_copy("foo\r\nbar");*/
-			//echo copy("1.txt", "2.txt"); //bind copy text function php txt with coppy function //https://stackoverflow.com/questions/50729670
-			//function active($currect_page)
-			//{
-			 // $url_array =  explode('/', $_SERVER['REQUEST_URI']) ;
-			//  $url = $row['playerid'] . ' ';  
-			 // if($currect_page == $url)
-				//{
-				//  echo 'active'; //class name in css 
-			  //} 
-			//}//https://stackoverflow.com/questions/15963757/how-to-set-current-page-active-in-php
-
-			// ALL USER DEFINED FUNCTIONS
-			/*$arr = get_defined_functions();
-			foreach ($arr['user'] as $key => $value){
-			echo $value.'<br />';
-			}
-			// ALL USER DEFINED FUNCTIONS
-
-			// ALL INTERNAL FUNCTIONS
-			$arr = get_defined_functions();
-			foreach ($arr['internal'] as $key => $value){
-			echo $value.'<br />';
-			}*/ //https://gtk.php.net/manual/en/html/ //https://gtk.php.net/manual/en/html/gtk/gtk.gtkcombobox.method.get_active_text.html //https://fmhelp.filemaker.com/help/15/fmp/en/index.html#page/FMP_Help/get-activeselectionstart.html
-			// ALL INTERNAL FUNCTIONS
-			//<script type="text/javascript" language="JavaScript">
-			//document.forms['myform'].elements['mytextfield'].focus();
-			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
-		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//if($back >= 0)
-		//	print "<a href='$page?start=$back'>Previous</a>";
-		//if($thisp < $row0)
-		//	print "<a href='$page?start=$next'>Next</a>";
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</center></td>-->
-		<!--<td>--><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
-		//$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//mysqli_query($db, $query) or die('Error querying database.');
-		//$result = mysqli_query($db, $query);
-		//while($row = mysqli_fetch_array($result))
-		//{
-			//$query2 = "SELECT * FROM users WHERE steamid = ".$row['playerid']."";
-			//mysqli_query($db, $query2) or die('Error querying in table.');
-			//$result2 = mysqli_query($db, $query2);
-			//$row2 = mysqli_fetch_array($result2);
-			//$ip = $row2['ip'];
-			// Use JSON encoded string and converts
-			// it into a PHP variable
-			//$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
-			//echo strtolower($ipdat->geoplugin_countryCode);
-		//}
-		?>.svg">-->
-		<?php
-		//Step2
-		//$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//$query = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
-		//mysqli_query($db, $query) or die('Error querying database.');
-		//if(strlen($name) > 0)
-			//echo $name . ' ';
-		//Step3
-		//$result = mysqli_query($db, $query);
-		//$row = mysqli_fetch_array($result);
-		//$countx = 1;
-		//while($row = mysqli_fetch_array($result))
-		//{
-			//$query2 = "SELECT * FROM users WHERE steamid = ".$row['playerid']."";
-			//mysqli_query($db, $query2) or die('Error querying in table.');
-			//$result2 = mysqli_query($db, $query2);
-			//$row2 = mysqli_fetch_array($result2);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			//{
-				//$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
-				//mysqli_query($db, $query3) or die('Error querying in table.');
-				//$result3 = mysqli_query($db, $query3);
-				//$row3 = mysqli_fetch_array($result3);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				//{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-				//}
-			//}
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			//$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			//$countx = 1;
-			//https://ourcodeworld.com/articles/read/51/how-to-detect-the-country-of-a-visitor-in-php-or-javascript-for-free-with-the-request-ip
-			//$ip = $_SERVER['REMOTE_ADDR']; // This will contain the ip of the request
-			//$ip = $row2['ip'];
-			// You can use a more sophisticated method to retrieve the content of a webpage with php using a library or something
-			// We will retrieve quickly with the file_get_contents
-			//$dataArray = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
-
-			//var_dump($dataArray);
-
-			// outputs something like (obviously with the data of your IP) :
-
-			// geoplugin_countryCode => "DE",
-			// geoplugin_countryName => "Germany"
-			// geoplugin_continentCode => "EU"
-
-			//echo "Hello visitor from: ".$dataArray["geoplugin_countryCode"];
-			//https://www.geeksforgeeks.org/how-to-get-visitors-country-from-their-ip-in-php/
-			// PHP code to obtain country, city, 
-			// continent, etc using IP Address
-
-			//$ip = '52.25.109.230';
-			//$ip = $row2['ip'];
-
-			// Use JSON encoded string and converts
-			// it into a PHP variable
-			//$ipdat = @json_decode(file_get_contents(
-			//    "http://www.geoplugin.net/json.gp?ip=" . $ip));
-
-			//echo 'Country Name: ' . $ipdat->geoplugin_countryName . "\n";
-			//echo 'City Name: ' . $ipdat->geoplugin_city . "\n";
-			//echo 'Continent Name: ' . $ipdat->geoplugin_continentName . "\n";
-			//echo 'Latitude: ' . $ipdat->geoplugin_latitude . "\n";
-			//echo 'Longitude: ' . $ipdat->geoplugin_longitude . "\n";
-			//echo 'Currency Symbol: ' . $ipdat->geoplugin_currencySymbol . "\n";
-			//echo 'Currency Code: ' . $ipdat->geoplugin_currencyCode . "\n";
-			//echo 'Timezone: ' . $ipdat->geoplugin_timezone;
-			//https://www.bing.com/search?q=small+latters+php&cvid=7365f1771b474dfd8b5a19044ad9e1f3&aqs=edge..69i57.2719j0j1&pglt=43&FORM=ANNTA1&PC=U531
-			//$flag;
-			//$dir = strtolower($ipdat->geoplugin_countryCode) . '.svg';
-			//echo $dir . '';
-			//$test;
-			//echo ;
-			//echo 
-			//$test = "de";
-			//echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row2['username'] . ' [U:1:' . $row['playerid'] . ']<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
-			//https://github.com/hampusborgos/country-flags
-			//.svg">' . $row2['username'] . ' [U:1:' . $row['playerid'] . '] ' . $ipdat->geoplugin_countryCode . '<br>'; //https://www.php.net/manual/en/function.get-defined-functions.php
-			//$countx = $countx + 1;
-			//$someVar="value";
-			//echo shell_exec("echo " . escapeshellarg($someVar) . " | clip");
-			/*function clipboard_copy($text) //https://stackoverflow.com/questions/33926038/copy-to-clipboard-from-php-command-line-script-in-windows-7 //bugs.php.net/bug.php?id=19545
-			{
-				$ie = new COM('InternetExplorer.Application');
-				$ie->Navigate('about:blank');
-				while ($ie->ReadyState != 4)
-				{
-					sleep(0.1);
-				}
-				$ie->document->ParentWindow->ClipboardData->SetData("text", 
-		$text);
-				$ie->Quit();
-			}
-
-			clipboard_copy("foo\r\nbar");*/
-			//echo copy("1.txt", "2.txt"); //bind copy text function php txt with coppy function //https://stackoverflow.com/questions/50729670
-			//function active($currect_page)
-			//{
-			 // $url_array =  explode('/', $_SERVER['REQUEST_URI']) ;
-			//  $url = $row['playerid'] . ' ';  
-			 // if($currect_page == $url)
-				//{
-				//  echo 'active'; //class name in css 
-			  //} 
-			//}//https://stackoverflow.com/questions/15963757/how-to-set-current-page-active-in-php
-
-			// ALL USER DEFINED FUNCTIONS
-			/*$arr = get_defined_functions();
-			foreach ($arr['user'] as $key => $value){
-			echo $value.'<br />';
-			}
-			// ALL USER DEFINED FUNCTIONS
-
-			// ALL INTERNAL FUNCTIONS
-			$arr = get_defined_functions();
-			foreach ($arr['internal'] as $key => $value){
-			echo $value.'<br />';
-			}*/ //https://gtk.php.net/manual/en/html/ //https://gtk.php.net/manual/en/html/gtk/gtk.gtkcombobox.method.get_active_text.html //https://fmhelp.filemaker.com/help/15/fmp/en/index.html#page/FMP_Help/get-activeselectionstart.html
-			// ALL INTERNAL FUNCTIONS
-			//<script type="text/javascript" language="JavaScript">
-			//document.forms['myform'].elements['mytextfield'].focus();
-			//</script> //https://www.mediacollege.com/internet/javascript/form/focus.html
-		//}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</td>
-		<td>--><!--<img width="20px" src="country-flags-main/country-flags-main/svg/<?php
-		//$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//mysqli_query($db, $query) or die('Error querying database.');
-		//$result = mysqli_query($db, $query);
-		//while($row = mysqli_fetch_array($result))
-		//{
-			//$query2 = "SELECT * FROM users WHERE steamid = ".$row['partnerid']."";
-			//mysqli_query($db, $query2) or die('Error querying in table.');
-			//$result2 = mysqli_query($db, $query2);
-			//$row2 = mysqli_fetch_array($result2);
-			//$ip = $row2['ip'];
-			// Use JSON encoded string and converts
-			// it into a PHP variable
-			//$ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
-			//echo strtolower($ipdat->geoplugin_countryCode);
-		//}
-		?>.svg">-->
-		<?php
-		//<img width="20px" src="country-flags-main/country-flags-main/svg/de.svn">
-		//Step2
-		//$query2 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//$query2 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
-		//mysqli_query($db, $query2) or die('Error querying database.');
-		//if(strlen($name) > 0)
-			//echo $name . ' ';
-		//Step3
-		//$result2 = mysqli_query($db, $query2);
-		//$row2 = mysqli_fetch_array($result2);
-
-		//while($row2 = mysqli_fetch_array($result2))
-		//{
-			//$query22 = "SELECT * FROM users WHERE steamid = ".$row2['playerid']."";
-			//mysqli_query($db, $query22) or die('Error querying in table.');
-			//$result22 = mysqli_query($db, $query22);
-			//$row22 = mysqli_fetch_array($result22);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			//{
-				//$query32 = "SELECT * FROM users WHERE steamid = ".$row2['partnerid']."";
-				//mysqli_query($db, $query32) or die('Error querying in table.');
-				//$result32 = mysqli_query($db, $query32);
-				//$row32 = mysqli_fetch_array($result32);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				//{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-				//}
-			//}
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			//$formatedDate = date("Y-m-d H:i:s", (int)$row2['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			//echo $row32['username'] . '<br>';
-			//$ip = $row32['ip'];
-
-			// Use JSON encoded string and converts
-			// it into a PHP variable
-			//$ipdat = @json_decode(file_get_contents(
-			//    "http://www.geoplugin.net/json.gp?ip=" . $ip)); //https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
-			//https://stackoverflow.com/questions/26065495/php-echo-to-display-image-html
-			//echo "<img width=20px src=country-flags-main/country-flags-main/svg/".strtolower($ipdat->geoplugin_countryCode).".svg>" . ' ' . $row32['username'] . ' [U:1:' . $row2['partnerid'] . ']<br>';
-			//https://github.com/hampusborgos/country-flags
-			//https://www.codespeedy.com/display-the-country-flag-of-visitors-in-php/
-		//}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</td>
-		<td>--><?php
-		//Step2
-		//$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//$query3 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
-		//mysqli_query($db, $query3) or die('Error querying database.');
-		//if(strlen($name) > 0)
-			//echo $name . ' ';
-		//Step3
-		//$result3 = mysqli_query($db, $query3);
-		//$row3 = mysqli_fetch_array($result3);
-
-		//while($row3 = mysqli_fetch_array($result3))
-		//{
-			//$query23 = "SELECT username FROM users WHERE steamid = ".$row3['playerid']."";
-			//mysqli_query($db, $query23) or die('Error querying in table.');
-			//$result23 = mysqli_query($db, $query23);
-			//$row23 = mysqli_fetch_array($result23);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			//{
-				//$query33 = "SELECT username FROM users WHERE steamid = ".$row3['partnerid']."";
-				//mysqli_query($db, $query33) or die('Error querying in table.');
-				//$result33 = mysqli_query($db, $query33);
-				//$row33 = mysqli_fetch_array($result33);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				//{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-				//}
-			//}
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			//$formatedDate = date("Y-m-d H:i:s", (int)$row3['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			//$hours = floor($row3['time'] / 3600);
-			//$mins = floor($row3['time'] / 60 % 60);
-			//$secs = floor($row3['time'] % 60);
-			//$row3x = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-			
-			//echo $row3x . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
-		//}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</td>
-		<td><center>--><?php
-		//Step2
-		//$query3 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//$query3 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
-		//mysqli_query($db, $query3) or die('Error querying database.');
-		//if(strlen($name) > 0)
-			//echo $name . ' ';
-		//Step3
-		//$result3 = mysqli_query($db, $query3);
-		//$row3 = mysqli_fetch_array($result3);
-
-		//while($row3 = mysqli_fetch_array($result3))
-		//{
-			//$query23 = "SELECT username FROM users WHERE steamid = ".$row3['playerid']."";
-			//mysqli_query($db, $query23) or die('Error querying in table.');
-			//$result23 = mysqli_query($db, $query23);
-			//$row23 = mysqli_fetch_array($result23);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			//{
-				//$query33 = "SELECT username FROM users WHERE steamid = ".$row3['partnerid']."";
-				//mysqli_query($db, $query33) or die('Error querying in table.');
-				//$result33 = mysqli_query($db, $query33);
-				//$row33 = mysqli_fetch_array($result33);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				//{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-				//}
-			//}
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			//$formatedDate = date("Y-m-d H:i:s", (int)$row3['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			//$hours = floor($row3['time'] / 3600);
-			//$mins = floor($row3['time'] / 60 % 60);
-			//$secs = floor($row3['time'] % 60);
-			//$row3x = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-			//$completions = $row3['completions']; //https://www.bing.com/search?q=set+where+is+null+sql&cvid=3134695c3d564421aec72036422c503c&aqs=edge..69i57j0l3.7648j0j1&pglt=299&FORM=ANNTA1&PC=U531
-			//echo $completions . '<br>'; //https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
-		//}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</center></td>
-		<td>--><?php
-		//Step2
-		//$query4 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//$query4 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
-		//mysqli_query($db, $query4) or die('Error querying database.');
-		//if(strlen($name) > 0)
-			//echo $name . ' ';
-		//Step3
-		//$result4 = mysqli_query($db, $query4);
-		//$row4 = mysqli_fetch_array($result4);
-
-		//while($row4 = mysqli_fetch_array($result4))
-		//{
-			/*$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
-			mysqli_query($db, $query2) or die('Error querying in table.');
-			$result2 = mysqli_query($db, $query2);
-			$row2 = mysqli_fetch_array($result2);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			{
-				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
-				mysqli_query($db, $query3) or die('Error querying in table.');
+				$rank;
+				$resultRank = mysqli_query($db, $queryRank);
+				while($rank = mysqli_fetch_assoc($resultRank))
+					if($rank['id'] == $row['id'])
+						break;
+				$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
+				mysqli_query($db, $query2) or die('Error querying in table. [3]');
+				$result2 = mysqli_query($db, $query2);
+				$row2 = mysqli_fetch_array($result2);
+				$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
+				mysqli_query($db, $query3) or die('Error querying in table. [4]');
 				$result3 = mysqli_query($db, $query3);
 				$row3 = mysqli_fetch_array($result3);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-				}
-			}*/
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			//$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			//echo $row4['map'] . '<br>';
-		//}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</td>
-		<td>--><?php
-		//Step2
-		//$query5 = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time ASC";
-		//$query5 = "SELECT * FROM records WHERE map = '"$_POST['id']"' ORDER BY time ASC";
-		//mysqli_query($db, $query5) or die('Error querying database.');
-		//if(strlen($name) > 0)
-			//echo $name . ' ';
-		//Step3
-		//$result5 = mysqli_query($db, $query5);
-		//$row5 = mysqli_fetch_array($result5);
-
-		//while($row5 = mysqli_fetch_array($result5))
-		//{
-			/*$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
-			mysqli_query($db, $query2) or die('Error querying in table.');
-			$result2 = mysqli_query($db, $query2);
-			$row2 = mysqli_fetch_array($result2);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			//{
-				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
-				mysqli_query($db, $query3) or die('Error querying in table.');
-				$result3 = mysqli_query($db, $query3);
-				$row3 = mysqli_fetch_array($result3);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				//{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-				//}
-			//}*/
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			//$formatedDate = date("Y-m-d H:i:s", (int)$row5['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			//echo $formatedDate . '<br>';
-		//}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		//mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp
-	?><!--</td>-->
-	  <!--</tr>-->
-		<!--<?php
-			if(!mysqli_num_rows($result))
-				echo "<center>No records found!</center>";
-		?>-->
+				if(!$serverRecord)
+					$serverRecord = $rowGetSR['time'];
+				$timeDiff = $row['time'] - $serverRecord;
+				$timeDiffHours = floor($timeDiff / 3600);
+				$timeDiffMins = floor($timeDiff / 60 % 60);
+				$timeDiffSecs = floor($timeDiff % 60);
+				$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
+				$formatedDateYmd = date("Y-m-d", $row["date"]);
+				$formatedDateHis = date("H:i:s", $row['date']);
+				//https://www.w3schools.com/html/html_colors.asp
+				//https://www.tutorialspoint.com/html/html_colors.htm
+				$stamid64beforefirstuser = 76561197960265728; //so first user will be with + 1
+				$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
+				$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
+				//https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
+				if($rank['rank'] == 1)
+					echo "<tr><td><center><img src=/topplace/gold_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+				else if($rank['rank'] == 2)
+					echo "<tr><td><center><img src=/topplace/silver_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+				else if($rank['rank'] == 3)
+					echo "<tr><td><center><img src=/topplace/bronze_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+				else
+					echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+			}
+			echo "<table class='styled-table2'><thead><tr>";
+			if($back >= 0)
+				print "<th><center><a href='$page?start=$back&l=$l' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
+			if($start + $limit < $row0[0])
+				print "<th><center><a href='$page?start=$next&l=$l' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+			echo "</tr></thead></table>";
+			$year = "Copyleft fakeexpert 2021 -";
+			echo $year . ' ' . date("Y") . ' year.'; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
+		?>
 	</tbody>
 	</table>
-	<?php
-		echo "<table class='styled-table2'><thead><tr>";
-		if($back >= 0)
-			//print "<a href='$page?start=$back'>Previous</a>";
-			print "<th><center><a href='$page?start=$back&l=$l' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html
-		if($start + $limit < $row0[0])
-			print "<th><center><a href='$page?start=$next&l=$l' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
-		echo "</tr></thead></table><br>";
-		/*//Step2
-		$query = "SELECT * FROM records WHERE map = '".$name."' ORDER BY time";
-		mysqli_query($db, $query) or die('Error querying database.');
-		//if(strlen($name) > 0)
-			echo $name . ' ';
-		//Step3
-		$result = mysqli_query($db, $query);
-		$row = mysqli_fetch_array($result);
-
-		while($row = mysqli_fetch_array($result))
-		{
-			$query2 = "SELECT username FROM users WHERE steamid = ".$row['playerid']."";
-			mysqli_query($db, $query2) or die('Error querying in table.');
-			$result2 = mysqli_query($db, $query2);
-			$row2 = mysqli_fetch_array($result2);
-			//echo $row2['username'] . ' ';
-			//$row2 = mysqli_fetch_field($result2);
-			//while ($row2 = mysqli_fetch_array($result2))
-			{
-				$query3 = "SELECT username FROM users WHERE steamid = ".$row['partnerid']."";
-				mysqli_query($db, $query3) or die('Error querying in table.');
-				$result3 = mysqli_query($db, $query3);
-				$row3 = mysqli_fetch_array($result3);
-				//echo $row3['username'] . ' ';
-				//$row3 = mysqli_fetch_field($result3);
-				//while($row3 = mysqli_fetch_array($result3))
-				{
-					//echo $row2['username'] . ' ' . $row3['username'] . ' ';
-					//printf("%s %s" $row2, $row3);
-					//printf("%s", mysqli_fetch_field($result2));
-				}
-			}
-			
-			//echo $row['id'] . ' ' . $row['playerid'] . ' ' . $row['partnerid'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br />';
-			$formatedDate = date("Y-m-d H:i:s", (int)$row['date']);
-			//echo $row['time'] . ' ' . $row['map'] . ' ' . $row['date'] . '<br>'; //https://code-boxx.com/format-unix-timestamp-date-time-php/#:~:text=We%20can%20use%20the%20date%20function%20to%20format,date%20%28%22D%2C%20j%20F%20Y%20h%3Ai%3As%20A%22%2C%20%24UNIX%29%3B
-			//if(strlen($row2['username']) > 0 && strlen($row3['username']) > 0) //https://www.bing.com/search?q=%26%26+php&qs=n&form=QBRE&sp=-1&pq=%26%26+&sc=8-3&sk=&cvid=7A930573B6A242F29BE4D868A8ECA9DE
-			echo $row2['username'] . ' ' . $row3['username'] . ' ' . $row['time'] . ' ' . $row['map'] . ' ' . $formatedDate . '<br>';
-		}//https://github.com/egulias/EmailValidator/pull/228/commits/7694cc94bd1e0836051e5542963d08c7976637da
-		//Step 4 //https://www.bing.com/search?q=where+username+is+null&cvid=5c73249074f9461ba358fa38f07db88c&aqs=edge..69i57.6008j0j4&FORM=ANAB01&PC=U531
-		mysqli_close($db); //https://www.w3schools.com/html/html_tables.asp*/
-	?>
-	<!--</form>-->
-		<!--<label for="submit">Please choose map</label><br/>-->
-				<!--<form method = "post" action = "">-->
-					<!--<select id="submit" name="submit">-->
-						<!--<option value="">Select map</option>-->
-						<?php //$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
-								//$rs = mysqli_query($db, $sql);
-							//while($rows = mysqli_fetch_assoc($rs))
-							//{
-								//echo '<option value="'.$rows['map'].'">'.$rows['map'].'</option>';
-							//}
-							//echo $next;
-						?>
-					<!--</select>-->
-		<!--<input type = submit value = submit name = next></form>-->
-	<?php $year = "Copyleft fakeexpert 2021 -"; echo $year . ' ' . date("Y") . ' year.<br>';?> <!--https://www.geeksforgeeks.org/how-to-get-current-year-in-php/-->
-	</body>
-</html>
-https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
+</body>
+<!--https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
 https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
-https://stackoverflow.com/questions/9494209/how-to-link-mysql-to-html
-<html><!--Copyleft 2021-2021 year.--></html>
-https://www.php.net/license/index.php
+https://stackoverflow.com/questions/9494209/how-to-link-mysql-to-html-->
+<!--Copyleft 2021-2021 year.-->
+<!--https://www.php.net/license/index.php
 https://htmlcodex.com/license/#:~:text=All%20of%20the%20creative%20works%20by%20HTML%20Codex,under%20a%20Creative%20Commons%20Attribution%204.0%20International%20License.
 License
 Creative Commons License
@@ -1158,4 +347,5 @@ For related projects, please refer to licensing information on the Project websi
 
 PECL
 PEAR
-GTK
+GTK-->
+</html>
