@@ -568,7 +568,8 @@ Action event_playerspawn(Event event, const char[] name, bool dontBroadcast)
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
 	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-	CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	if(!gB_isDevmap)
+		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
 }
 
 void event_button(const char[] output, int caller, int activator, float delay)
@@ -753,7 +754,7 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
-	if(partner)
+	if(partner && !gB_isDevmap)
 	{
 		ResetFactory(partner)
 		CS_SetClientClanTag(partner, gS_clanTag[partner][0])
@@ -1467,10 +1468,13 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
-	char sCmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
-	kv.GetSectionName(sCmd, 64)
-	if(StrEqual(sCmd, "ClanTagChanged"))
-		CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	if(gB_isDevmap)
+	{
+		char sCmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
+		kv.GetSectionName(sCmd, 64)
+		if(StrEqual(sCmd, "ClanTagChanged"))
+			CS_GetClientClanTag(client, gS_clanTag[client][0], 256)
+	}
 }
 
 Action cmd_test(int client, int args)
