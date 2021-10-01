@@ -6,7 +6,6 @@
 .styled-table
 {
 	border-collapse: collapse;
-	margin: 25px 0;
 	font-size: 0.9em;
 	font-family: sans-serif;
 	min-width: 64px;
