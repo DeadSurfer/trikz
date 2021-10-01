@@ -58,31 +58,30 @@
 	<h1>Trikz Timer</h1> 
 	<?php
 		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert') or die ('Error connecting to MySQL server.');
-	?>
-		<form method = "post" action = ""> <!--//http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. --> <!-- //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html--> <!-- https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D. -->
-			<select id="submit" name="submit">
-				<option value="">Select a map</option> <!--//https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/-->
-				<?php
-					$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
-					$rs = mysqli_query($db, $sql);
-					while($rows = mysqli_fetch_assoc($rs))
-						echo '<option value="'.$rows['map'].'">'.$rows['map'].'</option>';
-				?>
-			</select>
-		<input type = submit value = Submit></form>
-	<?php
+		echo "<form method=post><select id=submit name=submit><option>Select a map</option>"; //http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. --> //https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/ <!-- //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html--> <!-- https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D. -->
+		$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+		$rs = mysqli_query($db, $sql);
+		while($rows = mysqli_fetch_assoc($rs))
+			echo "<option>$rows[map]</option>";
+		echo "</select><input type = submit value = Submit></form>";
 		if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page https://www.w3schools.com/PHP/php_superglobals_get.asp
 			$_SESSION['map'] = $_GET['map'];
 		if(!isset($_SESSION['map']))
-			$_SESSION['map'] = "trikz_adventure";
+		{
+			$mapASC = mysqli_fetch_assoc(mysqli_query($db, $sql));
+			$_SESSION['map'] = $mapASC['map'];
+		}
 		if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
 		{	
 			$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
 			$_SESSION['map'] = $_POST['submit'];
 		}
 		else
-			$name = "trikz_adventure";
-		echo "<table class='styled-table'><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
+		{
+			$mapASC = mysqli_fetch_assoc(mysqli_query($db, $sql));
+			$name = $mapASC['map'];
+		}
+		echo "<table class=styled-table><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
 	?>
 	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
 		<thead>
@@ -181,7 +180,7 @@
 			$serverRecord = 0;
 			// set the default timezone to use.
 			date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
-			if(!mysqli_num_rows($result)) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
+			if(!mysqli_fetch_row($result)) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
 				echo "<td><center>No records found!</center></td>";
 			while($row = mysqli_fetch_assoc($result))
 			{
@@ -218,26 +217,26 @@
 				$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
 				//https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
 				if($rank['rank'] == 1)
-					echo "<tr><td><center><img src=/topplace/gold_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+					echo "<tr><td><center><img src=/topplace/gold_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 				else if($rank['rank'] == 2)
-					echo "<tr><td><center><img src=/topplace/silver_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+					echo "<tr><td><center><img src=/topplace/silver_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 				else if($rank['rank'] == 3)
-					echo "<tr><td><center><img src=/topplace/bronze_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+					echo "<tr><td><center><img src=/topplace/bronze_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 				else
-					echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style='color:#000000'>$row3[username]</a></td><td class='active-row'><center>$time <font color='#980000'>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+					echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 			}
 		?>
 	</tbody>
 	</table>
 	<?php
-		echo "<table class='styled-table'><thead><tr>";
+		echo "<table class=styled-table><thead><tr>";
 		if($back >= 0)
-			print "<th><center><a href='$page?start=$back&l=$l' style='color:#ffffff'>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
+			print "<th><center><a href=$page?start=$back&l=$l style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
 		if($start + $limit < $row0[0])
-			print "<th><center><a href='$page?start=$next&l=$l' style='color:#ffffff'>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+			print "<th><center><a href=$page?start=$next&l=$l style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
 		echo "</tr></thead></table>";
-		$year = "Copyleft fakeexpert 2021 -";
-		echo $year . ' ' . date("Y") . ' year.'; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
+		$year = date("Y");
+		echo "<br>Copyleft FakeExpert 2021 - $year year."; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
 	?>
 </body>
 <!--https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
