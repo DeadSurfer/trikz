@@ -1371,7 +1371,7 @@ void createstart()
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	SDKHook(entity, SDKHook_StartTouchPost, SDKStartTouchPost) //sometimes it fire by Restart function. Post make sens.
 	SDKHook(entity, SDKHook_EndTouchPost, SDKEndTouchPost) //run timer, go to the start zone, type r. post fix this.
 	PrintToServer("Start zone is successfuly setup.")
 	gB_haveZone[0] = true
@@ -2170,7 +2170,7 @@ void SDKEndTouchPost(int entity, int other)
 	}
 }
 
-Action SDKStartTouch(int entity, int other)
+void SDKStartTouchPost(int entity, int other)
 {
 	if(0 < other <= MaxClients && !gB_isDevmap)
 	{
