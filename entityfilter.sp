@@ -683,15 +683,22 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			{
 				if(partner)
 				{
-					if(!gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
-					{
-						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-					}
+					if(gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
+						return Plugin_Handled
 				}
 				else
-					if(!gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
-						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					if(gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
+						return Plugin_Handled
+			}
+			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+			{
+				if(partner)
+				{
+					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+				}
+				else
+					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 			}
 		}
 		else
