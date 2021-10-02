@@ -3426,7 +3426,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 Action SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	if(IsValidEntity(client))
+	if(IsValidEntity(entity) && IsValidEntity(client))
 	{
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		gB_silentKnife = true
