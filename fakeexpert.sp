@@ -1405,7 +1405,7 @@ void createend()
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouchPost) //connect with post callback. make fire fast is posible.
 	PrintToServer("End zone is successfuly setup.")
 	CPSetup(0)
 	gB_haveZone[1] = true
