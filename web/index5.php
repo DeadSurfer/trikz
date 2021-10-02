@@ -59,7 +59,7 @@
 	<?php
 		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert') or die ('Error connecting to MySQL server.');
 		echo "<form method=post><select id=submit name=submit><option>Select a map</option>"; //http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. --> //https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/ <!-- //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html--> <!-- https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D. -->
-		$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map ASC";
+		$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map";
 		$rs = mysqli_query($db, $sql);
 		while($rows = mysqli_fetch_assoc($rs))
 			echo "<option>$rows[map]</option>";
@@ -154,19 +154,19 @@
 			if($l == 1)
 				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
 			else if(!$l)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time ASC LIMIT $start, $limit";
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT $start, $limit";
 			else if($l == 3)
 				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
 			else if($l == 2)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes ASC LIMIT $start, $limit";
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes LIMIT $start, $limit";
 			else if($l == 5)
 				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
 			else if($l == 4)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries ASC LIMIT $start, $limit";
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries LIMIT $start, $limit";
 			else if($l == 7)
 				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
 			else if($l == 6)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date ASC LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
+				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
 			mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
 			mysqli_query($db, $query) or die('Error querying database. [1]');
 			mysqli_query($db, $getSR) or die('Error querying database. [getSR]');
