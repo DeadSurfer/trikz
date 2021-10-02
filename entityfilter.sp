@@ -442,7 +442,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(gI_linkedEntities[activator][pThis] && partner)
 			{
-				PrintToServer("%i", gI_linkedEntities[activator][pThis])
 				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 				gI_linkedEntities[activator][pThis]--
