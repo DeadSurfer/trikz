@@ -442,6 +442,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(gI_linkedEntities[activator][pThis] && partner)
 			{
+				PrintToServer("%i", gI_linkedEntities[activator][pThis])
 				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
 				gI_linkedEntities[activator][pThis]--
@@ -689,13 +690,20 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 						return Plugin_Handled
 				}
 				else
+				{
 					if(gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
 						return Plugin_Handled
+				}
 			}
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
 				if(partner)
 				{
+					if(StrContains(output, "OnStart") != -1 || StrContains(output, "OnEnd") != -1)
+					{
+						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_linkedEntitiesDefault[i][caller]
+						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_linkedEntitiesDefault[i][caller]
+					}
 					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 				}
