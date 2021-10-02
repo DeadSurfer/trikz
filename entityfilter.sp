@@ -681,33 +681,51 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					return Plugin_Handled
 			char sOutput[32]
 			Format(sOutput, 32, "m_%s", output)
+			bool check
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
 			{
 				if(partner)
 				{
 					if(gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]])
-						return Plugin_Handled
+						check = true
 				}
 				else
 				{
 					if(gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]])
-						return Plugin_Handled
+						check = true
 				}
 			}
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+			if(!check)
 			{
-				if(partner)
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
 				{
-					if(StrContains(output, "OnStart") != -1 || StrContains(output, "OnEnd") != -1)
+					if(partner)
 					{
-						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_linkedEntitiesDefault[i][caller]
-						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_linkedEntitiesDefault[i][caller]
+						if(StrContains(output, "OnStart") != -1 || StrContains(output, "OnEnd") != -1 || StrContains(output, "OnPressed") != -1 || StrContains(output, "OnDamaged") != -1)
+						{
+							if(gI_linkedEntitiesDefault[i][caller])
+							{
+								gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]]++
+								gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]]++
+							}
+						}
+						else if(StrContains(output, "OnT") != -1)
+						{
+							gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+							gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+						}
 					}
-					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					else
+					{
+						if(StrContains(output, "OnStart") != -1 || StrContains(output, "OnEnd") != -1 || StrContains(output, "OnPressed") != -1 || StrContains(output, "OnDamaged") != -1)
+						{
+							if(gI_linkedEntitiesDefault[i][caller])
+								gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]]++
+						}
+						else if(StrContains(output, "OnT") != -1)
+							gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					}
 				}
-				else
-					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 			}
 		}
 		else
@@ -726,15 +744,11 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						if(partner)
 						{
-							if(!gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]])
-							{
-								gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
-								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
-							}
+							gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 						}
 						else
-							if(!gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]])
-								gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 					}
 				}
 			}
