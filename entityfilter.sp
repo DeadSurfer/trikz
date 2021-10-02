@@ -130,12 +130,14 @@ Action timer_load(Handle timer)
 		gB_stateDisabled[0][i] = false
 		gI_linkedEntitiesDefault[i][i] = 0
 		gI_linkedMathEntitiesDefault[i][i] = 0
+		gF_buttonDefaultDelay[i] = 0.0
 		for(int j = 0; j <= 10; j++)
 			gI_entityOutput[j][i] = 0
 		for(int j = 0; j <= MaxClients; j++)
 		{
 			gB_stateDisabled[j][i] = false
 			gI_linkedEntities[j][i] = 0
+			gF_buttonReady[j][i] = 0.0
 		}
 	}
 	for(int i = 0; i < sizeof(sClassname); i++)
