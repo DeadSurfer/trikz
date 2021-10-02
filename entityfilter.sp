@@ -186,7 +186,7 @@ void EntityLinked(int entity, char[] output)
 			for(int j = 0; j < sizeof(sClassname); j++)
 			{
 				int entityLinked
-				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, entity)) != INVALID_ENT_REFERENCE)
+				while((entityLinked = FindLinkedEntity(entityLinked, sClassname[j], sTarget, StrEqual(sInput, "Toggle") ? entity : 0)) != INVALID_ENT_REFERENCE)
 				{
 					OutputInput(entityLinked, sClassname[j], sTarget)
 					if(StrEqual(output, "m_OnPressed") || StrEqual(output, "m_OnDamaged"))
