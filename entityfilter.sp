@@ -671,14 +671,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 		int partner = Trikz_GetClientPartner(activator)
 		if(caller > 0)
 		{
-			if(partner)
-			{
-				if(gB_stateDisabled[activator][caller])
-					return Plugin_Handled
-			}
-			else
-				if(gB_stateDisabled[partner][caller])
-					return Plugin_Handled
+			if(gB_stateDisabled[partner][caller])
+				return Plugin_Handled
 			char sOutput[32]
 			Format(sOutput, 32, "m_%s", output)
 			for(int i = 1; i <= gI_maxLinks[caller]; i++)
