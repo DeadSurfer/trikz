@@ -31,6 +31,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <cstrike>
+#include <clientprefs>
 
 int gI_partner[MAXPLAYERS + 1]
 float gF_originStartZone[2][3]
@@ -141,6 +142,7 @@ int gI_points[MAXPLAYERS + 1]
 Handle gH_start
 int gI_pointsMaxs
 int gI_lastQuery
+Handle gH_cookie[4]
 
 public Plugin myinfo =
 {
@@ -212,6 +214,10 @@ public void OnPluginStart()
 	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 	gH_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell)
 	RegPluginLibrary("fakeexpert")
+	gH_cookie[0] = RegClientCookie("vel", "vel", CookieAccess_Protected)
+	gH_cookie[1] = RegClientCookie("mls", "mls", CookieAccess_Protected)
+	gH_cookie[2] = RegClientCookie("button", "button", CookieAccess_Protected)
+	gH_cookie[3] = RegClientCookie("pbutton", "pbutton", CookieAccess_Protected)
 }
 
 public void OnMapStart()
@@ -738,6 +744,15 @@ public void OnClientPutInServer(int client)
 	gB_pbutton[client] = false
 	ResetFactory(client)
 	gI_points[client] = 0
+	char sValue[16]
+	GetClientCookie(client, gH_cookie[0], sValue, 16)
+	gB_hudVel[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, gH_cookie[1], sValue, 16)
+	gB_mlstats[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, gH_cookie[2], sValue, 16)
+	gB_button[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, gH_cookie[2], sValue, 16)
+	gB_pbutton[client] = view_as<bool>(StringToInt(sValue))
 }
 
 public void OnClientDisconnect(int client)
@@ -3262,12 +3277,21 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 			gB_MenuIsOpen[param1] = true
 		case MenuAction_Select:
 		{
+			char sValue[16]
 			switch(param2)
 			{
 				case 0:
+				{
 					gB_hudVel[param1] = !gB_hudVel[param1]
+					IntToString(gB_hudVel[param1], sValue, 16)
+					SetClientCookie(param1, gH_cookie[0], sValue)
+				}
 				case 1:
+				{
 					gB_mlstats[param1] = !gB_mlstats[param1]
+					IntToString(gB_mlstats[param1], sValue, 16)
+					SetClientCookie(param1, gH_cookie[1], sValue)
+				}
 			}
 			cmd_hud(param1, 0)
 		}
@@ -3300,6 +3324,9 @@ void Hud(int client)
 Action cmd_mlstats(int client, int args)
 {
 	gB_mlstats[client] = !gB_mlstats[client]
+	char sValue[16]
+	IntToString(gB_mlstats[client], sValue, 16)
+	SetClientCookie(client, gH_cookie[1], sValue)
 	PrintToChat(client, gB_mlstats[client] ? "ML stats is on." : "ML stats is off.")
 	return Plugin_Handled
 }
@@ -3307,6 +3334,9 @@ Action cmd_mlstats(int client, int args)
 Action cmd_button(int client, int args)
 {
 	gB_button[client] = !gB_button[client]
+	char sValue[16]
+	IntToString(gB_button[client], sValue, 16)
+	SetClientCookie(client, gH_cookie[2], sValue)
 	PrintToChat(client, gB_button[client] ? "Button announcer is on." : "Button announcer is off.")
 	return Plugin_Handled
 }
@@ -3314,6 +3344,9 @@ Action cmd_button(int client, int args)
 Action cmd_pbutton(int client, int args)
 {
 	gB_pbutton[client] = !gB_pbutton[client]
+	char sValue[16]
+	IntToString(gB_pbutton[client], sValue, 16)
+	SetClientCookie(client, gH_cookie[3], sValue)
 	PrintToChat(client, gB_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.")
 	return Plugin_Handled
 }
