@@ -200,21 +200,15 @@ void EntityLinked(int entity, char[] output)
 					}
 					else
 					{
-						int math
-						bool mathExist
 						for(int k = 1; k <= gI_mathTotalCount; k++)
 						{
-							math = k
+							int math = k
 							if(gI_mathID[math] == entity)
 							{
-								mathExist = true
+								gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+								gI_entityOutput[GetOutput(output)][entityLinked]++
 								break
 							}
-						}
-						if(mathExist)
-						{
-							gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
-							gI_entityOutput[GetOutput(output)][entityLinked]++
 						}
 					}
 				}
