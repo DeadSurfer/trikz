@@ -2865,7 +2865,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			gB_pingLock[client] = true
 			if(gI_pingModel[client])
 			{
-				RemoveEntity(gI_pingModel[client])
+				if(IsValidEntity(gI_pingModel[client]))
+					RemoveEntity(gI_pingModel[client])
 				gI_pingModel[client] = 0
 				KillTimer(gH_timerPing[client])
 			}
