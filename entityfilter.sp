@@ -702,11 +702,11 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						if(partner)
 						{
-							gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
-							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+							gI_linkedEntities[activator][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 						}
 						else
-							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] = gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
+							gI_linkedEntities[partner][gI_linkedMathEntitiesDefault[j][math]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedMathEntitiesDefault[j][math]]
 					}
 				}
 			}
