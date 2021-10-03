@@ -2122,7 +2122,7 @@ void createcp(int cpnum)
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouchPost)
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
 }
 
@@ -2734,13 +2734,14 @@ void DrawZone(int client, float life)
 		zones += gI_cpCount
 		for(int i = 2; i <= zones; i++)
 		{
-			start[i][0] = (gF_originCP[0][i - 1][0] < gF_originCP[1][i - 1][0]) ? gF_originCP[0][i - 1][0] : gF_originCP[1][i - 1][0]
-			start[i][1] = (gF_originCP[0][i - 1][1] < gF_originCP[1][i - 1][1]) ? gF_originCP[0][i - 1][1] : gF_originCP[1][i - 1][1]
-			start[i][2] = (gF_originCP[0][i - 1][2] < gF_originCP[1][i - 1][2]) ? gF_originCP[0][i - 1][2] : gF_originCP[1][i - 1][2]
+			int cpnum = i - 1
+			start[i][0] = (gF_originCP[0][cpnum][0] < gF_originCP[1][cpnum][0]) ? gF_originCP[0][cpnum][0] : gF_originCP[1][cpnum][0]
+			start[i][1] = (gF_originCP[0][cpnum][1] < gF_originCP[1][cpnum][1]) ? gF_originCP[0][cpnum][1] : gF_originCP[1][cpnum][1]
+			start[i][2] = (gF_originCP[0][cpnum][2] < gF_originCP[1][cpnum][2]) ? gF_originCP[0][cpnum][2] : gF_originCP[1][cpnum][2]
 			start[i][2] += 3.0
-			end[i][0] = (gF_originCP[0][i - 1][0] > gF_originCP[1][i - 1][0]) ? gF_originCP[0][i - 1][0] : gF_originCP[1][i - 1][0]
-			end[i][1] = (gF_originCP[0][i - 1][1] > gF_originCP[1][i - 1][1]) ? gF_originCP[0][i - 1][1] : gF_originCP[1][i - 1][1]
-			end[i][2] = (gF_originCP[0][i - 1][2] > gF_originCP[1][i - 1][2]) ? gF_originCP[0][i - 1][2] : gF_originCP[1][i - 1][2]
+			end[i][0] = (gF_originCP[0][cpnum][0] > gF_originCP[1][cpnum][0]) ? gF_originCP[0][cpnum][0] : gF_originCP[1][cpnum][0]
+			end[i][1] = (gF_originCP[0][cpnum][1] > gF_originCP[1][cpnum][1]) ? gF_originCP[0][cpnum][1] : gF_originCP[1][cpnum][1]
+			end[i][2] = (gF_originCP[0][cpnum][2] > gF_originCP[1][cpnum][2]) ? gF_originCP[0][cpnum][2] : gF_originCP[1][cpnum][2]
 			end[i][2] += 3.0
 		}
 	}
