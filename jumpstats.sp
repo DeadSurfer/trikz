@@ -30,6 +30,7 @@
 */
 #include <sdkhooks>
 #include <sdktools>
+#include <clientprefs>
 
 bool gB_jumped[MAXPLAYERS + 1]
 float gF_origin[MAXPLAYERS + 1][3]
@@ -56,6 +57,7 @@ float gF_skyOrigin[MAXPLAYERS + 1][3]
 int gI_entityButtons[MAXPLAYERS + 1]
 native int Trikz_GetClientButtons(int client)
 bool gB_teleported[MAXPLAYERS + 1]
+Handle gH_cookie
 
 public Plugin myinfo =
 {
@@ -79,6 +81,7 @@ public void OnPluginStart()
 		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
 		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
+	gH_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected)
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -93,11 +96,17 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
 	SDKHook(client, SDKHook_Touch, SDKSkyFix2)
 	gB_jumpstats[client] = false
+	char sValue[16]
+	GetClientCookie(client, gH_cookie, sValue, 16)
+	gB_jumpstats[client] = view_as<bool>(StringToInt(sValue))
 }
 
 Action cmd_jumpstats(int client, int args)
 {
 	gB_jumpstats[client] = !gB_jumpstats[client]
+	char sValue[16]
+	IntToString(gB_jumpstats[client], sValue, 16)
+	SetClientCookie(client, gH_cookie, sValue)
 	PrintToChat(client, gB_jumpstats[client] ? "Jump stats is on." : "Jump stats is off.")
 	return Plugin_Handled
 }
