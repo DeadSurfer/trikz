@@ -29,6 +29,7 @@
 	your programs, too.
 */
 #include <sdkhooks>
+#include <clientprefs>
 
 float gF_boostTimeStart[MAXPLAYERS + 1]
 float gF_boostTimeEnd[MAXPLAYERS + 1]
@@ -39,6 +40,7 @@ bool gB_duck[MAXPLAYERS + 1]
 bool gB_boostStats[MAXPLAYERS + 1]
 float gF_angles[MAXPLAYERS + 1][3]
 bool gB_projectile[MAXPLAYERS + 1]
+Handle gH_cookie
 
 public Plugin myinfo =
 {
@@ -52,17 +54,24 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	RegConsoleCmd("sm_bs", cmd_booststats)
+	gH_cookie = RegClientCookie("bs", "booststats", CookieAccess_Protected)
 }
 
 public void OnClientPutInServer(int client)
 {
 	gB_boostStats[client] = false
 	gB_projectile[client] = false
+	char sValue[16]
+	GetClientCookie(client, gH_cookie, sValue, 16)
+	gB_boostStats[client] = view_as<bool>(StringToInt(sValue))
 }
 
 Action cmd_booststats(int client, int args)
 {
 	gB_boostStats[client] = !gB_boostStats[client]
+	char sValue[16]
+	IntToString(gB_boostStats[client], sValue, 16)
+	SetClientCookie(client, gH_cookie, sValue)
 	PrintToChat(client, gB_boostStats[client] ? "Boost stats is on." : "Boost stats is off.")
 	return Plugin_Handled
 }
