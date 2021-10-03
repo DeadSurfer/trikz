@@ -3443,7 +3443,8 @@ Action SDKProjectile(int entity)
 
 void frame_blockExplosion(int entity)
 {
-	SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+	if(IsValidEntity(entity))
+		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
 }
 
 Action timer_deleteProjectile(Handle timer, int entity)
