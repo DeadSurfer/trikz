@@ -3487,7 +3487,8 @@ void frame_blockExplosion(int entity)
 
 Action timer_deleteProjectile(Handle timer, int entity)
 {
-	RemoveEntity(entity)
+	if(IsValidEntity(entity))
+		RemoveEntity(entity)
 }
 
 void SDKProjectilePost(int entity)
