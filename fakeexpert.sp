@@ -143,6 +143,7 @@ Handle gH_start
 int gI_pointsMaxs
 int gI_lastQuery
 Handle gH_cookie[4]
+bool gB_isPluginLoaded
 
 public Plugin myinfo =
 {
@@ -181,13 +182,6 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_mls", cmd_mlstats)
 	RegConsoleCmd("sm_button", cmd_button)
 	RegConsoleCmd("sm_pbutton", cmd_pbutton)
-	gH_cookie[0] = RegClientCookie("vel", "velocity in hint", CookieAccess_Protected)
-	gH_cookie[1] = RegClientCookie("mls", "mega long stats", CookieAccess_Protected)
-	gH_cookie[2] = RegClientCookie("button", "button", CookieAccess_Protected)
-	gH_cookie[3] = RegClientCookie("pbutton", "partner button", CookieAccess_Protected)
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i))
-			OnClientPutInServer(i)
 	RegServerCmd("sm_createzones", cmd_createzones)
 	RegServerCmd("sm_createusers", cmd_createusers)
 	RegServerCmd("sm_createrecords", cmd_createrecords)
@@ -218,6 +212,10 @@ public void OnPluginStart()
 	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 	gH_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell)
 	RegPluginLibrary("fakeexpert")
+	gH_cookie[0] = RegClientCookie("vel", "velocity in hint", CookieAccess_Protected)
+	gH_cookie[1] = RegClientCookie("mls", "mega long stats", CookieAccess_Protected)
+	gH_cookie[2] = RegClientCookie("button", "button", CookieAccess_Protected)
+	gH_cookie[3] = RegClientCookie("pbutton", "partner button", CookieAccess_Protected)
 }
 
 public void OnMapStart()
@@ -2109,6 +2107,16 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 		if(!client)
 			return 
 		ZoneEditor2(client)
+	}
+	if(!gB_isPluginLoaded)
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+				OnClientPutInServer(i)
+				
+		}
+		gB_isPluginLoaded = true
 	}
 }
 
