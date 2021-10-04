@@ -143,7 +143,6 @@ Handle gH_start
 int gI_pointsMaxs
 int gI_lastQuery
 Handle gH_cookie[4]
-bool gB_isPluginLoaded
 
 public Plugin myinfo =
 {
@@ -2104,16 +2103,11 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 	}
 	if(cp == 10)
 	{
-		if(!client)
-			return 
-		ZoneEditor2(client)
-	}
-	if(!gB_isPluginLoaded)
-	{
+		if(client)
+			ZoneEditor2(client)
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
 				OnClientPutInServer(i)
-		gB_isPluginLoaded = true
 	}
 }
 
