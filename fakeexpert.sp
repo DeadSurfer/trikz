@@ -362,6 +362,11 @@ public void OnMapStart()
 	
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
 	
+	RecalculatePoints()
+}
+
+void RecalculatePoints()
+{
 	if(gB_passDB)
 		gD_mysql.Query(SQLRecalculatePoints_GetMap, "SELECT map FROM tier")
 }
@@ -2678,6 +2683,7 @@ void SQLConnect(Database db, const char[] error, any data)
 	char sQuery[512]
 	Format(sQuery, 512, "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", gS_map)
 	gD_mysql.Query(SQLGetServerRecord, sQuery)
+	RecalculatePoints()
 }
 
 void ForceZonesSetup()
