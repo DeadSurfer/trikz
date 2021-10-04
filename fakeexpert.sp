@@ -2111,11 +2111,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 	if(!gB_isPluginLoaded)
 	{
 		for(int i = 1; i <= MaxClients; i++)
-		{
 			if(IsClientInGame(i))
 				OnClientPutInServer(i)
-				
-		}
 		gB_isPluginLoaded = true
 	}
 }
