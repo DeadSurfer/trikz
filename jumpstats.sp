@@ -297,9 +297,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(1000.0 > distance >= 230.0 && pre < 280.0)
 		{
 			if(gB_jumpstats[client])
-				PrintToChat(client, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			if(gB_runboost[client] && gB_jumpstats[gI_rbBooster[client]])
-				PrintToChat(gI_rbBooster[client], "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+				PrintToChat(gI_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -309,7 +309,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "[SM] %s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
 			}
 		}
 		ResetFactory(client)
@@ -376,7 +376,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			sync *= 100.0
 			if(gB_jumpstats[client])
 				if(190.0 > distance >= 22.0)
-					PrintToChat(client, "[SM] %sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+					PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && IsClientObserver(i))
@@ -385,7 +385,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
 						if(190.0 > distance >= 22.0)
-							PrintToChat(i, "[SM] %sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+							PrintToChat(i, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
 				}
 			}
 		}
