@@ -55,6 +55,9 @@ public void OnPluginStart()
 {
 	RegConsoleCmd("sm_bs", cmd_booststats)
 	gH_cookie = RegClientCookie("bs", "booststats", CookieAccess_Protected)
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsValidEntity(i))
+			OnClientPutInServer(i)
 }
 
 public void OnClientPutInServer(int client)
