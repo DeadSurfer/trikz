@@ -9,53 +9,77 @@
 	font-size: 0.9em;
 	font-family: sans-serif;
 	min-width: 64px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	/*box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
 }
-
 .styled-table thead tr
 {
 	background-color: #009879;
 	color: #ffffff;
 	text-align: left;
 }
-
 .styled-table th,
 .styled-table td
 {
 	text-align: left;
 	padding: 12px 15px;
 }
-
 .styled-table tbody tr
 {
 	background-color: #ffffff;
 	border-bottom: 1px solid #dddddd;
 }
-
-.styled-table tbody tr:nth-of-type(even) <!--https://css-tricks.com/almanac/selectors/n/nth-of-type/--> <!--https://www.w3schools.com/cssref/sel_nth-of-type.asp--> <!--https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type#basic_example-->
+.styled-table tbody tr:nth-of-type(even) /*<!--https://css-tricks.com/almanac/selectors/n/nth-of-type/--> <!--https://www.w3schools.com/cssref/sel_nth-of-type.asp--> <!--https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type#basic_example-->*/
 {
 	background-color: #f3f3f3;
 }
-
 .styled-table tbody tr:last-of-type
 {
 	border-bottom: 2px solid #009879;
 }
-
 .styled-table tbody tr.active-row
 {
 	font-weight: bold;
 	color: #009879;
 }
-
 .styled-table tbody td.active-row
 {
 	font-weight: bold;
 	color: #009879;
 }
+body
+{
+	margin: 0;
+}
+.header /*https://www.w3schools.com/howto/howto_css_style_header.asp*/
+{
+	padding: 30px;
+	text-align: center;
+	background: #1abc9c;
+	color: white;
+	font-size: 15px;
+	/*position: fixed;*/ /*https://stackoverflow.com/questions/7402635/how-can-i-make-content-appear-beneath-a-fixed-div-element*/
+	/*left: 0;
+	top: 0;*/
+}
+.content
+{
+	padding: 20px;
+}
+.footer /*https://www.w3schools.com/howto/howto_css_fixed_footer.asp*/
+{
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: #009879;
+	color: white;
+	text-align: center;
+	font-size: 0.9em;
+	font-family: sans-serif;
+}
 </style>
-<body style="background-color:#ffffff"> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
-	<h1>Trikz Timer</h1> 
+<body style=background-color:#ffffff> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
+	<div class=header><h1>Trikz Timer</h1> 
 	<?php
 		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert') or die ('Error connecting to MySQL server.');
 		echo "<form method=post><select id=submit name=submit><option>Select a map</option>"; //http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. --> //https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/ <!-- //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html--> <!-- https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D. -->
@@ -81,10 +105,15 @@
 			$mapASC = mysqli_fetch_assoc(mysqli_query($db, $sql));
 			$name = $mapASC['map'];
 		}
-		echo "<table class=styled-table><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
+		//echo "<table class=styled-table style=margin-left:500px><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
 	?>
-	<table class="styled-table"> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l-->
+	</div>
+	<div class=content>
+	<table class=styled-table style=margin-left:auto;margin-right:auto> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l--> <!-- https://www.computerhope.com/issues/ch001968.htm --> <!-- http://htmlbook.ru/css/margin-left -->
 		<thead>
+			<?php
+				echo "<tr><th>Map: $_SESSION[map]</th></tr>";
+			?>
 			<tr>
 				<?php
 					$page = basename($_SERVER['PHP_SELF']);
@@ -131,113 +160,118 @@
 				?>
 			</tr>
 		</thead>
-		<tbody>
-		<?php
-			$page = basename($_SERVER['PHP_SELF']); //https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531 https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
-			if(isset($_GET['start'])) //https://www.stechies.com/undefined-index-error-php/
-				$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
-			else
-				$start = 0;
-			if(isset($_POST['submit']))
-				$start = 0;
-			$limit = 10;
-			$thisp = $start + $limit;
-			$back = $start - $limit;
-			$next = $start + $limit;
-			if(isset($_GET['l']))
-				$l = (int) $_GET['l'];
-			else
-				$l = 0;
-			$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
-			$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
-			$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
-			if($l == 1)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
-			else if(!$l)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT $start, $limit";
-			else if($l == 3)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
-			else if($l == 2)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes LIMIT $start, $limit";
-			else if($l == 5)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
-			else if($l == 4)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries LIMIT $start, $limit";
-			else if($l == 7)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
-			else if($l == 6)
-				$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
-			mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
-			mysqli_query($db, $query) or die('Error querying database. [1]');
-			mysqli_query($db, $getSR) or die('Error querying database. [getSR]');
-			mysqli_query($db, $query0) or die('Error querying database. [2]');
-			$resultRank = mysqli_query($db, $queryRank);
-			$result = mysqli_query($db, $query);
-			$result0 = mysqli_query($db, $query0);
-			$resultGetSR = mysqli_query($db, $getSR);
-			$rowGetSR = mysqli_fetch_array($resultGetSR);
-			$row0 = mysqli_fetch_array($result0); //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
-			$serverRecord = 0;
-			// set the default timezone to use.
-			date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
-			if(!mysqli_num_rows($result)) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
-				echo "<td><center>No records found!</center></td>";
-			while($row = mysqli_fetch_assoc($result))
-			{
-				$rank;
-				$resultRank = mysqli_query($db, $queryRank);
-				while($rank = mysqli_fetch_assoc($resultRank))
-					if($rank['id'] == $row['id'])
-						break;
-				$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
-				mysqli_query($db, $query2) or die('Error querying in table. [3]');
-				$result2 = mysqli_query($db, $query2);
-				$row2 = mysqli_fetch_array($result2);
-				$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
-				mysqli_query($db, $query3) or die('Error querying in table. [4]');
-				$result3 = mysqli_query($db, $query3);
-				$row3 = mysqli_fetch_array($result3);
-				$hours = floor($row['time'] / 3600);
-				$mins = floor($row['time'] / 60 % 60);
-				$secs = floor($row['time'] % 60);
-				$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
-				if(!$serverRecord)
-					$serverRecord = $rowGetSR['time'];
-				$timeDiff = $row['time'] - $serverRecord;
-				$timeDiffHours = floor($timeDiff / 3600);
-				$timeDiffMins = floor($timeDiff / 60 % 60);
-				$timeDiffSecs = floor($timeDiff % 60);
-				$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
-				$formatedDateYmd = date("Y-m-d", $row["date"]);
-				$formatedDateHis = date("H:i:s", $row['date']);
-				//https://www.w3schools.com/html/html_colors.asp
-				//https://www.tutorialspoint.com/html/html_colors.htm
-				$stamid64beforefirstuser = 76561197960265728; //so first user will be with + 1
-				$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
-				$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
-				//https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
-				if($rank['rank'] == 1)
-					echo "<tr><td><center><img src=/topplace/gold_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-				else if($rank['rank'] == 2)
-					echo "<tr><td><center><img src=/topplace/silver_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-				else if($rank['rank'] == 3)
-					echo "<tr><td><center><img src=/topplace/bronze_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+			<tbody>
+			<?php
+				$page = basename($_SERVER['PHP_SELF']); //https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531 https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
+				if(isset($_GET['start'])) //https://www.stechies.com/undefined-index-error-php/
+					$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
 				else
-					echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
-			}
+					$start = 0;
+				if(isset($_POST['submit']))
+					$start = 0;
+				$limit = 10;
+				$thisp = $start + $limit;
+				$back = $start - $limit;
+				$next = $start + $limit;
+				if(isset($_GET['l']))
+					$l = (int) $_GET['l'];
+				else
+					$l = 0;
+				$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
+				$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
+				$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
+				if($l == 1)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
+				else if(!$l)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT $start, $limit";
+				else if($l == 3)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
+				else if($l == 2)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes LIMIT $start, $limit";
+				else if($l == 5)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
+				else if($l == 4)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries LIMIT $start, $limit";
+				else if($l == 7)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
+				else if($l == 6)
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
+				mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
+				mysqli_query($db, $query) or die('Error querying database. [1]');
+				mysqli_query($db, $getSR) or die('Error querying database. [getSR]');
+				mysqli_query($db, $query0) or die('Error querying database. [2]');
+				$resultRank = mysqli_query($db, $queryRank);
+				$result = mysqli_query($db, $query);
+				$result0 = mysqli_query($db, $query0);
+				$resultGetSR = mysqli_query($db, $getSR);
+				$rowGetSR = mysqli_fetch_array($resultGetSR);
+				$row0 = mysqli_fetch_array($result0); //https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
+				$serverRecord = 0;
+				// set the default timezone to use.
+				date_default_timezone_set('UTC'); //https://www.php.net/manual/en/function.date.php
+				if(!mysqli_num_rows($result)) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
+					echo "<td><center>No records found!</center></td>";
+				while($row = mysqli_fetch_assoc($result))
+				{
+					$rank;
+					$resultRank = mysqli_query($db, $queryRank);
+					while($rank = mysqli_fetch_assoc($resultRank))
+						if($rank['id'] == $row['id'])
+							break;
+					$query2 = "SELECT username FROM users WHERE steamid = $row[playerid]";
+					mysqli_query($db, $query2) or die('Error querying in table. [3]');
+					$result2 = mysqli_query($db, $query2);
+					$row2 = mysqli_fetch_array($result2);
+					$query3 = "SELECT username FROM users WHERE steamid = $row[partnerid]";
+					mysqli_query($db, $query3) or die('Error querying in table. [4]');
+					$result3 = mysqli_query($db, $query3);
+					$row3 = mysqli_fetch_array($result3);
+					$hours = floor($row['time'] / 3600);
+					$mins = floor($row['time'] / 60 % 60);
+					$secs = floor($row['time'] % 60);
+					$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
+					if(!$serverRecord)
+						$serverRecord = $rowGetSR['time'];
+					$timeDiff = $row['time'] - $serverRecord;
+					$timeDiffHours = floor($timeDiff / 3600);
+					$timeDiffMins = floor($timeDiff / 60 % 60);
+					$timeDiffSecs = floor($timeDiff % 60);
+					$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
+					$formatedDateYmd = date("Y-m-d", $row["date"]);
+					$formatedDateHis = date("H:i:s", $row['date']);
+					//https://www.w3schools.com/html/html_colors.asp
+					//https://www.tutorialspoint.com/html/html_colors.htm
+					$stamid64beforefirstuser = 76561197960265728; //so first user will be with + 1
+					$player1steamid64 = $stamid64beforefirstuser + $row['playerid'];
+					$player2steamid64 = $stamid64beforefirstuser + $row['partnerid'];
+					//https://www.sitepoint.com/community/t/insert-an-image-into-index-php-file/8545
+					if($rank['rank'] == 1)
+						echo "<tr><td><center><img src=/topplace/gold_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+					else if($rank['rank'] == 2)
+						echo "<tr><td><center><img src=/topplace/silver_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+					else if($rank['rank'] == 3)
+						echo "<tr><td><center><img src=/topplace/bronze_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+					else
+						echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+				}
+			?>
+		</tbody>
+		<?php
+			echo "<thead><tr>";
+			if($back >= 0)
+				print "<th><center><a href=$page?start=$back&l=$l style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
+			if($start + $limit < $row0[0])
+				print "<th><center><a href=$page?start=$next&l=$l style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+			echo "</tr></thead>";
 		?>
-	</tbody>
 	</table>
-	<?php
-		echo "<table class=styled-table><thead><tr>";
-		if($back >= 0)
-			print "<th><center><a href=$page?start=$back&l=$l style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
-		if($start + $limit < $row0[0])
-			print "<th><center><a href=$page?start=$next&l=$l style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
-		echo "</tr></thead></table>";
-		$year = date("Y");
-		echo "<br>Copyleft FakeExpert 2021 - $year year."; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
-	?>
+	</div>
+	<div class=footer>
+		<?php
+			$year = date("Y");
+			echo "<p>Copyleft FakeExpert 2021 - $year year.</p>"; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
+		?>
+	</div>
 </body>
 <!--https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/
 https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
