@@ -404,7 +404,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		int partner = Trikz_GetClientPartner(activator)
 		if(StrEqual(sInput, "Enable"))
 		{
-			if(gI_linkedEntities[activator][pThis] && partner)
+			if(gI_linkedEntities[partner][pThis])
 			{
 				gB_stateDisabled[activator][pThis] = false
 				gB_stateDisabled[partner][pThis] = false
@@ -419,7 +419,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else if(StrEqual(sInput, "Disable"))
 		{
-			if(gI_linkedEntities[activator][pThis] && partner)
+			if(gI_linkedEntities[partner][pThis])
 			{
 				gB_stateDisabled[activator][pThis] = true
 				gB_stateDisabled[partner][pThis] = true
@@ -434,7 +434,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else if(StrEqual(sInput, "Toggle"))
 		{
-			if(gI_linkedEntities[activator][pThis] && partner)
+			if(gI_linkedEntities[partner][pThis])
 			{
 				gB_stateDisabled[activator][pThis] = !gB_stateDisabled[activator][pThis]
 				gB_stateDisabled[partner][pThis] = !gB_stateDisabled[partner][pThis]
@@ -449,7 +449,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 		}
 		else if(StrEqual(sInput, "Break"))
 		{
-			if(gI_linkedEntities[activator][pThis] && partner)
+			if(gI_linkedEntities[partner][pThis])
 			{
 				gB_stateDisabled[activator][pThis] = true
 				gB_stateDisabled[partner][pThis] = true
@@ -476,7 +476,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 			if(!pThisIndex)
 				return MRES_Ignored
-			if(gB_stateDisabled[activator][pThisIndex] && partner)
+			if(gB_stateDisabled[partner][pThisIndex])
 			{
 				gB_stateDisabled[activator][pThisIndex] = false
 				gB_stateDisabled[partner][pThisIndex] = false
@@ -501,7 +501,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	int partner = Trikz_GetClientPartner(activator)
 	if(StrEqual(sInput, "Unlock"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(gI_linkedEntities[partner][pThis])
 		{
 			gB_stateDisabled[activator][pThis] = false
 			gB_stateDisabled[partner][pThis] = false
@@ -516,7 +516,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	}
 	else if(StrEqual(sInput, "Lock"))
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		if(gI_linkedEntities[partner][pThis])
 		{
 			gB_stateDisabled[activator][pThis] = true
 			gB_stateDisabled[partner][pThis] = true
