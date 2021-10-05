@@ -71,6 +71,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("player_jump", Event_PlayerJump)
+	gH_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
@@ -81,7 +82,6 @@ public void OnPluginStart()
 		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
 		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
-	gH_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected)
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
