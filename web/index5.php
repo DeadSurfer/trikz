@@ -82,7 +82,7 @@ body
 }
 .dropbtn
 {
-	background-color: #3498DB;
+	background-color: #00755D;
 	color: white;
 	padding: 16px;
 	font-size: 16px;
@@ -91,7 +91,7 @@ body
 }
 .dropbtn:hover, .dropbtn:focus
 {
-	background-color: #2980B9;
+	background-color: #00B793;
 }
 .dropdown
 {
@@ -156,20 +156,12 @@ body
 	<div class=header><h1>Trikz Timer</h1> 
 	<?php
 		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert') or die ('Error connecting to MySQL server.');
-		echo "<form method=post><select id=submit name=submit><option>Select a map</option>"; //http://www.learningaboutelectronics.com/Articles/How-to-retrieve-data-from-a-textbox-using-PHP.php#:~:text=And%20the%20answer%20is%2C%20we%20can%20do%20this,information%20and%20displaying%20it%20on%20a%20web%20page. --> //https://www.wdb24.com/ajax-dropdown-list-from-database-using-php-and-jquery/ <!-- //https://www.foxinfotech.in/2019/01/how-to-create-text-box-and-display-its-value-in-php.html--> <!-- https://www.ecomspark.com/how-to-submit-a-form-in-php-and-email/#:~:text=In%20PHP%2C%20isset%20%28%29%20method%20is%20used%20to,%28isset%20%28%24_POST%20%5B%27submit%27%5D%29%29%20%7B%20echo%20%22form%20success%22%3B%20%7D. -->
 		$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map";
+		echo "<div class=dropdown><button onclick=myFunction() class=dropbtn>Choose a map</button><div id=myDropdown class=dropdown-content>";
 		$rs = mysqli_query($db, $sql);
 		while($rows = mysqli_fetch_assoc($rs))
-			echo "<option>$rows[map]</option>";
-		echo "</select><input type = submit value = Submit></form>";
-		echo "<div class=dropdown>
-			<button onclick=myFunction() class=dropbtn>Choose a map</button>
-			<div id=myDropdown class=dropdown-content>";
-				$rs = mysqli_query($db, $sql);
-				while($rows = mysqli_fetch_assoc($rs))
-					echo "<a href=.?map=$rows[map]>$rows[map]</a>";
-			echo "</div>
-		</div>"; //https://www.w3schools.com/howto/howto_js_dropdown.asp https://stackoverflow.com/questions/8174282/link-to-reload-current-page
+			echo "<a href=.?map=$rows[map]>$rows[map]</a>";
+		echo "</div></div>"; //https://www.w3schools.com/howto/howto_js_dropdown.asp https://stackoverflow.com/questions/8174282/link-to-reload-current-page
 		if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page https://www.w3schools.com/PHP/php_superglobals_get.asp
 			$_SESSION['map'] = $_GET['map'];
 		if(!isset($_SESSION['map']))
