@@ -235,20 +235,10 @@ body
 		echo "</div></div>"; //https://www.w3schools.com/howto/howto_js_dropdown.asp https://stackoverflow.com/questions/8174282/link-to-reload-current-page
 		if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page https://www.w3schools.com/PHP/php_superglobals_get.asp
 			$_SESSION['map'] = $_GET['map'];
-		if(!isset($_SESSION['map']))
-		{
-			$mapASC = mysqli_fetch_assoc(mysqli_query($db, $sql));
-			$_SESSION['map'] = $mapASC['map'];
-		}
-		if(isset($_POST['submit'])) //https://stackoverflow.com/questions/65603660/beginner-php-warning-undefined-array-key
-		{	
-			$name = $_POST['submit']; //https://stackoverflow.com/questions/13447554/how-to-get-input-field-value-using-php
-			$_SESSION['map'] = $_POST['submit'];
-		}
 		else
 		{
 			$mapASC = mysqli_fetch_assoc(mysqli_query($db, $sql));
-			$name = $mapASC['map'];
+			$_SESSION['map'] = $mapASC['map'];
 		}
 	?>
 	</div>
@@ -263,11 +253,11 @@ body
 			<tr>
 				<?php
 					$page = basename($_SERVER['PHP_SELF']);
-					if(isset($_GET['l']))
+					if(isset($_GET['sort']))
 					{
-						if($_GET['l'] == 1)
+						if($_GET['sort'] == 1)
 							echo "<th><center>Place <a href=$page?start=$_GET[start]&l=0><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-						else if($_GET['l'] == 0)
+						else if($_GET['sort'] == 0)
 							echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
 							echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down_icon.png></a></center></th>";
@@ -276,23 +266,23 @@ body
 						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 					echo "<th>Team</th>"; //<!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
 					echo "<th><center>Time</center></th>";
-					if(isset($_GET['l']))
+					if(isset($_GET['sort']))
 					{
-						if($_GET['l'] == 3)
+						if($_GET['sort'] == 3)
 							echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=2><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-						else if($_GET['l'] == 2)
+						else if($_GET['sort'] == 2)
 							echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=3><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
 							echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-						if($_GET['l'] == 5)
+						if($_GET['sort'] == 5)
 							echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=4><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-						else if($_GET['l'] == 4)
+						else if($_GET['sort'] == 4)
 							echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=5><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
 							echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-						if($_GET['l'] == 7)
+						if($_GET['sort'] == 7)
 							echo "<th><center>Date <a href=$page?start=$_GET[start]&l=6><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
-						else if($_GET['l'] == 6)
+						else if($_GET['sort'] == 6)
 							echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
 							echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
@@ -313,12 +303,10 @@ body
 					$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
 				else
 					$start = 0;
-				if(isset($_POST['submit']))
-					$start = 0;
-				if(isset($_GET['l']))
-					$l = (int) $_GET['l'];
+				if(isset($_GET['sort']))
+					$sort = (int) $_GET['sort'];
 				else
-					$l = 0;
+					$sort = 0;
 				if(isset($_GET['limit']))
 					$limit = (int) $_GET['limit'];
 				else
@@ -329,21 +317,21 @@ body
 				$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
 				$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
 				$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
-				if($l == 1)
+				if($sort == 1)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
 				else if(!$l)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT $start, $limit";
-				else if($l == 3)
+				else if($sort == 3)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
-				else if($l == 2)
+				else if($sort == 2)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes LIMIT $start, $limit";
-				else if($l == 5)
+				else if($sort == 5)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
-				else if($l == 4)
+				else if($sort == 4)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries LIMIT $start, $limit";
-				else if($l == 7)
+				else if($sort == 7)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
-				else if($l == 6)
+				else if($sort == 6)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
 				mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
 				mysqli_query($db, $query) or die('Error querying database. [1]');
@@ -408,9 +396,9 @@ body
 		<?php
 			echo "<thead><tr>";
 			if($back >= 0)
-				print "<th><center><a href=$page?start=$back&l=$l style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
+				print "<th><center><a href=$page?start=$back&l=$sort style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
 			if($start + $limit < $row0[0])
-				print "<th><center><a href=$page?start=$next&l=$l style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+				print "<th><center><a href=$page?start=$next&l=$sort style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
 			echo "</tr></thead>";
 		?>
 	</table>
