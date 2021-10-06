@@ -111,7 +111,7 @@ body
 	background-color: #f1f1f1;
 	/*min-width: 160px;
 	overflow: auto;*/
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 	z-index: 1;
 	overflow: hidden;
 	overflow-y: auto;
@@ -159,7 +159,7 @@ body
 	background-color: #f1f1f1;
 	/*min-width: 160px;
 	overflow: auto;*/
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 	z-index: 1;
 	overflow: hidden;
 	overflow-y: auto;
@@ -250,7 +250,6 @@ body
 			$mapASC = mysqli_fetch_assoc(mysqli_query($db, $sql));
 			$name = $mapASC['map'];
 		}
-		//echo "<table class=styled-table style=margin-left:500px><thead><tr><th>Map: $_SESSION[map]</th></tr></thead></table>";
 	?>
 	</div>
 	<div class=content>
