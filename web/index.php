@@ -332,7 +332,9 @@ body
 				else if($sort == 6)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
 				mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
-				mysqli_query($db, $query) or die('Error querying database. [1]');
+				mysqli_query($db, $query);
+				if(!$query)
+					echo "<script>window.location.href = window.location.protocol + '//' + window.location.host</script>"; //https://stackoverflow.com/questions/6042007/how-to-get-the-host-url-using-javascript-from-the-current-page
 				mysqli_query($db, $getSR) or die('Error querying database. [getSR]');
 				mysqli_query($db, $query0) or die('Error querying database. [2]');
 				$resultRank = mysqli_query($db, $queryRank);
