@@ -248,7 +248,7 @@ body
 			<?php
 				if(!isset($_GET['limit']))
 					  $_GET['limit'] = 10;
-				echo "<tr><th colspan=2>Show <div class=dropdownlimit><button onclick=myFunction() class=dropbtnlimit>$_GET[limit]</button> records<div id=myDropdownlimit class=dropdown-contentlimit><a href=?limit=10>10</a><a href=?limit=25>25</a><a href=?limit=50>50</a></div></div></th><th></th><th colspan=3 style=text-align:right>Map: $_SESSION[map]</th></tr>";
+				echo "<tr><th colspan=2>Show <div class=dropdownlimit><button onclick=myFunction() class=dropbtnlimit>$_GET[limit]</button> records<div id=myDropdownlimit class=dropdown-contentlimit><a href=?limit=10>10</a><a href=?limit=25>25</a><a href=?limit=50>50</a></div></div></th><th></th><th colspan=3 style=text-align:right>Map: $_SESSION[map]</th></tr>"; //https://stackoverflow.com/questions/25594610/center-text-of-table-data-connected-with-colspan-2-with-css-select-td-with
 			?>
 			<tr>
 				<?php
