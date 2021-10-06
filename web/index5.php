@@ -9,7 +9,7 @@
 	font-size: 0.9em;
 	font-family: sans-serif;
 	min-width: 64px;
-	/*box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 .styled-table thead tr
 {
@@ -63,6 +63,7 @@ body
 	font-weight: bold;
 	font-size: 0.9em;
 	font-family: sans-serif;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 .content
 {
@@ -81,6 +82,7 @@ body
 	font-size: 0.9em;
 	font-family: sans-serif;
 	font-weight: bold;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 .dropbtn
 {
