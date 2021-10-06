@@ -231,11 +231,11 @@ body
 		echo "<div class=dropdown><button onclick=myFunction() class=dropbtn>Choose a map</button><div id=myDropdown class=dropdown-content>";
 		$rs = mysqli_query($db, $sql);
 		while($rows = mysqli_fetch_assoc($rs))
-			echo "<a href=.?map=$rows[map]>$rows[map]</a>";
+			echo "<a href=?map=$rows[map]>$rows[map]</a>";
 		echo "</div></div>"; //https://www.w3schools.com/howto/howto_js_dropdown.asp https://stackoverflow.com/questions/8174282/link-to-reload-current-page
 		if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page https://www.w3schools.com/PHP/php_superglobals_get.asp
 			$_SESSION['map'] = $_GET['map'];
-		else
+		if(!isset($_SESSION['map']))
 		{
 			$mapASC = mysqli_fetch_assoc(mysqli_query($db, $sql));
 			$_SESSION['map'] = $mapASC['map'];
@@ -248,57 +248,55 @@ body
 			<?php
 				if(!isset($_GET['limit']))
 					  $_GET['limit'] = 10;
-				echo "<tr><th><center>Show <div class=dropdownlimit><button onclick=myFunction() class=dropbtnlimit>$_GET[limit]</button> records<div id=myDropdownlimit class=dropdown-contentlimit><a href=.?limit=10>10</a><a href=.?limit=25>25</a><a href=.?limit=50>50</a></div></div></center></th><th></th><th></th><th></th><th></th><th><center>Map: $_SESSION[map]</center></th></tr>";
+				echo "<tr><th><center>Show <div class=dropdownlimit><button onclick=myFunction() class=dropbtnlimit>$_GET[limit]</button> records<div id=myDropdownlimit class=dropdown-contentlimit><a href=?limit=10>10</a><a href=?limit=25>25</a><a href=?limit=50>50</a></div></div></center></th><th></th><th></th><th></th><th></th><th><center>Map: $_SESSION[map]</center></th></tr>";
 			?>
 			<tr>
 				<?php
-					$page = basename($_SERVER['PHP_SELF']);
 					if(isset($_GET['sort']))
 					{
 						if($_GET['sort'] == 1)
-							echo "<th><center>Place <a href=$page?start=$_GET[start]&l=0><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+							echo "<th><center>Place <a href=?start=$_GET[start]&sort=0><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 						else if($_GET['sort'] == 0)
-							echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+							echo "<th><center>Place <a href=?start=0&sort=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
-							echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+							echo "<th><center>Place <a href=?start=0&sort=1><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 					}
 					else
-						echo "<th><center>Place <a href=$page?start=0&l=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+						echo "<th><center>Place <a href=?start=0&sort=1><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 					echo "<th>Team</th>"; //<!--https://www.w3resource.com/html/attributes/html-align-attribute.php-->
 					echo "<th><center>Time</center></th>";
 					if(isset($_GET['sort']))
 					{
 						if($_GET['sort'] == 3)
-							echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=2><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+							echo "<th><center>Finishes <a href=?start=$_GET[start]&sort=2><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 						else if($_GET['sort'] == 2)
-							echo "<th><center>Finishes <a href=$page?start=$_GET[start]&l=3><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+							echo "<th><center>Finishes <a href=?start=$_GET[start]&sort=3><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
-							echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+							echo "<th><center>Finishes <a href=?start=0&sort=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 						if($_GET['sort'] == 5)
-							echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=4><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+							echo "<th><center>Tries <a href=?start=$_GET[start]&sort=4><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 						else if($_GET['sort'] == 4)
-							echo "<th><center>Tries <a href=$page?start=$_GET[start]&l=5><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+							echo "<th><center>Tries <a href=?start=$_GET[start]&sort=5><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
-							echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+							echo "<th><center>Tries <a href=?start=0&sort=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 						if($_GET['sort'] == 7)
-							echo "<th><center>Date <a href=$page?start=$_GET[start]&l=6><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
+							echo "<th><center>Date <a href=?start=$_GET[start]&sort=6><img src=/sort/sort-amount-down-solid_icon.png></a></center></th>";
 						else if($_GET['sort'] == 6)
-							echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
+							echo "<th><center>Date <a href=?start=0&sort=7><img src=/sort/sort-amount-down-alt-solid_icon.png></a></center></th>";
 						else
-							echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+							echo "<th><center>Date <a href=?start=0&sort=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 					}
 					else
 					{
-						echo "<th><center>Finishes <a href=$page?start=0&l=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-						echo "<th><center>Tries <a href=$page?start=0&l=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
-						echo "<th><center>Date <a href=$page?start=0&l=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+						echo "<th><center>Finishes <a href=?start=0&sort=3><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+						echo "<th><center>Tries <a href=?start=0&sort=5><img src=/sort/sort-amount-down_icon.png></a></center></th>";
+						echo "<th><center>Date <a href=?start=0&sort=7><img src=/sort/sort-amount-down_icon.png></a></center></th>";
 					}	
 				?>
 			</tr>
 		</thead>
 			<tbody>
 			<?php
-				$page = basename($_SERVER['PHP_SELF']); //https://www.bing.com/search?q=get+page+name+php&cvid=ac271473acee453cbb249156e9bac152&aqs=edge..69i57.4032j0j1&pglt=299&FORM=ANNTA1&PC=U531 https://www.tutorialrepublic.com/faq/how-to-get-current-page-url-in-php.php#:~:text=Answer%3A%20Use%20the%20PHP%20%24_SERVER%20Superglobal%20Variable%20You,%28or%20protocol%29%2C%20whether%20it%20is%20http%20or%20https.
 				if(isset($_GET['start'])) //https://www.stechies.com/undefined-index-error-php/
 					$start = (int) $_GET['start']; //https://www.tutorialkart.com/php/php-convert-string-to-int/
 				else
@@ -319,7 +317,7 @@ body
 				$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
 				if($sort == 1)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
-				else if(!$l)
+				else if(!$sort)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT $start, $limit";
 				else if($sort == 3)
 					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
@@ -396,9 +394,9 @@ body
 		<?php
 			echo "<thead><tr>";
 			if($back >= 0)
-				print "<th><center><a href=$page?start=$back&l=$sort style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
+				print "<th><center><a href=?start=$back&sort=$sort style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
 			if($start + $limit < $row0[0])
-				print "<th><center><a href=$page?start=$next&l=$sort style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+				print "<th><center><a href=?start=$next&sort=$sort style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
 			echo "</tr></thead>";
 		?>
 	</table>
