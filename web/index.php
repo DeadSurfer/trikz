@@ -9,7 +9,7 @@
 	font-size: 0.9em;
 	font-family: sans-serif;
 	min-width: 64px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	/*box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
 }
 .styled-table thead tr
 {
