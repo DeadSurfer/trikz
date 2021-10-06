@@ -80,7 +80,78 @@ body
 	font-family: sans-serif;
 	font-weight: bold;
 }
+.dropbtn
+{
+	background-color: #3498DB;
+	color: white;
+	padding: 16px;
+	font-size: 16px;
+	border: none;
+	cursor: pointer;
+}
+.dropbtn:hover, .dropbtn:focus
+{
+	background-color: #2980B9;
+}
+.dropdown
+{
+	position: relative;
+	display: inline-block;
+}
+.dropdown-content
+{
+	display: none;
+	position: fixed;
+	background-color: #f1f1f1;
+	/*min-width: 160px;
+	overflow: auto;*/
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	z-index: 1;
+	overflow: hidden;
+	overflow-y: auto;
+	max-height: calc(80vh - 150px); /*https://stackoverflow.com/questions/68241427/how-to-make-a-scrollable-dropdown-menu-in-bootstrap-5*/
+}
+.dropdown-content a
+{
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+.dropdown a:hover
+{
+	background-color: #ddd;
+}
+.show
+{
+	display: block;
+}
 </style>
+<script>
+	/* When the user clicks on the button, 
+	toggle between hiding and showing the dropdown content */
+	function myFunction()
+	{
+		document.getElementById("myDropdown").classList.toggle("show");
+	}
+	// Close the dropdown if the user clicks outside of it
+	window.onclick = function(event)
+	{
+		if(!event.target.matches('.dropbtn'))
+		{
+			var dropdowns = document.getElementsByClassName("dropdown-content");
+			var i;
+			for(i = 0; i < dropdowns.length; i++)
+			{
+				var openDropdown = dropdowns[i];
+				if(openDropdown.classList.contains('show'))
+				{
+					openDropdown.classList.remove('show');
+				}
+			}
+		}
+	}
+</script>
 <body style=background-color:#ffffff> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
 	<div class=header><h1>Trikz Timer</h1> 
 	<?php
@@ -91,6 +162,14 @@ body
 		while($rows = mysqli_fetch_assoc($rs))
 			echo "<option>$rows[map]</option>";
 		echo "</select><input type = submit value = Submit></form>";
+		echo "<div class=dropdown>
+			<button onclick=myFunction() class=dropbtn>Choose a map</button>
+			<div id=myDropdown class=dropdown-content>";
+				$rs = mysqli_query($db, $sql);
+				while($rows = mysqli_fetch_assoc($rs))
+					echo "<a href=.?map=$rows[map]>$rows[map]</a>";
+			echo "</div>
+		</div>"; //https://www.w3schools.com/howto/howto_js_dropdown.asp https://stackoverflow.com/questions/8174282/link-to-reload-current-page
 		if(isset($_GET['map'])) //https://www.w3schools.com/PHP/php_superglobals_get.asp https://stackoverflow.com/questions/7014146/how-to-remember-input-data-in-the-forms-even-after-refresh-page https://www.w3schools.com/PHP/php_superglobals_get.asp
 			$_SESSION['map'] = $_GET['map'];
 		if(!isset($_SESSION['map']))
