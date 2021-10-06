@@ -61,6 +61,8 @@ body
 	/*left: 0;
 	top: 0;*/
 	font-weight: bold;
+	font-size: 0.9em;
+	font-family: sans-serif;
 }
 .content
 {
@@ -88,6 +90,8 @@ body
 	font-size: 16px;
 	border: none;
 	cursor: pointer;
+	font-family: sans-serif;
+	font-weight: bold;
 }
 .dropbtn:hover, .dropbtn:focus
 {
@@ -110,6 +114,9 @@ body
 	overflow: hidden;
 	overflow-y: auto;
 	max-height: calc(80vh - 150px); /*https://stackoverflow.com/questions/68241427/how-to-make-a-scrollable-dropdown-menu-in-bootstrap-5*/
+	font-size: 0.9em;
+	font-family: sans-serif;
+	font-weight: bold;
 }
 .dropdown-content a
 {
@@ -119,6 +126,54 @@ body
 	display: block;
 }
 .dropdown a:hover
+{
+	background-color: #ddd;
+}
+.dropbtnlimit
+{
+	background-color: #00755D;
+	color: white;
+	/*padding: 8px;
+	font-size: 8px;*/
+	font-size: 0.9em;
+	border: none;
+	cursor: pointer;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+.dropbtnlimit:hover, .dropbtnlimit:focus
+{
+	background-color: #00B793;
+}
+.dropdownlimit
+{
+	position: relative;
+	display: inline-block;
+}
+.dropdown-contentlimit
+{
+	display: none;
+	position: fixed;
+	background-color: #f1f1f1;
+	/*min-width: 160px;
+	overflow: auto;*/
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	z-index: 1;
+	overflow: hidden;
+	overflow-y: auto;
+	max-height: calc(80vh - 150px); /*https://stackoverflow.com/questions/68241427/how-to-make-a-scrollable-dropdown-menu-in-bootstrap-5*/
+	font-size: 0.9em;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+.dropdown-contentlimit a
+{
+	color: black;
+	padding: 12px 15px;
+	text-decoration: none;
+	display: block;
+}
+.dropdownlimit a:hover
 {
 	background-color: #ddd;
 }
@@ -133,6 +188,7 @@ body
 	function myFunction()
 	{
 		document.getElementById("myDropdown").classList.toggle("show");
+		document.getElementById("myDropdownlimit").classList.toggle("show");
 	}
 	// Close the dropdown if the user clicks outside of it
 	window.onclick = function(event)
@@ -140,6 +196,19 @@ body
 		if(!event.target.matches('.dropbtn'))
 		{
 			var dropdowns = document.getElementsByClassName("dropdown-content");
+			var i;
+			for(i = 0; i < dropdowns.length; i++)
+			{
+				var openDropdown = dropdowns[i];
+				if(openDropdown.classList.contains('show'))
+				{
+					openDropdown.classList.remove('show');
+				}
+			}
+		}
+		else if(!event.target.matches('.dropbtnlimit'))
+		{
+			var dropdowns = document.getElementsByClassName("dropdown-contentlimit");
 			var i;
 			for(i = 0; i < dropdowns.length; i++)
 			{
@@ -186,7 +255,9 @@ body
 	<table class=styled-table style=margin-left:auto;margin-right:auto> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l--> <!-- https://www.computerhope.com/issues/ch001968.htm --> <!-- http://htmlbook.ru/css/margin-left -->
 		<thead>
 			<?php
-				echo "<tr><th>Map: $_SESSION[map]</th></tr>";
+				if(!isset($_GET['limit']))
+					  $_GET['limit'] = 10;
+				echo "<tr><th><center>Show <div class=dropdownlimit><button onclick=myFunction() class=dropbtnlimit>$_GET[limit]</button> records<div id=myDropdownlimit class=dropdown-contentlimit><a href=.?limit=10>10</a><a href=.?limit=25>25</a><a href=.?limit=50>50</a></div></div></center></th><th></th><th></th><th></th><th></th><th><center>Map: $_SESSION[map]</center></th></tr>";
 			?>
 			<tr>
 				<?php
@@ -243,14 +314,17 @@ body
 					$start = 0;
 				if(isset($_POST['submit']))
 					$start = 0;
-				$limit = 10;
-				$thisp = $start + $limit;
-				$back = $start - $limit;
-				$next = $start + $limit;
 				if(isset($_GET['l']))
 					$l = (int) $_GET['l'];
 				else
 					$l = 0;
+				if(isset($_GET['limit']))
+					$limit = (int) $_GET['limit'];
+				else
+					$limit = 10;
+				$thisp = $start + $limit;
+				$back = $start - $limit;
+				$next = $start + $limit;
 				$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
 				$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
 				$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
