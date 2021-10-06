@@ -54,16 +54,18 @@ body
 {
 	padding: 30px;
 	text-align: center;
-	background: #1abc9c;
+	background: #009879;
 	color: white;
 	font-size: 15px;
 	/*position: fixed;*/ /*https://stackoverflow.com/questions/7402635/how-can-i-make-content-appear-beneath-a-fixed-div-element*/
 	/*left: 0;
 	top: 0;*/
+	font-weight: bold;
 }
 .content
 {
-	padding: 20px;
+	padding-top: 20px;
+	padding-bottom: 60px; /*https://stackoverflow.com/questions/43685888/footer-doesnt-go-to-the-bottom*/
 }
 .footer /*https://www.w3schools.com/howto/howto_css_fixed_footer.asp*/
 {
@@ -76,6 +78,7 @@ body
 	text-align: center;
 	font-size: 0.9em;
 	font-family: sans-serif;
+	font-weight: bold;
 }
 </style>
 <body style=background-color:#ffffff> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
