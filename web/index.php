@@ -51,6 +51,7 @@
 body
 {
 	margin: 0;
+	background-color: #ffffff;
 }
 .header /*https://www.w3schools.com/howto/howto_css_style_header.asp*/
 {
@@ -225,7 +226,7 @@ body
 		}
 	}
 </script>
-<body style=background-color:#ffffff> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
+<body> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
 	<div class=header><h1>Trikz Timer</h1> 
 	<?php
 		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert') or die ('Error connecting to MySQL server.');
