@@ -727,18 +727,22 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	}
 	int partner
 	if(0 < ent2 <= MaxClients)
+	{
 		partner = Trikz_GetClientPartner(ent2)
-	if(!gB_stateDisabled[partner][ent1])
-		return MRES_Ignored
+		if(!gB_stateDisabled[partner][ent1])
+			return MRES_Ignored
+	}
 	char sClassname[32]
 	GetEntityClassname(ent2, sClassname, 32)
 	if(StrContains(sClassname, "projectile") != -1)
 	{
 		int ent2owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity")
 		if(0 < ent2owner <= MaxClients)
+		{
 			partner = Trikz_GetClientPartner(ent2owner)
-		if(!gB_stateDisabled[partner][ent1])
-			return MRES_Ignored
+			if(!gB_stateDisabled[partner][ent1])
+				return MRES_Ignored
+		}
 	}
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
