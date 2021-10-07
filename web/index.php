@@ -10,6 +10,8 @@
 	font-family: sans-serif;
 	min-width: 64px;
 	/*box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
+	margin-left: auto;
+	margin-right: auto;
 }
 .styled-table thead tr
 {
@@ -243,7 +245,7 @@ body
 	?>
 	</div>
 	<div class=content>
-	<table class=styled-table style=margin-left:auto;margin-right:auto> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l--> <!-- https://www.computerhope.com/issues/ch001968.htm --> <!-- http://htmlbook.ru/css/margin-left -->
+	<table class=styled-table> <!--//https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l--> <!-- https://www.computerhope.com/issues/ch001968.htm --> <!-- http://htmlbook.ru/css/margin-left -->
 		<thead>
 			<?php
 				if(!isset($_GET['limit']))
@@ -374,7 +376,7 @@ body
 					$timeDiffMins = floor($timeDiff / 60 % 60);
 					$timeDiffSecs = floor($timeDiff % 60);
 					$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
-					$formatedDateYmd = date("Y-m-d", $row["date"]);
+					$formatedDateYmd = date("Y-m-d", $row['date']);
 					$formatedDateHis = date("H:i:s", $row['date']);
 					//https://www.w3schools.com/html/html_colors.asp
 					//https://www.tutorialspoint.com/html/html_colors.htm
