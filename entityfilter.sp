@@ -48,8 +48,8 @@ native int Trikz_GetClientPartner(int client)
 int gI_linkedEntitiesDefault[2048 + 1][2048 + 1]
 int gI_linkedEntities[MAXPLAYERS + 1][2048 + 1]
 int gI_linkedMathEntitiesDefault[2048 + 1][2048 + 1]
-int gI_maxLinks[2048 + 1]
-int gI_maxMathLinks[2048 + 1]
+int gI_maxLinks[11][2048 + 1]
+int gI_maxMathLinks[11][2048 + 1]
 int gI_entityOutput[11][2048 + 1]
 float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
@@ -121,8 +121,6 @@ Action timer_load(Handle timer)
 	gI_mathTotalCount = 0
 	for(int i = 1; i <= 2048; i++)
 	{
-		gI_maxLinks[i] = 0
-		gI_maxMathLinks[i] = 0
 		gI_entityID[i] = 0
 		gI_mathID[i] = 0
 		gI_breakID[i] = 0
@@ -132,7 +130,11 @@ Action timer_load(Handle timer)
 		gI_linkedMathEntitiesDefault[i][i] = 0
 		gF_buttonDefaultDelay[i] = 0.0
 		for(int j = 0; j <= 10; j++)
+		{
 			gI_entityOutput[j][i] = 0
+			gI_maxLinks[j][i] = 0
+			gI_maxMathLinks[j][i] = 0
+		}
 		for(int j = 0; j <= MaxClients; j++)
 		{
 			gB_stateDisabled[j][i] = false
@@ -195,7 +197,7 @@ void EntityLinked(int entity, char[] output)
 						OutputInput(entity, "func_button")
 					if(entity > 0)
 					{
-						gI_linkedEntitiesDefault[++gI_maxLinks[entity]][entity] = entityLinked
+						gI_linkedEntitiesDefault[++gI_maxLinks[GetOutput(output)][entity]][entity] = entityLinked
 						gI_entityOutput[GetOutput(output)][entityLinked]++
 					}
 					else
@@ -205,7 +207,7 @@ void EntityLinked(int entity, char[] output)
 							int math = k
 							if(gI_mathID[math] == entity)
 							{
-								gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+								gI_linkedMathEntitiesDefault[++gI_maxMathLinks[GetOutput(output)][math]][math] = entityLinked
 								gI_entityOutput[GetOutput(output)][entityLinked]++
 								break
 							}
@@ -672,7 +674,7 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				return Plugin_Handled
 			char sOutput[32]
 			Format(sOutput, 32, "m_%s", output)
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+			for(int i = 1; i <= gI_maxLinks[GetOutput(sOutput)][caller]; i++)
 			{
 				if(partner)
 				{
@@ -695,7 +697,7 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				if(gI_mathID[i] == caller)
 				{
 					int math = i
-					for(int j = 1; j <= gI_maxMathLinks[math]; j++)
+					for(int j = 1; j <= gI_maxMathLinks[GetOutput(sOutput)][math]; j++)
 					{
 						if(partner)
 						{
