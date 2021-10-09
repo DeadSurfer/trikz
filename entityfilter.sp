@@ -198,7 +198,7 @@ void EntityLinked(int entity, char[] output)
 					if(entity > 0)
 					{
 						gI_linkedEntitiesDefault[++gI_maxLinks[GetOutput(output)][entity]][entity] = entityLinked
-						gI_entityOutput[GetOutput(output)][entityLinked]++
+						gI_entityOutput[GetOutput(output)][entityLinked] = 1
 					}
 					else
 					{
@@ -208,7 +208,7 @@ void EntityLinked(int entity, char[] output)
 							if(gI_mathID[math] == entity)
 							{
 								gI_linkedMathEntitiesDefault[++gI_maxMathLinks[GetOutput(output)][math]][math] = entityLinked
-								gI_entityOutput[GetOutput(output)][entityLinked]++
+								gI_entityOutput[GetOutput(output)][entityLinked] = 1
 								break
 							}
 						}
@@ -680,6 +680,7 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				{
 					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					PrintToServer("%i %i %i %i", gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]], i, gI_linkedEntitiesDefault[i][caller], gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]])
 				}
 				else
 					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
