@@ -617,7 +617,13 @@ Action EntityVisibleTransmit(int entity, int client)
 {
 	if(0 < client <= MaxClients)
 	{
-		if(!IsPlayerAlive(client))
+		if(IsPlayerAlive(client))
+		{
+			int partner = Trikz_GetClientPartner(client)
+			if(gB_stateDisabled[partner][entity])
+				return Plugin_Handled
+		}
+		else
 		{
 			int target = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 			if(0 < target <= MaxClients)
@@ -627,9 +633,6 @@ Action EntityVisibleTransmit(int entity, int client)
 					return Plugin_Handled
 			}
 		}
-		int partner = Trikz_GetClientPartner(client)
-		if(gB_stateDisabled[partner][entity])
-			return Plugin_Handled
 	}
 	return Plugin_Continue
 }
