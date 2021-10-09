@@ -2110,8 +2110,17 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 		if(!gB_haveZone[2])
 			gB_haveZone[2] = true
 		for(int i = 1; i <= MaxClients; i++)
+		{
 			if(IsClientInGame(i))
+			{
 				OnClientPutInServer(i)
+				if(!GetEntData(i, FindDataMapInfo(i, "m_iAmmo") + 12 * 4))
+				{
+					GivePlayerItem(i, "weapon_flashbang")
+					GivePlayerItem(i, "weapon_flashbang")
+				}
+			}
+		}
 	}
 }
 
