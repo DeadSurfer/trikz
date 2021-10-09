@@ -665,6 +665,8 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 {
+	if(activator > MaxClients)
+		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
