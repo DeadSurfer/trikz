@@ -680,7 +680,6 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				{
 					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-					PrintToServer("%i %i %i %i", gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]], i, gI_linkedEntitiesDefault[i][caller], gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]])
 				}
 				else
 					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
