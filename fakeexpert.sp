@@ -2114,7 +2114,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 			if(IsClientInGame(i))
 			{
 				OnClientPutInServer(i)
-				if(!GetEntData(i, FindDataMapInfo(i, "m_iAmmo") + 12 * 4))
+				if(IsPlayerAlive(i) && !GetEntData(i, FindDataMapInfo(i, "m_iAmmo") + 12 * 4))
 				{
 					GivePlayerItem(i, "weapon_flashbang")
 					GivePlayerItem(i, "weapon_flashbang")
