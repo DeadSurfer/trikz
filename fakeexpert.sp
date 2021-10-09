@@ -736,7 +736,6 @@ public void OnClientPutInServer(int client)
 				gF_velocity[client][i][j] = 0.0
 			}
 		}
-		CancelClientMenu(client)
 		gB_block[client] = true
 		//gF_Time[client] = 0.0
 		if(!gB_isDevmap)
@@ -758,6 +757,8 @@ public void OnClientPutInServer(int client)
 		GetClientCookie(client, gH_cookie[2], sValue, 16)
 		gB_pbutton[client] = view_as<bool>(StringToInt(sValue))
 	}
+	else
+		CancelClientMenu(client)
 }
 
 public void OnClientDisconnect(int client)
