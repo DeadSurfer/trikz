@@ -58,6 +58,7 @@ int gI_entityButtons[MAXPLAYERS + 1]
 native int Trikz_GetClientButtons(int client)
 bool gB_teleported[MAXPLAYERS + 1]
 Handle gH_cookie
+float gF_skyAble[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -94,7 +95,6 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_Touch, TouchClient)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
-	SDKHook(client, SDKHook_Touch, SDKSkyFix2)
 	gB_jumpstats[client] = false
 	char sValue[16]
 	GetClientCookie(client, gH_cookie, sValue, 16)
@@ -145,8 +145,9 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 		gF_preVel[client][1] = vel[1]
 		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
 		gF_dotTime[client] = GetEngineTime()
-		GetClientAbsOrigin(client, gF_skyOrigin[client])
 	}
+	GetClientAbsOrigin(client, gF_skyOrigin[client])
+	gF_skyAble[client] = GetGameTime()
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -459,12 +460,6 @@ void TouchClient(int client, int other)
 	}
 }
 
-Action SDKSkyFix2(int client, int other)
-{
-	if(0 < client <= MaxClients && !(0 < other <= MaxClients)) //0, > MaxClients
-		GetClientAbsOrigin(client, gF_skyOrigin[client])
-}
-
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("fakeexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : gI_entityButtons[other] & IN_JUMP) && GetEngineTime() - gF_boostTime[client] > 0.15)
@@ -497,7 +492,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						velNew[2] = 800.0
-				if(FloatAbs(gF_skyOrigin[client][2] - gF_skyOrigin[other][2]) > 32.0)
+				if(FloatAbs(gF_skyOrigin[client][2] - gF_skyOrigin[other][2]) > 1.5 || GetGameTime() - gF_skyAble[other] > 22.06)
 				{
 					ConVar CV_gravity = FindConVar("sv_gravity")
 					if(gB_jumpstats[client])
