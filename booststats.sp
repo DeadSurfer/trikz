@@ -64,6 +64,10 @@ public void OnClientPutInServer(int client)
 {
 	gB_boostStats[client] = false
 	gB_projectile[client] = false
+}
+
+public void OnClientCookiesCached(int client)
+{
 	char sValue[16]
 	GetClientCookie(client, gH_cookie, sValue, 16)
 	gB_boostStats[client] = view_as<bool>(StringToInt(sValue))
@@ -89,21 +93,15 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
-		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
+		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile)
 }
 
-Action SDKSpawnProjectile(int entity)
+void SDKSpawnProjectile(int entity)
 {
-	RequestFrame(frame_projectileVel, EntIndexToEntRef(entity))
-}
-
-void frame_projectileVel(int ref)
-{
-	int entity = EntRefToEntIndex(ref)
 	if(IsValidEntity(entity))
 	{
 		float vel[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		gB_projectile[client] = true
