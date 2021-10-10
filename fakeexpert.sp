@@ -2895,11 +2895,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_color[client])
 				SetEntityRenderColor(gI_pingModel[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
-			if(LibraryExists("fakeexpert-entityfilter"))
-			{
-				SDKHook(gI_pingModel[client], SDKHook_SetTransmit, SDKSetTransmitPing)
-				gI_pingModelOwner[gI_pingModel[client]] = client
-			}
 			//https://forums.alliedmods.net/showthread.php?p=1080444
 			if(gB_color[client])
 			{
@@ -2913,6 +2908,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
 			if(LibraryExists("fakeexpert-entityfilter"))
 			{
+				SDKHook(gI_pingModel[client], SDKHook_SetTransmit, SDKSetTransmitPing)
+				gI_pingModelOwner[gI_pingModel[client]] = client
 				int clients[MAXPLAYERS + 1]
 				int count
 				for(int i = 1; i <= MaxClients; i++)
