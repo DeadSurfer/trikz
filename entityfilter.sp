@@ -484,9 +484,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			if(gB_stateDisabled[0][pThisIndex])
 				gB_stateDisabled[0][pThisIndex] = false
 		}
+		DHookSetReturn(hReturn, false)
+		return MRES_Supercede
 	}
-	DHookSetReturn(hReturn, false)
-	return MRES_Supercede
+	return MRES_Ignored
 }
 
 MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
