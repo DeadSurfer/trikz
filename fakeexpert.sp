@@ -140,6 +140,7 @@ Handle gH_start
 int gI_pointsMaxs
 int gI_lastQuery
 Handle gH_cookie[4]
+float gF_skyAble[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -588,6 +589,7 @@ Action event_playerjump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	GetClientAbsOrigin(client, gF_skyOrigin[client])
+	gF_skyAble[client] = GetGameTime()
 }
 
 Action event_playerdeath(Event event, const char[] name, bool dontBroadcast)
@@ -674,7 +676,6 @@ public void OnClientPutInServer(int client)
 	{
 		SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 		SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
-		SDKHook(client, SDKHook_Touch, SDKSkyFix2)
 		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 		SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 		SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
@@ -864,17 +865,11 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						gF_skyVel[other][2] = 800.0
-				if(FloatAbs(gF_skyOrigin[client][2] - gF_skyOrigin[other][2]) > 32.0)
+				if(FloatAbs(gF_skyOrigin[client][2] - gF_skyOrigin[other][2]) > 1.5 || GetGameTime() - gF_skyAble[other] > 22.06)
 					gB_skyBoost[other] = true
 			}
 		}
 	}
-}
-
-Action SDKSkyFix2(int client, int other)
-{
-	if(0 < client <= MaxClients && !(0 < other <= MaxClients)) //0, > MaxClients
-		GetClientAbsOrigin(client, gF_skyOrigin[client])
 }
 
 void SDKBoostFix(int client)
