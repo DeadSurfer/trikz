@@ -62,7 +62,8 @@ public void OnPluginStart()
 
 public void OnClientPutInServer(int client)
 {
-	gB_boostStats[client] = false
+	if(!AreClientCookiesCached(client))
+		gB_boostStats[client] = false
 	gB_projectile[client] = false
 }
 
