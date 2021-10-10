@@ -94,6 +94,7 @@ bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
 int gI_wModelPlayerDef[5]
 int gI_pingModel[MAXPLAYERS + 1]
+int gI_pingModelOwner[2048 + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
 
 bool gB_zoneFirst[3]
@@ -114,10 +115,6 @@ bool gB_afk[MAXPLAYERS + 1]
 float gF_center[12][3]
 bool gB_DrawZone[MAXPLAYERS + 1]
 float gF_engineTime
-//int gI_vModelView
-//int gI_vModelViewDef
-//int gI_wModel
-//int gI_wModelDef
 float gF_pingTime[MAXPLAYERS + 1]
 bool gB_pingLock[MAXPLAYERS + 1]
 bool gB_msg[MAXPLAYERS + 1]
@@ -254,10 +251,6 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	//gI_vModelView = PrecacheModel("models/fakeexpert/models/weapons/v_eq_flashbang.mdl")
-	//gI_vModelViewDef = PrecacheModel("models/weapons/v_eq_flashbang.mdl")
-	//gI_wModel = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang.mdl")
-	//gI_wModelDef = PrecacheModel("models/weapons/w_eq_flashbang.mdl")
 	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl")
 	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl")
 	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl")
@@ -538,7 +531,7 @@ void frame_SayText2(DataPack dp)
 	dp.ReadString(sText, 256)
 	if(IsClientInGame(client))
 	{
-		int clients[MAXPLAYERS +1]
+		int clients[MAXPLAYERS + 1]
 		int count
 		int team = GetClientTeam(client)
 		for(int i = 1; i <= MaxClients; i++)
@@ -609,37 +602,6 @@ void output_teleport(const char[] output, int caller, int activator, float delay
 	if(0 < activator <= MaxClients)
 		gB_teleported[activator] = true
 }
-
-/*void SDKWeaponSwitchPost(int client, int weapon)
-{
-	char sWeapon[32]
-	GetEntityClassname(weapon, sWeapon, 32)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
-	{
-		int vm = GetEntPropEnt(client, Prop_Data, "m_hViewModel")
-		if(gB_color[client])
-		{
-			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelView, 2) //https://forums.alliedmods.net/showthread.php?t=181558?t=181558 https://github.com/bcserv/smlib/blob/master/scripting/include/smlib/entities.inc#L980 https://github.com/2389736818/SM-WeaponModels/blob/master/scripting/weaponmodels/entitydata.sp#L141 https://forums.alliedmods.net/showthread.php?p=2752343
-			if(gI_colorCount[client] == 1)
-				SetEntProp(vm, Prop_Data, "m_nSkin", 1)
-			if(gI_colorCount[client] > 1)	
-				SetEntProp(vm, Prop_Data, "m_nSkin", gI_colorCount[client] + 4)
-			SetEntityRenderColor(client, gI_color[client][0], gI_color[client][1], gI_color[client][2], gB_block[client] ? 255 : 125)
-		}
-		else
-		{
-			SetEntProp(vm, Prop_Data, "m_nModelIndex", gI_vModelViewDef, 2)
-			SetEntityRenderColor(client, 255, 255, 255, gB_block[client] ? 255 : 125)
-		}
-		//CreateTimer(1.0, timer_wModel, weapon, TIMER_FLAG_NO_MAPCHANGE)
-	}
-}*/
-
-/*Action timer_wModel(Handle timer, int weapon)
-{
-	SetEntProp(weapon, Prop_Data, "m_nModelIndex", gI_wModel, 2)
-	DispatchKeyValue(weapon, "skin", "2")
-}*/
 
 Action cmd_checkpoint(int client, int args)
 {
@@ -716,7 +678,6 @@ public void OnClientPutInServer(int client)
 		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 		SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
 		SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-		//SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitchPost)
 		if(IsClientInGame(client) && gB_passDB)
 		{
 			gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High)
@@ -2934,6 +2895,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(gB_color[client])
 				SetEntityRenderColor(gI_pingModel[client], gI_color[client][0], gI_color[client][1], gI_color[client][2], 255)
 			TeleportEntity(gI_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
+			if(LibraryExists("fakeexpert-entityfilter"))
+			{
+				SDKHook(gI_pingModel[client], SDKHook_SetTransmit, SDKSetTransmitPing)
+				gI_pingModelOwner[gI_pingModel[client]] = client
+			}
 			//https://forums.alliedmods.net/showthread.php?p=1080444
 			if(gB_color[client])
 			{
@@ -2945,8 +2911,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 			else
 				TE_SetupBeamPoints(start, end, gI_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
-			TE_SendToAll()
-			EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
+			if(LibraryExists("fakeexpert-entityfilter"))
+			{
+				int clients[MAXPLAYERS + 1]
+				int count
+				for(int i = 1; i <= MaxClients; i++)
+					if(IsClientInGame(i))
+						if(gI_partner[client] == gI_partner[gI_partner[i]] || i == client)
+							clients[count++] = i
+				TE_Send(clients, count)
+				EmitSound(clients, count, "fakeexpert/pingtool/click.wav", client)
+			}
+			else
+			{
+				TE_SendToAll()
+				EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
+			}
 			gH_timerPing[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
@@ -2977,8 +2957,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(0 < observerTarget <= MaxClients && gI_partner[observerTarget] && IsPlayerAlive(gI_partner[observerTarget]) && observerMode < 7)
 			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", gI_partner[observerTarget])
 	}
-	//if(IsPlayerAlive(client))
-	//	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_nModelIndex"))
 	if(GetEngineTime() - gF_hudTime[client] >= 0.1)
 	{
 		gF_hudTime[client] = GetEngineTime()
@@ -3532,24 +3510,19 @@ void SDKWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-
 		GivePlayerItem(client, "weapon_flashbang")
 		GivePlayerItem(client, "weapon_flashbang")
 	}
-	/*char sWeapon[32]
-	GetEntityClassname(weapon, sWeapon, 32)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
-	{
-		int index
-		while((index = FindEntityByClassname(index, "weapon_flashbang")) > 0)
-		{
-			SetEntProp(index, Prop_Data, "m_nModelIndex", gI_wModel, 2)
-			DispatchKeyValue(index, "skin", "2")
-			PrintToServer("%i %i", weapon, index)
-		}
-	}*/
 }
 
 Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
+}
+
+Action SDKSetTransmitPing(int entity, int client)
+{
+	if(IsPlayerAlive(client) && gI_pingModelOwner[entity] != client && gI_partner[gI_pingModelOwner[entity]] != gI_partner[gI_partner[client]])
+		return Plugin_Handled
+	return Plugin_Continue
 }
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
