@@ -85,17 +85,15 @@ public void OnPluginStart()
 	}
 }
 
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
-{
-	MarkNativeAsOptional("Trikz_GetClientButtons")
-	return APLRes_Success
-}
-
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_Touch, TouchClient)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
 	gB_jumpstats[client] = false
+}
+
+public void OnClientCookiesCached(int client)
+{
 	char sValue[16]
 	GetClientCookie(client, gH_cookie, sValue, 16)
 	gB_jumpstats[client] = view_as<bool>(StringToInt(sValue))
