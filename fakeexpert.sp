@@ -723,7 +723,7 @@ public void OnClientCookiesCached(int client)
 	gB_mlstats[client] = view_as<bool>(StringToInt(sValue))
 	GetClientCookie(client, gH_cookie[2], sValue, 16)
 	gB_button[client] = view_as<bool>(StringToInt(sValue))
-	GetClientCookie(client, gH_cookie[2], sValue, 16)
+	GetClientCookie(client, gH_cookie[3], sValue, 16)
 	gB_pbutton[client] = view_as<bool>(StringToInt(sValue))
 }
 
