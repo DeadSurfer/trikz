@@ -703,10 +703,13 @@ public void OnClientPutInServer(int client)
 		if(!gB_isDevmap)
 			DrawZone(client, 0.0)
 		gB_msg[client] = true
-		gB_hudVel[client] = false
-		gB_mlstats[client] = false
-		gB_button[client] = false
-		gB_pbutton[client] = false
+		if(!AreClientCookiesCached(client))
+		{
+			gB_hudVel[client] = false
+			gB_mlstats[client] = false
+			gB_button[client] = false
+			gB_pbutton[client] = false
+		}
 		ResetFactory(client)
 		gI_points[client] = 0
 	}
