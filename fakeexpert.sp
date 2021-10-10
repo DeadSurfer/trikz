@@ -709,18 +709,22 @@ public void OnClientPutInServer(int client)
 		gB_pbutton[client] = false
 		ResetFactory(client)
 		gI_points[client] = 0
-		char sValue[16]
-		GetClientCookie(client, gH_cookie[0], sValue, 16)
-		gB_hudVel[client] = view_as<bool>(StringToInt(sValue))
-		GetClientCookie(client, gH_cookie[1], sValue, 16)
-		gB_mlstats[client] = view_as<bool>(StringToInt(sValue))
-		GetClientCookie(client, gH_cookie[2], sValue, 16)
-		gB_button[client] = view_as<bool>(StringToInt(sValue))
-		GetClientCookie(client, gH_cookie[2], sValue, 16)
-		gB_pbutton[client] = view_as<bool>(StringToInt(sValue))
 	}
 	else
 		CancelClientMenu(client)
+}
+
+public void OnClientCookiesCached(int client)
+{
+	char sValue[16]
+	GetClientCookie(client, gH_cookie[0], sValue, 16)
+	gB_hudVel[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, gH_cookie[1], sValue, 16)
+	gB_mlstats[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, gH_cookie[2], sValue, 16)
+	gB_button[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, gH_cookie[2], sValue, 16)
+	gB_pbutton[client] = view_as<bool>(StringToInt(sValue))
 }
 
 public void OnClientDisconnect(int client)
