@@ -89,7 +89,8 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_Touch, TouchClient)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
-	gB_jumpstats[client] = false
+	if(!AreClientCookiesCached(client))
+		gB_jumpstats[client] = false
 }
 
 public void OnClientCookiesCached(int client)
