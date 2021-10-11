@@ -165,12 +165,17 @@ Action timer_finalMSG(Handle timer, int client)
 	gF_projectileVel[client] = 0.0
 }
 
-Action SDKStartTouch(int client, int other)
+Action SDKStartTouch(int entity, int other)
 {
-	if(0 < client <= MaxClients && !gF_projectileVel[client])
+	if(0 < other <= MaxClients && !gF_projectileVel[other])
 	{
-		float vel[3]
-		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vel)
-		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+		char sClassname[32]
+		GetEntityClassname(entity, sClassname, 32)
+		if(StrEqual(sClassname, "flashbang_projectile"))
+		{
+			float vel[3]
+			GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
+			gF_projectileVel[other] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+		}
 	}
 }
