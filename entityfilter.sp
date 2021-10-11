@@ -494,6 +494,8 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
+	if(!StrEqual(sInput, "Lock") || !StrEqual(sInput, "Unlock"))
+		return MRES_Ignored
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
@@ -528,8 +530,6 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 			gI_linkedEntities[0][pThis]--
 		}
 	}
-	else
-		return MRES_Ignored
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }
@@ -538,6 +538,8 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
+	if(!StrEqual(sInput, "Add") && !StrEqual(sInput, "Subtract") && !StrEqual(sInput, "SetValue") && !StrEqual(sInput, "SetValueNoFire"))
+		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
 	char sValue[64]
@@ -582,7 +584,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			}
 		}
 	}
-	else if(StrEqual(sInput, "SetValue") || StrEqual(sInput, "SetValueNoFire"))
+	else
 	{
 		gF_mathValue[activator][pThisIndex] = flValue
 		gF_mathValue[partner][pThisIndex] = flValue
@@ -597,8 +599,6 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			gF_mathValue[partner][pThisIndex] = gF_mathMax[pThisIndex]
 		}
 	}
-	else
-		return MRES_Ignored
 	DHookSetReturn(hReturn, false)
 	return MRES_Supercede
 }
