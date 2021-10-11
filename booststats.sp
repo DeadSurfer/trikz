@@ -65,6 +65,7 @@ public void OnClientPutInServer(int client)
 	if(!AreClientCookiesCached(client))
 		gB_boostStats[client] = false
 	gB_projectile[client] = false
+	SDKHook(client, SDKHook_StartTouch, SDKStartTouch)
 }
 
 public void OnClientCookiesCached(int client)
@@ -94,15 +95,20 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
-		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile)
+		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
 }
 
-void SDKSpawnProjectile(int entity)
+Action SDKSpawnProjectile(int entity)
+{
+	RequestFrame(frame_projectileVel, entity)
+}
+
+void frame_projectileVel(int entity)
 {
 	if(IsValidEntity(entity))
 	{
 		float vel[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
+		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		gB_projectile[client] = true
@@ -156,4 +162,15 @@ Action timer_finalMSG(Handle timer, int client)
 		}
 	}
 	gB_projectile[client] = false
+	gF_projectileVel[client] = 0.0
+}
+
+Action SDKStartTouch(int client, int other)
+{
+	if(0 < client <= MaxClients && !gF_projectileVel[client])
+	{
+		float vel[3]
+		GetEntPropVector(other, Prop_Data, "m_vecVelocity", vel)
+		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+	}
 }
