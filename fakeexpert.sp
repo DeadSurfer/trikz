@@ -491,15 +491,15 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 		Format(sPoints, 32, "\x08%08X%.0fM\x01", color, float(gI_points[client]) / 1000000.0)*/
 	int precentage = RoundToFloor(float(gI_points[client]) / float(gI_pointsMaxs) * 100.0)
 	char sColor[8]
-	if(precentage >= 50)
+	if(precentage >= 90)
 		Format(sColor, 8, "ff8000")
-	else if(precentage >= 33)
+	else if(precentage >= 70)
 		Format(sColor, 8, "a335ee")
-	else if(precentage >= 25)
+	else if(precentage >= 55)
 		Format(sColor, 8, "0070dd")
-	else if(precentage >= 20)
+	else if(precentage >= 40)
 		Format(sColor, 8, "1eff00")
-	else if(precentage >= 16)
+	else if(precentage >= 15)
 		Format(sColor, 8, "ffffff")
 	else if(precentage >= 0)
 		Format(sColor, 8, "9d9d9d") //https://wowpedia.fandom.com/wiki/Quality
