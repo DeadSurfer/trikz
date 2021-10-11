@@ -137,7 +137,7 @@ int gI_entityButtons[MAXPLAYERS + 1]
 bool gB_teleported[MAXPLAYERS + 1]
 int gI_points[MAXPLAYERS + 1]
 Handle gH_start
-int gI_pointsMaxs
+int gI_pointsMaxs = 1
 int gI_lastQuery
 Handle gH_cookie[4]
 float gF_skyAble[MAXPLAYERS + 1]
@@ -472,7 +472,7 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	Format(sMsgFormated, 32, "%s", sMsg)
 	char sPoints[32]
 	//https://www.skillsyouneed.com/num/percent-change.html
-	int increase = RoundToFloor((float(gI_points[client]) - float(gI_pointsMaxs)) / float(gI_pointsMaxs) * 255.0)
+	/*int increase = RoundToFloor((float(gI_points[client]) - float(gI_pointsMaxs)) / float(gI_pointsMaxs) * 255.0)
 	if(!increase)
 		increase = 255
 	else if(increase < 0)
@@ -488,7 +488,27 @@ Action um_saytext2(UserMsg msg_id, BfRead msg, const int[] players, int playersN
 	else if(gI_points[client] > 999)
 		Format(sPoints, 32, "\x08%08X%.0fK\x01", color, float(gI_points[client]) / 1000.0)
 	else if(gI_points[client] > 999999)
-		Format(sPoints, 32, "\x08%08X%.0fM\x01", color, float(gI_points[client]) / 1000000.0)
+		Format(sPoints, 32, "\x08%08X%.0fM\x01", color, float(gI_points[client]) / 1000000.0)*/
+	int precentage = RoundToFloor(float(gI_points[client]) / float(gI_pointsMaxs) * 100.0)
+	char sColor[8]
+	if(precentage >= 50)
+		Format(sColor, 8, "ff8000")
+	else if(precentage >= 33)
+		Format(sColor, 8, "a335ee")
+	else if(precentage >= 25)
+		Format(sColor, 8, "0070dd")
+	else if(precentage >= 20)
+		Format(sColor, 8, "1eff00")
+	else if(precentage >= 16)
+		Format(sColor, 8, "ffffff")
+	else if(precentage >= 0)
+		Format(sColor, 8, "9d9d9d") //https://wowpedia.fandom.com/wiki/Quality
+	if(gI_points[client] < 1000)
+		Format(sPoints, 32, "\x07%s%i\x01", sColor, gI_points[client])
+	else if(gI_points[client] > 999)
+		Format(sPoints, 32, "\x07%s%.0fK\x01", sColor, float(gI_points[client]) / 1000.0)
+	else if(gI_points[client] > 999999)
+		Format(sPoints, 32, "\x07%s%.0fM\x01", sColor, float(gI_points[client]) / 1000000.0)
 	if(StrEqual(sMsg, "Cstrike_Chat_AllSpec"))
 		Format(sText, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", sPoints, sName, sText) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(sMsg, "Cstrike_Chat_Spec"))
