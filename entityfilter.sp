@@ -116,7 +116,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_load(Handle timer)
 {
-	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter", "logic_relay"}
+	char sClassname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
 	gI_entityTotalCount = 0
 	gI_mathTotalCount = 0
 	for(int i = 1; i <= 2048; i++)
@@ -161,8 +161,6 @@ Action timer_load(Handle timer)
 				EntityLinked(entity, "m_OnHitMin")
 				EntityLinked(entity, "m_OnHitMax")
 			}
-			else if(i == 7)
-				EntityLinked(entity, "m_OnTrigger")
 		}
 	}
 	char sTriggers[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"}
@@ -182,7 +180,7 @@ void EntityLinked(int entity, char[] output)
 		GetOutputActionTargetInput(entity, output, i, sInput, 32)
 		char sTarget[64]
 		GetOutputActionTarget(entity, output, i, sTarget, 64)
-		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break") || StrEqual(sInput, "Trigger") || StrEqual(sInput, "CancelPending") || StrEqual(sInput, "ForceSpawn"))
+		if(StrEqual(sInput, "Enable") || StrEqual(sInput, "Disable") || StrEqual(sInput, "Toggle") || StrEqual(sInput, "Break"))
 		{
 			char sClassname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable"}
 			for(int j = 0; j < sizeof(sClassname); j++)
