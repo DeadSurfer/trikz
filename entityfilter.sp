@@ -397,7 +397,6 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	PrintToServer("%s", sInput)
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
