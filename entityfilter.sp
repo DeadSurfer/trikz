@@ -234,11 +234,11 @@ int FindLinkedEntity(int entity, char[] classname, char[] target, int parent = 0
 	char sName[64]
 	while((entity = FindEntityByClassname(entity, classname)) != INVALID_ENT_REFERENCE)
 	{
-		if(StrEqual(target, "!self") && entity == parent)
+		if(StrEqual(target, "!self", false) && entity == parent)
 			return entity
 		if(!GetEntPropString(entity, Prop_Data, "m_iName", sName, 64))
 			continue
-		if(StrEqual(target, sName))
+		if(StrEqual(target, sName, false))
 			return entity
 	}
 	return INVALID_ENT_REFERENCE
@@ -292,7 +292,7 @@ void OutputInput(int entity, char[] output, char[] target = "")
 			{
 				Format(sName, 64, "m_iszTemplateEntityNames[%i]", j)
 				GetEntPropString(template, Prop_Data, sName, sName, 64)
-				if(StrEqual(target, sName))
+				if(StrEqual(target, sName, false))
 				{
 					gI_breakID[gI_entityTotalCount] = template
 					DHookEntity(gH_AcceptInput, false, template)
