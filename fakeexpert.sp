@@ -141,6 +141,7 @@ int gI_pointsMaxs = 1
 int gI_lastQuery
 Handle gH_cookie[4]
 float gF_skyAble[MAXPLAYERS + 1]
+native bool Trikz_GetEntityFilter(int client, int entity)
 
 public Plugin myinfo =
 {
@@ -3024,7 +3025,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
 {
-	return entity > MaxClients
+	if(LibraryExists("fakeexpert-entityfilter"))
+		return entity > MaxClients && !Trikz_GetEntityFilter(data, entity)
+	else
+		return entity > MaxClients
 }
 
 Action timer_removePing(Handle timer, int client)
