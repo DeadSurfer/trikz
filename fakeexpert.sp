@@ -1231,7 +1231,7 @@ void Color(int client, bool customSkin, int color = -1)
 			SetEntProp(gI_partner[client], Prop_Data, "m_nModelIndex", gI_wModelPlayer[gI_class[client]])
 			DispatchKeyValue(client, "skin", "2")
 			DispatchKeyValue(gI_partner[client], "skin", "2")
-			char gS_colorExploded[3][3]
+			char gS_colorExploded[3][16]
 			if(gI_colorCount[client] == 9)
 			{
 				gI_colorCount[client] = 0
@@ -1242,7 +1242,7 @@ void Color(int client, bool customSkin, int color = -1)
 				gI_colorCount[client] = color
 				gI_colorCount[gI_partner[client]] = color
 			}
-			ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 16, 16)
+			ExplodeString(gS_color[gI_colorCount[client]], ",", gS_colorExploded, 3, 16)
 			for(int i = 0; i <= 2; i++)
 			{
 				gI_color[client][i] = StringToInt(gS_colorExploded[i])
