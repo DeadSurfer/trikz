@@ -3023,10 +3023,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }
 
-bool TraceEntityFilterPlayer(int entity, int contentMask, any data)
+bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 {
 	if(LibraryExists("fakeexpert-entityfilter"))
-		return entity > MaxClients && !Trikz_GetEntityFilter(data, entity)
+		return entity > MaxClients && !Trikz_GetEntityFilter(client, entity)
 	else
 		return entity > MaxClients
 }
