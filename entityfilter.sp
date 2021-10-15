@@ -111,7 +111,7 @@ public void OnClientPutInServer(int client)
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	CreateTimer(2.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE) //Make work logic_auto on delay.
+	CreateTimer(1.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE) //Make work logic_auto on delay.
 }
 
 Action timer_load(Handle timer)
