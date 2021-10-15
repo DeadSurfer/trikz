@@ -1303,7 +1303,7 @@ void Restart(int client)
 			{
 				if(IsPlayerAlive(client) && IsPlayerAlive(gI_partner[client]))
 				{
-					ResetFactory(client)
+					CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE)
 					Call_StartForward(gH_start)
 					Call_PushCell(client)
 					Call_Finish()
@@ -1328,6 +1328,12 @@ void Restart(int client)
 				PrintToChat(client, "You must have a partner.")
 		}
 	}
+}
+
+Action timer_resetfactory(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+		ResetFactory(client)
 }
 
 Action Timer_BlockToggle(Handle timer, int client)
@@ -1376,8 +1382,8 @@ void createstart()
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins)
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
-	SDKHook(entity, SDKHook_StartTouchPost, SDKStartTouchPost) //sometimes it fire by Restart function. Post make sens.
-	SDKHook(entity, SDKHook_EndTouchPost, SDKEndTouchPost) //run timer, go to the start zone, type r. post fix this.
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
+	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
 	PrintToServer("Start zone is successfuly setup.")
 	gB_haveZone[0] = true
 }
@@ -1410,7 +1416,7 @@ void createend()
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouchPost) //connect with post callback. make fire fast is posible.
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("End zone is successfuly setup.")
 	CPSetup(0)
 	gB_haveZone[1] = true
@@ -2138,7 +2144,7 @@ void createcp(int cpnum)
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins) //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs)
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouchPost)
+	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum)
 }
 
@@ -2162,7 +2168,7 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	PrintToServer("Successfuly created records table.")
 }
 
-void SDKEndTouchPost(int entity, int other)
+Action SDKEndTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && gB_readyToStart[other] && gI_partner[other])
 	{
@@ -2186,7 +2192,7 @@ void SDKEndTouchPost(int entity, int other)
 	}
 }
 
-void SDKStartTouchPost(int entity, int other)
+Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && !gB_isDevmap)
 	{
