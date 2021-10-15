@@ -104,6 +104,12 @@ public void OnPluginStart()
 	RegPluginLibrary("fakeexpert-entityfilter")
 }
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	CreateNative("Trikz_GetEntityFilter", Native_GetEntityFilter)
+	return APLRes_Success
+}
+
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SetTransmit, TransmitPlayer)
@@ -821,4 +827,12 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 			return Plugin_Handled
 	}
 	return Plugin_Continue
+}
+
+public int Native_GetEntityFilter(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1)
+	int entity = GetNativeCell(2)
+	int partner = Trikz_GetClientPartner(client)
+	return gB_stateDisabled[partner][entity]
 }
