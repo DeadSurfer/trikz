@@ -829,7 +829,7 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	return Plugin_Continue
 }
 
-public int Native_GetEntityFilter(Handle plugin, int numParams)
+int Native_GetEntityFilter(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1)
 	int entity = GetNativeCell(2)
