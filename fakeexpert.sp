@@ -60,6 +60,7 @@ float gF_ServerRecord
 
 ConVar gCV_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 ConVar gCV_topURL
+ConVar gCV_allowJoystick
 
 bool gB_MenuIsOpen[MAXPLAYERS + 1]
 
@@ -154,8 +155,9 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	gCV_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
-	gCV_topURL = CreateConVar("topurl", "", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top")
+	gCV_steamid = CreateConVar("steamid", "120192594", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
+	gCV_topURL = CreateConVar("topurl", "http://www.fakeexpert.tk/?start=0&map=", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top")
+	gCV_allowJoystick = CreateConVar("allowjoystick", "1", "Allow using +left && +right")
 	AutoExecConfig(true) //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 	RegConsoleCmd("sm_t", cmd_trikz)
 	RegConsoleCmd("sm_trikz", cmd_trikz)
@@ -2816,8 +2818,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	gI_entityButtons[client] = buttons
 	if(buttons & IN_JUMP && IsPlayerAlive(client) && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
-	//if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
-	//	KickClient(client, "Don't use joystick") //https://sm.alliedmods.net/new-api/clients/KickClient
+	if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
+		if (!GetConVarBool(gCV_allowJoystick))
+			KickClient(client, "Don't use joystick") //https://sm.alliedmods.net/new-api/clients/KickClient
 	//Timer
 	if(gB_state[client] && gI_partner[client])
 	{
