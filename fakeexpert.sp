@@ -214,6 +214,7 @@ public void OnPluginStart()
 	gH_cookie[1] = RegClientCookie("mls", "mega long stats", CookieAccess_Protected)
 	gH_cookie[2] = RegClientCookie("button", "button", CookieAccess_Protected)
 	gH_cookie[3] = RegClientCookie("pbutton", "partner button", CookieAccess_Protected)
+	CreateTimer(60.0, timer_clearlag)
 }
 
 public void OnMapStart()
@@ -3654,4 +3655,9 @@ int Native_GetClientPartner(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1)
 	return gI_partner[client]
+}
+
+Action timer_clearlag(Handle timer)
+{
+	ServerCommand("mat_texture_list_txlod_sync reset")
 }
