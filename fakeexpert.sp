@@ -1032,33 +1032,27 @@ void Partner(int client)
 				Menu menu = new Menu(partner_handler)
 				menu.SetTitle("Choose partner")
 				char sName[MAX_NAME_LENGTH]
-				int noPlayers
+				bool noPlayers = true
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) && !IsFakeClient(i)) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
 					{
 						if(IsPlayerAlive(i))
 						{
-							if(gI_partner[i])
-								noPlayers = 2
-							else
-								noPlayers = 1
 							if(client != i && !gI_partner[i])
 							{
 								GetClientName(i, sName, MAX_NAME_LENGTH)
 								char sNameID[32]
 								IntToString(i, sNameID, 32)
 								menu.AddItem(sNameID, sName)
-								noPlayers = 0
+								noPlayers = false
 							}
 						}
 					}
 				}
 				switch(noPlayers)
 				{
-					case 1:
-						PrintToChat(client, "No alive, free player.")
-					case 2:
+					case true:
 						PrintToChat(client, "No free player.")
 				}
 				menu.Display(client, 20)
