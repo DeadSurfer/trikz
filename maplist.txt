@@ -8,6 +8,7 @@ trikz_autist
 trikz_blue
 trikz_brink
 trikz_cool
+trikz_cosmos_fix
 trikz_cyrus
 trikz_daemon
 trikz_Desert_b7
@@ -21,12 +22,15 @@ trikz_forfun
 trikz_go
 trikz_greg
 trikz_hammer
+trikz_inspaire
+trikz_kart
 trikz_krepix
 trikz_kyoto_final
 trikz_learn
 trikz_learn_hard
 trikz_legends_b1
 trikz_measuregeneric
+trikz_measuregeneric2
 trikz_minecraft
 trikz_MoscowDno
 trikz_move
@@ -34,6 +38,7 @@ trikz_noxious
 trikz_overdriver
 trikz_p
 trikz_penguin
+trikz_pharaohs_tomb
 trikz_proud
 trikz_RandomRaider
 trikz_reality
@@ -44,6 +49,8 @@ trikz_short
 trikz_shutthefuckup
 trikz_skyway_fixed
 trikz_soft
+trikz_source
+trikz_stolen_final
 trikz_sun
 trikz_tanyaisawhore
 trikz_TinTin
