@@ -2004,7 +2004,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			else if(StrEqual(sItem, "cpupdate"))
 			{
 				Format(sQuery, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(gF_originCP[0][cpnum][0]), RoundFloat(gF_originCP[0][cpnum][1]), RoundFloat(gF_originCP[0][cpnum][2]), RoundFloat(gF_originCP[1][cpnum][0]), RoundFloat(gF_originCP[1][cpnum][1]), RoundFloat(gF_originCP[1][cpnum][2]), cpnum, gS_map)
-				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum)
+				gD_mysql.Query(SQLUpdateZone, sQuery, cpnum + 1)
 			}
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
 		}
@@ -2030,7 +2030,7 @@ void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any dat
 			PrintToServer("End zone successfuly updated.")
 		else if(!data)
 			PrintToServer("Start zone successfuly updated.")
-		if(data > 1)
+		else if(data > 1)
 			PrintToServer("CP zone nr. %i successfuly updated.", data - 1)
 	}
 }
@@ -3491,8 +3491,8 @@ Action SDKProjectile(int entity)
 		FakeClientCommand(client, "use weapon_knife")
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //thanks to alliedmodders. 2019 https://forums.alliedmods.net/archive/index.php/t-287052.html
 		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true)
 		RequestFrame(frame_blockExplosion, entity)
+		CreateTimer(GetClientAvgLatency(client, NetFlow_Both), timer_hideSwtich, client, TIMER_FLAG_NO_MAPCHANGE)
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
@@ -3501,6 +3501,12 @@ void frame_blockExplosion(int entity)
 {
 	if(IsValidEntity(entity))
 		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+}
+
+Action timer_hideSwtich(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true)
 }
 
 Action timer_deleteProjectile(Handle timer, int entity)
