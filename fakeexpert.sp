@@ -2094,15 +2094,18 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 			ZoneEditor2(client)
 		if(!gB_haveZone[2])
 			gB_haveZone[2] = true
-		for(int i = 1; i <= MaxClients; i++)
+		if(!gB_isDevmap)
 		{
-			if(IsClientInGame(i))
+			for(int i = 1; i <= MaxClients; i++)
 			{
-				OnClientPutInServer(i)
-				if(IsPlayerAlive(i) && !GetEntData(i, FindDataMapInfo(i, "m_iAmmo") + 12 * 4))
+				if(IsClientInGame(i))
 				{
-					GivePlayerItem(i, "weapon_flashbang")
-					GivePlayerItem(i, "weapon_flashbang")
+					OnClientPutInServer(i)
+					if(IsPlayerAlive(i) && !GetEntData(i, FindDataMapInfo(i, "m_iAmmo") + 12 * 4))
+					{
+						GivePlayerItem(i, "weapon_flashbang")
+						GivePlayerItem(i, "weapon_flashbang")
+					}
 				}
 			}
 		}
