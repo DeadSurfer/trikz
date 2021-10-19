@@ -694,7 +694,7 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public void OnClientPutInServer(int client)
 {
-	if(gB_haveZone[2])
+	if(gB_haveZone[2] || gB_isDevmap)
 	{
 		SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
 		SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
@@ -735,7 +735,7 @@ public void OnClientPutInServer(int client)
 		ResetFactory(client)
 		gI_points[client] = 0
 	}
-	else
+	if(!gB_haveZone[2])
 		CancelClientMenu(client)
 }
 
