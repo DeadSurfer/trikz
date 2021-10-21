@@ -55,7 +55,6 @@ float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
 float gF_mathMax[2048 + 1]
-bool gB_insideTrigger[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -613,12 +612,13 @@ Action TouchTrigger(int entity, int other)
 	if(0 < other <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(other)
-		if(gB_insideTrigger[partner][entity])
+		if(gB_stateDisabled[partner][entity])
+		{
 			AcceptEntityInput(entity, "StartTouch", other, other) //https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp#L1294
+			return Plugin_Handled
+		}
 		else
 			AcceptEntityInput(entity, "EndTouch", other, other)
-		if(gB_stateDisabled[partner][entity])
-			return Plugin_Handled
 	}
 	return Plugin_Continue
 }
@@ -680,26 +680,6 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 		int partner = Trikz_GetClientPartner(activator)
 		if(caller > 0)
 		{
-			if(partner)
-			{
-				if(StrContains(output, "OnStartTouch") != -1)
-				{
-					gB_insideTrigger[activator][caller] = true
-					gB_insideTrigger[partner][caller] = true
-				}
-				else if(StrContains(output, "OnEndTouch") != -1)
-				{
-					gB_insideTrigger[activator][caller] = false
-					gB_insideTrigger[partner][caller] = false
-				}
-			}
-			else
-			{
-				if(StrContains(output, "OnStartTouch") != -1)
-					gB_insideTrigger[partner][caller] = true
-				else if(StrContains(output, "OnEndTouch") != -1)
-					gB_insideTrigger[partner][caller] = false
-			}
 			if(gB_stateDisabled[partner][caller])
 				return Plugin_Handled
 			char sOutput[32]
