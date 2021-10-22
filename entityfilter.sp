@@ -613,12 +613,7 @@ Action TouchTrigger(int entity, int other)
 	{
 		int partner = Trikz_GetClientPartner(other)
 		if(gB_stateDisabled[partner][entity])
-		{
-			AcceptEntityInput(entity, "StartTouch", other, other) //https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp#L1294
 			return Plugin_Handled
-		}
-		else
-			AcceptEntityInput(entity, "EndTouch", other, other)
 	}
 	return Plugin_Continue
 }
