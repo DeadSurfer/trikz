@@ -64,7 +64,7 @@ ConVar gCV_topURL
 bool gB_MenuIsOpen[MAXPLAYERS + 1]
 
 int gI_boost[MAXPLAYERS + 1]
-bool gB_skyBoost[MAXPLAYERS + 1]
+int gI_skyBoost[MAXPLAYERS + 1]
 bool gB_bouncedOff[2048 + 1]
 bool gB_groundBoost[MAXPLAYERS + 1]
 int gI_flash[MAXPLAYERS + 1]
@@ -865,8 +865,9 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15 && !gB_skyBoost[other])
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && gI_entityButtons[other] & IN_JUMP && GetEngineTime() - gF_boostTime[client] > 0.15 && !gI_skyBoost[other])
 	{
+		PrintToServer("1")
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
 		float originFlyer[3]
@@ -895,7 +896,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					if(velBooster[2] > 800.0)
 						gF_skyVel[other][2] = 800.0
 				if(FloatAbs(gF_skyOrigin[client][2] - gF_skyOrigin[other][2]) > 1.5 || GetGameTime() - gF_skyAble[other] > 0.5)
-					gB_skyBoost[other] = true
+					gI_skyBoost[other] = 1
 			}
 		}
 	}
@@ -2814,8 +2815,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	gI_entityButtons[client] = buttons
 	if(buttons & IN_JUMP && IsPlayerAlive(client) && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
-	//if(buttons & IN_LEFT || buttons & IN_RIGHT)//https://sm.alliedmods.net/new-api/entity_prop_stocks/__raw Expert-Zone idea.
-	//	KickClient(client, "Don't use joystick") //https://sm.alliedmods.net/new-api/clients/KickClient
 	//Timer
 	if(gB_state[client] && gI_partner[client])
 	{
@@ -2831,10 +2830,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			ResetFactory(gI_partner[client])
 		}
 	}
-	if(gB_skyBoost[client])
+	if(gI_skyBoost[client])
 	{
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
-		gB_skyBoost[client] = false
+		if(gI_skyBoost[client] == 2)
+		{
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, gF_skyVel[client])
+			gI_skyBoost[client] = 0
+		}
+		else
+			gI_skyBoost[client] = 2
 	}
 	if(gI_boost[client])
 	{
