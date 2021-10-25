@@ -613,7 +613,12 @@ Action TouchTrigger(int entity, int other)
 	{
 		int partner = Trikz_GetClientPartner(other)
 		if(gB_stateDisabled[partner][entity])
+		{
+			AcceptEntityInput(entity, "EndTouch", other, other)
 			return Plugin_Handled
+		}
+		else
+			AcceptEntityInput(entity, "StartTouch", other, other)
 	}
 	return Plugin_Continue
 }
@@ -668,26 +673,25 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 {
-	if(activator > MaxClients)
-		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
 		if(caller > 0)
 		{
-			if(gB_stateDisabled[partner][caller])
-				return Plugin_Handled
-			char sOutput[32]
-			Format(sOutput, 32, "m_%s", output)
-			for(int i = 1; i <= gI_maxLinks[caller]; i++)
+			if(!gB_stateDisabled[partner][caller])
 			{
-				if(partner)
+				char sOutput[32]
+				Format(sOutput, 32, "m_%s", output)
+				for(int i = 1; i <= gI_maxLinks[caller]; i++)
 				{
-					gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					if(partner)
+					{
+						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+					}
+					else
+						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 				}
-				else
-					gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 			}
 		}
 		else
@@ -716,6 +720,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			}
 		}
 	}
+	else
+		return Plugin_Handled
 	return Plugin_Continue
 }
 
