@@ -55,6 +55,7 @@ float gF_mathValueDefault[2048 + 1]
 float gF_mathValue[MAXPLAYERS + 1][2048 + 1]
 float gF_mathMin[2048 + 1]
 float gF_mathMax[2048 + 1]
+bool gB_shouldntArtifacialTouch[MAXPLAYERS + 1][2048 + 1]
 
 public Plugin myinfo =
 {
@@ -144,6 +145,7 @@ Action timer_load(Handle timer)
 			gB_stateDisabled[j][i] = false
 			gI_linkedEntities[j][i] = 0
 			gF_buttonReady[j][i] = 0.0
+			gB_shouldntArtifacialTouch[j][i] = false
 		}
 	}
 	for(int i = 0; i < sizeof(sClassname); i++)
@@ -386,6 +388,7 @@ void Reset(int client)
 		gB_stateDisabled[client][gI_entityID[i]] = gB_stateDefaultDisabled[gI_entityID[i]]
 		gF_buttonReady[client][gI_entityID[i]] = 0.0
 		gI_linkedEntities[client][gI_entityID[i]] = 0
+		gB_shouldntArtifacialTouch[client][gI_entityID[i]] = false
 	}
 	for(int i = 1; i <= gI_mathTotalCount; i++)
 		gF_mathValue[client][i] = gF_mathValueDefault[i]
@@ -614,11 +617,18 @@ Action TouchTrigger(int entity, int other)
 		int partner = Trikz_GetClientPartner(other)
 		if(gB_stateDisabled[partner][entity])
 		{
-			AcceptEntityInput(entity, "EndTouch", other, other)
+			if(!gB_shouldntArtifacialTouch[partner][entity])
+			{
+				AcceptEntityInput(entity, "EndTouch", other, other)
+				gB_shouldntArtifacialTouch[partner][entity] = false
+			}
 			return Plugin_Handled
 		}
-		else
+		if(!gB_shouldntArtifacialTouch[partner][entity])
+		{
 			AcceptEntityInput(entity, "StartTouch", other, other)
+			gB_shouldntArtifacialTouch[partner][entity] = false
+		}
 	}
 	return Plugin_Continue
 }
@@ -688,9 +698,25 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+						if(StrEqual(output, "OnStartTouch"))
+						{
+							gB_shouldntArtifacialTouch[activator][caller] = true
+							gB_shouldntArtifacialTouch[partner][caller] = true
+						}
+						else if(StrEqual(output, "OnEndTouch"))
+						{
+							gB_shouldntArtifacialTouch[activator][caller] = true
+							gB_shouldntArtifacialTouch[partner][caller] = true
+						}
 					}
 					else
+					{
 						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
+						if(StrEqual(output, "OnStartTouch"))
+							gB_shouldntArtifacialTouch[partner][caller] = true
+						else if(StrEqual(output, "OnEndTouch"))
+							gB_shouldntArtifacialTouch[partner][caller] = true
+					}
 				}
 			}
 		}
