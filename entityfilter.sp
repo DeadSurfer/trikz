@@ -698,12 +698,12 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					{
 						gI_linkedEntities[activator][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
 						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-						if(StrEqual(output, "OnStartTouch"))
+						if(StrContains(output, "OnStartTouch") != -1)
 						{
 							gB_shouldntArtifacialTouch[activator][caller] = true
 							gB_shouldntArtifacialTouch[partner][caller] = true
 						}
-						else if(StrEqual(output, "OnEndTouch"))
+						else if(StrContains(output, "OnEndTouch") != -1)
 						{
 							gB_shouldntArtifacialTouch[activator][caller] = true
 							gB_shouldntArtifacialTouch[partner][caller] = true
@@ -712,9 +712,9 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					else
 					{
 						gI_linkedEntities[partner][gI_linkedEntitiesDefault[i][caller]] += gI_entityOutput[GetOutput(sOutput)][gI_linkedEntitiesDefault[i][caller]]
-						if(StrEqual(output, "OnStartTouch"))
+						if(StrContains(output, "OnStartTouch") != -1)
 							gB_shouldntArtifacialTouch[partner][caller] = true
-						else if(StrEqual(output, "OnEndTouch"))
+						else if(StrContains(output, "OnEndTouch") != -1)
 							gB_shouldntArtifacialTouch[partner][caller] = true
 					}
 				}
