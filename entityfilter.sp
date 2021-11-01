@@ -134,7 +134,6 @@ Action timer_load(Handle timer)
 		gI_mathID[i] = 0
 		gI_breakID[i] = 0
 		gB_stateDefaultDisabled[i] = false
-		gB_stateDisabled[0][i] = false
 		gI_linkedEntitiesDefault[i][i] = 0
 		gI_linkedMathEntitiesDefault[i][i] = 0
 		gF_buttonDefaultDelay[i] = 0.0
@@ -226,6 +225,24 @@ void EntityLinked(int entity, char[] output)
 			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", sTarget)) != INVALID_ENT_REFERENCE)
 			{
 				OutputInput(entityLinked, "func_button")
+				if(entity > 0)
+				{
+					gI_linkedEntitiesDefault[++gI_maxLinks[entity]][entity] = entityLinked
+					gI_entityOutput[GetOutput(output)][entityLinked] = 1
+				}
+				else
+				{
+					for(int k = 1; k <= gI_mathTotalCount; k++)
+					{
+						int math = k
+						if(gI_mathID[math] == entity)
+						{
+							gI_linkedMathEntitiesDefault[++gI_maxMathLinks[math]][math] = entityLinked
+							gI_entityOutput[GetOutput(output)][entityLinked] = 1
+							break
+						}
+					}
+				}
 				DHookEntity(gH_AcceptInput, false, entityLinked, INVALID_FUNCTION, AcceptInputButton)
 			}
 		}
@@ -339,10 +356,6 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		gF_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait")
 		gF_buttonReady[0][entity] = 0.0
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1)
-		gB_stateDefaultDisabled[entity] = false
-		gB_stateDisabled[0][entity] = false
-		if(GetEntProp(entity, Prop_Data, "m_bLocked"))
-			AcceptEntityInput(entity, "Unlock")
 	}
 	if(i < 2)
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit)
@@ -362,6 +375,8 @@ void OutputInput(int entity, char[] output, char[] target = "")
 		AcceptEntityInput(entity, "Enable")
 	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags"))
 		AcceptEntityInput(entity, "Toggle")
+	else if(i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked"))
+		AcceptEntityInput(entity, "Unlock")
 }
 
 void AddOutput(int entity, char[] output, char[] outputtype)
@@ -403,6 +418,8 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
+	if(!StrEqual(sInput, "Enable", false) && !StrEqual(sInput, "Disable", false) && !StrEqual(sInput, "Toggle", false) && !StrEqual(sInput, "Break", false) && !StrEqual(sInput, "ForceSpawn", false))
+		return MRES_Ignored
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
@@ -481,15 +498,16 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 					break
 				}
 			}
-			if(!pThisIndex)
-				return MRES_Ignored
-			if(gB_stateDisabled[activator][pThisIndex] && partner)
+			if(pThisIndex)
 			{
-				gB_stateDisabled[activator][pThisIndex] = false
-				gB_stateDisabled[partner][pThisIndex] = false
+				if(gB_stateDisabled[activator][pThisIndex] && partner)
+				{
+					gB_stateDisabled[activator][pThisIndex] = false
+					gB_stateDisabled[partner][pThisIndex] = false
+				}
+				if(gB_stateDisabled[0][pThisIndex])
+					gB_stateDisabled[0][pThisIndex] = false
 			}
-			if(gB_stateDisabled[0][pThisIndex])
-				gB_stateDisabled[0][pThisIndex] = false
 		}
 		DHookSetReturn(hReturn, false)
 		return MRES_Supercede
@@ -501,44 +519,48 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
 	char sInput[32]
 	DHookGetParamString(hParams, 1, sInput, 32)
-	if(!StrEqual(sInput, "Lock", false) || !StrEqual(sInput, "Unlock", false))
+	if(!StrEqual(sInput, "Lock", false) && !StrEqual(sInput, "Unlock", false))
 		return MRES_Ignored
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	int partner = Trikz_GetClientPartner(activator)
-	if(StrEqual(sInput, "Unlock", false))
+	if(0 < activator <= MaxClients)
 	{
-		if(gI_linkedEntities[activator][pThis] && partner)
+		int partner = Trikz_GetClientPartner(activator)
+		if(StrEqual(sInput, "Unlock", false))
 		{
-			gB_stateDisabled[activator][pThis] = false
-			gB_stateDisabled[partner][pThis] = false
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
+			if(gI_linkedEntities[activator][pThis] && partner)
+			{
+				gB_stateDisabled[activator][pThis] = false
+				gB_stateDisabled[partner][pThis] = false
+				gI_linkedEntities[activator][pThis]--
+				gI_linkedEntities[partner][pThis]--
+			}
+			if(gI_linkedEntities[0][pThis])
+			{
+				gB_stateDisabled[0][pThis] = false
+				gI_linkedEntities[0][pThis]--
+			}
 		}
-		if(gI_linkedEntities[0][pThis])
+		else if(StrEqual(sInput, "Lock", false))
 		{
-			gB_stateDisabled[0][pThis] = false
-			gI_linkedEntities[0][pThis]--
+			if(gI_linkedEntities[activator][pThis] && partner)
+			{
+				gB_stateDisabled[activator][pThis] = true
+				gB_stateDisabled[partner][pThis] = true
+				gI_linkedEntities[activator][pThis]--
+				gI_linkedEntities[partner][pThis]--
+			}
+			if(gI_linkedEntities[0][pThis])
+			{
+				gB_stateDisabled[0][pThis] = true
+				gI_linkedEntities[0][pThis]--
+			}
 		}
+		DHookSetReturn(hReturn, false)
+		return MRES_Supercede
 	}
-	else if(StrEqual(sInput, "Lock", false))
-	{
-		if(gI_linkedEntities[activator][pThis] && partner)
-		{
-			gB_stateDisabled[activator][pThis] = true
-			gB_stateDisabled[partner][pThis] = true
-			gI_linkedEntities[activator][pThis]--
-			gI_linkedEntities[partner][pThis]--
-		}
-		if(gI_linkedEntities[0][pThis])
-		{
-			gB_stateDisabled[0][pThis] = true
-			gI_linkedEntities[0][pThis]--
-		}
-	}
-	DHookSetReturn(hReturn, false)
-	return MRES_Supercede
+	return MRES_Ignored
 }
 
 MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
@@ -683,6 +705,8 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 {
+	if(activator > MaxClients)
+		return Plugin_Handled
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
@@ -746,8 +770,6 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 			}
 		}
 	}
-	else
-		return Plugin_Handled
 	return Plugin_Continue
 }
 
