@@ -433,6 +433,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
 	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
+	MarkNativeAsOptional("Trikz_GetEntityFilter")
 	return APLRes_Success
 }
 
