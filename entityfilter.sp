@@ -743,6 +743,9 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 					}
 				}
 			}
+			else
+				if(gB_shouldntArtifacialTouch[partner][caller])
+					return Plugin_Continue
 		}
 		else
 		{
