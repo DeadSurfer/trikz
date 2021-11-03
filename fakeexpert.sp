@@ -695,47 +695,44 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public void OnClientPutInServer(int client)
 {
-	if(gB_haveZone[2] || gB_isDevmap)
+	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
+	SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
+	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
+	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
+	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
+	if(IsClientInGame(client) && gB_passDB)
 	{
-		SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage)
-		SDKHook(client, SDKHook_StartTouch, SDKSkyFix)
-		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
-		SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquipPost)
-		SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
-		if(IsClientInGame(client) && gB_passDB)
-		{
-			gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High)
-			char sQuery[512]
-			int steamid = GetSteamAccountID(client)
-			Format(sQuery, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, gS_map)
-			gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
-		}
-		gB_MenuIsOpen[client] = false
-		for(int i = 0; i <= 1; i++)
-		{
-			gB_toggledCheckpoint[client][i] = false
-			for(int j = 0; j <= 2; j++)
-			{
-				gF_origin[client][i][j] = 0.0
-				gF_eyeAngles[client][i][j] = 0.0
-				gF_velocity[client][i][j] = 0.0
-			}
-		}
-		gB_block[client] = true
-		//gF_Time[client] = 0.0
-		if(!gB_isDevmap)
-			DrawZone(client, 0.0)
-		gB_msg[client] = true
-		if(!AreClientCookiesCached(client))
-		{
-			gB_hudVel[client] = false
-			gB_mlstats[client] = false
-			gB_button[client] = false
-			gB_pbutton[client] = false
-		}
-		ResetFactory(client)
-		gI_points[client] = 0
+		gD_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High)
+		char sQuery[512]
+		int steamid = GetSteamAccountID(client)
+		Format(sQuery, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, gS_map)
+		gD_mysql.Query(SQLGetPersonalRecord, sQuery, GetClientSerial(client))
 	}
+	gB_MenuIsOpen[client] = false
+	for(int i = 0; i <= 1; i++)
+	{
+		gB_toggledCheckpoint[client][i] = false
+		for(int j = 0; j <= 2; j++)
+		{
+			gF_origin[client][i][j] = 0.0
+			gF_eyeAngles[client][i][j] = 0.0
+			gF_velocity[client][i][j] = 0.0
+		}
+	}
+	gB_block[client] = true
+	//gF_Time[client] = 0.0
+	if(!gB_isDevmap)
+		DrawZone(client, 0.0)
+	gB_msg[client] = true
+	if(!AreClientCookiesCached(client))
+	{
+		gB_hudVel[client] = false
+		gB_mlstats[client] = false
+		gB_button[client] = false
+		gB_pbutton[client] = false
+	}
+	ResetFactory(client)
+	gI_points[client] = 0
 	if(!gB_haveZone[2])
 		CancelClientMenu(client)
 }
@@ -2097,20 +2094,9 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 		if(!gB_haveZone[2])
 			gB_haveZone[2] = true
 		if(!gB_isDevmap)
-		{
 			for(int i = 1; i <= MaxClients; i++)
-			{
 				if(IsClientInGame(i))
-				{
 					OnClientPutInServer(i)
-					if(IsPlayerAlive(i) && !GetEntData(i, FindDataMapInfo(i, "m_iAmmo") + 12 * 4))
-					{
-						GivePlayerItem(i, "weapon_flashbang")
-						GivePlayerItem(i, "weapon_flashbang")
-					}
-				}
-			}
-		}
 	}
 }
 
