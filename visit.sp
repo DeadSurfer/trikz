@@ -39,16 +39,16 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("player_connect", connect)
+	HookEvent("player_connect_client", connect, EventHookMode_Pre)
 	HookEvent("player_disconnect", disconnect, EventHookMode_Pre)
 	HookEvent("player_team", teamjoin, EventHookMode_Pre)
 }
 
 Action connect(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(client > 0)
-		PrintToChatAll("Player %N has joined the game", client)
+	char sName[MAX_NAME_LENGTH]
+	event.GetString("name", sName, MAX_NAME_LENGTH)
+	PrintToChatAll("Player %s has joined the game", sName)
 	SetEventBroadcast(event, true)
 }
 
