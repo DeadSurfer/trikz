@@ -246,42 +246,48 @@ void LoadRecord()
 	cvForce.SetInt(1)
 	char sFile[PLATFORM_MAX_PATH]
 	BuildPath(Path_SM, sFile, PLATFORM_MAX_PATH, "data/fakeexpert/%s.replay", gS_map)
-	File f = OpenFile(sFile, "rb")
-	int frameCount
-	int time
-	f.ReadInt32(frameCount)
-	f.ReadInt32(gI_steam3[0])
-	f.ReadInt32(time)
-	gI_tick[1] = frameCount
-	any aData[sizeof(eFrame)]
-	delete gA_frameCache[0]
-	gA_frameCache[0] = new ArrayList(sizeof(eFrame), frameCount)
-	for(int i = 0; i < frameCount; i++)
+	if(FileExists(sFile))
 	{
-			if(f.Read(aData, sizeof(eFrame), 4) >= 0)
-				gA_frameCache[0].SetArray(i, aData, sizeof(eFrame))
+		File f = OpenFile(sFile, "rb")
+		int frameCount
+		int time
+		f.ReadInt32(frameCount)
+		f.ReadInt32(gI_steam3[0])
+		f.ReadInt32(time)
+		gI_tick[1] = frameCount
+		any aData[sizeof(eFrame)]
+		delete gA_frameCache[0]
+		gA_frameCache[0] = new ArrayList(sizeof(eFrame), frameCount)
+		for(int i = 0; i < frameCount; i++)
+		{
+				if(f.Read(aData, sizeof(eFrame), 4) >= 0)
+					gA_frameCache[0].SetArray(i, aData, sizeof(eFrame))
+		}
+		delete f
+		char sQuery[512]
+		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
+		gD_database.Query(SQLGetName, sQuery, 0)
 	}
-	delete f
-	char sQuery[512]
-	Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
-	gD_database.Query(SQLGetName, sQuery, 0)
 	BuildPath(Path_SM, sFile, PLATFORM_MAX_PATH, "data/fakeexpert/%s_replay.replay", gS_map)
-	f = OpenFile(sFile, "rb")
-	f.ReadInt32(frameCount)
-	f.ReadInt32(gI_steam3[1])
-	f.ReadInt32(time)
-	gI_tick[1] = frameCount
-	delete gA_frameCache[1]
-	gA_frameCache[1] = new ArrayList(sizeof(eFrame), frameCount)
-	for(int i = 0; i < frameCount; i++)
+	if(FileExists(sFile))
 	{
-			if(f.Read(aData, sizeof(eFrame), 4) >= 0)
-				gA_frameCache[1].SetArray(i, aData, sizeof(eFrame))
+		f = OpenFile(sFile, "rb")
+		f.ReadInt32(frameCount)
+		f.ReadInt32(gI_steam3[1])
+		f.ReadInt32(time)
+		gI_tick[1] = frameCount
+		delete gA_frameCache[1]
+		gA_frameCache[1] = new ArrayList(sizeof(eFrame), frameCount)
+		for(int i = 0; i < frameCount; i++)
+		{
+				if(f.Read(aData, sizeof(eFrame), 4) >= 0)
+					gA_frameCache[1].SetArray(i, aData, sizeof(eFrame))
+		}
+		delete f
+		gI_tick[0] = 0
+		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
+		gD_database.Query(SQLGetName, sQuery, 1)
 	}
-	delete f
-	gI_tick[0] = 0
-	Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
-	gD_database.Query(SQLGetName, sQuery, 1)
 }
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
