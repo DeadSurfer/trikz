@@ -271,11 +271,14 @@ void LoadRecord()
 	BuildPath(Path_SM, sFile, PLATFORM_MAX_PATH, "data/fakeexpert/%s_replay.replay", gS_map)
 	if(FileExists(sFile))
 	{
-		f = OpenFile(sFile, "rb")
+		File f = OpenFile(sFile, "rb")
+		int frameCount
+		int time
 		f.ReadInt32(frameCount)
 		f.ReadInt32(gI_steam3[1])
 		f.ReadInt32(time)
 		gI_tick[1] = frameCount
+		any aData[sizeof(eFrame)]
 		delete gA_frameCache[1]
 		gA_frameCache[1] = new ArrayList(sizeof(eFrame), frameCount)
 		for(int i = 0; i < frameCount; i++)
@@ -285,6 +288,7 @@ void LoadRecord()
 		}
 		delete f
 		gI_tick[0] = 0
+		char sQuery[512]
 		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
 		gD_database.Query(SQLGetName, sQuery, 1)
 	}
