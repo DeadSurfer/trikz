@@ -55,8 +55,8 @@ Action connect(Event event, const char[] name, bool dontBroadcast)
 Action disconnect(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	char reason[32]
-	event.GetString("reason", reason, 32)
+	char reason[64]
+	event.GetString("reason", reason, 64)
 	PrintToChatAll("Player %N left the game (%s)", client, reason)
 	SetEventBroadcast(event, true)
 }
