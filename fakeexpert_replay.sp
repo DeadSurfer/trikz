@@ -61,6 +61,7 @@ bool gB_Linux
 native int Trikz_GetClientPartner(int client)
 native int Trikz_SetTrikzPartner(int client, int partner)
 int gI_bot[2]
+bool gB_loaded[2]
 
 public Plugin myinfo =
 {
@@ -105,8 +106,11 @@ public void OnMapStart()
 {
 	GetCurrentMap(gS_map, 192)
 	CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
-	gI_bot[0] = 0
-	gI_bot[1] = 0
+	for(int i = 0; i <= 1; i++)
+	{
+		gI_bot[i] = 0
+		gB_loaded[i] = false
+	}
 }
 
 Action timer_bot(Handle timer)
@@ -269,6 +273,7 @@ void LoadRecord()
 		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
 		gD_database.Query(SQLGetName, sQuery, 0)
 		gI_timeToRestart = GetGameTickCount()
+		gB_loaded[0] = true
 	}
 	BuildPath(Path_SM, sFile, PLATFORM_MAX_PATH, "data/fakeexpert/%s_replay.replay", gS_map)
 	if(FileExists(sFile))
@@ -294,6 +299,7 @@ void LoadRecord()
 		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
 		gD_database.Query(SQLGetName, sQuery, 1)
 		gI_timeToRestart = GetGameTickCount()
+		gB_loaded[1] = true
 	}
 }
 
@@ -325,7 +331,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsFakeClient(client) && IsPlayerAlive(client) && gI_tick[0] < gI_tick[1] && gI_bot[0] && gI_bot[1])
+	if(IsFakeClient(client) && IsPlayerAlive(client) && gI_tick[0] < gI_tick[1] && gI_bot[0] && gI_bot[1] && gB_loaded[0] && gB_loaded[1])
 	{
 		buttons = 0
 		vel[0] = 0.0 //Prevent bot shaking.
@@ -373,6 +379,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				case 4:
 					FakeClientCommand(client, "use weapon_flashbang")
 			}
+			gI_timeToRestart = GetGameTickCount()
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
 		}
 		else if(gI_bot[1] == client)
@@ -416,6 +423,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				case 4:
 					FakeClientCommand(client, "use weapon_flashbang")
 			}
+			gI_timeToRestart = GetGameTickCount()
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
 
 		}
@@ -456,7 +464,6 @@ public void Trikz_Start(int client)
 public void Trikz_Record(int client, float time)
 {
 	SetupSave(client, time)
-	gI_timeToRestart = GetGameTickCount()
 }
 
 void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
