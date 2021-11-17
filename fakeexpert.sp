@@ -1215,7 +1215,7 @@ Action cmd_color(int client, int args)
 
 void Color(int client, bool customSkin, int color = -1)
 {
-	if(IsClientInGame(client))
+	if(IsClientInGame(client) && !IsFakeClient(client))
 	{
 		if(!gB_isDevmap && !gI_partner[client])
 		{
