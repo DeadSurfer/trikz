@@ -53,7 +53,7 @@ native bool Trikz_GetTimerStateTrikz(int client)
 int gI_flagsLast[MAXPLAYERS + 1]
 Handle gH_DoAnimationEvent
 DynamicDetour gH_MaintainBotQuota
-float gF_timeToRestart
+int gI_timeToRestart
 int gI_weapon[MAXPLAYERS + 1]
 bool gB_switchPrevent
 DynamicHook gH_UpdateStepSound
@@ -268,6 +268,7 @@ void LoadRecord()
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
 		gD_database.Query(SQLGetName, sQuery, 0)
+		gI_timeToRestart = GetGameTickCount()
 	}
 	BuildPath(Path_SM, sFile, PLATFORM_MAX_PATH, "data/fakeexpert/%s_replay.replay", gS_map)
 	if(FileExists(sFile))
@@ -292,6 +293,7 @@ void LoadRecord()
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
 		gD_database.Query(SQLGetName, sQuery, 1)
+		gI_timeToRestart = GetGameTickCount()
 	}
 }
 
@@ -419,7 +421,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		return Plugin_Changed
 	}
-	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTime() - gF_timeToRestart > 3.0 && gF_timeToRestart != 0.0)
+	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - gI_timeToRestart == 300)
 	{
 		CS_RespawnPlayer(client)
 		CS_RespawnPlayer(Trikz_GetClientPartner(client))
@@ -454,7 +456,7 @@ public void Trikz_Start(int client)
 public void Trikz_Record(int client, float time)
 {
 	SetupSave(client, time)
-	gF_timeToRestart = GetGameTime()
+	gI_timeToRestart = GetGameTickCount()
 }
 
 void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
