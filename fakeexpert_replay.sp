@@ -115,58 +115,61 @@ public void OnMapStart()
 
 Action timer_bot(Handle timer)
 {
-	int replayRunning
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-			replayRunning++
-	if(replayRunning < 2)
-		ServerCommand("bot_add")
-	int botCount
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-			botCount++
-	if(botCount > 2)
+	if(gB_loaded[0] && gB_loaded[1])
 	{
+		int replayRunning
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
+				replayRunning++
+		if(replayRunning < 2)
+			ServerCommand("bot_add")
+		int botCount
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
+				botCount++
+		if(botCount > 2)
+		{
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
+				{
+					ServerCommand("bot_kick %N", i)
+					break
+				}
+			}
+		}
+		if(!replayRunning)
+		{
+			char sQuery[512]
+			Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
+			gD_database.Query(SQLGetName, sQuery, 0)
+			Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
+			gD_database.Query(SQLGetName, sQuery, 1)
+		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
 			{
-				ServerCommand("bot_kick %N", i)
-				break
-			}
-		}
-	}
-	if(!replayRunning)
-	{
-		char sQuery[512]
-		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
-		gD_database.Query(SQLGetName, sQuery, 0)
-		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
-		gD_database.Query(SQLGetName, sQuery, 1)
-	}
-	for(int i = 1; i <= MaxClients; i++)
-	{
-		if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-		{
-			if(gI_bot[0] != i)
-			{
-				gI_bot[0] = i
-				continue
-			}
-			if(gI_bot[1] != i)
-			{
 				if(gI_bot[0] != i)
 				{
-					gI_bot[1] = i
-					break
+					gI_bot[0] = i
+					continue
 				}
-			}
-			if(gI_bot[1])
-			{
-				if(!Trikz_GetClientPartner(gI_bot[1]))
+				if(gI_bot[1] != i)
 				{
-					Trikz_SetTrikzPartner(gI_bot[0], gI_bot[1])
-					Trikz_SetTrikzPartner(gI_bot[1], gI_bot[0])
+					if(gI_bot[0] != i)
+					{
+						gI_bot[1] = i
+						break
+					}
+				}
+				if(gI_bot[1])
+				{
+					if(!Trikz_GetClientPartner(gI_bot[1]))
+					{
+						Trikz_SetTrikzPartner(gI_bot[0], gI_bot[1])
+						Trikz_SetTrikzPartner(gI_bot[1], gI_bot[0])
+					}
 				}
 			}
 		}
