@@ -148,12 +148,12 @@ Action timer_bot(Handle timer)
 	{
 		if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
 		{
-			if(!gI_bot[0])
+			if(gI_bot[0] != i)
 			{
 				gI_bot[0] = i
 				continue
 			}
-			if(!gI_bot[1])
+			if(gI_bot[1] != i)
 			{
 				if(gI_bot[0] != i)
 				{
