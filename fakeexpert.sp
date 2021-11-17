@@ -3095,7 +3095,7 @@ Action cmd_devmap(int client, int args)
 		gI_voters = 0
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && !IsClientSourceTV(i))
+			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsFakeClient(i))
 			{
 				gI_voters++
 				if(gB_isDevmap)
@@ -3212,7 +3212,7 @@ Action cmd_afk(int client, int args)
 		gI_afkClient = client
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsPlayerAlive(i) && client != i)
+			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsFakeClient(i) && !IsPlayerAlive(i) && client != i)
 			{
 				gB_afk[i] = false
 				gI_voters++
