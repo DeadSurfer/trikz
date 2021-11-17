@@ -52,7 +52,6 @@ Database gD_database
 native bool Trikz_GetTimerStateTrikz(int client)
 int gI_flagsLast[MAXPLAYERS + 1]
 Handle gH_DoAnimationEvent
-DynamicDetour gH_MaintainBotQuota
 int gI_timeToRestart
 int gI_weapon[MAXPLAYERS + 1]
 bool gB_switchPrevent
@@ -96,9 +95,6 @@ public void OnPluginStart()
 		gH_UpdateStepSound.AddParam(HookParamType_VectorPtr)
 		gH_UpdateStepSound.AddParam(HookParamType_VectorPtr)
 	}
-	gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)
-	DHookSetFromConf(gH_MaintainBotQuota, gamedata, SDKConf_Signature, "BotManager::MaintainBotQuota")
-	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota)
 	delete gamedata
 }
 
@@ -122,6 +118,19 @@ Action timer_bot(Handle timer)
 {
 	if(gB_loaded[0] && gB_loaded[1])
 	{
+		ConVar cvForce = FindConVar("bot_stop")
+		cvForce.SetInt(1)
+		cvForce = FindConVar("bot_join_after_player")
+		cvForce.SetInt(0)
+		cvForce = FindConVar("bot_quota")
+		cvForce.Flags = GetConVarFlags(FindConVar("bot_quota")) &~ FCVAR_NOTIFY
+		cvForce.SetInt(2)
+		cvForce = FindConVar("bot_flipout")
+		cvForce.SetInt(1)
+		cvForce = FindConVar("bot_zombie")
+		cvForce.SetInt(1)
+		cvForce = FindConVar("bot_quota_mode")
+		cvForce.SetString("normal")
 		int replayRunning
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
@@ -247,17 +256,6 @@ void SQLGetName(Database db, DBResultSet results, const char[] error, any data)
 
 void LoadRecord()
 {
-	ConVar cvForce = FindConVar("bot_stop")
-	cvForce.SetInt(1)
-	cvForce = FindConVar("bot_join_after_player")
-	cvForce.SetInt(0)
-	cvForce = FindConVar("bot_quota")
-	cvForce.Flags = GetConVarFlags(FindConVar("bot_quota")) &~ FCVAR_NOTIFY
-	cvForce.SetInt(2)
-	cvForce = FindConVar("bot_flipout")
-	cvForce.SetInt(1)
-	cvForce = FindConVar("bot_zombie")
-	cvForce.SetInt(1)
 	char sFile[PLATFORM_MAX_PATH]
 	BuildPath(Path_SM, sFile, PLATFORM_MAX_PATH, "data/fakeexpert/%s.replay", gS_map)
 	if(FileExists(sFile))
@@ -547,10 +545,4 @@ MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 		SetEntityMoveType(pThis, MOVETYPE_NOCLIP)
 	SetEntityFlags(pThis, GetEntityFlags(pThis) | FL_ATCONTROLS)
 	return MRES_Ignored
-}
-
-// Stops bot_quota from doing anything.
-MRESReturn Detour_MaintainBotQuota(int pThis)
-{
-	return MRES_Supercede
 }
