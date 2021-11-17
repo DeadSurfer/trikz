@@ -102,6 +102,11 @@ public void OnPluginStart()
 	delete gamedata
 }
 
+public void OnPluginEnd()
+{
+	SetConVarFlags(FindConVar("bot_quota"), GetConVarFlags(FindConVar("bot_quota")) | FCVAR_NOTIFY)
+}
+
 public void OnMapStart()
 {
 	GetCurrentMap(gS_map, 192)
@@ -247,7 +252,8 @@ void LoadRecord()
 	cvForce = FindConVar("bot_join_after_player")
 	cvForce.SetInt(0)
 	cvForce = FindConVar("bot_quota")
-	cvForce.SetInt(0)
+	cvForce.Flags = GetConVarFlags(FindConVar("bot_quota")) &~ FCVAR_NOTIFY
+	cvForce.SetInt(2)
 	cvForce = FindConVar("bot_flipout")
 	cvForce.SetInt(1)
 	cvForce = FindConVar("bot_zombie")
