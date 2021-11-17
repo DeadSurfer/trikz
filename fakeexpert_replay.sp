@@ -36,7 +36,7 @@
 char gS_map[192]
 ArrayList gA_frame[MAXPLAYERS + 1]
 ArrayList gA_frameCache[2]
-int gI_frameCount[MAXPLAYERS + 1]
+int gI_tickcount[MAXPLAYERS + 1]
 enum struct eFrame
 {
 	float pos[3]
@@ -53,7 +53,7 @@ native bool Trikz_GetTimerStateTrikz(int client)
 int gI_flagsLast[MAXPLAYERS + 1]
 Handle gH_DoAnimationEvent
 DynamicDetour gH_MaintainBotQuota
-float gF_time
+float gF_timeToRestart
 int gI_weapon[MAXPLAYERS + 1]
 bool gB_switchPrevent
 DynamicHook gH_UpdateStepSound
@@ -196,19 +196,20 @@ void SetupSave(int client, float time)
 void SaveRecord(int client, char[] path, float time, int type)
 {
 	File f = OpenFile(path, "wb")
-	f.WriteInt32(gI_frameCount[client])
+	int tickcount = GetGameTickCount() - gI_tickcount[client]
+	f.WriteInt32(tickcount)
 	gI_steam3[type] = GetSteamAccountID(client)
 	f.WriteInt32(gI_steam3[type])
 	f.WriteInt32(view_as<int>(time))
 	any aData[sizeof(eFrame)]
 	any aDataWrite[sizeof(eFrame) * 100]
 	int iFramesWritten
-	for(int i = 0; i < gI_frameCount[client]; i++)
+	for(int i = 0; i < tickcount; i++)
 	{
 		gA_frame[client].GetArray(i, aData, sizeof(eFrame))
 		for(int j = 0; j < sizeof(eFrame); j++)
 			aDataWrite[(sizeof(eFrame) * iFramesWritten) + j] = aData[j];
-		if(++iFramesWritten == 100 || i == gI_frameCount[client] - 1)
+		if(++iFramesWritten == 100 || i == tickcount - 1)
 		{
 			f.Write(aDataWrite, sizeof(eFrame) * iFramesWritten, 4)
 			iFramesWritten = 0
@@ -298,8 +299,9 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 {
 	if(Trikz_GetTimerStateTrikz(client))
 	{
-		if(gA_frame[client].Length <= gI_frameCount[client])
-			gA_frame[client].Resize(gI_frameCount[client] + (100 * 2))
+		int tickcountReal = GetGameTickCount() - gI_tickcount[client]
+		if(gA_frame[client].Length <= tickcountReal)
+			gA_frame[client].Resize(tickcountReal + (100 * 2))
 		eFrame frame
 		GetClientAbsOrigin(client, frame.pos)
 		float ang[3]
@@ -315,7 +317,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			frame.weapon = gI_weapon[client]
 			gI_weapon[client] = 0
 		}
-		gA_frame[client].SetArray(gI_frameCount[client]++, frame, sizeof(eFrame))
+		gA_frame[client].SetArray(tickcountReal, frame, sizeof(eFrame))
 	}
 }
 
@@ -371,7 +373,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
 		}
-		if(gI_bot[1] == client)
+		else if(gI_bot[1] == client)
 		{
 			gA_frameCache[1].GetArray(gI_tick[0], frame, sizeof(eFrame))
 			float posPrev[3]
@@ -415,10 +417,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
 
 		}
-		//gF_time = GetGameTime()
 		return Plugin_Changed
 	}
-	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTime() - gF_time > 3.0 && gF_time != 0.0)
+	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTime() - gF_timeToRestart > 3.0 && gF_timeToRestart != 0.0)
 	{
 		CS_RespawnPlayer(client)
 		CS_RespawnPlayer(Trikz_GetClientPartner(client))
@@ -447,13 +448,13 @@ public void Trikz_Start(int client)
 {
 	delete gA_frame[client]
 	gA_frame[client] = new ArrayList((sizeof(eFrame)))
-	gI_frameCount[client] = 0
+	gI_tickcount[client] = GetGameTickCount()
 }
 
 public void Trikz_Record(int client, float time)
 {
 	SetupSave(client, time)
-	gF_time = GetGameTime()
+	gF_timeToRestart = GetGameTime()
 }
 
 void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
