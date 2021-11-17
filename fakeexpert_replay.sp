@@ -152,12 +152,12 @@ Action timer_bot(Handle timer)
 				}
 			}
 		}
-		if(!replayRunning)
+		if(replayRunning)
 		{
 			char sQuery[512]
-			Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
+			Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", gI_steam3[0])
 			gD_database.Query(SQLGetName, sQuery, 0)
-			Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
+			Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", gI_steam3[1])
 			gD_database.Query(SQLGetName, sQuery, 1)
 		}
 		for(int i = 1; i <= MaxClients; i++)
