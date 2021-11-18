@@ -62,6 +62,7 @@ native int Trikz_GetClientPartner(int client)
 native int Trikz_SetTrikzPartner(int client, int partner)
 int gI_bot[2]
 bool gB_loaded[2]
+float gF_tickrate
 
 public Plugin myinfo =
 {
@@ -77,6 +78,7 @@ public void OnPluginStart()
 	Database.Connect(SQLConnect, "fakeexpert")
 	HookEvent("round_start", OnRoundStart, EventHookMode_Post)
 	HookEvent("player_spawn", OnSpawn, EventHookMode_Post)
+	HookEvent("player_changename", OnChangeName, EventHookMode_Pre)
 	GameData gamedata = new GameData("fakeexpert")
 	gB_Linux = (gamedata.GetOffset("OS") == 2)
 	StartPrepSDKCall(gB_Linux ? SDKCall_Static : SDKCall_Player)
@@ -100,6 +102,7 @@ public void OnPluginStart()
 		gH_UpdateStepSound.AddParam(HookParamType_VectorPtr)
 	}
 	delete gamedata
+	gF_tickrate = 1.0 / GetTickInterval()
 }
 
 public void OnPluginEnd()
@@ -222,8 +225,9 @@ void SetupSave(int client, float time)
 
 void SaveRecord(int client, char[] path, float time, int type)
 {
-	File f = OpenFile(path, "wb")
 	int tickcount = GetGameTickCount() - gI_tickcount[client]
+	gA_frame[client].Resize(tickcount)
+	File f = OpenFile(path, "wb")
 	f.WriteInt32(tickcount)
 	gI_steam3[type] = GetSteamAccountID(client)
 	f.WriteInt32(gI_steam3[type])
@@ -322,7 +326,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	{
 		int tickcountReal = GetGameTickCount() - gI_tickcount[client]
 		if(gA_frame[client].Length <= tickcountReal)
-			gA_frame[client].Resize(tickcountReal + (100 * 2))
+			gA_frame[client].Resize(tickcountReal + (RoundToCeil(gF_tickrate) * 2))
 		eFrame frame
 		GetClientAbsOrigin(client, frame.pos)
 		float ang[3]
@@ -358,7 +362,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			GetClientAbsOrigin(client, posPrev)
 			float velPos[3]
 			MakeVectorFromPoints(posPrev, frame.pos, velPos)
-			ScaleVector(velPos, 100.0)
+			ScaleVector(velPos, gF_tickrate)
 			buttons = frame.buttons
 			float ang[3]
 			ang[0] = frame.ang[0]
@@ -499,16 +503,21 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
+Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	if(IsFakeClient(client))
+		return Plugin_Handled
+	else
+		return Plugin_Continue
+}
+
 void ApplyFlags(int &flags1, int flags2, int flag)
 {
 	if((flags2 & flag) != 0)
-	{
 		flags1 |= flag
-	}
 	else
-	{
 		flags1 &= ~flag
-	}
 }
 
 Action SDKWeaponSwitch(int client, int weapon)
@@ -516,9 +525,7 @@ Action SDKWeaponSwitch(int client, int weapon)
 	if(Trikz_GetTimerStateTrikz(client))
 	{
 		if(gB_switchPrevent)
-		{
 			gB_switchPrevent = false
-		}
 		else
 		{
 			char sClassname[32]
