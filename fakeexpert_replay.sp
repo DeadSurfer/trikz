@@ -507,9 +507,7 @@ Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(IsFakeClient(client))
-		return Plugin_Handled
-	else
-		return Plugin_Continue
+		SetEventBroadcast(event, true)
 }
 
 void ApplyFlags(int &flags1, int flags2, int flag)
