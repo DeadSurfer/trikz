@@ -375,23 +375,26 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
 			float sync = -1.0
-			sync += float(gI_syncTick[client])
-			if(sync == -1.0)
-				sync = 0.0
-			sync /= float(gI_tickAir[client])
-			sync *= 100.0
-			if(gB_jumpstats[client])
-				if(190.0 > distance >= 22.0)
-					PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
-			for(int i = 1; i <= MaxClients; i++)
+			if(gI_syncTick[client])
 			{
-				if(IsClientInGame(i) && IsClientObserver(i))
+				sync += float(gI_syncTick[client])
+				if(sync == -1.0)
+					sync = 0.0
+				sync /= float(gI_tickAir[client])
+				sync *= 100.0
+				if(gB_jumpstats[client])
+					if(190.0 > distance >= 22.0)
+						PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+				for(int i = 1; i <= MaxClients; i++)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-						if(190.0 > distance >= 22.0)
-							PrintToChat(i, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+					if(IsClientInGame(i) && IsClientObserver(i))
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+						if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+							if(190.0 > distance >= 22.0)
+								PrintToChat(i, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+					}
 				}
 			}
 		}
