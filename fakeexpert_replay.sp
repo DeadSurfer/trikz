@@ -519,3 +519,17 @@ MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 	SetEntityFlags(pThis, GetEntityFlags(pThis) | FL_ATCONTROLS)
 	return MRES_Ignored
 }
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	if(StrContains(classname, "trigger") != -1)
+		SDKHook(entity, SDKHook_Touch, SDKTrigger)
+}
+
+Action SDKTrigger(int entity, int other)
+{
+	if(0 < other <= MaxClients && IsFakeClient(other) && IsPlayerAlive(other))
+		return Plugin_Handled
+	else
+		return Plugin_Continue
+}
