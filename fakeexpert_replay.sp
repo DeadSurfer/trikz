@@ -63,7 +63,7 @@ native int Trikz_SetTrikzPartner(int client, int partner)
 int gI_bot[2]
 bool gB_loaded[2]
 float gF_tickrate
-int gI_replayTickCount
+int gI_replayTickcount[MAXPLAYERS + 1]
 char gS_weapon[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smokegrenade", "p228", "deagle", "elite", "fiveseven", 
 						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
 						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
@@ -128,10 +128,12 @@ public void OnMapStart()
 
 Action timer_bot(Handle timer)
 {
-	//PrintToServer("yes")
-	//if(gB_loaded[0] && gB_loaded[1])
+	char sRecord[PLATFORM_MAX_PATH]
+	BuildPath(Path_SM, sRecord, PLATFORM_MAX_PATH, "data/fakeexpert/%s.replay", gS_map)
+	char sRecordPartner[PLATFORM_MAX_PATH]
+	BuildPath(Path_SM, sRecordPartner, PLATFORM_MAX_PATH, "data/fakeexpert/%s_partner.replay", gS_map)
+	if(FileExists(sRecord) && FileExists(sRecordPartner))
 	{
-		//PrintToServer("yes")
 		ConVar cvForce = FindConVar("bot_stop")
 		cvForce.SetInt(1)
 		cvForce = FindConVar("bot_join_after_player")
@@ -200,10 +202,6 @@ Action timer_bot(Handle timer)
 			}
 		}
 	}
-	/*else if(!gB_loaded[0] && !gB_loaded[1])
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-				ServerCommand("bot_kick %N", i)*/
 }
 
 void SetupSave(int client, float time)
@@ -280,8 +278,7 @@ void LoadRecord()
 		f.ReadInt32(tickcount)
 		f.ReadInt32(gI_steam3[0])
 		f.ReadInt32(time)
-		gI_replayTickCount = tickcount
-		PrintToServer("%i", tickcount)
+		gI_replayTickcount[gI_bot[0]] = tickcount
 		any aData[sizeof(eFrame)]
 		delete gA_frameCache[gI_bot[0]]
 		gA_frameCache[gI_bot[0]] = new ArrayList(sizeof(eFrame), tickcount)
@@ -307,8 +304,7 @@ void LoadRecord()
 		f.ReadInt32(tickcount)
 		f.ReadInt32(gI_steam3[1])
 		f.ReadInt32(time)
-		gI_replayTickCount = tickcount
-		PrintToServer("%i", tickcount)
+		gI_replayTickcount[gI_bot[1]] = tickcount
 		any aData[sizeof(eFrame)]
 		delete gA_frameCache[gI_bot[1]]
 		gA_frameCache[gI_bot[1]] = new ArrayList(sizeof(eFrame), tickcount)
@@ -364,7 +360,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsFakeClient(client) && IsPlayerAlive(client) && gI_tick[client][0] < gI_replayTickCount && gB_loaded[0] && gB_loaded[1])
+	if(IsFakeClient(client) && IsPlayerAlive(client) && gI_tick[client][0] < gI_replayTickcount[client] && gB_loaded[0] && gB_loaded[1])
 	{
 		vel[0] = 0.0 //Prevent bot shaking.
 		vel[1] = 0.0
@@ -412,7 +408,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		TeleportEntity(client, NULL_VECTOR, ang, velPos)
 		return Plugin_Changed
 	}
-	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - gI_timeToRestart[client] == 300)
+	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - gI_timeToRestart[client] == 300 && gI_tick[Trikz_GetClientPartner(client)][0] == gI_replayTickcount[Trikz_GetClientPartner(client)])
 	{
 		CS_RespawnPlayer(client)
 		gI_tick[client][0] = 0
