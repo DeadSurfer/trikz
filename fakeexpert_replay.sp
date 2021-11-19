@@ -289,11 +289,8 @@ void LoadRecord()
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[0])
 		gD_database.Query(SQLGetName, sQuery, 0)
-		gI_timeToRestart[gI_bot[0]] = GetGameTickCount()
 		gB_loaded[0] = true
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i))
-				gI_tick[i][0] = 0
+		gI_tick[gI_bot[0]][0] = 0
 	}
 	BuildPath(Path_SM, sFile, PLATFORM_MAX_PATH, "data/fakeexpert/%s_partner.replay", gS_map)
 	if(FileExists(sFile))
@@ -315,11 +312,8 @@ void LoadRecord()
 		char sQuery[512]
 		Format(sQuery, 512, "SELECT username FROM users WHERE steamid = %i", gI_steam3[1])
 		gD_database.Query(SQLGetName, sQuery, 1)
-		gI_timeToRestart[gI_bot[1]] = GetGameTickCount()
 		gB_loaded[1] = true
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i))
-				gI_tick[i][0] = 0
+		gI_tick[gI_bot[1]][0] = 0
 	}
 }
 
@@ -375,11 +369,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float ang[3]
 		ang[0] = frame.ang[0]
 		ang[1] = frame.ang[1]
-		if(gI_tick[client][0] == 1)
-		{
-			TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}))
-			return Plugin_Changed
-		}
 		MoveType movetype = MOVETYPE_NOCLIP
 		int flags = GetEntityFlags(client)
 		ApplyFlags(flags, frame.flags, FL_ONGROUND)
@@ -404,19 +393,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 		}
+		if(gI_tick[client][0] == 1)
+			TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}))
+		else if(1 < gI_tick[client][0] < gI_replayTickcount[client])
+			TeleportEntity(client, NULL_VECTOR, ang, velPos)
 		gI_timeToRestart[client] = GetGameTickCount()
-		TeleportEntity(client, NULL_VECTOR, ang, velPos)
-		return Plugin_Changed
 	}
 	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - gI_timeToRestart[client] == 300 && gI_tick[Trikz_GetClientPartner(client)][0] == gI_replayTickcount[Trikz_GetClientPartner(client)])
 	{
 		CS_RespawnPlayer(client)
 		gI_tick[client][0] = 0
-		vel[0] = 0.0 //Prevent bot shaking.
-		vel[1] = 0.0
-		return Plugin_Changed
 	}
-	return Plugin_Continue
 }
 
 void SQLConnect(Database db, const char[] error, any data)
