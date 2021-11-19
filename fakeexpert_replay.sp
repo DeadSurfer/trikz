@@ -397,6 +397,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}))
 		else if(1 < gI_tick[client][0] < gI_replayTickcount[client])
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
+		else if(gI_tick[client][0] == gI_replayTickcount[client])
+			TeleportEntity(client, frame.pos, ang, NULL_VECTOR)
 		gI_timeToRestart[client] = GetGameTickCount()
 	}
 	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - gI_timeToRestart[client] == 300 && gI_tick[Trikz_GetClientPartner(client)][0] == gI_replayTickcount[Trikz_GetClientPartner(client)])
