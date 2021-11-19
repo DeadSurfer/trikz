@@ -64,7 +64,6 @@ int gI_bot[2]
 bool gB_loaded[2]
 float gF_tickrate
 int gI_replayTickCount
-float gF_frameAsync[MAXPLAYERS + 1][9]
 
 public Plugin myinfo =
 {
@@ -346,48 +345,19 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			gI_weapon[client] = 0
 		}
 		gA_frame[client].SetArray(gI_tick[client][1]++, frame, sizeof(eFrame))
-		/*int size = gA_frame[client].Length
-		int diff = 1
-		if(gI_tick[Trikz_GetClientPartner(client)][1] && gI_tick[Trikz_GetClientPartner(client)][1] > size + 1)
-			diff = gI_tick[Trikz_GetClientPartner(client)][1] - size + 1
-		gA_frame[client].Resize(diff + size)
-		if(diff > 1)
+		if(gI_tick[Trikz_GetClientPartner(client)][1] > gI_tick[client][1])
 		{
-			int i
-			while(diff + -1 > i)
+			int differ = gI_tick[Trikz_GetClientPartner(client)][1] - gI_tick[client][1]
+			if(differ > 1) //life is good
 			{
-				gA_frame[client].Set(size + i, gF_frameAsync[client][0], 0)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][1], 1)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][2], 2)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][3], 3)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][4], 4)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][5], 5)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][6], 6)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][7], 7)
-				gA_frame[client].Set(size + i, gF_frameAsync[client][8], 8)
-				i++
+				for(int i = 0; i <= differ; i++)
+				{
+					if(gA_frame[client].Length <= gI_tick[client][1])
+						gA_frame[client].Resize(gI_tick[client][1] + (RoundToCeil(gF_tickrate) * 2))
+					gA_frame[client].SetArray(gI_tick[client][1]++, frame, sizeof(eFrame))
+				}
 			}
-			size = diff + -1 + size
 		}
-		gA_frame[client].Set(size, frame.pos[0], 0)
-		gA_frame[client].Set(size, frame.pos[1], 1)
-		gA_frame[client].Set(size, frame.pos[2], 2)
-		gA_frame[client].Set(size, ang[0], 3)
-		gA_frame[client].Set(size, ang[1], 4)
-		gA_frame[client].Set(size, buttons, 5)
-		gA_frame[client].Set(size, GetEntityFlags(client), 6)
-		gA_frame[client].Set(size, GetEntityMoveType(client), 7)
-		gA_frame[client].Set(size, frame.weapon, 8)
-		gI_tick[client][1] = size
-		gF_frameAsync[client][0] = frame.pos[0]
-		gF_frameAsync[client][1] = frame.pos[1]
-		gF_frameAsync[client][2] = frame.pos[2]
-		gF_frameAsync[client][3] = ang[0]
-		gF_frameAsync[client][4] = ang[1]
-		gF_frameAsync[client][5] = view_as<float>(buttons)
-		gF_frameAsync[client][6] = view_as<float>(GetEntityFlags(client))
-		gF_frameAsync[client][7] = view_as<float>(GetEntityMoveType(client))
-		gF_frameAsync[client][8] = view_as<float>(frame.weapon)*/
 	}
 }
 
