@@ -348,14 +348,11 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		if(gI_tick[Trikz_GetClientPartner(client)][1] > gI_tick[client][1])
 		{
 			int differ = gI_tick[Trikz_GetClientPartner(client)][1] - gI_tick[client][1]
-			if(differ > 1) //life is good
+			for(int i = 2; i <= differ; i++) //life is good
 			{
-				for(int i = 0; i <= differ; i++)
-				{
-					if(gA_frame[client].Length <= gI_tick[client][1])
-						gA_frame[client].Resize(gI_tick[client][1] + (RoundToCeil(gF_tickrate) * 2))
-					gA_frame[client].SetArray(gI_tick[client][1]++, frame, sizeof(eFrame))
-				}
+				if(gA_frame[client].Length <= gI_tick[client][1])
+					gA_frame[client].Resize(gI_tick[client][1] + (RoundToCeil(gF_tickrate) * 2))
+				gA_frame[client].SetArray(gI_tick[client][1]++, frame, sizeof(eFrame))
 			}
 		}
 	}
