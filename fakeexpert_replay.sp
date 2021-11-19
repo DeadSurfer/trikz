@@ -64,6 +64,10 @@ int gI_bot[2]
 bool gB_loaded[2]
 float gF_tickrate
 int gI_replayTickCount
+char gS_weapon[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smokegrenade", "p228", "deagle", "elite", "fiveseven", 
+						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
+						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
+						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249"}
 
 public Plugin myinfo =
 {
@@ -393,16 +397,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			movetype = frame.movetype
 		gI_flagsLast[client] = frame.flags
 		SetEntityMoveType(client, movetype)
-		switch(frame.weapon)
+		if(frame.weapon)
 		{
-			case 1:
-				FakeClientCommand(client, "use weapon_knife")
-			case 2:
-				FakeClientCommand(client, "use weapon_glock")
-			case 3:
-				FakeClientCommand(client, "use weapon_usp")
-			case 4:
-				FakeClientCommand(client, "use weapon_flashbang")
+			for(int i = 0; i < sizeof(gS_weapon); i++)
+			{
+				if(frame.weapon == i + 1)
+				{
+					FakeClientCommand(client, "use weapon_%s", gS_weapon[i])
+					break
+				}
+			}
 		}
 		gI_timeToRestart[client] = GetGameTickCount()
 		TeleportEntity(client, NULL_VECTOR, ang, velPos)
@@ -482,14 +486,16 @@ Action SDKWeaponSwitch(int client, int weapon)
 		{
 			char sClassname[32]
 			GetEntityClassname(weapon, sClassname, 32)
-			if(StrEqual(sClassname, "weapon_knife"))
-				gI_weapon[client] = 1
-			else if(StrEqual(sClassname, "weapon_glock"))
-				gI_weapon[client] = 2
-			else if(StrEqual(sClassname, "weapon_usp"))
-				gI_weapon[client] = 3
-			else if(StrEqual(sClassname, "weapon_flashbang"))
-				gI_weapon[client] = 4
+			char sWeapon[32]
+			for(int i = 0; i < sizeof(gS_weapon); i++)
+			{
+				Format(sWeapon, 32, "weapon_%s", gS_weapon[i])
+				if(StrEqual(sClassname, sWeapon))
+				{
+					gI_weapon[client] = i + 1
+					break
+				}
+			}
 		}
 	}
 }
