@@ -36,7 +36,7 @@
 char gS_map[192]
 ArrayList gA_frame[MAXPLAYERS + 1]
 ArrayList gA_frameCache[MAXPLAYERS + 1]
-int gI_tickcount[MAXPLAYERS + 1]
+//int gI_tickcount[MAXPLAYERS + 1]
 enum struct eFrame
 {
 	float pos[3]
