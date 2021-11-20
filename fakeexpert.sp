@@ -437,6 +437,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
 	CreateNative("Trikz_GetTimerStateTrikz", Native_GetTimerStateTrikz)
 	CreateNative("Trikz_SetTrikzPartner", Native_SetTrikzPartner)
+	CreateNative("Trikz_TrikzRestart", Native_TrikzRestart)
 	MarkNativeAsOptional("Trikz_GetEntityFilter")
 	return APLRes_Success
 }
@@ -1316,10 +1317,11 @@ void Restart(int client)
 					if(gB_MenuIsOpen[client])
 						Trikz(client)
 					CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
-					int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
-					if(IsValidEntity(pistol))
-						RemoveEntity(pistol) //RemovePlayerItem need extra frame.
-					GivePlayerItem(client, "weapon_usp")
+					//int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
+					//if(IsValidEntity(pistol))
+					//	RemoveEntity(pistol) //RemovePlayerItem need extra frame.
+					//GivePlayerItem(client, "weapon_usp")
+					CS_RespawnPlayer(client)
 				}
 			}
 			else if(IsPlayerAlive(client) && !gI_partner[client])
@@ -3691,6 +3693,12 @@ int Native_SetTrikzPartner(Handle plugin, int numParams)
 	int client = GetNativeCell(1)
 	int partner = GetNativeCell(2)
 	gI_partner[client] = partner
+}
+
+int Native_TrikzRestart(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1)
+	Restart(client)
 }
 
 Action timer_clearlag(Handle timer)
