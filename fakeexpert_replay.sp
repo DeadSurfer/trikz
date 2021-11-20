@@ -60,6 +60,7 @@ DynamicHook gH_UpdateStepSound
 bool gB_Linux
 native int Trikz_GetClientPartner(int client)
 native int Trikz_SetTrikzPartner(int client, int partner)
+native int Trikz_TrikzRestart(int client)
 int gI_bot[2]
 bool gB_loaded[2]
 float gF_tickrate
@@ -356,6 +357,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if(IsFakeClient(client) && IsPlayerAlive(client) && gI_tick[client][0] < gI_replayTickcount[client] && gB_loaded[0] && gB_loaded[1])
 	{
+		if(!gI_tick[client][0])
+			Trikz_TrikzRestart(client)
 		vel[0] = 0.0 //Prevent bot shaking.
 		vel[1] = 0.0
 		eFrame frame
@@ -403,7 +406,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - gI_timeToRestart[client] == 300 && gI_tick[Trikz_GetClientPartner(client)][0] == gI_replayTickcount[Trikz_GetClientPartner(client)])
 	{
-		CS_RespawnPlayer(client)
+		//CS_RespawnPlayer(client)
+		Trikz_TrikzRestart(client)
 		gI_tick[client][0] = 0
 	}
 }
