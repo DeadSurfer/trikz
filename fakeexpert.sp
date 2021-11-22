@@ -726,7 +726,7 @@ public void OnClientPutInServer(int client)
 	}
 	gB_block[client] = true
 	//gF_Time[client] = 0.0
-	if(!gB_isDevmap)
+	if(!gB_isDevmap && gB_haveZone[2])
 		DrawZone(client, 0.0)
 	gB_msg[client] = true
 	if(!AreClientCookiesCached(client))
