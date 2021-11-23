@@ -197,6 +197,10 @@ Action timer_bot(Handle timer)
 					{
 						Trikz_SetTrikzPartner(gI_bot[0], gI_bot[1])
 						Trikz_SetTrikzPartner(gI_bot[1], gI_bot[0])
+						if(!IsPlayerAlive(gI_bot[0]))
+							CS_RespawnPlayer(gI_bot[0])
+						if(!IsPlayerAlive(gI_bot[1]))
+							CS_RespawnPlayer(gI_bot[1])
 						LoadRecord()
 					}
 				}
@@ -406,7 +410,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - gI_timeToRestart[client] == 300 && gI_tick[Trikz_GetClientPartner(client)][0] == gI_replayTickcount[Trikz_GetClientPartner(client)])
 	{
-		//CS_RespawnPlayer(client)
 		Trikz_TrikzRestart(client)
 		gI_tick[client][0] = 0
 	}
