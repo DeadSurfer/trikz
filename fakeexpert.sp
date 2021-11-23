@@ -92,7 +92,6 @@ int gI_wModelThrown
 int gI_class[MAXPLAYERS + 1]
 bool gB_color[MAXPLAYERS + 1]
 int gI_wModelPlayer[5]
-int gI_wModelPlayerDef[5]
 int gI_pingModel[MAXPLAYERS + 1]
 int gI_pingModelOwner[2048 + 1]
 Handle gH_timerPing[MAXPLAYERS + 1]
@@ -256,107 +255,35 @@ public void OnMapStart()
 		ForceChangeLevel(gS_map, "Turn on SourceTV")
 	}
 	gI_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl", true)
-	gI_wModelPlayerDef[1] = PrecacheModel("models/player/ct_urban.mdl", true)
-	gI_wModelPlayerDef[2] = PrecacheModel("models/player/ct_gsg9.mdl", true)
-	gI_wModelPlayerDef[3] = PrecacheModel("models/player/ct_sas.mdl", true)
-	gI_wModelPlayerDef[4] = PrecacheModel("models/player/ct_gign.mdl", true)
 	gI_wModelPlayer[1] = PrecacheModel("models/fakeexpert/player/ct_urban.mdl", true)
 	gI_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl", true)
 	gI_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl", true)
 	gI_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl", true)
-	PrecacheModel("models/fakeexpert/pingtool/pingtool.mdl", true)
 	PrecacheSound("fakeexpert/pingtool/click.wav", true) //https://forums.alliedmods.net/showthread.php?t=333211
 	gI_zoneModel[0] = PrecacheModel("materials/fakeexpert/zones/start.vmt", true)
 	gI_zoneModel[1] = PrecacheModel("materials/fakeexpert/zones/finish.vmt", true)
 	gI_zoneModel[2] = PrecacheModel("materials/fakeexpert/zones/check_point.vmt", true)
 	gI_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true)
-	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx80.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.dx90.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl")
-	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.phy")
-	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.sw.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.vvd")
-	
-	AddFileToDownloadsTable("models/fakeexpert/pingtool/pingtool.dx80.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/pingtool/pingtool.dx90.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/pingtool/pingtool.mdl")
-	AddFileToDownloadsTable("models/fakeexpert/pingtool/pingtool.sw.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/pingtool/pingtool.vvd")
-	
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gign.dx80.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gign.dx90.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gign.mdl")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gign.phy")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gign.sw.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gign.vvd")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gsg9.dx90.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gsg9.dx90.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gsg9.mdl")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gsg9.phy")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gsg9.sw.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_gsg9.vvd")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_sas.dx80.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_sas.dx90.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_sas.mdl")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_sas.phy")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_sas.sw.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_sas.vvd")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_urban.dx80.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_urban.dx90.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_urban.mdl")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_urban.phy")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_urban.sw.vtx")
-	AddFileToDownloadsTable("models/fakeexpert/player/ct_urban.vvd")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/materials/models/weapons/w_models/w_eq_flashbang/noshadow.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/materials/models/weapons/w_models/w_eq_flashbang/shadow.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/materials/models/weapons/w_models/w_eq_flashbang/w_eq_flashbang.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/materials/models/weapons/w_models/w_eq_flashbang/wireframe.vmt")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/pingtool/circle_arrow.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/pingtool/circle_arrow.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/pingtool/circle_point.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/pingtool/circle_point.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/pingtool/grad.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/pingtool/grad.vtf")
-	AddFileToDownloadsTable("sound/fakeexpert/pingtool/click.wav")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gign/skin1.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gign/skin2.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gign/unlit_base.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gign/unlit_detail.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gign/vertex.vtf")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gsg9/skin1.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gsg9/skin2.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gsg9/unlit_base.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gsg9/unlit_detail.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_gsg9/vertex.vtf")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_sas/skin1.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_sas/skin2.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_sas/unlit_base.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_sas/unlit_detail.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_sas/vertex.vtf")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_urban/skin1.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_urban/skin2.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_urban/unlit_base.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_urban/unlit_detail.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/player/ct_urban/vertex.vtf")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/player/unlit_default.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/player/vertex_default.vmt")
-	
-	AddFileToDownloadsTable("materials/fakeexpert/zones/start.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/zones/start.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/zones/finish.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/zones/finish.vtf")
-	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vmt")
-	AddFileToDownloadsTable("materials/fakeexpert/zones/check_point.vtf")
-	
+	char path[12][PLATFORM_MAX_PATH] = {"models/fakeexpert/models/weapons/", "models/fakeexpert/pingtool/", "models/fakeexpert/player/", "materials/fakeexpert/materials/models/weapons/w_models/", "materials/fakeexpert/pingtool/", "sound/fakeexpert/pingtool/", "materials/fakeexpert/player/ct_gign/", "materials/fakeexpert/player/ct_gsg9/", "materials/fakeexpert/player/ct_sas/", "materials/fakeexpert/player/ct_urban/", "materials/fakeexpert/player/", "materials/fakeexpert/zones/"}
+	for(int i = 0; i < sizeof(path); i++)
+	{
+		DirectoryListing dir = OpenDirectory(path[i])
+		char filename[12][PLATFORM_MAX_PATH]
+		FileType type
+		char pathFull[12][PLATFORM_MAX_PATH]
+		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
+		{
+			if(type == FileType_File)
+			{
+				if(StrContains(filename[i], ".mdl") != -1)
+					PrecacheModel(filename[i], true)
+				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i])
+				AddFileToDownloadsTable(pathFull[i])
+			}
+		}
+		delete dir
+	}
 	gCV_turboPhysics = FindConVar("sv_turbophysics") //thnaks to maru.
-	
 	RecalculatePoints()
 }
 
