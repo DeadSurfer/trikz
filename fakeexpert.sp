@@ -275,9 +275,9 @@ public void OnMapStart()
 		{
 			if(type == FileType_File)
 			{
-				if(StrContains(filename[i], ".mdl") != -1)
-					PrecacheModel(filename[i], true)
 				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i])
+				if(StrContains(pathFull[i], ".mdl") != -1)
+					PrecacheModel(pathFull[i], true)
 				AddFileToDownloadsTable(pathFull[i])
 			}
 		}
@@ -1245,6 +1245,7 @@ void Restart(int client)
 					Call_StartForward(gH_start)
 					Call_PushCell(client)
 					Call_Finish()
+					CS_RespawnPlayer(client)
 					float velNull[3]
 					TeleportEntity(client, gF_originStart, NULL_VECTOR, velNull)
 					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
@@ -1256,11 +1257,6 @@ void Restart(int client)
 					if(gB_MenuIsOpen[client])
 						Trikz(client)
 					CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
-					//int pistol = GetPlayerWeaponSlot(client, 1) //https://forums.alliedmods.net/showthread.php?p=2458524 https://www.bing.com/search?q=CS_SLOT_KNIFE&cvid=52182d12e2ce40ddb948446cae8cfd71&aqs=edge..69i57.383j0j1&pglt=299&FORM=ANNTA1&PC=U531
-					//if(IsValidEntity(pistol))
-					//	RemoveEntity(pistol) //RemovePlayerItem need extra frame.
-					//GivePlayerItem(client, "weapon_usp")
-					CS_RespawnPlayer(client)
 				}
 			}
 			else if(IsPlayerAlive(client) && !gI_partner[client])
