@@ -291,7 +291,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			Format(sZLevel, 32, "[Rise|%.1f] ", origin[2] - gF_origin[client][2])
 		if(origin[2] - gF_origin[client][2] < -1.285155) //0.017089 without rb
 			Format(sZLevel, 32, "[Fall|%.1f] ", origin[2] - gF_origin[client][2])
-		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
+		//PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
 		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		float sync = -1.0
@@ -370,7 +370,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
-		PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
+		//PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
 		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
 		{
 			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
