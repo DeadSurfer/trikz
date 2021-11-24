@@ -60,9 +60,9 @@ public void OnMapStart()
 		{
 			if(type == FileType_File)
 			{
-				if(StrContains(filename[i], ".mdl") != -1)
-					PrecacheModel(filename[i], true)
 				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i])
+				if(StrContains(pathFull[i], ".mdl") != -1)
+					PrecacheModel(pathFull[i], true)
 				AddFileToDownloadsTable(pathFull[i])
 			}
 		}
