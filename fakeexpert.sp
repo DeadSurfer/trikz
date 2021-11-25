@@ -201,6 +201,7 @@ public void OnPluginStart()
 	HookEntityOutput("func_button", "OnPressed", OnButton)
 	HookEvent("player_jump", OnJump)
 	HookEvent("player_death", OnDeath)
+	AddCommandListener(joinclass, "joinclass")
 	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
 	for(int i = 0; i < sizeof(sOutputs); i++)
 	{
@@ -564,6 +565,17 @@ Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	RemoveEntity(ragdoll)
+}
+
+Action joinclass(int client, const char[] command, int argc)
+{
+	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+}
+
+Action timer_respawn(Handle timer, int client)
+{
+	if(IsClientInGame(client) && !IsPlayerAlive(client))
+		CS_RespawnPlayer(client)
 }
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
