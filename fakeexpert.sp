@@ -3573,12 +3573,14 @@ int Native_SetTrikzPartner(Handle plugin, int numParams)
 	int client = GetNativeCell(1)
 	int partner = GetNativeCell(2)
 	g_partner[client] = partner
+	g_partner[partner] = client
 }
 
 int Native_TrikzRestart(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1)
 	Restart(client)
+	Restart(g_partner[client])
 }
 
 Action timer_clearlag(Handle timer)
