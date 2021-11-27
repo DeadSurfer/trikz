@@ -52,7 +52,7 @@ native bool Trikz_GetTimerStateTrikz(int client)
 int g_flagsLast[MAXPLAYERS + 1]
 Handle g_DoAnimationEvent
 DynamicDetour g_MaintainBotQuota
-int g_timeToRestart[MAXPLAYERS + 1]
+float g_timeToRestart[MAXPLAYERS + 1]
 int g_weapon[MAXPLAYERS + 1]
 bool g_switchPrevent[MAXPLAYERS + 1]
 DynamicHook g_UpdateStepSound
@@ -387,9 +387,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
 		else if(g_tick[client][0] == g_replayTickcount[client])
 			TeleportEntity(client, frame.pos, ang, NULL_VECTOR)
-		g_timeToRestart[client] = GetGameTickCount()
+		g_timeToRestart[client] = GetGameTime()
 	}
-	else if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] == g_replayTickcount[client] && GetGameTickCount() - g_timeToRestart[client] == 300)
+	else if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart[client] >= 3.0)
 	{
 		g_tick[client][0] = 0
 		g_tick[Trikz_GetClientPartner(client)][0] = 0
