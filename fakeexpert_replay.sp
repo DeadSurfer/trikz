@@ -119,10 +119,17 @@ public void OnMapStart()
 {
 	GetCurrentMap(g_map, 192)
 	CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
-	for(int i = 0; i <= 1; i++)
+}
+
+public void OnClientDisconnect(int client)
+{
+	if(IsFakeClient(client))
 	{
-		g_bot[i] = 0
-		g_loaded[i] = false
+		for(int i = 0; i <= 1; i++)
+		{
+			g_bot[i] = 0
+			g_loaded[i] = false
+		}
 	}
 }
 
@@ -144,58 +151,35 @@ Action timer_bot(Handle timer)
 		cvForce.SetInt(1)
 		cvForce = FindConVar("bot_zombie")
 		cvForce.SetInt(1)
-		int replayRunning
+		int botShouldAdd = 2
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-				replayRunning++
-		if(replayRunning < 2)
-			ServerCommand("bot_add")
-		int botCount
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-				botCount++
-		if(botCount > 2)
-		{
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-				{
-					ServerCommand("bot_kick %N", i)
-					break
-				}
-			}
-		}
-		if(replayRunning)
+				botShouldAdd--
+		if(botShouldAdd != 0)
+			for(int i = 1; i <= botShouldAdd; i++)
+				ServerCommand("bot_add")
+		if(!botShouldAdd)
 		{
 			char query[512]
-			Format(query, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[0])
-			g_database.Query(SQLGetName, query, 0)
-			Format(query, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1])
-			g_database.Query(SQLGetName, query, 1)
+			for(int i = 0; i <= 1; i++)
+			{
+				Format(query, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[i])
+				g_database.Query(SQLGetName, query, i)
+			}
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
 			{
 				if(!g_bot[0])
-				{
 					g_bot[0] = i
-					continue
-				}
-				else if(!g_bot[1])
+				if(g_bot[0] != i)
+					g_bot[1] = i
+				if(g_bot[1])
 				{
-					if(g_bot[0] != i)
-					{
-						g_bot[1] = i
-						break
-					}
-				}
-				else if(g_bot[1])
-				{
-					if(!Trikz_GetClientPartner(g_bot[1]))
+					if(!Trikz_GetClientPartner(g_bot[0]))
 					{
 						Trikz_SetTrikzPartner(g_bot[0], g_bot[1])
-						Trikz_SetTrikzPartner(g_bot[1], g_bot[0])
 						if(IsClientInGame(g_bot[0]) && !IsPlayerAlive(g_bot[0]))
 							CS_RespawnPlayer(g_bot[0])
 						if(IsClientInGame(g_bot[1]) && !IsPlayerAlive(g_bot[1]))
@@ -360,7 +344,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] < g_replayTickcount[client] && g_loaded[0] && g_loaded[1])
 	{
-		if(!g_tick[client][0])
+		if(IsClientInGame(client) && !g_tick[client][0])
 			Trikz_TrikzRestart(client)
 		vel[0] = 0.0 //prevent crashes.
 		vel[1] = 0.0
@@ -405,10 +389,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, frame.pos, ang, NULL_VECTOR)
 		g_timeToRestart[client] = GetGameTickCount()
 	}
-	else if(IsFakeClient(client) && IsPlayerAlive(client) && GetGameTickCount() - g_timeToRestart[client] == 300 && g_tick[Trikz_GetClientPartner(client)][0] == g_replayTickcount[Trikz_GetClientPartner(client)])
+	else if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] == g_replayTickcount[client] && GetGameTickCount() - g_timeToRestart[client] == 300)
 	{
-		Trikz_TrikzRestart(client)
 		g_tick[client][0] = 0
+		g_tick[Trikz_GetClientPartner(client)][0] = 0
 	}
 }
 
