@@ -32,33 +32,33 @@
 #include <sdktools>
 #include <clientprefs>
 
-bool gB_jumped[MAXPLAYERS + 1]
-float gF_origin[MAXPLAYERS + 1][3]
-int gI_strafeCount[MAXPLAYERS + 1]
-bool gB_ladder[MAXPLAYERS + 1]
-float gF_preVel[MAXPLAYERS + 1][3]
-bool gB_jumpstats[MAXPLAYERS + 1]
-bool gB_strafeFirst[MAXPLAYERS + 1]
-int gI_tick[MAXPLAYERS + 1]
-int gI_syncTick[MAXPLAYERS + 1]
-int gI_tickAir[MAXPLAYERS + 1]
-bool gB_isCountJump[MAXPLAYERS + 1]
+bool g_jumped[MAXPLAYERS + 1]
+float g_origin[MAXPLAYERS + 1][3]
+int g_strafeCount[MAXPLAYERS + 1]
+bool g_ladder[MAXPLAYERS + 1]
+float g_preVel[MAXPLAYERS + 1][3]
+bool g_jumpstats[MAXPLAYERS + 1]
+bool g_strafeFirst[MAXPLAYERS + 1]
+int g_tick[MAXPLAYERS + 1]
+int g_syncTick[MAXPLAYERS + 1]
+int g_tickAir[MAXPLAYERS + 1]
+bool g_countjump[MAXPLAYERS + 1]
 float gF_dot[MAXPLAYERS + 1]
-bool gB_strafeBlockD[MAXPLAYERS + 1]
-bool gB_strafeBlockA[MAXPLAYERS + 1]
-bool gB_strafeBlockS[MAXPLAYERS + 1]
-bool gB_strafeBlockW[MAXPLAYERS + 1]
-char gS_style[MAXPLAYERS + 1][32]
-float gF_dotTime[MAXPLAYERS + 1]
+bool g_strafeBlockD[MAXPLAYERS + 1]
+bool g_strafeBlockA[MAXPLAYERS + 1]
+bool g_strafeBlockS[MAXPLAYERS + 1]
+bool g_strafeBlockW[MAXPLAYERS + 1]
+char g_style[MAXPLAYERS + 1][32]
+float g_dotTime[MAXPLAYERS + 1]
 bool gB_runboost[MAXPLAYERS + 1]
-int gI_rbBooster[MAXPLAYERS + 1]
-float gF_boostTime[MAXPLAYERS + 1]
-float gF_skyOrigin[MAXPLAYERS + 1][3]
-int gI_entityButtons[MAXPLAYERS + 1]
+int g_rbBooster[MAXPLAYERS + 1]
+float g_boostTime[MAXPLAYERS + 1]
+float g_skyOrigin[MAXPLAYERS + 1]
+int g_entityButtons[MAXPLAYERS + 1]
 native int Trikz_GetClientButtons(int client)
-bool gB_teleported[MAXPLAYERS + 1]
-Handle gH_cookie
-float gF_skyAble[MAXPLAYERS + 1]
+bool g_teleported[MAXPLAYERS + 1]
+Handle g_cookie
+float g_skyAble[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -72,7 +72,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("player_jump", Event_PlayerJump)
-	gH_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected)
+	g_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
@@ -96,23 +96,23 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_Touch, TouchClient)
 	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
 	if(!AreClientCookiesCached(client))
-		gB_jumpstats[client] = false
+		g_jumpstats[client] = false
 }
 
 public void OnClientCookiesCached(int client)
 {
 	char sValue[16]
-	GetClientCookie(client, gH_cookie, sValue, 16)
-	gB_jumpstats[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, g_cookie, sValue, 16)
+	g_jumpstats[client] = view_as<bool>(StringToInt(sValue))
 }
 
 Action cmd_jumpstats(int client, int args)
 {
-	gB_jumpstats[client] = !gB_jumpstats[client]
+	g_jumpstats[client] = !g_jumpstats[client]
 	char sValue[16]
-	IntToString(gB_jumpstats[client], sValue, 16)
-	SetClientCookie(client, gH_cookie, sValue)
-	PrintToChat(client, gB_jumpstats[client] ? "Jump stats is on." : "Jump stats is off.")
+	IntToString(g_jumpstats[client], sValue, 16)
+	SetClientCookie(client, g_cookie, sValue)
+	PrintToChat(client, g_jumpstats[client] ? "Jump stats is on." : "Jump stats is off.")
 	return Plugin_Handled
 }
 
@@ -126,48 +126,48 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 void output_teleport(const char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
-		gB_teleported[activator] = true
+		g_teleported[activator] = true
 }
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
+	if(g_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
-		gB_jumped[client] = true
-		gB_teleported[client] = false
+		g_jumped[client] = true
+		g_teleported[client] = false
 		float origin[3]
 		if(gB_runboost[client])
-			GetClientAbsOrigin(gI_rbBooster[client], origin)
+			GetClientAbsOrigin(g_rbBooster[client], origin)
 		else
 			GetClientAbsOrigin(client, origin)
-		gF_origin[client][0] = origin[0]
-		gF_origin[client][1] = origin[1]
-		gF_origin[client][2] = origin[2]
+		g_origin[client][0] = origin[0]
+		g_origin[client][1] = origin[1]
+		g_origin[client][2] = GetGroundPos(client)
 		float vel[3]
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
-		gF_preVel[client][0] = vel[0]
-		gF_preVel[client][1] = vel[1]
-		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
-		gF_dotTime[client] = GetEngineTime()
+		g_preVel[client][0] = vel[0]
+		g_preVel[client][1] = vel[1]
+		g_countjump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
+		g_dotTime[client] = GetEngineTime()
 	}
-	GetClientAbsOrigin(client, gF_skyOrigin[client])
-	gF_skyAble[client] = GetGameTime()
+	g_skyOrigin[client] = GetGroundPos(client)
+	g_skyAble[client] = GetGameTime()
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	gI_entityButtons[client] = buttons
+	g_entityButtons[client] = buttons
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
-		if(gI_tick[client] < 30)
-			gI_tick[client]++
+		if(g_tick[client] < 30)
+			g_tick[client]++
 	}
 	else
 	{
-		if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && (gB_jumped[client] || gB_ladder[client]))
+		if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && (g_jumped[client] || g_ladder[client]))
 		{
-			if(GetEngineTime() - gF_dotTime[client] < 0.4)
+			if(GetEngineTime() - g_dotTime[client] < 0.4)
 			{
 				float eye[3]
 				GetClientEyeAngles(client, eye)
@@ -183,10 +183,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				gF_dot[client] = GetVectorDotProduct(eye, velAbs) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
 				//PrintToServer("%f", gF_dot[client])
 			}
-			gI_tickAir[client]++
+			g_tickAir[client]++
 		}
 	}
-	if(gB_jumped[client])
+	if(g_jumped[client])
 	{
 		if(gF_dot[client] < -0.9) //backward
 		{
@@ -194,30 +194,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_MOVELEFT)
 				{
-					if(!gB_strafeBlockA[client])
+					if(!g_strafeBlockA[client])
 					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = false
-						gB_strafeBlockA[client] = true
+						g_strafeCount[client]++
+						g_strafeBlockD[client] = false
+						g_strafeBlockA[client] = true
 					}
-					gI_syncTick[client]++
+					g_syncTick[client]++
 				}
 			}
 			else
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
-					if(!gB_strafeBlockD[client])
+					if(!g_strafeBlockD[client])
 					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = true
-						gB_strafeBlockA[client] = false
+						g_strafeCount[client]++
+						g_strafeBlockD[client] = true
+						g_strafeBlockA[client] = false
 					}
-					gI_syncTick[client]++
+					g_syncTick[client]++
 				}
 			}
-			if(!StrEqual(gS_style[client], "Backward"))
-				Format(gS_style[client], 32, "Backward")
+			if(!StrEqual(g_style[client], "Backward"))
+				Format(g_style[client], 32, "Backward")
 		}
 		else if(gF_dot[client] > 0.9) //forward
 		{
@@ -225,30 +225,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_MOVERIGHT)
 				{
-					if(!gB_strafeBlockD[client])
+					if(!g_strafeBlockD[client])
 					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = true
-						gB_strafeBlockA[client] = false
+						g_strafeCount[client]++
+						g_strafeBlockD[client] = true
+						g_strafeBlockA[client] = false
 					}
-					gI_syncTick[client]++
+					g_syncTick[client]++
 				}
 			}
 			else
 			{
 				if(buttons & IN_MOVELEFT)
 				{
-					if(!gB_strafeBlockA[client])
+					if(!g_strafeBlockA[client])
 					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = false
-						gB_strafeBlockA[client] = true
+						g_strafeCount[client]++
+						g_strafeBlockD[client] = false
+						g_strafeBlockA[client] = true
 					}
-					gI_syncTick[client]++
+					g_syncTick[client]++
 				}
 			}
-			if(!StrEqual(gS_style[client], "Forward"))
-				Format(gS_style[client], 32, "Forward")
+			if(!StrEqual(g_style[client], "Forward"))
+				Format(g_style[client], 32, "Forward")
 		}
 		else //sideways
 		{
@@ -256,56 +256,55 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(buttons & IN_BACK)
 				{
-					if(!gB_strafeBlockS[client])
+					if(!g_strafeBlockS[client])
 					{
-						gI_strafeCount[client]++
-						gB_strafeBlockS[client] = true
-						gB_strafeBlockW[client] = false
+						g_strafeCount[client]++
+						g_strafeBlockS[client] = true
+						g_strafeBlockW[client] = false
 					}
-					gI_syncTick[client]++
+					g_syncTick[client]++
 				}
 			}
 			else
 			{
 				if(buttons & IN_FORWARD)
 				{
-					if(!gB_strafeBlockW[client])
+					if(!g_strafeBlockW[client])
 					{
-						gI_strafeCount[client]++
-						gB_strafeBlockS[client] = false
-						gB_strafeBlockW[client] = true
+						g_strafeCount[client]++
+						g_strafeBlockS[client] = false
+						g_strafeBlockW[client] = true
 					}
-					gI_syncTick[client]++
+					g_syncTick[client]++
 				}
 			}
-			if(!StrEqual(gS_style[client], "Sideways"))
-				Format(gS_style[client], 32, "Sideways")
+			if(!StrEqual(g_style[client], "Sideways"))
+				Format(g_style[client], 32, "Sideways")
 		}
 	}
-	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
+	if(GetEntityFlags(client) & FL_ONGROUND && g_jumped[client])
 	{
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
 		char sZLevel[32]
-		if(origin[2] - gF_origin[client][2] > 1.705139) //1.475586 without rb
-			Format(sZLevel, 32, "[Rise|%.1f] ", origin[2] - gF_origin[client][2])
-		if(origin[2] - gF_origin[client][2] < -1.285155) //0.017089 without rb
-			Format(sZLevel, 32, "[Fall|%.1f] ", origin[2] - gF_origin[client][2])
-		//PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
-		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
-		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
+		if(GetGroundPos(client) - g_origin[client][2] > 0.0)
+			Format(sZLevel, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2])
+		if(GetGroundPos(client) - g_origin[client][2] < 0.0)
+			Format(sZLevel, 32, "[Fall|%.1f] ", GetGroundPos(client) - g_origin[client][2])
+		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
+		float pre = SquareRoot(Pow(g_preVel[client][0], 2.0) + Pow(g_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		float sync = -1.0
-		sync += float(gI_syncTick[client])
+		sync += float(g_syncTick[client])
 		if(sync == -1.0)
 			sync = 0.0
-		sync /= float(gI_tickAir[client])
+		sync /= float(g_tickAir[client])
 		sync *= 100.0
 		if(1000.0 > distance >= 230.0 && pre < 280.0)
 		{
-			if(gB_jumpstats[client])
-				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
-			if(gB_runboost[client] && gB_jumpstats[gI_rbBooster[client]])
-				PrintToChat(gI_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+			if(g_jumpstats[client])
+				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", sZLevel, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
+			if(gB_runboost[client] && g_jumpstats[g_rbBooster[client]])
+				PrintToChat(g_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", sZLevel, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -313,9 +312,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+				if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", sZLevel, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
 			}
 		}
 		ResetFactory(client)
@@ -329,71 +328,71 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(GetEntityMoveType(client) & MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
 	{
 		ResetFactory(client)
-		gB_ladder[client] = true
+		g_ladder[client] = true
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
-		gF_origin[client][0] = origin[0]
-		gF_origin[client][1] = origin[1]
-		gF_origin[client][2] = origin[2]
-		gB_strafeFirst[client] = true
+		g_origin[client][0] = origin[0]
+		g_origin[client][1] = origin[1]
+		g_origin[client][2] = GetGroundPos(client)
+		g_strafeFirst[client] = true
 	}
-	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
+	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && g_ladder[client])
 	{
 		if(mouse[0] > 0)
 		{
 			if(buttons & IN_MOVERIGHT)
 			{
-				if(!gB_strafeBlockD[client])
+				if(!g_strafeBlockD[client])
 				{
-					gI_strafeCount[client]++
-					gB_strafeBlockD[client] = true
-					gB_strafeBlockA[client] = false
+					g_strafeCount[client]++
+					g_strafeBlockD[client] = true
+					g_strafeBlockA[client] = false
 				}
-				gI_syncTick[client]++
+				g_syncTick[client]++
 			}
 		}
 		else
 		{
 			if(buttons & IN_MOVELEFT)
 			{
-				if(!gB_strafeBlockA[client])
+				if(!g_strafeBlockA[client])
 				{
-					gI_strafeCount[client]++
-					gB_strafeBlockD[client] = false
-					gB_strafeBlockA[client] = true
+					g_strafeCount[client]++
+					g_strafeBlockD[client] = false
+					g_strafeBlockA[client] = true
 				}
-				gI_syncTick[client]++
+				g_syncTick[client]++
 			}
 		}
 	}
-	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
+	if(GetEntityFlags(client) & FL_ONGROUND && g_ladder[client])
 	{
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
-		//PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
-		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
+		//if(4.549926 >= GetGroundPos(client) - g_origin[client][2] >= -3.872436)
+		if(GetGroundPos(client) - g_origin[client][2] == 0.0)
 		{
-			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
+			float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0))
 			float sync = -1.0
-			if(gI_syncTick[client])
+			if(g_syncTick[client])
 			{
-				sync += float(gI_syncTick[client])
+				sync += float(g_syncTick[client])
 				if(sync == -1.0)
 					sync = 0.0
-				sync /= float(gI_tickAir[client])
+				sync /= float(g_tickAir[client])
 				sync *= 100.0
-				if(gB_jumpstats[client])
+				if(g_jumpstats[client])
 					if(190.0 > distance >= 22.0)
-						PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+						PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync)
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) && IsClientObserver(i))
 					{
 						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-						if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+						if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
 							if(190.0 > distance >= 22.0)
-								PrintToChat(i, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+								PrintToChat(i, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync)
 					}
 				}
 			}
@@ -410,23 +409,23 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 void ResetFactory(int client)
 {
-	gB_jumped[client] = false
-	gB_ladder[client] = false
-	gI_strafeCount[client] = 0
-	gI_syncTick[client] = 0
-	gI_tick[client] = 0
-	gI_tickAir[client] = 0
-	gB_strafeBlockD[client] = false
-	gB_strafeBlockA[client] = false
-	gB_strafeBlockS[client] = false
-	gB_strafeBlockW[client] = false
+	g_jumped[client] = false
+	g_ladder[client] = false
+	g_strafeCount[client] = 0
+	g_syncTick[client] = 0
+	g_tick[client] = 0
+	g_tickAir[client] = 0
+	g_strafeBlockD[client] = false
+	g_strafeBlockA[client] = false
+	g_strafeBlockS[client] = false
+	g_strafeBlockW[client] = false
 	gB_runboost[client] = false
-	gB_teleported[client] = false
+	g_teleported[client] = false
 }
 
 Action StartTouchProjectile(int entity, int other)
 {
-	if(0 < other <= MaxClients && (gB_jumped[other] || gB_ladder[other]))
+	if(0 < other <= MaxClients && (g_jumped[other] || g_ladder[other]))
 	{
 		//https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L220-L231
 		float entityOrigin[3]
@@ -439,14 +438,14 @@ Action StartTouchProjectile(int entity, int other)
 		if(0.0 < delta < 2.0)
 		{
 			ResetFactory(other)
-			gF_boostTime[other] = GetEngineTime()
+			g_boostTime[other] = GetEngineTime()
 		}
 	}
 }
 
 void TouchClient(int client, int other)
 {
-	if(0 < other <= MaxClients && gI_tick[client] == 30)
+	if(0 < other <= MaxClients && g_tick[client] == 30)
 	{
 		float clientOrigin[3]
 		GetClientAbsOrigin(client, clientOrigin)
@@ -460,17 +459,17 @@ void TouchClient(int client, int other)
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				gB_runboost[i] = false
-				gI_rbBooster[i] = 0
+				g_rbBooster[i] = 0
 			}
 			gB_runboost[client] = true
-			gI_rbBooster[client] = other
+			g_rbBooster[client] = other
 		}
 	}
 }
 
 void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("fakeexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : gI_entityButtons[other] & IN_JUMP) && GetEngineTime() - gF_boostTime[client] > 0.15)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("fakeexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : g_entityButtons[other] & IN_JUMP) && GetEngineTime() - g_boostTime[client] > 0.15)
 	{
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
@@ -500,12 +499,12 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						velNew[2] = 800.0
-				if(FloatAbs(gF_skyOrigin[client][2] - gF_skyOrigin[other][2]) > 1.5 || GetGameTime() - gF_skyAble[other] > 0.5)
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) != 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar CV_gravity = FindConVar("sv_gravity")
-					if(gB_jumpstats[client])
+					if(g_jumpstats[client])
 						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
-					if(gB_jumpstats[other])
+					if(g_jumpstats[other])
 						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
 					for(int i = 1; i <= MaxClients; i++)
 					{
@@ -513,7 +512,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 						{
 							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-							if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
+							if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
 								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
 						}
 					}
@@ -521,4 +520,74 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 			}
 		}
 	}
+}
+
+float GetGroundPos(int client)
+{
+	float vecOrigin[3]
+	float vecPos[3]
+	GetClientAbsOrigin(client, vecOrigin)
+	float rayBuffer[4]
+	for(int i = 0; i <= 3; i++)
+	{
+		float doPos[2][3]
+		switch(i)
+		{
+			case 0:
+			{
+				doPos[0][0] = vecOrigin[0] + 16.0
+				doPos[0][1] = vecOrigin[1] - 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] + 16.0
+				doPos[1][1] = vecOrigin[1] - 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+			case 1:
+			{
+				doPos[0][0] = vecOrigin[0] + 16.0
+				doPos[0][1] = vecOrigin[1] + 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] + 16.0
+				doPos[1][1] = vecOrigin[1] + 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+			case 2:
+			{
+				doPos[0][0] = vecOrigin[0] - 16.0
+				doPos[0][1] = vecOrigin[1] + 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] - 16.0
+				doPos[1][1] = vecOrigin[1] + 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+			case 3:
+			{
+				doPos[0][0] = vecOrigin[0] - 16.0
+				doPos[0][1] = vecOrigin[1] - 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] - 16.0
+				doPos[1][1] = vecOrigin[1] - 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+		}
+		Handle trace = TR_TraceRayFilterEx(doPos[0], doPos[1], MASK_PLAYERSOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
+		if(TR_DidHit(trace))
+		{
+			TR_GetEndPosition(vecPos, trace)
+			rayBuffer[i] = vecPos[2]
+		}
+		delete trace
+	}
+	float groundPos
+	for(int i = 0; i <= 3; i++)
+		if(FloatAbs(groundPos) < FloatAbs(rayBuffer[i]))
+			groundPos = rayBuffer[i]
+	return groundPos
+}
+
+bool TraceEntityFilterPlayer(int entity, int contentsMask, any data)
+{
+	if(entity == data)
+		return false
+	return true
 }
