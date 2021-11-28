@@ -286,11 +286,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
-		char sZLevel[32]
+		char notFlat[32]
 		if(GetGroundPos(client) - g_origin[client][2] > 0.0)
-			Format(sZLevel, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2])
+			Format(notFlat, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2])
 		if(GetGroundPos(client) - g_origin[client][2] < 0.0)
-			Format(sZLevel, 32, "[Fall|%.1f] ", GetGroundPos(client) - g_origin[client][2])
+			Format(notFlat, 32, "[Fall|%.1f] ", GetGroundPos(client) - g_origin[client][2])
 		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(g_preVel[client][0], 2.0) + Pow(g_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		float sync = -1.0
@@ -302,9 +302,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(1000.0 > distance >= 230.0 && pre < 280.0)
 		{
 			if(g_jumpstats[client])
-				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", sZLevel, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
+				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", notFlat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
 			if(gB_runboost[client] && g_jumpstats[g_rbBooster[client]])
-				PrintToChat(g_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", sZLevel, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
+				PrintToChat(g_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", notFlat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -314,7 +314,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", sZLevel, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
+						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", notFlat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_style[client])
 			}
 		}
 		ResetFactory(client)
@@ -369,7 +369,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
-		//if(4.549926 >= GetGroundPos(client) - g_origin[client][2] >= -3.872436)
 		if(GetGroundPos(client) - g_origin[client][2] == 0.0)
 		{
 			float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0))
