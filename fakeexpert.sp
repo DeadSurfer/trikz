@@ -131,7 +131,7 @@ bool g_mlstats[MAXPLAYERS + 1]
 float g_mlsDistance[MAXPLAYERS + 1][2][3]
 bool g_button[MAXPLAYERS + 1]
 bool g_pbutton[MAXPLAYERS + 1]
-float g_skyOrigin[MAXPLAYERS + 1][3]
+float g_skyOrigin[MAXPLAYERS + 1]
 int g_entityButtons[MAXPLAYERS + 1]
 bool g_teleported[MAXPLAYERS + 1]
 int g_points[MAXPLAYERS + 1]
@@ -538,7 +538,7 @@ void OnButton(const char[] output, int caller, int activator, float delay)
 Action OnJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	GetClientAbsOrigin(client, g_skyOrigin[client])
+	g_skyOrigin[client] = GetGroundPos(client)
 	g_skyAble[client] = GetGameTime()
 }
 
@@ -827,7 +827,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						g_skyVel[other][2] = 800.0
-				if(g_entityFlags[client] & FL_INWATER ? !g_skyBoost[other] : FloatAbs(g_skyOrigin[client][2] - g_skyOrigin[other][2]) > 1.5 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(g_entityFlags[client] & FL_INWATER ? !g_skyBoost[other] : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) != 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 					g_skyBoost[other] = 1
 			}
 		}
@@ -3586,4 +3586,67 @@ int Native_TrikzRestart(Handle plugin, int numParams)
 Action timer_clearlag(Handle timer)
 {
 	ServerCommand("mat_texture_list_txlod_sync reset")
+}
+
+float GetGroundPos(int client)
+{
+	float vecOrigin[3]
+	float vecPos[3]
+	GetClientAbsOrigin(client, vecOrigin)
+	float rayBuffer[4]
+	for(int i = 0; i <= 3; i++)
+	{
+		float doPos[2][3]
+		switch(i)
+		{
+			case 0:
+			{
+				doPos[0][0] = vecOrigin[0] + 16.0
+				doPos[0][1] = vecOrigin[1] - 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] + 16.0
+				doPos[1][1] = vecOrigin[1] - 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+			case 1:
+			{
+				doPos[0][0] = vecOrigin[0] + 16.0
+				doPos[0][1] = vecOrigin[1] + 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] + 16.0
+				doPos[1][1] = vecOrigin[1] + 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+			case 2:
+			{
+				doPos[0][0] = vecOrigin[0] - 16.0
+				doPos[0][1] = vecOrigin[1] + 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] - 16.0
+				doPos[1][1] = vecOrigin[1] + 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+			case 3:
+			{
+				doPos[0][0] = vecOrigin[0] - 16.0
+				doPos[0][1] = vecOrigin[1] - 16.0
+				doPos[0][2] = vecOrigin[2]
+				doPos[1][0] = vecOrigin[0] - 16.0
+				doPos[1][1] = vecOrigin[1] - 16.0
+				doPos[1][2] = vecOrigin[2] - 90.0
+			}
+		}
+		Handle trace = TR_TraceRayFilterEx(doPos[0], doPos[1], MASK_PLAYERSOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
+		if(TR_DidHit(trace))
+		{
+			TR_GetEndPosition(vecPos, trace)
+			rayBuffer[i] = vecPos[2]
+		}
+		delete trace
+	}
+	float groundPos
+	for(int i = 0; i <= 3; i++)
+		if(FloatAbs(groundPos) < FloatAbs(rayBuffer[i]))
+			groundPos = rayBuffer[i]
+	return groundPos
 }
