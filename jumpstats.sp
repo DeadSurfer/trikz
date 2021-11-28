@@ -521,7 +521,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 	}
 }
 
-float GetGroundPos(int client)
+float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float vecOrigin[3]
 	float vecPos[3]
