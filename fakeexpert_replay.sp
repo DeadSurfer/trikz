@@ -158,7 +158,7 @@ Action timer_bot(Handle timer)
 		if(botShouldAdd != 0)
 			for(int i = 1; i <= botShouldAdd; i++)
 				ServerCommand("bot_add")
-		if(!botShouldAdd)
+		if(!botShouldAdd && g_database)
 		{
 			char query[512]
 			for(int i = 0; i <= 1; i++)
@@ -274,9 +274,12 @@ void LoadRecord()
 			if(f.Read(data, sizeof(eFrame), 4) >= 0)
 				g_frameCache[g_bot[0]].SetArray(i, data, sizeof(eFrame))
 		delete f
-		char query[512]
-		Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[0])
-		g_database.Query(SQLGetName, query, 0)
+		if(g_database)
+		{
+			char query[512]
+			Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[0])
+			g_database.Query(SQLGetName, query, 0)
+		}
 		g_loaded[0] = true
 		g_tick[g_bot[0]][0] = 0
 	}
@@ -297,9 +300,12 @@ void LoadRecord()
 			if(f.Read(data, sizeof(eFrame), 4) >= 0)
 				g_frameCache[g_bot[1]].SetArray(i, data, sizeof(eFrame))
 		delete f
-		char query[512]
-		Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[1])
-		g_database.Query(SQLGetName, query, 1)
+		if(g_database)
+		{
+			char query[512]
+			Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[1])
+			g_database.Query(SQLGetName, query, 1)
+		}
 		g_loaded[1] = true
 		g_tick[g_bot[1]][0] = 0
 	}
