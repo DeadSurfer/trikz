@@ -308,8 +308,8 @@ void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const char[] 
 
 void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
 {
-	char query[512]
 	int place
+	char query[512]
 	while(results.FetchRow())
 	{
 		int points = results.FetchInt(1) * results.FetchInt(0) / ++place //thanks to DeadSurfer
@@ -419,7 +419,7 @@ Action OnMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum
 	char msgFormated[32]
 	Format(msgFormated, 32, "%s", msgBuffer)
 	char points[32]
-	int precentage = RoundToFloor(float(g_points[client]) / float(g_pointsMaxs) * 100.0)
+	int precentage = g_points[client] / g_pointsMaxs * 100
 	char color[8]
 	if(precentage >= 90)
 		Format(color, 8, "FF8000")
@@ -436,9 +436,9 @@ Action OnMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum
 	if(g_points[client] < 1000)
 		Format(points, 32, "\x07%s%i\x01", color, g_points[client])
 	else if(g_points[client] > 999)
-		Format(points, 32, "\x07%s%.0fK\x01", color, float(g_points[client]) / 1000.0)
+		Format(points, 32, "\x07%s%iK\x01", color, g_points[client] / 1000)
 	else if(g_points[client] > 999999)
-		Format(points, 32, "\x07%s%.0fM\x01", color, float(g_points[client]) / 1000000.0)
+		Format(points, 32, "\x07%s%iM\x01", color, g_points[client] / 1000000)
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec"))
 		Format(text, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", points, sName, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec"))
@@ -3043,17 +3043,17 @@ void Devmap(bool force = false)
 		if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] >= g_devmapCount[0])
 		{
 			if(g_devmap)
-				PrintToChatAll("Devmap will be disabled. \"Yes\" chose %.0f%%% or %.0f of %.0f players.", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, float(g_devmapCount[1]), float(g_devmapCount[0]) + float(g_devmapCount[1]))
+				PrintToChatAll("Devmap will be disabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / g_devmapCount[0] + g_devmapCount[1]) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1])
 			else
-				PrintToChatAll("Devmap will be enabled. \"Yes\" chose %.0f%%% or %.0f of %.0f players.", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, float(g_devmapCount[1]), float(g_devmapCount[0]) + float(g_devmapCount[1]))
+				PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / g_devmapCount[0] + g_devmapCount[1]) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1])
 			CreateTimer(5.0, timer_changelevel, g_devmap ? false : true)
 		}
 		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] <= g_devmapCount[0])
 		{
 			if(g_devmap)
-				PrintToChatAll("Devmap will be continue. \"No\" chose %.0f%%% or %.0f of %.0f players.", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, float(g_devmapCount[0]), float(g_devmapCount[0]) + float(g_devmapCount[1])) //google translate russian to english.
+				PrintToChatAll("Devmap will be continue. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / g_devmapCount[0] + g_devmapCount[1]) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]) //google translate russian to english.
 			else
-				PrintToChatAll("Devmap will not be enabled. \"No\" chose %.0f%%% or %.0f of %.0f players.", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, float(g_devmapCount[0]), float(g_devmapCount[0]) + float(g_devmapCount[1]))
+				PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / g_devmapCount[0] + g_devmapCount[1]) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1])
 		}
 		for(int i = 0; i <= 1; i++)
 			g_devmapCount[i] = 0
