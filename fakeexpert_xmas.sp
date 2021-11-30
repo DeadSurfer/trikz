@@ -91,10 +91,10 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	KeyValues kv = new KeyValues("xmas")
 	if(FileToKeyValues(kv, g_file) && kv.GotoFirstSubKey())
 	{
-		char nameKey[16]
-		if(kv.GetSectionName(nameKey, 16))
+		char nameKey[32]
+		do
 		{
-			do
+			if(kv.GetSectionName(nameKey, 32))
 			{
 				float origin[3]
 				float angles[3]
@@ -104,8 +104,8 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 				kv.GetString("type", type, 64)
 				CreateItem(origin, angles, type)
 			}
-			while(kv.GotoNextKey())
 		}
+		while(kv.GotoNextKey())
 	}
 	delete kv
 }
@@ -295,6 +295,7 @@ void CreateItem(float origin[3], float angles[3], char[] type)
 	else if(StrEqual(type, "gift11_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_special.mdl", model)
 	int entity = CreateEntityByName("prop_dynamic")
 	DispatchKeyValue(entity, "model", model)
+	DispatchKeyValue(entity, "Solid", "1")
 	DispatchSpawn(entity)
 	TeleportEntity(entity, origin, angles, NULL_VECTOR)
 }
@@ -305,24 +306,24 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			char item[16]
-			menu.GetItem(param2, item, 16)
+			char item[64]
+			menu.GetItem(param2, item, 64)
 			if(StrEqual(item, "del"))
 			{
 				int entity = GetClientAimTarget(param1, false)
 				if(IsValidEntity(entity))
 				{
 					float origin[3]
-					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
+					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", origin)
 					KeyValues kv = new KeyValues("xmas")
 					if(FileToKeyValues(kv, g_file) && kv.GotoFirstSubKey())
 					{
-						char nameKey[64]
-						char nameKeyCurrent[64]
-						Format(nameKeyCurrent, 64, "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]))
+						char nameKey[32]
+						char nameKeyCurrent[32]
+						Format(nameKeyCurrent, 32, "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]))
 						do
 						{
-							if(kv.GetSectionName(nameKey, 64))
+							if(kv.GetSectionName(nameKey, 32))
 							{
 								if(StrEqual(nameKey, nameKeyCurrent))
 								{
@@ -331,7 +332,6 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 									kv.Rewind()
 									KeyValuesToFile(kv, g_file)
 								}
-									
 							}
 						}
 						while(kv.GotoNextKey())
