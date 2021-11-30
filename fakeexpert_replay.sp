@@ -313,7 +313,7 @@ void LoadRecord()
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
-	if(Trikz_GetTimerStateTrikz(client))
+	if(Trikz_GetTimerStateTrikz(client) && g_frame[client])
 	{
 		if(g_frame[client].Length <= g_tick[client][1])
 			g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
