@@ -78,7 +78,7 @@ public void OnMapStart()
 
 public void OnClientDisconnect(int client)
 {
-	if(g_hat[client])
+	if(g_hat[client] && IsValidEntity(g_hat[client]))
 	{
 		SDKUnhook(g_hat[client], SDKHook_SetTransmit, SDKTransmit)
 		RemoveEntity(g_hat[client])
@@ -125,7 +125,7 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(g_hat[client])
+	if(g_hat[client] && IsValidEntity(g_hat[client]))
 	{
 		SDKUnhook(g_hat[client], SDKHook_SetTransmit, SDKTransmit)
 		RemoveEntity(g_hat[client])
@@ -153,6 +153,8 @@ void CreateHat(int client)
 		origin[2] += right[2] * offset[0] + forward_[2] * offset[1] + up[2] * offset[2]
 		g_hat[client] = CreateEntityByName("prop_dynamic")
 		DispatchKeyValue(g_hat[client], "model", "models/fakeexpert/santahat/santa.mdl")
+		SetEntProp(g_hat[client], Prop_Data, "m_CollisionGroup", 2)
+		SetEntPropEnt(g_hat[client], Prop_Send, "m_hOwnerEntity", client)
 		DispatchSpawn(g_hat[client])
 		SDKHook(g_hat[client], SDKHook_SetTransmit, SDKTransmit)
 		TeleportEntity(g_hat[client], origin, angles, NULL_VECTOR)
