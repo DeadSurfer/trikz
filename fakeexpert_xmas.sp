@@ -135,7 +135,7 @@ void OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 void CreateHat(int client)
 {
-	if(0 < client <= MaxClients && IsPlayerAlive(client) && (GetClientTeam(client) == 2 || GetClientTeam(client) == 3))
+	if(0 < client <= MaxClients && IsPlayerAlive(client) && (GetClientTeam(client) == 2 || GetClientTeam(client) == 3) && !g_hat[client])
 	{
 		float origin[3]
 		float angles[3]
