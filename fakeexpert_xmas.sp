@@ -89,6 +89,9 @@ public void OnMapStart()
 	}
 	char map[192]
 	GetCurrentMap(map, 192)
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/fakeexpert/")
+	if(!DirExists(path[0]))
+		CreateDirectory(path[0], 511)
 	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/fakeexpert/xmas/")
 	if(!DirExists(path[0]))
 		CreateDirectory(path[0], 511)
