@@ -41,9 +41,9 @@ public void OnPluginStart()
 {
 	g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
 	AutoExecConfig(true) //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
-	HookEvent("round_start", OnRoundStart, EventHookMode_Post)
-	HookEvent("player_spawn", OnSpawn, EventHookMode_Post)
-	HookEvent("player_death", OnDeath, EventHookMode_Post)
+	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy)
+	HookEvent("player_spawn", OnSpawn, EventHookMode_PostNoCopy)
+	HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy)
 	RegConsoleCmd("sm_xmas", cmd_xmas)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
@@ -53,17 +53,8 @@ public void OnPluginStart()
 public void OnPluginEnd()
 {
 	for(int i = 1; i <= MaxClients; i++)
-	{
 		if(IsClientInGame(i))
-		{
-			if(g_hat[i] && IsValidEntity(g_hat[i]))
-			{
-				SDKUnhook(g_hat[i], SDKHook_SetTransmit, SDKTransmit)
-				RemoveEntity(g_hat[i])
-				g_hat[i] = 0
-			}
-		}
-	}
+			RemoveHat(i)
 }
 
 public void OnMapStart()
@@ -100,12 +91,7 @@ public void OnMapStart()
 
 public void OnClientDisconnect(int client)
 {
-	if(g_hat[client] && IsValidEntity(g_hat[client]))
-	{
-		SDKUnhook(g_hat[client], SDKHook_SetTransmit, SDKTransmit)
-		RemoveEntity(g_hat[client])
-		g_hat[client] = 0
-	}
+	RemoveHat(client)
 }
 
 void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
@@ -132,6 +118,9 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 		while(kv.GotoNextKey())
 	}
 	delete kv
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			CreateHat(i)
 }
 
 void OnSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -149,10 +138,16 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(g_hat[client] && IsValidEntity(g_hat[client]))
+	RemoveHat(client)
+}
+
+void RemoveHat(int client)
+{
+	if(g_hat[client])
 	{
 		SDKUnhook(g_hat[client], SDKHook_SetTransmit, SDKTransmit)
-		RemoveEntity(g_hat[client])
+		if(IsValidEntity(g_hat[client]))
+			RemoveEntity(g_hat[client])
 		g_hat[client] = 0
 	}
 }
