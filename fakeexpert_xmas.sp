@@ -125,7 +125,7 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 				kv.GetVector("origin", origin)
 				kv.GetVector("angles", angles)
 				kv.GetString("type", type, 64)
-				kv.GetNum("skin", skin)
+				skin = kv.GetNum("skin")
 				CreateItem(origin, angles, type, skin)
 			}
 		}
@@ -193,9 +193,11 @@ Action SDKTransmit(int entity, int client)
 {
 	if(entity == g_hat[client])
 		return Plugin_Handled
-	if(IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == 4)
+	if(IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == 4 && GetEntPropEnt(client, Prop_Send, "m_hObserverTarget"))
 		if(entity == g_hat[GetEntPropEnt(client, Prop_Send, "m_hObserverTarget")])
 			return Plugin_Handled
+	if(!IsPlayerAlive(client) && g_hat[client])
+		return Plugin_Handled
 	return Plugin_Continue
 }
 
@@ -275,7 +277,7 @@ void Xmas(int client, char[] type = "")
 			angles[1] = eyeAngles[1] + 90.0
 		else if(StrEqual(type, "teddybear"))
 		{
-			angles[1] = eyeAngles[1] + 180
+			angles[1] = eyeAngles[1] + 180.0
 			skin = GetRandomInt(1, 2)
 		}
 		else
@@ -338,7 +340,7 @@ void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	else if(StrEqual(type, "gift10_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_special.mdl", model)
 	int entity = CreateEntityByName("prop_dynamic")
 	DispatchKeyValue(entity, "model", model)
-	DispatchKeyValue(entity, "Solid", "1")
+	DispatchKeyValue(entity, "solid", "1")
 	DispatchSpawn(entity)
 	TeleportEntity(entity, origin, angles, NULL_VECTOR)
 	SetEntProp(entity, Prop_Data, "m_nSkin", skin)
