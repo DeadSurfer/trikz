@@ -121,10 +121,12 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 				float origin[3]
 				float angles[3]
 				char type[64]
+				int skin
 				kv.GetVector("origin", origin)
 				kv.GetVector("angles", angles)
 				kv.GetString("type", type, 64)
-				CreateItem(origin, angles, type)
+				kv.GetNum("skin", skin)
+				CreateItem(origin, angles, type, skin)
 			}
 		}
 		while(kv.GotoNextKey())
@@ -213,18 +215,21 @@ Action cmd_xmas(int client, int args)
 		menu.AddItem("teddybear", "Teddybear")
 		menu.AddItem("gift", "Gift")
 		menu.AddItem("gift2", "Gift2")
+		menu.AddItem("del", "Delete item")
 		menu.AddItem("gift3", "Gift3")
 		menu.AddItem("gift4", "Gift4")
 		menu.AddItem("gift5", "Gift5")
 		menu.AddItem("gift6", "Gift6")
 		menu.AddItem("gift7", "Gift7")
 		menu.AddItem("gift8", "Gift8")
+		menu.AddItem("del", "Delete item")
 		menu.AddItem("gift9", "Gift9")
 		menu.AddItem("gift10", "Gift10")
 		menu.AddItem("gift_big", "Gift Big")
 		menu.AddItem("gift2_big", "Gift2 Big")
 		menu.AddItem("gift3_big", "Gift3 Big")
 		menu.AddItem("gift4_big", "Gift4 Big")
+		menu.AddItem("del", "Delete item")
 		menu.AddItem("gift5_big", "Gift5 Big")
 		menu.AddItem("gift6_big", "Gift6 Big")
 		menu.AddItem("gift7_big", "Gift7 Big")
@@ -260,15 +265,28 @@ void Xmas(int client, char[] type = "")
 		angles[0] += 90.0
 		float eyeAngles[3]
 		GetClientEyeAngles(client, eyeAngles)
+		int skin
 		if(StrEqual(type, "tree") || StrEqual(type, "tree_big"))
+		{
 			angles[1] = eyeAngles[1] - 135.0
+			skin = GetRandomInt(1, 4)
+		}
 		else if(StrEqual(type, "snowman"))
 			angles[1] = eyeAngles[1] + 90.0
 		else if(StrEqual(type, "teddybear"))
+		{
 			angles[1] = eyeAngles[1] + 180
+			skin = GetRandomInt(1, 2)
+		}
 		else
+		{
 			angles[1] = eyeAngles[1]
-		CreateItem(origin, angles, type)
+			if(StrEqual(type, "gift10"))
+				skin = GetRandomInt(1, 4)
+			else
+				skin = GetRandomInt(1, 5)
+		}
+		CreateItem(origin, angles, type, skin)
 		KeyValues kv = new KeyValues("xmas")
 		FileToKeyValues(kv, g_file)
 		char info[32]
@@ -277,6 +295,7 @@ void Xmas(int client, char[] type = "")
 		kv.SetVector("origin", origin)
 		kv.SetVector("angles", angles)
 		kv.SetString("type", type)
+		kv.SetNum("skin", skin)
 		kv.Rewind()
 		KeyValuesToFile(kv, g_file)
 		delete kv
@@ -290,7 +309,7 @@ bool Trace_FilterPlayers(int entity, int contentsMask, any data)
 	return false
 }
 
-void CreateItem(float origin[3], float angles[3], char[] type)
+void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 {
 	char model[PLATFORM_MAX_PATH] = "models/fakeexpert/xmas/"
 	if(StrEqual(type, "tree")) Format(model, PLATFORM_MAX_PATH, "%sxmastree_mini.mdl", model)
@@ -322,6 +341,7 @@ void CreateItem(float origin[3], float angles[3], char[] type)
 	DispatchKeyValue(entity, "Solid", "1")
 	DispatchSpawn(entity)
 	TeleportEntity(entity, origin, angles, NULL_VECTOR)
+	SetEntProp(entity, Prop_Data, "m_nSkin", skin)
 }
 
 int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
