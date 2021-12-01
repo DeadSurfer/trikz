@@ -45,6 +45,25 @@ public void OnPluginStart()
 	HookEvent("player_spawn", OnSpawn, EventHookMode_Post)
 	HookEvent("player_death", OnDeath, EventHookMode_Post)
 	RegConsoleCmd("sm_xmas", cmd_xmas)
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			CreateHat(i)
+}
+
+public void OnPluginEnd()
+{
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			if(g_hat[i] && IsValidEntity(g_hat[i]))
+			{
+				SDKUnhook(g_hat[i], SDKHook_SetTransmit, SDKTransmit)
+				RemoveEntity(g_hat[i])
+				g_hat[i] = 0
+			}
+		}
+	}
 }
 
 public void OnMapStart()
