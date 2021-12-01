@@ -119,8 +119,13 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	}
 	delete kv
 	for(int i = 1; i <= MaxClients; i++)
+	{
 		if(IsClientInGame(i))
+		{
+			RemoveHat(i)
 			CreateHat(i)
+		}
+	}
 }
 
 void OnSpawn(Event event, const char[] name, bool dontBroadcast)
