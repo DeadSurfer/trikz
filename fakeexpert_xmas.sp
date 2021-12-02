@@ -44,7 +44,7 @@ public void OnPluginStart()
 	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy)
 	HookEvent("player_spawn", OnSpawn, EventHookMode_PostNoCopy)
 	HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy)
-	HookEvent("player_team", OnTeam, EventHookMode_PostNoCopy)
+	HookEvent("player_team", OnTeam, EventHookMode_Pre)
 	RegConsoleCmd("sm_xmas", cmd_xmas)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
@@ -132,11 +132,11 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	char sModel[PLATFORM_MAX_PATH]
-	GetClientModel(client, sModel, PLATFORM_MAX_PATH)
-	if(StrEqual(sModel, "models/player/ct_gsg9.mdl"))
+	char model[PLATFORM_MAX_PATH]
+	GetClientModel(client, model, PLATFORM_MAX_PATH)
+	if(StrEqual(model, "models/player/ct_gsg9.mdl"))
 		SetEntityModel(client, "models/player/ct_urban.mdl")
-	else if(StrEqual(sModel, "models/player/ct_sas.mdl"))
+	else if(StrEqual(model, "models/player/ct_sas.mdl"))
 		SetEntityModel(client, "models/player/ct_gign.mdl")
 	CreateHat(client)
 }
@@ -147,7 +147,7 @@ void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	RemoveHat(client)
 }
 
-void OnTeam(Event event, const char[] name, bool dontBroadcast)
+Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	RemoveHat(client)
