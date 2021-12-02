@@ -150,7 +150,9 @@ void OnDeath(Event event, const char[] name, bool dontBroadcast)
 Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	RemoveHat(client)
+	int team = event.GetInt("team") //https://wiki.alliedmods.net/Generic_Source_Events#player_team
+	if(team == 1)
+		RemoveHat(client)
 }
 
 void RemoveHat(int client)
