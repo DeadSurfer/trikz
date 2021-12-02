@@ -44,7 +44,7 @@ public void OnPluginStart()
 	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy)
 	HookEvent("player_spawn", OnSpawn, EventHookMode_PostNoCopy)
 	HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy)
-	HookEvent("player_team", OnTeam, EventHookMode_Pre)
+	HookEvent("player_team", OnTeam, EventHookMode_Pre) //https://forums.alliedmods.net/showpost.php?p=1273273&postcount=3
 	RegConsoleCmd("sm_xmas", cmd_xmas)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
