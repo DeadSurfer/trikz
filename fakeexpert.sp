@@ -34,6 +34,8 @@
 #include <clientprefs>
 
 int g_partner[MAXPLAYERS + 1]
+float g_partnerInHold[MAXPLAYERS + 1]
+bool g_partnerInHoldLock[MAXPLAYERS + 1]
 float g_zoneStartOrigin[2][3]
 float g_zoneEndOrigin[2][3]
 Database g_mysql
@@ -142,6 +144,8 @@ int g_queryLast
 Handle g_cookie[4]
 float g_skyAble[MAXPLAYERS + 1]
 native bool Trikz_GetEntityFilter(int client, int entity)
+float g_restartInHold[MAXPLAYERS + 1]
+bool g_restartInHoldLock[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -202,6 +206,8 @@ public void OnPluginStart()
 	HookEvent("player_jump", OnJump)
 	HookEvent("player_death", OnDeath)
 	AddCommandListener(joinclass, "joinclass")
+	AddCommandListener(autobuy, "autobuy")
+	AddCommandListener(rebuy, "rebuy")
 	char outputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
 	for(int i = 0; i < sizeof(outputs); i++)
 	{
@@ -587,6 +593,16 @@ Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 Action joinclass(int client, const char[] command, int argc)
 {
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+}
+
+Action autobuy(int client, const char[] command, int argc)
+{
+	Block(client)
+}
+
+Action rebuy(int client, const char[] command, int argc)
+{
+	Color(client, true)
 }
 
 Action timer_respawn(Handle timer, int client)
@@ -1026,73 +1042,44 @@ void Partner(int client)
 		PrintToChat(client, "Turn off devmap.")
 	else
 	{
-		if(IsPlayerAlive(client))
+		if(!g_partner[client])
 		{
-			if(!g_partner[client])
+			Menu menu = new Menu(partner_handler)
+			menu.SetTitle("Choose partner")
+			char sName[MAX_NAME_LENGTH]
+			bool noPlayers = true
+			for(int i = 1; i <= MaxClients; i++)
 			{
-				Menu menu = new Menu(partner_handler)
-				menu.SetTitle("Choose partner")
-				char sName[MAX_NAME_LENGTH]
-				bool noPlayers = true
-				for(int i = 1; i <= MaxClients; i++)
+				if(IsClientInGame(i) && !IsFakeClient(i)) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
 				{
-					if(IsClientInGame(i) && !IsFakeClient(i)) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
+					if(client != i && !g_partner[i])
 					{
-						if(IsPlayerAlive(i))
-						{
-							if(client != i && !g_partner[i])
-							{
-								GetClientName(i, sName, MAX_NAME_LENGTH)
-								char nameID[32]
-								IntToString(i, nameID, 32)
-								menu.AddItem(nameID, sName)
-								noPlayers = false
-							}
-						}
+						GetClientName(i, sName, MAX_NAME_LENGTH)
+						char nameID[32]
+						IntToString(i, nameID, 32)
+						menu.AddItem(nameID, sName)
+						noPlayers = false
 					}
 				}
-				switch(noPlayers)
-				{
-					case true:
-						PrintToChat(client, "No free player.")
-				}
-				menu.Display(client, 20)
 			}
-			else
+			switch(noPlayers)
 			{
-				Menu menu = new Menu(cancelpartner_handler)
-				menu.SetTitle("Cancel partnership with %N", g_partner[client])
-				char partner[32]
-				IntToString(g_partner[client], partner, 32)
-				menu.AddItem(partner, "Yes")
-				menu.AddItem("", "No")
-				menu.Display(client, 20)
+				case false:
+					menu.Display(client, 20)
+				case true:
+					PrintToChat(client, "No free player.")
 			}
+			
 		}
 		else
 		{
-			int entity
-			bool ct
-			bool t
-			while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
-			{
-				ct = true
-				break
-			}
-			while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
-			{
-				t = true
-				break
-			}
-			if(ct && t)
-			{
-				PrintToChat(client, "Join to Counter-Terrorist or Terrorist team.")
-				return
-			}
-			else if(ct)
-				PrintToChat(client, "Join to Counter-Terrorist team.")
-			else if(t)
-				PrintToChat(client, "Join to Terrorist team.")
+			Menu menu = new Menu(cancelpartner_handler)
+			menu.SetTitle("Cancel partnership with %N", g_partner[client])
+			char partner[32]
+			IntToString(g_partner[client], partner, 32)
+			menu.AddItem(partner, "Yes")
+			menu.AddItem("", "No")
+			menu.Display(client, 20)
 		}
 	}
 }
@@ -1320,8 +1307,43 @@ void Restart(int client)
 						Trikz(client)
 					CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
 				}
+				else if(!IsPlayerAlive(client))
+				{
+					int entity
+					bool ct
+					bool t
+					while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
+					{
+						ct = true
+						break
+					}
+					while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
+					{
+						if(!ct)
+							t = true
+						break
+					}
+					if(ct)
+					{
+						ChangeClientTeam(client, CS_TEAM_CT)
+						CS_RespawnPlayer(client)
+						if(!IsPlayerAlive(g_partner[client]))
+							CS_RespawnPlayer(g_partner[client])
+						Restart(client)
+						Restart(g_partner[client])
+					}
+					if(t)
+					{
+						ChangeClientTeam(client, CS_TEAM_T)
+						CS_RespawnPlayer(client)
+						if(!IsPlayerAlive(g_partner[client]))
+							CS_RespawnPlayer(g_partner[client])
+						Restart(client)
+						Restart(g_partner[client])
+					}
+				}
 			}
-			else if(IsPlayerAlive(client) && !g_partner[client])
+			else
 				PrintToChat(client, "You must have a partner.")
 		}
 	}
@@ -3092,6 +3114,47 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				else
 					SetEntityRenderColor(client, 255, 255, 255, 255)
 			}
+		}
+		if(!g_partner[client])
+		{
+			if(buttons & IN_USE)
+			{
+				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
+				{
+					g_partnerInHold[client] = GetEngineTime()
+					g_partnerInHoldLock[client] = false
+				}
+			}
+			else
+				if(!g_partnerInHoldLock[client])
+					g_partnerInHoldLock[client] = true
+			if(!g_partnerInHoldLock[client] && GetEngineTime() - g_partnerInHold[client] > 0.7)
+			{
+				g_partnerInHoldLock[client] = true
+				Partner(client)
+			}
+		}
+		if(buttons & IN_RELOAD)
+		{
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
+			{
+				g_restartInHold[client] = GetEngineTime()
+				g_restartInHoldLock[client] = false
+			}
+		}
+		else
+			if(!g_restartInHoldLock[client])
+				g_restartInHoldLock[client] = true
+		if(!g_restartInHoldLock[client] && GetEngineTime() - g_restartInHold[client] > 0.7)
+		{
+			g_restartInHoldLock[client] = true
+			if(g_partner[client])
+			{
+				Restart(client)
+				Restart(g_partner[client])
+			}
+			else
+				Partner(client)
 		}
 	}
 }
