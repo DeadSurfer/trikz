@@ -44,6 +44,7 @@ public void OnPluginStart()
 	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy)
 	HookEvent("player_spawn", OnSpawn, EventHookMode_PostNoCopy)
 	HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy)
+	HookEvent("player_team", OnTeam, EventHookMode_PostNoCopy)
 	RegConsoleCmd("sm_xmas", cmd_xmas)
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
@@ -146,6 +147,12 @@ void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	RemoveHat(client)
 }
 
+void OnTeam(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	RemoveHat(client)
+}
+
 void RemoveHat(int client)
 {
 	if(g_hat[client])
@@ -196,8 +203,6 @@ Action SDKTransmit(int entity, int client)
 	if(IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == 4 && GetEntPropEnt(client, Prop_Send, "m_hObserverTarget"))
 		if(entity == g_hat[GetEntPropEnt(client, Prop_Send, "m_hObserverTarget")])
 			return Plugin_Handled
-	if(!IsPlayerAlive(client) && g_hat[client])
-		return Plugin_Handled
 	return Plugin_Continue
 }
 
@@ -271,22 +276,22 @@ void Xmas(int client, char[] type = "")
 		if(StrEqual(type, "tree") || StrEqual(type, "tree_big"))
 		{
 			angles[1] = eyeAngles[1] - 135.0
-			skin = GetRandomInt(1, 4)
+			skin = GetRandomInt(0, 3)
 		}
 		else if(StrEqual(type, "snowman"))
 			angles[1] = eyeAngles[1] + 90.0
 		else if(StrEqual(type, "teddybear"))
 		{
 			angles[1] = eyeAngles[1] + 180.0
-			skin = GetRandomInt(1, 2)
+			skin = GetRandomInt(0, 1)
 		}
 		else
 		{
 			angles[1] = eyeAngles[1]
 			if(StrEqual(type, "gift10"))
-				skin = GetRandomInt(1, 4)
+				skin = GetRandomInt(0, 3)
 			else
-				skin = GetRandomInt(1, 5)
+				skin = GetRandomInt(0, 4)
 		}
 		CreateItem(origin, angles, type, skin)
 		KeyValues kv = new KeyValues("xmas")
