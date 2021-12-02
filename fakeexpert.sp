@@ -3608,14 +3608,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if(StrEqual(classname, "flashbang_projectile"))
 	{
 		g_bouncedOff[entity] = false //tengu lawl boost fix .sp
-		SDKHook(entity, SDKHook_Spawn, SDKProjectile)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
-		SDKHook(entity, SDKHook_SpawnPost, SDKProjectilePost)
+		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile)
 	}
 }
 
-Action SDKProjectile(int entity)
+void SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
 	if(IsValidEntity(entity) && IsValidEntity(client))
@@ -3628,6 +3627,12 @@ Action SDKProjectile(int entity)
 		RequestFrame(frame_blockExplosion, entity)
 		CreateTimer(IsFakeClient(client) ? 0.1 : GetClientAvgLatency(client, NetFlow_Both), timer_hideSwtich, client, TIMER_FLAG_NO_MAPCHANGE)
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
+		if(g_color[client])
+		{
+			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown)
+			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
+			SetEntityRenderColor(entity, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 255)
+		}
 	}
 }
 
@@ -3647,20 +3652,6 @@ Action timer_deleteProjectile(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
 		RemoveEntity(entity)
-}
-
-void SDKProjectilePost(int entity)
-{
-	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
-	if(IsValidEntity(client))
-	{
-		if(g_color[client])
-		{
-			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown)
-			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
-			SetEntityRenderColor(entity, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 255)
-		}
-	}
 }
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
