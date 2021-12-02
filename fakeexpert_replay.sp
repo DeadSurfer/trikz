@@ -320,9 +320,19 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 {
 	if(Trikz_GetTimerStateTrikz(client) && g_frame[client])
 	{
+		eFrame frame
+		if(g_tick[Trikz_GetClientPartner(client)][1] > g_tick[client][1])
+		{
+			int differ = g_tick[Trikz_GetClientPartner(client)][1] - g_tick[client][1]
+			for(int i = 2; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
+			{
+				if(g_frame[client].Length <= g_tick[client][1])
+					g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
+				g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
+			}
+		}
 		if(g_frame[client].Length <= g_tick[client][1])
 			g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
-		eFrame frame
 		GetClientAbsOrigin(client, frame.pos)
 		float ang[3]
 		GetClientEyeAngles(client, ang)
@@ -338,16 +348,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			g_weapon[client] = 0
 		}
 		g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
-		if(g_tick[Trikz_GetClientPartner(client)][1] > g_tick[client][1])
-		{
-			int differ = g_tick[Trikz_GetClientPartner(client)][1] - g_tick[client][1]
-			for(int i = 2; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
-			{
-				if(g_frame[client].Length <= g_tick[client][1])
-					g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
-				g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
-			}
-		}
 	}
 }
 
@@ -367,7 +367,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float velPos[3]
 		MakeVectorFromPoints(posPrev, frame.pos, velPos)
 		ScaleVector(velPos, g_tickrate)
-		buttons = frame.buttons
 		float ang[3]
 		ang[0] = frame.ang[0]
 		ang[1] = frame.ang[1]
@@ -380,14 +379,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(g_flagsLast[client] & FL_ONGROUND && !(frame.flags & FL_ONGROUND) && g_DoAnimationEvent != INVALID_HANDLE)
 			SDKCall(g_DoAnimationEvent, g_Linux ? EntIndexToEntRef(client) : client, 3, 0)
 		g_flagsLast[client] = frame.flags
-		SetEntityMoveType(client, frame.movetype)
+		MoveType movetype = MOVETYPE_NOCLIP
+		if(frame.movetype == MOVETYPE_LADDER)
+			movetype = frame.movetype
+		SetEntityMoveType(client, movetype)
 		if(frame.weapon)
 		{
 			for(int i = 0; i < sizeof(g_weaponName); i++)
 			{
 				if(frame.weapon == i + 1)
 				{
-					FakeClientCommand(client, "use weapon_%s", g_weaponName[i])
+					FakeClientCommandEx(client, "use weapon_%s", g_weaponName[i])
 					break
 				}
 			}
@@ -398,6 +400,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
 		else if(g_tick[client][0] == g_replayTickcount[client])
 			TeleportEntity(client, frame.pos, ang, NULL_VECTOR)
+		buttons = frame.buttons
 		g_timeToRestart[client] = GetGameTime()
 	}
 	else if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart[client] >= 3.0)
@@ -435,7 +438,7 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT)
 	{
-		SDKHook(client, SDKHook_WeaponSwitch, SDKWeaponSwitch)
+		SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitch)
 		if(IsFakeClient(client))
 		{
 			g_UpdateStepSound.HookEntity(Hook_Pre, client, Hook_UpdateStepSound_Pre)
@@ -459,7 +462,7 @@ void ApplyFlags(int &flags1, int flags2, int flag)
 		flags1 &= ~flag
 }
 
-Action SDKWeaponSwitch(int client, int weapon)
+void SDKWeaponSwitch(int client, int weapon)
 {
 	if(Trikz_GetTimerStateTrikz(client))
 	{
