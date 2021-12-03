@@ -357,7 +357,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(IsClientInGame(client) && !g_tick[client][0])
 			Trikz_TrikzRestart(client)
-		vel[0] = 0.0 //prevent crashes.
+		vel[0] = 0.0 //prevent shakes at flat surface.
 		vel[1] = 0.0
 		vel[2] = 0.0
 		eFrame frame
