@@ -67,7 +67,7 @@ int g_replayTickcount[MAXPLAYERS + 1]
 char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smokegrenade", "p228", "deagle", "elite", "fiveseven", 
 						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
 						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
-						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249"}
+						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"}
 
 public Plugin myinfo =
 {
