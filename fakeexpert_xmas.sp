@@ -278,9 +278,9 @@ void Xmas(int client, char[] type = "")
 	GetClientEyePosition(client, origin)
 	GetClientEyeAngles(client, angles)
 	TR_TraceRayFilter(origin, angles, MASK_SOLID, RayType_Infinite, Trace_FilterPlayers, client)
-	if(TR_DidHit(null))
+	if(TR_DidHit())
 	{
-		TR_GetEndPosition(origin, null)
+		TR_GetEndPosition(origin)
 		TR_GetPlaneNormal(null, angles)
 		GetVectorAngles(angles, angles)
 		angles[0] += 90.0
