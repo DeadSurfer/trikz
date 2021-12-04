@@ -1367,7 +1367,7 @@ void Restart(int client)
 					}
 					if(ct)
 					{
-						ChangeClientTeam(client, CS_TEAM_CT)
+						CS_SwitchTeam(client, CS_TEAM_CT) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
 						CS_RespawnPlayer(client)
 						if(!IsPlayerAlive(g_partner[client]))
 							CS_RespawnPlayer(g_partner[client])
@@ -1376,7 +1376,7 @@ void Restart(int client)
 					}
 					if(t)
 					{
-						ChangeClientTeam(client, CS_TEAM_T)
+						CS_SwitchTeam(client, CS_TEAM_T)
 						CS_RespawnPlayer(client)
 						if(!IsPlayerAlive(g_partner[client]))
 							CS_RespawnPlayer(g_partner[client])
