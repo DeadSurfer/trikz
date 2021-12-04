@@ -48,7 +48,7 @@ enum struct eFrame
 int g_tick[MAXPLAYERS + 1][2]
 int g_steamid3[2]
 Database g_database
-native bool Trikz_GetTimerStateTrikz(int client)
+native bool Trikz_GetTimerState(int client)
 int g_flagsLast[MAXPLAYERS + 1]
 Handle g_DoAnimationEvent
 DynamicDetour g_MaintainBotQuota
@@ -58,8 +58,8 @@ bool g_switchPrevent[MAXPLAYERS + 1]
 DynamicHook g_UpdateStepSound
 bool g_Linux
 native int Trikz_GetClientPartner(int client)
-native int Trikz_SetTrikzPartner(int client, int partner)
-native int Trikz_TrikzRestart(int client)
+native int Trikz_SetPartner(int client, int partner)
+native int Trikz_Restart(int client)
 int g_bot[2]
 bool g_loaded[2]
 float g_tickrate
@@ -68,6 +68,7 @@ char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smo
 						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
 						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
 						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"}
+native int Trikz_GetDevmap()
 
 public Plugin myinfo =
 {
@@ -117,8 +118,13 @@ public void OnPluginEnd()
 
 public void OnMapStart()
 {
-	GetCurrentMap(g_map, 192)
-	CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+	if(!Trikz_GetDevmap())
+	{
+		GetCurrentMap(g_map, 192)
+		CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+	}
+	else
+		OnPluginEnd()
 }
 
 public void OnClientDisconnect(int client)
@@ -179,7 +185,7 @@ Action timer_bot(Handle timer)
 				{
 					if(!Trikz_GetClientPartner(g_bot[0]))
 					{
-						Trikz_SetTrikzPartner(g_bot[0], g_bot[1])
+						Trikz_SetPartner(g_bot[0], g_bot[1])
 						if(IsClientInGame(g_bot[0]) && !IsPlayerAlive(g_bot[0]))
 							CS_RespawnPlayer(g_bot[0])
 						if(IsClientInGame(g_bot[1]) && !IsPlayerAlive(g_bot[1]))
@@ -318,7 +324,7 @@ void LoadRecord()
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
-	if(Trikz_GetTimerStateTrikz(client) && g_frame[client])
+	if(Trikz_GetTimerState(client) && g_frame[client])
 	{
 		eFrame frame
 		GetClientAbsOrigin(client, frame.pos)
@@ -359,7 +365,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] < g_replayTickcount[client] && g_loaded[0] && g_loaded[1])
 	{
 		if(IsClientInGame(client) && !g_tick[client][0])
-			Trikz_TrikzRestart(client)
+			Trikz_Restart(client)
 		vel[0] = 0.0 //prevent shakes at flat surface.
 		vel[1] = 0.0
 		vel[2] = 0.0
@@ -467,7 +473,7 @@ void ApplyFlags(int &flags1, int flags2, int flag)
 
 void SDKWeaponSwitch(int client, int weapon)
 {
-	if(Trikz_GetTimerStateTrikz(client))
+	if(Trikz_GetTimerState(client))
 	{
 		if(g_switchPrevent[client])
 			g_switchPrevent[client] = false
