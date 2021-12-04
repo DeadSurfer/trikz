@@ -210,7 +210,7 @@ Action SDKTransmit(int entity, int client)
 	if(entity == g_hat[client])
 		return Plugin_Handled
 	if(LibraryExists("fakeexpert") && LibraryExists("fakeexpert-entityfilter"))
-		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+		if(IsPlayerAlive(client) && GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
 			return Plugin_Handled
 	if(LibraryExists("fakeexpert_bhop") && !IsClientObserver(client))
 		return Plugin_Handled
