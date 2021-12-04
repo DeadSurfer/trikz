@@ -3826,7 +3826,7 @@ float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=10
 	GetClientAbsOrigin(client, origin)
 	float originDir[3]
 	GetClientAbsOrigin(client, originDir)
-	originDir[2] -= 1.0
+	originDir[2] -= 90.0
 	float mins[3]
 	GetClientMins(client, mins)
 	float maxs[3]
