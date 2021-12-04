@@ -1,24 +1,17 @@
 /*
 	GNU GENERAL PUBLIC LICENSE
-
 	VERSION 2, JUNE 1991
-
 	Copyright (C) 1989, 1991 Free Software Foundation, Inc.
 	51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
-
 	Everyone is permitted to copy and distribute verbatim copies
 	of this license document, but changing it is not allowed.
-
 	GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
 	Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
 	Everyone is permitted to copy and distribute verbatim copies
 	of this license document, but changing it is not allowed.
-
 							Preamble
-
 	The GNU General Public License is a free, copyleft license for
 	software and other kinds of works.
-
 	The licenses for most software and other practical works are designed
 	to take away your freedom to share and change the works. By contrast,
 	the GNU General Public license is intended to guarantee your freedom to 
@@ -30,497 +23,393 @@
 */
 #include <sdktools>
 #include <sdkhooks>
-#include <dhooks>
-#include <cstrike>
 
-char g_map[192]
-ArrayList g_frame[MAXPLAYERS + 1]
-ArrayList g_frameCache[MAXPLAYERS + 1]
-enum struct eFrame
-{
-	float pos[3]
-	float ang[2]
-	int buttons
-	int flags
-	MoveType movetype
-	int weapon
-}
-int g_tick[MAXPLAYERS + 1][2]
-int g_steamid3[2]
-Database g_database
-native bool Trikz_GetTimerStateTrikz(int client)
-int g_flagsLast[MAXPLAYERS + 1]
-Handle g_DoAnimationEvent
-DynamicDetour g_MaintainBotQuota
-float g_timeToRestart[MAXPLAYERS + 1]
-int g_weapon[MAXPLAYERS + 1]
-bool g_switchPrevent[MAXPLAYERS + 1]
-DynamicHook g_UpdateStepSound
-bool g_Linux
+char g_file[PLATFORM_MAX_PATH]
+ConVar g_steamid
+int g_hat[MAXPLAYERS + 1]
 native int Trikz_GetClientPartner(int client)
-native int Trikz_SetTrikzPartner(int client, int partner)
-native int Trikz_TrikzRestart(int client)
-int g_bot[2]
-bool g_loaded[2]
-float g_tickrate
-int g_replayTickcount[MAXPLAYERS + 1]
-char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smokegrenade", "p228", "deagle", "elite", "fiveseven", 
-						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
-						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
-						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"}
 
 public Plugin myinfo =
 {
-	name = "Replay",
-	author = "Smesh(Nick Yurevich)",
-	description = "Replay module for fakeexpert.",
-	version = "0.1",
+	name = "Xmas",
+	author = "Nick Jurevics (Smesh, Smesh292)",
+	description = "Snowman, gifts, big Christmas tree, Santa hat.",
+	version = "1.0",
 	url = "http://www.sourcemod.net/"
 }
 
 public void OnPluginStart()
 {
-	Database.Connect(SQLConnect, "fakeexpert")
-	HookEvent("player_spawn", OnSpawn, EventHookMode_Post)
-	HookEvent("player_changename", OnChangeName, EventHookMode_Pre)
-	GameData gamedata = new GameData("fakeexpert")
-	g_Linux = (gamedata.GetOffset("OS") == 2)
-	StartPrepSDKCall(g_Linux ? SDKCall_Static : SDKCall_Player)
-	if(PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "Player::DoAnimationEvent"))
-	{
-		if(g_Linux)
-			PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_ByRef)
-		PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue)
-		PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue)
-	}
-	g_DoAnimationEvent = EndPrepSDKCall()
-	g_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)
-	DHookSetFromConf(g_MaintainBotQuota, gamedata, SDKConf_Signature, "BotManager::MaintainBotQuota")
-	g_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota)
-	int offset
-	if((offset = GameConfGetOffset(gamedata, "CBasePlayer::UpdateStepSound")) != -1)
-	{
-		g_UpdateStepSound = new DynamicHook(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity)
-		g_UpdateStepSound.AddParam(HookParamType_ObjectPtr)
-		g_UpdateStepSound.AddParam(HookParamType_VectorPtr)
-		g_UpdateStepSound.AddParam(HookParamType_VectorPtr)
-	}
-	delete gamedata
-	g_tickrate = 1.0 / GetTickInterval()
+	g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.")
+	AutoExecConfig(true) //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
+	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy)
+	HookEvent("player_spawn", OnSpawn, EventHookMode_PostNoCopy)
+	HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy)
+	HookEvent("player_team", OnTeam, EventHookMode_Pre) //https://forums.alliedmods.net/showthread.php?t=135521
+	RegConsoleCmd("sm_xmas", cmd_xmas)
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			CreateHat(i)
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("Trikz_GetClientPartner")
+	return APLRes_Success
 }
 
 public void OnPluginEnd()
 {
-	SetConVarFlags(FindConVar("bot_quota"), GetConVarFlags(FindConVar("bot_quota")) | FCVAR_NOTIFY)
-	ServerCommand("bot_kick")
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			RemoveHat(i)
 }
 
 public void OnMapStart()
 {
-	GetCurrentMap(g_map, 192)
-	CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+	char path[4][PLATFORM_MAX_PATH] = {"models/fakeexpert/xmas/", "models/fakeexpert/santahat/", "materials/fakeexpert/xmas/", "materials/fakeexpert/santahat/"}
+	for(int i = 0; i < sizeof(path); i++)
+	{
+		DirectoryListing dir = OpenDirectory(path[i])
+		char filename[4][PLATFORM_MAX_PATH]
+		FileType type
+		char pathFull[4][PLATFORM_MAX_PATH]
+		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
+		{
+			if(type == FileType_File)
+			{
+				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i])
+				if(StrContains(pathFull[i], ".mdl") != -1)
+					PrecacheModel(pathFull[i], true)
+				AddFileToDownloadsTable(pathFull[i])
+			}
+		}
+		delete dir
+	}
+	char map[192]
+	GetCurrentMap(map, 192)
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/fakeexpert/")
+	if(!DirExists(path[0]))
+		CreateDirectory(path[0], 511)
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/fakeexpert/xmas/")
+	if(!DirExists(path[0]))
+		CreateDirectory(path[0], 511)
+	Format(g_file, PLATFORM_MAX_PATH, "%s%s.cfg", path[0], map)
 }
 
 public void OnClientDisconnect(int client)
 {
-	if(IsFakeClient(client))
-	{
-		for(int i = 0; i <= 1; i++)
-		{
-			g_bot[i] = 0
-			g_loaded[i] = false
-		}
-	}
+	RemoveHat(client)
 }
 
-Action timer_bot(Handle timer)
+void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	char record[PLATFORM_MAX_PATH]
-	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/fakeexpert/%s.replay", g_map)
-	char recordPartner[PLATFORM_MAX_PATH]
-	BuildPath(Path_SM, recordPartner, PLATFORM_MAX_PATH, "data/fakeexpert/%s_partner.replay", g_map)
-	if(FileExists(record) && FileExists(recordPartner))
+	KeyValues kv = new KeyValues("xmas")
+	if(FileToKeyValues(kv, g_file) && kv.GotoFirstSubKey())
 	{
-		ConVar cvForce = FindConVar("bot_stop")
-		cvForce.SetInt(1)
-		cvForce = FindConVar("bot_join_after_player")
-		cvForce.SetInt(0)
-		cvForce = FindConVar("bot_quota")
-		cvForce.Flags = GetConVarFlags(FindConVar("bot_quota")) &~ FCVAR_NOTIFY
-		cvForce = FindConVar("bot_flipout")
-		cvForce.SetInt(1)
-		cvForce = FindConVar("bot_zombie")
-		cvForce.SetInt(1)
-		int botShouldAdd = 2
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-				botShouldAdd--
-		if(botShouldAdd != 0)
-			for(int i = 1; i <= botShouldAdd; i++)
-				ServerCommand("bot_add")
-		if(!botShouldAdd && g_database)
+		char nameKey[32]
+		do
 		{
-			char query[512]
-			for(int i = 0; i <= 1; i++)
+			if(kv.GetSectionName(nameKey, 32))
 			{
-				Format(query, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[i])
-				g_database.Query(SQLGetName, query, i)
+				float origin[3]
+				float angles[3]
+				char type[64]
+				int skin
+				kv.GetVector("origin", origin)
+				kv.GetVector("angles", angles)
+				kv.GetString("type", type, 64)
+				skin = kv.GetNum("skin")
+				CreateItem(origin, angles, type, skin)
 			}
 		}
-		for(int i = 1; i <= MaxClients; i++)
+		while(kv.GotoNextKey())
+	}
+	delete kv
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
 		{
-			if(IsClientInGame(i) && !IsClientSourceTV(i) && IsFakeClient(i))
-			{
-				if(!g_bot[0])
-					g_bot[0] = i
-				if(g_bot[0] != i)
-					g_bot[1] = i
-				if(g_bot[1])
-				{
-					if(!Trikz_GetClientPartner(g_bot[0]))
-					{
-						Trikz_SetTrikzPartner(g_bot[0], g_bot[1])
-						if(IsClientInGame(g_bot[0]) && !IsPlayerAlive(g_bot[0]))
-							CS_RespawnPlayer(g_bot[0])
-						if(IsClientInGame(g_bot[1]) && !IsPlayerAlive(g_bot[1]))
-							CS_RespawnPlayer(g_bot[1])
-						LoadRecord()
-					}
-				}
-			}
+			RemoveHat(i)
+			CreateHat(i)
 		}
 	}
-}
-
-void SetupSave(int client, float time)
-{
-	char dir[PLATFORM_MAX_PATH]
-	BuildPath(Path_SM, dir, PLATFORM_MAX_PATH, "data/fakeexpert")
-	if(!DirExists(dir))
-		CreateDirectory(dir, 511)
-	char dirBackup[PLATFORM_MAX_PATH]
-	BuildPath(Path_SM, dirBackup, PLATFORM_MAX_PATH, "data/fakeexpert/backup")
-	if(!DirExists(dirBackup))
-		CreateDirectory(dirBackup, 511)
-	char record[PLATFORM_MAX_PATH]
-	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/fakeexpert/%s.replay", g_map)
-	SaveRecord(client, record, time)
-	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/fakeexpert/%s_partner.replay", g_map)
-	SaveRecord(Trikz_GetClientPartner(client), record, time)
-	char recordBackup[PLATFORM_MAX_PATH]
-	char timeFormat[32]
-	FormatTime(timeFormat, 32, "%Y%b%d_%H_%M_%S", GetTime())
-	BuildPath(Path_SM, recordBackup, PLATFORM_MAX_PATH, "data/fakeexpert/backup/%s_%s.replay", g_map, timeFormat)
-	SaveRecord(client, recordBackup, time)
-	BuildPath(Path_SM, recordBackup, PLATFORM_MAX_PATH, "data/fakeexpert/backup/%s_%s_partner.replay", g_map, timeFormat)
-	SaveRecord(Trikz_GetClientPartner(client), recordBackup, time)
-}
-
-void SaveRecord(int client, char[] path, float time)
-{
-	g_frame[client].Resize(g_tick[client][1])
-	File f = OpenFile(path, "wb")
-	f.WriteInt32(g_tick[client][1])
-	f.WriteInt32(GetSteamAccountID(client))
-	f.WriteInt32(view_as<int>(time))
-	any data[sizeof(eFrame)]
-	any dataWrite[sizeof(eFrame) * 100]
-	int framesWritten
-	for(int i = 0; i < g_tick[client][1]; i++)
-	{
-		g_frame[client].GetArray(i, data, sizeof(eFrame))
-		for(int j = 0; j < sizeof(eFrame); j++)
-			dataWrite[(sizeof(eFrame) * framesWritten) + j] = data[j]
-		if(++framesWritten == 100 || i == g_tick[client][1] - 1)
-		{
-			f.Write(dataWrite, sizeof(eFrame) * framesWritten, 4)
-			framesWritten = 0
-		}
-	}
-	delete f
-}
-
-void SQLGetName(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(strlen(error))
-		PrintToServer("SQLGetName: %s", error)
-	else
-	{
-		if(results.FetchRow())
-		{
-			char name[MAX_NAME_LENGTH]
-			results.FetchString(0, name, MAX_NAME_LENGTH)
-			Format(name, MAX_NAME_LENGTH, "RECORD %s", name)
-			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && IsFakeClient(i) && IsPlayerAlive(i))
-					if(g_bot[data] == i && g_steamid3[data])
-						SetClientName(i, name)
-		}
-	}
-}
-
-void LoadRecord()
-{
-	char filePath[PLATFORM_MAX_PATH]
-	BuildPath(Path_SM, filePath, PLATFORM_MAX_PATH, "data/fakeexpert/%s.replay", g_map)
-	if(FileExists(filePath))
-	{
-		File f = OpenFile(filePath, "rb")
-		int tickcount
-		int time
-		f.ReadInt32(tickcount)
-		f.ReadInt32(g_steamid3[0])
-		f.ReadInt32(time)
-		g_replayTickcount[g_bot[0]] = tickcount
-		any data[sizeof(eFrame)]
-		delete g_frameCache[g_bot[0]]
-		g_frameCache[g_bot[0]] = new ArrayList(sizeof(eFrame), tickcount)
-		for(int i = 0; i < tickcount; i++)
-			if(f.Read(data, sizeof(eFrame), 4) >= 0)
-				g_frameCache[g_bot[0]].SetArray(i, data, sizeof(eFrame))
-		delete f
-		if(g_database)
-		{
-			char query[512]
-			Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[0])
-			g_database.Query(SQLGetName, query, 0)
-		}
-		g_loaded[0] = true
-		g_tick[g_bot[0]][0] = 0
-	}
-	BuildPath(Path_SM, filePath, PLATFORM_MAX_PATH, "data/fakeexpert/%s_partner.replay", g_map)
-	if(FileExists(filePath))
-	{
-		File f = OpenFile(filePath, "rb")
-		int tickcount
-		int time
-		f.ReadInt32(tickcount)
-		f.ReadInt32(g_steamid3[1])
-		f.ReadInt32(time)
-		g_replayTickcount[g_bot[1]] = tickcount
-		any data[sizeof(eFrame)]
-		delete g_frameCache[g_bot[1]]
-		g_frameCache[g_bot[1]] = new ArrayList(sizeof(eFrame), tickcount)
-		for(int i = 0; i < tickcount; i++)
-			if(f.Read(data, sizeof(eFrame), 4) >= 0)
-				g_frameCache[g_bot[1]].SetArray(i, data, sizeof(eFrame))
-		delete f
-		if(g_database)
-		{
-			char query[512]
-			Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[1])
-			g_database.Query(SQLGetName, query, 1)
-		}
-		g_loaded[1] = true
-		g_tick[g_bot[1]][0] = 0
-	}
-}
-
-public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
-{
-	if(Trikz_GetTimerStateTrikz(client) && g_frame[client])
-	{
-		eFrame frame
-		if(g_frame[client].Length <= g_tick[client][1])
-			g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
-		GetClientAbsOrigin(client, frame.pos)
-		float ang[3]
-		GetClientEyeAngles(client, ang)
-		frame.ang[0] = ang[0]
-		frame.ang[1] = ang[1]
-		frame.buttons = buttons
-		frame.flags = GetEntityFlags(client)
-		frame.movetype = GetEntityMoveType(client)
-		if(g_weapon[client])
-		{
-			g_switchPrevent[client] = true
-			frame.weapon = g_weapon[client]
-			g_weapon[client] = 0
-		}
-		int differ = g_tick[Trikz_GetClientPartner(client)][1] - g_tick[client][1]
-		if(differ < 2)
-			g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
-		else if(differ >= 2)
-		{
-			for(int i = 2; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
-			{
-				if(g_frame[client].Length <= g_tick[client][1])
-					g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
-				g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
-			}
-		}
-	}
-}
-
-public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
-{
-	if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] < g_replayTickcount[client] && g_loaded[0] && g_loaded[1])
-	{
-		if(IsClientInGame(client) && !g_tick[client][0])
-			Trikz_TrikzRestart(client)
-		vel[0] = 0.0 //prevent shakes at flat surface.
-		vel[1] = 0.0
-		vel[2] = 0.0
-		eFrame frame
-		g_frameCache[client].GetArray(g_tick[client][0]++, frame, sizeof(eFrame))
-		float posPrev[3]
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev)
-		float velPos[3]
-		MakeVectorFromPoints(posPrev, frame.pos, velPos)
-		ScaleVector(velPos, g_tickrate)
-		float ang[3]
-		ang[0] = frame.ang[0]
-		ang[1] = frame.ang[1]
-		int flags = GetEntityFlags(client)
-		ApplyFlags(flags, frame.flags, FL_ONGROUND)
-		ApplyFlags(flags, frame.flags, FL_PARTIALGROUND)
-		ApplyFlags(flags, frame.flags, FL_INWATER)
-		ApplyFlags(flags, frame.flags, FL_SWIM)
-		SetEntityFlags(client, flags)
-		if(g_flagsLast[client] & FL_ONGROUND && !(frame.flags & FL_ONGROUND) && g_DoAnimationEvent != INVALID_HANDLE)
-			SDKCall(g_DoAnimationEvent, g_Linux ? EntIndexToEntRef(client) : client, 3, 0)
-		g_flagsLast[client] = frame.flags
-		MoveType movetype = MOVETYPE_NOCLIP
-		if(frame.movetype == MOVETYPE_LADDER)
-			movetype = frame.movetype
-		SetEntityMoveType(client, movetype)
-		if(frame.weapon)
-		{
-			for(int i = 0; i < sizeof(g_weaponName); i++)
-			{
-				if(frame.weapon == i + 1)
-				{
-					FakeClientCommandEx(client, "use weapon_%s", g_weaponName[i])
-					break
-				}
-			}
-		}
-		if(g_tick[client][0] == 1)
-			TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}))
-		else if(1 < g_tick[client][0] < g_replayTickcount[client])
-			TeleportEntity(client, NULL_VECTOR, ang, velPos)
-		else if(g_tick[client][0] == g_replayTickcount[client])
-			TeleportEntity(client, frame.pos, ang, NULL_VECTOR)
-		buttons = frame.buttons
-		g_timeToRestart[client] = GetGameTime()
-	}
-	else if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart[client] >= 3.0)
-	{
-		g_tick[client][0] = 0
-		g_tick[Trikz_GetClientPartner(client)][0] = 0
-	}
-}
-
-void SQLConnect(Database db, const char[] error, any data)
-{
-	if(!db)
-	{
-		PrintToServer("Failed to connect to database")
-		return
-	}
-	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
-	g_database = db
-}
-
-public void Trikz_Start(int client)
-{
-	delete g_frame[client]
-	g_frame[client] = new ArrayList((sizeof(eFrame)))
-	g_tick[client][1] = 0
-}
-
-public void Trikz_Record(int client, float time)
-{
-	SetupSave(client, time)
 }
 
 void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT)
-	{
-		SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitch)
-		if(IsFakeClient(client))
-		{
-			g_UpdateStepSound.HookEntity(Hook_Pre, client, Hook_UpdateStepSound_Pre)
-			g_UpdateStepSound.HookEntity(Hook_Post, client, Hook_UpdateStepSound_Post)
-		}
-	}
+	char model[PLATFORM_MAX_PATH]
+	GetClientModel(client, model, PLATFORM_MAX_PATH)
+	if(StrEqual(model, "models/player/ct_gsg9.mdl"))
+		SetEntityModel(client, "models/player/ct_urban.mdl")
+	else if(StrEqual(model, "models/player/ct_sas.mdl"))
+		SetEntityModel(client, "models/player/ct_gign.mdl")
+	CreateHat(client)
 }
 
-Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
+void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(IsFakeClient(client))
-		SetEventBroadcast(event, true)
+	RemoveHat(client)
 }
 
-void ApplyFlags(int &flags1, int flags2, int flag)
+Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
-	if((flags2 & flag) != 0)
-		flags1 |= flag
-	else
-		flags1 &= ~flag
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	int team = event.GetInt("team") //https://wiki.alliedmods.net/Generic_Source_Events#player_team
+	if(team == 1)
+		RemoveHat(client)
 }
 
-void SDKWeaponSwitch(int client, int weapon)
+void RemoveHat(int client)
 {
-	if(Trikz_GetTimerStateTrikz(client))
+	if(g_hat[client])
 	{
-		if(g_switchPrevent[client])
-			g_switchPrevent[client] = false
-		else
-		{
-			char classname[32]
-			GetEntityClassname(weapon, classname, 32)
-			char weaponName[32]
-			for(int i = 0; i < sizeof(g_weaponName); i++)
-			{
-				Format(weaponName, 32, "weapon_%s", g_weaponName[i])
-				if(StrEqual(classname, weaponName))
-				{
-					g_weapon[client] = i + 1
-					break
-				}
-			}
-		}
+		SDKUnhook(g_hat[client], SDKHook_SetTransmit, SDKTransmit)
+		if(IsValidEntity(g_hat[client]))
+			RemoveEntity(g_hat[client])
+		g_hat[client] = 0
 	}
 }
 
-// Stops bot_quota from doing anything.
-MRESReturn Detour_MaintainBotQuota(int pThis)
+void CreateHat(int client)
 {
-	return MRES_Supercede
+	if(0 < client <= MaxClients && IsPlayerAlive(client) && (GetClientTeam(client) == 2 || GetClientTeam(client) == 3) && !g_hat[client])
+	{
+		float origin[3]
+		float angles[3]
+		float forward_[3]
+		float right[3]
+		float up[3]
+		GetClientAbsOrigin(client, origin)
+		GetClientAbsAngles(client, angles)
+		float offset[3]
+		offset[1] = -1.0
+		offset[2] = 6.0
+		GetAngleVectors(angles, forward_, right, up)
+		origin[0] += right[0] * offset[0] + forward_[0] * offset[1] + up[0] * offset[2]
+		origin[1] += right[1] * offset[0] + forward_[1] * offset[1] + up[1] * offset[2]
+		origin[2] += right[2] * offset[0] + forward_[2] * offset[1] + up[2] * offset[2]
+		g_hat[client] = CreateEntityByName("prop_dynamic")
+		DispatchKeyValue(g_hat[client], "model", "models/fakeexpert/santahat/santa.mdl")
+		SetEntProp(g_hat[client], Prop_Data, "m_CollisionGroup", 2)
+		SetEntPropEnt(g_hat[client], Prop_Send, "m_hOwnerEntity", client)
+		DispatchSpawn(g_hat[client])
+		SDKHook(g_hat[client], SDKHook_SetTransmit, SDKTransmit)
+		TeleportEntity(g_hat[client], origin, angles, NULL_VECTOR)
+		SetVariantString("!activator")
+		AcceptEntityInput(g_hat[client], "SetParent", client, g_hat[client])
+		SetVariantString("forward")
+		AcceptEntityInput(g_hat[client], "SetParentAttachmentMaintainOffset", g_hat[client], g_hat[client])
+	}
 }
 
-// Remove flags from replay bots that cause CBasePlayer::UpdateStepSound to return without playing a footstep.
-MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
+Action SDKTransmit(int entity, int client)
 {
-	if(GetEntityMoveType(pThis) == MOVETYPE_NOCLIP)
-		SetEntityMoveType(pThis, MOVETYPE_WALK)
-	SetEntityFlags(pThis, GetEntityFlags(pThis) & ~FL_ATCONTROLS)
-	return MRES_Ignored
-}
-
-// Readd flags to replay bots now that CBasePlayer::UpdateStepSound is done.
-MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
-{
-	if(GetEntityMoveType(pThis) == MOVETYPE_WALK)
-		SetEntityMoveType(pThis, MOVETYPE_NOCLIP)
-	SetEntityFlags(pThis, GetEntityFlags(pThis) | FL_ATCONTROLS)
-	return MRES_Ignored
-}
-
-public void OnEntityCreated(int entity, const char[] classname)
-{
-	if(StrContains(classname, "trigger") != -1)
-		SDKHook(entity, SDKHook_Touch, SDKTrigger)
-}
-
-Action SDKTrigger(int entity, int other)
-{
-	if(0 < other <= MaxClients && IsFakeClient(other) && IsPlayerAlive(other))
+	if(entity == g_hat[client])
 		return Plugin_Handled
-	else
-		return Plugin_Continue
+	if(LibraryExists("fakeexpert") && LibraryExists("fakeexpert-entityfilter"))
+		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+			return Plugin_Handled
+	if(LibraryExists("fakeexpert_bhop") && !IsClientObserver(client))
+		return Plugin_Handled
+	if(IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == 4 && GetEntPropEnt(client, Prop_Send, "m_hObserverTarget"))
+		if(entity == g_hat[GetEntPropEnt(client, Prop_Send, "m_hObserverTarget")])
+			return Plugin_Handled
+	return Plugin_Continue
 }
+
+Action cmd_xmas(int client, int args)
+{
+	char steamidCurrent[32]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 32)
+	char steamid[32]
+	g_steamid.GetString(steamid, 32)
+	if(StrEqual(steamid, steamidCurrent))
+	{
+		Menu menu = new Menu(handler_menu_xmas)
+		menu.SetTitle("Xmas")
+		menu.AddItem("tree", "Tree")
+		menu.AddItem("tree_big", "Tree Big")
+		menu.AddItem("snowman", "Snowman")
+		menu.AddItem("teddybear", "Teddybear")
+		menu.AddItem("gift", "Gift")
+		menu.AddItem("gift2", "Gift2")
+		menu.AddItem("del", "Delete item")
+		menu.AddItem("gift3", "Gift3")
+		menu.AddItem("gift4", "Gift4")
+		menu.AddItem("gift5", "Gift5")
+		menu.AddItem("gift6", "Gift6")
+		menu.AddItem("gift7", "Gift7")
+		menu.AddItem("gift8", "Gift8")
+		menu.AddItem("del", "Delete item")
+		menu.AddItem("gift9", "Gift9")
+		menu.AddItem("gift10", "Gift10")
+		menu.AddItem("gift_big", "Gift Big")
+		menu.AddItem("gift2_big", "Gift2 Big")
+		menu.AddItem("gift3_big", "Gift3 Big")
+		menu.AddItem("gift4_big", "Gift4 Big")
+		menu.AddItem("del", "Delete item")
+		menu.AddItem("gift5_big", "Gift5 Big")
+		menu.AddItem("gift6_big", "Gift6 Big")
+		menu.AddItem("gift7_big", "Gift7 Big")
+		menu.AddItem("gift8_big", "Gift8 Big")
+		menu.AddItem("gift9_big", "Gift9 Big")
+		menu.AddItem("gift10_big", "Gift10 Big")
+		menu.AddItem("del", "Delete item")
+		menu.Display(client, MENU_TIME_FOREVER)
+		return Plugin_Handled
+	}
+	return Plugin_Continue
+}
+
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	if(!IsChatTrigger())
+		if(StrEqual(sArgs, "xmas"))
+			cmd_xmas(client, 0)
+}
+
+void Xmas(int client, char[] type = "")
+{
+	float origin[3]
+	float angles[3]
+	GetClientEyePosition(client, origin)
+	GetClientEyeAngles(client, angles)
+	TR_TraceRayFilter(origin, angles, MASK_SOLID, RayType_Infinite, Trace_FilterPlayers, client)
+	if(TR_DidHit(null))
+	{
+		TR_GetEndPosition(origin, null)
+		TR_GetPlaneNormal(null, angles)
+		GetVectorAngles(angles, angles)
+		angles[0] += 90.0
+		float eyeAngles[3]
+		GetClientEyeAngles(client, eyeAngles)
+		int skin
+		if(StrEqual(type, "tree") || StrEqual(type, "tree_big"))
+		{
+			angles[1] = eyeAngles[1] - 135.0
+			skin = GetRandomInt(0, 3)
+		}
+		else if(StrEqual(type, "snowman"))
+			angles[1] = eyeAngles[1] + 90.0
+		else if(StrEqual(type, "teddybear"))
+		{
+			angles[1] = eyeAngles[1] + 180.0
+			skin = GetRandomInt(0, 1)
+		}
+		else
+		{
+			angles[1] = eyeAngles[1]
+			if(StrEqual(type, "gift10"))
+				skin = GetRandomInt(0, 3)
+			else
+				skin = GetRandomInt(0, 4)
+		}
+		CreateItem(origin, angles, type, skin)
+		KeyValues kv = new KeyValues("xmas")
+		FileToKeyValues(kv, g_file)
+		char info[32]
+		Format(info, 32, "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]))
+		kv.JumpToKey(info, true)
+		kv.SetVector("origin", origin)
+		kv.SetVector("angles", angles)
+		kv.SetString("type", type)
+		kv.SetNum("skin", skin)
+		kv.Rewind()
+		KeyValuesToFile(kv, g_file)
+		delete kv
+	}	
+}
+
+bool Trace_FilterPlayers(int entity, int contentsMask, any data)
+{
+	if(entity != data && entity > MaxClients) 
+		return true
+	return false
+}
+
+void CreateItem(float origin[3], float angles[3], char[] type, int skin)
+{
+	char model[PLATFORM_MAX_PATH] = "models/fakeexpert/xmas/"
+	if(StrEqual(type, "tree")) Format(model, PLATFORM_MAX_PATH, "%sxmastree_mini.mdl", model)
+	else if(StrEqual(type, "tree_big")) Format(model, PLATFORM_MAX_PATH, "%sxmastree.mdl", model)
+	else if(StrEqual(type, "snowman")) Format(model, PLATFORM_MAX_PATH, "%sxmas_snowman.mdl", model)
+	else if(StrEqual(type, "teddybear")) Format(model, PLATFORM_MAX_PATH, "%sxmas_teddybear.mdl", model)
+	else if(StrEqual(type, "gift")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_octo_curly.mdl", model)
+	else if(StrEqual(type, "gift2")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_octo_speciala.mdl", model)
+	else if(StrEqual(type, "gift3")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_octo_specialb.mdl", model)
+	else if(StrEqual(type, "gift4")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_quad_curly.mdl", model)
+	else if(StrEqual(type, "gift5")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_quad_speciala.mdl", model)
+	else if(StrEqual(type, "gift6")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_quad_specialb.mdl", model)
+	else if(StrEqual(type, "gift7")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_round_curly.mdl", model)
+	else if(StrEqual(type, "gift8")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_round_speciala.mdl", model)
+	else if(StrEqual(type, "gift9")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_mini_round_specialb.mdl", model)
+	else if(StrEqual(type, "gift10")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox_nano.mdl", model)
+	else if(StrEqual(type, "gift_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox64x64_ribbon_butterfly.mdl", model)
+	else if(StrEqual(type, "gift2_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox64x64_ribbon_curly.mdl", model)
+	else if(StrEqual(type, "gift3_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox64x64_ribbon_special.mdl", model)
+	else if(StrEqual(type, "gift4_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox64x96h_diagonal.mdl", model)
+	else if(StrEqual(type, "gift5_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox64x128h_ribbon_flower.mdl", model)
+	else if(StrEqual(type, "gift6_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox64x128w_ribbon_special.mdl", model)
+	else if(StrEqual(type, "gift7_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox96x96_ribbon_special.mdl", model)
+	else if(StrEqual(type, "gift8_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_butterfly.mdl", model)
+	else if(StrEqual(type, "gift9_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_curly.mdl", model)
+	else if(StrEqual(type, "gift10_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_special.mdl", model)
+	int entity = CreateEntityByName("prop_dynamic")
+	DispatchKeyValue(entity, "model", model)
+	DispatchKeyValue(entity, "solid", "1")
+	DispatchSpawn(entity)
+	TeleportEntity(entity, origin, angles, NULL_VECTOR)
+	SetEntProp(entity, Prop_Data, "m_nSkin", skin)
+}
+
+int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char item[64]
+			menu.GetItem(param2, item, 64)
+			if(StrEqual(item, "del"))
+			{
+				int entity = GetClientAimTarget(param1, false)
+				if(IsValidEntity(entity))
+				{
+					float origin[3]
+					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", origin)
+					KeyValues kv = new KeyValues("xmas")
+					if(FileToKeyValues(kv, g_file) && kv.GotoFirstSubKey())
+					{
+						char nameKey[32]
+						char nameKeyCurrent[32]
+						Format(nameKeyCurrent, 32, "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]))
+						do
+						{
+							if(kv.GetSectionName(nameKey, 32))
+							{
+								if(StrEqual(nameKey, nameKeyCurrent))
+								{
+									RemoveEntity(entity)
+									kv.DeleteThis()
+									kv.Rewind()
+									KeyValuesToFile(kv, g_file)
+								}
+							}
+						}
+						while(kv.GotoNextKey())
+					}
+					delete kv
+				}
+			}
+			else
+				Xmas(param1, item)
+			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+		}
+	}
+}
+//https://forums.alliedmods.net/showthread.php?t=303402 xmas item origin code
+//https://forums.alliedmods.net/showthread.php?t=174714 xmas player hat origin code
+//thanks to expert-zone for more xmas items and hat and maru for minor help.
