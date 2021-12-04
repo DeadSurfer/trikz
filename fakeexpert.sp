@@ -3144,7 +3144,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		if(!g_devmap)
 		{
-			if(!g_partner[client])
+			if(IsPlayerAlive(client) && !g_partner[client])
 			{
 				if(buttons & IN_USE)
 				{
