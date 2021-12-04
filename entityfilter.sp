@@ -421,11 +421,19 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 {
 	char input[32]
 	DHookGetParamString(hParams, 1, input, 32)
-	if(!StrEqual(input, "Enable", false) && !StrEqual(input, "Disable", false) && !StrEqual(input, "Toggle", false) && !StrEqual(input, "Break", false) && !StrEqual(input, "ForceSpawn", false))
-		return MRES_Ignored
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
+	if(IsFakeClient(activator))
+	{
+		if(StrEqual(input, "Volume", false) || StrEqual(input, "ToggleSound", false) || StrEqual(input, "PlaySound", false) || StrEqual(input, "StopSound", false)) //https://github.com/Kxnrl/MapMusic-API/blob/master/mapmusic.sp
+		{
+			DHookSetReturn(hReturn, false)
+			return MRES_Supercede
+		}
+	}
+	if(!StrEqual(input, "Enable", false) && !StrEqual(input, "Disable", false) && !StrEqual(input, "Toggle", false) && !StrEqual(input, "Break", false) && !StrEqual(input, "ForceSpawn", false))
+		return MRES_Ignored
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
@@ -827,6 +835,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(IsValidEntity(entity) && StrContains(classname, "_projectile") != -1)
 		SDKHook(entity, SDKHook_SetTransmit, TransmitNade)
+	if(StrEqual(classname, "ambient_generic"))
+		DHookEntity(g_AcceptInput, false, entity)
 }
 
 int GetOutput(char[] output)
@@ -867,7 +877,7 @@ Action TransmitPlayer(int entity, int client) //entity - me, client - loop all c
 Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
 {
 	//make visible nade only for partner
-	if(IsPlayerAlive(client) && GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+	if(IsPlayerAlive(client) && entity > 0 && GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
 		return Plugin_Handled
 	return Plugin_Continue
 }
