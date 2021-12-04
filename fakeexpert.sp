@@ -910,7 +910,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						g_skyVel[other][2] = 800.0
-				if(g_entityFlags[client] & FL_INWATER ? !g_skyBoost[other] : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) != 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(g_entityFlags[client] & FL_INWATER ? !g_skyBoost[other] : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.000002 || GetGameTime() - g_skyAble[other] > 0.5)
 					g_skyBoost[other] = 1
 			}
 		}
@@ -3822,63 +3822,19 @@ Action timer_clearlag(Handle timer)
 
 float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
-	float vecOrigin[3]
-	float vecPos[3]
-	GetClientAbsOrigin(client, vecOrigin)
-	float rayBuffer[4]
-	for(int i = 0; i <= 3; i++)
-	{
-		float doPos[2][3]
-		switch(i)
-		{
-			case 0:
-			{
-				doPos[0][0] = vecOrigin[0] + 16.0
-				doPos[0][1] = vecOrigin[1] - 16.0
-				doPos[0][2] = vecOrigin[2]
-				doPos[1][0] = vecOrigin[0] + 16.0
-				doPos[1][1] = vecOrigin[1] - 16.0
-				doPos[1][2] = vecOrigin[2] - 90.0
-			}
-			case 1:
-			{
-				doPos[0][0] = vecOrigin[0] + 16.0
-				doPos[0][1] = vecOrigin[1] + 16.0
-				doPos[0][2] = vecOrigin[2]
-				doPos[1][0] = vecOrigin[0] + 16.0
-				doPos[1][1] = vecOrigin[1] + 16.0
-				doPos[1][2] = vecOrigin[2] - 90.0
-			}
-			case 2:
-			{
-				doPos[0][0] = vecOrigin[0] - 16.0
-				doPos[0][1] = vecOrigin[1] + 16.0
-				doPos[0][2] = vecOrigin[2]
-				doPos[1][0] = vecOrigin[0] - 16.0
-				doPos[1][1] = vecOrigin[1] + 16.0
-				doPos[1][2] = vecOrigin[2] - 90.0
-			}
-			case 3:
-			{
-				doPos[0][0] = vecOrigin[0] - 16.0
-				doPos[0][1] = vecOrigin[1] - 16.0
-				doPos[0][2] = vecOrigin[2]
-				doPos[1][0] = vecOrigin[0] - 16.0
-				doPos[1][1] = vecOrigin[1] - 16.0
-				doPos[1][2] = vecOrigin[2] - 90.0
-			}
-		}
-		Handle trace = TR_TraceRayFilterEx(doPos[0], doPos[1], MASK_PLAYERSOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
-		if(TR_DidHit(trace))
-		{
-			TR_GetEndPosition(vecPos, trace)
-			rayBuffer[i] = vecPos[2]
-		}
-		delete trace
-	}
-	float groundPos
-	for(int i = 0; i <= 3; i++)
-		if(FloatAbs(groundPos) < FloatAbs(rayBuffer[i]))
-			groundPos = rayBuffer[i]
-	return groundPos
+	float origin[3]
+	GetClientAbsOrigin(client, origin)
+	float originDir[3]
+	GetClientAbsOrigin(client, originDir)
+	originDir[2] -= 1.0
+	float mins[3]
+	GetClientMins(client, mins)
+	float maxs[3]
+	GetClientMaxs(client, maxs)
+	Handle trace = TR_TraceHullFilterEx(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client)
+	float pos[3]
+	if(TR_DidHit(trace))
+		TR_GetEndPosition(pos, trace)
+	delete trace
+	return pos[2]
 }
