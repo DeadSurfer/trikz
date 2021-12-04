@@ -958,7 +958,7 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						g_skyVel[other][2] = 800.0
-				if(g_entityFlags[client] & FL_INWATER ? !g_skyBoost[other] : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.000002 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(g_entityFlags[client] & FL_INWATER ? !g_skyBoost[other] : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.02 || GetGameTime() - g_skyAble[other] > 0.5)
 					g_skyBoost[other] = 1
 			}
 		}
