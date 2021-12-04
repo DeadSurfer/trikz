@@ -337,10 +337,11 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			frame.weapon = g_weapon[client]
 			g_weapon[client] = 0
 		}
-		g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
-		if(g_tick[Trikz_GetClientPartner(client)][1] > g_tick[client][1])
+		int differ = g_tick[Trikz_GetClientPartner(client)][1] - g_tick[client][1]
+		if(differ < 2)
+			g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
+		else if(differ >= 2)
 		{
-			int differ = g_tick[Trikz_GetClientPartner(client)][1] - g_tick[client][1]
 			for(int i = 2; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
 			{
 				if(g_frame[client].Length <= g_tick[client][1])
