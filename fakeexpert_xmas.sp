@@ -27,6 +27,7 @@
 char g_file[PLATFORM_MAX_PATH]
 ConVar g_steamid
 int g_hat[MAXPLAYERS + 1]
+native int Trikz_GetClientPartner(int client)
 
 public Plugin myinfo =
 {
@@ -49,6 +50,12 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			CreateHat(i)
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("Trikz_GetClientPartner")
+	return APLRes_Success
 }
 
 public void OnPluginEnd()
@@ -201,6 +208,11 @@ void CreateHat(int client)
 Action SDKTransmit(int entity, int client)
 {
 	if(entity == g_hat[client])
+		return Plugin_Handled
+	if(LibraryExists("fakeexpert") && LibraryExists("fakeexpert-entityfilter"))
+		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+			return Plugin_Handled
+	if(LibraryExists("fakeexpert_bhop") && !IsClientObserver(client))
 		return Plugin_Handled
 	if(IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == 4 && GetEntPropEnt(client, Prop_Send, "m_hObserverTarget"))
 		if(entity == g_hat[GetEntPropEnt(client, Prop_Send, "m_hObserverTarget")])
