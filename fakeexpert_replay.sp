@@ -321,8 +321,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	if(Trikz_GetTimerStateTrikz(client) && g_frame[client])
 	{
 		eFrame frame
-		if(g_frame[client].Length <= g_tick[client][1])
-			g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
 		GetClientAbsOrigin(client, frame.pos)
 		float ang[3]
 		GetClientEyeAngles(client, ang)
@@ -339,7 +337,11 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		}
 		int differ = g_tick[Trikz_GetClientPartner(client)][1] - g_tick[client][1]
 		if(differ < 2)
+		{
+			if(g_frame[client].Length <= g_tick[client][1])
+				g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
 			g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
+		}
 		else if(differ >= 2)
 		{
 			for(int i = 2; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
