@@ -75,7 +75,7 @@ int g_devmapCount[2]
 bool g_devmap
 float g_devmapTime
 
-float gF_origin[MAXPLAYERS + 1][2][3]
+float g_cpOrigin[MAXPLAYERS + 1][2][3]
 float g_cpAng[MAXPLAYERS + 1][2][3]
 float g_cpVel[MAXPLAYERS + 1][2][3]
 bool g_cpToggled[MAXPLAYERS + 1][2]
@@ -101,8 +101,8 @@ Handle g_pingTimer[MAXPLAYERS + 1]
 bool g_zoneFirst[3]
 
 char g_colorType[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,0", "0,255,255", "0,191,255", "0,0,255", "255,0,255"} //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
-int gI_colorBuffer[MAXPLAYERS + 1][3]
-int gI_colorCount[MAXPLAYERS + 1]
+int g_colorBuffer[MAXPLAYERS + 1][3]
+int g_colorCount[MAXPLAYERS + 1]
 
 int g_zoneModel[3]
 int g_laserBeam
@@ -208,6 +208,9 @@ public void OnPluginStart()
 	AddCommandListener(joinclass, "joinclass")
 	AddCommandListener(autobuy, "autobuy")
 	AddCommandListener(rebuy, "rebuy")
+	AddCommandListener(cheer, "cheer")
+	AddCommandListener(showbriefing, "showbriefing")
+	AddCommandListener(headtrack_reset_home_pos, "headtrack_reset_home_pos")
 	char outputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
 	for(int i = 0; i < sizeof(outputs); i++)
 	{
@@ -416,9 +419,10 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
 	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
-	CreateNative("Trikz_GetTimerStateTrikz", Native_GetTimerStateTrikz)
-	CreateNative("Trikz_SetTrikzPartner", Native_SetTrikzPartner)
-	CreateNative("Trikz_TrikzRestart", Native_TrikzRestart)
+	CreateNative("Trikz_GetTimerState", Native_GetTimerState)
+	CreateNative("Trikz_SetPartner", Native_SetPartner)
+	CreateNative("Trikz_Restart", Native_Restart)
+	CreateNative("Trikz_GetDevmap", Native_GetDevmap)
 	MarkNativeAsOptional("Trikz_GetEntityFilter")
 	return APLRes_Success
 }
@@ -556,7 +560,7 @@ Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	{
 		SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]])
 		DispatchKeyValue(client, "skin", "2")
-		SetEntityRenderColor(client, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 255)
+		SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
 	}
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
@@ -595,6 +599,12 @@ Action joinclass(int client, const char[] command, int argc)
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 }
 
+Action timer_respawn(Handle timer, int client)
+{
+	if(IsClientInGame(client) && !IsPlayerAlive(client))
+		CS_RespawnPlayer(client)
+}
+
 Action autobuy(int client, const char[] command, int argc)
 {
 	Block(client)
@@ -605,10 +615,48 @@ Action rebuy(int client, const char[] command, int argc)
 	Color(client, true)
 }
 
-Action timer_respawn(Handle timer, int client)
+Action cheer(int client, const char[] command, int argc)
 {
-	if(IsClientInGame(client) && !IsPlayerAlive(client))
-		CS_RespawnPlayer(client)
+	if(g_partner[client])
+		Partner(client)
+}
+
+Action showbriefing(int client, const char[] command, int argc)
+{
+	Menu menu = new Menu(menu_info_handler)
+	menu.SetTitle("Control")
+	menu.AddItem("js", "!js")
+	menu.AddItem("hud", "!hud")
+	menu.AddItem("button", "!button")
+	menu.AddItem("pbutton", "!pbutton")
+	menu.Display(client, 20)
+}
+
+int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+					FakeClientCommand(param1, "sm_js")
+				case 1:
+					cmd_hud(param1, 0)
+				case 2:
+					cmd_button(param1, 0)
+				case 3:
+					cmd_pbutton(param1, 0)
+			}
+		}
+	}
+}
+
+Action headtrack_reset_home_pos(int client, const char[] command, int argc)
+{
+	if(!g_menuOpened[client])
+		Trikz(client)
 }
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
@@ -650,24 +698,24 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 				{
-					GetClientAbsOrigin(param1, gF_origin[param1][0])
+					GetClientAbsOrigin(param1, g_cpOrigin[param1][0])
 					GetClientEyeAngles(param1, g_cpAng[param1][0]) //https://github.com/Smesh292/trikz/blob/main/checkpoint.sp#L101
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][0])
 					if(!g_cpToggled[param1][0])
 						g_cpToggled[param1][0] = true
 				}
 				case 1:
-					TeleportEntity(param1, gF_origin[param1][0], g_cpAng[param1][0], g_cpVel[param1][0])
+					TeleportEntity(param1, g_cpOrigin[param1][0], g_cpAng[param1][0], g_cpVel[param1][0])
 				case 2:
 				{
-					GetClientAbsOrigin(param1, gF_origin[param1][1])
+					GetClientAbsOrigin(param1, g_cpOrigin[param1][1])
 					GetClientEyeAngles(param1, g_cpAng[param1][1])
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][1])
 					if(!g_cpToggled[param1][1])
 						g_cpToggled[param1][1] = true
 				}
 				case 3:
-					TeleportEntity(param1, gF_origin[param1][1], g_cpAng[param1][1], g_cpVel[param1][1])
+					TeleportEntity(param1, g_cpOrigin[param1][1], g_cpAng[param1][1], g_cpVel[param1][1])
 			}
 			Checkpoint(param1)
 		}
@@ -703,7 +751,7 @@ public void OnClientPutInServer(int client)
 		g_cpToggled[client][i] = false
 		for(int j = 0; j <= 2; j++)
 		{
-			gF_origin[client][i][j] = 0.0
+			g_cpOrigin[client][i][j] = 0.0
 			g_cpAng[client][i][j] = 0.0
 			g_cpVel[client][i][j] = 0.0
 		}
@@ -940,7 +988,8 @@ void SDKBoostFix(int client)
 
 Action cmd_trikz(int client, int args)
 {
-	Trikz(client)
+	if(!g_menuOpened[client])
+		Trikz(client)
 	return Plugin_Handled
 }
 
@@ -1021,7 +1070,7 @@ Action Block(int client) //thanks maru for optimization.
 	g_block[client] = !g_block[client]
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", g_block[client] ? 5 : 2)
 	if(g_color[client])
-		SetEntityRenderColor(client, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], g_block[client] ? 255 : 125)
+		SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[client] ? 255 : 125)
 	else
 		SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125)
 	if(g_menuOpened[client])
@@ -1215,33 +1264,33 @@ void Color(int client, bool customSkin, int color = -1)
 			DispatchKeyValue(client, "skin", "2")
 			DispatchKeyValue(g_partner[client], "skin", "2")
 			char g_colorTypeExploded[3][16]
-			if(gI_colorCount[client] == 9)
+			if(g_colorCount[client] == 9)
 			{
-				gI_colorCount[client] = 0
-				gI_colorCount[g_partner[client]] = 0
+				g_colorCount[client] = 0
+				g_colorCount[g_partner[client]] = 0
 			}
 			else if(0 <= color <= 8)
 			{
-				gI_colorCount[client] = color
-				gI_colorCount[g_partner[client]] = color
+				g_colorCount[client] = color
+				g_colorCount[g_partner[client]] = color
 			}
-			ExplodeString(g_colorType[gI_colorCount[client]], ",", g_colorTypeExploded, 3, 16)
+			ExplodeString(g_colorType[g_colorCount[client]], ",", g_colorTypeExploded, 3, 16)
 			for(int i = 0; i <= 2; i++)
 			{
-				gI_colorBuffer[client][i] = StringToInt(g_colorTypeExploded[i])
-				gI_colorBuffer[g_partner[client]][i] = StringToInt(g_colorTypeExploded[i])
+				g_colorBuffer[client][i] = StringToInt(g_colorTypeExploded[i])
+				g_colorBuffer[g_partner[client]][i] = StringToInt(g_colorTypeExploded[i])
 			}
-			SetEntityRenderColor(client, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], g_block[client] ? 255 : 125)
-			SetEntityRenderColor(g_partner[client], gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], g_block[g_partner[client]] ? 255 : 125)
-			gI_colorCount[client]++
-			gI_colorCount[g_partner[client]]++
+			SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[client] ? 255 : 125)
+			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[g_partner[client]] ? 255 : 125)
+			g_colorCount[client]++
+			g_colorCount[g_partner[client]]++
 		}
 		else
 		{
 			g_color[client] = false
 			g_color[g_partner[client]] = false
-			gI_colorCount[client] = 0
-			gI_colorCount[g_partner[client]] = 0
+			g_colorCount[client] = 0
+			g_colorCount[g_partner[client]] = 0
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125)
 			SetEntityRenderColor(g_partner[client], 255, 255, 255, g_block[g_partner[client]] ? 255 : 125)
 		}
@@ -1297,15 +1346,8 @@ void Restart(int client)
 					CS_RespawnPlayer(client)
 					float velNull[3]
 					TeleportEntity(client, g_originStart, NULL_VECTOR, velNull)
-					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-					if(g_color[client])
-						SetEntityRenderColor(client, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 125)
-					else
-						SetEntityRenderColor(client, 255, 255, 255, 125)
-					g_block[client] = false
 					if(g_menuOpened[client])
 						Trikz(client)
-					CreateTimer(3.0, Timer_BlockToggle, client, TIMER_FLAG_NO_MAPCHANGE) 
 				}
 				else if(!IsPlayerAlive(client))
 				{
@@ -1353,21 +1395,6 @@ Action timer_resetfactory(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 		ResetFactory(client)
-}
-
-Action Timer_BlockToggle(Handle timer, int client)
-{
-	if(IsValidEntity(client) && IsValidEntity(g_partner[client]))
-	{
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-		if(g_color[client])
-			SetEntityRenderColor(client, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 255)
-		else
-			SetEntityRenderColor(client, 255, 255, 255, 255)
-		g_block[client] = true
-		if(g_menuOpened[client])
-			Trikz(client)
-	}
 }
 
 void CreateStart()
@@ -3010,14 +3037,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal)
 				}
 				if(g_color[client])
-					SetEntityRenderColor(g_pingModel[client], gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 255)
+					SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
 				TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
 				//https://forums.alliedmods.net/showthread.php?p=1080444
 				if(g_color[client])
 				{
 					int color[4]
 					for(int i = 0; i <= 2; i++)
-						color[i] = gI_colorBuffer[client][i]
+						color[i] = g_colorBuffer[client][i]
 					color[3] = 255
 					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0)
 				}
@@ -3099,7 +3126,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
 				if(g_color[other])
-					SetEntityRenderColor(other, gI_colorBuffer[other][0], gI_colorBuffer[other][1], gI_colorBuffer[other][2], 125)
+					SetEntityRenderColor(other, g_colorBuffer[other][0], g_colorBuffer[other][1], g_colorBuffer[other][2], 125)
 				else
 					SetEntityRenderColor(other, 255, 255, 255, 125)
 			}
@@ -3110,51 +3137,54 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 				if(g_color[client])
-					SetEntityRenderColor(client, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 255)
+					SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
 				else
 					SetEntityRenderColor(client, 255, 255, 255, 255)
 			}
 		}
-		if(!g_partner[client])
+		if(!g_devmap)
 		{
-			if(buttons & IN_USE)
+			if(!g_partner[client])
 			{
-				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
+				if(buttons & IN_USE)
 				{
-					g_partnerInHold[client] = GetEngineTime()
-					g_partnerInHoldLock[client] = false
+					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
+					{
+						g_partnerInHold[client] = GetEngineTime()
+						g_partnerInHoldLock[client] = false
+					}
+				}
+				else
+					if(!g_partnerInHoldLock[client])
+						g_partnerInHoldLock[client] = true
+				if(!g_partnerInHoldLock[client] && GetEngineTime() - g_partnerInHold[client] > 0.7)
+				{
+					g_partnerInHoldLock[client] = true
+					Partner(client)
+				}
+			}
+			if(buttons & IN_RELOAD)
+			{
+				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
+				{
+					g_restartInHold[client] = GetEngineTime()
+					g_restartInHoldLock[client] = false
 				}
 			}
 			else
-				if(!g_partnerInHoldLock[client])
-					g_partnerInHoldLock[client] = true
-			if(!g_partnerInHoldLock[client] && GetEngineTime() - g_partnerInHold[client] > 0.7)
+				if(!g_restartInHoldLock[client])
+					g_restartInHoldLock[client] = true
+			if(!g_restartInHoldLock[client] && GetEngineTime() - g_restartInHold[client] > 0.7)
 			{
-				g_partnerInHoldLock[client] = true
-				Partner(client)
-			}
-		}
-		if(buttons & IN_RELOAD)
-		{
-			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
-			{
-				g_restartInHold[client] = GetEngineTime()
-				g_restartInHoldLock[client] = false
-			}
-		}
-		else
-			if(!g_restartInHoldLock[client])
 				g_restartInHoldLock[client] = true
-		if(!g_restartInHoldLock[client] && GetEngineTime() - g_restartInHold[client] > 0.7)
-		{
-			g_restartInHoldLock[client] = true
-			if(g_partner[client])
-			{
-				Restart(client)
-				Restart(g_partner[client])
+				if(g_partner[client])
+				{
+					Restart(client)
+					Restart(g_partner[client])
+				}
+				else
+					Partner(client)
 			}
-			else
-				Partner(client)
 		}
 	}
 }
@@ -3513,7 +3543,10 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	if(!IsChatTrigger())
 	{
 		if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
-			Trikz(client)
+		{
+			if(!g_menuOpened[client])
+				Trikz(client)
+		}
 		else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
 			Block(client)
 		else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
@@ -3631,7 +3664,7 @@ void SDKProjectile(int entity)
 		{
 			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown)
 			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
-			SetEntityRenderColor(entity, gI_colorBuffer[client][0], gI_colorBuffer[client][1], gI_colorBuffer[client][2], 255)
+			SetEntityRenderColor(entity, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
 		}
 	}
 }
@@ -3791,7 +3824,7 @@ int Native_GetClientPartner(Handle plugin, int numParams)
 	return g_partner[client]
 }
 
-int Native_GetTimerStateTrikz(Handle plugin, int numParams)
+int Native_GetTimerState(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1)
 	if(!IsFakeClient(client))
@@ -3800,7 +3833,7 @@ int Native_GetTimerStateTrikz(Handle plugin, int numParams)
 		return false
 }
 
-int Native_SetTrikzPartner(Handle plugin, int numParams)
+int Native_SetPartner(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1)
 	int partner = GetNativeCell(2)
@@ -3808,11 +3841,16 @@ int Native_SetTrikzPartner(Handle plugin, int numParams)
 	g_partner[partner] = client
 }
 
-int Native_TrikzRestart(Handle plugin, int numParams)
+int Native_Restart(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1)
 	Restart(client)
 	Restart(g_partner[client])
+}
+
+int Native_GetDevmap(Handle plugin, int numParams)
+{
+	return g_devmap
 }
 
 Action timer_clearlag(Handle timer)
