@@ -601,7 +601,7 @@ Action joinclass(int client, const char[] command, int argc)
 
 Action timer_respawn(Handle timer, int client)
 {
-	if(IsClientInGame(client) && !IsPlayerAlive(client))
+	if(IsClientInGame(client) && GetClientTeam(client) != CS_TEAM_SPECTATOR && !IsPlayerAlive(client))
 		CS_RespawnPlayer(client)
 }
 
