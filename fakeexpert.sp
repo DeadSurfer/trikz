@@ -629,6 +629,7 @@ Action showbriefing(int client, const char[] command, int argc)
 	menu.AddItem("hud", "!hud")
 	menu.AddItem("button", "!button")
 	menu.AddItem("pbutton", "!pbutton")
+	menu.AddItem("spec", "!spec")
 	menu.Display(client, 20)
 }
 
@@ -648,6 +649,8 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 					cmd_button(param1, 0)
 				case 3:
 					cmd_pbutton(param1, 0)
+				case 4:
+					cmd_spec(param1, 0)
 			}
 		}
 	}
@@ -3442,7 +3445,7 @@ void Noclip(int client)
 
 Action cmd_spec(int client, int args)
 {
-	ChangeClientTeam(client, 1)
+	ChangeClientTeam(client, CS_TEAM_SPECTATOR)
 	return Plugin_Handled
 }
 
