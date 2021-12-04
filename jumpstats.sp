@@ -174,15 +174,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetClientEyeAngles(client, eye)
 				eye[0] = Cosine(DegToRad(eye[1]))
 				eye[1] = Sine(DegToRad(eye[1]))
-				//eye[2] = 0.0
+				eye[2] = 0.0
 				float velAbs[3]
 				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs)
 				float length = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0))
 				velAbs[0] /= length
 				velAbs[1] /= length
-				//velNew[2] = 0.0
+				velNew[2] = 0.0
 				gF_dot[client] = GetVectorDotProduct(eye, velAbs) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
-				//PrintToServer("%f", gF_dot[client])
 			}
 			g_tickAir[client]++
 		}
@@ -197,7 +196,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
 		char notFlat[32]
-		PrintToServer("Result: %.10f", GetGroundPos(client) - g_origin[client][2])
 		if(GetGroundPos(client) - g_origin[client][2] > 0.000002)
 			Format(notFlat, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2])
 		if(GetGroundPos(client) - g_origin[client][2] < -0.000002)
@@ -362,9 +360,9 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		GetClientAbsOrigin(client, originBooster)
 		float originFlyer[3]
 		GetClientAbsOrigin(other, originFlyer)
-		float maxs[3]
-		GetClientMaxs(client, maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-		float delta = originFlyer[2] - originBooster[2] - maxs[2]
+		float maxsBooster[3]
+		GetClientMaxs(client, maxsBooster) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			float velBooster[3]
