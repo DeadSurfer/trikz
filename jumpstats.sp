@@ -144,7 +144,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 			GetClientAbsOrigin(client, origin)
 		g_origin[client][0] = origin[0]
 		g_origin[client][1] = origin[1]
-		g_origin[client][2] = GetGroundPos(client)
+		g_origin[client][2] = gB_runboost[client] ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client)
 		float vel[3]
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 		g_preVel[client][0] = vel[0]
@@ -196,9 +196,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
 		char notFlat[32]
-		if(GetGroundPos(client) - g_origin[client][2] > 0.000002)
+		if(GetGroundPos(client) - g_origin[client][2] > 0.02)
 			Format(notFlat, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2])
-		if(GetGroundPos(client) - g_origin[client][2] < -0.000002)
+		if(GetGroundPos(client) - g_origin[client][2] < -0.02)
 			Format(notFlat, 32, "[Fall|%.1f] ", GetGroundPos(client) - g_origin[client][2])
 		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(g_preVel[client][0], 2.0) + Pow(g_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
@@ -384,7 +384,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						velNew[2] = 800.0
-				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.000002 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.02 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar CV_gravity = FindConVar("sv_gravity")
 					if(g_jumpstats[client])
