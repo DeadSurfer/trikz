@@ -3681,16 +3681,14 @@ Action timer_deleteProjectile(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		if(LibraryExists("fakeexpert-entityfilter"))
-			FlashbangEffect(entity, true)
-		else
-			FlashbangEffect(entity)
+		FlashbangEffect(entity)
 		RemoveEntity(entity)
 	}
 }
 
-void FlashbangEffect(int entity, bool filter = false)
+void FlashbangEffect(int entity)
 {
+	bool filter = LibraryExists("fakeexpert-entityfilter")
 	float origin[3]
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
 	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100) //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
