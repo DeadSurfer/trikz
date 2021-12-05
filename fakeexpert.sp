@@ -146,6 +146,7 @@ float g_skyAble[MAXPLAYERS + 1]
 native bool Trikz_GetEntityFilter(int client, int entity)
 float g_restartInHold[MAXPLAYERS + 1]
 bool g_restartInHoldLock[MAXPLAYERS + 1]
+int g_smoke
 
 public Plugin myinfo =
 {
@@ -274,6 +275,9 @@ public void OnMapStart()
 	g_zoneModel[1] = PrecacheModel("materials/fakeexpert/zones/finish.vmt", true)
 	g_zoneModel[2] = PrecacheModel("materials/fakeexpert/zones/check_point.vmt", true)
 	g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true)
+	g_smoke = PrecacheModel("materials/sprites/smoke.vmt", true)
+	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true)
+	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true)
 	char path[12][PLATFORM_MAX_PATH] = {"models/fakeexpert/models/weapons/", "models/fakeexpert/pingtool/", "models/fakeexpert/player/", "materials/fakeexpert/materials/models/weapons/w_models/", "materials/fakeexpert/pingtool/", "sound/fakeexpert/pingtool/", "materials/fakeexpert/player/ct_gign/", "materials/fakeexpert/player/ct_gsg9/", "materials/fakeexpert/player/ct_sas/", "materials/fakeexpert/player/ct_urban/", "materials/fakeexpert/player/", "materials/fakeexpert/zones/"}
 	for(int i = 0; i < sizeof(path); i++)
 	{
@@ -3676,7 +3680,21 @@ Action timer_hideSwtich(Handle timer, int client)
 Action timer_deleteProjectile(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
+	{
+		float origin[3]
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
+		TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100) //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
+		TE_SendToAll()
+		float dir[3] //https://forums.alliedmods.net/showthread.php?t=274452
+		dir[0] = GetRandomFloat(-1.0, 1.0)
+		dir[1] = GetRandomFloat(-1.0, 1.0)
+		dir[2] = GetRandomFloat(-1.0, 1.0)
+		TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2))
+		TE_SendToAll() //Idea from expert zone. So we just made non empty event.
+		char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"}
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.2, SNDPITCH_NORMAL) //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 so via gcfscape we can found sound/weapons/flashbang there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar so better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 		RemoveEntity(entity)
+	}
 }
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
