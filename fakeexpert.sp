@@ -933,14 +933,13 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && !g_skyBoost[other])
 	{
-		PrintToServer("1")
 		float originBooster[3]
 		GetClientAbsOrigin(client, originBooster)
 		float originFlyer[3]
 		GetClientAbsOrigin(other, originFlyer)
-		float maxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-		float delta = originFlyer[2] - originBooster[2] - maxs[2]
+		float maxsBooster[3]
+		GetClientMaxs(client, maxsBooster) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2]
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			float velBooster[3]
