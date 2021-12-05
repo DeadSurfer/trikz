@@ -78,11 +78,11 @@ public void OnPluginStart()
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
 	RegConsoleCmd("sm_js", cmd_jumpstats)
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
-	for(int i = 0; i < sizeof(sOutputs); i++)
+	char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
+	for(int i = 0; i < sizeof(output); i++)
 	{
-		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
-		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+		HookEntityOutput("trigger_teleport", output[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
+		HookEntityOutput("trigger_teleport_relative", output[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
 }
 
@@ -102,17 +102,17 @@ public void OnClientPutInServer(int client)
 
 public void OnClientCookiesCached(int client)
 {
-	char sValue[16]
-	GetClientCookie(client, g_cookie, sValue, 16)
-	g_jumpstats[client] = view_as<bool>(StringToInt(sValue))
+	char value[16]
+	GetClientCookie(client, g_cookie, value, 16)
+	g_jumpstats[client] = view_as<bool>(StringToInt(value))
 }
 
 Action cmd_jumpstats(int client, int args)
 {
 	g_jumpstats[client] = !g_jumpstats[client]
-	char sValue[16]
-	IntToString(g_jumpstats[client], sValue, 16)
-	SetClientCookie(client, g_cookie, sValue)
+	char value[16]
+	IntToString(g_jumpstats[client], value, 16)
+	SetClientCookie(client, g_cookie, value)
 	PrintToChat(client, g_jumpstats[client] ? "Jump stats is on." : "Jump stats is off.")
 	return Plugin_Handled
 }
@@ -195,11 +195,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		float origin[3]
 		GetClientAbsOrigin(client, origin)
-		char notFlat[32]
+		char flat[32]
 		if(GetGroundPos(client) - g_origin[client][2] > 0.02)
-			Format(notFlat, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2])
+			Format(flat, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2])
 		if(GetGroundPos(client) - g_origin[client][2] < -0.02)
-			Format(notFlat, 32, "[Fall|%.1f] ", GetGroundPos(client) - g_origin[client][2])
+			Format(flat, 32, "[Fall|%.1f] ", GetGroundPos(client) - g_origin[client][2])
 		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
 		float pre = SquareRoot(Pow(g_preVel[client][0], 2.0) + Pow(g_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 		float sync = -1.0
@@ -211,9 +211,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(1000.0 > distance >= 230.0 && pre < 280.0)
 		{
 			if(g_jumpstats[client])
-				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", notFlat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client])
+				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client])
 			if(gB_runboost[client] && g_jumpstats[g_rbBooster[client]])
-				PrintToChat(g_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", notFlat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client])
+				PrintToChat(g_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client])
 		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -223,7 +223,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", notFlat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client])
+						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", gB_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client])
 			}
 		}
 		ResetFactory(client)
@@ -386,11 +386,11 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 						velNew[2] = 800.0
 				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.02 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
-					ConVar CV_gravity = FindConVar("sv_gravity")
+					ConVar gravity = FindConVar("sv_gravity")
 					if(g_jumpstats[client])
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
 					if(g_jumpstats[other])
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)))
 					for(int i = 1; i <= MaxClients; i++)
 					{
 						if(IsClientInGame(i) && IsClientObserver(i))
@@ -398,7 +398,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 							if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
-								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)))
 						}
 					}
 				}
