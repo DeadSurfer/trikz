@@ -3053,9 +3053,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					int clients[MAXPLAYERS + 1]
 					int count
 					for(int i = 1; i <= MaxClients; i++)
+					{
 						if(IsClientInGame(i))
-							if(g_partner[client] == g_partner[g_partner[i]] || i == client)
+						{
+							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+							if(g_partner[client] == g_partner[g_partner[i]] || i == client || observerTarget == client)
 								clients[count++] = i
+						}
+					}
 					TE_Send(clients, count)
 					EmitSound(clients, count, "fakeexpert/pingtool/click.wav", client)
 				}
@@ -3700,9 +3705,14 @@ void FlashbangEffect(int entity)
 		if(owner == -1)
 			owner = 0
 		for(int i = 1; i <= MaxClients; i++)
+		{
 			if(IsClientInGame(i))
-				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
+			{
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || observerTarget == owner)
 					clients[count++] = i
+			}
+		}
 		TE_Send(clients, count)
 	}
 	else
