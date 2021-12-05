@@ -3696,9 +3696,12 @@ void FlashbangEffect(int entity)
 	int count
 	if(filter)
 	{
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+		if(owner == -1)
+			owner = 0
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
-				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity"))
+				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
 					clients[count++] = i
 		TE_Send(clients, count)
 	}
