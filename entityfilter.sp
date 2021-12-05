@@ -55,7 +55,7 @@ float g_mathValueDefault[2048 + 1]
 float g_mathValue[MAXPLAYERS + 1][2048 + 1]
 float g_mathMin[2048 + 1]
 float g_mathMax[2048 + 1]
-bool g_shouldntArtifacialTouch[MAXPLAYERS + 1][2048 + 1]
+bool g_StartTouchArtifacial[MAXPLAYERS + 1][2][2048 + 1] //Fully used george logic from https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp. Thanks to Ciallo-Ani for opensource code.
 native int Trikz_GetDevmap()
 
 public Plugin myinfo =
@@ -147,7 +147,8 @@ Action timer_load(Handle timer)
 			g_stateDisabled[j][i] = false
 			g_linkedEntities[j][i] = 0
 			g_buttonReady[j][i] = 0.0
-			g_shouldntArtifacialTouch[j][i] = false
+			for(int k = 0; k <= 1; k++)
+				g_StartTouchArtifacial[j][k][i] = false
 		}
 	}
 	for(int i = 0; i < sizeof(classname); i++)
@@ -406,7 +407,8 @@ void Reset(int client)
 		g_stateDisabled[client][g_entityID[i]] = g_stateDefaultDisabled[g_entityID[i]]
 		g_buttonReady[client][g_entityID[i]] = 0.0
 		g_linkedEntities[client][g_entityID[i]] = 0
-		g_shouldntArtifacialTouch[client][g_entityID[i]] = false
+		for(int j = 0; j <= 1; j++)
+			g_StartTouchArtifacial[client][j][g_entityID[i]] = false
 	}
 	for(int i = 1; i <= g_mathTotalCount; i++)
 		g_mathValue[client][i] = g_mathValueDefault[i]
@@ -424,18 +426,18 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	if(DHookIsNullParam(hParams, 2))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	if(IsFakeClient(activator))
-	{
-		if(StrEqual(input, "Volume", false) || StrEqual(input, "ToggleSound", false) || StrEqual(input, "PlaySound", false) || StrEqual(input, "StopSound", false)) //https://github.com/Kxnrl/MapMusic-API/blob/master/mapmusic.sp
-		{
-			DHookSetReturn(hReturn, false)
-			return MRES_Supercede
-		}
-	}
-	if(!StrEqual(input, "Enable", false) && !StrEqual(input, "Disable", false) && !StrEqual(input, "Toggle", false) && !StrEqual(input, "Break", false) && !StrEqual(input, "ForceSpawn", false))
-		return MRES_Ignored
 	if(0 < activator <= MaxClients)
 	{
+		if(IsFakeClient(activator))
+		{
+			if(StrEqual(input, "Volume", false) || StrEqual(input, "ToggleSound", false) || StrEqual(input, "PlaySound", false) || StrEqual(input, "StopSound", false)) //https://github.com/Kxnrl/MapMusic-API/blob/master/mapmusic.sp
+			{
+				DHookSetReturn(hReturn, false)
+				return MRES_Supercede
+			}
+		}
+		if(!StrEqual(input, "Enable", false) && !StrEqual(input, "Disable", false) && !StrEqual(input, "Toggle", false) && !StrEqual(input, "Break", false) && !StrEqual(input, "ForceSpawn", false))
+			return MRES_Ignored
 		int partner = Trikz_GetClientPartner(activator)
 		if(StrEqual(input, "Enable", false))
 		{
@@ -648,14 +650,21 @@ Action TouchTrigger(int entity, int other)
 	if(0 < other <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(other)
+		if(!g_stateDisabled[partner][entity])
+		{
+			if(!g_StartTouchArtifacial[partner][1][entity])
+			{
+				g_StartTouchArtifacial[partner][0][entity] = true
+				AcceptEntityInput(entity, "StartTouch", other, other)
+			}
+		}
 		if(g_stateDisabled[partner][entity])
 		{
-			if(!g_shouldntArtifacialTouch[partner][entity])
+			if(g_StartTouchArtifacial[partner][1][entity])
 				AcceptEntityInput(entity, "EndTouch", other, other)
 			return Plugin_Handled
 		}
-		if(!g_shouldntArtifacialTouch[partner][entity])
-			AcceptEntityInput(entity, "StartTouch", other, other)
+		g_StartTouchArtifacial[partner][1][entity] = g_stateDisabled[partner][entity] ? false : true
 	}
 	return Plugin_Continue
 }
@@ -717,50 +726,63 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 		int partner = Trikz_GetClientPartner(activator)
 		if(caller > 0)
 		{
+			char outputFormated[32]
+			Format(outputFormated, 32, "m_%s", output)
 			if(!g_stateDisabled[partner][caller])
 			{
-				char outputFormated[32]
-				Format(outputFormated, 32, "m_%s", output)
 				for(int i = 1; i <= g_maxLinks[caller]; i++)
 				{
 					if(partner)
 					{
 						g_linkedEntities[activator][g_linkedEntitiesDefault[i][caller]] += g_entityOutput[GetOutput(outputFormated)][g_linkedEntitiesDefault[i][caller]]
 						g_linkedEntities[partner][g_linkedEntitiesDefault[i][caller]] += g_entityOutput[GetOutput(outputFormated)][g_linkedEntitiesDefault[i][caller]]
-						if(StrContains(output, "OnStartTouch") != -1)
-						{
-							g_shouldntArtifacialTouch[activator][caller] = true
-							g_shouldntArtifacialTouch[partner][caller] = true
-						}
-						else if(StrContains(output, "OnEndTouch") != -1)
-						{
-							g_shouldntArtifacialTouch[activator][caller] = true
-							g_shouldntArtifacialTouch[partner][caller] = true
-						}
 					}
 					else
-					{
 						g_linkedEntities[partner][g_linkedEntitiesDefault[i][caller]] += g_entityOutput[GetOutput(outputFormated)][g_linkedEntitiesDefault[i][caller]]
-						if(StrContains(output, "OnStartTouch") != -1)
-							g_shouldntArtifacialTouch[partner][caller] = true
-						else if(StrContains(output, "OnEndTouch") != -1)
-							g_shouldntArtifacialTouch[partner][caller] = true
+				}
+			}
+			if(partner)
+			{
+				if(StrContains(output, "OnStartTouch") != -1)
+				{
+					if(g_StartTouchArtifacial[partner][0][caller])
+					{
+						g_StartTouchArtifacial[activator][0][caller] = false
+						g_StartTouchArtifacial[partner][0][caller] = false
+						return Plugin_Continue
 					}
+					if(g_stateDisabled[partner][caller])
+						return Plugin_Handled
+					g_StartTouchArtifacial[activator][1][caller] = true
+					g_StartTouchArtifacial[partner][1][caller] = true
+				}
+				else if(StrContains(output, "OnEndTouch") != -1)
+				{
+					if(g_stateDisabled[partner][caller] && !g_StartTouchArtifacial[partner][1][caller])
+						return Plugin_Handled
+					g_StartTouchArtifacial[activator][1][caller] = false
+					g_StartTouchArtifacial[partner][1][caller] = false
 				}
 			}
 			else
 			{
-				/*bool check
-				for(int i = 1; i <= g_maxLinks[caller]; i++)
+				if(StrContains(output, "OnStartTouch") != -1)
 				{
-					if(g_linkedEntities[partner][g_linkedEntitiesDefault[i][caller]])
+					if(g_StartTouchArtifacial[partner][0][caller])
 					{
-						check = true
-						break
+						g_StartTouchArtifacial[partner][0][caller] = false
+						return Plugin_Continue
 					}
-				}*/
-				//if(!check)
-					//return Plugin_Handled
+					if(g_stateDisabled[partner][caller])
+						return Plugin_Handled
+					g_StartTouchArtifacial[partner][1][caller] = true
+				}
+				else if(StrContains(output, "OnEndTouch") != -1)
+				{
+					if(g_stateDisabled[partner][caller] && !g_StartTouchArtifacial[partner][1][caller])
+						return Plugin_Handled
+					g_StartTouchArtifacial[partner][1][caller] = false
+				}
 			}
 		}
 		else
