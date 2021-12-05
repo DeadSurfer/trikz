@@ -650,19 +650,19 @@ Action TouchTrigger(int entity, int other)
 	if(0 < other <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(other)
-		if(!g_stateDisabled[partner][entity])
+		if(g_stateDisabled[partner][entity])
+		{
+			if(g_StartTouchArtifacial[partner][1][entity])
+				AcceptEntityInput(entity, "EndTouch", other, other)
+			return Plugin_Handled
+		}
+		else
 		{
 			if(!g_StartTouchArtifacial[partner][1][entity])
 			{
 				g_StartTouchArtifacial[partner][0][entity] = true
 				AcceptEntityInput(entity, "StartTouch", other, other)
 			}
-		}
-		if(g_stateDisabled[partner][entity])
-		{
-			if(g_StartTouchArtifacial[partner][1][entity])
-				AcceptEntityInput(entity, "EndTouch", other, other)
-			return Plugin_Handled
 		}
 		g_StartTouchArtifacial[partner][1][entity] = g_stateDisabled[partner][entity] ? false : true
 	}
