@@ -584,9 +584,9 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
 	int partner = Trikz_GetClientPartner(activator)
-	char value[64]
-	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, value, 64)
-	float value = StringToFloat(value)
+	char value_[64]
+	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, value_, 64)
+	float value = StringToFloat(value_)
 	int thisIndex
 	for(int i = 1; i <= g_mathTotalCount; i++)
 	{
