@@ -454,8 +454,8 @@ Action OnMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum
 	msg.ReadByte()
 	char msgBuffer[32]
 	msg.ReadString(msgBuffer, 32)
-	char sName[MAX_NAME_LENGTH]
-	msg.ReadString(sName, MAX_NAME_LENGTH)
+	char name[MAX_NAME_LENGTH]
+	msg.ReadString(name, MAX_NAME_LENGTH)
 	char text[256]
 	msg.ReadString(text, 256)
 	if(!g_msg[client])
@@ -485,31 +485,31 @@ Action OnMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum
 	else if(g_points[client] > 999999)
 		Format(points, 32, "\x07%s%iM\x01", color, g_points[client] / 1000000)
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec"))
-		Format(text, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", points, sName, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
+		Format(text, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec"))
-		Format(text, 256, "\x01(Spectator) [%s] \x07CCCCCC%s \x01:  %s", points, sName, text)
+		Format(text, 256, "\x01(Spectator) [%s] \x07CCCCCC%s \x01:  %s", points, name, text)
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_All"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(text, 256, "\x01[%s] \x07FF4040%s \x01:  %s", points, sName, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
+			Format(text, 256, "\x01[%s] \x07FF4040%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
 		else if(GetClientTeam(client) == 3)
-			Format(text, 256, "\x01[%s] \x0799CCFF%s \x01:  %s", points, sName, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
+			Format(text, 256, "\x01[%s] \x0799CCFF%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
 	}
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_AllDead"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(text, 256, "\x01*DEAD* [%s] \x07FF4040%s \x01:  %s", points, sName, text)
+			Format(text, 256, "\x01*DEAD* [%s] \x07FF4040%s \x01:  %s", points, name, text)
 		else if(GetClientTeam(client) == 3)
-			Format(text, 256, "\x01*DEAD* [%s] \x0799CCFF%s \x01:  %s", points, sName, text)
+			Format(text, 256, "\x01*DEAD* [%s] \x0799CCFF%s \x01:  %s", points, name, text)
 	}
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT"))
-		Format(text, 256, "\x01(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, sName, text)
+		Format(text, 256, "\x01(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text)
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT_Dead"))
-		Format(text, 256, "\x01*DEAD*(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, sName, text)
+		Format(text, 256, "\x01*DEAD*(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text)
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T"))
-		Format(text, 256, "\x01(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, sName, text) //https://forums.alliedmods.net/showthread.php?t=185016
+		Format(text, 256, "\x01(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text) //https://forums.alliedmods.net/showthread.php?t=185016
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T_Dead"))
-		Format(text, 256, "\x01*DEAD*(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, sName, text)
+		Format(text, 256, "\x01*DEAD*(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(msgBuffer, "_All") != -1)
@@ -1098,28 +1098,28 @@ void Partner(int client)
 		{
 			Menu menu = new Menu(partner_handler)
 			menu.SetTitle("Choose partner")
-			char sName[MAX_NAME_LENGTH]
-			bool noPlayers = true
+			char name[MAX_NAME_LENGTH]
+			bool player
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) && !IsFakeClient(i)) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
 				{
 					if(client != i && !g_partner[i])
 					{
-						GetClientName(i, sName, MAX_NAME_LENGTH)
+						GetClientName(i, name, MAX_NAME_LENGTH)
 						char nameID[32]
 						IntToString(i, nameID, 32)
-						menu.AddItem(nameID, sName)
-						noPlayers = false
+						menu.AddItem(nameID, name)
+						player = true
 					}
 				}
 			}
-			switch(noPlayers)
+			switch(player)
 			{
 				case false:
-					menu.Display(client, 20)
-				case true:
 					PrintToChat(client, "No free player.")
+				case true:
+					menu.Display(client, 20)
 			}
 			
 		}
@@ -1221,28 +1221,28 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_color(int client, int args)
 {
-	char sArgString[512]
-	GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
-	int color = StringToInt(sArgString)
-	if(StrEqual(sArgString, "white"))
+	char arg[512]
+	GetCmdArgString(arg, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+	int color = StringToInt(arg)
+	if(StrEqual(arg, "white"))
 		color = 0
-	else if(StrEqual(sArgString, "red"))
+	else if(StrEqual(arg, "red"))
 		color = 1
-	else if(StrEqual(sArgString, "orange"))
+	else if(StrEqual(arg, "orange"))
 		color = 2
-	else if(StrEqual(sArgString, "yellow"))
+	else if(StrEqual(arg, "yellow"))
 		color = 3
-	else if(StrEqual(sArgString, "lime"))
+	else if(StrEqual(arg, "lime"))
 		color = 4
-	else if(StrEqual(sArgString, "aqua"))
+	else if(StrEqual(arg, "aqua"))
 		color = 5
-	else if(StrEqual(sArgString, "deep sky blue"))
+	else if(StrEqual(arg, "deep sky blue"))
 		color = 6
-	else if(StrEqual(sArgString, "blue"))
+	else if(StrEqual(arg, "blue"))
 		color = 7
-	else if(StrEqual(sArgString, "magenta"))
+	else if(StrEqual(arg, "magenta"))
 		color = 8
-	if(strlen(sArgString) && 0 <= color <= 8)
+	if(strlen(arg) && 0 <= color <= 8)
 		Color(client, true, color)
 	else if(!color)
 		Color(client, true)
@@ -1473,12 +1473,11 @@ void CreateEnd()
 
 Action cmd_startmins(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
 		{
@@ -1506,12 +1505,11 @@ void SQLDeleteStartZone(Database db, DBResultSet results, const char[] error, an
 
 Action cmd_deleteallcp(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent)) //https://sm.alliedmods.net/new-api/
 	{
 		if(g_devmap)
 		{
@@ -1541,54 +1539,53 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	if(!g_devmap)
 	{
-		char sCmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
-		kv.GetSectionName(sCmd, 64)
-		if(StrEqual(sCmd, "ClanTagChanged"))
+		char cmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
+		kv.GetSectionName(cmd, 64)
+		if(StrEqual(cmd, "ClanTagChanged"))
 			CS_GetClientClanTag(client, g_clantag[client][0], 256)
 	}
 }
 
 Action cmd_test(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID)) //https://sm.alliedmods.net/new-api/
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent)) //https://sm.alliedmods.net/new-api/
 	{
 		char text[256]
-		char sName[MAX_NAME_LENGTH]
-		GetClientName(client, sName, MAX_NAME_LENGTH)
+		char name[MAX_NAME_LENGTH]
+		GetClientName(client, name, MAX_NAME_LENGTH)
 		int team = GetClientTeam(client)
-		char sTeam[32]
-		char sTeamColor[32]
+		char teamName[32]
+		char teamColor[32]
 		switch(team)
 		{
 			case 1:
 			{
-				Format(sTeam, 32, "Spectator")
-				Format(sTeamColor, 32, "\x07CCCCCC")
+				Format(teamName, 32, "Spectator")
+				Format(teamColor, 32, "\x07CCCCCC")
 			}
 			case 2:
 			{
-				Format(sTeam, 32, "Terrorist")
-				Format(sTeamColor, 32, "\x07FF4040")
+				Format(teamName, 32, "Terrorist")
+				Format(teamColor, 32, "\x07FF4040")
 			}
 			case 3:
 			{
-				Format(sTeam, 32, "Counter-Terrorist")
-				Format(sTeamColor, 32, "\x0799CCFF")
+				Format(teamName, 32, "Counter-Terrorist")
+				Format(teamColor, 32, "\x0799CCFF")
 			}
 		}
-		Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", sName, sTeam)
+		Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName)
 		ReplaceString(text, 256, ";#", "\x07")
 		ReplaceString(text, 256, "{default}", "\x01")
-		ReplaceString(text, 256, "{teamcolor}", sTeamColor)
+		ReplaceString(text, 256, "{teamcolor}", teamColor)
 		PrintToChat(client, "%s", text)
-		char sArgString[256]
-		GetCmdArgString(sArgString, 256)
-		int partner = StringToInt(sArgString)
+		char arg[256]
+		GetCmdArgString(arg, 256)
+		int partner = StringToInt(arg)
 		if(partner <= MaxClients && !g_partner[client])
 		{
 			g_partner[client] = partner
@@ -1614,9 +1611,9 @@ Action cmd_test(int client, int args)
 		color |= (255 & 255) << 8 // 255 blue
 		color |= (50 & 255) << 0 // 50 alpha
 		PrintToChat(client, "\x08%08XCOLOR", color)
-		char sAuth64[64]
-		GetClientAuthId(client, AuthId_SteamID64, sAuth64, 64)
-		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", sAuth64, steamid) //https://forums.alliedmods.net/showthread.php?t=324112 120192594
+		char auth64[64]
+		GetClientAuthId(client, AuthId_SteamID64, auth64, 64)
+		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid) //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 		return Plugin_Handled
 	}
 	return Plugin_Continue
@@ -1624,12 +1621,11 @@ Action cmd_test(int client, int args)
 
 Action cmd_endmins(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
 		{
@@ -1657,18 +1653,17 @@ void SQLDeleteEndZone(Database db, DBResultSet results, const char[] error, any 
 
 Action cmd_maptier(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
 		{
-			char sArgString[512]
-			GetCmdArgString(sArgString, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
-			int tier = StringToInt(sArgString)
+			char arg[512]
+			GetCmdArgString(arg, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+			int tier = StringToInt(arg)
 			if(tier > 0)
 			{
 				PrintToServer("[Args] Tier: %i", tier)
@@ -1731,12 +1726,11 @@ void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any da
 
 Action cmd_startmaxs(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID) && g_zoneFirst[0])
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent) && g_zoneFirst[0])
 	{
 		GetClientAbsOrigin(client, g_zoneStartOrigin[1])
 		char query[512]
@@ -1750,12 +1744,11 @@ Action cmd_startmaxs(int client, int args)
 
 Action cmd_endmaxs(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID) && g_zoneFirst[1])
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent) && g_zoneFirst[1])
 	{
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1])
 		char query[512]
@@ -1769,18 +1762,17 @@ Action cmd_endmaxs(int client, int args)
 
 Action cmd_cpmins(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
 		{
-			char sCmd[512]
-			GetCmdArg(args, sCmd, 512)
-			int cpnum = StringToInt(sCmd)
+			char cmd[512]
+			GetCmdArg(args, cmd, 512)
+			int cpnum = StringToInt(cmd)
 			if(cpnum > 0)
 			{
 				PrintToChat(client, "CP: No.%i", cpnum)
@@ -1811,16 +1803,15 @@ void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data
 
 Action cmd_cpmaxs(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID) && g_zoneFirst[2])
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent) && g_zoneFirst[2])
 	{
-		char sCmd[512]
-		GetCmdArg(args, sCmd, 512)
-		int cpnum = StringToInt(sCmd)
+		char cmd[512]
+		GetCmdArg(args, cmd, 512)
+		int cpnum = StringToInt(cmd)
 		if(cpnum > 0)
 		{
 			GetClientAbsOrigin(client, g_cpPos[1][cpnum])
@@ -1847,12 +1838,11 @@ void SQLCPInserted(Database db, DBResultSet results, const char[] error, any dat
 
 Action cmd_zones(int client, int args)
 {
-	int steamid = GetSteamAccountID(client)
-	char sCurrentSteamID[64]
-	IntToString(steamid, sCurrentSteamID, 64)
-	char sSteamID[64]
-	GetConVarString(g_steamid, sSteamID, 64)
-	if(StrEqual(sSteamID, sCurrentSteamID))
+	char steamidCurrent[64]
+	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	char steamid[64]
+	GetConVarString(g_steamid, steamid, 64)
+	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
 			ZoneEditor(client)
@@ -1874,15 +1864,15 @@ void ZoneEditor2(int client)
 		menu.AddItem("start", "Start zone")
 	if(g_zoneHave[1])
 		menu.AddItem("end", "End zone")
-	char sFormat[32]
+	char format[32]
 	if(g_cpCount)
 	{
 		for(int i = 1; i <= g_cpCount; i++)
 		{
-			Format(sFormat, 32, "CP nr. %i zone", i)
-			char sCP[16]
-			Format(sCP, 16, "%i", i)
-			menu.AddItem(sCP, sFormat)
+			Format(format, 32, "CP nr. %i zone", i)
+			char cp[16]
+			Format(cp, 16, "%i", i)
+			menu.AddItem(cp, format)
 		}
 	}
 	else if(!g_zoneHave[0] && !g_zoneHave[1] && !g_cpCount)
@@ -1929,10 +1919,10 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 			for(int i = 1; i <= g_cpCount; i++)
 			{
-				char sCP[16]
-				IntToString(i, sCP, 16)
-				Format(sCP, 16, "%i", i)
-				if(StrEqual(item, sCP))
+				char cp[16]
+				IntToString(i, cp, 16)
+				Format(cp, 16, "%i", i)
+				if(StrEqual(item, cp))
 				{
 					menu2.SetTitle("Zone editor - CP nr. %i zone", i)
 					char sButton[32]
@@ -2012,36 +2002,36 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				g_zoneEndOrigin[1][1] += 16.0
 			else if(StrEqual(item, "end-ymaxs"))
 				g_zoneEndOrigin[1][1] -= 16.0
-			char sExploded[16][16]
-			ExplodeString(item, ";", sExploded, 16, 16)
-			int cpnum = StringToInt(sExploded[0])
-			char sFormatCP[16]
-			Format(sFormatCP, 16, "%i;tp", cpnum)
-			if(StrEqual(item, sFormatCP))
+			char exploded[16][16]
+			ExplodeString(item, ";", exploded, 16, 16)
+			int cpnum = StringToInt(exploded[0])
+			char cpFormated[16]
+			Format(cpFormated, 16, "%i;tp", cpnum)
+			if(StrEqual(item, cpFormated))
 				TeleportEntity(param1, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR)
-			Format(sFormatCP, 16, "%i;1", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;1", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][0] += 16.0
-			Format(sFormatCP, 16, "%i;2", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;2", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][0] -= 16.0
-			Format(sFormatCP, 16, "%i;3", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;3", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][1] += 16.0
-			Format(sFormatCP, 16, "%i;4", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;4", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][1] -= 16.0
-			Format(sFormatCP, 16, "%i;5", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;5", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][0] += 16.0
-			Format(sFormatCP, 16, "%i;6", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;6", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][0] -= 16.0
-			Format(sFormatCP, 16, "%i;7", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;7", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][1] += 16.0
-			Format(sFormatCP, 16, "%i;8", cpnum)
-			if(StrEqual(item, sFormatCP))
+			Format(cpFormated, 16, "%i;8", cpnum)
+			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][1] -= 16.0
 			char query[512]
 			if(StrEqual(item, "startupdate"))
@@ -2176,12 +2166,12 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 
 void createcp(int cpnum)
 {
-	char sTriggerName[64]
-	Format(sTriggerName, 64, "fakeexpert_cp%i", cpnum)
+	char trigger[64]
+	Format(trigger, 64, "fakeexpert_cp%i", cpnum)
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
-	DispatchKeyValue(entity, "targetname", sTriggerName)
+	DispatchKeyValue(entity, "targetname", trigger)
 	DispatchSpawn(entity)
 	SetEntityModel(entity, "models/player/t_arctic.mdl")
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
@@ -2266,14 +2256,14 @@ Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && !g_devmap && !IsFakeClient(other))
 	{
-		char sTrigger[32]
-		GetEntPropString(entity, Prop_Data, "m_iName", sTrigger, 32)
-		if(StrEqual(sTrigger, "fakeexpert_startzone") && g_mapFinished[g_partner[other]])
+		char trigger[32]
+		GetEntPropString(entity, Prop_Data, "m_iName", trigger, 32)
+		if(StrEqual(trigger, "fakeexpert_startzone") && g_mapFinished[g_partner[other]])
 		{
 			Restart(other) //expert zone idea.
 			Restart(g_partner[other])
 		}
-		if(StrEqual(sTrigger, "fakeexpert_endzone"))
+		if(StrEqual(trigger, "fakeexpert_endzone"))
 		{
 			g_mapFinished[other] = true
 			if(g_mapFinished[g_partner[other]] && g_state[other])
@@ -2434,9 +2424,9 @@ Action SDKStartTouch(int entity, int other)
 		}
 		for(int i = 1; i <= g_cpCount; i++)
 		{
-			char sTrigger2[64]
-			Format(sTrigger2, 64, "fakeexpert_cp%i", i)
-			if(StrEqual(sTrigger, sTrigger2))
+			char triggerCP[64]
+			Format(triggerCP, 64, "fakeexpert_cp%i", i)
+			if(StrEqual(trigger, triggerCP))
 			{
 				g_cp[i][other] = true
 				if(g_cp[i][other] && g_cp[i][g_partner[other]] && !g_cpLock[i][other])
@@ -3639,9 +3629,9 @@ Action ProjectileBoostFixEndTouch(int entity, int other)
 	return Plugin_Handled
 }*/
 
-public void OnEntityCreated(int entity, const char[] classname)
+public void OnEntityCreated(int entity, const char[] clasname)
 {
-	if(StrEqual(classname, "flashbang_projectile"))
+	if(StrEqual(clasname, "flashbang_projectile"))
 	{
 		g_bouncedOff[entity] = false //tengu lawl boost fix .sp
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
