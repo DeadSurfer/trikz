@@ -3698,7 +3698,7 @@ void FlashbangEffect(int entity)
 		int count
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
-				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity"))
+				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity"))
 					clients[count++] = i
 		TE_Send(clients, count)
 	}
@@ -3715,7 +3715,7 @@ void FlashbangEffect(int entity)
 		int count
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
-				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity"))
+				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity"))
 					clients[count++] = i
 		TE_Send(clients, count)
 	}
@@ -3728,7 +3728,7 @@ void FlashbangEffect(int entity)
 		int count
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i))
-				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity"))
+				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity"))
 					clients[count++] = i
 		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.2, SNDPITCH_NORMAL)
 	}
