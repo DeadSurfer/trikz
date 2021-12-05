@@ -586,7 +586,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	int partner = Trikz_GetClientPartner(activator)
 	char value[64]
 	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, value, 64)
-	float flValue = StringToFloat(value)
+	float value = StringToFloat(value)
 	int thisIndex
 	for(int i = 1; i <= g_mathTotalCount; i++)
 	{
@@ -602,8 +602,8 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(g_mathValue[activator][thisIndex] < g_mathMax[thisIndex])
 		{
-			g_mathValue[activator][thisIndex] += flValue
-			g_mathValue[partner][thisIndex] += flValue
+			g_mathValue[activator][thisIndex] += value
+			g_mathValue[partner][thisIndex] += value
 			if(g_mathValue[activator][thisIndex] >= g_mathMax[thisIndex])
 			{
 				g_mathValue[activator][thisIndex] = g_mathMax[thisIndex]
@@ -616,8 +616,8 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(g_mathValue[activator][thisIndex] > g_mathMin[thisIndex])
 		{
-			g_mathValue[activator][thisIndex] -= flValue
-			g_mathValue[partner][thisIndex] -= flValue
+			g_mathValue[activator][thisIndex] -= value
+			g_mathValue[partner][thisIndex] -= value
 			if(g_mathValue[activator][thisIndex] <= g_mathMin[thisIndex])
 			{
 				g_mathValue[activator][thisIndex] = g_mathMin[thisIndex]
@@ -628,8 +628,8 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	}
 	else
 	{
-		g_mathValue[activator][thisIndex] = flValue
-		g_mathValue[partner][thisIndex] = flValue
+		g_mathValue[activator][thisIndex] = value
+		g_mathValue[partner][thisIndex] = value
 		if(g_mathValue[activator][thisIndex] < g_mathMin[thisIndex])
 		{
 			g_mathValue[activator][thisIndex] = g_mathMin[thisIndex]
