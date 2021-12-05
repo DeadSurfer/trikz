@@ -3681,20 +3681,61 @@ Action timer_deleteProjectile(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		float origin[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
-		TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100) //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
-		TE_SendToAll()
-		float dir[3] //https://forums.alliedmods.net/showthread.php?t=274452
-		dir[0] = GetRandomFloat(-1.0, 1.0)
-		dir[1] = GetRandomFloat(-1.0, 1.0)
-		dir[2] = GetRandomFloat(-1.0, 1.0)
-		TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2))
-		TE_SendToAll() //Idea from expert zone. So we just made non empty event.
-		char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"}
-		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.2, SNDPITCH_NORMAL) //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 so via gcfscape we can found sound/weapons/flashbang there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar so better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+		if(LibraryExists("fakeexpert-entityfilter"))
+			FlashbangEffect(entity, true)
+		else
+			FlashbangEffect(entity)
 		RemoveEntity(entity)
 	}
+}
+
+void FlashbangEffect(int entity, bool filter = false)
+{
+	float origin[3]
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
+	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100) //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
+	if(filter)
+	{
+		int clients[MAXPLAYERS + 1]
+		int count
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i))
+				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity"))
+					clients[count++] = i
+		TE_Send(clients, count)
+	}
+	else
+		TE_SendToAll()
+	float dir[3] //https://forums.alliedmods.net/showthread.php?t=274452
+	dir[0] = GetRandomFloat(-1.0, 1.0)
+	dir[1] = GetRandomFloat(-1.0, 1.0)
+	dir[2] = GetRandomFloat(-1.0, 1.0)
+	TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2))
+	if(filter)
+	{
+		int clients[MAXPLAYERS + 1]
+		int count
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i))
+				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity"))
+					clients[count++] = i
+		TE_Send(clients, count)
+	}
+	else
+		TE_SendToAll() //Idea from expert zone. So we just made non empty event.
+	char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"}
+	if(filter)
+	{
+		int clients[MAXPLAYERS + 1]
+		int count
+		for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i))
+				if(g_partner[GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity")] == g_partner[g_partner[i]] || i == GetEntPropEnt(entity, Prop_Data, "m_hGroundEntity"))
+					clients[count++] = i
+		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.2, SNDPITCH_NORMAL)
+	}
+	else
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.2, SNDPITCH_NORMAL) //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 so via gcfscape we can found sound/weapons/flashbang there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar so better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 }
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
