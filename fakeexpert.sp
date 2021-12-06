@@ -124,7 +124,7 @@ int g_afkClient
 bool g_hudVel[MAXPLAYERS + 1]
 float g_hudTime[MAXPLAYERS + 1]
 char g_clantag[MAXPLAYERS + 1][2][256]
-Handle g_clantagTimer[MAXPLAYERS + 1]
+//Handle g_clantagTimer[MAXPLAYERS + 1]
 float g_mlsVel[MAXPLAYERS + 1][2][2]
 int g_mlsCount[MAXPLAYERS + 1]
 char g_mlsPrint[MAXPLAYERS + 1][100][256]
@@ -147,6 +147,7 @@ native bool Trikz_GetEntityFilter(int client, int entity)
 float g_restartInHold[MAXPLAYERS + 1]
 bool g_restartInHoldLock[MAXPLAYERS + 1]
 int g_smoke
+bool g_clantagOnce[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -201,7 +202,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp)
 	RegConsoleCmd("sm_test", cmd_test)
 	AddNormalSoundHook(OnSound)
-	HookUserMessage(GetUserMessageId("SayText2"), OnMessage, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
+	HookUserMessage(GetUserMessageId("SayText2"), OnSayMessage, true) //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookEvent("player_spawn", OnSpawn)
 	HookEntityOutput("func_button", "OnPressed", OnButton)
 	HookEvent("player_jump", OnJump)
@@ -452,7 +453,7 @@ public void OnMapEnd()
 	}
 }
 
-Action OnMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	int client = msg.ReadByte()
 	msg.ReadByte()
@@ -569,8 +570,11 @@ Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
 	SetEntityRenderMode(client, RENDER_TRANSALPHA) //maru is genius person who fix this bug. thanks maru for idea.
-	if(!g_devmap)
+	if(!g_devmap && !g_clantagOnce[client])
+	{
 		CS_GetClientClanTag(client, g_clantag[client][0], 256)
+		g_clantagOnce[client] = true
+	}
 }
 
 void OnButton(const char[] output, int caller, int activator, float delay)
@@ -616,7 +620,7 @@ Action autobuy(int client, const char[] command, int argc)
 
 Action rebuy(int client, const char[] command, int argc)
 {
-	Color(client, true)
+	Color(client, false, true)
 }
 
 Action cheer(int client, const char[] command, int argc)
@@ -629,10 +633,12 @@ Action showbriefing(int client, const char[] command, int argc)
 {
 	Menu menu = new Menu(menu_info_handler)
 	menu.SetTitle("Control")
+	menu.AddItem("top", "!top")
 	menu.AddItem("js", "!js")
 	menu.AddItem("hud", "!hud")
 	menu.AddItem("button", "!button")
 	menu.AddItem("pbutton", "!pbutton")
+	menu.AddItem("trikz", "!trikz")
 	menu.AddItem("spec", "!spec")
 	menu.Display(client, 20)
 }
@@ -646,14 +652,18 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 			switch(param2)
 			{
 				case 0:
-					FakeClientCommand(param1, "sm_js")
+					cmd_top(param1, 0)
 				case 1:
-					cmd_hud(param1, 0)
+					FakeClientCommand(param1, "sm_js")
 				case 2:
-					cmd_button(param1, 0)
+					cmd_hud(param1, 0)
 				case 3:
-					cmd_pbutton(param1, 0)
+					cmd_button(param1, 0)
 				case 4:
+					cmd_pbutton(param1, 0)
+				case 5:
+					Trikz(param1)
+				case 6:
 					cmd_spec(param1, 0)
 			}
 		}
@@ -662,8 +672,7 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action headtrack_reset_home_pos(int client, const char[] command, int argc)
 {
-	if(!g_menuOpened[client])
-		Trikz(client)
+	Color(client, true)
 }
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
@@ -779,6 +788,7 @@ public void OnClientPutInServer(int client)
 	g_points[client] = 0
 	if(!g_zoneHave[2])
 		CancelClientMenu(client)
+	g_clantagOnce[client] = false
 }
 
 public void OnClientCookiesCached(int client)
@@ -796,7 +806,7 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
-	Color(client, false)
+	Color(client)
 	g_color[client] = false
 	int partner = g_partner[client]
 	g_partner[g_partner[client]] = 0
@@ -1038,7 +1048,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 2:
 				{
-					Color(param1, true)
+					Color(param1, false, true)
 					Trikz(param1)
 				}
 				case 3:
@@ -1209,7 +1219,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 				{
-					Color(param1, false)
+					Color(param1)
 					g_partner[param1] = 0
 					g_partner[partner] = 0
 					ResetFactory(param1)
@@ -1246,13 +1256,13 @@ Action cmd_color(int client, int args)
 	else if(StrEqual(arg, "magenta"))
 		color = 8
 	if(strlen(arg) && 0 <= color <= 8)
-		Color(client, true, color)
+		Color(client, false, true, color)
 	else if(!color)
-		Color(client, true)
+		Color(client, false, true)
 	return Plugin_Handled
 }
 
-void Color(int client, bool customSkin, int color = -1)
+void Color(int client, bool onlyFlashbang = false, bool customSkin = false, int color = -1)
 {
 	if(IsClientInGame(client) && !IsFakeClient(client))
 	{
@@ -1286,8 +1296,11 @@ void Color(int client, bool customSkin, int color = -1)
 				g_colorBuffer[client][i] = StringToInt(g_colorTypeExploded[i])
 				g_colorBuffer[g_partner[client]][i] = StringToInt(g_colorTypeExploded[i])
 			}
-			SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[client] ? 255 : 125)
-			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[g_partner[client]] ? 255 : 125)
+			if(!onlyFlashbang)
+			{
+				SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[client] ? 255 : 125)
+				SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[g_partner[client]] ? 255 : 125)
+			}
 			g_colorCount[client]++
 			g_colorCount[g_partner[client]]++
 		}
@@ -2243,8 +2256,10 @@ Action SDKEndTouch(int entity, int other)
 		g_timerTimeStart[g_partner[other]] = GetEngineTime()
 		g_readyToStart[other] = false
 		g_readyToStart[g_partner[other]] = false
-		g_clantagTimer[other] = CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
-		g_clantagTimer[g_partner[other]] = CreateTimer(0.1, timer_clantag, g_partner[other], TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+		//g_clantagTimer[other] = CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+		//g_clantagTimer[g_partner[other]] = CreateTimer(0.1, timer_clantag, g_partner[other], TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+		CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+		CreateTimer(0.1, timer_clantag, g_partner[other], TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
 		for(int i = 1; i <= g_cpCount; i++)
 		{
 			g_cp[i][other] = false
@@ -3553,25 +3568,25 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
 			Partner(client)
 		else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color")) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
-			Color(client, true)
+			Color(client, false, true)
 		else if(StrEqual(sArgs, "c 0") || StrEqual(sArgs, "c white") || StrEqual(sArgs, "color 0") || StrEqual(sArgs, "color white"))
-			Color(client, true, 0)
+			Color(client, false, true, 0)
 		else if(StrEqual(sArgs, "c 1") || StrEqual(sArgs, "c red") || StrEqual(sArgs, "color 1") || StrEqual(sArgs, "color red"))
-			Color(client, true, 1)
+			Color(client, false, true, 1)
 		else if(StrEqual(sArgs, "c 2") || StrEqual(sArgs, "c orange") || StrEqual(sArgs, "color 2") || StrEqual(sArgs, "color orange"))
-			Color(client, true, 2)
+			Color(client, false, true, 2)
 		else if(StrEqual(sArgs, "c 3") || StrEqual(sArgs, "c yellow") || StrEqual(sArgs, "color 3") || StrEqual(sArgs, "color yellow"))
-			Color(client, true, 3)
+			Color(client, false, true, 3)
 		else if(StrEqual(sArgs, "c 4") || StrEqual(sArgs, "c lime") || StrEqual(sArgs, "color 4") || StrEqual(sArgs, "color lime"))
-			Color(client, true, 4)
+			Color(client, false, true, 4)
 		else if(StrEqual(sArgs, "c 5") || StrEqual(sArgs, "c aqua") || StrEqual(sArgs, "color 5") || StrEqual(sArgs, "color aqua"))
-			Color(client, true, 5)
+			Color(client, false, true, 5)
 		else if(StrEqual(sArgs, "c 6") || StrEqual(sArgs, "c deep sky blue") || StrEqual(sArgs, "color 6") || StrEqual(sArgs, "color deep sky blue"))
-			Color(client, true, 6)
+			Color(client, false, true, 6)
 		else if(StrEqual(sArgs, "c 7") || StrEqual(sArgs, "c blue") || StrEqual(sArgs, "color 7") || StrEqual(sArgs, "color blue"))
-			Color(client, true, 7)
+			Color(client, false, true, 7)
 		else if(StrEqual(sArgs, "c 8") || StrEqual(sArgs, "c magenta") || StrEqual(sArgs, "color 8") || StrEqual(sArgs, "color magenta"))
-			Color(client, true, 8)
+			Color(client, false, true, 8)
 		else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		{
 			Restart(client)
