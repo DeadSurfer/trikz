@@ -219,10 +219,10 @@ void SetupSave(int client, float time)
 	BuildPath(Path_SM, recordBackup, PLATFORM_MAX_PATH, "data/fakeexpert/backup/%s_%s.replay", g_map, timeFormat)
 	SaveRecord(client, recordBackup, time)
 	BuildPath(Path_SM, recordBackup, PLATFORM_MAX_PATH, "data/fakeexpert/backup/%s_%s_partner.replay", g_map, timeFormat)
-	SaveRecord(Trikz_GetClientPartner(client), recordBackup, time)
+	SaveRecord(Trikz_GetClientPartner(client), recordBackup, time, true)
 }
 
-void SaveRecord(int client, char[] path, float time)
+void SaveRecord(int client, char[] path, float time, bool load = false)
 {
 	g_frame[client].Resize(g_tick[client][1])
 	File f = OpenFile(path, "wb")
@@ -244,6 +244,8 @@ void SaveRecord(int client, char[] path, float time)
 		}
 	}
 	delete f
+	if(load)
+		LoadRecord()
 }
 
 void SQLGetName(Database db, DBResultSet results, const char[] error, any data)
