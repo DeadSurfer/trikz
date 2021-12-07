@@ -673,8 +673,6 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action headtrack_reset_home_pos(int client, const char[] command, int argc)
 {
-	g_seperate[client] = true
-	g_seperate[g_partner[client]] = true
 	ColorFlashbang(client, true)
 }
 
@@ -1340,6 +1338,8 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 		{
 			g_color[client][1] = true
 			g_color[g_partner[client]][1] = true
+			g_seperate[client] = true
+			g_seperate[g_partner[client]] = true
 			char g_colorTypeExploded[3][16]
 			if(g_colorCount[client][1] == 9)
 			{
@@ -1364,10 +1364,10 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 		{
 			g_color[client][1] = false
 			g_color[g_partner[client]][1] = false
+			g_seperate[client] = false
+			g_seperate[client] = false
 			g_colorCount[client][1] = 0
 			g_colorCount[g_partner[client]][1] = 0
-			g_seperate[client] = false
-			g_seperate[client] = false
 		}
 	}
 }
