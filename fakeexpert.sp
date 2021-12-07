@@ -57,7 +57,7 @@ float g_cpTimeClient[11][MAXPLAYERS + 1]
 float gF_cpDiff[11][MAXPLAYERS + 1]
 float g_cpTime[11]
 
-float gF_haveRecord[MAXPLAYERS + 1]
+float g_haveRecord[MAXPLAYERS + 1]
 float g_ServerRecordTime
 
 ConVar g_steamid //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
@@ -213,11 +213,11 @@ public void OnPluginStart()
 	AddCommandListener(cheer, "cheer")
 	AddCommandListener(showbriefing, "showbriefing")
 	AddCommandListener(headtrack_reset_home_pos, "headtrack_reset_home_pos")
-	char outputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
-	for(int i = 0; i < sizeof(outputs); i++)
+	char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
+	for(int i = 0; i < sizeof(output); i++)
 	{
-		HookEntityOutput("trigger_teleport", outputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
-		HookEntityOutput("trigger_teleport_relative", outputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+		HookEntityOutput("trigger_teleport", output[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
+		HookEntityOutput("trigger_teleport_relative", output[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
 	LoadTranslations("test.phrases") //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 	g_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell)
@@ -937,9 +937,9 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 	{
 		int client = GetClientFromSerial(data)
 		if(results.FetchRow())
-			gF_haveRecord[client] = results.FetchFloat(0)
+			g_haveRecord[client] = results.FetchFloat(0)
 		else
-			gF_haveRecord[client] = 0.0
+			g_haveRecord[client] = 0.0
 	}
 }
 
@@ -2308,8 +2308,8 @@ Action SDKStartTouch(int entity, int other)
 							FinishMSG(g_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(query, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map)
 							g_mysql.Query(SQLUpdateRecord, query)
-							gF_haveRecord[other] = g_timerTime[other]
-							gF_haveRecord[g_partner[other]] = g_timerTime[other]
+							g_haveRecord[other] = g_timerTime[other]
+							g_haveRecord[g_partner[other]] = g_timerTime[other]
 							g_mateRecord[other] = g_timerTime[other]
 							g_mateRecord[g_partner[other]] = g_timerTime[other]
 							g_ServerRecord = true
@@ -2343,10 +2343,10 @@ Action SDKStartTouch(int entity, int other)
 							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(query, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map)
 							g_mysql.Query(SQLUpdateRecord, query)
-							if(gF_haveRecord[other] > g_timerTime[other])
-								gF_haveRecord[other] = g_timerTime[other]
-							if(gF_haveRecord[g_partner[other]] > g_timerTime[other])
-								gF_haveRecord[g_partner[other]] = g_timerTime[other]
+							if(g_haveRecord[other] > g_timerTime[other])
+								g_haveRecord[other] = g_timerTime[other]
+							if(g_haveRecord[g_partner[other]] > g_timerTime[other])
+								g_haveRecord[g_partner[other]] = g_timerTime[other]
 							if(g_mateRecord[other] > g_timerTime[other])
 							{
 								g_mateRecord[other] = g_timerTime[other]
@@ -2368,8 +2368,8 @@ Action SDKStartTouch(int entity, int other)
 							FinishMSG(g_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(query, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
 							g_mysql.Query(SQLInsertRecord, query)
-							gF_haveRecord[other] = g_timerTime[other]
-							gF_haveRecord[g_partner[other]] = g_timerTime[other]
+							g_haveRecord[other] = g_timerTime[other]
+							g_haveRecord[g_partner[other]] = g_timerTime[other]
 							g_mateRecord[other] = g_timerTime[other]
 							g_mateRecord[g_partner[other]] = g_timerTime[other]
 							g_ServerRecord = true
@@ -2391,10 +2391,10 @@ Action SDKStartTouch(int entity, int other)
 							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							Format(query, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
 							g_mysql.Query(SQLInsertRecord, query)
-							if(!gF_haveRecord[other])
-								gF_haveRecord[other] = g_timerTime[other]
-							if(!gF_haveRecord[g_partner[other]])
-								gF_haveRecord[g_partner[other]] = g_timerTime[other]
+							if(!g_haveRecord[other])
+								g_haveRecord[other] = g_timerTime[other]
+							if(!g_haveRecord[g_partner[other]])
+								g_haveRecord[g_partner[other]] = g_timerTime[other]
 							g_mateRecord[other] = g_timerTime[other]
 							g_mateRecord[g_partner[other]] = g_timerTime[other]
 						}
@@ -2416,8 +2416,8 @@ Action SDKStartTouch(int entity, int other)
 				else
 				{
 					g_ServerRecordTime = g_timerTime[other]
-					gF_haveRecord[other] = g_timerTime[other]
-					gF_haveRecord[g_partner[other]] = g_timerTime[other]
+					g_haveRecord[other] = g_timerTime[other]
+					g_haveRecord[g_partner[other]] = g_timerTime[other]
 					g_mateRecord[other] = g_timerTime[other]
 					g_mateRecord[g_partner[other]] = g_timerTime[other]
 					PrintToChatAll("\x077CFC00New server record!")
@@ -2975,7 +2975,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
 				g_boost[client] = 3
 			}
-			else if(g_boost[client] == 3) // let make loop finish and come back to here.
+			else if(g_boost[client] == 3) //Let make loop finish and come back to here.
 			{
 				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
 				if(g_groundBoost[client])
@@ -3032,7 +3032,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				for(int i = 0; i <= 2; i++)
 				{
 					angle[i] *= 8192.0
-					end[i] = start[i] + angle[i] //thanks to rumour for pingtool original code.
+					end[i] = start[i] + angle[i] //Thanks to rumour for pingtool original code.
 				}
 				TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
 				if(TR_DidHit())
@@ -3107,7 +3107,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						DrawZone(i, 0.1)
 			}
 		}
-		if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //make able to swtich wtih E to the partner via spectate.
+		if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //Make able to swtich wtih E to the partner via spectate.
 		{
 			int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
@@ -3234,14 +3234,14 @@ Action ProjectileBoostFix(int entity, int other)
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
-		if(0.0 < delta < 2.0) //tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		if(0.0 < delta < 2.0) //Tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", g_entityVel[other])
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", g_clientVel[other])
 			g_boostTime[other] = GetEngineTime()
 			g_groundBoost[other] = g_bouncedOff[entity]
 			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
-			g_flash[other] = EntIndexToEntRef(entity) //check this for postthink post to correct set first telelportentity speed. starttouch have some outputs only one of them is coorect wich gives correct other(player) id.
+			g_flash[other] = EntIndexToEntRef(entity) //Thats should never happen.
 			g_boost[other] = 1
 			float vel[3]
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel)
@@ -3499,7 +3499,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 			cmd_hud(param1, 0)
 		}
 		case MenuAction_Cancel:
-			g_menuOpened[param1] = false //idea from expert zone.
+			g_menuOpened[param1] = false //Idea from expert zone.
 		case MenuAction_Display:
 			g_menuOpened[param1] = true
 	}
@@ -3621,7 +3621,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(!other)
-		g_bouncedOff[entity] = true //get from tengu github tengulawl scriptig boost-fix.sp
+		g_bouncedOff[entity] = true //Get from Tengu github "tengulawl" scriptig "boost-fix.sp".
 }
 
 /*Action cmd_time(int client, int args)
@@ -3656,7 +3656,7 @@ public void OnEntityCreated(int entity, const char[] clasname)
 {
 	if(StrEqual(clasname, "flashbang_projectile"))
 	{
-		g_bouncedOff[entity] = false //tengu lawl boost fix .sp
+		g_bouncedOff[entity] = false //"Tengulawl" "boost-fix.sp".
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile)
@@ -3671,8 +3671,8 @@ void SDKProjectile(int entity)
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		g_silentKnife = true
 		FakeClientCommand(client, "use weapon_knife")
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //thanks to alliedmodders. 2019 https://forums.alliedmods.net/archive/index.php/t-287052.html
-		ClientCommand(client, "lastinv") //hornet, log idea, main idea Nick Yurevich since 2019, hornet found ClientCommand - lastinv
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+		ClientCommand(client, "lastinv") //Hornet, Log idea, main idea Nick Yurevich since 2019, Hornet found ClientCommand - lastinv.
 		RequestFrame(frame_blockExplosion, entity)
 		CreateTimer(IsFakeClient(client) ? 0.1 : GetClientAvgLatency(client, NetFlow_Both), timer_hideSwtich, client, TIMER_FLAG_NO_MAPCHANGE)
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
@@ -3740,7 +3740,7 @@ void FlashbangEffect(int entity)
 	if(filter)
 		TE_Send(clients, count)
 	else
-		TE_SendToAll() //Idea from expert zone. So we just made non empty event.
+		TE_SendToAll() //Idea from "Expert-Zone". So we just made non empty event.
 	char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"}
 	if(filter)
 		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.2, SNDPITCH_NORMAL)
@@ -3752,10 +3752,10 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 {
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
-	return Plugin_Handled //full god-mode
+	return Plugin_Handled //Full god-mode.
 }
 
-void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw thanks to lon to give this idea. aka trikz_failtime
+void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw thanks to Lon to give this idea. (aka trikz_failtime)
 {
 	if(!GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	{
@@ -3861,7 +3861,7 @@ int Stuck(int client)
 	GetClientMins(client, mins)
 	GetClientMaxs(client, maxs)
 	GetClientAbsOrigin(client, origin)
-	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //skiper, gurman idea, plugin 2020
+	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //Skiper, Gurman idea, plugin 2020 year.
 	return TR_GetEntityIndex()
 }
 
