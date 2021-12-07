@@ -1366,6 +1366,8 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 			g_color[g_partner[client]][1] = false
 			g_colorCount[client][1] = 0
 			g_colorCount[g_partner[client]][1] = 0
+			g_seperate[client] = false
+			g_seperate[client] = false
 		}
 	}
 }
