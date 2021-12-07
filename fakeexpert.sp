@@ -3447,7 +3447,7 @@ Action cmd_noclip(int client, int args)
 
 void Noclip(int client)
 {
-	if(IsClientInGame(client))
+	if(client)
 	{
 		if(g_devmap)
 		{
