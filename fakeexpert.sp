@@ -3441,20 +3441,22 @@ void AFK(int client, bool force = false)
 
 Action cmd_noclip(int client, int args)
 {
-	if(!args)
-		Noclip(client)
+	Noclip(client)
 	return Plugin_Handled
 }
 
 void Noclip(int client)
 {
-	if(g_devmap)
+	if(IsClientInGame(client))
 	{
-		SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP)
-		PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.")
+		if(g_devmap)
+		{
+			SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP)
+			PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.")
+		}
+		else
+			PrintToChat(client, "Turn on devmap.")
 	}
-	else
-		PrintToChat(client, "Turn on devmap.")
 }
 
 Action cmd_spec(int client, int args)
