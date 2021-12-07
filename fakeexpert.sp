@@ -3441,7 +3441,8 @@ void AFK(int client, bool force = false)
 
 Action cmd_noclip(int client, int args)
 {
-	Noclip(client)
+	if(!args)
+		Noclip(client)
 	return Plugin_Handled
 }
 
