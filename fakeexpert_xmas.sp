@@ -359,7 +359,12 @@ void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	else if(StrEqual(type, "gift10_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_special.mdl", model)
 	int entity = CreateEntityByName("prop_dynamic")
 	DispatchKeyValue(entity, "model", model)
-	DispatchKeyValue(entity, "solid", "1")
+	DispatchKeyValue(entity, "spawnflags", "256")
+	if(StrEqual(type, "tree_big"))
+	{
+		char anim[][] = {"windy1", "windy2"}
+		DispatchKeyValue(entity, "DefaultAnim", anim[GetRandomInt(0, 1)])
+	}
 	DispatchSpawn(entity)
 	TeleportEntity(entity, origin, angles, NULL_VECTOR)
 	SetEntProp(entity, Prop_Data, "m_nSkin", skin)
