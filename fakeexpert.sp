@@ -92,7 +92,7 @@ bool g_sourcetv
 bool g_block[MAXPLAYERS + 1]
 int g_wModelThrown
 int g_class[MAXPLAYERS + 1]
-bool g_color[MAXPLAYERS + 1]
+bool g_color[MAXPLAYERS + 1][2]
 int g_wModelPlayer[5]
 int g_pingModel[MAXPLAYERS + 1]
 int g_pingModelOwner[2048 + 1]
@@ -101,8 +101,8 @@ Handle g_pingTimer[MAXPLAYERS + 1]
 bool g_zoneFirst[3]
 
 char g_colorType[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,0", "0,255,255", "0,191,255", "0,0,255", "255,0,255"} //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
-int g_colorBuffer[MAXPLAYERS + 1][3]
-int g_colorCount[MAXPLAYERS + 1]
+int g_colorBuffer[MAXPLAYERS + 1][3][2]
+int g_colorCount[MAXPLAYERS + 1][2]
 
 int g_zoneModel[3]
 int g_laserBeam
@@ -148,6 +148,7 @@ float g_restartInHold[MAXPLAYERS + 1]
 bool g_restartInHoldLock[MAXPLAYERS + 1]
 int g_smoke
 bool g_clantagOnce[MAXPLAYERS + 1]
+bool g_seperate[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -561,11 +562,11 @@ Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		g_class[client] = 3
 	else if(StrEqual(model, "models/player/ct_gign.mdl"))
 		g_class[client] = 4
-	if(g_color[client])
+	if(g_color[client][0])
 	{
 		SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]])
 		DispatchKeyValue(client, "skin", "2")
-		SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
+		SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255)
 	}
 	else
 		SetEntityRenderColor(client, 255, 255, 255, 255)
@@ -620,7 +621,7 @@ Action autobuy(int client, const char[] command, int argc)
 
 Action rebuy(int client, const char[] command, int argc)
 {
-	Color(client, false, true)
+	Color(client, true)
 }
 
 Action cheer(int client, const char[] command, int argc)
@@ -672,7 +673,9 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action headtrack_reset_home_pos(int client, const char[] command, int argc)
 {
-	Color(client, true)
+	g_seperate[client] = true
+	g_seperate[g_partner[client]] = true
+	ColorFlashbang(client, true)
 }
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
@@ -807,7 +810,10 @@ public void OnClientCookiesCached(int client)
 public void OnClientDisconnect(int client)
 {
 	Color(client)
-	g_color[client] = false
+	ColorFlashbang(client)
+	g_color[client][0] = false
+	g_color[client][1] = false
+	g_seperate[client] = false
 	int partner = g_partner[client]
 	g_partner[g_partner[client]] = 0
 	if(partner && g_menuOpened[partner])
@@ -1048,7 +1054,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				case 2:
 				{
-					Color(param1, false, true)
+					Color(param1, true)
 					Trikz(param1)
 				}
 				case 3:
@@ -1085,8 +1091,8 @@ Action Block(int client) //thanks maru for optimization.
 {
 	g_block[client] = !g_block[client]
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", g_block[client] ? 5 : 2)
-	if(g_color[client])
-		SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[client] ? 255 : 125)
+	if(g_color[client][0])
+		SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125)
 	else
 		SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125)
 	if(g_menuOpened[client])
@@ -1220,6 +1226,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					Color(param1)
+					ColorFlashbang(param1)
 					g_partner[param1] = 0
 					g_partner[partner] = 0
 					ResetFactory(param1)
@@ -1256,13 +1263,13 @@ Action cmd_color(int client, int args)
 	else if(StrEqual(arg, "magenta"))
 		color = 8
 	if(strlen(arg) && 0 <= color <= 8)
-		Color(client, false, true, color)
+		Color(client, true, color)
 	else if(!color)
-		Color(client, false, true)
+		Color(client, true)
 	return Plugin_Handled
 }
 
-void Color(int client, bool onlyFlashbang = false, bool customSkin = false, int color = -1)
+void Color(int client, bool customSkin = false, int color = -1)
 {
 	if(IsClientInGame(client) && !IsFakeClient(client))
 	{
@@ -1273,45 +1280,92 @@ void Color(int client, bool onlyFlashbang = false, bool customSkin = false, int 
 		}
 		if(customSkin)
 		{
-			g_color[client] = true
-			g_color[g_partner[client]] = true
+			g_color[client][0] = true
+			g_color[g_partner[client]][0] = true
 			SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]])
-			SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]])
+			SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]])
 			DispatchKeyValue(client, "skin", "2")
 			DispatchKeyValue(g_partner[client], "skin", "2")
 			char g_colorTypeExploded[3][16]
-			if(g_colorCount[client] == 9)
+			if(g_colorCount[client][0] == 9)
 			{
-				g_colorCount[client] = 0
-				g_colorCount[g_partner[client]] = 0
+				g_colorCount[client][0] = 0
+				g_colorCount[g_partner[client]][0] = 0
 			}
 			else if(0 <= color <= 8)
 			{
-				g_colorCount[client] = color
-				g_colorCount[g_partner[client]] = color
+				g_colorCount[client][0] = color
+				g_colorCount[g_partner[client]][0] = color
 			}
-			ExplodeString(g_colorType[g_colorCount[client]], ",", g_colorTypeExploded, 3, 16)
+			ExplodeString(g_colorType[g_colorCount[client][0]], ",", g_colorTypeExploded, 3, 16)
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][i] = StringToInt(g_colorTypeExploded[i])
-				g_colorBuffer[g_partner[client]][i] = StringToInt(g_colorTypeExploded[i])
+				g_colorBuffer[client][i][0] = StringToInt(g_colorTypeExploded[i])
+				g_colorBuffer[g_partner[client]][i][0] = StringToInt(g_colorTypeExploded[i])
 			}
-			if(!onlyFlashbang)
+			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125)
+			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] ? 255 : 125)
+			g_colorCount[client][0]++
+			g_colorCount[g_partner[client]][0]++
+			if(!g_seperate[client])
 			{
-				SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[client] ? 255 : 125)
-				SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], g_block[g_partner[client]] ? 255 : 125)
+				for(int i = 0; i <= 2; i++)
+					g_colorBuffer[g_partner[client]][i][1] = g_colorBuffer[client][i][0]
+				g_colorCount[client][1] = g_colorCount[client][0]
+				g_colorCount[g_partner[client]][1] = g_colorCount[g_partner[client]][0]
 			}
-			g_colorCount[client]++
-			g_colorCount[g_partner[client]]++
 		}
 		else
 		{
-			g_color[client] = false
-			g_color[g_partner[client]] = false
-			g_colorCount[client] = 0
-			g_colorCount[g_partner[client]] = 0
+			g_color[client][0] = false
+			g_color[g_partner[client]][0] = false
+			g_colorCount[client][0] = 0
+			g_colorCount[g_partner[client]][0] = 0
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125)
 			SetEntityRenderColor(g_partner[client], 255, 255, 255, g_block[g_partner[client]] ? 255 : 125)
+		}
+	}
+}
+
+void ColorFlashbang(int client, bool customSkin = false, int color = -1)
+{
+	if(IsClientInGame(client) && !IsFakeClient(client))
+	{
+		if(!g_devmap && !g_partner[client])
+		{
+			PrintToChat(client, "You must have a partner.")
+			return
+		}
+		if(customSkin)
+		{
+			g_color[client][1] = true
+			g_color[g_partner[client]][1] = true
+			char g_colorTypeExploded[3][16]
+			if(g_colorCount[client][1] == 9)
+			{
+				g_colorCount[client][1] = 0
+				g_colorCount[g_partner[client]][1] = 0
+			}
+			else if(0 <= color <= 8)
+			{
+				g_colorCount[client][1] = color
+				g_colorCount[g_partner[client]][1] = color
+			}
+			ExplodeString(g_colorType[g_colorCount[client][1]], ",", g_colorTypeExploded, 3, 16)
+			for(int i = 0; i <= 2; i++)
+			{
+				g_colorBuffer[client][i][1] = StringToInt(g_colorTypeExploded[i])
+				g_colorBuffer[g_partner[client]][i][1] = StringToInt(g_colorTypeExploded[i])
+			}
+			g_colorCount[client][1]++
+			g_colorCount[g_partner[client]][1]++
+		}
+		else
+		{
+			g_color[client][1] = false
+			g_color[g_partner[client]][1] = false
+			g_colorCount[client][1] = 0
+			g_colorCount[g_partner[client]][1] = 0
 		}
 	}
 }
@@ -3047,15 +3101,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					normal[0] -= 270.0
 					SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal)
 				}
-				if(g_color[client])
-					SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
+				if(g_color[client][1])
+					SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255)
 				TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
 				//https://forums.alliedmods.net/showthread.php?p=1080444
-				if(g_color[client])
+				if(g_color[client][1])
 				{
 					int color[4]
 					for(int i = 0; i <= 2; i++)
-						color[i] = g_colorBuffer[client][i]
+						color[i] = g_colorBuffer[client][i][1]
 					color[3] = 255
 					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0)
 				}
@@ -3141,8 +3195,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 			{
 				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
-				if(g_color[other])
-					SetEntityRenderColor(other, g_colorBuffer[other][0], g_colorBuffer[other][1], g_colorBuffer[other][2], 125)
+				if(g_color[other][0])
+					SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125)
 				else
 					SetEntityRenderColor(other, 255, 255, 255, 125)
 			}
@@ -3152,8 +3206,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			{
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-				if(g_color[client])
-					SetEntityRenderColor(client, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
+				if(g_color[client][0])
+					SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255)
 				else
 					SetEntityRenderColor(client, 255, 255, 255, 255)
 			}
@@ -3571,25 +3625,25 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
 			Partner(client)
 		else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color")) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
-			Color(client, false, true)
+			Color(client, true)
 		else if(StrEqual(sArgs, "c 0") || StrEqual(sArgs, "c white") || StrEqual(sArgs, "color 0") || StrEqual(sArgs, "color white"))
-			Color(client, false, true, 0)
+			Color(client, true, 0)
 		else if(StrEqual(sArgs, "c 1") || StrEqual(sArgs, "c red") || StrEqual(sArgs, "color 1") || StrEqual(sArgs, "color red"))
-			Color(client, false, true, 1)
+			Color(client, true, 1)
 		else if(StrEqual(sArgs, "c 2") || StrEqual(sArgs, "c orange") || StrEqual(sArgs, "color 2") || StrEqual(sArgs, "color orange"))
-			Color(client, false, true, 2)
+			Color(client, true, 2)
 		else if(StrEqual(sArgs, "c 3") || StrEqual(sArgs, "c yellow") || StrEqual(sArgs, "color 3") || StrEqual(sArgs, "color yellow"))
-			Color(client, false, true, 3)
+			Color(client, true, 3)
 		else if(StrEqual(sArgs, "c 4") || StrEqual(sArgs, "c lime") || StrEqual(sArgs, "color 4") || StrEqual(sArgs, "color lime"))
-			Color(client, false, true, 4)
+			Color(client, true, 4)
 		else if(StrEqual(sArgs, "c 5") || StrEqual(sArgs, "c aqua") || StrEqual(sArgs, "color 5") || StrEqual(sArgs, "color aqua"))
-			Color(client, false, true, 5)
+			Color(client, true, 5)
 		else if(StrEqual(sArgs, "c 6") || StrEqual(sArgs, "c deep sky blue") || StrEqual(sArgs, "color 6") || StrEqual(sArgs, "color deep sky blue"))
-			Color(client, false, true, 6)
+			Color(client, true, 6)
 		else if(StrEqual(sArgs, "c 7") || StrEqual(sArgs, "c blue") || StrEqual(sArgs, "color 7") || StrEqual(sArgs, "color blue"))
-			Color(client, false, true, 7)
+			Color(client, true, 7)
 		else if(StrEqual(sArgs, "c 8") || StrEqual(sArgs, "c magenta") || StrEqual(sArgs, "color 8") || StrEqual(sArgs, "color magenta"))
-			Color(client, false, true, 8)
+			Color(client, true, 8)
 		else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
 		{
 			Restart(client)
@@ -3679,11 +3733,11 @@ void SDKProjectile(int entity)
 		RequestFrame(frame_blockExplosion, entity)
 		CreateTimer(IsFakeClient(client) ? 0.1 : GetClientAvgLatency(client, NetFlow_Both), timer_hideSwtich, client, TIMER_FLAG_NO_MAPCHANGE)
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
-		if(g_color[client])
+		if(g_color[client][1])
 		{
 			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown)
 			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
-			SetEntityRenderColor(entity, g_colorBuffer[client][0], g_colorBuffer[client][1], g_colorBuffer[client][2], 255)
+			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255)
 		}
 	}
 }
