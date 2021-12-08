@@ -1315,7 +1315,10 @@ void Color(int client, bool customSkin = false, int color = -1)
 				g_colorCount[client][1] = g_colorCount[client][0]
 				g_colorCount[g_partner[client]][1] = g_colorCount[g_partner[client]][0]
 				for(int i = 0; i <= 2; i++)
+				{
+					g_colorBuffer[client][i][1] = g_colorBuffer[client][i][0]
 					g_colorBuffer[g_partner[client]][i][1] = g_colorBuffer[client][i][0]
+				}
 			}
 		}
 		else
