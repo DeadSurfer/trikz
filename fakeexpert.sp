@@ -636,11 +636,12 @@ Action showbriefing(int client, const char[] command, int argc)
 	menu.SetTitle("Control")
 	menu.AddItem("top", "!top")
 	menu.AddItem("js", "!js")
+	menu.AddItem("bs", "!bs")
 	menu.AddItem("hud", "!hud")
 	menu.AddItem("button", "!button")
 	menu.AddItem("pbutton", "!pbutton")
-	menu.AddItem("trikz", "!trikz")
 	menu.AddItem("spec", "!spec")
+	menu.AddItem("trikz", "!trikz")
 	menu.Display(client, 20)
 }
 
@@ -657,15 +658,17 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 1:
 					FakeClientCommand(param1, "sm_js")
 				case 2:
-					cmd_hud(param1, 0)
+					FakeClientCommand(param1, "sm_bs")
 				case 3:
-					cmd_button(param1, 0)
+					cmd_hud(param1, 0)
 				case 4:
-					cmd_pbutton(param1, 0)
+					cmd_button(param1, 0)
 				case 5:
-					Trikz(param1)
+					cmd_pbutton(param1, 0)
 				case 6:
 					cmd_spec(param1, 0)
+				case 7:
+					Trikz(param1)
 			}
 		}
 	}
@@ -1307,10 +1310,12 @@ void Color(int client, bool customSkin = false, int color = -1)
 			g_colorCount[g_partner[client]][0]++
 			if(!g_seperate[client])
 			{
-				for(int i = 0; i <= 2; i++)
-					g_colorBuffer[g_partner[client]][i][1] = g_colorBuffer[client][i][0]
+				g_color[client][1] = true
+				g_color[g_partner[client]][1] = true
 				g_colorCount[client][1] = g_colorCount[client][0]
 				g_colorCount[g_partner[client]][1] = g_colorCount[g_partner[client]][0]
+				for(int i = 0; i <= 2; i++)
+					g_colorBuffer[g_partner[client]][i][1] = g_colorBuffer[client][i][0]
 			}
 		}
 		else
