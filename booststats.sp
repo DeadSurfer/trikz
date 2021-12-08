@@ -136,7 +136,8 @@ void frame_projectileVel(int entity)
 Action timer_clear(Handle timer, int client)
 {
 	if(IsClientInGame(client))
-		g_boostPerf[client][0] = false
+		if(g_boostPerf[client][1])
+			g_boostPerf[client][0] = false
 }
 
 Action SDKStartTouch(int entity, int other)
@@ -179,7 +180,7 @@ Action timer_waitSpawn(Handle timer, int client)
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && g_boostStats[i])
-					PrintToChat(i, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 			}
 		}
 		g_boostProcess[client] = false
