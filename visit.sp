@@ -46,18 +46,19 @@ public void OnPluginStart()
 
 Action connect(Event event, const char[] name, bool dontBroadcast)
 {
-	char sName[MAX_NAME_LENGTH]
-	event.GetString("name", sName, MAX_NAME_LENGTH)
-	PrintToChatAll("Player %s has joined the game", sName)
+	char name_[MAX_NAME_LENGTH]
+	event.GetString("name", name_, MAX_NAME_LENGTH)
+	PrintToChatAll("Player %s has joined the game", name_)
 	SetEventBroadcast(event, true)
 }
 
 Action disconnect(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"))
 	char reason[64]
 	event.GetString("reason", reason, 64)
-	PrintToChatAll("Player %N left the game (%s)", client, reason)
+	char name_[MAX_NAME_LENGTH]
+	event.GetString("name", name_, MAX_NAME_LENGTH)
+	PrintToChatAll("Player %N left the game (%s)", name_, reason)
 	SetEventBroadcast(event, true)
 }
 
