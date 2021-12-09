@@ -3881,7 +3881,7 @@ Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MA
 		g_silentKnife = false
 		return Plugin_Handled
 	}
-	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav") && IsValidEntity(g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")]))
+	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav") && g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == entity)
 		return Plugin_Handled
 	return Plugin_Continue
 }
