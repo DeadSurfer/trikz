@@ -41,6 +41,7 @@ float g_angles[MAXPLAYERS + 1][3]
 Handle g_cookie
 bool g_boostProcess[MAXPLAYERS + 1]
 bool g_boostPerf[MAXPLAYERS + 1][2]
+bool g_created[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -119,6 +120,7 @@ void SDKSpawnProjectile(int entity)
 	if(!g_boostPerf[client][1])
 		g_boostPerf[client][0] = true
 	RequestFrame(frame_projectileVel, entity)
+	g_created[client] = true
 }
 
 void frame_projectileVel(int entity)
@@ -136,8 +138,7 @@ void frame_projectileVel(int entity)
 Action timer_clear(Handle timer, int client)
 {
 	if(IsClientInGame(client))
-		if(g_boostPerf[client][1])
-			g_boostPerf[client][0] = false
+		g_boostPerf[client][0] = false
 }
 
 Action SDKStartTouch(int entity, int other)
@@ -169,7 +170,7 @@ void OnJump(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_waitSpawn(Handle timer, int client)
 {
-	if(IsClientInGame(client) && 0.0 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3)
+	if(IsClientInGame(client) && 0.0 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3 && g_created[client])
 	{
 		if(IsClientInGame(client) && g_boostStats[client])
 			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
@@ -186,5 +187,6 @@ Action timer_waitSpawn(Handle timer, int client)
 		g_boostProcess[client] = false
 		g_boostPerf[client][0] = false
 		g_boostPerf[client][1] = false
+		g_created[client] = false
 	}	
 }
