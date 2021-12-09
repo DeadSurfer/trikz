@@ -45,7 +45,7 @@ enum struct eFrame
 	MoveType movetype
 	int weapon
 }
-int g_tick[MAXPLAYERS + 1][2]
+int g_tick[MAXPLAYERS + 1]
 int g_steamid3[2]
 Database g_database
 native bool Trikz_GetTimerState(int client)
@@ -224,20 +224,20 @@ void SetupSave(int client, float time)
 
 void SaveRecord(int client, char[] path, float time, bool load = false)
 {
-	g_frame[client].Resize(g_tick[client][1])
+	g_frame[client].Resize(g_tick[client])
 	File f = OpenFile(path, "wb")
-	f.WriteInt32(g_tick[client][1])
+	f.WriteInt32(g_tick[client])
 	f.WriteInt32(GetSteamAccountID(client))
 	f.WriteInt32(view_as<int>(time))
 	any data[sizeof(eFrame)]
 	any dataWrite[sizeof(eFrame) * 100]
 	int framesWritten
-	for(int i = 0; i < g_tick[client][1]; i++)
+	for(int i = 0; i < g_tick[client]; i++)
 	{
 		g_frame[client].GetArray(i, data, sizeof(eFrame))
 		for(int j = 0; j < sizeof(eFrame); j++)
 			dataWrite[(sizeof(eFrame) * framesWritten) + j] = data[j]
-		if(++framesWritten == 100 || i == g_tick[client][1] - 1)
+		if(++framesWritten == 100 || i == g_tick[client] - 1)
 		{
 			f.Write(dataWrite, sizeof(eFrame) * framesWritten, 4)
 			framesWritten = 0
@@ -294,7 +294,7 @@ void LoadRecord()
 			g_database.Query(SQLGetName, query, 0)
 		}
 		g_loaded[0] = true
-		g_tick[g_bot[0]][0] = 0
+		g_tick[g_bot[0]] = 0
 	}
 	BuildPath(Path_SM, filePath, PLATFORM_MAX_PATH, "data/fakeexpert/%s_partner.replay", g_map)
 	if(FileExists(filePath))
@@ -320,7 +320,7 @@ void LoadRecord()
 			g_database.Query(SQLGetName, query, 1)
 		}
 		g_loaded[1] = true
-		g_tick[g_bot[1]][0] = 0
+		g_tick[g_bot[1]] = 0
 	}
 }
 
@@ -343,36 +343,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			frame.weapon = g_weapon[client]
 			g_weapon[client] = 0
 		}
-		int differ = g_tick[Trikz_GetClientPartner(client)][1] - g_tick[client][1]
+		int differ = g_tick[Trikz_GetClientPartner(client)] - g_tick[client]
 		if(differ)
 		{
 			for(int i = 1; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
 			{
-				if(g_frame[client].Length <= g_tick[client][1])
-					g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
-				g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
+				if(g_frame[client].Length <= g_tick[client])
+					g_frame[client].Resize(g_tick[client] + (RoundToCeil(g_tickrate) * 2))
+				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame))
 			}
 		}
 		else
 		{
-			if(g_frame[client].Length <= g_tick[client][1])
-				g_frame[client].Resize(g_tick[client][1] + (RoundToCeil(g_tickrate) * 2))
-			g_frame[client].SetArray(g_tick[client][1]++, frame, sizeof(eFrame))
+			if(g_frame[client].Length <= g_tick[client])
+				g_frame[client].Resize(g_tick[client] + (RoundToCeil(g_tickrate) * 2))
+			g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame))
 		}
 	}
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] < g_replayTickcount[client] && g_loaded[0] && g_loaded[1])
+	if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client] < g_replayTickcount[client] && g_loaded[0] && g_loaded[1])
 	{
-		if(IsClientInGame(client) && !g_tick[client][0])
+		if(IsClientInGame(client) && !g_tick[client])
 			Trikz_Restart(client)
 		vel[0] = 0.0 //prevent shakes at flat surface.
 		vel[1] = 0.0
 		vel[2] = 0.0
 		eFrame frame
-		g_frameCache[client].GetArray(g_tick[client][0]++, frame, sizeof(eFrame))
+		g_frameCache[client].GetArray(g_tick[client]++, frame, sizeof(eFrame))
 		float posPrev[3]
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev)
 		float velPos[3]
@@ -405,19 +405,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 		}
-		if(g_tick[client][0] == 1)
+		if(g_tick[client] == 1)
 			TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}))
-		else if(1 < g_tick[client][0] < g_replayTickcount[client])
+		else if(1 < g_tick[client] < g_replayTickcount[client])
 			TeleportEntity(client, NULL_VECTOR, ang, velPos)
-		else if(g_tick[client][0] == g_replayTickcount[client])
+		else if(g_tick[client] == g_replayTickcount[client])
 			TeleportEntity(client, frame.pos, ang, NULL_VECTOR)
 		buttons = frame.buttons
 		g_timeToRestart[client] = GetGameTime()
 	}
-	else if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client][0] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart[client] >= 3.0)
+	else if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart[client] >= 3.0)
 	{
-		g_tick[client][0] = 0
-		g_tick[Trikz_GetClientPartner(client)][0] = 0
+		g_tick[client] = 0
+		g_tick[Trikz_GetClientPartner(client)] = 0
 	}
 }
 
@@ -434,9 +434,12 @@ void SQLConnect(Database db, const char[] error, any data)
 
 public void Trikz_Start(int client)
 {
-	delete g_frame[client]
-	g_frame[client] = new ArrayList((sizeof(eFrame)))
-	g_tick[client][1] = 0
+	if(!IsFakeClient(client))
+	{
+		delete g_frame[client]
+		g_frame[client] = new ArrayList((sizeof(eFrame)))
+		g_tick[client] = 0
+	}
 }
 
 public void Trikz_Record(int client, float time)
