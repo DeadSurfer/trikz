@@ -149,6 +149,7 @@ bool g_restartInHoldLock[MAXPLAYERS + 1]
 int g_smoke
 bool g_clantagOnce[MAXPLAYERS + 1]
 bool g_seperate[MAXPLAYERS + 1]
+int g_projectileSoundLoud[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -3735,6 +3736,7 @@ public void OnEntityCreated(int entity, const char[] clasname)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile)
+		SDKHook(entity, SDKHook_Touch, SDKStopSpam)
 	}
 }
 
@@ -3757,6 +3759,22 @@ void SDKProjectile(int entity)
 			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
 			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255)
 		}
+	}
+}
+
+void SDKStopSpam(int entity, int other)
+{
+	if(0 < other <= MaxClients && IsClientInGame(other))
+	{
+		float originOther[3]
+		GetClientAbsOrigin(other, originOther)
+		float originEntity[3]
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity)
+		float maxsEntity[3]
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
+		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
+		if(delta == -66.015251)
+			g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] = EntIndexToEntRef(entity)
 	}
 }
 
@@ -3859,6 +3877,8 @@ Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MA
 		g_silentKnife = false
 		return Plugin_Handled
 	}
+	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav") && g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == EntIndexToEntRef(entity))
+		return Plugin_Handled
 	return Plugin_Continue
 }
 
