@@ -42,6 +42,7 @@ Handle g_cookie
 bool g_boostProcess[MAXPLAYERS + 1]
 float g_boostPerf[MAXPLAYERS + 1][2]
 bool g_created[MAXPLAYERS + 1]
+native int Trikz_GetClientPartner(int client)
 
 public Plugin myinfo =
 {
@@ -60,6 +61,12 @@ public void OnPluginStart()
 		if(IsValidEntity(i))
 			OnClientPutInServer(i)
 	HookEvent("player_jump", OnJump, EventHookMode_PostNoCopy)
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("Trikz_GetClientPartner")
+	return APLRes_Success
 }
 
 public void OnClientPutInServer(int client)
@@ -165,6 +172,8 @@ Action timer_waitSpawn(Handle timer, int client)
 	{
 		if(IsClientInGame(client) && g_boostStats[client])
 			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+		else if(0 < Trikz_GetClientPartner(client) <= MaxClients && IsClientInGame(Trikz_GetClientPartner(client)) && g_boostStats[Trikz_GetClientPartner(client)])
+			PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
@@ -173,6 +182,8 @@ Action timer_waitSpawn(Handle timer, int client)
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && g_boostStats[i])
 					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+				else if(0 < Trikz_GetClientPartner(client) <= MaxClients && observerMode < 7 && observerTarget == Trikz_GetClientPartner(client) && g_boostStats[i])
+					PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 			}
 		}
 		g_boostProcess[client] = false
