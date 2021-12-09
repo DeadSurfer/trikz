@@ -975,8 +975,16 @@ void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				g_skyVel[other][2] = velBooster[2]
 				if(velFlyer[2] > -700.0)
 				{
-					if(velBooster[2] > 750.0)
-						g_skyVel[other][2] = 750.0
+					if((g_entityFlags[client] & FL_INWATER))
+					{
+						if(velBooster[2] > 300.0)
+							g_skyVel[other][2] = 500.0
+					}
+					else
+					{
+						if(velBooster[2] > 750.0)
+							g_skyVel[other][2] = 750.0
+					}
 				}
 				else
 					if(velBooster[2] > 800.0)
@@ -3020,13 +3028,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 		if(g_skyBoost[client])
 		{
-			if(g_skyBoost[client] == 2)
+			if(g_skyBoost[client] == 1)
+				g_skyBoost[client] = 2
+			else if(g_skyBoost[client] == 2)
 			{
 				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, g_skyVel[client])
 				g_skyBoost[client] = 0
 			}
-			else
-				g_skyBoost[client] = 2
 		}
 		if(g_boost[client])
 		{
