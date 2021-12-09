@@ -3778,7 +3778,7 @@ void SDKStopSpam(int entity, int other)
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
 		if(delta == -66.015251)
-			g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] = IsValidEntity(entity)
+			g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] = entity
 	}
 }
 
