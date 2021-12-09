@@ -3778,7 +3778,7 @@ void SDKStopSpam(int entity, int other)
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
 		if(delta == -66.015251)
-			g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] = EntIndexToEntRef(entity)
+			g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] = IsValidEntity(entity)
 	}
 }
 
@@ -3881,7 +3881,7 @@ Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MA
 		g_silentKnife = false
 		return Plugin_Handled
 	}
-	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav") && g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == EntIndexToEntRef(entity))
+	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav") && g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == IsValidEntity(entity))
 		return Plugin_Handled
 	return Plugin_Continue
 }
