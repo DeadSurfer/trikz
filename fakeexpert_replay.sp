@@ -343,6 +343,27 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			frame.weapon = g_weapon[client]
 			g_weapon[client] = 0
 		}
+		else
+		{
+			if(!g_tick[client])
+			{
+				char weaponName[32]
+				GetClientWeapon(client, weaponName, 32)
+				for(int i = 0; i < sizeof(g_weaponName); i++)
+				{
+					if(frame.weapon == i + 1)
+					{
+						char format[32]
+						Format(format, 32, "weapon_%s", g_weaponName[i])
+						if(StrEqual(weaponName, g_weaponName[i]))
+						{
+							frame.weapon = i + 1
+							break
+						}
+					}
+				}
+			}
+		}
 		int differ = g_tick[Trikz_GetClientPartner(client)] - g_tick[client]
 		if(differ)
 		{
@@ -396,10 +417,25 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		SetEntityMoveType(client, movetype)
 		if(frame.weapon)
 		{
+			//char classname[32]
+			//char weaponName[32]
 			for(int i = 0; i < sizeof(g_weaponName); i++)
 			{
 				if(frame.weapon == i + 1)
 				{
+					/*for(int j = 0; j <= 4; j++)
+					{
+						for(int k = 0; k <= 3; k++)
+						{
+							if(IsValidEntity(GetPlayerWeaponSlot(client, j)))
+							{
+								GetEntityClassname(GetPlayerWeaponSlot(client, j), classname, 32)
+								Format(weaponName, 32, "weapon_%s", g_weaponName[i])
+								if(StrEqual(classname, weaponName))
+									SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", GetPlayerWeaponSlot(client, j))
+							}
+						}
+					}*/
 					FakeClientCommandEx(client, "use weapon_%s", g_weaponName[i])
 					break
 				}
