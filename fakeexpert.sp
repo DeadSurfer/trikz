@@ -128,7 +128,7 @@ char g_clantag[MAXPLAYERS + 1][2][256]
 float g_mlsVel[MAXPLAYERS + 1][2][2]
 int g_mlsCount[MAXPLAYERS + 1]
 char g_mlsPrint[MAXPLAYERS + 1][100][256]
-int g_mlsBooster[MAXPLAYERS + 1]
+int g_mlsFlyer[MAXPLAYERS + 1]
 bool g_mlstats[MAXPLAYERS + 1]
 float g_mlsDistance[MAXPLAYERS + 1][2][3]
 bool g_button[MAXPLAYERS + 1]
@@ -230,6 +230,18 @@ public void OnPluginStart()
 	g_cookie[2] = RegClientCookie("button", "button", CookieAccess_Protected)
 	g_cookie[3] = RegClientCookie("pbutton", "partner button", CookieAccess_Protected)
 	CreateTimer(60.0, timer_clearlag)
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
+	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
+	CreateNative("Trikz_GetTimerState", Native_GetTimerState)
+	CreateNative("Trikz_SetPartner", Native_SetPartner)
+	CreateNative("Trikz_Restart", Native_Restart)
+	CreateNative("Trikz_GetDevmap", Native_GetDevmap)
+	MarkNativeAsOptional("Trikz_GetEntityFilter")
+	return APLRes_Success
 }
 
 public void OnMapStart()
@@ -420,18 +432,6 @@ void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any 
 			}
 		}
 	}
-}
-
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
-{
-	CreateNative("Trikz_GetClientButtons", Native_GetClientButtons)
-	CreateNative("Trikz_GetClientPartner", Native_GetClientPartner)
-	CreateNative("Trikz_GetTimerState", Native_GetTimerState)
-	CreateNative("Trikz_SetPartner", Native_SetPartner)
-	CreateNative("Trikz_Restart", Native_Restart)
-	CreateNative("Trikz_GetDevmap", Native_GetDevmap)
-	MarkNativeAsOptional("Trikz_GetEntityFilter")
-	return APLRes_Success
 }
 
 public void OnMapEnd()
@@ -3323,7 +3323,7 @@ Action ProjectileBoostFix(int entity, int other)
 			g_mlsCount[other]++
 			if(g_mlsCount[other] == 1)
 				GetClientAbsOrigin(other, g_mlsDistance[other][0])
-			g_mlsBooster[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+			g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		}
 	}
 }
@@ -3747,11 +3747,15 @@ void SDKProjectile(int entity)
 	{
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		g_silentKnife = true
-		FakeClientCommand(client, "use weapon_knife")
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
-		ClientCommand(client, "lastinv") //Hornet, Log idea, main idea Nick Yurevich since 2019, Hornet found ClientCommand - lastinv.
+		if(!IsFakeClient(client))
+		{
+			FakeClientCommand(client, "use weapon_knife")
+			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+			ClientCommand(client, "lastinv") //Hornet, Log idea, main idea Nick Yurevich since 2019, Hornet found ClientCommand - lastinv.
+		}
 		RequestFrame(frame_blockExplosion, entity)
-		CreateTimer(IsFakeClient(client) ? 0.1 : GetClientAvgLatency(client, NetFlow_Both), timer_hideSwtich, client, TIMER_FLAG_NO_MAPCHANGE)
+		if(!IsFakeClient(client))
+			CreateTimer(GetClientAvgLatency(client, NetFlow_Both), timer_hideSwtich, client, TIMER_FLAG_NO_MAPCHANGE)
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
 		if(g_color[client][1])
 		{
@@ -3914,9 +3918,9 @@ void MLStats(int client, bool ground = false)
 		Format(print, 256, "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : "")
 		g_teleported[client] = false
 	}
-	if(g_mlstats[g_mlsBooster[client]])
+	if(g_mlstats[g_mlsFlyer[client]])
 	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsBooster[client])
+		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client])
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
 		bfmsg.WriteByte(true)
 		bfmsg.WriteString(print)
@@ -3936,7 +3940,7 @@ void MLStats(int client, bool ground = false)
 		{
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-			if(observerMode < 7 && observerTarget == client && g_mlstats[i])
+			if(observerMode < 7 && (observerTarget == client || observerTarget == g_mlsFlyer[client]) && g_mlstats[i])
 			{
 				Handle KeyHintText = StartMessageOne("KeyHintText", i)
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
