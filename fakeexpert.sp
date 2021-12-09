@@ -3736,7 +3736,7 @@ public void OnEntityCreated(int entity, const char[] clasname)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile)
-		SDKHook(entity, SDKHook_Touch, SDKStopSpam)
+		SDKHook(entity, SDKHook_StartTouch, SDKStopSpam)
 	}
 }
 
@@ -3766,7 +3766,7 @@ void SDKProjectile(int entity)
 	}
 }
 
-void SDKStopSpam(int entity, int other)
+Action SDKStopSpam(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsClientInGame(other))
 	{
@@ -3778,7 +3778,12 @@ void SDKStopSpam(int entity, int other)
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
 		if(delta == -66.015251)
-			g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] = entity
+		{
+			int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+			if(owner < 0)
+				owner = 0
+			g_projectileSoundLoud[owner] = entity
+		}
 	}
 }
 
@@ -3881,8 +3886,14 @@ Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MA
 		g_silentKnife = false
 		return Plugin_Handled
 	}
-	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav") && g_projectileSoundLoud[GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")] == entity)
-		return Plugin_Handled
+	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav"))
+	{
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+		if(owner < 0)
+			owner = 0
+		if(g_projectileSoundLoud[owner] == entity)
+			return Plugin_Handled
+	}
 	return Plugin_Continue
 }
 
