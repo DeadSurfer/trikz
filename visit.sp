@@ -58,7 +58,7 @@ Action disconnect(Event event, const char[] name, bool dontBroadcast)
 	event.GetString("reason", reason, 64)
 	char name_[MAX_NAME_LENGTH]
 	event.GetString("name", name_, MAX_NAME_LENGTH)
-	PrintToChatAll("Player %N left the game (%s)", name_, reason)
+	PrintToChatAll("Player %s left the game (%s)", name_, reason)
 	SetEventBroadcast(event, true)
 }
 
