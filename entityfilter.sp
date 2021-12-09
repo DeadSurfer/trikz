@@ -906,8 +906,6 @@ Action TransmitNade(int entity, int client) //entity - nade, client - loop all c
 
 public Action Trikz_CheckSolidity(int ent1, int ent2)
 {
-	if(0 < ent1 <= MaxClients && 0 < ent2 <= MaxClients) //make no collide with bot
-		return Plugin_Handled //result = false
 	char classname[32]
 	GetEntityClassname(ent2, classname, 32)
 	if(StrContains(classname, "projectile") != -1)
