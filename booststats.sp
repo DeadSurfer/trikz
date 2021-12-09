@@ -40,7 +40,7 @@ bool g_boostStats[MAXPLAYERS + 1]
 float g_angles[MAXPLAYERS + 1][3]
 Handle g_cookie
 bool g_boostProcess[MAXPLAYERS + 1]
-bool g_boostPerf[MAXPLAYERS + 1][2]
+float g_boostPerf[MAXPLAYERS + 1][2]
 bool g_created[MAXPLAYERS + 1]
 
 public Plugin myinfo =
@@ -117,11 +117,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 void SDKSpawnProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-	if(!g_boostPerf[client][1])
-		g_boostPerf[client][0] = true
+	g_boostPerf[client][0] = GetGameTime()
 	RequestFrame(frame_projectileVel, entity)
 	g_created[client] = true
 }
+
 
 void frame_projectileVel(int entity)
 {
@@ -131,16 +131,8 @@ void frame_projectileVel(int entity)
 		float vel[3]
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
 		g_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
-		CreateTimer(0.4, timer_clear, client, TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
-
-Action timer_clear(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-		g_boostPerf[client][0] = false
-}
-
 Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && !g_projectileVel[other])
@@ -162,8 +154,7 @@ void OnJump(Event event, const char[] name, bool dontBroadcast)
 	if(g_boostProcess[client])
 	{
 		g_boostTimeEnd[client] = GetGameTime()
-		if(!g_boostPerf[client][0])
-			g_boostPerf[client][1] = true
+		g_boostPerf[client][1] = GetGameTime()
 		CreateTimer(0.1, timer_waitSpawn, client, TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
@@ -173,7 +164,7 @@ Action timer_waitSpawn(Handle timer, int client)
 	if(IsClientInGame(client) && 0.0 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3 && g_created[client])
 	{
 		if(IsClientInGame(client) && g_boostStats[client])
-			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
@@ -181,12 +172,10 @@ Action timer_waitSpawn(Handle timer, int client)
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && g_boostStats[i])
-					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 			}
 		}
 		g_boostProcess[client] = false
-		g_boostPerf[client][0] = false
-		g_boostPerf[client][1] = false
 		g_created[client] = false
 	}	
 }
