@@ -899,7 +899,10 @@ Action TransmitPlayer(int entity, int client) //entity - me, client - loop all c
 Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
 {
 	//make visible nade only for partner
-	if(IsPlayerAlive(client) && entity > 0 && GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+	if(owner < 0)
+		owner = 0
+	if(IsPlayerAlive(client) && entity > 0 && owner != client && Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
 		return Plugin_Handled
 	return Plugin_Continue
 }
@@ -909,9 +912,16 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	char classname[32]
 	GetEntityClassname(ent2, classname, 32)
 	if(StrContains(classname, "projectile") != -1)
+	{
 		if(0 < ent1 <= MaxClients)
-			if(Trikz_GetClientPartner(GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
+		{
+			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity")
+			if(owner < 0)
+				owner = 0
+			if(Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
 				return Plugin_Handled
+		}
+	}
 	if(0 < ent1 <= MaxClients && 0 < ent2 <= MaxClients)
 	{
 		//make no collide with all players.
