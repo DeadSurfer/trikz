@@ -3850,11 +3850,11 @@ void SDKThink(int client)
 			g_readyToFix[client] = true
 		if(g_readyToFix[client])
 		{
-			char weapon[32]
-			GetClientWeapon(client, weapon, 32)
+			char classname[32]
+			GetClientWeapon(client, classname, 32)
 			if(StrEqual(classname, "weapon_flashbang"))
 			{
-				if(GetEntPropFloat(weapon, Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(weapon, Prop_Send, "m_fThrowTime") < GetGameTime())
+				if(GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
 				{
 					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 					g_readyToFix[client] = false
