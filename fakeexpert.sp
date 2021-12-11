@@ -3842,7 +3842,7 @@ Action SDKWeaponDrop(int client, int weapon)
 		RemoveEntity(weapon)
 }
 
-Action SDKThink(int client)
+void SDKThink(int client)
 {
 	if(!IsFakeClient(client))
 	{
