@@ -150,6 +150,7 @@ int g_smoke
 bool g_clantagOnce[MAXPLAYERS + 1]
 bool g_seperate[MAXPLAYERS + 1]
 int g_projectileSoundLoud[MAXPLAYERS + 1]
+bool g_readyToFix[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -758,6 +759,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix) //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip)
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop)
+	SDKHook(client, SDKHook_PreThinkPost, SDKThink)
 	if(IsClientInGame(client) && g_dbPassed)
 	{
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High)
@@ -853,7 +855,7 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 			}
 			else
 			{
-				Format(query, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%N', %i, %i, %i)", client, steamid, GetTime(), GetTime())
+				Format(query, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime())
 				g_mysql.Query(SQLUserAdded, query)
 			}
 		}
@@ -880,9 +882,9 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			char query[512]
 			int steamid = GetSteamAccountID(client)
 			if(results.FetchRow())
-				Format(query, 512, "UPDATE users SET username = '%N', lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid)
+				Format(query, 512, "UPDATE users SET username = \"%N\", lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid)
 			else
-				Format(query, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES ('%N', %i, %i, %i)", client, steamid, GetTime(), GetTime())
+				Format(query, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime())
 			g_mysql.Query(SQLUpdateUsernameSuccess, query, GetClientSerial(client), DBPrio_High)
 		}
 	}
@@ -3278,23 +3280,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }
 
-bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
-{
-	if(LibraryExists("fakeexpert-entityfilter"))
-		return entity > MaxClients && !Trikz_GetEntityFilter(client, entity)
-	else
-		return entity > MaxClients
-}
-
-Action timer_removePing(Handle timer, int client)
-{
-	if(g_pingModel[client])
-	{
-		RemoveEntity(g_pingModel[client])
-		g_pingModel[client] = 0
-	}
-}
-
 Action ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsClientInGame(other) && !g_boost[other] && !(g_entityFlags[other] & FL_ONGROUND))
@@ -3746,16 +3731,7 @@ void SDKProjectile(int entity)
 	if(IsValidEntity(entity) && IsValidEntity(client))
 	{
 		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
-		g_silentKnife = true
-		if(!IsFakeClient(client))
-		{
-			FakeClientCommand(client, "use weapon_knife")
-			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
-			ClientCommand(client, "lastinv") //Hornet, Log idea, main idea Nick Yurevich since 2019, Hornet found ClientCommand - lastinv.
-		}
 		RequestFrame(frame_blockExplosion, entity)
-		if(!IsFakeClient(client))
-			CreateTimer(GetClientAvgLatency(client, NetFlow_Both), timer_hideSwtich, client, TIMER_FLAG_NO_MAPCHANGE)
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
 		if(g_color[client][1])
 		{
@@ -3791,12 +3767,6 @@ void frame_blockExplosion(int entity)
 {
 	if(IsValidEntity(entity))
 		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
-}
-
-Action timer_hideSwtich(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true)
 }
 
 Action timer_deleteProjectile(Handle timer, int entity)
@@ -3870,6 +3840,62 @@ Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
+}
+
+Action SDKThink(int client)
+{
+	if(!IsFakeClient(client))
+	{
+		if(GetClientButtons(client) & IN_ATTACK)
+			g_readyToFix[client] = true
+		if(g_readyToFix[client])
+		{
+			char weapon[32]
+			GetClientWeapon(client, weapon, 32)
+			if(StrEqual(classname, "weapon_flashbang"))
+			{
+				if(GetEntPropFloat(weapon, Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(weapon, Prop_Send, "m_fThrowTime") < GetGameTime())
+				{
+					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+					g_readyToFix[client] = false
+					g_silentKnife = true
+					FakeClientCommandEx(client, "use weapon_knife")
+					RequestFrame(frame_fix, client)
+				}
+			}
+		}
+	}
+}
+void frame_fix(int client)
+{
+	if(IsClientInGame(client))
+		RequestFrame(frame_fix2, client)
+}
+
+void frame_fix2(int client)
+{
+	if(IsClientInGame(client))
+	{
+		FakeClientCommandEx(client, "use weapon_flashbang")
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true)
+	}
+}
+
+bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
+{
+	if(LibraryExists("fakeexpert-entityfilter"))
+		return entity > MaxClients && !Trikz_GetEntityFilter(client, entity)
+	else
+		return entity > MaxClients
+}
+
+Action timer_removePing(Handle timer, int client)
+{
+	if(g_pingModel[client])
+	{
+		RemoveEntity(g_pingModel[client])
+		g_pingModel[client] = 0
+	}
 }
 
 Action SDKSetTransmitPing(int entity, int client)
