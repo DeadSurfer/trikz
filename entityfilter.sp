@@ -720,7 +720,11 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 {
 	if(activator > MaxClients)
-		return Plugin_Handled
+	{
+		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
+		if(activator < 0)
+			activator = 0
+	}
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
@@ -855,9 +859,9 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(IsValidEntity(entity) && StrContains(classname, "_projectile") != -1)
+	if(StrContains(classname, "_projectile") != -1)
 		SDKHook(entity, SDKHook_SetTransmit, TransmitNade)
-	if(StrEqual(classname, "ambient_generic"))
+	else if(StrEqual(classname, "ambient_generic"))
 		DHookEntity(g_AcceptInput, false, entity)
 }
 
