@@ -100,7 +100,7 @@ Handle g_pingTimer[MAXPLAYERS + 1]
 
 bool g_zoneFirst[3]
 
-char g_colorType[][] = {"255,255,255", "255,0,0", "255,165,0", "255,255,0", "0,255,0", "0,255,255", "0,191,255", "0,0,255", "255,0,255"} //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
+char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"} //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
 int g_colorBuffer[MAXPLAYERS + 1][3][2]
 int g_colorCount[MAXPLAYERS + 1][2]
 
@@ -1298,7 +1298,7 @@ void Color(int client, bool customSkin = false, int color = -1)
 			SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]])
 			DispatchKeyValue(client, "skin", "2")
 			DispatchKeyValue(g_partner[client], "skin", "2")
-			char g_colorTypeExploded[3][16]
+			char g_colorTypeExploded[4][32]
 			if(g_colorCount[client][0] == 9)
 			{
 				g_colorCount[client][0] = 0
@@ -1309,7 +1309,7 @@ void Color(int client, bool customSkin = false, int color = -1)
 				g_colorCount[client][0] = color
 				g_colorCount[g_partner[client]][0] = color
 			}
-			ExplodeString(g_colorType[g_colorCount[client][0]], ",", g_colorTypeExploded, 3, 16)
+			ExplodeString(g_colorType[g_colorCount[client][0]], ",", g_colorTypeExploded, 4, 32)
 			for(int i = 0; i <= 2; i++)
 			{
 				g_colorBuffer[client][i][0] = StringToInt(g_colorTypeExploded[i])
@@ -1319,7 +1319,14 @@ void Color(int client, bool customSkin = false, int color = -1)
 			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] ? 255 : 125)
 			g_colorCount[client][0]++
 			g_colorCount[g_partner[client]][0]++
-			if(!g_seperate[client])
+			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255)
+			if(g_seperate[client])
+			{
+				ShowHudText(client, 5, "%s (F2)", g_colorTypeExploded[3])
+				if(g_partner[client])
+					ShowHudText(g_partner[client], 5, "%s (F2)", g_colorTypeExploded[3])
+			}
+			else
 			{
 				g_color[client][1] = true
 				g_color[g_partner[client]][1] = true
@@ -1330,6 +1337,9 @@ void Color(int client, bool customSkin = false, int color = -1)
 					g_colorBuffer[client][i][1] = g_colorBuffer[client][i][0]
 					g_colorBuffer[g_partner[client]][i][1] = g_colorBuffer[client][i][0]
 				}
+				ShowHudText(client, 5, "%s (F2+)", g_colorTypeExploded[3])
+				if(g_partner[client])
+					ShowHudText(g_partner[client], 5, "%s (F2+)", g_colorTypeExploded[3])
 			}
 		}
 		else
@@ -1359,7 +1369,7 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 			g_color[g_partner[client]][1] = true
 			g_seperate[client] = true
 			g_seperate[g_partner[client]] = true
-			char g_colorTypeExploded[3][16]
+			char g_colorTypeExploded[4][32]
 			if(g_colorCount[client][1] == 9)
 			{
 				g_colorCount[client][1] = 0
@@ -1370,7 +1380,7 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 				g_colorCount[client][1] = color
 				g_colorCount[g_partner[client]][1] = color
 			}
-			ExplodeString(g_colorType[g_colorCount[client][1]], ",", g_colorTypeExploded, 3, 16)
+			ExplodeString(g_colorType[g_colorCount[client][1]], ",", g_colorTypeExploded, 4, 32)
 			for(int i = 0; i <= 2; i++)
 			{
 				g_colorBuffer[client][i][1] = StringToInt(g_colorTypeExploded[i])
@@ -1378,6 +1388,10 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 			}
 			g_colorCount[client][1]++
 			g_colorCount[g_partner[client]][1]++
+			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255)
+			ShowHudText(client, 5, "%s", g_colorTypeExploded[3])
+			if(g_partner[client])
+				ShowHudText(g_partner[client], 5, "%s", g_colorTypeExploded[3])
 		}
 		else
 		{
@@ -1524,6 +1538,7 @@ void CreateStart()
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2)
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch)
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch)
+	SDKHook(entity, SDKHook_Touch, SDKTouch)
 	PrintToServer("Start zone is successfuly setup.")
 	g_zoneHave[0] = true
 }
@@ -2343,6 +2358,12 @@ Action SDKEndTouch(int entity, int other)
 			g_cpLock[i][g_partner[other]] = false
 		}
 	}
+}
+
+Action SDKTouch(int entity, int other)
+{
+	if(!(GetEntityFlags(other) & FL_ONGROUND))
+		SDKEndTouch(entity, other)
 }
 
 Action SDKStartTouch(int entity, int other)
