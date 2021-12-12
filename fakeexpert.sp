@@ -2108,8 +2108,8 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				g_zoneEndOrigin[1][1] += 16.0
 			else if(StrEqual(item, "end-ymaxs"))
 				g_zoneEndOrigin[1][1] -= 16.0
-			char exploded[16][16]
-			ExplodeString(item, ";", exploded, 16, 16)
+			char exploded[1][16]
+			ExplodeString(item, ";", exploded, 1, 16)
 			int cpnum = StringToInt(exploded[0])
 			char cpFormated[16]
 			Format(cpFormated, 16, "%i;tp", cpnum)
