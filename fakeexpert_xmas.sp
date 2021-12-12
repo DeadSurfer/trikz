@@ -359,7 +359,7 @@ void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	else if(StrEqual(type, "gift10_big")) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_special.mdl", model)
 	int entity = CreateEntityByName("prop_dynamic")
 	DispatchKeyValue(entity, "model", model)
-	DispatchKeyValue(entity, "spawnflags", "256")
+	DispatchKeyValue(entity, "solid", "1")
 	if(StrEqual(type, "tree_big"))
 	{
 		char anim[][] = {"windy1", "windy2"}
@@ -393,7 +393,7 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 						Format(nameKeyCurrent, 32, "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]))
 						do
 						{
-							if(kv.GetSectionName(nameKey, 32))
+							if(KvGetSectionName(kv, nameKey, 32))
 							{
 								if(StrEqual(nameKey, nameKeyCurrent))
 								{
