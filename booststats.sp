@@ -172,7 +172,7 @@ Action timer_waitSpawn(Handle timer, int client)
 	{
 		if(IsClientInGame(client) && g_boostStats[client])
 			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
-		else if(0 < Trikz_GetClientPartner(client) <= MaxClients && IsClientInGame(Trikz_GetClientPartner(client)) && g_boostStats[Trikz_GetClientPartner(client)])
+		if(0 < Trikz_GetClientPartner(client) <= MaxClients && IsClientInGame(Trikz_GetClientPartner(client)) && g_boostStats[Trikz_GetClientPartner(client)])
 			PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 		for(int i = 1; i <= MaxClients; i++)
 		{
