@@ -3896,6 +3896,12 @@ void frame_fix(int client)
 void frame_fix2(int client)
 {
 	if(IsClientInGame(client))
+		RequestFrame(frame_fix3, client)
+}
+
+void frame_fix3(int client)
+{
+	if(IsClientInGame(client))
 	{
 		FakeClientCommandEx(client, "use weapon_flashbang")
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true)
