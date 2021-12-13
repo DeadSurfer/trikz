@@ -60,6 +60,7 @@ bool g_teleported[MAXPLAYERS + 1]
 Handle g_cookie
 float g_skyAble[MAXPLAYERS + 1]
 float g_gain[MAXPLAYERS + 1]
+int g_entityFlags[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -159,6 +160,7 @@ Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	g_entityButtons[client] = buttons
+	g_entityFlags[client] = GetEntityFlags(client)
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
 		if(g_tick[client] < 30)
@@ -378,13 +380,21 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				velNew[2] = velBooster[2]
 				if(velFlyer[2] > -700.0)
 				{
-					if(velBooster[2] > 750.0)
-						velNew[2] = 750.0
+					if((g_entityFlags[client] & FL_INWATER))
+					{
+						if(velBooster[2] > 300.0)
+							velNew[2] = 500.0
+					}
+					else
+					{
+						if(velBooster[2] > 750.0)
+							velNew[2] = 750.0
+					}
 				}
 				else
 					if(velBooster[2] > 800.0)
 						velNew[2] = 800.0
-				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(g_entityFlags[client] & FL_INWATER ? !g_skyBoost[other] : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar gravity = FindConVar("sv_gravity")
 					if(g_jumpstats[client])
