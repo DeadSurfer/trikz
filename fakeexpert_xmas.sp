@@ -185,7 +185,7 @@ void CreateHat(int client)
 		GetClientAbsOrigin(client, origin)
 		GetClientAbsAngles(client, angles)
 		float offset[3]
-		offset[1] = -1.0
+		offset[1] = -2.0
 		offset[2] = 6.0
 		GetAngleVectors(angles, forward_, right, up)
 		origin[0] += right[0] * offset[0] + forward_[0] * offset[1] + up[0] * offset[2]
