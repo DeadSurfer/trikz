@@ -375,8 +375,8 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer)
 				velBooster[2] *= 3.0
 				float velNew[3]
-				velNew[0] = velFlyer[0]
-				velNew[1] = velFlyer[1]
+				//velNew[0] = velFlyer[0]
+				//velNew[1] = velFlyer[1]
 				velNew[2] = velBooster[2]
 				if(velFlyer[2] > -700.0)
 				{
@@ -394,7 +394,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				else
 					if(velBooster[2] > 800.0)
 						velNew[2] = 800.0
-				if(g_entityFlags[client] & FL_INWATER ? velNew[2] > 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar gravity = FindConVar("sv_gravity")
 					if(g_jumpstats[client])
