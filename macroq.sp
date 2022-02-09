@@ -19,7 +19,7 @@ public Action OnPlayerRunCmd(int client, int& buttons)
     g_macroOpened[client] = true
     buttons |= IN_ATTACK
   }
-  if(GetEngineTime() - g_macroTime[client] > GetConVarFloat(g_convar) && g_macroOpened[client])
+  if(GetEngineTime() - g_macroTime[client] >= 0.1 && g_macroOpened[client])
   {
     buttons |= IN_JUMP
     g_macroOpened[client] = false
