@@ -1,6 +1,5 @@
 float g_macroTime[MAXPLAYERS + 1]
 bool g_macroOpened[MAXPLAYERS + 1]
-ConVar g_convar
 
 public Plugin myinfo =
 {
