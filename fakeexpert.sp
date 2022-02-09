@@ -578,6 +578,7 @@ Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		CS_GetClientClanTag(client, g_clantag[client][0], 256)
 		g_clantagOnce[client] = true
 	}
+	return Plugin_Continue
 }
 
 void OnButton(const char[] output, int caller, int activator, float delay)
@@ -596,6 +597,7 @@ Action OnJump(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	g_skyOrigin[client] = GetGroundPos(client)
 	g_skyAble[client] = GetGameTime()
+	return Plugin_Continue
 }
 
 Action OnDeath(Event event, const char[] name, bool dontBroadcast)
@@ -603,33 +605,39 @@ Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	RemoveEntity(ragdoll)
+	return Plugin_Continue
 }
 
 Action joinclass(int client, const char[] command, int argc)
 {
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+	return Plugin_Continue
 }
 
 Action timer_respawn(Handle timer, int client)
 {
 	if(IsClientInGame(client) && GetClientTeam(client) != CS_TEAM_SPECTATOR && !IsPlayerAlive(client))
 		CS_RespawnPlayer(client)
+	return Plugin_Continue
 }
 
 Action autobuy(int client, const char[] command, int argc)
 {
 	Block(client)
+	return Plugin_Continue
 }
 
 Action rebuy(int client, const char[] command, int argc)
 {
 	Color(client, true)
+	return Plugin_Continue
 }
 
 Action cheer(int client, const char[] command, int argc)
 {
 	if(g_partner[client])
 		Partner(client)
+	return Plugin_Continue
 }
 
 Action showbriefing(int client, const char[] command, int argc)
@@ -645,6 +653,7 @@ Action showbriefing(int client, const char[] command, int argc)
 	menu.AddItem("spec", "!spec")
 	menu.AddItem("trikz", "!trikz")
 	menu.Display(client, 20)
+	return Plugin_Continue
 }
 
 int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -674,11 +683,13 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+	return 0
 }
 
 Action headtrack_reset_home_pos(int client, const char[] command, int argc)
 {
 	ColorFlashbang(client, true)
+	return Plugin_Continue
 }
 
 void output_teleport(const char[] output, int caller, int activator, float delay)
@@ -750,6 +761,7 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+	return 0
 }
 
 public void OnClientPutInServer(int client)
@@ -1091,6 +1103,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Display:
 			g_menuOpened[param1] = true
 	}
+	return 0
 }
 
 Action cmd_block(int client, int args)
@@ -1185,6 +1198,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			menu2.Display(partner, 20)
 		}
 	}
+	return 0
 }
 
 int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
@@ -1222,6 +1236,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 			}
 		}
 	}
+	return 0
 }
 
 int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -1249,6 +1264,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+	return 0
 }
 
 Action cmd_color(int client, int args)
@@ -1503,6 +1519,7 @@ Action timer_resetfactory(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 		ResetFactory(client)
+	return Plugin_Continue
 }
 
 void CreateStart()
@@ -1626,6 +1643,7 @@ Action cmd_deleteallcp(int client, int args)
 		else
 			PrintToChat(client, "Turn on devmap.")
 	}
+	return Plugin_Continue
 }
 
 void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
@@ -1650,6 +1668,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		if(StrEqual(cmd, "ClanTagChanged"))
 			CS_GetClientClanTag(client, g_clantag[client][0], 256)
 	}
+	return Plugin_Continue
 }
 
 Action cmd_test(int client, int args)
@@ -1955,6 +1974,7 @@ Action cmd_zones(int client, int args)
 		else
 			PrintToChat(client, "Turn on devmap.")
 	}
+	return Plugin_Continue
 }
 
 void ZoneEditor(int client)
@@ -2060,6 +2080,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			menu2.Display(param1, MENU_TIME_FOREVER)
 		}
 	}
+	return 0
 }
 
 int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -2169,6 +2190,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Display:
 			g_zoneDraw[param1] = true
 	}
+	return 0
 }
 
 void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any data)
@@ -2194,6 +2216,7 @@ void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any dat
 Action cmd_createcp(int args)
 {
 	g_mysql.Query(SQLCreateCPTable, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx INT, cpy INT, cpz INT, cpx2 INT, cpy2 INT, cpz2 INT, map VARCHAR(192), PRIMARY KEY(id))")
+	return Plugin_Continue
 }
 
 void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any data)
@@ -2209,6 +2232,7 @@ void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any 
 Action cmd_createtier(int args)
 {
 	g_mysql.Query(SQLCreateTierTable, "CREATE TABLE IF NOT EXISTS tier (id INT AUTO_INCREMENT, tier INT, map VARCHAR(192), PRIMARY KEY(id))")
+	return Plugin_Continue
 }
 
 void SQLCreateTierTable(Database db, DBResultSet results, const char[] error, any data)
@@ -2307,6 +2331,7 @@ void createcp(int cpnum)
 Action cmd_createusers(int args)
 {
 	g_mysql.Query(SQLCreateUserTable, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))")
+	return Plugin_Continue
 }
 
 void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
@@ -2322,6 +2347,7 @@ void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, an
 Action cmd_createrecords(int args)
 {
 	g_mysql.Query(SQLRecordsTable, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, points INT, map VARCHAR(192), date INT, PRIMARY KEY(id))")
+	returu Plugin_Continue
 }
 
 void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
@@ -2358,12 +2384,14 @@ Action SDKEndTouch(int entity, int other)
 			g_cpLock[i][g_partner[other]] = false
 		}
 	}
+	return Plugin_Continue
 }
 
 Action SDKTouch(int entity, int other)
 {
 	if(!(GetEntityFlags(other) & FL_ONGROUND))
 		SDKEndTouch(entity, other)
+	return Plugin_Continue
 }
 
 Action SDKStartTouch(int entity, int other)
@@ -2566,6 +2594,7 @@ Action SDKStartTouch(int entity, int other)
 			}
 		}
 	}
+	return Plugin_Continue
 }
 
 void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, personalSecond, int srHour = 0, int srMinute = 0, int srSecond = 0)
@@ -2767,6 +2796,7 @@ Action timer_sourcetv(Handle timer)
 		CreateTimer(5.0, timer_runsourcetv, _, TIMER_FLAG_NO_MAPCHANGE)
 		g_ServerRecord = false
 	}
+	return Plugin_Continue
 }
 
 Action timer_runsourcetv(Handle timer)
@@ -2786,6 +2816,7 @@ Action timer_runsourcetv(Handle timer)
 		ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map)
 		g_sourcetvchangedFileName = true
 	}
+	return Plugin_Continue
 }
 
 void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
@@ -2870,6 +2901,7 @@ void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
 Action cmd_createzones(int args)
 {
 	g_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x2 INT, possition_y2 INT, possition_z2 INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	return Plugin_Continue
 }
 
 void SQLConnect(Database db, const char[] error, any data)
@@ -3299,6 +3331,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 	}
+	return Plugin_Continue
 }
 
 Action ProjectileBoostFix(int entity, int other)
@@ -3332,6 +3365,7 @@ Action ProjectileBoostFix(int entity, int other)
 			g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
 		}
 	}
+	return Plugin_Continue
 }
 
 Action cmd_devmap(int client, int args)
@@ -3394,12 +3428,14 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+	return 0
 }
 
 Action timer_devmap(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	Devmap(true)
+	return Plugin_Continue
 }
 
 void Devmap(bool force = false)
@@ -3430,6 +3466,7 @@ Action timer_changelevel(Handle timer, bool value)
 {
 	g_devmap = value
 	ForceChangeLevel(g_map, "Reason: Devmap")
+	return Plugin_Continue
 }
 
 Action cmd_top(int client, int args)
@@ -3450,6 +3487,7 @@ Action timer_motd(Handle timer, int client)
 		Format(url, 256, "%s%s", url, g_map)
 		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	}
+	return Plugin_Continue
 }
 
 Action cmd_afk(int client, int args)
@@ -3502,12 +3540,14 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+	return 0
 }
 
 Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	AFK(client, true)
+	return Plugin_Continue
 }
 
 void AFK(int client, bool force = false)
@@ -3585,6 +3625,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Display:
 			g_menuOpened[param1] = true
 	}
+	return 0
 }
 
 void Hud(int client)
@@ -3698,12 +3739,14 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		else if(StrEqual(sArgs, "pbutton"))
 			cmd_pbutton(client, 0)
 	}
+	return Plugin_Continue
 }
 
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(!other)
 		g_bouncedOff[entity] = true //Get from Tengu github "tengulawl" scriptig "boost-fix.sp".
+	return Plugin_Continue
 }
 
 /*Action cmd_time(int client, int args)
@@ -3782,6 +3825,7 @@ Action SDKStopSpam(int entity, int other)
 			g_projectileSoundLoud[owner] = entity
 		}
 	}
+	return Plugin_Continue
 }
 
 void frame_blockExplosion(int entity)
@@ -3797,6 +3841,7 @@ Action timer_deleteProjectile(Handle timer, int entity)
 		FlashbangEffect(entity)
 		RemoveEntity(entity)
 	}
+	return Plugin_Continue
 }
 
 void FlashbangEffect(int entity)
@@ -3861,6 +3906,7 @@ Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
+	return Plugin_Continue
 }
 
 void SDKThink(int client)
@@ -3923,6 +3969,7 @@ Action timer_removePing(Handle timer, int client)
 		RemoveEntity(g_pingModel[client])
 		g_pingModel[client] = 0
 	}
+	return Plugin_Continue
 }
 
 Action SDKSetTransmitPing(int entity, int client)
@@ -4063,6 +4110,7 @@ int Native_SetPartner(Handle plugin, int numParams)
 	int partner = GetNativeCell(2)
 	g_partner[client] = partner
 	g_partner[partner] = client
+	return 0
 }
 
 int Native_Restart(Handle plugin, int numParams)
@@ -4070,6 +4118,7 @@ int Native_Restart(Handle plugin, int numParams)
 	int client = GetNativeCell(1)
 	Restart(client)
 	Restart(g_partner[client])
+	return 0
 }
 
 int Native_GetDevmap(Handle plugin, int numParams)
@@ -4080,6 +4129,7 @@ int Native_GetDevmap(Handle plugin, int numParams)
 Action timer_clearlag(Handle timer)
 {
 	ServerCommand("mat_texture_list_txlod_sync reset")
+	return Plugin_Continue
 }
 
 float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
