@@ -180,6 +180,7 @@ Action timer_load(Handle timer)
 		for(int j = 0; j < sizeof(output); j++)
 			HookEntityOutput(trigger[i], output[j], EntityOutputHook)
 	PrintToServer("Total entities in proccess: %i. Math counters: %i", g_entityTotalCount, g_mathTotalCount)
+	return Plugin_Continue
 }
 
 void EntityLinked(int entity, char[] output)
@@ -252,7 +253,8 @@ void EntityLinked(int entity, char[] output)
 		}
 		else if(StrEqual(input, "Add", false) || StrEqual(input, "Subtract", false))
 		{
-			int entityLinked = FindLinkedEntity(entityLinked, "math_counter", target)
+			int entityLinked
+			FindLinkedEntity(entityLinked, "math_counter", target)
 			OutputInput(entityLinked, "math_counter")
 		}
 	}
@@ -715,6 +717,7 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
 {
 	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker)
+	return Plugin_Continue
 }
 
 Action EntityOutputHook(char[] output, int caller, int activator, float delay)
