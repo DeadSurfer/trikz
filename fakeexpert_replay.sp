@@ -196,6 +196,7 @@ Action timer_bot(Handle timer)
 			}
 		}
 	}
+	return Plugin_Continue
 }
 
 void SetupSave(int client, float time)
@@ -455,6 +456,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		g_tick[client] = 0
 		g_tick[Trikz_GetClientPartner(client)] = 0
 	}
+	return Plugin_Continue
 }
 
 void SQLConnect(Database db, const char[] error, any data)
@@ -502,6 +504,7 @@ Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(IsFakeClient(client))
 		SetEventBroadcast(event, true)
+	return Plugin_Continue
 }
 
 void ApplyFlags(int &flags1, int flags2, int flag)
