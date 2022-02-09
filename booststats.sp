@@ -131,7 +131,6 @@ void SDKSpawnProjectile(int entity)
 	g_created[client] = true
 }
 
-
 void frame_projectileVel(int entity)
 {
 	if(IsValidEntity(entity))
@@ -142,6 +141,7 @@ void frame_projectileVel(int entity)
 		g_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 	}
 }
+
 Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && !g_projectileVel[other])
