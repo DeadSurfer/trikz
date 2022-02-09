@@ -98,6 +98,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	if(!IsChatTrigger())
 		if(StrEqual(sArgs, "bs"))
 			cmd_booststats(client, 0)
+	return Plugin_Continue
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -113,6 +114,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		g_angles[client][0] = angles[0]
 		g_angles[client][1] = angles[1]
 	}
+	return Plugin_Continue
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
@@ -153,6 +155,7 @@ Action SDKStartTouch(int entity, int other)
 			g_projectileVel[other] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		}
 	}
+	return Plugin_Continue
 }
 
 void OnJump(Event event, const char[] name, bool dontBroadcast)
@@ -188,5 +191,6 @@ Action timer_waitSpawn(Handle timer, int client)
 		}
 		g_boostProcess[client] = false
 		g_created[client] = false
-	}	
+	}
+	return Plugin_Continue
 }
