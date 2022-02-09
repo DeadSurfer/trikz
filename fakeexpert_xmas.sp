@@ -160,6 +160,7 @@ Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 	int team = event.GetInt("team") //https://wiki.alliedmods.net/Generic_Source_Events#player_team
 	if(team == 1)
 		RemoveHat(client)
+	return Plugin_Continue
 }
 
 void RemoveHat(int client)
@@ -269,6 +270,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	if(!IsChatTrigger())
 		if(StrEqual(sArgs, "xmas"))
 			cmd_xmas(client, 0)
+	return Plugin_Continue
 }
 
 void Xmas(int client, char[] type = "")
@@ -414,6 +416,7 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
 		}
 	}
+	return 0
 }
 //https://forums.alliedmods.net/showthread.php?t=303402 xmas item origin code
 //https://forums.alliedmods.net/showthread.php?t=174714 xmas player hat origin code
