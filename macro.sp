@@ -23,4 +23,5 @@ public Action OnPlayerRunCmd(int client, int& buttons)
     buttons |= IN_JUMP
     g_macroOpened[client] = false
   }
+  return Plugin_Continue
 }
