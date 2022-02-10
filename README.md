@@ -20,3 +20,4 @@ As i heard MLG begining in 2015 year.
 I started play trikz in 2012 year with friend from own server.
 We used alliedmodders.com plugins from forum.
 Sega was good friend we played trikz all night together.
+We can use open-source code from Valve as Source Engine to improve programming skills and motivet to learn.
