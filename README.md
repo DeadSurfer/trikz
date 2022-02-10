@@ -24,3 +24,4 @@ We can use open-source code from Valve as Source Engine to improve programming s
 Man patīk rakt kartupeļus.
 Tomāti bija ļoti svaigi sāti gardi.
 Gurķi bija labi svaigi sātigi sulīgi.
+Zemenes bija saldas un svaigas.
