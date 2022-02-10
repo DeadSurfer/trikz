@@ -31,4 +31,4 @@ Es riju smiltis. Es riju ābolus. Es riju gaļu.
 Es riju smiltis bērnudārzā.
 Datorā atrodas pornogrāfija.
 Modificēts flashbang no valve arhīviem.
-Swoobles.com model editor 1.7 versija. Un izmontojot gcfscape programatūru.
+Swoobles.com model editor 1.7 versija. Un izmontojot gcfscape programatūru. Atļauja tika iedota no EDa puses. Izmantot visus materiālus un modeļus ieskaitot eglīšu dāvanas un citus rotājumus.
