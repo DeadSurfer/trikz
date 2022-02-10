@@ -247,7 +247,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnMapStart()
 {
-	GetCurrentMap(g_map, 192)
+	GetCurrentMap(g_map, sizeof(g_map))
 	Database.Connect(SQLConnect, "fakeexpert")
 	for(int i = 0; i <= 2; i++)
 	{
@@ -262,17 +262,17 @@ public void OnMapStart()
 		if(!g_sourcetvchangedFileName)
 		{
 			char filenameOld[256]
-			Format(filenameOld, 256, "%s-%s-%s.dem", g_date, g_time, g_map)
+			Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map)
 			char filenameNew[256]
-			Format(filenameNew, 256, "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map)
+			Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map)
 			RenameFile(filenameNew, filenameOld)
 			g_sourcetvchangedFileName = true
 		}
 		if(!g_devmap)
 		{
 			PrintToServer("sourcetv start recording.")
-			FormatTime(g_date, 64, "%Y-%m-%d", GetTime())
-			FormatTime(g_time, 64, "%H-%M-%S", GetTime())
+			FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime())
+			FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime())
 			ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map) //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
 		}
 	}
@@ -2803,17 +2803,17 @@ Action timer_sourcetv(Handle timer)
 Action timer_runsourcetv(Handle timer)
 {
 	char filenameOld[256]
-	Format(filenameOld, 256, "%s-%s-%s.dem", g_date, g_time, g_map)
+	Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map)
 	char filenameNew[256]
-	Format(filenameNew, 256, "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map)
+	Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map)
 	RenameFile(filenameNew, filenameOld)
 	ConVar CV_sourcetv = FindConVar("tv_enable")
 	bool sourcetv = CV_sourcetv.BoolValue //https://sm.alliedmods.net/new-api/convars/__raw
 	if(sourcetv)
 	{
 		PrintToServer("sourcetv start recording.")
-		FormatTime(g_date, 64, "%Y-%m-%d", GetTime())
-		FormatTime(g_time, 64, "%H-%M-%S", GetTime())
+		FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime())
+		FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime())
 		ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map)
 		g_sourcetvchangedFileName = true
 	}
@@ -2832,7 +2832,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		char query[512]
 		if(results.FetchRow())
 		{
-			Format(query, 512, "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, g_map) //log help me alot with this stuff
+			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, g_map) //log help me alot with this stuff
 			DataPack dp = new DataPack()
 			dp.WriteCell(GetClientSerial(other))
 			dp.WriteCell(cpnum)
@@ -2915,7 +2915,7 @@ void SQLConnect(Database db, const char[] error, any data)
 		ForceZonesSetup() //https://sm.alliedmods.net/new-api/dbi/__raw
 		g_dbPassed = true //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 		char query[512]
-		Format(query, 512, "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", g_map)
+		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", g_map)
 		g_mysql.Query(SQLGetServerRecord, query)
 		RecalculatePoints()
 	}
@@ -2926,7 +2926,7 @@ void SQLConnect(Database db, const char[] error, any data)
 void ForceZonesSetup()
 {
 	char query[512]
-	Format(query, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map)
+	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map)
 	g_mysql.Query(SQLSetZoneStart, query)
 }
 
@@ -2946,7 +2946,7 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 			g_zoneStartOrigin[1][2] = results.FetchFloat(5)
 			CreateStart()
 			char query[512]
-			Format(query, 512, "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map)
+			Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map)
 			g_mysql.Query(SQLSetZoneEnd, query)
 		}
 	}
@@ -3216,7 +3216,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
 			}
 		}
-		if(!g_turbophysics.BoolValue)
+		//if(!g_turbophysics.BoolValue)
 		{
 			if(IsPlayerAlive(client))
 			{
@@ -3482,10 +3482,10 @@ Action timer_motd(Handle timer, int client)
 	{
 		ConVar hostname = FindConVar("hostname")
 		char hostnameBuffer[256]
-		hostname.GetString(hostnameBuffer, 256)
+		hostname.GetString(hostnameBuffer, sizeof(hostnameBuffer))
 		char url[192]
-		g_urlTop.GetString(url, 192)
-		Format(url, 256, "%s%s", url, g_map)
+		g_urlTop.GetString(url, sizeof(url))
+		Format(url, sizeof(url), "%s%s", url, g_map)
 		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
 	}
 	return Plugin_Continue
@@ -3609,13 +3609,13 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					g_hudVel[param1] = !g_hudVel[param1]
-					IntToString(g_hudVel[param1], value, 16)
+					IntToString(g_hudVel[param1], value, sizeof(value))
 					SetClientCookie(param1, g_cookie[0], value)
 				}
 				case 1:
 				{
 					g_mlstats[param1] = !g_mlstats[param1]
-					IntToString(g_mlstats[param1], value, 16)
+					IntToString(g_mlstats[param1], value, sizeof(value))
 					SetClientCookie(param1, g_cookie[1], value)
 				}
 			}
@@ -3652,7 +3652,7 @@ Action cmd_mlstats(int client, int args)
 {
 	g_mlstats[client] = !g_mlstats[client]
 	char value[16]
-	IntToString(g_mlstats[client], value, 16)
+	IntToString(g_mlstats[client], value, sizeof(value))
 	SetClientCookie(client, g_cookie[1], value)
 	PrintToChat(client, g_mlstats[client] ? "ML stats is on." : "ML stats is off.")
 	return Plugin_Handled
@@ -3662,7 +3662,7 @@ Action cmd_button(int client, int args)
 {
 	g_button[client] = !g_button[client]
 	char value[16]
-	IntToString(g_button[client], value, 16)
+	IntToString(g_button[client], value, sizeof(value))
 	SetClientCookie(client, g_cookie[2], value)
 	PrintToChat(client, g_button[client] ? "Button announcer is on." : "Button announcer is off.")
 	return Plugin_Handled
@@ -3672,7 +3672,7 @@ Action cmd_pbutton(int client, int args)
 {
 	g_pbutton[client] = !g_pbutton[client]
 	char value[16]
-	IntToString(g_pbutton[client], value, 16)
+	IntToString(g_pbutton[client], value, sizeof(value))
 	SetClientCookie(client, g_cookie[3], value)
 	PrintToChat(client, g_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.")
 	return Plugin_Handled
@@ -3919,7 +3919,7 @@ void SDKThink(int client)
 		if(g_readyToFix[client])
 		{
 			char classname[32]
-			GetClientWeapon(client, classname, 32)
+			GetClientWeapon(client, classname, sizeof(classname))
 			if(StrEqual(classname, "weapon_flashbang"))
 			{
 				if(GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
@@ -3947,6 +3947,18 @@ void frame_fix2(int client)
 }
 
 void frame_fix3(int client)
+{
+	if(IsClientInGame(client))
+		RequestFrame(frame_fix4, client)
+}
+
+void frame_fix4(int client)
+{
+	if(IsClientInGame(client))
+		RequestFrame(frame_fix5, client)
+}
+
+void frame_fix5(int client)
 {
 	if(IsClientInGame(client))
 	{
@@ -4020,14 +4032,14 @@ void MLStats(int client, bool ground = false)
 	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost)
 	char print[256]
 	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
-		Format(print, 256, "%s%s", print, g_mlsPrint[client][i])
+		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i])
 	if(g_mlsCount[client] > 10)
-		Format(print, 256, "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]])
+		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]])
 	if(ground)
 	{
 		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0]
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1]
-		Format(print, 256, "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : "")
+		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : "")
 		g_teleported[client] = false
 	}
 	if(g_mlstats[g_mlsFlyer[client]])
