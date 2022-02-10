@@ -16,3 +16,4 @@ Modification of game calls as "trikz" or trick.
 Flashbang and two players gameplay together via speed in the time.
 Stackboost discovered by Gaaamer on youtube.com
 Boost from "sky" is discovored by ED as correct way. But first was Tengulawl in public access or MLG in 2016 year public server in Game Counter-Strike: Source trikz playgame.
+As i heard MLG begining in 2015 year.
