@@ -14,3 +14,4 @@ Most expensive bug was fixed by hornet and ed in 2019 discovered by me. It flash
 These all stories about Counter-Strike: Source by Valve company.
 Modification of game calls as "trikz" or trick.
 Flashbang and two players gameplay together via speed in the time.
+Stackboost discovered by Gaaamer on youtube.com
