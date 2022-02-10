@@ -23,4 +23,4 @@ Sega was good friend we played trikz all night together.
 We can use open-source code from Valve as Source Engine to improve programming skills and motivet to learn.
 Man patīk rakt kartupeļus.
 Tomāti bija ļoti svaigi sāti gardi.
-Gurķi bija labi svaigi sātigi sulūgi.
+Gurķi bija labi svaigi sātigi sulīgi.
