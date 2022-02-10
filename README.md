@@ -22,3 +22,4 @@ We used alliedmodders.com plugins from forum.
 Sega was good friend we played trikz all night together.
 We can use open-source code from Valve as Source Engine to improve programming skills and motivet to learn.
 Man patīk rakt kartupeļus.
+Tomāti bija ļoti svaigi sāti gardi.
