@@ -27,3 +27,4 @@ Gurķi bija labi svaigi sātigi sulīgi.
 Zemenes bija saldas un svaigas.
 Bedre bija izrakta sunim, lai to noglabātu laicīgi.
 Domas jāatdala ar komatu. Smiltis sunim mutē.
+Es riju smiltis.
