@@ -26,4 +26,4 @@ Tomāti bija ļoti svaigi sāti gardi.
 Gurķi bija labi svaigi sātigi sulīgi.
 Zemenes bija saldas un svaigas.
 Bedre bija izrakta sunim, lai to noglabātu laicīgi.
-Domas jāatdala ar komatu.
+Domas jāatdala ar komatu. Smiltis sunim mutē.
