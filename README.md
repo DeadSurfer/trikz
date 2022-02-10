@@ -10,3 +10,4 @@ Ping tool code from rumour. FakeExpert is good but Expert-Zone better.
 Also you have "I" button for extra options.
 Thanks to LOn for first george source "trikz_solid.sp" code gaving and Bop cooperating from LOn, LOn found Bop and give me He discord, Bop gives me "trikz_solid.sp" used screen demonstratin and chat messaging.
 Thanks to Shavit trikz plugin as template for beggining.
+Most expensive bug was fixed by hornet and ed in 2019 discovered by me. It flashbang disapear from render.
