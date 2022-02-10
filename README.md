@@ -19,4 +19,4 @@ Boost from "sky" is discovored by ED as correct way. But first was Tengulawl in 
 As i heard MLG begining in 2015 year.
 I started play trikz in 2012 year with friend from own server.
 We used alliedmodders.com plugins from forum.
-Sega was good friend we play trikz all night together.
+Sega was good friend we played trikz all night together.
