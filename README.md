@@ -13,3 +13,4 @@ Thanks to Shavit trikz plugin as template for beggining.
 Most expensive bug was fixed by hornet and ed in 2019 discovered by me. It flashbang disapear from render.
 These all stories about Counter-Strike: Source by Valve company.
 Modifification of game calls as "trikz" or trick.
+Flashbang and two players gameplay together via speed in the time.
