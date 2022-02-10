@@ -28,3 +28,4 @@ Zemenes bija saldas un svaigas.
 Bedre bija izrakta sunim, lai to noglabātu laicīgi.
 Domas jāatdala ar komatu. Smiltis sunim mutē.
 Es riju smiltis. Es riju ābolus. Es riju gaļu.
+Es riju smiltis bērnudārzā.
