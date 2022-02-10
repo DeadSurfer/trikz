@@ -31,4 +31,4 @@ Es riju smiltis. Es riju ābolus. Es riju gaļu.
 Es riju smiltis bērnudārzā.
 Datorā atrodas pornogrāfija.
 Modificēts flashbang no valve arhīviem.
-Swoobles.com model editor 1.7 versija. Un izmontojot gcfscape programatūru. Atļauja tika iedota no EDa puses. Izmantot visus materiālus un modeļus ieskaitot eglīšu dāvanas un citus rotājumus. Gamebana.com bsp faili satur pornogrāfiju. Un vēl daudz ponografiskus materiālus satur gamebanana.com bsp faili un citi.
+Swoobles.com model editor 1.7 versija. Un izmontojot gcfscape programatūru. Atļauja tika iedota no EDa puses. Izmantot visus materiālus un modeļus ieskaitot eglīšu dāvanas un citus rotājumus. Gamebana.com bsp faili satur pornogrāfiju. Un vēl daudz ponografiskus materiālus satur gamebanana.com bsp faili un citi. bsp var atvērt ar pakratu un mdl var nolasīt ar blender programatūru.
