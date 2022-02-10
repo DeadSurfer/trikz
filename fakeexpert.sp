@@ -297,15 +297,16 @@ public void OnMapStart()
 	char path[12][PLATFORM_MAX_PATH] = {"models/fakeexpert/models/weapons/", "models/fakeexpert/pingtool/", "models/fakeexpert/player/", "materials/fakeexpert/materials/models/weapons/w_models/", "materials/fakeexpert/pingtool/", "sound/fakeexpert/pingtool/", "materials/fakeexpert/player/ct_gign/", "materials/fakeexpert/player/ct_gsg9/", "materials/fakeexpert/player/ct_sas/", "materials/fakeexpert/player/ct_urban/", "materials/fakeexpert/player/", "materials/fakeexpert/zones/"}
 	for(int i = 0; i < sizeof(path); i++)
 	{
+		//PrintToServer("%i %i", i, PLATFORM_MAX_PATH)
 		DirectoryListing dir = OpenDirectory(path[i])
 		char filename[12][PLATFORM_MAX_PATH]
 		FileType type
 		char pathFull[12][PLATFORM_MAX_PATH]
-		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
+		while(dir.GetNext(filename[i], sizeof(filename), type))
 		{
 			if(type == FileType_File)
 			{
-				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i])
+				Format(pathFull[i], sizeof(pathFull), "%s%s", path[i], filename[i])
 				if(StrContains(pathFull[i], ".mdl") != -1)
 					PrecacheModel(pathFull[i], true)
 				AddFileToDownloadsTable(pathFull[i])
@@ -332,9 +333,9 @@ void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const char[] 
 		while(results.FetchRow())
 		{
 			char map[192]
-			results.FetchString(0, map, 192)
+			results.FetchString(0, map, sizeof(map))
 			char query[512]
-			Format(query, 512, "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' ORDER BY time", map, map, map) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' ORDER BY time", map, map, map) //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 			g_mysql.Query(SQLRecalculatePoints, query)
 		}
 	}
@@ -351,7 +352,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		while(results.FetchRow())
 		{
 			int points = results.FetchInt(1) * results.FetchInt(0) / ++place //thanks to DeadSurfer
-			Format(query, 512, "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2))
+			Format(query, sizeof(query), "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2))
 			g_queryLast++
 			g_mysql.Query(SQLRecalculatePoints2, query)
 		}
@@ -378,7 +379,7 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		while(results.FetchRow())
 		{
 			char query[512]
-			Format(query, 512, "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0)) //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
+			Format(query, sizeof(query), "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0)) //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
 			g_mysql.Query(SQLRecalculateUserPoints, query, results.FetchInt(0))
 		}
 	}
@@ -394,7 +395,7 @@ void SQLRecalculateUserPoints(Database db, DBResultSet results, const char[] err
 		while(results.FetchRow())
 			points += results.FetchInt(0)
 		char query[512]
-		Format(query, 512, "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, data)
+		Format(query, sizeof(query), "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, data)
 		g_queryLast++
 		g_mysql.Query(SQLUpdateUserPoints, query)
 	}
@@ -427,7 +428,7 @@ void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any 
 				if(IsClientInGame(i) && !IsFakeClient(i))
 				{
 					int steamid = GetSteamAccountID(i)
-					Format(query, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
+					Format(query, sizeof(query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
 					g_mysql.Query(SQLGetPoints, query, GetClientSerial(i))
 				}
 			}
@@ -443,11 +444,11 @@ public void OnMapEnd()
 	{
 		ServerCommand("tv_stoprecord")
 		char filenameOld[256]
-		Format(filenameOld, 256, "%s-%s-%s.dem", g_date, g_time, g_map)
+		Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map)
 		if(g_ServerRecord)
 		{
 			char filenameNew[256]
-			Format(filenameNew, 256, "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map)
+			Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map)
 			RenameFile(filenameNew, filenameOld)
 			g_ServerRecord = false
 		}
@@ -461,63 +462,63 @@ Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int players
 	int client = msg.ReadByte()
 	msg.ReadByte()
 	char msgBuffer[32]
-	msg.ReadString(msgBuffer, 32)
+	msg.ReadString(msgBuffer, sizeof(msgBuffer))
 	char name[MAX_NAME_LENGTH]
-	msg.ReadString(name, MAX_NAME_LENGTH)
+	msg.ReadString(name, sizeof(name))
 	char text[256]
-	msg.ReadString(text, 256)
+	msg.ReadString(text, sizeof(text))
 	if(!g_msg[client])
 		return Plugin_Handled
 	g_msg[client] = false
 	char msgFormated[32]
-	Format(msgFormated, 32, "%s", msgBuffer)
+	Format(msgFormated, sizeof(msgFormated), "%s", msgBuffer)
 	char points[32]
 	int precentage = g_points[client] / g_pointsMaxs * 100
 	char color[8]
 	if(precentage >= 90)
-		Format(color, 8, "FF8000")
+		Format(color, sizeof(color), "FF8000")
 	else if(precentage >= 70)
-		Format(color, 8, "A335EE")
+		Format(color, sizeof(color), "A335EE")
 	else if(precentage >= 55)
-		Format(color, 8, "0070DD")
+		Format(color, sizeof(color), "0070DD")
 	else if(precentage >= 40)
-		Format(color, 8, "1EFF00")
+		Format(color, sizeof(color), "1EFF00")
 	else if(precentage >= 15)
-		Format(color, 8, "FFFFFF")
+		Format(color, sizeof(color), "FFFFFF")
 	else if(precentage >= 0)
-		Format(color, 8, "9D9D9D") //https://wowpedia.fandom.com/wiki/Quality
+		Format(color, sizeof(color), "9D9D9D") //https://wowpedia.fandom.com/wiki/Quality
 	if(g_points[client] < 1000)
-		Format(points, 32, "\x07%s%i\x01", color, g_points[client])
+		Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client])
 	else if(g_points[client] > 999)
-		Format(points, 32, "\x07%s%iK\x01", color, g_points[client] / 1000)
+		Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000)
 	else if(g_points[client] > 999999)
-		Format(points, 32, "\x07%s%iM\x01", color, g_points[client] / 1000000)
+		Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000)
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec"))
-		Format(text, 256, "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
+		Format(text, sizeof(text), "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec"))
-		Format(text, 256, "\x01(Spectator) [%s] \x07CCCCCC%s \x01:  %s", points, name, text)
+		Format(text, sizeof(text), "\x01(Spectator) [%s] \x07CCCCCC%s \x01:  %s", points, name, text)
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_All"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(text, 256, "\x01[%s] \x07FF4040%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
+			Format(text, sizeof(text), "\x01[%s] \x07FF4040%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
 		else if(GetClientTeam(client) == 3)
-			Format(text, 256, "\x01[%s] \x0799CCFF%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
+			Format(text, sizeof(text), "\x01[%s] \x0799CCFF%s \x01:  %s", points, name, text) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
 	}
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_AllDead"))
 	{
 		if(GetClientTeam(client) == 2)
-			Format(text, 256, "\x01*DEAD* [%s] \x07FF4040%s \x01:  %s", points, name, text)
+			Format(text, sizeof(text), "\x01*DEAD* [%s] \x07FF4040%s \x01:  %s", points, name, text)
 		else if(GetClientTeam(client) == 3)
-			Format(text, 256, "\x01*DEAD* [%s] \x0799CCFF%s \x01:  %s", points, name, text)
+			Format(text, sizeof(text), "\x01*DEAD* [%s] \x0799CCFF%s \x01:  %s", points, name, text)
 	}
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT"))
-		Format(text, 256, "\x01(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text)
+		Format(text, sizeof(text), "\x01(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text)
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT_Dead"))
-		Format(text, 256, "\x01*DEAD*(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text)
+		Format(text, sizeof(text), "\x01*DEAD*(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text)
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T"))
-		Format(text, 256, "\x01(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text) //https://forums.alliedmods.net/showthread.php?t=185016
+		Format(text, sizeof(text), "\x01(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text) //https://forums.alliedmods.net/showthread.php?t=185016
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T_Dead"))
-		Format(text, 256, "\x01*DEAD*(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text)
+		Format(text, sizeof(text), "\x01*DEAD*(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text)
 	DataPack dp = new DataPack()
 	dp.WriteCell(GetClientSerial(client))
 	dp.WriteCell(StrContains(msgBuffer, "_All") != -1)
@@ -532,7 +533,7 @@ void frame_SayText2(DataPack dp)
 	int client = GetClientFromSerial(dp.ReadCell())
 	bool allchat = dp.ReadCell()
 	char text[256]
-	dp.ReadString(text, 256)
+	dp.ReadString(text, sizeof(text))
 	if(IsClientInGame(client))
 	{
 		int clients[MAXPLAYERS + 1]
@@ -777,7 +778,7 @@ public void OnClientPutInServer(int client)
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High)
 		char query[512]
 		int steamid = GetSteamAccountID(client)
-		Format(query, 512, "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, g_map)
+		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, g_map)
 		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client))
 	}
 	g_menuOpened[client] = false
@@ -813,13 +814,13 @@ public void OnClientPutInServer(int client)
 public void OnClientCookiesCached(int client)
 {
 	char value[16]
-	GetClientCookie(client, g_cookie[0], value, 16)
+	GetClientCookie(client, g_cookie[0], value, sizeof(value))
 	g_hudVel[client] = view_as<bool>(StringToInt(value))
-	GetClientCookie(client, g_cookie[1], value, 16)
+	GetClientCookie(client, g_cookie[1], value, sizeof(value))
 	g_mlstats[client] = view_as<bool>(StringToInt(value))
-	GetClientCookie(client, g_cookie[2], value, 16)
+	GetClientCookie(client, g_cookie[2], value, sizeof(value))
 	g_button[client] = view_as<bool>(StringToInt(value))
-	GetClientCookie(client, g_cookie[3], value, 16)
+	GetClientCookie(client, g_cookie[3], value, sizeof(value))
 	g_pbutton[client] = view_as<bool>(StringToInt(value))
 }
 
@@ -862,12 +863,12 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 			int steamid = GetSteamAccountID(client)
 			if(results.FetchRow())
 			{
-				Format(query, 512, "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid)
+				Format(query, sizeof(query), "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid)
 				g_mysql.Query(SQLUpdateUsername, query, GetClientSerial(client), DBPrio_High)
 			}
 			else
 			{
-				Format(query, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime())
+				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime())
 				g_mysql.Query(SQLUserAdded, query)
 			}
 		}
@@ -894,9 +895,9 @@ void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any
 			char query[512]
 			int steamid = GetSteamAccountID(client)
 			if(results.FetchRow())
-				Format(query, 512, "UPDATE users SET username = \"%N\", lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid)
+				Format(query, sizeof(query), "UPDATE users SET username = \"%N\", lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid)
 			else
-				Format(query, 512, "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime())
+				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime())
 			g_mysql.Query(SQLUpdateUsernameSuccess, query, GetClientSerial(client), DBPrio_High)
 		}
 	}
@@ -917,7 +918,7 @@ void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] err
 			{
 				char query[512]
 				int steamid = GetSteamAccountID(client)
-				Format(query, 512, "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
+				Format(query, sizeof(query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid)
 				g_mysql.Query(SQLGetPoints, query, GetClientSerial(client), DBPrio_High)
 			}
 		}
@@ -1150,9 +1151,9 @@ void Partner(int client)
 				{
 					if(client != i && !g_partner[i])
 					{
-						GetClientName(i, name, MAX_NAME_LENGTH)
+						GetClientName(i, name, sizeof(name))
 						char nameID[32]
-						IntToString(i, nameID, 32)
+						IntToString(i, nameID, sizeof(nameID))
 						menu.AddItem(nameID, name)
 						player = true
 					}
@@ -1172,7 +1173,7 @@ void Partner(int client)
 			Menu menu = new Menu(cancelpartner_handler)
 			menu.SetTitle("Cancel partnership with %N", g_partner[client])
 			char partner[32]
-			IntToString(g_partner[client], partner, 32)
+			IntToString(g_partner[client], partner, sizeof(partner))
 			menu.AddItem(partner, "Yes")
 			menu.AddItem("", "No")
 			menu.Display(client, 20)
@@ -1187,12 +1188,12 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 		case MenuAction_Select:
 		{
 			char item[32]
-			menu.GetItem(param2, item, 32)
+			menu.GetItem(param2, item, sizeof(item))
 			int partner = StringToInt(item)
 			Menu menu2 = new Menu(askpartner_handle)
 			menu2.SetTitle("Agree partner with %N?", param1)
 			char param1Buffer[32]
-			IntToString(param1, param1Buffer, 32)
+			IntToString(param1, param1Buffer, sizeof(param1Buffer))
 			menu2.AddItem(param1Buffer, "Yes")
 			menu2.AddItem(item, "No")
 			menu2.Display(partner, 20)
@@ -1208,7 +1209,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 		case MenuAction_Select:
 		{
 			char item[32]
-			menu.GetItem(param2, item, 32)
+			menu.GetItem(param2, item, sizeof(item))
 			int partner = StringToInt(item)
 			switch(param2)
 			{
@@ -1225,7 +1226,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 						if(g_menuOpened[partner])
 							Trikz(partner)
 						char query[512]
-						Format(query, 512, "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map)
+						Format(query, sizeof(query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map)
 						g_mysql.Query(SQLGetPartnerRecord, query, GetClientSerial(param1))
 					}
 					else
@@ -1246,7 +1247,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Select:
 		{
 			char item[32]
-			menu.GetItem(param2, item, 32)
+			menu.GetItem(param2, item, sizeof(item))
 			int partner = StringToInt(item)
 			switch(param2)
 			{
@@ -1270,7 +1271,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 Action cmd_color(int client, int args)
 {
 	char arg[512]
-	GetCmdArgString(arg, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+	GetCmdArgString(arg, sizeof(arg)) //https://www.sourcemod.net/new-api/console/GetCmdArgString
 	int color = StringToInt(arg)
 	if(StrEqual(arg, "white"))
 		color = 0
@@ -1314,7 +1315,7 @@ void Color(int client, bool customSkin = false, int color = -1)
 			SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]])
 			DispatchKeyValue(client, "skin", "2")
 			DispatchKeyValue(g_partner[client], "skin", "2")
-			char g_colorTypeExploded[4][32]
+			char colorTypeExploded[4][32]
 			if(g_colorCount[client][0] == 9)
 			{
 				g_colorCount[client][0] = 0
@@ -1325,11 +1326,11 @@ void Color(int client, bool customSkin = false, int color = -1)
 				g_colorCount[client][0] = color
 				g_colorCount[g_partner[client]][0] = color
 			}
-			ExplodeString(g_colorType[g_colorCount[client][0]], ",", g_colorTypeExploded, 4, 32)
+			ExplodeString(g_colorType[g_colorCount[client][0]], ",", colorTypeExploded, 4, sizeof(colorTypeExploded))
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][i][0] = StringToInt(g_colorTypeExploded[i])
-				g_colorBuffer[g_partner[client]][i][0] = StringToInt(g_colorTypeExploded[i])
+				g_colorBuffer[client][i][0] = StringToInt(colorTypeExploded[i])
+				g_colorBuffer[g_partner[client]][i][0] = StringToInt(colorTypeExploded[i])
 			}
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125)
 			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] ? 255 : 125)
@@ -1338,9 +1339,9 @@ void Color(int client, bool customSkin = false, int color = -1)
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255)
 			if(g_seperate[client])
 			{
-				ShowHudText(client, 5, "%s (F2)", g_colorTypeExploded[3])
+				ShowHudText(client, 5, "%s (F2)", colorTypeExploded[3])
 				if(g_partner[client])
-					ShowHudText(g_partner[client], 5, "%s (F2)", g_colorTypeExploded[3])
+					ShowHudText(g_partner[client], 5, "%s (F2)", colorTypeExploded[3])
 			}
 			else
 			{
@@ -1353,9 +1354,9 @@ void Color(int client, bool customSkin = false, int color = -1)
 					g_colorBuffer[client][i][1] = g_colorBuffer[client][i][0]
 					g_colorBuffer[g_partner[client]][i][1] = g_colorBuffer[client][i][0]
 				}
-				ShowHudText(client, 5, "%s (F2+)", g_colorTypeExploded[3])
+				ShowHudText(client, 5, "%s (F2+)", colorTypeExploded[3])
 				if(g_partner[client])
-					ShowHudText(g_partner[client], 5, "%s (F2+)", g_colorTypeExploded[3])
+					ShowHudText(g_partner[client], 5, "%s (F2+)", colorTypeExploded[3])
 			}
 		}
 		else
@@ -1385,7 +1386,7 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 			g_color[g_partner[client]][1] = true
 			g_seperate[client] = true
 			g_seperate[g_partner[client]] = true
-			char g_colorTypeExploded[4][32]
+			char colorTypeExploded[4][32]
 			if(g_colorCount[client][1] == 9)
 			{
 				g_colorCount[client][1] = 0
@@ -1396,18 +1397,18 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 				g_colorCount[client][1] = color
 				g_colorCount[g_partner[client]][1] = color
 			}
-			ExplodeString(g_colorType[g_colorCount[client][1]], ",", g_colorTypeExploded, 4, 32)
+			ExplodeString(g_colorType[g_colorCount[client][1]], ",", colorTypeExploded, 4, sizeof(colorTypeExploded))
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][i][1] = StringToInt(g_colorTypeExploded[i])
-				g_colorBuffer[g_partner[client]][i][1] = StringToInt(g_colorTypeExploded[i])
+				g_colorBuffer[client][i][1] = StringToInt(colorTypeExploded[i])
+				g_colorBuffer[g_partner[client]][i][1] = StringToInt(colorTypeExploded[i])
 			}
 			g_colorCount[client][1]++
 			g_colorCount[g_partner[client]][1]++
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255)
-			ShowHudText(client, 5, "%s", g_colorTypeExploded[3])
+			ShowHudText(client, 5, "%s", colorTypeExploded[3])
 			if(g_partner[client])
-				ShowHudText(g_partner[client], 5, "%s", g_colorTypeExploded[3])
+				ShowHudText(g_partner[client], 5, "%s", colorTypeExploded[3])
 		}
 		else
 		{
@@ -1597,9 +1598,9 @@ void CreateEnd()
 Action cmd_startmins(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
@@ -1621,7 +1622,7 @@ void SQLDeleteStartZone(Database db, DBResultSet results, const char[] error, an
 	else
 	{
 		char query[512]
-		Format(query, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]))
+		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]))
 		g_mysql.Query(SQLSetStartZones, query)
 	}
 }
@@ -1629,15 +1630,15 @@ void SQLDeleteStartZone(Database db, DBResultSet results, const char[] error, an
 Action cmd_deleteallcp(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent)) //https://sm.alliedmods.net/new-api/
 	{
 		if(g_devmap)
 		{
 			char query[512]
-			Format(query, 512, "DELETE FROM cp WHERE map = '%s'", g_map) //https://www.w3schools.com/sql/sql_delete.asp
+			Format(query, sizeof(query), "DELETE FROM cp WHERE map = '%s'", g_map) //https://www.w3schools.com/sql/sql_delete.asp
 			g_mysql.Query(SQLDeleteAllCP, query)
 		}
 		else
@@ -1664,7 +1665,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	if(!g_devmap)
 	{
 		char cmd[64] //https://forums.alliedmods.net/showthread.php?t=270684
-		kv.GetSectionName(cmd, 64)
+		kv.GetSectionName(cmd, sizeof(cmd))
 		if(StrEqual(cmd, "ClanTagChanged"))
 			CS_GetClientClanTag(client, g_clantag[client][0], 256)
 	}
@@ -1674,14 +1675,14 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 Action cmd_test(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent)) //https://sm.alliedmods.net/new-api/
 	{
 		char text[256]
 		char name[MAX_NAME_LENGTH]
-		GetClientName(client, name, MAX_NAME_LENGTH)
+		GetClientName(client, name, sizeof(name))
 		int team = GetClientTeam(client)
 		char teamName[32]
 		char teamColor[32]
@@ -1689,27 +1690,27 @@ Action cmd_test(int client, int args)
 		{
 			case 1:
 			{
-				Format(teamName, 32, "Spectator")
-				Format(teamColor, 32, "\x07CCCCCC")
+				Format(teamName, sizeof(teamName), "Spectator")
+				Format(teamColor, sizeof(teamColor), "\x07CCCCCC")
 			}
 			case 2:
 			{
-				Format(teamName, 32, "Terrorist")
-				Format(teamColor, 32, "\x07FF4040")
+				Format(teamName, sizeof(teamName), "Terrorist")
+				Format(teamColor, sizeof(teamColor), "\x07FF4040")
 			}
 			case 3:
 			{
-				Format(teamName, 32, "Counter-Terrorist")
-				Format(teamColor, 32, "\x0799CCFF")
+				Format(teamName, sizeof(teamName), "Counter-Terrorist")
+				Format(teamColor, sizeof(teamColor), "\x0799CCFF")
 			}
 		}
-		Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName)
-		ReplaceString(text, 256, ";#", "\x07")
-		ReplaceString(text, 256, "{default}", "\x01")
-		ReplaceString(text, 256, "{teamcolor}", teamColor)
+		Format(text, sizeof(text), "\x01%T", "Hello", client, "FakeExpert", name, teamName)
+		ReplaceString(text, sizeof(text), ";#", "\x07")
+		ReplaceString(text, sizeof(text), "{default}", "\x01")
+		ReplaceString(text, sizeof(text), "{teamcolor}", teamColor)
 		PrintToChat(client, "%s", text)
 		char arg[256]
-		GetCmdArgString(arg, 256)
+		GetCmdArgString(arg, sizeof(arg))
 		int partner = StringToInt(arg)
 		if(partner <= MaxClients && !g_partner[client])
 		{
@@ -1737,7 +1738,7 @@ Action cmd_test(int client, int args)
 		color |= (50 & 255) << 0 // 50 alpha
 		PrintToChat(client, "\x08%08XCOLOR", color)
 		char auth64[64]
-		GetClientAuthId(client, AuthId_SteamID64, auth64, 64)
+		GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64))
 		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid) //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 		return Plugin_Handled
 	}
@@ -1747,9 +1748,9 @@ Action cmd_test(int client, int args)
 Action cmd_endmins(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
@@ -1771,7 +1772,7 @@ void SQLDeleteEndZone(Database db, DBResultSet results, const char[] error, any 
 	else
 	{
 		char query[512]
-		Format(query, 512, "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]))
+		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]))
 		g_mysql.Query(SQLSetEndZones, query)
 	}
 }
@@ -1779,21 +1780,21 @@ void SQLDeleteEndZone(Database db, DBResultSet results, const char[] error, any 
 Action cmd_maptier(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
 		{
 			char arg[512]
-			GetCmdArgString(arg, 512) //https://www.sourcemod.net/new-api/console/GetCmdArgString
+			GetCmdArgString(arg, sizeof(arg)) //https://www.sourcemod.net/new-api/console/GetCmdArgString
 			int tier = StringToInt(arg)
 			if(tier > 0)
 			{
 				PrintToServer("[Args] Tier: %i", tier)
 				char query[512]
-				Format(query, 512, "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map)
+				Format(query, sizeof(query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map)
 				g_mysql.Query(SQLTierRemove, query, tier)
 			}
 		}
@@ -1811,7 +1812,7 @@ void SQLTierRemove(Database db, DBResultSet results, const char[] error, any dat
 	else
 	{
 		char query[512]
-		Format(query, 512, "INSERT INTO tier (tier, map) VALUES (%i, '%s')", data, g_map)
+		Format(query, sizeof(query), "INSERT INTO tier (tier, map) VALUES (%i, '%s')", data, g_map)
 		g_mysql.Query(SQLTierInsert, query, data)
 	}
 }
@@ -1852,14 +1853,14 @@ void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any da
 Action cmd_startmaxs(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, steamid(steamid))
 	if(StrEqual(steamid, steamidCurrent) && g_zoneFirst[0])
 	{
 		GetClientAbsOrigin(client, g_zoneStartOrigin[1])
 		char query[512]
-		Format(query, 512, "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map)
+		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map)
 		g_mysql.Query(SQLDeleteStartZone, query)
 		g_zoneFirst[0] = false
 		return Plugin_Handled
@@ -1870,14 +1871,14 @@ Action cmd_startmaxs(int client, int args)
 Action cmd_endmaxs(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent) && g_zoneFirst[1])
 	{
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1])
 		char query[512]
-		Format(query, 512, "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map)
+		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map)
 		g_mysql.Query(SQLDeleteEndZone, query)
 		g_zoneFirst[1] = false
 		return Plugin_Handled
@@ -1888,15 +1889,15 @@ Action cmd_endmaxs(int client, int args)
 Action cmd_cpmins(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
 		{
 			char cmd[512]
-			GetCmdArg(args, cmd, 512)
+			GetCmdArg(args, cmd, sizeof(cmd))
 			int cpnum = StringToInt(cmd)
 			if(cpnum > 0)
 			{
@@ -1921,7 +1922,7 @@ void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data
 		if(results.HasResults == false)
 			PrintToServer("Checkpoint zone no. %i successfuly deleted.", data)
 		char query[512]
-		Format(query, 512, "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[0][data][0]), RoundFloat(g_cpPos[0][data][1]), RoundFloat(g_cpPos[0][data][2]), RoundFloat(g_cpPos[1][data][0]), RoundFloat(g_cpPos[1][data][1]), RoundFloat(g_cpPos[1][data][2]), g_map)
+		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[0][data][0]), RoundFloat(g_cpPos[0][data][1]), RoundFloat(g_cpPos[0][data][2]), RoundFloat(g_cpPos[1][data][0]), RoundFloat(g_cpPos[1][data][1]), RoundFloat(g_cpPos[1][data][2]), g_map)
 		g_mysql.Query(SQLCPInserted, query, data)
 	}
 }
@@ -1929,19 +1930,19 @@ void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data
 Action cmd_cpmaxs(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamid))
 	if(StrEqual(steamid, steamidCurrent) && g_zoneFirst[2])
 	{
 		char cmd[512]
-		GetCmdArg(args, cmd, 512)
+		GetCmdArg(args, cmd, sizeof(cmd))
 		int cpnum = StringToInt(cmd)
 		if(cpnum > 0)
 		{
 			GetClientAbsOrigin(client, g_cpPos[1][cpnum])
 			char query[512]
-			Format(query, 512, "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map)
+			Format(query, sizeof(query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map)
 			g_mysql.Query(SQLCPRemoved, query, cpnum)
 			g_zoneFirst[2] = false
 		}
@@ -1964,9 +1965,9 @@ void SQLCPInserted(Database db, DBResultSet results, const char[] error, any dat
 Action cmd_zones(int client, int args)
 {
 	char steamidCurrent[64]
-	IntToString(GetSteamAccountID(client), steamidCurrent, 64)
+	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent))
 	char steamid[64]
-	GetConVarString(g_steamid, steamid, 64)
+	GetConVarString(g_steamid, steamid, sizeof(steamidCurrent))
 	if(StrEqual(steamid, steamidCurrent))
 	{
 		if(g_devmap)
@@ -2347,7 +2348,7 @@ void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, an
 Action cmd_createrecords(int args)
 {
 	g_mysql.Query(SQLRecordsTable, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, points INT, map VARCHAR(192), date INT, PRIMARY KEY(id))")
-	returu Plugin_Continue
+	return Plugin_Continue
 }
 
 void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
