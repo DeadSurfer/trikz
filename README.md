@@ -30,3 +30,4 @@ Domas jāatdala ar komatu. Smiltis sunim mutē.
 Es riju smiltis. Es riju ābolus. Es riju gaļu.
 Es riju smiltis bērnudārzā.
 Datorā atrodas pornogrāfija.
+Modificēts flashbang no valve arhīviem.
