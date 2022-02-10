@@ -15,3 +15,4 @@ These all stories about Counter-Strike: Source by Valve company.
 Modification of game calls as "trikz" or trick.
 Flashbang and two players gameplay together via speed in the time.
 Stackboost discovered by Gaaamer on youtube.com
+Boost from "sky" is discovored by ED as correct way. But first was Tengulawl in public access or MLG public server in Game Counter-Strike: Source trikz playgame.
