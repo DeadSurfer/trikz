@@ -157,7 +157,7 @@ public Plugin myinfo =
 	name = "trikz + timer",
 	author = "Smesh(Nick Yurevich)",
 	description = "Allows to able make trikz more comfortable",
-	version = "3.1",
+	version = "3.2",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -294,22 +294,23 @@ public void OnMapStart()
 	g_smoke = PrecacheModel("materials/sprites/smoke.vmt", true)
 	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true)
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true)
-	char path[12][PLATFORM_MAX_PATH] = {"models/fakeexpert/models/weapons/", "models/fakeexpert/pingtool/", "models/fakeexpert/player/", "materials/fakeexpert/materials/models/weapons/w_models/", "materials/fakeexpert/pingtool/", "sound/fakeexpert/pingtool/", "materials/fakeexpert/player/ct_gign/", "materials/fakeexpert/player/ct_gsg9/", "materials/fakeexpert/player/ct_sas/", "materials/fakeexpert/player/ct_urban/", "materials/fakeexpert/player/", "materials/fakeexpert/zones/"}
+	char path[12][PLATFORM_MAX_PATH] = {"models/fakeexpert/models/weapons/", "models/fakeexpert/pingtool/", "models/fakeexpert/player/", "materials/fakeexpert/models/weapons/w_models/w_eq_flashbang/", "materials/fakeexpert/pingtool/", "sound/fakeexpert/pingtool/", "materials/fakeexpert/player/ct_gign/", "materials/fakeexpert/player/ct_gsg9/", "materials/fakeexpert/player/ct_sas/", "materials/fakeexpert/player/ct_urban/", "materials/fakeexpert/player/", "materials/fakeexpert/zones/"}
 	for(int i = 0; i < sizeof(path); i++)
 	{
-		//PrintToServer("%i %i", i, PLATFORM_MAX_PATH)
+		PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path))
 		DirectoryListing dir = OpenDirectory(path[i])
 		char filename[12][PLATFORM_MAX_PATH]
 		FileType type
 		char pathFull[12][PLATFORM_MAX_PATH]
-		while(dir.GetNext(filename[i], sizeof(filename), type))
+		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
 		{
 			if(type == FileType_File)
 			{
-				Format(pathFull[i], sizeof(pathFull), "%s%s", path[i], filename[i])
+				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i])
 				if(StrContains(pathFull[i], ".mdl") != -1)
 					PrecacheModel(pathFull[i], true)
 				AddFileToDownloadsTable(pathFull[i])
+				PrintToServer("%s", pathFull[i])
 			}
 		}
 		delete dir
@@ -668,9 +669,9 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 					cmd_top(param1, 0)
 				case 1:
-					FakeClientCommand(param1, "sm_js")
+					FakeClientCommandEx(param1, "sm_js") //faster cooamnd respond
 				case 2:
-					FakeClientCommand(param1, "sm_bs")
+					FakeClientCommandEx(param1, "sm_bs") //faster command respond
 				case 3:
 					cmd_hud(param1, 0)
 				case 4:
@@ -3993,6 +3994,176 @@ Action SDKSetTransmitPing(int entity, int client)
 }
 
 Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
+{
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
+	{
+		g_silentKnife = false
+		return Plugin_Handled
+	}
+	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav"))
+	{
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+		if(owner < 0)
+			owner = 0
+		if(g_projectileSoundLoud[owner] == entity)
+			return Plugin_Handled
+	}
+	return Plugin_Continue
+}
+
+Action timer_clantag(Handle timer, int client)
+{
+	if(0 < client <= MaxClients && IsClientInGame(client))
+	{
+		if(g_state[client])
+		{
+			CS_SetClientClanTag(client, g_clantag[client][1])
+			return Plugin_Continue
+		}
+		else
+			CS_SetClientClanTag(client, g_clantag[client][0])
+	}
+	return Plugin_Stop
+}
+
+void MLStats(int client, bool ground = false)
+{
+	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0))
+	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0))
+	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost)
+	char print[256]
+	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
+		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i])
+	if(g_mlsCount[client] > 10)
+		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]])
+	if(ground)
+	{
+		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0]
+		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1]
+		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : "")
+		g_teleported[client] = false
+	}
+	if(g_mlstats[g_mlsFlyer[client]])
+	{
+		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client])
+		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
+		bfmsg.WriteByte(true)
+		bfmsg.WriteString(print)
+		EndMessage()
+	}
+	if(g_mlstats[client])
+	{
+		Handle KeyHintText = StartMessageOne("KeyHintText", client)
+		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
+		bfmsg.WriteByte(true)
+		bfmsg.WriteString(print)
+		EndMessage()
+	}
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) && IsClientObserver(i))
+		{
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+			if(observerMode < 7 && (observerTarget == client || observerTarget == g_mlsFlyer[client]) && g_mlstats[i])
+			{
+				Handle KeyHintText = StartMessageOne("KeyHintText", i)
+				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
+				bfmsg.WriteByte(true)
+				bfmsg.WriteString(print)
+				EndMessage()
+			}
+		}
+	}
+}
+
+int Stuck(int client)
+{
+	float mins[3]
+	float maxs[3]
+	float origin[3]
+	GetClientMins(client, mins)
+	GetClientMaxs(client, maxs)
+	GetClientAbsOrigin(client, origin)
+	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //Skiper, Gurman idea, plugin 2020 year.
+	return TR_GetEntityIndex()
+}
+
+bool TR_donthitself(int entity, int mask, int client)
+{
+	if(LibraryExists("fakeexpert-entityfilter"))
+		return entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]]
+	else
+		return entity != client && 0 < entity <= MaxClients
+}
+
+int Native_GetClientButtons(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1)
+	return g_entityButtons[client]
+}
+
+int Native_GetClientPartner(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1)
+	return g_partner[client]
+}
+
+int Native_GetTimerState(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1)
+	if(!IsFakeClient(client))
+		return g_state[client]
+	else
+		return false
+}
+
+int Native_SetPartner(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1)
+	int partner = GetNativeCell(2)
+	g_partner[client] = partner
+	g_partner[partner] = client
+	return 0
+}
+
+int Native_Restart(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1)
+	Restart(client)
+	Restart(g_partner[client])
+	return 0
+}
+
+int Native_GetDevmap(Handle plugin, int numParams)
+{
+	return g_devmap
+}
+
+Action timer_clearlag(Handle timer)
+{
+	ServerCommand("mat_texture_list_txlod_sync reset")
+	return Plugin_Continue
+}
+
+float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+{
+	float origin[3]
+	GetClientAbsOrigin(client, origin)
+	float originDir[3]
+	GetClientAbsOrigin(client, originDir)
+	originDir[2] -= 90.0
+	float mins[3]
+	GetClientMins(client, mins)
+	float maxs[3]
+	GetClientMaxs(client, maxs)
+	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client)
+	float pos[3]
+	if(TR_DidHit())
+		TR_GetEndPosition(pos)
+	return pos[2]
+}
+itch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
 	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
 	{
