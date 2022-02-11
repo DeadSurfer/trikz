@@ -3055,7 +3055,7 @@ void DrawZone(int client, float life)
 	}
 }
 
-void ResetFactory(int client)
+static void ResetFactory(int client)
 {
 	g_readyToStart[client] = true
 	//g_timerTime[client] = 0.0
@@ -3066,65 +3066,79 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if(!IsFakeClient(client))
 	{
-		g_entityFlags[client] = GetEntityFlags(client)
-		g_entityButtons[client] = buttons
+		g_entityFlags[client] = GetEntityFlags(client);
+		g_entityButtons[client] = buttons;
 		if(buttons & IN_JUMP && IsPlayerAlive(client) && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
-			buttons &= ~IN_JUMP //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
+		{
+			buttons &= ~IN_JUMP; //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
+			//return Plugin_Continue;
+		}
 		//Timer
 		if(g_state[client] && g_partner[client])
 		{
-			g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client]
+			g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
 			//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
-			int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-			int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60
-			int second = RoundToFloor(g_timerTime[client]) % 60
-			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second)
+			int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
+			int second = RoundToFloor(g_timerTime[client]) % 60;
+			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
 			if(!IsPlayerAlive(client))
 			{
-				ResetFactory(client)
-				ResetFactory(g_partner[client])
+				ResetFactory(client);
+				ResetFactory(g_partner[client]);
+				//return Plugin_Continue;
 			}
+			//return Plugin_Continue;
 		}
 		if(g_skyBoost[client])
 		{
 			if(g_skyBoost[client] == 1)
-				g_skyBoost[client] = 2
+			{
+				g_skyBoost[client] = 2;
+				//return Plugin_Continue;
+			}
 			else if(g_skyBoost[client] == 2)
 			{
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, g_skyVel[client])
-				g_skyBoost[client] = 0
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, g_skyVel[client]);
+				g_skyBoost[client] = 0;
+				//return Plugin_Continue;
 			}
+			//return Plugin_Continue;
 		}
 		if(g_boost[client])
 		{
-			float velocity[3]
+			float velocity[3];
 			if(g_boost[client] == 2)
 			{
-				velocity[0] = g_clientVel[client][0] - g_entityVel[client][0]
-				velocity[1] = g_clientVel[client][1] - g_entityVel[client][1]
-				velocity[2] = g_entityVel[client][2]
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity)
-				g_boost[client] = 3
+				velocity[0] = g_clientVel[client][0] - g_entityVel[client][0];
+				velocity[1] = g_clientVel[client][1] - g_entityVel[client][1];
+				velocity[2] = g_entityVel[client][2];
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+				g_boost[client] = 3;
+				//return Plugin_Continue;
 			}
 			else if(g_boost[client] == 3) //Let make loop finish and come back to here.
 			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity)
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity);
 				if(g_groundBoost[client])
 				{
-					velocity[0] += g_entityVel[client][0]
-					velocity[1] += g_entityVel[client][1]
-					velocity[2] += g_entityVel[client][2]
+					velocity[0] += g_entityVel[client][0];
+					velocity[1] += g_entityVel[client][1];
+					velocity[2] += g_entityVel[client][2];
+					//return Plugin_Continue;
 				}
 				else
 				{
-					velocity[0] += g_entityVel[client][0] * 0.135
-					velocity[1] += g_entityVel[client][1] * 0.135
+					velocity[0] += g_entityVel[client][0] * 0.135;
+					velocity[1] += g_entityVel[client][1] * 0.135;
+					//return Plugin_Continue;
 				}
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
-				g_boost[client] = 0
-				g_mlsVel[client][1][0] = velocity[0]
-				g_mlsVel[client][1][1] = velocity[1]
-				MLStats(client)
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
+				g_boost[client] = 0;
+				g_mlsVel[client][1][0] = velocity[0];
+				g_mlsVel[client][1][1] = velocity[1];
+				MLStats(client);
+				//return Plugin_Continue;
 			}
 		}
 		if(IsPlayerAlive(client) && (g_partner[client] || g_devmap))
@@ -3133,89 +3147,121 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
 				{
-					g_pingTime[client] = GetEngineTime()
-					g_pingLock[client] = false
+					g_pingTime[client] = GetEngineTime();
+					g_pingLock[client] = false;
+					//return Plugin_Continue;
 				}
+				//return Plugin_Continue;
 			}
 			else
+			{
 				if(!g_pingLock[client])
-					g_pingLock[client] = true
+				{
+					g_pingLock[client] = true;
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
 			if(!g_pingLock[client] && GetEngineTime() - g_pingTime[client] > 0.7)
 			{
-				g_pingLock[client] = true
+				g_pingLock[client] = true;
 				if(g_pingModel[client])
 				{
 					if(IsValidEntity(g_pingModel[client]))
-						RemoveEntity(g_pingModel[client])
-					g_pingModel[client] = 0
-					KillTimer(g_pingTimer[client])
+					{
+						RemoveEntity(g_pingModel[client]);
+						//return Plugin_Continue;
+					}
+					g_pingModel[client] = 0;
+					KillTimer(g_pingTimer[client]);
 				}
-				g_pingModel[client] = CreateEntityByName("prop_dynamic_override") //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
-				SetEntityModel(g_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl")
-				DispatchSpawn(g_pingModel[client])
-				SetEntProp(g_pingModel[client], Prop_Data, "m_fEffects", 16) //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
-				float start[3]
-				float angle[3]
-				float end[3]
-				GetClientEyePosition(client, start)
-				GetClientEyeAngles(client, angle)
-				GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR)
+				g_pingModel[client] = CreateEntityByName("prop_dynamic_override"); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+				SetEntityModel(g_pingModel[client], "models/fakeexpert/pingtool/pingtool.mdl");
+				DispatchSpawn(g_pingModel[client]);
+				SetEntProp(g_pingModel[client], Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
+				float start[3];
+				float angle[3];
+				float end[3];
+				GetClientEyePosition(client, start);
+				GetClientEyeAngles(client, angle);
+				GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR);
 				for(int i = 0; i <= 2; i++)
 				{
-					angle[i] *= 8192.0
-					end[i] = start[i] + angle[i] //Thanks to rumour for pingtool original code.
+					angle[i] *= 8192.0;
+					end[i] = start[i] + angle[i]; //Thanks to rumour for pingtool original code.
 				}
-				TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client)
-				if(TR_DidHit())
+				TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client);
+				if(TR_DidHit(null))
 				{
-					TR_GetEndPosition(end)
-					float normal[3]
-					TR_GetPlaneNormal(null, normal) //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
-					GetVectorAngles(normal, normal)
-					GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR)
+					TR_GetEndPosition(end);
+					float normal[3];
+					TR_GetPlaneNormal(null, normal); //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
+					GetVectorAngles(normal, normal);
+					GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR);
 					for(int i = 0; i <= 2; i++)
-						end[i] += angle[i]
-					normal[0] -= 270.0
-					SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal)
+					{
+						end[i] += angle[i];
+					}
+					normal[0] -= 270.0;
+					SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal);
+					//return Plugin_Continue;
 				}
 				if(g_color[client][1])
-					SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255)
-				TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR)
+				{
+					SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+					//return Plugin_Continue;
+				}
+				TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR);
 				//https://forums.alliedmods.net/showthread.php?p=1080444
 				if(g_color[client][1])
 				{
-					int color[4]
+					int color[4];
 					for(int i = 0; i <= 2; i++)
-						color[i] = g_colorBuffer[client][i][1]
-					color[3] = 255
-					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0)
+					{
+						color[i] = g_colorBuffer[client][i][1];
+						//return Plugin_Continue
+					}
+					color[3] = 255;
+					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
+					//return Plugin_Continue;
 				}
 				else
-					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0)
+				{
+					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0);
+					//return Plugin_Continue;
+				}
 				if(LibraryExists("fakeexpert-entityfilter"))
 				{
-					SDKHook(g_pingModel[client], SDKHook_SetTransmit, SDKSetTransmitPing)
-					g_pingModelOwner[g_pingModel[client]] = client
-					int clients[MAXPLAYERS + 1]
-					int count
+					SDKHook(g_pingModel[client], SDKHook_SetTransmit, SDKSetTransmitPing);
+					g_pingModelOwner[g_pingModel[client]] = client;
+					int clients[MAXPLAYERS + 1];
+					int count;
 					for(int i = 1; i <= MaxClients; i++)
 					{
 						if(IsClientInGame(i))
 						{
-							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 							if(g_partner[client] == g_partner[g_partner[i]] || i == client || observerTarget == client)
-								clients[count++] = i
+							{
+								clients[count++] = i;
+								//return Plugin_Continue;
+							}
+							//return Plugin_Continue;
 						}
+						//return Plugin_Continue;
 					}
-					TE_Send(clients, count)
-					EmitSound(clients, count, "fakeexpert/pingtool/click.wav", client)
+					TE_Send(clients, count);
+					EmitSound(clients, count, "fakeexpert/pingtool/click.wav", client);
+					//return Plugin_Continue;
 				}
 				else
 				{
-					TE_SendToAll()
-					EmitSoundToAll("fakeexpert/pingtool/click.wav", client)
+					TE_SendToAll();
+					EmitSoundToAll("fakeexpert/pingtool/click.wav", client);
+					//return Plugin_Continue;
 				}
-				g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE)
+				g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
+				//return Plugin_Continue;
 			}
 		}
 		//if(!g_turbophysics.BoolValue)
@@ -3223,71 +3269,111 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(IsPlayerAlive(client))
 			{
 				if(g_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
-					SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+				{
+					SetEntProp(client, Prop_Data, "m_CollisionGroup", 5);
+					//return Plugin_Continue;
+				}
 				else if(!g_block[client] && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
-					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+				{
+					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
 			}
 		}
 		if(g_zoneDraw[client])
 		{
 			if(GetEngineTime() - g_engineTime >= 0.1)
 			{
-				g_engineTime = GetEngineTime()
+				g_engineTime = GetEngineTime();
 				for(int i = 1; i <= MaxClients; i++)
+				{
 					if(IsClientInGame(i))
-						DrawZone(i, 0.1)
+					{
+						DrawZone(i, 0.1);
+						//return Plugin_Continue;
+					}
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
 			}
+			//return Plugin_Continue;
 		}
 		if(IsClientObserver(client) && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //Make able to swtich wtih E to the partner via spectate.
 		{
-			int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
-			int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
+			int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
+			int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
 			if(0 < observerTarget <= MaxClients && g_partner[observerTarget] && IsPlayerAlive(g_partner[observerTarget]) && observerMode < 7)
-				SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget])
+			{
+				SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget]);
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
 		}
 		if(GetEngineTime() - g_hudTime[client] >= 0.1)
 		{
-			g_hudTime[client] = GetEngineTime()
-			Hud(client)
+			g_hudTime[client] = GetEngineTime();
+			Hud(client);
+			//return Plugin_Continue;
 		}
 		if(GetEntityFlags(client) & FL_ONGROUND)
 		{
 			if(g_mlsCount[client])
 			{
-				int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-				char class[32]
+				int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity");
+				char class[32];
 				if(IsValidEntity(groundEntity))
-					GetEntityClassname(groundEntity, class, sizeof(class))
+				{
+					GetEntityClassname(groundEntity, class, sizeof(class));
+					//return Plugin_Continue;
+				}
 				if(!(StrEqual(class, "flashbang_projectile")))
 				{
-					GetClientAbsOrigin(client, g_mlsDistance[client][1])
-					MLStats(client, true)
-					g_mlsCount[client] = 0
+					GetClientAbsOrigin(client, g_mlsDistance[client][1]);
+					MLStats(client, true);
+					g_mlsCount[client] = 0;
+					return Plugin_Continue;
 				}
+				//return Plugin_Continue;
 			}
 		}
-		int other = Stuck(client)
+		int other = Stuck(client);
 		if(0 < other <= MaxClients && IsPlayerAlive(client) && g_block[other])
 		{
 			if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 			{
 				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
 				if(g_color[other][0])
-					SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125)
+				{
+					SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
+					//return Plugin_Continue;
+				}
 				else
-					SetEntityRenderColor(other, 255, 255, 255, 125)
+				{
+					SetEntityRenderColor(other, 255, 255, 255, 125);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
 			}
 		}
 		else if(IsPlayerAlive(client) && other == -1 && g_block[client])
 		{
 			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			{
-				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5);
 				if(g_color[client][0])
-					SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255)
+				{
+					SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+					//return Plugin_Continue;
+				}
 				else
-					SetEntityRenderColor(client, 255, 255, 255, 255)
+				{
+					SetEntityRenderColor(client, 255, 255, 255, 255);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
 			}
+			//return Plugin_Continue;
 		}
 		if(!g_devmap)
 		{
@@ -3297,118 +3383,159 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
 					{
-						g_partnerInHold[client] = GetEngineTime()
-						g_partnerInHoldLock[client] = false
+						g_partnerInHold[client] = GetEngineTime();
+						g_partnerInHoldLock[client] = false;
+						//return Plugin_Continue;
 					}
+					//return Plugin_Continue;
 				}
 				else
+				{
 					if(!g_partnerInHoldLock[client])
-						g_partnerInHoldLock[client] = true
+					{
+						g_partnerInHoldLock[client] = true;
+						//return Plugin_Continue;
+					}
+					//return Plugin_Continue;
+				}
 				if(!g_partnerInHoldLock[client] && GetEngineTime() - g_partnerInHold[client] > 0.7)
 				{
-					g_partnerInHoldLock[client] = true
-					Partner(client)
+					g_partnerInHoldLock[client] = true;
+					Partner(client);
+					//return Plugin_Continue;
 				}
+				//return Plugin_Continue;
 			}
 			if(buttons & IN_RELOAD)
 			{
 				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
 				{
-					g_restartInHold[client] = GetEngineTime()
-					g_restartInHoldLock[client] = false
+					g_restartInHold[client] = GetEngineTime();
+					g_restartInHoldLock[client] = false;
+					//return Plugin_Continue;
 				}
+				//return Plugin_Continue;
 			}
 			else
+			{
 				if(!g_restartInHoldLock[client])
-					g_restartInHoldLock[client] = true
+				{
+					g_restartInHoldLock[client] = true;
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
 			if(!g_restartInHoldLock[client] && GetEngineTime() - g_restartInHold[client] > 0.7)
 			{
-				g_restartInHoldLock[client] = true
+				g_restartInHoldLock[client] = true;
 				if(g_partner[client])
 				{
-					Restart(client)
-					Restart(g_partner[client])
+					Restart(client);
+					Restart(g_partner[client]);
+					//return Plugin_Continue;
 				}
 				else
-					Partner(client)
+				{
+					Partner(client);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
 			}
+			//return Plugin_Continue;
 		}
+		return Plugin_Continue;
 	}
-	return Plugin_Continue
+	else
+	{
+		return Plugin_Continue;
+	}
 }
 
 Action ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsClientInGame(other) && !g_boost[other] && !(g_entityFlags[other] & FL_ONGROUND))
 	{
-		float originOther[3]
-		GetClientAbsOrigin(other, originOther)
-		float originEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity)
-		float maxsEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
-		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
+		float originOther[3];
+		GetClientAbsOrigin(other, originOther);
+		float originEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
+		float maxsEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
+		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //Tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", g_entityVel[other])
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", g_clientVel[other])
-			g_boostTime[other] = GetEngineTime()
-			g_groundBoost[other] = g_bouncedOff[entity]
-			SetEntProp(entity, Prop_Send, "m_nSolidType", 0) //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
-			g_flash[other] = EntIndexToEntRef(entity) //Thats should never happen.
-			g_boost[other] = 1
-			float vel[3]
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel)
-			g_mlsVel[other][0][0] = vel[0]
-			g_mlsVel[other][0][1] = vel[1]
-			g_mlsCount[other]++
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", g_entityVel[other]);
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", g_clientVel[other]);
+			g_boostTime[other] = GetEngineTime();
+			g_groundBoost[other] = g_bouncedOff[entity];
+			SetEntProp(entity, Prop_Send, "m_nSolidType", 0); //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
+			g_flash[other] = EntIndexToEntRef(entity); //Thats should never happen.
+			g_boost[other] = 1;
+			float vel[3];
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel);
+			g_mlsVel[other][0][0] = vel[0];
+			g_mlsVel[other][0][1] = vel[1];
+			g_mlsCount[other]++;
 			if(g_mlsCount[other] == 1)
-				GetClientAbsOrigin(other, g_mlsDistance[other][0])
-			g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+			{
+				GetClientAbsOrigin(other, g_mlsDistance[other][0]);
+				//return Plugin_Continue;
+			}
+			g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+			//return Plugin_Continue;
 		}
+		return Plugin_Continue;
 	}
-	return Plugin_Continue
+	//else
+	//{
+	return Plugin_Continue;
+	//}
 }
 
 Action cmd_devmap(int client, int args)
 {
 	if(GetEngineTime() - g_devmapTime > 35.0 && GetEngineTime() - g_afkTime > 30.0)
 	{
-		g_voters = 0
+		g_voters = 0;
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsFakeClient(i))
 			{
-				g_voters++
+				g_voters++;
 				if(g_devmap)
 				{
-					Menu menu = new Menu(devmap_handler)
-					menu.SetTitle("Turn off dev map?")
-					menu.AddItem("yes", "Yes")
-					menu.AddItem("no", "No")
-					menu.Display(i, 20)
+					Menu menu = new Menu(devmap_handler);
+					menu.SetTitle("Turn off dev map?");
+					menu.AddItem("yes", "Yes");
+					menu.AddItem("no", "No");
+					menu.Display(i, 20);
 				}
 				else
 				{
-					Menu menu = new Menu(devmap_handler)
-					menu.SetTitle("Turn on dev map?")
-					menu.AddItem("yes", "Yes")
-					menu.AddItem("no", "No")
-					menu.Display(i, 20)
+					Menu menu = new Menu(devmap_handler);
+					menu.SetTitle("Turn on dev map?");
+					menu.AddItem("yes", "Yes");
+					menu.AddItem("no", "No");
+					menu.Display(i, 20);
+					//return Plugin_Continue;
 				}
 			}
 		}
-		g_devmapTime = GetEngineTime()
-		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE)
-		PrintToChatAll("Devmap vote started by %N", client)
+		g_devmapTime = GetEngineTime();
+		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE);
+		PrintToChatAll("Devmap vote started by %N", client);
+		return Plugin_Handled;
 	}
 	else if(GetEngineTime() - g_devmapTime <= 35.0 || GetEngineTime() - g_afkTime <= 30.0)
-		PrintToChat(client, "Devmap vote is not allowed yet.")
-	return Plugin_Handled
+	{
+		PrintToChat(client, "Devmap vote is not allowed yet.");
+		return Plugin_Handled;
+	}
+	return Plugin_Handled;
 }
 
-int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
+public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3418,110 +3545,136 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 				{
-					g_devmapCount[1]++
-					g_voters--
-					Devmap()
+					g_devmapCount[1]++;
+					g_voters--;
+					Devmap();
+					return param2;
 				}
 				case 1:
 				{
-					g_devmapCount[0]++
-					g_voters--
-					Devmap()
+					g_devmapCount[0]++;
+					g_voters--;
+					Devmap();
+					return param2;
 				}
+				//return param2;
 			}
+			return param2;
 		}
+		//return param2;
 	}
-	return 0
+	return param2;
 }
 
 Action timer_devmap(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	Devmap(true)
-	return Plugin_Continue
+	Devmap(true);
+	return Plugin_Continue;
 }
 
-void Devmap(bool force = false)
+static void Devmap(bool force = false)
 {
 	if(force || !g_voters)
 	{
 		if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] >= g_devmapCount[0])
 		{
 			if(g_devmap)
-				PrintToChatAll("Devmap will be disabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1])
+			{
+				PrintToChatAll("Devmap will be disabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+			}
 			else
-				PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1])
-			CreateTimer(5.0, timer_changelevel, g_devmap ? false : true)
+			{
+				PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+			}
+			CreateTimer(5.0, timer_changelevel, g_devmap ? false : true);
 		}
 		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] <= g_devmapCount[0])
 		{
 			if(g_devmap)
-				PrintToChatAll("Devmap will be continue. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]) //google translate russian to english.
+			{
+				PrintToChatAll("Devmap will be continue. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]); //google translate russian to english.
+			}
 			else
-				PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1])
+			{
+				PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+			}
 		}
 		for(int i = 0; i <= 1; i++)
-			g_devmapCount[i] = 0
+		{
+			g_devmapCount[i] = 0;
+		}
 	}
 }
 
 Action timer_changelevel(Handle timer, bool value)
 {
-	g_devmap = value
-	ForceChangeLevel(g_map, "Reason: Devmap")
-	return Plugin_Continue
+	g_devmap = value;
+	ForceChangeLevel(g_map, "Reason: Devmap");
+	return Plugin_Continue;
 }
 
 Action cmd_top(int client, int args)
 {
-	CreateTimer(0.1, timer_motd, client, TIMER_FLAG_NO_MAPCHANGE) //OnMapStart() is not work from first try.
-	return Plugin_Handled
+	CreateTimer(0.1, timer_motd, client, TIMER_FLAG_NO_MAPCHANGE); //OnMapStart() is not work from first try.
+	return Plugin_Handled;
 }
 
 Action timer_motd(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		ConVar hostname = FindConVar("hostname")
-		char hostnameBuffer[256]
-		hostname.GetString(hostnameBuffer, sizeof(hostnameBuffer))
-		char url[192]
-		g_urlTop.GetString(url, sizeof(url))
-		Format(url, sizeof(url), "%s%s", url, g_map)
-		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL) //https://forums.alliedmods.net/showthread.php?t=232476
+		ConVar hostname = FindConVar("hostname");
+		char hostnameBuffer[256];
+		hostname.GetString(hostnameBuffer, sizeof(hostnameBuffer));
+		char url[192];
+		g_urlTop.GetString(url, sizeof(url));
+		Format(url, sizeof(url), "%s%s", url, g_map);
+		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL); //https://forums.alliedmods.net/showthread.php?t=232476
+		return Plugin_Continue;
 	}
-	return Plugin_Continue
+	else
+	{
+		PrintToServer("Player %N (ID: %i) is not in-game.", client, client)
+		return Plugin_Continue;
+	}
 }
 
-Action cmd_afk(int client, int args)
+public Action cmd_afk(int client, int args)
 {
 	if(GetEngineTime() - g_afkTime > 30.0 && GetEngineTime() - g_devmapTime > 35.0)
 	{
-		g_voters = 0
-		g_afkClient = client
+		g_voters = 0;
+		g_afkClient = client;
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && !IsClientSourceTV(i) && !IsFakeClient(i) && !IsPlayerAlive(i) && client != i)
 			{
-				g_afk[i] = false
-				g_voters++
-				Menu menu = new Menu(afk_handler)
-				menu.SetTitle("Are you here?")
-				menu.AddItem("yes", "Yes")
-				menu.AddItem("no", "No")
-				menu.Display(i, 20)
+				g_afk[i] = false;
+				g_voters++;
+				Menu menu = new Menu(afk_handler);
+				menu.SetTitle("Are you here?");
+				menu.AddItem("yes", "Yes");
+				menu.AddItem("no", "No");
+				menu.Display(i, 20);
+				//return Plugin_Continue;
 			}
+			//return Plugin_Continue;
 		}
-		g_afkTime = GetEngineTime()
-		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE)
-		PrintToChatAll("Afk check - vote started by %N", client)
+		g_afkTime = GetEngineTime();
+		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE);
+		PrintToChatAll("Afk check - vote started by %N", client);
+		return Plugin_Handled;
 	}
 	else if(GetEngineTime() - g_afkTime <= 30.0 || GetEngineTime() - g_devmapTime <= 35.0)
-		PrintToChat(client, "Afk vote is not allowed yet.")
-	return Plugin_Handled
+	{
+		PrintToChat(client, "Afk vote is not allowed yet.");
+		return Plugin_Handled;
+	}
+	return Plugin_Handled;
 }
 
-int afk_handler(Menu menu, MenuAction action, int param1, int param2)
+public int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3531,225 +3684,336 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 				{
-					g_afk[param1] = true
-					g_voters--
-					AFK(g_afkClient)
+					g_afk[param1] = true;
+					g_voters--;
+					AFK(g_afkClient);
+					return param2;
 				}
 				case 1:
 				{
-					g_voters--
-					AFK(g_afkClient)
+					g_voters--;
+					AFK(g_afkClient);
+					return param2;
 				}
+				//return param2;
 			}
+			return param2;
 		}
+		//return param2;
 	}
-	return 0
+	return param2;
 }
 
 Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
-	AFK(client, true)
-	return Plugin_Continue
+	AFK(client, true);
+	return Plugin_Continue;
 }
 
-void AFK(int client, bool force = false)
+static void AFK(int client, bool force = false)
 {
 	if(force || !g_voters)
+	{
 		for(int i = 1; i <= MaxClients; i++)
+		{
 			if(IsClientInGame(i) && !IsPlayerAlive(i) && !IsClientSourceTV(i) && !g_afk[i] && client != i)
-				KickClient(i, "Away from keyboard")
+			{
+				KickClient(i, "Away from keyboard");
+			}
+		}
+		//return Plugin_Continue;
+	}
 }
 
 Action cmd_noclip(int client, int args)
 {
-	Noclip(client)
-	return Plugin_Handled
+	Noclip(client);
+	return Plugin_Handled;
 }
 
-void Noclip(int client)
+static void Noclip(int client)
 {
 	if(client)
 	{
 		if(g_devmap)
 		{
-			SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP)
-			PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.")
+			SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
+			PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.");
 		}
 		else
-			PrintToChat(client, "Turn on devmap.")
+		{
+			PrintToChat(client, "Turn on devmap.");
+		}
 	}
 }
 
 Action cmd_spec(int client, int args)
 {
-	ChangeClientTeam(client, CS_TEAM_SPECTATOR)
-	return Plugin_Handled
+	ChangeClientTeam(client, CS_TEAM_SPECTATOR);
+	return Plugin_Handled;
 }
 
 Action cmd_hud(int client, int args)
 {
-	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
-	menu.SetTitle("Hud")
-	menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]")
-	menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]")
-	menu.Display(client, 20)
-	return Plugin_Handled
+	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+	menu.SetTitle("Hud");
+	menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
+	menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
+	menu.Display(client, 20);
+	return Plugin_Handled;
 }
 
-int hud_handler(Menu menu, MenuAction action, int param1, int param2)
+public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
 		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
-			g_menuOpened[param1] = true
+		{
+			g_menuOpened[param1] = true;
+			return param1;
+		}
 		case MenuAction_Select:
 		{
-			char value[16]
+			char value[16];
 			switch(param2)
 			{
 				case 0:
 				{
-					g_hudVel[param1] = !g_hudVel[param1]
-					IntToString(g_hudVel[param1], value, sizeof(value))
-					SetClientCookie(param1, g_cookie[0], value)
+					g_hudVel[param1] = !g_hudVel[param1];
+					IntToString(g_hudVel[param1], value, sizeof(value));
+					SetClientCookie(param1, g_cookie[0], value);
+					return param1;
 				}
 				case 1:
 				{
-					g_mlstats[param1] = !g_mlstats[param1]
-					IntToString(g_mlstats[param1], value, sizeof(value))
-					SetClientCookie(param1, g_cookie[1], value)
+					g_mlstats[param1] = !g_mlstats[param1];
+					IntToString(g_mlstats[param1], value, sizeof(value));
+					SetClientCookie(param1, g_cookie[1], value);
+					return param1;
 				}
 			}
-			cmd_hud(param1, 0)
+			cmd_hud(param1, 0);
+			return param2;
 		}
 		case MenuAction_Cancel:
-			g_menuOpened[param1] = false //Idea from expert zone.
+		{
+			g_menuOpened[param1] = false; //Idea from expert zone.
+			return param1;
+		}
 		case MenuAction_Display:
-			g_menuOpened[param1] = true
+		{
+			g_menuOpened[param1] = true;
+			return param1;
+		}
 	}
-	return 0
+	return param2;
 }
 
-void Hud(int client)
+static void Hud(int client)
 {
-	float vel[3]
-	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel)
-	float velXY = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0))
+	float vel[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
+	float velXY = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
 	if(g_hudVel[client])
-		PrintHintText(client, "%.0f", velXY)
+	{
+		PrintHintText(client, "%.0f", velXY);
+	}
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) && !IsPlayerAlive(i))
 		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 			if(observerMode < 7 && observerTarget == client && g_hudVel[i])
-				PrintHintText(i, "%.0f", velXY)
+			{
+				PrintHintText(i, "%.0f", velXY);
+			}
 		}
 	}
 }
 
-Action cmd_mlstats(int client, int args)
+public Action cmd_mlstats(int client, int args)
 {
-	g_mlstats[client] = !g_mlstats[client]
-	char value[16]
-	IntToString(g_mlstats[client], value, sizeof(value))
-	SetClientCookie(client, g_cookie[1], value)
-	PrintToChat(client, g_mlstats[client] ? "ML stats is on." : "ML stats is off.")
-	return Plugin_Handled
+	g_mlstats[client] = !g_mlstats[client];
+	char value[16];
+	IntToString(g_mlstats[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[1], value);
+	PrintToChat(client, g_mlstats[client] ? "ML stats is on." : "ML stats is off.");
+	return Plugin_Handled;
 }
 
-Action cmd_button(int client, int args)
+public Action cmd_button(int client, int args)
 {
-	g_button[client] = !g_button[client]
-	char value[16]
-	IntToString(g_button[client], value, sizeof(value))
-	SetClientCookie(client, g_cookie[2], value)
-	PrintToChat(client, g_button[client] ? "Button announcer is on." : "Button announcer is off.")
-	return Plugin_Handled
+	g_button[client] = !g_button[client];
+	char value[16];
+	IntToString(g_button[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[2], value);
+	PrintToChat(client, g_button[client] ? "Button announcer is on." : "Button announcer is off.");
+	return Plugin_Handled;
 }
 
-Action cmd_pbutton(int client, int args)
+public Action cmd_pbutton(int client, int args)
 {
-	g_pbutton[client] = !g_pbutton[client]
-	char value[16]
-	IntToString(g_pbutton[client], value, sizeof(value))
-	SetClientCookie(client, g_cookie[3], value)
-	PrintToChat(client, g_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.")
-	return Plugin_Handled
+	g_pbutton[client] = !g_pbutton[client];
+	char value[16];
+	IntToString(g_pbutton[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[3], value);
+	PrintToChat(client, g_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.");
+	return Plugin_Handled;
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(!IsChatTrigger())
 	{
-		if(StrEqual(sArgs, "t") || StrEqual(sArgs, "trikz"))
+		if(StrEqual(sArgs, "t", false) || StrEqual(sArgs, "trikz", false))
 		{
 			if(!g_menuOpened[client])
-				Trikz(client)
+			{
+				Trikz(client);
+				return Plugin_Continue;
+			}
+			return Plugin_Continue;
 		}
-		else if(StrEqual(sArgs, "bl") || StrEqual(sArgs, "block"))
-			Block(client)
-		else if(StrEqual(sArgs, "p") || StrEqual(sArgs, "partner"))
-			Partner(client)
-		else if(StrEqual(sArgs, "c") || StrEqual(sArgs, "color")) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
-			Color(client, true)
-		else if(StrEqual(sArgs, "c 0") || StrEqual(sArgs, "c white") || StrEqual(sArgs, "color 0") || StrEqual(sArgs, "color white"))
-			Color(client, true, 0)
-		else if(StrEqual(sArgs, "c 1") || StrEqual(sArgs, "c red") || StrEqual(sArgs, "color 1") || StrEqual(sArgs, "color red"))
-			Color(client, true, 1)
-		else if(StrEqual(sArgs, "c 2") || StrEqual(sArgs, "c orange") || StrEqual(sArgs, "color 2") || StrEqual(sArgs, "color orange"))
-			Color(client, true, 2)
-		else if(StrEqual(sArgs, "c 3") || StrEqual(sArgs, "c yellow") || StrEqual(sArgs, "color 3") || StrEqual(sArgs, "color yellow"))
-			Color(client, true, 3)
-		else if(StrEqual(sArgs, "c 4") || StrEqual(sArgs, "c lime") || StrEqual(sArgs, "color 4") || StrEqual(sArgs, "color lime"))
-			Color(client, true, 4)
-		else if(StrEqual(sArgs, "c 5") || StrEqual(sArgs, "c aqua") || StrEqual(sArgs, "color 5") || StrEqual(sArgs, "color aqua"))
-			Color(client, true, 5)
-		else if(StrEqual(sArgs, "c 6") || StrEqual(sArgs, "c deep sky blue") || StrEqual(sArgs, "color 6") || StrEqual(sArgs, "color deep sky blue"))
-			Color(client, true, 6)
-		else if(StrEqual(sArgs, "c 7") || StrEqual(sArgs, "c blue") || StrEqual(sArgs, "color 7") || StrEqual(sArgs, "color blue"))
-			Color(client, true, 7)
-		else if(StrEqual(sArgs, "c 8") || StrEqual(sArgs, "c magenta") || StrEqual(sArgs, "color 8") || StrEqual(sArgs, "color magenta"))
-			Color(client, true, 8)
-		else if(StrEqual(sArgs, "r") || StrEqual(sArgs, "restart"))
+		else if(StrEqual(sArgs, "bl", false) || StrEqual(sArgs, "block", false))
+		{
+			Block(client);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "p", false) || StrEqual(sArgs, "partner", false))
+		{
+			Partner(client);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
+		{
+			Color(client, true);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 0", false) || StrEqual(sArgs, "c white", false) || StrEqual(sArgs, "color 0", false) || StrEqual(sArgs, "color white", false))
+		{
+			Color(client, true, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 1", false) || StrEqual(sArgs, "c red", false) || StrEqual(sArgs, "color 1", false) || StrEqual(sArgs, "color red", false))
+		{
+			Color(client, true, 1);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 2", false) || StrEqual(sArgs, "c orange", false) || StrEqual(sArgs, "color 2", false) || StrEqual(sArgs, "color orange", false))
+		{
+			Color(client, true, 2);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 3", false) || StrEqual(sArgs, "c yellow", false) || StrEqual(sArgs, "color 3", false) || StrEqual(sArgs, "color yellow", false))
+		{
+			Color(client, true, 3);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 4", false) || StrEqual(sArgs, "c lime", false) || StrEqual(sArgs, "color 4", false) || StrEqual(sArgs, "color lime", false))
+		{
+			Color(client, true, 4);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 5", false) || StrEqual(sArgs, "c aqua", false) || StrEqual(sArgs, "color 5", false) || StrEqual(sArgs, "color aqua", false))
+		{
+			Color(client, true, 5);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 6", false) || StrEqual(sArgs, "c deep sky blue", false) || StrEqual(sArgs, "color 6", false) || StrEqual(sArgs, "color deep sky blue", false))
+		{
+			Color(client, true, 6);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 7", false) || StrEqual(sArgs, "c blue", false) || StrEqual(sArgs, "color 7", false) || StrEqual(sArgs, "color blue", false))
+		{
+			Color(client, true, 7);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 8", false) || StrEqual(sArgs, "c magenta", false) || StrEqual(sArgs, "color 8", false) || StrEqual(sArgs, "color magenta", false))
+		{
+			Color(client, true, 8);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
 		{
 			Restart(client)
 			if(g_partner[client])
-				Restart(g_partner[client])
+			{
+				Restart(g_partner[client]);
+				return Plugin_Continue;
+			}
+			return Plugin_Continue;
 		}
 		//else if(StrEqual(sArgs, "time"))
 		//	cmd_time(client, 0)
-		else if(StrEqual(sArgs, "devmap"))
-			cmd_devmap(client, 0)
-		else if(StrEqual(sArgs, "top"))
-			cmd_top(client, 0)
-		else if(StrEqual(sArgs, "cp"))
-			Checkpoint(client)
-		else if(StrEqual(sArgs, "afk"))
-			cmd_afk(client, 0)
-		else if(StrEqual(sArgs, "nc") || StrEqual(sArgs, "noclip"))
+		else if(StrEqual(sArgs, "devmap", false))
+		{
+			cmd_devmap(client, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "top", false))
+		{
+			cmd_top(client, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "cp", false))
+		{
+			Checkpoint(client);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "afk", false))
+		{
+			cmd_afk(client, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "nc", false) || StrEqual(sArgs, "noclip", false))
+		{
 			Noclip(client)
-		else if(StrEqual(sArgs, "sp") || StrEqual(sArgs, "spec"))
-			cmd_spec(client, 0)
-		else if(StrEqual(sArgs, "hud"))
-			cmd_hud(client, 0)
-		else if(StrEqual(sArgs, "mls"))
-			cmd_mlstats(client, 0)
-		else if(StrEqual(sArgs, "button"))
-			cmd_button(client, 0)
-		else if(StrEqual(sArgs, "pbutton"))
-			cmd_pbutton(client, 0)
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "sp", false) || StrEqual(sArgs, "spec", false))
+		{
+			cmd_spec(client, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "hud", false))
+		{
+			cmd_hud(client, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "mls", false))
+		{
+			cmd_mlstats(client, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "button", false))
+		{
+			cmd_button(client, 0);
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "pbutton", false))
+		{
+			cmd_pbutton(client, 0);
+			return Plugin_Continue;
+		}
+		return Plugin_Continue;
 	}
-	return Plugin_Continue
+	return Plugin_Continue;
 }
 
-Action ProjectileBoostFixEndTouch(int entity, int other)
+public Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(!other)
-		g_bouncedOff[entity] = true //Get from Tengu github "tengulawl" scriptig "boost-fix.sp".
-	return Plugin_Continue
+	{
+		g_bouncedOff[entity] = true; //Get from Tengu github "tengulawl" scriptig "boost-fix.sp".
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Continue;
+	}
 }
 
 /*Action cmd_time(int client, int args)
@@ -3757,259 +4021,323 @@ Action ProjectileBoostFixEndTouch(int entity, int other)
 	if(IsPlayerAlive(client))
 	{
 		//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
-		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-		int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60
-		int second = RoundToFloor(g_timerTime[client]) % 60
-		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second)
+		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+		int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
+		int second = RoundToFloor(g_timerTime[client]) % 60;
+		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
 		if(g_partner[client])
-			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second)
+		{
+			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second);
+			return Plugin_Handlded;
+		}
+		return Plugin_Handled;
 	}
 	else
 	{
-		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget")
-		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode")
+		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
+		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
 		if(observerMode < 7)
 		{
 			//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
-			int hour = (RoundToFloor(g_timerTime[observerTarget]) / 3600) % 24 //https://forums.alliedmods.net/archive/index.php/t-187536.html
-			int minute = (RoundToFloor(g_timerTime[observerTarget]) / 60) % 60
-			int second = RoundToFloor(g_timerTime[observerTarget]) % 60
+			int hour = (RoundToFloor(g_timerTime[observerTarget]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			int minute = (RoundToFloor(g_timerTime[observerTarget]) / 60) % 60;
+			int second = RoundToFloor(g_timerTime[observerTarget]) % 60;
 			PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second)
+			return Plugin_Handled;
 		}
+		return Plugin_Handled;
 	}
-	return Plugin_Handled
+	//return Plugin_Handled;
 }*/
 
 public void OnEntityCreated(int entity, const char[] clasname)
 {
 	if(StrEqual(clasname, "flashbang_projectile"))
 	{
-		g_bouncedOff[entity] = false //"Tengulawl" "boost-fix.sp".
-		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix)
-		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch)
-		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile)
-		SDKHook(entity, SDKHook_StartTouch, SDKStopSpam)
+		g_bouncedOff[entity] = false; //"Tengulawl" "boost-fix.sp".
+		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix);
+		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch);
+		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile);
+		SDKHook(entity, SDKHook_StartTouch, SDKStopSpam);
 	}
 }
 
-void SDKProjectile(int entity)
+public void SDKProjectile(int entity)
 {
-	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if(IsValidEntity(entity) && IsValidEntity(client))
 	{
-		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2) //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
-		RequestFrame(frame_blockExplosion, entity)
-		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE)
+		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+		RequestFrame(frame_blockExplosion, entity);
+		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE);
 		if(g_color[client][1])
 		{
-			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown)
-			SetEntProp(entity, Prop_Data, "m_nSkin", 1)
-			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255)
+			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
+			SetEntProp(entity, Prop_Data, "m_nSkin", 1);
+			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+			//return Plugin_Continue;
 		}
+		//return Plugin_Continue;
 	}
 }
 
-Action SDKStopSpam(int entity, int other)
+public Action SDKStopSpam(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsClientInGame(other))
 	{
-		float originOther[3]
-		GetClientAbsOrigin(other, originOther)
-		float originEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity)
-		float maxsEntity[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity)
-		float delta = originOther[2] - originEntity[2] - maxsEntity[2]
+		float originOther[3];
+		GetClientAbsOrigin(other, originOther);
+		float originEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
+		float maxsEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
+		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
 		if(delta == -66.015251)
 		{
-			int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-			if(owner < 0)
-				owner = 0
-			g_projectileSoundLoud[owner] = entity
+			int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+			//if(owner < 0)
+			//{
+				//owner = 0;
+				//return Plugin_Continue;
+			//}
+			g_projectileSoundLoud[owner > 0 ? owner : 0] = entity;
+			return Plugin_Continue;
 		}
+		return Plugin_Continue;
 	}
-	return Plugin_Continue
+	return Plugin_Continue;
 }
 
-void frame_blockExplosion(int entity)
+static void frame_blockExplosion(int entity)
 {
 	if(IsValidEntity(entity))
-		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0) //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+	{
+		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0); //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+	}
 }
 
 Action timer_deleteProjectile(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		FlashbangEffect(entity)
-		RemoveEntity(entity)
+		FlashbangEffect(entity);
+		RemoveEntity(entity);
+		return Plugin_Continue;
 	}
-	return Plugin_Continue
+	return Plugin_Continue;
 }
 
-void FlashbangEffect(int entity)
+static void FlashbangEffect(int entity)
 {
-	bool filter = LibraryExists("fakeexpert-entityfilter")
-	float origin[3]
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin)
-	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100) //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
-	int clients[MAXPLAYERS + 1]
-	int count
+	bool filter = LibraryExists("fakeexpert-entityfilter");
+	float origin[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
+	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
+	int clients[MAXPLAYERS + 1];
+	int count;
 	if(filter)
 	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 		if(owner == -1)
-			owner = 0
+		{
+			owner = 0;
+		}
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i))
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || observerTarget == owner)
-					clients[count++] = i
+				{
+					clients[count++] = i;
+				}
 			}
 		}
-		TE_Send(clients, count)
+		TE_Send(clients, count);
 	}
 	else
-		TE_SendToAll()
-	float dir[3] //https://forums.alliedmods.net/showthread.php?t=274452
-	dir[0] = GetRandomFloat(-1.0, 1.0)
-	dir[1] = GetRandomFloat(-1.0, 1.0)
-	dir[2] = GetRandomFloat(-1.0, 1.0)
-	TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2))
+	{
+		TE_SendToAll();
+	}
+	float dir[3]; //https://forums.alliedmods.net/showthread.php?t=274452
+	dir[0] = GetRandomFloat(-1.0, 1.0);
+	dir[1] = GetRandomFloat(-1.0, 1.0);
+	dir[2] = GetRandomFloat(-1.0, 1.0);
+	TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2));
 	if(filter)
-		TE_Send(clients, count)
+	{
+		TE_Send(clients, count);
+	}
 	else
-		TE_SendToAll() //Idea from "Expert-Zone". So, we just made non empty event.
-	char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"}
+	{
+		TE_SendToAll(); //Idea from "Expert-Zone". So, we just made non empty event.
+	}
+	char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"};
 	if(filter)
-		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL)
+	{
+		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL);
+	}
 	else
-		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL) //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+	{
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+	}
 }
 
 Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?p=1687371
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR)
-	return Plugin_Handled //Full god-mode.
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR); //https://forums.alliedmods.net/showthread.php?p=1687371
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR);
+	return Plugin_Handled; //Full god-mode.
 }
 
-void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
+public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
 	if(!GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
 	{
-		GivePlayerItem(client, "weapon_flashbang")
-		GivePlayerItem(client, "weapon_flashbang")
+		GivePlayerItem(client, "weapon_flashbang");
+		GivePlayerItem(client, "weapon_flashbang");
 	}
 }
 
 Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
-		RemoveEntity(weapon)
-	return Plugin_Continue
+	{
+		RemoveEntity(weapon);
+		return Plugin_Continue;
+	}
+	else
+	{
+		PrintToServer("Weapon %i is not valid.", weapon);
+		return Plugin_Continue;
+	}
 }
 
-void SDKThink(int client)
+public void SDKThink(int client)
 {
 	if(!IsFakeClient(client))
 	{
 		if(GetClientButtons(client) & IN_ATTACK)
-			g_readyToFix[client] = true
+		{
+			g_readyToFix[client] = true;
+		}
 		if(g_readyToFix[client])
 		{
-			char classname[32]
-			GetClientWeapon(client, classname, sizeof(classname))
+			char classname[32];
+			GetClientWeapon(client, classname, sizeof(classname));
 			if(StrEqual(classname, "weapon_flashbang"))
 			{
 				if(GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
 				{
-					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false) //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
-					g_readyToFix[client] = false
-					g_silentKnife = true
-					FakeClientCommandEx(client, "use weapon_knife")
-					RequestFrame(frame_fix, client)
+					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+					g_readyToFix[client] = false;
+					g_silentKnife = true;
+					FakeClientCommandEx(client, "use weapon_knife");
+					RequestFrame(frame_fix, client);
 				}
 			}
 		}
 	}
 }
-void frame_fix(int client)
-{
-	if(IsClientInGame(client))
-		RequestFrame(frame_fix2, client)
-}
 
-void frame_fix2(int client)
-{
-	if(IsClientInGame(client))
-		RequestFrame(frame_fix3, client)
-}
-
-void frame_fix3(int client)
-{
-	if(IsClientInGame(client))
-		RequestFrame(frame_fix4, client)
-}
-
-void frame_fix4(int client)
-{
-	if(IsClientInGame(client))
-		RequestFrame(frame_fix5, client)
-}
-
-void frame_fix5(int client)
+public void frame_fix(int client)
 {
 	if(IsClientInGame(client))
 	{
-		FakeClientCommandEx(client, "use weapon_flashbang")
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true)
+		RequestFrame(frame_fix2, client);
 	}
 }
 
-bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
+public frame_fix2(int client)
+{
+	if(IsClientInGame(client))
+	{
+		RequestFrame(frame_fix3, client);
+	}
+}
+
+public frame_fix3(int client)
+{
+	if(IsClientInGame(client))
+	{
+		RequestFrame(frame_fix4, client);
+	}
+}
+
+public frame_fix4(int client)
+{
+	if(IsClientInGame(client))
+	{
+		RequestFrame(frame_fix5, client);
+	}
+}
+
+public frame_fix5(int client)
+{
+	if(IsClientInGame(client))
+	{
+		FakeClientCommandEx(client, "use weapon_flashbang");
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
+	}
+}
+
+public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 {
 	if(LibraryExists("fakeexpert-entityfilter"))
-		return entity > MaxClients && !Trikz_GetEntityFilter(client, entity)
+	{
+		return entity > MaxClients && !Trikz_GetEntityFilter(client, entity);
+	}
 	else
-		return entity > MaxClients
+	{
+		return entity > MaxClients;
+	}
 }
 
 Action timer_removePing(Handle timer, int client)
 {
 	if(g_pingModel[client])
 	{
-		RemoveEntity(g_pingModel[client])
-		g_pingModel[client] = 0
+		RemoveEntity(g_pingModel[client]);
+		g_pingModel[client] = 0;
+		return Plugin_Continue;
 	}
-	return Plugin_Continue
+	else
+	{
+		PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
+		return Plugin_Continue;
+	}
 }
 
 Action SDKSetTransmitPing(int entity, int client)
 {
 	if(IsPlayerAlive(client) && g_pingModelOwner[entity] != client && g_partner[g_pingModelOwner[entity]] != g_partner[g_partner[client]])
-		return Plugin_Handled
-	return Plugin_Continue
+	{
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
 }
 
 Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
 	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
 	{
-		g_silentKnife = false
-		return Plugin_Handled
+		g_silentKnife = false;
+		return Plugin_Handled;
 	}
 	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav"))
 	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-		if(owner < 0)
-			owner = 0
-		if(g_projectileSoundLoud[owner] == entity)
-			return Plugin_Handled
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+		//if(owner < 0)
+		//{
+			//owner = 0;
+			//return Plugin_Continue;
+		//}
+		if(g_projectileSoundLoud[owner > 0 ? owner : 0] == entity)
+		{
+			return Plugin_Handled;
+		}
 	}
-	return Plugin_Continue
+	return Plugin_Continue;
 }
 
 Action timer_clantag(Handle timer, int client)
@@ -4018,149 +4346,174 @@ Action timer_clantag(Handle timer, int client)
 	{
 		if(g_state[client])
 		{
-			CS_SetClientClanTag(client, g_clantag[client][1])
-			return Plugin_Continue
+			CS_SetClientClanTag(client, g_clantag[client][1]);
+			return Plugin_Continue;
 		}
 		else
-			CS_SetClientClanTag(client, g_clantag[client][0])
+		{
+			CS_SetClientClanTag(client, g_clantag[client][0]);
+			return Plugin_Stop;
+		}
 	}
-	return Plugin_Stop
+	return Plugin_Stop;
 }
 
-void MLStats(int client, bool ground = false)
+static void MLStats(int client, bool ground = false)
 {
-	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0))
-	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0))
-	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost)
-	char print[256]
+	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
+	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
+	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost);
+	char print[256];
 	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
-		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i])
+	{
+		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i]);
+	}
 	if(g_mlsCount[client] > 10)
-		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]])
+	{
+		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]]);
+	}
 	if(ground)
 	{
-		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0]
-		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1]
-		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : "")
-		g_teleported[client] = false
+		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0];
+		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
+		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : "");
+		g_teleported[client] = false;
 	}
 	if(g_mlstats[g_mlsFlyer[client]])
 	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client])
-		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
-		bfmsg.WriteByte(true)
-		bfmsg.WriteString(print)
-		EndMessage()
+		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client]);
+		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+		bfmsg.WriteByte(true);
+		bfmsg.WriteString(print);
+		EndMessage();
 	}
 	if(g_mlstats[client])
 	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", client)
-		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
-		bfmsg.WriteByte(true)
-		bfmsg.WriteString(print)
-		EndMessage()
+		Handle KeyHintText = StartMessageOne("KeyHintText", client);
+		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+		bfmsg.WriteByte(true);
+		bfmsg.WriteString(print);
+		EndMessage();
 	}
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) && IsClientObserver(i))
 		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 			if(observerMode < 7 && (observerTarget == client || observerTarget == g_mlsFlyer[client]) && g_mlstats[i])
 			{
-				Handle KeyHintText = StartMessageOne("KeyHintText", i)
-				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
-				bfmsg.WriteByte(true)
-				bfmsg.WriteString(print)
-				EndMessage()
+				Handle KeyHintText = StartMessageOne("KeyHintText", i);
+				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+				bfmsg.WriteByte(true);
+				bfmsg.WriteString(print);
+				EndMessage();
 			}
 		}
 	}
 }
 
-int Stuck(int client)
+static int Stuck(int client)
 {
-	float mins[3]
-	float maxs[3]
-	float origin[3]
-	GetClientMins(client, mins)
-	GetClientMaxs(client, maxs)
-	GetClientAbsOrigin(client, origin)
-	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //Skiper, Gurman idea, plugin 2020 year.
-	return TR_GetEntityIndex()
+	float mins[3];
+	float maxs[3];
+	float origin[3];
+	GetClientMins(client, mins);
+	GetClientMaxs(client, maxs);
+	GetClientAbsOrigin(client, origin);
+	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client); //Skiper, Gurman idea, plugin 2020 year.
+	return TR_GetEntityIndex();
 }
 
-bool TR_donthitself(int entity, int mask, int client)
+public bool TR_donthitself(int entity, int mask, int client)
 {
 	if(LibraryExists("fakeexpert-entityfilter"))
-		return entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]]
+		return entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]];
 	else
-		return entity != client && 0 < entity <= MaxClients
+		return entity != client && 0 < entity <= MaxClients;
 }
 
-int Native_GetClientButtons(Handle plugin, int numParams)
+public int Native_GetClientButtons(Handle plugin, int numParams)
 {
-	int client = GetNativeCell(1)
-	return g_entityButtons[client]
+	int client = GetNativeCell(1);
+	return g_entityButtons[client];
 }
 
-int Native_GetClientPartner(Handle plugin, int numParams)
+public int Native_GetClientPartner(Handle plugin, int numParams)
 {
-	int client = GetNativeCell(1)
-	return g_partner[client]
+	int client = GetNativeCell(1);
+	return g_partner[client];
 }
 
-int Native_GetTimerState(Handle plugin, int numParams)
+public int Native_GetTimerState(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1)
 	if(!IsFakeClient(client))
-		return g_state[client]
+	{
+		return g_state[client];
+	}
 	else
-		return false
+	{
+		return 0;
+	}
 }
 
-int Native_SetPartner(Handle plugin, int numParams)
+public int Native_SetPartner(Handle plugin, int numParams)
 {
-	int client = GetNativeCell(1)
-	int partner = GetNativeCell(2)
-	g_partner[client] = partner
-	g_partner[partner] = client
-	return 0
+	int client = GetNativeCell(1);
+	int partner = GetNativeCell(2);
+	g_partner[client] = partner;
+	g_partner[partner] = client;
+	return partner;
 }
 
-int Native_Restart(Handle plugin, int numParams)
+public int Native_Restart(Handle plugin, int numParams)
 {
-	int client = GetNativeCell(1)
-	Restart(client)
-	Restart(g_partner[client])
-	return 0
+	int client = GetNativeCell(1);
+	Restart(client);
+	Restart(g_partner[client]);
+	if((0 < client <= 64 + 1))
+	{
+		return g_partner[client];
+	}
+	else
+	{
+		return 0;
+	}
 }
 
-int Native_GetDevmap(Handle plugin, int numParams)
+public int Native_GetDevmap(Handle plugin, int numParams)
 {
-	return g_devmap
+	return g_devmap;
 }
 
 Action timer_clearlag(Handle timer)
 {
-	ServerCommand("mat_texture_list_txlod_sync reset")
-	return Plugin_Continue
+	ServerCommand("mat_texture_list_txlod_sync reset");
+	return Plugin_Continue;
 }
 
-float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+static float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
-	float origin[3]
-	GetClientAbsOrigin(client, origin)
-	float originDir[3]
-	GetClientAbsOrigin(client, originDir)
-	originDir[2] -= 90.0
-	float mins[3]
-	GetClientMins(client, mins)
-	float maxs[3]
-	GetClientMaxs(client, maxs)
-	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client)
-	float pos[3]
+	float origin[3];
+	GetClientAbsOrigin(client, origin);
+	float originDir[3];
+	GetClientAbsOrigin(client, originDir);
+	originDir[2] -= 90.0;
+	float mins[3];
+	GetClientMins(client, mins);
+	float maxs[3];
+	GetClientMaxs(client, maxs);
+	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
+	float pos[3];
 	if(TR_DidHit())
-		TR_GetEndPosition(pos)
-	return pos[2]
+	{
+		TR_GetEndPosition(pos);
+		return pos[2];
+	}
+	else
+	{
+		PrintToServer("Is not hited ground for player %N", client);
+		return pos[2];
+	}
 }
