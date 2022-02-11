@@ -4293,7 +4293,7 @@ public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 	}
 }
 
-Action timer_removePing(Handle timer, int client)
+public Action timer_removePing(Handle timer, int client)
 {
 	if(g_pingModel[client])
 	{
@@ -4308,7 +4308,7 @@ Action timer_removePing(Handle timer, int client)
 	}
 }
 
-Action SDKSetTransmitPing(int entity, int client)
+public Action SDKSetTransmitPing(int entity, int client)
 {
 	if(IsPlayerAlive(client) && g_pingModelOwner[entity] != client && g_partner[g_pingModelOwner[entity]] != g_partner[g_partner[client]])
 	{
@@ -4317,14 +4317,14 @@ Action SDKSetTransmitPing(int entity, int client)
 	return Plugin_Continue;
 }
 
-Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
+public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) && g_silentKnife)
 	{
 		g_silentKnife = false;
 		return Plugin_Handled;
 	}
-	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav"))
+	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav", false))
 	{
 		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 		//if(owner < 0)
@@ -4340,7 +4340,7 @@ Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MA
 	return Plugin_Continue;
 }
 
-Action timer_clantag(Handle timer, int client)
+public Action timer_clantag(Handle timer, int client)
 {
 	if(0 < client <= MaxClients && IsClientInGame(client))
 	{
