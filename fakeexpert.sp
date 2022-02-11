@@ -1387,7 +1387,8 @@ void ColorFlashbang(int client, bool customSkin = false, int color = -1)
 			g_color[g_partner[client]][1] = true
 			g_seperate[client] = true
 			g_seperate[g_partner[client]] = true
-			char colorTypeExploded[4][32]
+			//char colorTypeExploded[4][32]
+			char colorTypeExploded[32][4]
 			if(g_colorCount[client][1] == 9)
 			{
 				g_colorCount[client][1] = 0
@@ -3256,7 +3257,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
 				char class[32]
 				if(IsValidEntity(groundEntity))
-					GetEntityClassname(groundEntity, class, 32)
+					GetEntityClassname(groundEntity, class, sizeof(class))
 				if(!(StrEqual(class, "flashbang_projectile")))
 				{
 					GetClientAbsOrigin(client, g_mlsDistance[client][1])
