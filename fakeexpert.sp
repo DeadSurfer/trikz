@@ -1997,9 +1997,9 @@ void ZoneEditor2(int client)
 	{
 		for(int i = 1; i <= g_cpCount; i++)
 		{
-			Format(format, 32, "CP nr. %i zone", i)
+			Format(format, sizeof(format), "CP nr. %i zone", i)
 			char cp[16]
-			Format(cp, 16, "%i", i)
+			Format(cp, sizeof(cp), "%i", i)
 			menu.AddItem(cp, format)
 		}
 	}
@@ -2015,7 +2015,7 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Select:
 		{
 			char item[16]
-			menu.GetItem(param2, item, 16)
+			menu.GetItem(param2, item, sizeof(item))
 			Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel)
 			if(StrEqual(item, "start"))
 			{
@@ -2048,33 +2048,33 @@ int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			for(int i = 1; i <= g_cpCount; i++)
 			{
 				char cp[16]
-				IntToString(i, cp, 16)
-				Format(cp, 16, "%i", i)
+				IntToString(i, cp, sizeof(cp))
+				Format(cp, sizeof(cp), "%i", i)
 				if(StrEqual(item, cp))
 				{
 					menu2.SetTitle("Zone editor - CP nr. %i zone", i)
 					char sButton[32]
-					Format(sButton, 32, "Teleport to CP nr. %i zone", i)
+					Format(sButton, sizeof(sButton), "Teleport to CP nr. %i zone", i)
 					char itemCP[16]
-					Format(itemCP, 16, "%i;tp", i)
+					Format(itemCP, sizeof(itemCP), "%i;tp", i)
 					menu2.AddItem(itemCP, sButton)
-					Format(itemCP, 16, "%i;1", i)
+					Format(itemCP, sizeof(itemCP), "%i;1", i)
 					menu2.AddItem(itemCP, "+x/mins")
-					Format(itemCP, 16, "%i;2", i)
+					Format(itemCP, sizeof(itemCP), "%i;2", i)
 					menu2.AddItem(itemCP, "-x/mins")
-					Format(itemCP, 16, "%i;3", i)
+					Format(itemCP, sizeof(itemCP), "%i;3", i)
 					menu2.AddItem(itemCP, "+y/mins")
-					Format(itemCP, 16, "%i;4", i)
+					Format(itemCP, sizeof(itemCP), "%i;4", i)
 					menu2.AddItem(itemCP, "-y/mins")
-					Format(itemCP, 16, "%i;5", i)
+					Format(itemCP, sizeof(itemCP), "%i;5", i)
 					menu2.AddItem(itemCP, "+x/maxs")
-					Format(itemCP, 16, "%i;6", i)
+					Format(itemCP, sizeof(itemCP), "%i;6", i)
 					menu2.AddItem(itemCP, "-x/maxs")
-					Format(itemCP, 16, "%i;7", i)
+					Format(itemCP, sizeof(itemCP), "%i;7", i)
 					menu2.AddItem(itemCP, "+y/maxs")
-					Format(itemCP, 16, "%i;8", i)
+					Format(itemCP, sizeof(itemCP), "%i;8", i)
 					menu2.AddItem(itemCP, "-y/maxs")
-					Format(sButton, 32, "Update CP nr. %i zone", i)
+					Format(sButton, sizeof(sButton), "Update CP nr. %i zone", i)
 					menu2.AddItem("cpupdate", sButton)
 				}
 			}
@@ -2094,7 +2094,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Select:
 		{
 			char item[16]
-			menu.GetItem(param2, item, 16)
+			menu.GetItem(param2, item, sizeof(item))
 			if(StrEqual(item, "starttp"))
 				TeleportEntity(param1, g_center[0], NULL_VECTOR, NULL_VECTOR)
 			else if(StrEqual(item, "start+xmins"))
@@ -2135,47 +2135,47 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			ExplodeString(item, ";", exploded, 1, 16)
 			int cpnum = StringToInt(exploded[0])
 			char cpFormated[16]
-			Format(cpFormated, 16, "%i;tp", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;tp", cpnum)
 			if(StrEqual(item, cpFormated))
 				TeleportEntity(param1, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR)
-			Format(cpFormated, 16, "%i;1", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;1", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][0] += 16.0
-			Format(cpFormated, 16, "%i;2", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;2", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][0] -= 16.0
-			Format(cpFormated, 16, "%i;3", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;3", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][1] += 16.0
-			Format(cpFormated, 16, "%i;4", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;4", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[0][cpnum][1] -= 16.0
-			Format(cpFormated, 16, "%i;5", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;5", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][0] += 16.0
-			Format(cpFormated, 16, "%i;6", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;6", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][0] -= 16.0
-			Format(cpFormated, 16, "%i;7", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;7", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][1] += 16.0
-			Format(cpFormated, 16, "%i;8", cpnum)
+			Format(cpFormated, sizeof(cpFormated), "%i;8", cpnum)
 			if(StrEqual(item, cpFormated))
 				g_cpPos[1][cpnum][1] -= 16.0
 			char query[512]
 			if(StrEqual(item, "startupdate"))
 			{
-				Format(query, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map)
+				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map)
 				g_mysql.Query(SQLUpdateZone, query, 0)
 			}
 			else if(StrEqual(item, "endupdate"))
 			{
-				Format(query, 512, "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map)
+				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map)
 				g_mysql.Query(SQLUpdateZone, query, 1)
 			}
 			else if(StrEqual(item, "cpupdate"))
 			{
-				Format(query, 512, "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[0][cpnum][0]), RoundFloat(g_cpPos[0][cpnum][1]), RoundFloat(g_cpPos[0][cpnum][2]), RoundFloat(g_cpPos[1][cpnum][0]), RoundFloat(g_cpPos[1][cpnum][1]), RoundFloat(g_cpPos[1][cpnum][2]), cpnum, g_map)
+				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[0][cpnum][0]), RoundFloat(g_cpPos[0][cpnum][1]), RoundFloat(g_cpPos[0][cpnum][2]), RoundFloat(g_cpPos[1][cpnum][0]), RoundFloat(g_cpPos[1][cpnum][1]), RoundFloat(g_cpPos[1][cpnum][2]), cpnum, g_map)
 				g_mysql.Query(SQLUpdateZone, query, cpnum + 1)
 			}
 			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER) //https://forums.alliedmods.net/showthread.php?p=2091775
@@ -2299,7 +2299,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack d
 void createcp(int cpnum)
 {
 	char trigger[64]
-	Format(trigger, 64, "fakeexpert_cp%i", cpnum)
+	Format(trigger, sizeof(trigger), "fakeexpert_cp%i", cpnum)
 	int entity = CreateEntityByName("trigger_multiple")
 	DispatchKeyValue(entity, "spawnflags", "1") //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0")
@@ -2401,7 +2401,7 @@ Action SDKStartTouch(int entity, int other)
 	if(0 < other <= MaxClients && !g_devmap && !IsFakeClient(other))
 	{
 		char trigger[32]
-		GetEntPropString(entity, Prop_Data, "m_iName", trigger, 32)
+		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger))
 		if(StrEqual(trigger, "fakeexpert_startzone") && g_mapFinished[g_partner[other]])
 		{
 			Restart(other) //expert zone idea.
@@ -2432,7 +2432,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(g_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(query, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map)
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map)
 							g_mysql.Query(SQLUpdateRecord, query)
 							g_haveRecord[other] = g_timerTime[other]
 							g_haveRecord[g_partner[other]] = g_timerTime[other]
@@ -2455,7 +2455,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(query, 512, "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map)
+							Format(query, sizeof(query), "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map)
 							g_mysql.Query(SQLUpdateRecord, query)
 						}
 						else if(g_ServerRecordTime < g_timerTime[other] < g_mateRecord[other])
@@ -2467,7 +2467,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(query, 512, "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map)
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map)
 							g_mysql.Query(SQLUpdateRecord, query)
 							if(g_haveRecord[other] > g_timerTime[other])
 								g_haveRecord[other] = g_timerTime[other]
@@ -2492,7 +2492,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(g_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(query, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
+							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
 							g_mysql.Query(SQLInsertRecord, query)
 							g_haveRecord[other] = g_timerTime[other]
 							g_haveRecord[g_partner[other]] = g_timerTime[other]
@@ -2515,7 +2515,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
-							Format(query, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
+							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
 							g_mysql.Query(SQLInsertRecord, query)
 							if(!g_haveRecord[other])
 								g_haveRecord[other] = g_timerTime[other]
@@ -2555,7 +2555,7 @@ Action SDKStartTouch(int entity, int other)
 							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i)
 					g_ServerRecord = true
 					CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE) //https://forums.alliedmods.net/showthread.php?t=191615
-					Format(query, 512, "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
+					Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime())
 					g_mysql.Query(SQLInsertRecord, query)
 					Call_StartForward(g_record)
 					Call_PushCell(other)
@@ -2569,7 +2569,7 @@ Action SDKStartTouch(int entity, int other)
 		for(int i = 1; i <= g_cpCount; i++)
 		{
 			char triggerCP[64]
-			Format(triggerCP, 64, "fakeexpert_cp%i", i)
+			Format(triggerCP, sizeof(triggerCP), "fakeexpert_cp%i", i)
 			if(StrEqual(trigger, triggerCP))
 			{
 				g_cp[i][other] = true
@@ -2580,14 +2580,14 @@ Action SDKStartTouch(int entity, int other)
 					int partnerid = GetSteamAccountID(g_partner[other])
 					if(!g_cpLock[1][other] && g_mateRecord[other])
 					{
-						Format(query, 512, "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map)
+						Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map)
 						g_mysql.Query(SQLSetTries, query)
 					}
 					g_cpLock[i][other] = true
 					g_cpLock[i][g_partner[other]] = true
 					g_cpTimeClient[i][other] = g_timerTime[other]
 					g_cpTimeClient[i][g_partner[other]] = g_timerTime[other]
-					Format(query, 512, "SELECT cp%i FROM records LIMIT 1", i)
+					Format(query, sizeof(query), "SELECT cp%i FROM records LIMIT 1", i)
 					DataPack dp = new DataPack()
 					dp.WriteCell(GetClientSerial(other))
 					dp.WriteCell(i)
@@ -2833,7 +2833,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		char query[512]
 		if(results.FetchRow())
 		{
-			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, g_map) //log help me alot with this stuff
+			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, g_map) //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
 			DataPack dp = new DataPack()
 			dp.WriteCell(GetClientSerial(other))
 			dp.WriteCell(cpnum)
@@ -3994,176 +3994,6 @@ Action SDKSetTransmitPing(int entity, int client)
 }
 
 Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
-{
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
-	{
-		g_silentKnife = false
-		return Plugin_Handled
-	}
-	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav"))
-	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-		if(owner < 0)
-			owner = 0
-		if(g_projectileSoundLoud[owner] == entity)
-			return Plugin_Handled
-	}
-	return Plugin_Continue
-}
-
-Action timer_clantag(Handle timer, int client)
-{
-	if(0 < client <= MaxClients && IsClientInGame(client))
-	{
-		if(g_state[client])
-		{
-			CS_SetClientClanTag(client, g_clantag[client][1])
-			return Plugin_Continue
-		}
-		else
-			CS_SetClientClanTag(client, g_clantag[client][0])
-	}
-	return Plugin_Stop
-}
-
-void MLStats(int client, bool ground = false)
-{
-	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0))
-	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0))
-	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost)
-	char print[256]
-	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
-		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i])
-	if(g_mlsCount[client] > 10)
-		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]])
-	if(ground)
-	{
-		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0]
-		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1]
-		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : "")
-		g_teleported[client] = false
-	}
-	if(g_mlstats[g_mlsFlyer[client]])
-	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client])
-		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
-		bfmsg.WriteByte(true)
-		bfmsg.WriteString(print)
-		EndMessage()
-	}
-	if(g_mlstats[client])
-	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", client)
-		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
-		bfmsg.WriteByte(true)
-		bfmsg.WriteString(print)
-		EndMessage()
-	}
-	for(int i = 1; i <= MaxClients; i++)
-	{
-		if(IsClientInGame(i) && IsClientObserver(i))
-		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-			if(observerMode < 7 && (observerTarget == client || observerTarget == g_mlsFlyer[client]) && g_mlstats[i])
-			{
-				Handle KeyHintText = StartMessageOne("KeyHintText", i)
-				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText)
-				bfmsg.WriteByte(true)
-				bfmsg.WriteString(print)
-				EndMessage()
-			}
-		}
-	}
-}
-
-int Stuck(int client)
-{
-	float mins[3]
-	float maxs[3]
-	float origin[3]
-	GetClientMins(client, mins)
-	GetClientMaxs(client, maxs)
-	GetClientAbsOrigin(client, origin)
-	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //Skiper, Gurman idea, plugin 2020 year.
-	return TR_GetEntityIndex()
-}
-
-bool TR_donthitself(int entity, int mask, int client)
-{
-	if(LibraryExists("fakeexpert-entityfilter"))
-		return entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]]
-	else
-		return entity != client && 0 < entity <= MaxClients
-}
-
-int Native_GetClientButtons(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1)
-	return g_entityButtons[client]
-}
-
-int Native_GetClientPartner(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1)
-	return g_partner[client]
-}
-
-int Native_GetTimerState(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1)
-	if(!IsFakeClient(client))
-		return g_state[client]
-	else
-		return false
-}
-
-int Native_SetPartner(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1)
-	int partner = GetNativeCell(2)
-	g_partner[client] = partner
-	g_partner[partner] = client
-	return 0
-}
-
-int Native_Restart(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1)
-	Restart(client)
-	Restart(g_partner[client])
-	return 0
-}
-
-int Native_GetDevmap(Handle plugin, int numParams)
-{
-	return g_devmap
-}
-
-Action timer_clearlag(Handle timer)
-{
-	ServerCommand("mat_texture_list_txlod_sync reset")
-	return Plugin_Continue
-}
-
-float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
-{
-	float origin[3]
-	GetClientAbsOrigin(client, origin)
-	float originDir[3]
-	GetClientAbsOrigin(client, originDir)
-	originDir[2] -= 90.0
-	float mins[3]
-	GetClientMins(client, mins)
-	float maxs[3]
-	GetClientMaxs(client, maxs)
-	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client)
-	float pos[3]
-	if(TR_DidHit())
-		TR_GetEndPosition(pos)
-	return pos[2]
-}
-itch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
 	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
 	{
