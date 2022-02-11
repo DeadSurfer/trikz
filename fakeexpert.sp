@@ -352,7 +352,7 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 		char query[512]
 		while(results.FetchRow())
 		{
-			int points = results.FetchInt(1) * results.FetchInt(0) / ++place //thanks to DeadSurfer
+			int points = results.FetchInt(1) * results.FetchInt(0) / ++place //thanks to DeadSurfer //https://1drv.ms/u/s!Aq4KvqCyYZmHgpM9uKBA-74lYr2L3Q
 			Format(query, sizeof(query), "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2))
 			g_queryLast++
 			g_mysql.Query(SQLRecalculatePoints2, query)
