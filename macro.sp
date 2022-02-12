@@ -14,7 +14,7 @@ public Plugin myinfo =
 	name = "Macro",
 	author = "Nick Jurevich",
 	description = "Make trikz game more comfortable.",
-	version = "0.7",
+	version = "0.8",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -130,7 +130,7 @@ public Action OnPlayerRunCmd(int client, int& buttons)
 	//if(GetEngineTime() - g_macroTime[client] >= 0.1 && GetEngineTime() - g_macroTime[client] <= 0.2)
 	//if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.1)
 	//i
-	if(g_macroOpened[client] == true && GetEngineTime () - g_macroTime[client] >= 0.1)
+	if(g_macroOpened[client] == true && GetEngineTime () - g_macroTime[client] >= 0.11)
 	{
 		buttons |= IN_JUMP;
 		g_macroTime[client] = GetEngineTime();
