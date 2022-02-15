@@ -151,6 +151,19 @@ bool g_clantagOnce[MAXPLAYERS + 1];
 bool g_seperate[MAXPLAYERS + 1];
 int g_projectileSoundLoud[MAXPLAYERS + 1];
 bool g_readyToFix[MAXPLAYERS + 1];
+ConVar gCV_trikz;
+ConVar gCV_block;
+ConVar gCV_partner;
+ConVar gCV_color;
+ConVar gCV_restart;
+ConVar gCV_checkpoint;
+ConVar gCV_afk;
+ConVar gCV_noclip;
+ConVar gCV_spec;
+ConVar gCV_button;
+ConVar gCV_pbutton;
+ConVar gCV_bhop;
+ConVar gCV_switch;
 
 public Plugin myinfo =
 {
@@ -165,6 +178,19 @@ public void OnPluginStart()
 {
 	g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.");
 	g_urlTop = CreateConVar("topurl", "", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top");
+	gCV_trikz = CreateConVar("trikz", "0", "Trikz menu.");
+	gCV_block = CreateConVar("block", "0", "Toggling block state.");
+	gCV_partner = CreateConVar("partner", "0", "Toggling partner menu.");
+	gCV_color = CreateConVar("color", "0", "Toggling color menu.");
+	gCV_restart = CreateConVar("restart", "0", "Allow player to restart timer.");
+	gCV_checkpoint = CreateConVar("checkpoint", "0", "Allow use checkpoint in dev mode.");
+	gCV_afk = CreateConVar("afk", "0", "Allow to use !afk command for players.");
+	gCV_noclip = CreateConVar("noclip", "0", "Allow to use noclip for players in dev mode.");
+	gCV_spec = CreateConVar("spec", "0", "Allow to use spectator command to swtich to the spectator team.");
+	gCV_button = CreateConVar("button", "0", "Allow to use text message for button announcments.");
+	gCV_pbutton = CreateConVar("pbutton", "0", "Allow to use text message for partner button announcments.");
+	gCV_bhop = CreateConVar("bhop", "0", "Autobhop.");
+	gCV_switch = CreateConVar("switch", "0", "Giving and switching to the flashbang.");
 
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -1432,7 +1458,8 @@ public void SDKBoostFix(int client)
 
 public Action cmd_trikz(int client, int args)
 {
-	if(g_menuOpened[client] == false)
+	bool convar = GetConVarBool(gCV_trikz);
+	if(convar == true && g_menuOpened[client] == false)
 	{
 		Trikz(client);
 	}
@@ -1613,7 +1640,12 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public Action cmd_block(int client, int args)
 {
-	Block(client);
+	bool convar = GetConVarBool(gCV_block);
+
+	if(convar == true)
+	{
+		Block(client);
+	}
 
 	return Plugin_Handled;
 }
@@ -1655,7 +1687,11 @@ public Action Block(int client) //thanks maru for optimization.
 
 public Action cmd_partner(int client, int args)
 {
-	Partner(client);
+	bool convar = GetConVarBool(gCV_partner);
+	if(convar == true)
+	{
+		Partner(client);
+	}
 
 	return Plugin_Handled;
 }
@@ -1870,6 +1906,13 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 public Action cmd_color(int client, int args)
 {
+	bool convar = GetConVarBool(gCV_color);
+
+	if(convar == true)
+	{
+		return Plugin_Handled;
+	}
+
 	static char arg[512];
 
 	GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
@@ -1957,7 +2000,7 @@ public void Color(int client, bool customSkin, int color)
 			DispatchKeyValue(client, "skin", "2");
 			DispatchKeyValue(g_partner[client], "skin", "2");
 
-			char colorTypeExploded[4][32];
+			char colorTypeExploded[32][4];
 
 			if(g_colorCount[client][0] == 9)
 			{
@@ -2136,6 +2179,13 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 
 public Action cmd_restart(int client, int args)
 {
+	bool convar = GetConVarBool(gCV_restart);
+
+	if(convar == false)
+	{
+		return Plugin_Handled;
+	}
+
 	Restart(client);
 
 	if(g_partner[client] > 0)
@@ -2183,10 +2233,10 @@ public void Restart(int client)
 
 				else if(IsPlayerAlive(client) == true)
 				{
-					int entity;
+					int entity = 0;
 
-					bool ct;
-					bool t;
+					bool ct = false;
+					bool t = false;
 
 					while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
 					{
@@ -2528,7 +2578,7 @@ public Action cmd_test(int client, int args)
 		PrintToServer("LibraryExists (fakeexpert-entityfilter): %i", LibraryExists("fakeexpert-entityfilter"));
 
 		//https://forums.alliedmods.net/showthread.php?t=187746
-		static int color;
+		static int color = 0;
 		color |= (5 & 255) << 24; //5 red
 		color |= (200 & 255) << 16; // 200 green
 		color |= (255 & 255) << 8; // 255 blue
@@ -2920,7 +2970,7 @@ public void SQLCPInserted(Database db, DBResultSet results, const char[] error, 
 
 	else if(strlen(error) == 0)
 	{
-		if((results.HasResults == false))
+		if(results.HasResults == false)
 		{
 			PrintToServer("Checkpoint zone no. %i successfuly created.", data);
 		}
@@ -4746,7 +4796,7 @@ public void DrawZone(int client, float life, float size, int speed)
 		corners[i][3][1] = end[i][1]
 		corners[i][3][2] = start[i][2]
 
-		static int modelType
+		static int modelType = 0;
 
 		if(i == 1)
 		{
@@ -4760,7 +4810,7 @@ public void DrawZone(int client, float life, float size, int speed)
 
 		for(int j = 0; j <= 3; j++)
 		{
-			int k = j + 1
+			int k = j + 1;
 
 			if(j == 3)
 			{
@@ -4790,7 +4840,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		g_entityButtons[client] = buttons;
 
-		if(buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
+		bool convar = GetConVarBool(gCV_bhop);
+
+		if(convar == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		{
 			buttons &= ~IN_JUMP; //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 			//return Plugin_Continue;
@@ -5015,8 +5067,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 					g_pingModelOwner[g_pingModel[client]] = client;
 
-					static int clients[MAXPLAYERS + 1];
-					static int count;
+					static int clients[MAXPLAYERS + 1]; // 64 + 1
+					static int count = 0;
 
 					for(int i = 1; i <= MaxClients; i++)
 					{
@@ -5293,7 +5345,7 @@ public Action ProjectileBoostFix(int entity, int other)
 		static float maxsEntity[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
-		float delta;
+		static float delta = 0.0;
 		delta = originOther[2] - originEntity[2] - maxsEntity[2];
 
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
@@ -5534,7 +5586,8 @@ public Action timer_motd(Handle timer, int client)
 
 public Action cmd_afk(int client, int args)
 {
-	if(GetEngineTime() - g_afkTime > 30.0 && GetEngineTime() - g_devmapTime > 35.0)
+	bool convar = GetConVarBool(gCV_afk);
+	if(convar == true && (GetEngineTime() - g_afkTime > 30.0 && GetEngineTime() - g_devmapTime > 35.0))
 	{
 		g_voters = 0;
 
@@ -5652,7 +5705,12 @@ public void AFK(int client, bool force)
 
 public Action cmd_noclip(int client, int args)
 {
-	Noclip(client);
+	bool convar = GetConVarBool(gCV_noclip);
+
+	if(convar == true)
+	{
+		Noclip(client);
+	}
 
 	return Plugin_Handled;
 }
@@ -5688,7 +5746,12 @@ public void Noclip(int client)
 
 public Action cmd_spec(int client, int args)
 {
-	ChangeClientTeam(client, CS_TEAM_SPECTATOR);
+	bool convar = GetConVarBool(gCV_spec);
+
+	if(convar == true)
+	{
+		ChangeClientTeam(client, CS_TEAM_SPECTATOR);
+	}
 
 	return Plugin_Handled;
 }
@@ -5847,7 +5910,7 @@ public Action cmd_button(int client, int args)
 
 public Action cmd_pbutton(int client, int args)
 {
-	g_pbutton[client] = !g_pbutton[client];
+	g_pbutton[client] = !g_pbutton[client]; //toggling
 
 	static char value[16];
 
@@ -5872,11 +5935,11 @@ public Action cmd_pbutton(int client, int args)
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
-	if(!IsChatTrigger())
+	if(IsChatTrigger() == false)
 	{
 		if(StrEqual(sArgs, "t", false) || StrEqual(sArgs, "trikz", false))
 		{
-			if(!g_menuOpened[client])
+			if(g_menuOpened[client] == false)
 			{
 				Trikz(client);
 
@@ -5973,7 +6036,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		{
 			Restart(client)
 
-			if(g_partner[client])
+			if(g_partner[client] == true)
 			{
 				Restart(g_partner[client]);
 
@@ -6159,7 +6222,7 @@ public Action SDKStopSpam(int entity, int other)
 		static float maxsEntity[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
-		static float delta;
+		static float delta = 0.0;
 		delta = originOther[2] - originEntity[2] - maxsEntity[2];
 
 		if(delta == -66.015251)
@@ -6215,7 +6278,7 @@ public void FlashbangEffect(const int entity)
 	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
 
 	int clients[MAXPLAYERS + 1];
-	int count;
+	int count = 0;
 
 	if(filter == true)
 	{
@@ -6288,7 +6351,7 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	if(!GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4))
+	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == false)
 	{
 		GivePlayerItem(client, "weapon_flashbang");
 		GivePlayerItem(client, "weapon_flashbang");
@@ -6314,7 +6377,7 @@ public Action SDKWeaponDrop(int client, int weapon)
 
 public void SDKThink(int client)
 {
-	if(!IsFakeClient(client))
+	if(IsFakeClient(client) == false)
 	{
 		if(GetClientButtons(client) & IN_ATTACK)
 		{
@@ -6558,7 +6621,7 @@ public void MLStats(const int client, bool ground)
 	}
 }
 
-public int Stuck(const int client)
+public int Stuck(int client)
 {
 	float mins[3];
 	float maxs[3];
@@ -6634,7 +6697,7 @@ public int Native_Restart(Handle plugin, int numParams)
 	Restart(client);
 	Restart(g_partner[client]);
 
-	if(0 < client <= 64 + 1)
+	if(0 < client <= MaxClients)
 	{
 		return g_partner[client];
 	}
@@ -6657,7 +6720,7 @@ public Action timer_clearlag(Handle timer)
 	return Plugin_Continue;
 }
 
-public float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+static bool GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float origin[3];
 	GetClientAbsOrigin(client, origin);
@@ -6673,29 +6736,34 @@ public float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.p
 	float maxs[3];
 	GetClientMaxs(client, maxs);
 
+	float pos[3];
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
 
-	float pos[3];
+	bool didHit = TR_DitHit(null);
+	//if(TR_DitHit(INVALID_HANDLE) == true)
+	//{
+	//}
+	//if(didHit == true)
+	//{
+	//}
+		//TR_GetEndPosition(pos);
 
-	if(TR_DitHit())
-	{
-		TR_GetEndPosition(pos);
+		//return pos[2];
+	//else if(TR_DitHit(null) == false)
+	//{
+		//PrintToServer("Is not hited ground for player %N", client);
 
-		return pos[2];
-	}
-	/*else
-	{
-		PrintToServer("Is not hited ground for player %N", client);
+		//return pos[2];
+	//}
 
-		return pos[2];
-	}*/
+	//return pos[2];
 	//if(TR_DidHit(null) != true) //sweeden information
 	//else if(TR_DitHit(null) == false)
 }
 
 public int GetColour(const int r, const int g, const int b, const int a)
 {
-	int color;
+	int color = 0;
 
 	color |= (r & 255) << 24;
 	color |= (g & 255) << 16;
