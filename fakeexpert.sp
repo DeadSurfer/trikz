@@ -279,7 +279,7 @@ public void OnPluginStart()
 	g_cookie[3] = RegClientCookie("pbutton", "partner button", CookieAccess_Protected);
 	g_cookie[4] = RegClientCookie("autoflash", "autoflash", CookieAccess_Protected);
 	g_cookie[5] = RegClientCookie("autoswitch", "autoswitch", CookieAccess_Protected);
-	g_cookie[6] = RegClientCookie("bhop", "bhop", CookieAccess_Protectd);
+	g_cookie[6] = RegClientCookie("bhop", "bhop", CookieAccess_Protected);
 	
 	CreateTimer(60.0, timer_clearlag);
 }
@@ -2333,7 +2333,7 @@ public void Restart(int client)
 
 public Action cmd_autoflash(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_autoflash);
+	bool convar = GetConVarBool(gCV_autoflashbang);
 	
 	if(convar == false)
 	{
