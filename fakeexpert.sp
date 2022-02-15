@@ -167,6 +167,7 @@ ConVar gCV_autoswitch;
 ConVar gCV_autoflashbang;
 bool g_autoflash[MAXPLAYERS + 1];
 bool g_autoswitch[MAXPLAYERS + 1];
+bool g_bhop[MAXPLAYERS + 1];
 
 public Plugin myinfo =
 {
@@ -278,7 +279,8 @@ public void OnPluginStart()
 	g_cookie[3] = RegClientCookie("pbutton", "partner button", CookieAccess_Protected);
 	g_cookie[4] = RegClientCookie("autoflash", "autoflash", CookieAccess_Protected);
 	g_cookie[5] = RegClientCookie("autoswitch", "autoswitch", CookieAccess_Protected);
-
+	g_cookie[6] = RegClientCookie("bhop", "bhop", CookieAccess_Protectd);
+	
 	CreateTimer(60.0, timer_clearlag);
 }
 
@@ -1145,6 +1147,9 @@ public void OnClientPutInServer(int client)
 		g_mlstats[client] = false;
 		g_button[client] = false;
 		g_pbutton[client] = false;
+		g_autoflash[client] = false;
+		g_autoswitch[client] = false;
+		g_bhop[client] = false;
 	}
 
 	ResetFactory(client);
@@ -1179,6 +1184,9 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[5], value, sizeof(value));
 	g_autoswitch[client] = view_as<bool>(StringToInt(value));
+
+	GetClientCookie(client, g_cookie[6], value, sizeof(value));
+	g_bhop[client] = view_as<bool>(StringToInt(value));
 }
 
 public void OnClientDisconnect(int client)
@@ -1483,6 +1491,7 @@ public void SDKBoostFix(int client)
 public Action cmd_trikz(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_trikz);
+
 	if(convar == true && g_menuOpened[client] == false)
 	{
 		Trikz(client);
@@ -1712,6 +1721,7 @@ public Action Block(int client) //thanks maru for optimization.
 public Action cmd_partner(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_partner);
+
 	if(convar == true)
 	{
 		Partner(client);
@@ -1932,7 +1942,7 @@ public Action cmd_color(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_color);
 
-	if(convar == true)
+	if(convar == false)
 	{
 		return Plugin_Handled;
 	}
@@ -2325,7 +2335,7 @@ public Action cmd_autoflash(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_autoflash);
 	
-	if(convar == true)
+	if(convar == false)
 	{
 		return Plugin_Handled;
 	}
@@ -2353,7 +2363,7 @@ public Action cmd_autoswitch(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_autoswitch);
 	
-	if(convar == true)
+	if(convar ==false)
 	{
 		return Plugin_Handled;
 	}
@@ -2375,6 +2385,32 @@ public Action cmd_autoswitch(int client, int args)
 	}
 
 	return Plugin_Handled;
+}
+
+public Action cmd_bhop(int client, int args)
+{
+	bool convar = GetConVarBool(gCV_bhop);
+	
+	if(convar == false)
+	{
+		return Plugin_Handled;
+	}
+
+	g_bhop[client] = !g_bhop[client];
+	
+	char sValue[16];
+	IntToString(g_bhop[client], sValue, sizeof(sValue));
+	SetClientCookie(client, g_cookie[6], sValue);
+	
+	if(g_bhop[client] == true)
+	{
+		PrintToChat(client, "\x01%T", "BhopON", client);
+	}
+
+	else if(g_bhop[client] == false)
+	{
+		PrintToChat(client, "\x01%T", "BhopOFF", client);
+	}
 }
 
 public Action timer_resetfactory(Handle timer, int client)
