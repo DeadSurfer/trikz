@@ -163,14 +163,15 @@ ConVar gCV_spec;
 ConVar gCV_button;
 ConVar gCV_pbutton;
 ConVar gCV_bhop;
-ConVar gCV_switch;
+ConVar gCV_autoswitch;
+ConVar gCV_autoflashbang;
 
 public Plugin myinfo =
 {
 	name = "trikz + timer",
 	author = "Smesh(Nick Yurevich)",
-	description = "Allows to able make trikz more comfortable",
-	version = "3.4",
+	description = "Allows to able make trikz more comfortable.",
+	version = "3.5",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -190,7 +191,8 @@ public void OnPluginStart()
 	gCV_button = CreateConVar("button", "0", "Allow to use text message for button announcments.");
 	gCV_pbutton = CreateConVar("pbutton", "0", "Allow to use text message for partner button announcments.");
 	gCV_bhop = CreateConVar("bhop", "0", "Autobhop.");
-	gCV_switch = CreateConVar("switch", "0", "Giving and switching to the flashbang.");
+	gCV_autoswitch = CreateConVar("autoswitch", "0", "Allow to switch to the flashbang automaticly.");
+	gCV_autoflashbang = CreateConVar("autoflashbang", "0", "Allow to give auto flashbangs.");
 
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -6191,7 +6193,12 @@ public void SDKProjectile(int entity)
 
 	if(IsValidEntity(entity) == true && IsValidEntity(client) == true)
 	{
-		SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+		bool convar = GetConVarBool(gCV_autoflashbang);
+
+		if(convar == true)
+		{
+			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+		}
 
 		RequestFrame(frame_blockExplosion, entity);
 
@@ -6351,7 +6358,9 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == false)
+	bool convar = GetConVarBool(gCV_autoflashbang);
+	
+	if(convar == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == false)
 	{
 		GivePlayerItem(client, "weapon_flashbang");
 		GivePlayerItem(client, "weapon_flashbang");
@@ -6392,7 +6401,9 @@ public void SDKThink(int client)
 
 			if(StrEqual(classname, "weapon_flashbang", false))
 			{
-				if(GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
+				bool convar = GetConVarBool(gCV_autoswitch);
+				
+				if(convar == true && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
 				{
 					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
