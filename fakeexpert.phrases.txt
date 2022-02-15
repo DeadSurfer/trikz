@@ -359,4 +359,20 @@
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"+{1}:{2}:{3}"
 	}
+	"AutoflashON"
+	{
+		"en"	"Auto flashbang is turned on."
+	}
+	"AutoflashOFF"
+	{
+		"en"	"Auto flashbang is turned off."
+	}
+	"AutoswitchON"
+	{
+		"en"	"Auto switch is truned on."
+	}
+	"AutoswitchOFF"
+	{
+		"en"	"Auto switch is turned off."
+	}
 }
