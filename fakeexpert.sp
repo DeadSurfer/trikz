@@ -180,22 +180,22 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.");
-	g_urlTop = CreateConVar("topurl", "", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top");
-	gCV_trikz = CreateConVar("trikz", "0", "Trikz menu.");
-	gCV_block = CreateConVar("block", "0", "Toggling block state.");
-	gCV_partner = CreateConVar("partner", "0", "Toggling partner menu.");
-	gCV_color = CreateConVar("color", "0", "Toggling color menu.");
-	gCV_restart = CreateConVar("restart", "0", "Allow player to restart timer.");
-	gCV_checkpoint = CreateConVar("checkpoint", "0", "Allow use checkpoint in dev mode.");
-	gCV_afk = CreateConVar("afk", "0", "Allow to use !afk command for players.");
-	gCV_noclip = CreateConVar("noclip", "0", "Allow to use noclip for players in dev mode.");
-	gCV_spec = CreateConVar("spec", "0", "Allow to use spectator command to swtich to the spectator team.");
-	gCV_button = CreateConVar("button", "0", "Allow to use text message for button announcments.");
-	gCV_pbutton = CreateConVar("pbutton", "0", "Allow to use text message for partner button announcments.");
-	gCV_bhop = CreateConVar("bhop", "0", "Autobhop.");
-	gCV_autoswitch = CreateConVar("autoswitch", "0", "Allow to switch to the flashbang automaticly.");
-	gCV_autoflashbang = CreateConVar("autoflashbang", "0", "Allow to give auto flashbangs.");
+	//g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.", 0.0, false, 1.0, true);
+	//g_urlTop = CreateConVar("topurl", "", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0.0, false, 1.0, true);
+	gCV_trikz = CreateConVar("trikz", "0.0", "Trikz menu.", 0.0, false, 1.0, true);
+	gCV_block = CreateConVar("block", "0.0", "Toggling block state.", 0.0, false, 1.0, true);
+	gCV_partner = CreateConVar("partner", "0.0", "Toggling partner menu.", 0.0, false, 1.0, true);
+	gCV_color = CreateConVar("color", "0.0", "Toggling color menu.", 0.0, false, 1.0, true);
+	gCV_restart = CreateConVar("restart", "0.0", "Allow player to restart timer.", 0.0, false, 1.0, true);
+	gCV_checkpoint = CreateConVar("checkpoint", "0.0", "Allow use checkpoint in dev mode.", 0.0, false, 1.0, true);
+	gCV_afk = CreateConVar("afk", "0.0", "Allow to use !afk command for players.", 0.0, false, 1.0, true);
+	gCV_noclip = CreateConVar("noclip", "0.0", "Allow to use noclip for players in dev mode.", 0.0, false, 1.0, true);
+	gCV_spec = CreateConVar("spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", 0.0, false, 1.0, true);
+	gCV_button = CreateConVar("button", "0.0", "Allow to use text message for button announcments.", 0.0, false, 1.0, true);
+	gCV_pbutton = CreateConVar("pbutton", "0.0", "Allow to use text message for partner button announcments.", 0.0, false, 1.0, true);
+	gCV_bhop = CreateConVar("bhop", "0.0", "Autobhop.", 0.0, false, 1.0, true);
+	gCV_autoswitch = CreateConVar("autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0.0, false, 1.0, true);
+	gCV_autoflashbang = CreateConVar("autoflashbang", "0.0", "Allow to give auto flashbangs.", 0.0, false, 1.0, true);
 
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -2543,13 +2543,16 @@ public void CreateEnd()
 
 public Action cmd_startmins(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false))
+	//if(StrEqual(steamid, steamidCurrent, false))
+	int flags = GetUserFlagBits(client);
+	
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		if(g_devmap == true)
 		{
@@ -2588,13 +2591,17 @@ public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] er
 
 public Action cmd_deleteallcp(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false)) //https://sm.alliedmods.net/new-api/
+	//if(StrEqual(steamid, steamidCurrent, false)) //https://sm.alliedmods.net/new-api/
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		if(g_devmap == true)
 		{
@@ -2656,13 +2663,17 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 
 public Action cmd_test(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false)) //https://sm.alliedmods.net/new-api/
+	//if(StrEqual(steamid, steamidCurrent, false)) //https://sm.alliedmods.net/new-api/
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		static char arg[256];
 
@@ -2705,7 +2716,7 @@ public Action cmd_test(int client, int args)
 		static char auth64[64];
 		GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64));
 
-		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
+		//PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 
 		return Plugin_Handled;
 	}
@@ -2771,13 +2782,17 @@ public void SendMessage(const char[] text, bool all, int client)
 
 public Action cmd_endmins(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false))
+	//if(StrEqual(steamid, steamidCurrent, false))
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		if(g_devmap == true)
 		{
@@ -2816,13 +2831,17 @@ public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] erro
 
 public Action cmd_maptier(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false))
+	//if(StrEqual(steamid, steamidCurrent, false))
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		if(g_devmap == true)
 		{
@@ -2931,13 +2950,17 @@ public void SQLSetEndZones(Database db, DBResultSet results, const char[] error,
 
 public Action cmd_startmaxs(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, steamid(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, steamid(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false) && g_zoneFirst[0] == true)
+	//if(StrEqual(steamid, steamidCurrent, false) && g_zoneFirst[0] == true)
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[0] == true)
 	{
 		GetClientAbsOrigin(client, g_zoneStartOrigin[1]);
 
@@ -2956,13 +2979,17 @@ public Action cmd_startmaxs(int client, int args)
 
 public Action cmd_endmaxs(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false) && g_zoneFirst[1] == true)
+	//if(StrEqual(steamid, steamidCurrent, false) && g_zoneFirst[1] == true)
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[1] == true)
 	{
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1]);
 
@@ -2981,13 +3008,17 @@ public Action cmd_endmaxs(int client, int args)
 
 public Action cmd_cpmins(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false))
+	//if(StrEqual(steamid, steamidCurrent, false))
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		if(g_devmap == true)
 		{
@@ -3045,13 +3076,17 @@ public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, a
 
 public Action cmd_cpmaxs(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamid));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamid));
 
-	if(StrEqual(steamid, steamidCurrent, false) && g_zoneFirst[2] == true)
+	//if(StrEqual(steamid, steamidCurrent, false) && g_zoneFirst[2] == true)
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[2] == true)
 	{
 		static char cmd[512];
 
@@ -3097,13 +3132,17 @@ public void SQLCPInserted(Database db, DBResultSet results, const char[] error, 
 
 public Action cmd_zones(int client, int args)
 {
-	static char steamidCurrent[64];
-	IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
+	//static char steamidCurrent[64];
+	//IntToString(GetSteamAccountID(client), steamidCurrent, sizeof(steamidCurrent));
 
-	static char steamid[64];
-	GetConVarString(g_steamid, steamid, sizeof(steamidCurrent));
+	//static char steamid[64];
+	//GetConVarString(g_steamid, steamid, sizeof(steamidCurrent));
 
-	if(StrEqual(steamid, steamidCurrent, false))
+	//if(StrEqual(steamid, steamidCurrent, false))
+
+	int flags = GetUserFlagBits(client);
+
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		if(g_devmap == true)
 		{
@@ -4247,7 +4286,6 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 	Format(sSRMinute, sizeof(sSRMinute), "%i", srMinute);
 	char sSRSecond[32];
 	Format(sSRSecond, sizeof(sSRSecond), "%i", srSecond);
-	
 
 	char format[256];
 
