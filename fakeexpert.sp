@@ -33,6 +33,10 @@
 #include <cstrike>
 #include <clientprefs>
 
+#pragma newdecls required
+//#define MAXPLAYER = {MAXPLAYERS + 1}
+#define MAXPLAYER MAXPLAYERS+1
+
 int g_partner[MAXPLAYERS + 1];
 float g_partnerInHold[MAXPLAYERS + 1];
 bool g_partnerInHoldLock[MAXPLAYERS + 1];
@@ -60,7 +64,7 @@ float g_cpTime[11];
 float g_haveRecord[MAXPLAYERS + 1];
 float g_ServerRecordTime;
 
-ConVar g_steamid; //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
+//ConVar g_steamid; //https://wiki.alliedmods.net/ConVars_(SourceMod_Scripting)
 ConVar g_urlTop;
 
 bool g_menuOpened[MAXPLAYERS + 1];
@@ -141,7 +145,7 @@ Handle g_start;
 Handle g_record;
 int g_pointsMaxs = 1;
 int g_queryLast;
-Handle g_cookie[6];
+Handle g_cookie[7];
 float g_skyAble[MAXPLAYERS + 1];
 native bool Trikz_GetEntityFilter(int client, int entity);
 float g_restartInHold[MAXPLAYERS + 1];
@@ -174,7 +178,7 @@ public Plugin myinfo =
 	name = "trikz + timer",
 	author = "Smesh(Nick Yurevich)",
 	description = "Allows to able make trikz more comfortable.",
-	version = "3.5",
+	version = "3.6",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -182,20 +186,20 @@ public void OnPluginStart()
 {
 	//g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.", 0.0, false, 1.0, true);
 	//g_urlTop = CreateConVar("topurl", "", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0.0, false, 1.0, true);
-	gCV_trikz = CreateConVar("trikz", "0.0", "Trikz menu.", 0.0, false, 1.0, true);
-	gCV_block = CreateConVar("block", "0.0", "Toggling block state.", 0.0, false, 1.0, true);
-	gCV_partner = CreateConVar("partner", "0.0", "Toggling partner menu.", 0.0, false, 1.0, true);
-	gCV_color = CreateConVar("color", "0.0", "Toggling color menu.", 0.0, false, 1.0, true);
-	gCV_restart = CreateConVar("restart", "0.0", "Allow player to restart timer.", 0.0, false, 1.0, true);
-	gCV_checkpoint = CreateConVar("checkpoint", "0.0", "Allow use checkpoint in dev mode.", 0.0, false, 1.0, true);
-	gCV_afk = CreateConVar("afk", "0.0", "Allow to use !afk command for players.", 0.0, false, 1.0, true);
-	gCV_noclip = CreateConVar("noclip", "0.0", "Allow to use noclip for players in dev mode.", 0.0, false, 1.0, true);
-	gCV_spec = CreateConVar("spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", 0.0, false, 1.0, true);
-	gCV_button = CreateConVar("button", "0.0", "Allow to use text message for button announcments.", 0.0, false, 1.0, true);
-	gCV_pbutton = CreateConVar("pbutton", "0.0", "Allow to use text message for partner button announcments.", 0.0, false, 1.0, true);
-	gCV_bhop = CreateConVar("bhop", "0.0", "Autobhop.", 0.0, false, 1.0, true);
-	gCV_autoswitch = CreateConVar("autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0.0, false, 1.0, true);
-	gCV_autoflashbang = CreateConVar("autoflashbang", "0.0", "Allow to give auto flashbangs.", 0.0, false, 1.0, true);
+	gCV_trikz = CreateConVar("trikz", "0.0", "Trikz menu.", 0, false, 0.0, true, 1.0);
+	gCV_block = CreateConVar("block", "0.0", "Toggling block state.", 0, false, 0.0, true, 1.0);
+	gCV_partner = CreateConVar("partner", "0.0", "Toggling partner menu.", 0, false, 0.0, true, 1.0);
+	gCV_color = CreateConVar("color", "0.0", "Toggling color menu.", 0, false, 0.0, true, 1.0);
+	gCV_restart = CreateConVar("restart", "0.0", "Allow player to restart timer.", 0, false, 0.0, true, 1.0);
+	gCV_checkpoint = CreateConVar("checkpoint", "0.0", "Allow use checkpoint in dev mode.", 0, false, 0.0, true, 1.0);
+	gCV_afk = CreateConVar("afk", "0.0", "Allow to use !afk command for players.", 0, false, 0.0, true, 1.0);
+	gCV_noclip = CreateConVar("noclip", "0.0", "Allow to use noclip for players in dev mode.", 0, false, 0.0, true, 1.0);
+	gCV_spec = CreateConVar("spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", 0, false, 0.0, true, 1.0);
+	gCV_button = CreateConVar("button", "0.0", "Allow to use text message for button announcments.", 0, false, 0.0, true, 1.0);
+	gCV_pbutton = CreateConVar("pbutton", "0.0", "Allow to use text message for partner button announcments.", 0, false, 0.0, true, 1.0);
+	gCV_bhop = CreateConVar("bhop", "0.0", "Autobhop.", 0, false, 0.0, true, 1.0);
+	gCV_autoswitch = CreateConVar("autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0, false, 0.0, true, 1.0);
+	gCV_autoflashbang = CreateConVar("autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
 
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -469,7 +473,7 @@ public void SQLRecalculatePoints2(Database db, DBResultSet results, const char[]
 
 	else if(strlen(error) == 0)
 	{
-		if(g_queryLast-- && g_queryLast == false)
+		if(g_queryLast-- && g_queryLast == 0)
 		{
 			g_mysql.Query(SQLRecalculatePoints3, "SELECT steamid FROM users");
 		}
@@ -528,7 +532,7 @@ public void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] e
 	{
 		if(results.HasResults == false)
 		{
-			if(g_queryLast-- && g_queryLast == false)
+			if(g_queryLast-- && g_queryLast == 0)
 			{
 				g_mysql.Query(SQLGetPointsMaxs, "SELECT points FROM users ORDER BY points DESC LIMIT 1");
 			}
@@ -825,13 +829,17 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 {
 	if(0 < activator <= MaxClients && IsClientInGame(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
-		if(g_button[activator] == true)
+		int convar = GetConVarInt(gCV_button);
+
+		if(g_button[activator] == true && convar == 1)
 		{
 			//PrintToChat(activator, "You have pressed a button.");
 			PrintToChat(activator, "\x01%T", "YouPressedButton", activator);
 		}
 
-		if(g_pbutton[g_partner[activator]] == true)
+		int convar2 = GetConVarInt(gCV_pbutton);
+
+		if(g_pbutton[g_partner[activator]] == true && convar2 == 1)
 		{
 			//PrintToChat(g_partner[activator], "Your partner have pressed a button.");
 			PrintToChat(g_partner[activator], "\x01%T", "YourPartnerPressedButton", g_partner[activator]);
@@ -885,7 +893,7 @@ public Action autobuy(int client, const char[] command, int argc)
 
 public Action rebuy(int client, const char[] command, int argc)
 {
-	Color(client, true, -1);
+	ColorZ(client, true, -1);
 
 	return Plugin_Continue;
 }
@@ -1191,7 +1199,7 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
-	Color(client, false, -1);
+	ColorZ(client, false, -1);
 	ColorFlashbang(client, false, -1);
 
 	g_color[client][0] = false;
@@ -1397,7 +1405,7 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 
 public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == false)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
 	{
 		static float originBooster[3];
 		GetClientAbsOrigin(client, originBooster);
@@ -1453,7 +1461,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 						g_skyVel[other][2] = 800.0;
 					}
 				}
-				if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == false : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					g_skyBoost[other] = 1;
 				}
@@ -1525,7 +1533,8 @@ public void Trikz(int client)
 		menu.AddItem("block", format);
 	}
 
-	if(g_partner[client] == true)
+	//if(g_partner[client] == true)
+	if(g_partner[client] > 0)
 	{
 		//menu.AddItem("partner", g_partner[client] ? "Breakup" : "Partner", g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		Format(format, sizeof(format), "%T", "Breakup");
@@ -1540,7 +1549,8 @@ public void Trikz(int client)
 		}
 	}
 
-	if(g_partner[client] == false)
+	//if(g_partner[client] == false)
+	if(g_partner[client] == 0)
 	{
 		Format(format, sizeof(format), "%T", "Partner");
 		if(g_devmap == true)
@@ -1563,24 +1573,28 @@ public void Trikz(int client)
 	else if(g_devmap == false)
 	{
 		//menu.AddItem("color", "Color", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-		if(g_partner[client] == true)
+		//if(g_partner[client] == true)
+		if(g_partner[client] > 0)
 		{
 			menu.AddItem("color", format, ITEMDRAW_DEFAULT);
 		}
 		
-		else if(g_partner[client] == false)
+		//else if(g_partner[client] == false)
+		else if(g_partner[client] == 0)
 		{
 			menu.AddItem("color", format, ITEMDRAW_DISABLED);
 		}
 	}
 	Format(format, sizeof(format), "%T", "Restart");
 	menu.AddItem("restart", "Restart", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED); //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
-	if(g_partner[client] == true)
+	//if(g_partner[client] == true)
+	if(g_partner[client] > 0)
 	{
 		menu.AddItem("restart", format, ITEMDRAW_DEFAULT);
 	}
 	
-	else if(g_partner[client] == false)
+	//else if(g_partner[client] == false)
+	else if(g_partner[client] == 0)
 	{
 		menu.AddItem("restart", format, ITEMDRAW_DISABLED);
 	}
@@ -1633,7 +1647,7 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 2:
 				{
-					Color(param1, true, -1);
+					ColorZ(param1, true, -1);
 					Trikz(param1);
 				}
 
@@ -1740,7 +1754,8 @@ public void Partner(int client)
 
 	else if(g_devmap == false)
 	{
-		if(g_partner[client] == false)
+		//if(g_partner[client] == false)
+		if(g_partner[client] == 0)
 		{
 			Menu menu = new Menu(partner_handler);
 
@@ -1755,7 +1770,8 @@ public void Partner(int client)
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
 				{
-					if(client != i && g_partner[i] == false)
+					//if(client != i && g_partner[i] == false)
+					if(client != i && g_partner[i] == 0)
 					{
 						GetClientName(i, name, sizeof(name));
 
@@ -1784,7 +1800,8 @@ public void Partner(int client)
 			
 		}
 
-		else if(g_partner[client] == true)
+		//else if(g_partner[client] == true)
+		else if(g_partner[client] > 0)
 		{
 			static char partner[32];
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
@@ -1849,7 +1866,8 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 			{
 				case 0:
 				{
-					if(g_partner[partner] == false)
+					//if(g_partner[partner] == false)
+					if(g_partner[partner] == 0)
 					{
 						g_partner[param1] = partner;
 						g_partner[partner] = param1;
@@ -1877,7 +1895,8 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						g_mysql.Query(SQLGetPartnerRecord, query, GetClientSerial(param1));
 					}
 
-					else if(g_partner[partner] == true)
+					//else if(g_partner[partner] == true)
+					else if(g_partner[partner] > 0)
 					{
 						//PrintToChat(param1, "A player already have a partner.");
 						PrintToChat(param1, "\x01%T", "AlreadyHavePartner", param1);
@@ -1914,7 +1933,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 			{
 				case 0:
 				{
-					Color(param1, false, -1);
+					ColorZ(param1, false, -1);
 					ColorFlashbang(param1, false, -1);
 
 					g_partner[param1] = 0;
@@ -2000,22 +2019,23 @@ public Action cmd_color(int client, int args)
 
 	if(strlen(arg) && 0 <= color <= 8)
 	{
-		Color(client, true, color);
+		ColorZ(client, true, color);
 	}
 
 	else if(!color)
 	{
-		Color(client, true, -1);
+		ColorZ(client, true, -1);
 	}
 
 	return Plugin_Handled;
 }
 
-public void Color(int client, bool customSkin, int color)
+public void ColorZ(int client, bool customSkin, int color)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		if(g_devmap == false && g_partner[client] == false)
+		//if(g_devmap == false && g_partner[client] == false)
+		if(g_devmap == false && g_partner[client] == 0)
 		{
 			PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
 			//PrintToChat(client, "You must have a partner.");
@@ -2117,7 +2137,8 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		if(g_devmap == false && g_partner[client] == false)
+		//if(g_devmap == false && g_partner[client] == false)
+		if(g_devmap == false && g_partner[client] == 0)
 		{
 			//PrintToChat(client, "You must have a partner.");
 			PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
@@ -2411,6 +2432,8 @@ public Action cmd_bhop(int client, int args)
 	{
 		PrintToChat(client, "\x01%T", "BhopOFF", client);
 	}
+
+	return Plugin_Handled;
 }
 
 public Action timer_resetfactory(Handle timer, int client)
@@ -2681,7 +2704,8 @@ public Action cmd_test(int client, int args)
 
 		int partner = StringToInt(arg);
 
-		if(partner <= MaxClients && g_partner[client] == false)
+		//if(partner <= MaxClients && g_partner[client] == false)
+		if(partner <= MaxClients && g_partner[client] == 0)
 		{
 			g_partner[client] = partner;
 
@@ -5400,7 +5424,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(g_devmap == false)
 		{
-			if(IsPlayerAlive(client) == true && g_partner[client] == false)
+			//if(IsPlayerAlive(client) == true && g_partner[client] == false)
+			if(IsPlayerAlive(client) == true && g_partner[client] == 0)
 			{
 				if(buttons & IN_USE)
 				{
@@ -5484,11 +5509,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		return Plugin_Continue;
 	}
+
+	return Plugin_Continue;
 }
 
 public Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < entity <= MaxClients && 0 < other <= MaxClients && IsClientInGame(other) == true && g_boost[other] == false && !(g_entityFlags[other] & FL_ONGROUND))
+	if(0 < entity <= MaxClients && 0 < other <= MaxClients && IsClientInGame(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
 		static float originOther[3];
 		GetClientAbsOrigin(other, originOther);
@@ -5650,7 +5677,7 @@ public Action timer_devmap(Handle timer)
 
 public void Devmap(bool force)
 {
-	if(force == true || g_voters == false)
+	if(force == true || g_voters == 0)
 	{
 		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] >= g_devmapCount[0])
 		{
@@ -5844,7 +5871,7 @@ public Action timer_afk(Handle timer, int client)
 
 public void AFK(int client, bool force)
 {
-	if(force == true || g_voters == false)
+	if(force == true || g_voters == 0)
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -6120,69 +6147,69 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 		else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
 		{
-			Color(client, true, -1);
+			ColorZ(client, true, -1);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 0", false) || StrEqual(sArgs, "c white", false) || StrEqual(sArgs, "color 0", false) || StrEqual(sArgs, "color white", false))
 		{
-			Color(client, true, 0);
+			ColorZ(client, true, 0);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 1", false) || StrEqual(sArgs, "c red", false) || StrEqual(sArgs, "color 1", false) || StrEqual(sArgs, "color red", false))
 		{
-			Color(client, true, 1);
+			ColorZ(client, true, 1);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 2", false) || StrEqual(sArgs, "c orange", false) || StrEqual(sArgs, "color 2", false) || StrEqual(sArgs, "color orange", false))
 		{
-			Color(client, true, 2);
+			ColorZ(client, true, 2);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 3", false) || StrEqual(sArgs, "c yellow", false) || StrEqual(sArgs, "color 3", false) || StrEqual(sArgs, "color yellow", false))
 		{
-			Color(client, true, 3);
+			ColorZ(client, true, 3);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 4", false) || StrEqual(sArgs, "c lime", false) || StrEqual(sArgs, "color 4", false) || StrEqual(sArgs, "color lime", false))
 		{
-			Color(client, true, 4);
+			ColorZ(client, true, 4);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 5", false) || StrEqual(sArgs, "c aqua", false) || StrEqual(sArgs, "color 5", false) || StrEqual(sArgs, "color aqua", false))
 		{
-			Color(client, true, 5);
+			ColorZ(client, true, 5);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 6", false) || StrEqual(sArgs, "c deep sky blue", false) || StrEqual(sArgs, "color 6", false) || StrEqual(sArgs, "color deep sky blue", false))
 		{
-			Color(client, true, 6);
+			ColorZ(client, true, 6);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 7", false) || StrEqual(sArgs, "c blue", false) || StrEqual(sArgs, "color 7", false) || StrEqual(sArgs, "color blue", false))
 		{
-			Color(client, true, 7);
+			ColorZ(client, true, 7);
 
 			return Plugin_Continue;
 		}
 		else if(StrEqual(sArgs, "c 8", false) || StrEqual(sArgs, "c magenta", false) || StrEqual(sArgs, "color 8", false) || StrEqual(sArgs, "color magenta", false))
 		{
-			Color(client, true, 8);
+			ColorZ(client, true, 8);
 
 			return Plugin_Continue;
 		}
@@ -6191,7 +6218,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		{
 			Restart(client)
 
-			if(g_partner[client] == true)
+			//if(g_partner[client] == true)
+			if(g_partner[client] == 0)
 			{
 				Restart(g_partner[client]);
 
@@ -6291,9 +6319,11 @@ public Action ProjectileBoostFixEndTouch(int entity, int other)
 	{
 		return Plugin_Continue;
 	}
+
+	return Plugin_Continue;
 }
 
-/*Action cmd_time(int client, int args)
+public Action cmd_time(int client, int args)
 {
 	if(IsPlayerAlive(client))
 	{
@@ -6301,31 +6331,38 @@ public Action ProjectileBoostFixEndTouch(int entity, int other)
 		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
 		int second = RoundToFloor(g_timerTime[client]) % 60;
+
 		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
+
 		if(g_partner[client])
 		{
 			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second);
-			return Plugin_Handlded;
+			return Plugin_Handled;
 		}
+
 		return Plugin_Handled;
 	}
 	else
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
+
 		if(observerMode < 7)
 		{
 			//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
 			int hour = (RoundToFloor(g_timerTime[observerTarget]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
 			int minute = (RoundToFloor(g_timerTime[observerTarget]) / 60) % 60;
 			int second = RoundToFloor(g_timerTime[observerTarget]) % 60;
+
 			PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second)
+
 			return Plugin_Handled;
 		}
+
 		return Plugin_Handled;
 	}
 	//return Plugin_Handled;
-}*/
+}
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
@@ -6511,9 +6548,9 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	bool convar = GetConVarBool(gCV_autoflashbang);
+	int convar = GetConVarInt(gCV_autoflashbang);
 	
-	if(convar == true && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == false)
+	if(convar == 1 && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang");
 		GivePlayerItem(client, "weapon_flashbang");
@@ -6523,6 +6560,7 @@ public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/n
 public Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon) == true)
+	//if()
 	{
 		RemoveEntity(weapon);
 
@@ -6535,6 +6573,8 @@ public Action SDKWeaponDrop(int client, int weapon)
 
 		return Plugin_Continue;
 	}
+
+	return Plugin_Continue;
 }
 
 public void SDKThink(int client)
@@ -6619,13 +6659,44 @@ public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 {
 	if(LibraryExists("fakeexpert-entityfilter") == true)
 	{
-		return entity > MaxClients && !Trikz_GetEntityFilter(client, entity);
+		if(Trikz_GetEntityFilter(client, entity) == false)
+		{
+			if(entity > MaxClients)
+			{
+				return true;
+			}
+			//return entity > MaxClients;
+		}
+
+		else if(Trikz_GetEntityFilter(client, entity) == true)
+		{
+			//return 0;
+			return false;
+		}
+		
+		return false;
 	}
 
 	else if(LibraryExists("fakeexpert-entityfilter") == false)
 	{
-		return entity > MaxClients;
+		if(entity > MaxClients)
+		{
+			return true;
+		}
+		else if(entity <= MaxClients)
+		{
+			return false;
+		}
+
+		return false;
+		//;return entity > MaxClients;
 	}
+
+	return false;
+	//else
+	//{
+	//	return 0;
+	//}
 }
 
 public Action timer_removePing(Handle timer, int client)
@@ -6645,6 +6716,8 @@ public Action timer_removePing(Handle timer, int client)
 
 		return Plugin_Continue;
 	}
+
+	return Plugin_Continue;
 }
 
 public Action SDKSetTransmitPing(int entity, int client)
@@ -6805,13 +6878,21 @@ public bool TR_donthitself(int entity, int mask, int client)
 {
 	if(LibraryExists("fakeexpert-entityfilter") == true)
 	{
-		return entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]];
+		if(entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]])
+		{
+			return true;
+		}
 	}
 
 	else if(LibraryExists("fakeexpert-entityfilter") == false)
 	{
-		return entity != client && 0 < entity <= MaxClients;
+		if(entity != client && 0 < entity <= MaxClients)
+		{
+			return true;
+		}
 	}
+
+	return false
 }
 
 public int Native_GetClientButtons(Handle plugin, int numParams)
@@ -6834,13 +6915,18 @@ public int Native_GetTimerState(Handle plugin, int numParams)
 
 	if(IsFakeClient(client) == false)
 	{
-		return g_state[client];
+		if(g_state[client] == true)
+		{
+			return true;
+		}
 	}
 
 	else if(IsFakeClient(client) == true)
 	{
 		return 0;
 	}
+
+	return 0;
 }
 
 public int Native_SetPartner(Handle plugin, int numParams)
@@ -6863,13 +6949,19 @@ public int Native_Restart(Handle plugin, int numParams)
 
 	if(0 < client <= MaxClients)
 	{
-		return g_partner[client];
+		int value = g_partner[client];
+		//if(g_partner[client] == true)
+		//{
+		return value;
+		//}
 	}
 
 	else if(!(0 < client <= MaxClients))
 	{
 		return 0;
 	}
+
+	return 0;
 }
 
 public int Native_GetDevmap(Handle plugin, int numParams)
@@ -6884,7 +6976,7 @@ public Action timer_clearlag(Handle timer)
 	return Plugin_Continue;
 }
 
-static bool GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+static float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float origin[3];
 	GetClientAbsOrigin(client, origin);
@@ -6902,8 +6994,10 @@ static bool GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 
 	float pos[3];
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
-
-	bool didHit = TR_DitHit(null);
+	TR_GetEndPosition(pos);
+	
+	return pos[2];
+	//bool didHit = TR_DitHit(null);
 	//if(TR_DitHit(INVALID_HANDLE) == true)
 	//{
 	//}
