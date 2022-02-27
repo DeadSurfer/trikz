@@ -145,7 +145,7 @@ Handle g_start;
 Handle g_record;
 int g_pointsMaxs = 1;
 int g_queryLast;
-Handle g_cookie[7];
+Handle g_cookie[8];
 float g_skyAble[MAXPLAYERS + 1];
 native bool Trikz_GetEntityFilter(int client, int entity);
 float g_restartInHold[MAXPLAYERS + 1];
@@ -172,13 +172,17 @@ ConVar gCV_autoflashbang;
 bool g_autoflash[MAXPLAYERS + 1];
 bool g_autoswitch[MAXPLAYERS + 1];
 bool g_bhop[MAXPLAYERS + 1];
+ConVar gCV_macro;
+bool g_macroDisabled[MAXPLAYER];
+float g_macroTime[MAXPLAYER];
+bool g_macroOpened[MAXPLAYER];
 
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "3.7",
+	version = "3.8",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -200,7 +204,8 @@ public void OnPluginStart()
 	gCV_bhop = CreateConVar("bhop", "0.0", "Autobhop.", 0, false, 0.0, true, 1.0);
 	gCV_autoswitch = CreateConVar("autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0, false, 0.0, true, 1.0);
 	gCV_autoflashbang = CreateConVar("autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
-
+	gCV_macro = CreateConVar("macro", "0.0", "Allow to use macro for each player.", 0, false, 0.0, true, 1.0);
+	
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
 	RegConsoleCmd("sm_t", cmd_trikz);
@@ -228,6 +233,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_mls", cmd_mlstats);
 	RegConsoleCmd("sm_button", cmd_button);
 	RegConsoleCmd("sm_pbutton", cmd_pbutton);
+	RegConsoleCmd("sm_macro", cmd_macro);
 
 	RegServerCmd("sm_createzones", cmd_createzones);
 	RegServerCmd("sm_createusers", cmd_createusers);
@@ -270,12 +276,12 @@ public void OnPluginStart()
 		HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	}
 
-	LoadTranslations("fakeexpert.phrases"); //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
+	LoadTranslations("trueexpert.phrases"); //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 
 	g_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell);
 	g_record = CreateGlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
 
-	RegPluginLibrary("fakeexpert");
+	RegPluginLibrary("trueexpert");
 
 	g_cookie[0] = RegClientCookie("vel", "velocity in hint", CookieAccess_Protected);
 	g_cookie[1] = RegClientCookie("mls", "mega long stats", CookieAccess_Protected);
@@ -284,7 +290,8 @@ public void OnPluginStart()
 	g_cookie[4] = RegClientCookie("autoflash", "autoflash", CookieAccess_Protected);
 	g_cookie[5] = RegClientCookie("autoswitch", "autoswitch", CookieAccess_Protected);
 	g_cookie[6] = RegClientCookie("bhop", "bhop", CookieAccess_Protected);
-	
+	g_cookie[7] = RegClientCookie("macro", "macro", CookieAccess_Protected);
+
 	CreateTimer(60.0, timer_clearlag);
 }
 
@@ -305,7 +312,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnMapStart()
 {
 	GetCurrentMap(g_map, sizeof(g_map));
-	Database.Connect(SQLConnect, "fakeexpert");
+	Database.Connect(SQLConnect, "trueexpert");
 
 	for(int i = 0; i <= 2; i++)
 	{
@@ -353,18 +360,18 @@ public void OnMapStart()
 		ForceChangeLevel(g_map, "Turn on sourcetv");
 	}
 
-	g_wModelThrown = PrecacheModel("models/fakeexpert/models/weapons/w_eq_flashbang_thrown.mdl", true);
+	g_wModelThrown = PrecacheModel("models/trueexpert/models/weapons/w_eq_flashbang_thrown.mdl", true);
 
-	g_wModelPlayer[1] = PrecacheModel("models/fakeexpert/player/ct_urban.mdl", true);
-	g_wModelPlayer[2] = PrecacheModel("models/fakeexpert/player/ct_gsg9.mdl", true);
-	g_wModelPlayer[3] = PrecacheModel("models/fakeexpert/player/ct_sas.mdl", true);
-	g_wModelPlayer[4] = PrecacheModel("models/fakeexpert/player/ct_gign.mdl", true);
+	g_wModelPlayer[1] = PrecacheModel("models/trueexpert/player/ct_urban.mdl", true);
+	g_wModelPlayer[2] = PrecacheModel("models/trueexpert/player/ct_gsg9.mdl", true);
+	g_wModelPlayer[3] = PrecacheModel("models/trueexpert/player/ct_sas.mdl", true);
+	g_wModelPlayer[4] = PrecacheModel("models/trueexpert/player/ct_gign.mdl", true);
 
-	PrecacheSound("fakeexpert/pingtool/click.wav", true); //https://forums.alliedmods.net/showthread.php?t=333211
+	PrecacheSound("trueexpert/pingtool/click.wav", true); //https://forums.alliedmods.net/showthread.php?t=333211
 
-	g_zoneModel[0] = PrecacheModel("materials/fakeexpert/zones/start.vmt", true);
-	g_zoneModel[1] = PrecacheModel("materials/fakeexpert/zones/finish.vmt", true);
-	g_zoneModel[2] = PrecacheModel("materials/fakeexpert/zones/check_point.vmt", true);
+	g_zoneModel[0] = PrecacheModel("materials/trueexpert/zones/start.vmt", true);
+	g_zoneModel[1] = PrecacheModel("materials/trueexpert/zones/finish.vmt", true);
+	g_zoneModel[2] = PrecacheModel("materials/trueexpert/zones/check_point.vmt", true);
 
 	g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_smoke = PrecacheModel("materials/sprites/smoke.vmt", true);
@@ -372,7 +379,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true);
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true);
 
-	char path[12][PLATFORM_MAX_PATH] = {"models/fakeexpert/models/weapons/", "models/fakeexpert/pingtool/", "models/fakeexpert/player/", "materials/fakeexpert/models/weapons/w_models/w_eq_flashbang/", "materials/fakeexpert/pingtool/", "sound/fakeexpert/pingtool/", "materials/fakeexpert/player/ct_gign/", "materials/fakeexpert/player/ct_gsg9/", "materials/fakeexpert/player/ct_sas/", "materials/fakeexpert/player/ct_urban/", "materials/fakeexpert/player/", "materials/fakeexpert/zones/"};
+	char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/models/weapons/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/models/weapons/w_models/w_eq_flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
@@ -1169,6 +1176,8 @@ public void OnClientPutInServer(int client)
 	}
 
 	g_clantagOnce[client] = false;
+	g_macroTime[client] = 0.0;
+	g_macroOpened[client] = false;
 }
 
 public void OnClientCookiesCached(int client)
@@ -2369,12 +2378,18 @@ public Action cmd_autoflash(int client, int args)
 
 	if(g_autoflash[client] == true)
 	{
-		PrintToChat(client, "\x01%T", "AutoflashON", client);
+		//PrintToChat(client, "\x01%T", "AutoflashON", client);
+		char format[256];
+		Format(format, sizeof(format), "AutoflashON", client);
+		SendMessage(format, false, client);
 	}
 
 	else if(g_autoflash[client] == false)
 	{
-		PrintToChat(client, "\x01%T", "AutoflashOFF", client);
+		//PrintToChat(client, "\x01%T", "AutoflashOFF", client);
+		char format[256];
+		Format(format, sizeof(format), "AutoflashOFF", client);
+		SendMessage(format, false, client);
 	}
 
 	return Plugin_Handled
@@ -2397,12 +2412,18 @@ public Action cmd_autoswitch(int client, int args)
 
 	if(g_autoswitch[client] == true)
 	{
-		PrintToChat(client, "\x01%T", "AutoswitchON", client);
+		//PrintToChat(client, "\x01%T", "AutoswitchON", client);
+		char format[256];
+		Format(format, sizeof(format), "AutoswitchON", client);
+		SendMessage(format, false, client);
 	}
 	
 	else if(g_autoswitch[client] == false)
 	{
-		PrintToChat(client, "\x01%T", "AutoswitchOFF", client);
+		//PrintToChat(client, "\x01%T", "AutoswitchOFF", client);
+		char format[256];
+		Format(format, sizeof(format), "AutoswitchOFF", client);
+		SendMessage(format, false, client);
 	}
 
 	return Plugin_Handled;
@@ -2425,12 +2446,52 @@ public Action cmd_bhop(int client, int args)
 	
 	if(g_bhop[client] == true)
 	{
-		PrintToChat(client, "\x01%T", "BhopON", client);
+		//PrintToChat(client, "\x01%T", "BhopON", client);
+		char format[256];
+		Format(format, sizeof(format), "BhopON", client);
+		SendMessage(format, false, client);
 	}
 
 	else if(g_bhop[client] == false)
 	{
-		PrintToChat(client, "\x01%T", "BhopOFF", client);
+		//PrintToChat(client, "\x01%T", "BhopOFF", client);
+		//SendMessage(format, sizeof(format), "BhopOFF", client);
+		char format[256];
+		Format(format, sizeof(format), "BhopOFF", client);
+		SendMessage(format, false, client);
+	}
+
+	return Plugin_Handled;
+}
+
+public Action cmd_macro(int client, int args)
+{
+	int convar = GetConVarInt(gCV_macro);
+	
+	if(convar == 0)
+	{
+		return Plugin_Handled;
+	}
+
+	g_macroDisabled[client] = !g_macroDisabled[client];
+	
+	char value[16]
+	IntToString(g_macroDisabled[client], value, sizeof(value));
+	
+	if(g_macroDisabled[client] == false)
+	{
+		//PrintToChat(client, "\x01%T", "MacroON", client);
+		char format[256];
+		Format(format, sizeof(format), "\x01%T", "MacroON", client);
+		SendMessage(format, false, client);
+	}
+	
+	else if(g_macroDisabled[client] == true)
+	{
+		//PrintToChat(client, "\x01%T", "MacroOFF", client);
+		char format[256];
+		Format(format, sizeof(format), "\x01%T", "MacroOFF", client);
+		SendMessage(format, false, client);
 	}
 
 	return Plugin_Handled;
@@ -2452,7 +2513,7 @@ public void CreateStart()
 
 	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0");
-	DispatchKeyValue(entity, "targetname", "fakeexpert_startzone");
+	DispatchKeyValue(entity, "targetname", "trueexpert_startzone");
 
 	DispatchSpawn(entity);
 
@@ -2513,7 +2574,7 @@ public void CreateEnd()
 
 	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0");
-	DispatchKeyValue(entity, "targetname", "fakeexpert_endzone");
+	DispatchKeyValue(entity, "targetname", "trueexpert_endzone");
 
 	DispatchSpawn(entity);
 
@@ -2726,7 +2787,7 @@ public Action cmd_test(int client, int args)
 			}
 		}
 
-		PrintToServer("LibraryExists (fakeexpert-entityfilter): %i", LibraryExists("fakeexpert-entityfilter"));
+		PrintToServer("LibraryExists (trueexpert-entityfilter): %i", LibraryExists("expert-entityfilter"));
 
 		//https://forums.alliedmods.net/showthread.php?t=187746
 		static int color = 0;
@@ -3729,7 +3790,7 @@ public void CreateCP(int cpnum)
 {
 	char trigger[64];
 
-	Format(trigger, sizeof(trigger), "fakeexpert_cp%i", cpnum);
+	Format(trigger, sizeof(trigger), "trueexpert_cp%i", cpnum);
 
 	int entity = CreateEntityByName("trigger_multiple");
 
@@ -3879,13 +3940,13 @@ public Action SDKStartTouch(int entity, int other)
 
 		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger));
 
-		if(StrEqual(trigger, "fakeexpert_startzone", false) && g_mapFinished[g_partner[other]] == true)
+		if(StrEqual(trigger, "trueexpert_startzone", false) && g_mapFinished[g_partner[other]] == true)
 		{
 			Restart(other); //expert zone idea.
 			Restart(g_partner[other]);
 		}
 
-		if(StrEqual(trigger, "fakeexpert_endzone", false))
+		if(StrEqual(trigger, "trueexpert_endzone", false))
 		{
 			g_mapFinished[other] = true;
 
@@ -4180,6 +4241,2880 @@ public Action SDKStartTouch(int entity, int other)
 								//char sSRCPHour[32];
 								char textCP[256];
 								Format(textCP, sizeof(textCP), "\x01%T", "CPImprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
+								SendMessage(textCP, true, other);
+							}
+
+							else if(g_cpTimeClient[i][other] > g_cpTime[i])
+							{
+								//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond);
+								char textCP[256];
+								Format(textCP, sizeof(textCP), "\x01%T", "CPDeprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
+								SendMessage(textCP, true, other);
+							}
+						}
+					}
+				}
+
+				else if(g_ServerRecordTime == 0.0)
+				{
+					g_ServerRecordTime = g_timerTime[other];
+
+					g_haveRecord[other] = g_timerTime[other];
+					g_haveRecord[g_partner[other]] = g_timerTime[other];
+
+					g_mateRecord[other] = g_timerTime[other];
+					g_mateRecord[g_partner[other]] = g_timerTime[other];
+
+					//PrintToChatAll("\x077CFC00New server record!");
+					PrintToChatAll("\x01%T", "NewServerRecord");
+					PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond);
+					char sName[MAX_NAME_LENGTH];
+					GetClientName(other, sName, sizeof(sName));
+					char sPartner[MAX_NAME_LENGTH];
+					GetClientName(g_partner[other], sPartner, sizeof(sPartner));
+					char text2[256];
+					Format(text2, sizeof(text2), "\x01%T", "NewServerRecordFist", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond);
+					SendMessage(text2, true, other);
+
+					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
+					FinishMSG(g_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
+
+					for(int i = 1; i <= g_cpCount; i++)
+					{
+						if(g_cp[i][other])
+						{
+							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i);
+							char textCP[256];
+							Format(textCP, sizeof(textCP), "\x01%T", "CPNEW", i);
+							SendMessage(textCP, true, other);
+						}
+					}
+
+					g_ServerRecord = true;
+
+					CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
+
+					Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime());
+
+					g_mysql.Query(SQLInsertRecord, query);
+
+					Call_StartForward(g_record);
+
+					Call_PushCell(other);
+					Call_PushFloat(g_timerTime[other]);
+
+					Call_Finish();
+				}
+
+				g_state[other] = false;
+				g_state[g_partner[other]] = false;
+			}
+		}
+
+		for(int i = 1; i <= g_cpCount; i++)
+		{
+			static char triggerCP[64];
+
+			Format(triggerCP, sizeof(triggerCP), "trueexpert_cp%i", i);
+
+			if(StrEqual(trigger, triggerCP, false))
+			{
+				g_cp[i][other] = true;
+
+				if(g_cp[i][other] == true && g_cp[i][g_partner[other]] == true && g_cpLock[i][other] == false)
+				{
+					static char query[512]; //https://stackoverflow.com/questions/9617453 https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
+
+					int playerid = GetSteamAccountID(other);
+					int partnerid = GetSteamAccountID(g_partner[other]);
+
+					if(g_cpLock[1][other] == false && g_mateRecord[other] > 0.0)
+					{
+						Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
+						g_mysql.Query(SQLSetTries, query);
+					}
+
+					g_cpLock[i][other] = true;
+					g_cpLock[i][g_partner[other]] = true;
+
+					g_cpTimeClient[i][other] = g_timerTime[other];
+					g_cpTimeClient[i][g_partner[other]] = g_timerTime[other];
+
+					Format(query, sizeof(query), "SELECT cp%i FROM records LIMIT 1", i);
+
+					DataPack dp = new DataPack();
+
+					dp.WriteCell(GetClientSerial(other));
+					dp.WriteCell(i);
+
+					g_mysql.Query(SQLCPSelect, query, dp);
+				}
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, int personalSecond, int srHour, int srMinute, int srSecond)
+{
+	char sPersonalHour[32];
+	Format(sPersonalHour, sizeof(sPersonalHour), "%i", personalHour);
+	char sPersonalMinute[32];
+	Format(sPersonalMinute, sizeof(sPersonalMinute), "%i", personalMinute);
+	char sPersonalSecond[32];
+	Format(sPersonalSecond, sizeof(sPersonalSecond), "%i", personalSecond);
+	
+	char sSRHour[32];
+	Format(sSRHour, sizeof(sSRHour), "%i", srHour);
+	char sSRMinute[32];
+	Format(sSRMinute, sizeof(sSRMinute), "%i", srMinute);
+	char sSRSecond[32];
+	Format(sSRSecond, sizeof(sSRSecond), "%i", srSecond);
+
+	char format[256];
+
+	if(onlyCP == true)
+	{
+		if(firstCPRecord == true)
+		{
+			SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+			Format(format, sizeof(format), "%T", "CP-record", client, cpnum);
+			ShowHudText(client, 1, format);
+
+			SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+			//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+			Format(format, sizeof(format), "%T", "CP-recordDetail", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+			ShowHudText(client, 2, format);
+			
+			SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+			ShowHudText(client, 3, "+00:00:00");
+			//Format(format, sizeof(format), "+00:00:00");
+			//Show
+			Format(format, sizeof(format), "%T", "CP-DetailZero", client);
+			ShowHudText(client, 3, format);
+
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+				{
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+					if(observerMode < 7 && observerTarget == client)
+					{
+						SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+						//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
+						Format(format, sizeof(format), "%T", "CP-record", i, cpnum);
+						ShowHudText(i, 1, format);
+
+						SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+						//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+						Format(format, sizeof(format), "%T", "CP-recordDetail", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+
+						SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+						Format(format, sizeof(format), "%T", "CP-DetailZero", i);
+						ShowHudText(i, 3, format);
+						//ShowHudText(i, 3, "+00:00:00");
+						
+					}
+				}
+			}
+		}
+
+		else if(firstCPRecord == false)
+		{
+			if(cpRecord == true)
+			{
+				SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157B3F4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+				Format(format, sizeof(format), "%T", "CP-recordNotFirst", client, cpnum);
+				ShowHudText(client, 1, format);
+
+				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirst", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				ShowHudText(client, 2, format);
+
+				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
+				Format(format, sizeof(format), "%T", "CP-recordImproveNotFirst", client, sSRHour, sSRMinute, sSRSecond);
+				ShowHudText(client, 3, format);
+				//ShowHudText(client, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+							Format(format, sizeof(format), "%T", "CP-recordNotFist", i, cpnum);
+							//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
+							ShowHudText(i, 1, format);
+
+							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+							//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+							Format(format, sizeof(format), "%T", "CP-recordDetailNotFirst", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							ShowHudText(i, 2, format);
+
+							SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
+							Format(format, sizeof(format), "%T", "CP-recordImproveNotFirst", i, sSRHour, sSRMinute, sSRSecond);
+							ShowHudText(i, 3, format);
+							//ShowHudText(i, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+						}
+					}
+				}
+			}
+
+			else if(cpRecord == false)
+			{
+				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				//Format(format, sizeof(format), "%T", "CP-recordDeprove"
+				Format(format, sizeof(format), "%T", "CP-recordNon", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				ShowHudText(client, 1, format);
+				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+
+				SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+				//ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+				Format(format, sizeof(format), "%T", "CP-recordDeprove", client, srHour, srMinute, srSecond);
+				ShowHudText(client, 2, format);
+
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+							//ShowHudText(i, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+							Format(format, sizeof(format), "%T", "CP-recordNon", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							ShowHudText(i, 1, format);
+
+							SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+							//ShowHudText(i, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+							Format(format, sizeof(format), "%T", "CP-recordDeprove", i, sSRHour, sSRMinute, sSRSecond);
+							ShowHudText(i, 2, format);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	else if(onlyCP == false)
+	{
+		if(firstServerRecord == true)
+		{
+			SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			//ShowHudText(client, 1, "MAP FINISHED!"); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+			Format(format, sizeof(format), "%T", "MapFinishedFirstRecord", client);
+			ShowHudText(client, 1, format);
+
+			SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+			//ShowHudText(client, 2, "NEW SERVER RECORD!");
+			Format(format, sizeof(format), "%T", "NewServerRecordHud", client);
+			ShowHudText(client, 2, format);
+
+			SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+			//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+			Format(format, sizeof(format), "%T", "FirstRecordHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+			ShowHudText(client, 3, format);
+
+			SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+			ShowHudText(client, 4, "+00:00:00");
+			Format(format, sizeof(format), "%T", "FirstRecordZeroHud", client);
+			ShowHudText(client, 4, format);
+
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+				{
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+					if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
+					{
+						SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+						//ShowHudText(i, 1, "MAP FINISHED!");
+						//Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
+						Format(format, sizeof(format), "%T", "MapFinishedFirstRecord", i);
+						ShowHudText(i, 1, format);
+
+						SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+						ShowHudText(i, 2, "NEW SERVER RECORD!");
+						//ShowHudText(i, 2, "%T", ""
+						Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
+						ShowHudText(i, 2, format);
+
+						SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+						//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+						Format(format, sizeof(format), "%T", "FirstRecordHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+						ShowHudText(i, 4, format);
+
+						SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+						//ShowHudText(i, 4, "+00:00:00");
+						Format(format, sizeof(format), "FirstRecordZeroHud", i);
+						ShowHudText(i, 4, format);
+
+					}
+				}
+			}
+		}
+
+		else if(firstServerRecord == false)
+		{
+			if(serverRecord == true)
+			{
+				SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+				ShowHudText(client, 1, "MAP FINISHED!");
+				
+				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirst", client);
+				ShowHudText(client, 2, format);
+				SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+				//ShowHudText(client, 2, "NEW SERVER RECORD!");
+				Format(format, sizeof(format), "%T", "NewServerRecordNotFirst", client);
+				ShowHudText(client, 2, format);
+
+				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirst", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				ShowHudText(client, 3, format);
+
+				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
+				//ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond); //https://youtu.be/j4L3YvHowv8?t=45
+				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirst", client);
+				ShowHudText(client, 4, format);
+				
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+						if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
+						{
+							SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+							//ShowHudText(i, 1, "MAP FINISHED!");
+							Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirst", i);
+							ShowHudText(i, 1, format);
+							
+							SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+							//ShowHudText(i, 2, "NEW SERVER RECORD!");
+							Format(format, sizeof(format), "%T", "NewServerRecordNotFirst", i);
+							ShowHudText(i, 2, format);
+
+							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+							//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+							//ShowHudText(i
+							//Format(sizeof
+							Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirst", i);
+							ShowHudText(i, 3, format);
+
+							SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
+							//ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+							//ShowHudText(i, 4,
+							Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirst", i);
+							ShowHudText(i, 3, format);
+						}
+					}
+				}
+			}
+
+			else if(serverRecord == false)
+			{
+				SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+				//ShowHudText(client, 1, "MAP FINISHED!");
+				Format(format, sizeof(format), "%T", "MapFinishedDeprove", client);
+				ShowHudText(client, 1, format);
+				
+				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+				Format(format, sizeof(format), "%T", "MapFinishedTimeDeprove", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				ShowHudText(client, 2, format);
+				
+				SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+				//ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwn", client, sSRHour, sSRMinute, sSRSecond);
+				ShowHudText(client, 3, format);
+
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+					{
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+						if(observerMode < 7 && observerTarget == client)
+						{
+							SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+							//char format[256];
+							Format(format, sizeof(format), "%T", "MapFinishedDeprove", i);
+							//ShowHudText(i, 1, "MAP FINISHED!");
+							ShowHudText(i, 1, format);
+
+							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+							
+							//ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+							Format(format, sizeof(format), "%T", "MapFinishedTimeDeprove", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							ShowHudText(i, 2, format);
+							
+							SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
+							//ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwn", i, sSRHour, sSRMinute, sSRSecond);
+							ShowHudText(i, 3, format);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLUpdateRecord: %s", error);
+	}
+}
+
+public void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLInsertRecord: %s", error);
+	}
+}
+
+public Action timer_sourcetv(Handle timer)
+{
+	ConVar CV_sourcetv = FindConVar("tv_enable");
+	bool sourcetv = CV_sourcetv.BoolValue; //https://sm.alliedmods.net/new-api/convars/__raw
+
+	if(sourcetv == true)
+	{
+		ServerCommand("tv_stoprecord");
+
+		g_sourcetvchangedFileName = false;
+
+		CreateTimer(5.0, timer_runsourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+
+		g_ServerRecord = false;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action timer_runsourcetv(Handle timer)
+{
+	static char filenameOld[256];
+	Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
+
+	static char filenameNew[256];
+	Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
+
+	RenameFile(filenameNew, filenameOld);
+	ConVar CV_sourcetv = FindConVar("tv_enable");
+
+	bool sourcetv = CV_sourcetv.BoolValue; //https://sm.alliedmods.net/new-api/convars/__raw
+
+	if(sourcetv == true)
+	{
+		PrintToServer("sourcetv start recording.")
+
+		FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime())
+		FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime())
+
+		ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map)
+
+		g_sourcetvchangedFileName = true
+	}
+
+	return Plugin_Continue
+}
+
+public void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
+{
+	if(strlen(error))
+	{
+		PrintToServer("SQLCPSelect: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		data.Reset()
+
+		int other = GetClientFromSerial(data.ReadCell())
+		int cpnum = data.ReadCell()
+
+		static char query[512]
+
+		if(results.FetchRow() == true)
+		{
+			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
+
+			DataPack dp = new DataPack();
+
+			dp.WriteCell(GetClientSerial(other));
+			dp.WriteCell(cpnum);
+
+			g_mysql.Query(SQLCPSelect2, query, dp);
+		}
+
+		else if(results.FetchRow() == false)
+		{
+			int personalHour = (RoundToFloor(g_timerTime[other]) / 3600) % 24;
+			int personalMinute = (RoundToFloor(g_timerTime[other]) / 60) % 60;
+			int personalSecond = RoundToFloor(g_timerTime[other]) % 60;
+
+			FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+		}
+	}
+}
+
+public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLCPSelect2: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		data.Reset();
+
+		int other = GetClientFromSerial(data.ReadCell());
+		int cpnum = data.ReadCell();
+
+		int personalHour = (RoundToFloor(g_timerTime[other]) / 3600) % 24;
+		int personalMinute = (RoundToFloor(g_timerTime[other]) / 60) % 60;
+		int personalSecond = RoundToFloor(g_timerTime[other]) % 60;
+
+		if(results.FetchRow() == true)
+		{
+			g_cpTime[cpnum] = results.FetchFloat(0);
+
+			if(g_cpTimeClient[cpnum][other] < g_cpTime[cpnum])
+			{
+				gF_cpDiff[cpnum][other] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
+				gF_cpDiff[cpnum][g_partner[other]] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
+
+				int srCPHour = (RoundToFloor(gF_cpDiff[cpnum][other]) / 3600) % 24;
+				int srCPMinute = (RoundToFloor(gF_cpDiff[cpnum][other]) / 60) % 60;
+				int srCPSecond = RoundToFloor(gF_cpDiff[cpnum][other]) % 60;
+
+				FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+				FinishMSG(g_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+			}
+
+			else
+			{
+				gF_cpDiff[cpnum][other] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
+				gF_cpDiff[cpnum][g_partner[other]] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
+
+				int srCPHour = (RoundToFloor(gF_cpDiff[cpnum][other]) / 3600) % 24;
+				int srCPMinute = (RoundToFloor(gF_cpDiff[cpnum][other]) / 60) % 60;
+				int srCPSecond = RoundToFloor(gF_cpDiff[cpnum][other]) % 60;
+
+				FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+				FinishMSG(g_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+			}
+		}
+
+		else if(results.FetchRow() == false)
+		{
+			FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+		}
+	}
+}
+
+public void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLSetTries: %s", error);
+	}
+}
+
+public Action cmd_createzones(int args)
+{
+	g_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x2 INT, possition_y2 INT, possition_z2 INT, PRIMARY KEY (id))") //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+
+	return Plugin_Continue
+}
+
+public void SQLConnect(Database db, const char[] error, any data)
+{
+	if(db != INVALID_HANDLE)
+	{
+		PrintToServer("Successfuly connected to database."); //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
+
+		g_mysql = db;
+
+		g_mysql.SetCharset("utf8"); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-core.sp#L2883
+
+		ForceZonesSetup(); //https://sm.alliedmods.net/new-api/dbi/__raw
+
+		g_dbPassed = true ;//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
+
+		static char query[512]
+
+		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", g_map);
+
+		g_mysql.Query(SQLGetServerRecord, query)
+
+		RecalculatePoints()
+	}
+
+	else if(db == INVALID_HANDLE)
+	{
+		PrintToServer("Failed to connect to database. (%s)", error);
+	}
+}
+
+public void ForceZonesSetup()
+{
+	static char query[512];
+
+	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
+
+	g_mysql.Query(SQLSetZoneStart, query);
+}
+
+public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLSetZoneStart: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		if(results.FetchRow() == true)
+		{
+			g_zoneStartOrigin[0][0] = results.FetchFloat(0);
+			g_zoneStartOrigin[0][1] = results.FetchFloat(1);
+			g_zoneStartOrigin[0][2] = results.FetchFloat(2);
+
+			g_zoneStartOrigin[1][0] = results.FetchFloat(3);
+			g_zoneStartOrigin[1][1] = results.FetchFloat(4);
+			g_zoneStartOrigin[1][2] = results.FetchFloat(5);
+
+			CreateStart();
+
+			static char query[512];
+
+			Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
+
+			g_mysql.Query(SQLSetZoneEnd, query);
+		}
+	}
+}
+
+public void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLSetZoneEnd: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		if(results.FetchRow() == true)
+		{
+			g_zoneEndOrigin[0][0] = results.FetchFloat(0);
+			g_zoneEndOrigin[0][1] = results.FetchFloat(1);
+			g_zoneEndOrigin[0][2] = results.FetchFloat(2);
+
+			g_zoneEndOrigin[1][0] = results.FetchFloat(3);
+			g_zoneEndOrigin[1][1] = results.FetchFloat(4);
+			g_zoneEndOrigin[1][2] = results.FetchFloat(5);
+
+			CreateEnd();
+		}
+	}
+}
+
+public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLCreateZonesTable: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		PrintToServer("Zones table is successfuly created.");
+	}
+}
+
+public void DrawZone(int client, float life, float size, int speed)
+{
+	static float start[12][3]
+	static float end[12][3]
+
+	start[0][0] = (g_zoneStartOrigin[0][0] < g_zoneStartOrigin[1][0]) ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0]
+	start[0][1] = (g_zoneStartOrigin[0][1] < g_zoneStartOrigin[1][1]) ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1]
+	start[0][2] = (g_zoneStartOrigin[0][2] < g_zoneStartOrigin[1][2]) ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2]
+
+	start[0][2] += size
+
+	end[0][0] = (g_zoneStartOrigin[0][0] > g_zoneStartOrigin[1][0]) ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0]
+	end[0][1] = (g_zoneStartOrigin[0][1] > g_zoneStartOrigin[1][1]) ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1]
+	end[0][2] = (g_zoneStartOrigin[0][2] > g_zoneStartOrigin[1][2]) ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2]
+
+	end[0][2] += size
+
+	start[1][0] = (g_zoneEndOrigin[0][0] < g_zoneEndOrigin[1][0]) ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0]
+	start[1][1] = (g_zoneEndOrigin[0][1] < g_zoneEndOrigin[1][1]) ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1]
+	start[1][2] = (g_zoneEndOrigin[0][2] < g_zoneEndOrigin[1][2]) ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2]
+
+	start[1][2] += size
+
+	end[1][0] = (g_zoneEndOrigin[0][0] > g_zoneEndOrigin[1][0]) ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0]
+	end[1][1] = (g_zoneEndOrigin[0][1] > g_zoneEndOrigin[1][1]) ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1]
+	end[1][2] = (g_zoneEndOrigin[0][2] > g_zoneEndOrigin[1][2]) ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2]
+
+	end[1][2] += size
+
+	static int zones = 1
+
+	if(g_cpCount > 0)
+	{
+		zones += g_cpCount
+
+		for(int i = 2; i <= zones; i++)
+		{
+			int cpnum = i - 1
+
+			start[i][0] = (g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0]) ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0]
+			start[i][1] = (g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1]) ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1]
+			start[i][2] = (g_cpPos[0][cpnum][2] < g_cpPos[1][cpnum][2]) ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2]
+
+			start[i][2] += size
+
+			end[i][0] = (g_cpPos[0][cpnum][0] > g_cpPos[1][cpnum][0]) ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0]
+			end[i][1] = (g_cpPos[0][cpnum][1] > g_cpPos[1][cpnum][1]) ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1]
+			end[i][2] = (g_cpPos[0][cpnum][2] > g_cpPos[1][cpnum][2]) ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2]
+
+			end[i][2] += size
+		}
+	}
+
+	static float corners[12][8][3] //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
+
+	for(int i = 0; i <= zones; i++)
+	{
+		//bottom left front
+		corners[i][0][0] = start[i][0]
+		corners[i][0][1] = start[i][1]
+		corners[i][0][2] = start[i][2]
+
+		//bottom right front
+		corners[i][1][0] = end[i][0]
+		corners[i][1][1] = start[i][1]
+		corners[i][1][2] = start[i][2]
+
+		//bottom right back
+		corners[i][2][0] = end[i][0]
+		corners[i][2][1] = end[i][1]
+		corners[i][2][2] = start[i][2]
+
+		//bottom left back
+		corners[i][3][0] = start[i][0]
+		corners[i][3][1] = end[i][1]
+		corners[i][3][2] = start[i][2]
+
+		static int modelType = 0;
+
+		if(i == 1)
+		{
+			modelType = 1;
+		}
+
+		else if(i > 1)
+		{
+			modelType = 2;
+		}
+
+		for(int j = 0; j <= 3; j++)
+		{
+			int k = j + 1;
+
+			if(j == 3)
+			{
+				k = 0;
+			}
+
+			int color[4];
+			
+			TE_SetupBeamPoints(corners[i][j], corners[i][k], g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SendToClient(client);
+		}
+	}
+}
+
+public void ResetFactory(int client)
+{
+	g_readyToStart[client] = true;
+	//g_timerTime[client] = 0.0;
+	g_state[client] = false;
+}
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if(IsFakeClient(client) == false)
+	{
+		g_entityFlags[client] = GetEntityFlags(client);
+
+		g_entityButtons[client] = buttons;
+
+		bool convar = GetConVarBool(gCV_bhop);
+
+		if(convar == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
+		{
+			buttons &= ~IN_JUMP; //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
+			//return Plugin_Continue;
+		}
+
+		//Timer
+		if(g_state[client] == true && g_partner[client] > 0)
+		{
+			g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
+
+			//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
+			int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
+			int second = RoundToFloor(g_timerTime[client]) % 60;
+
+			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
+
+			if(IsPlayerAlive(client) == false)
+			{
+				ResetFactory(client);
+				ResetFactory(g_partner[client]);
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+
+		if(g_skyBoost[client] > 0)
+		{
+			if(g_skyBoost[client] == 1)
+			{
+				g_skyBoost[client] = 2;
+				//return Plugin_Continue;
+			}
+
+			else if(g_skyBoost[client] == 2)
+			{
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, g_skyVel[client]);
+
+				g_skyBoost[client] = 0;
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+
+		if(g_boost[client] > 0)
+		{
+			static float velocity[3];
+
+			if(g_boost[client] == 2)
+			{
+				velocity[0] = g_clientVel[client][0] - g_entityVel[client][0];
+				velocity[1] = g_clientVel[client][1] - g_entityVel[client][1];
+				velocity[2] = g_entityVel[client][2];
+
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+
+				g_boost[client] = 3;
+
+				//return Plugin_Continue;
+			}
+
+			else if(g_boost[client] == 3) //Let make loop finish and come back to here.
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity);
+
+				if(g_groundBoost[client] == true)
+				{
+					velocity[0] += g_entityVel[client][0];
+					velocity[1] += g_entityVel[client][1];
+					velocity[2] += g_entityVel[client][2];
+					//return Plugin_Continue;
+				}
+
+				else
+				{
+					velocity[0] += g_entityVel[client][0] * 0.135;
+					velocity[1] += g_entityVel[client][1] * 0.135;
+					//return Plugin_Continue;
+				}
+
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
+
+				g_boost[client] = 0;
+
+				g_mlsVel[client][1][0] = velocity[0];
+				g_mlsVel[client][1][1] = velocity[1];
+
+				MLStats(client, false);
+				//return Plugin_Continue;
+			}
+		}
+		if(IsPlayerAlive(client) == true && (g_partner[client] > 0 || g_devmap == true))
+		{
+			if(buttons & IN_USE)
+			{
+				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
+				{
+					g_pingTime[client] = GetEngineTime();
+					g_pingLock[client] = false;
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+
+			else if(!(buttons & IN_USE))
+			{
+				if(g_pingLock[client] == false)
+				{
+					g_pingLock[client] = true;
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+
+			if(g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] > 0.7)
+			{
+				g_pingLock[client] = true;
+
+				if(g_pingModel[client] > 0)
+				{
+					if(IsValidEntity(g_pingModel[client]))
+					{
+						RemoveEntity(g_pingModel[client]);
+						//return Plugin_Continue;
+					}
+
+					g_pingModel[client] = 0;
+
+					KillTimer(g_pingTimer[client]);
+				}
+
+				g_pingModel[client] = CreateEntityByName("prop_dynamic_override"); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+
+				SetEntityModel(g_pingModel[client], "models/trueexpert/pingtool/pingtool.mdl");
+
+				DispatchSpawn(g_pingModel[client]);
+
+				SetEntProp(g_pingModel[client], Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
+
+				static float start[3];
+				static float angle[3];
+				static float end[3];
+
+				GetClientEyePosition(client, start);
+
+				GetClientEyeAngles(client, angle);
+
+				GetAngleVectors(angle, angle, NULL_VECTOR, NULL_VECTOR);
+
+				for(int i = 0; i <= 2; i++)
+				{
+					angle[i] *= 8192.0;
+					end[i] = start[i] + angle[i]; //Thanks to rumour for pingtool original code.
+				}
+
+				TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client);
+
+				if(TR_DidHit(null))
+				{
+					TR_GetEndPosition(end);
+
+					float normal[3];
+
+					TR_GetPlaneNormal(null, normal); //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
+
+					GetVectorAngles(normal, normal);
+
+					GetAngleVectors(normal, angle, NULL_VECTOR, NULL_VECTOR);
+
+					for(int i = 0; i <= 2; i++)
+					{
+						end[i] += angle[i];
+					}
+
+					normal[0] -= 270.0;
+
+					SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal);
+					//return Plugin_Continue;
+				}
+
+				if(g_color[client][1] == true)
+				{
+					SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+					//return Plugin_Continue;
+				}
+
+				TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR);
+
+				//https://forums.alliedmods.net/showthread.php?p=1080444
+				if(g_color[client][1] == true)
+				{
+					int color[4];
+
+					for(int i = 0; i <= 2; i++)
+					{
+						color[i] = g_colorBuffer[client][i][1];
+						//return Plugin_Continue
+					}
+
+					color[3] = 255;
+
+					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
+					//return Plugin_Continue;
+				}
+
+				else if(g_color[client][1] == false)
+				{
+					int color[4];
+
+					for(int i = 0; i < 4; i++)
+					{
+						color[i] = 255;
+					}
+
+					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
+					//return Plugin_Continue;
+				}
+
+				if(LibraryExists("trueexpert-entityfilter") == true)
+				{
+					SDKHook(g_pingModel[client], SDKHook_SetTransmit, SDKSetTransmitPing);
+
+					g_pingModelOwner[g_pingModel[client]] = client;
+
+					static int clients[MAXPLAYERS + 1]; // 64 + 1
+					static int count = 0;
+
+					for(int i = 1; i <= MaxClients; i++)
+					{
+						if(IsClientInGame(i) == true)
+						{
+							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+
+							if(g_partner[client] == g_partner[g_partner[i]] || i == client || observerTarget == client)
+							{
+								clients[count++] = i;
+								//return Plugin_Continue;
+							}
+							//return Plugin_Continue;
+						}
+						//return Plugin_Continue;
+					}
+
+					TE_Send(clients, count);
+
+					EmitSound(clients, count, "trueexpert/pingtool/click.wav", client);
+					//return Plugin_Continue;
+				}
+
+				else if(LibraryExists("trueepxert-entityfilter") == false)
+				{
+					TE_SendToAll();
+
+					EmitSoundToAll("trueexpert/pingtool/click.wav", client);
+					//return Plugin_Continue;
+				}
+
+				g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
+				//return Plugin_Continue;
+			}
+		}
+		ConVar cvPhysics = FindConVar("sv_turbophysics");
+		//int physics = g_turbophysics.IntValue;
+		//int physics = cvPhysics = FindConVar("sv_turbophysics");
+		int physics = cvPhysics.IntValue;
+		//if(g_turbophysics.IntValue == 0)
+		//if(GetConVarInt(g_turbophysics) == 0)
+		if(physics == 0)
+		{
+			if(IsPlayerAlive(client) == true)
+			{
+				if(g_block[client] == true && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
+				{
+					SetEntProp(client, Prop_Data, "m_CollisionGroup", 5);
+					//return Plugin_Continue;
+				}
+
+				else if(g_block[client] == false && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+				{
+					SetEntProp(client, Prop_Data, "m_CollisionGroup", 2);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+		}
+
+		if(g_zoneDraw[client] == true)
+		{
+			if(GetEngineTime() - g_engineTime >= 0.1)
+			{
+				g_engineTime = GetEngineTime();
+
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) == true)
+					{
+						DrawZone(i, 0.1, 3.0, 10);
+						//return Plugin_Continue;
+					}
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+
+		if(IsClientObserver(client) == true && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //Make able to swtich wtih E to the partner via spectate.
+		{
+			int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
+			int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
+
+			if(0 < observerTarget <= MaxClients && g_partner[observerTarget] > 0 && IsPlayerAlive(g_partner[observerTarget]) == true && observerMode < 7)
+			{
+				SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget]);
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+
+		if(GetEngineTime() - g_hudTime[client] >= 0.1)
+		{
+			g_hudTime[client] = GetEngineTime();
+
+			Hud(client);
+			//return Plugin_Continue;
+		}
+
+		if(GetEntityFlags(client) & FL_ONGROUND)
+		{
+			if(g_mlsCount[client] > 0)
+			{
+				int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity");
+
+				static char class[32];
+
+				if(IsValidEntity(groundEntity) == true)
+				{
+					GetEntityClassname(groundEntity, class, sizeof(class));
+					//return Plugin_Continue;
+				}
+
+				if(StrEqual(class, "flashbang_projectile", false) == false)
+				{
+					GetClientAbsOrigin(client, g_mlsDistance[client][1]);
+
+					MLStats(client, true);
+
+					g_mlsCount[client] = 0;
+
+					//return Plugin_Continue;
+				}
+
+				//return Plugin_Continue;
+			}
+		}
+
+		int other = Stuck(client);
+
+		if(0 < other <= MaxClients && IsPlayerAlive(client) == true && g_block[other] == true)
+		{
+			if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
+			{
+				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
+
+				if(g_color[other][0] == true)
+				{
+					SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
+					//return Plugin_Continue;
+				}
+
+				else if(g_color[other][0] == false)
+				{
+					SetEntityRenderColor(other, 255, 255, 255, 125);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+		}
+
+		else if(IsPlayerAlive(client) == true && other == -1 && g_block[client] == true)
+		{
+			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+			{
+				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5);
+
+				if(g_color[client][0] == true)
+				{
+					SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+					//return Plugin_Continue;
+				}
+
+				else if(g_color[client][0] == false)
+				{
+					SetEntityRenderColor(client, 255, 255, 255, 255);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+
+		if(g_devmap == false)
+		{
+			//if(IsPlayerAlive(client) == true && g_partner[client] == false)
+			if(IsPlayerAlive(client) == true && g_partner[client] == 0)
+			{
+				if(buttons & IN_USE)
+				{
+					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
+					{
+						g_partnerInHold[client] = GetEngineTime();
+						g_partnerInHoldLock[client] = false;
+						//return Plugin_Continue;
+					}
+					//return Plugin_Continue;
+				}
+
+				else if(!(buttons & IN_USE))
+				{
+					if(g_partnerInHoldLock[client] == false)
+					{
+						g_partnerInHoldLock[client] = true;
+						//return Plugin_Continue;
+					}
+					//return Plugin_Continue;
+				}
+
+				if(g_partnerInHoldLock[client] == false && GetEngineTime() - g_partnerInHold[client] > 0.7)
+				{
+					g_partnerInHoldLock[client] = true;
+
+					Partner(client);
+
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+
+			if(buttons & IN_RELOAD)
+			{
+				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
+				{
+					g_restartInHold[client] = GetEngineTime();
+
+					g_restartInHoldLock[client] = false;
+
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+
+			else if(!(buttons & IN_RELOAD))
+			{
+				if(g_restartInHoldLock[client] == false)
+				{
+					g_restartInHoldLock[client] = true;
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+
+			if(g_restartInHoldLock[client] == false && GetEngineTime() - g_restartInHold[client] > 0.7)
+			{
+				g_restartInHoldLock[client] = true;
+
+				if(g_partner[client] > 0)
+				{
+					Restart(client);
+					Restart(g_partner[client]);
+					//return Plugin_Continue;
+				}
+
+				else if(g_partner[client] == 0)
+				{
+					Partner(client);
+					//return Plugin_Continue;
+				}
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+		if(buttons & IN_ATTACK2)
+		{
+			char classname[32];
+			GetClientWeapon(client, classname, sizeof(classname));
+			if(StrEqual(classname, "weapon_flashbang", false))
+			{
+				if(g_macroOpened[client] == false && (g_macroTime[client] == 0.0 || GetEngineTime() - g_macroTime[client] >= 0.34))
+				{
+					g_macroTime[client] = GetEngineTime();
+					g_macroOpened[client] = true;
+				}
+
+				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.02)
+				{
+					buttons |= IN_ATTACK;
+				}
+			}
+		}
+
+		if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.11)
+		{
+			buttons |= IN_JUMP;
+			g_macroTime[client] = GetEngineTime();
+			g_macroOpened[client] = false;
+		}
+		return Plugin_Continue;
+	}
+	else if(IsFakeClient(client) == true)
+	{
+		return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action ProjectileBoostFix(int entity, int other)
+{
+	if(0 < entity <= MaxClients && 0 < other <= MaxClients && IsClientInGame(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
+	{
+		static float originOther[3];
+		GetClientAbsOrigin(other, originOther);
+
+		static float originEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
+
+		static float maxsEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
+
+		static float delta = 0.0;
+		delta = originOther[2] - originEntity[2] - maxsEntity[2];
+
+		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
+		if(0.0 < delta < 2.0) //Tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", g_entityVel[other]);
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", g_clientVel[other]);
+
+			g_boostTime[other] = GetEngineTime();
+			g_groundBoost[other] = g_bouncedOff[entity];
+
+			SetEntProp(entity, Prop_Send, "m_nSolidType", 0); //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
+
+			g_flash[other] = EntIndexToEntRef(entity); //Thats should never happen.
+			g_boost[other] = 1;
+
+			static float vel[3];
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel);
+
+			g_mlsVel[other][0][0] = vel[0];
+			g_mlsVel[other][0][1] = vel[1];
+
+			g_mlsCount[other]++;
+
+			if(g_mlsCount[other] == 1)
+			{
+				GetClientAbsOrigin(other, g_mlsDistance[other][0]);
+				//return Plugin_Continue;
+			}
+
+			g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+			//return Plugin_Continue;
+		}
+		//return Plugin_Continue;
+	}
+	//else
+	//{
+	return Plugin_Continue;
+	//}
+}
+
+public Action cmd_devmap(int client, int args)
+{
+	if(GetEngineTime() - g_devmapTime > 35.0 && GetEngineTime() - g_afkTime > 30.0)
+	{
+		g_voters = 0;
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false)
+			{
+				g_voters++;
+
+				if(g_devmap == true)
+				{
+					Menu menu = new Menu(devmap_handler);
+
+					menu.SetTitle("Turn off dev map?");
+
+					menu.AddItem("yes", "Yes");
+					menu.AddItem("no", "No");
+
+					menu.Display(i, 20);
+				}
+
+				else if(g_devmap == false)
+				{
+					Menu menu = new Menu(devmap_handler);
+
+					menu.SetTitle("Turn on dev map?");
+
+					menu.AddItem("yes", "Yes");
+					menu.AddItem("no", "No");
+					menu.Display(i, 20);
+
+					//return Plugin_Continue;
+				}
+			}
+		}
+
+		g_devmapTime = GetEngineTime();
+
+		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE);
+
+		//PrintToChatAll("Devmap vote started by %N", client);
+		static char name[MAX_NAME_LENGTH];
+		GetClientName(client, name, sizeof(name));
+
+		PrintToChatAll("\x01%T", "DevMapStart", client, name);
+
+		//return Plugin_Handled;
+	}
+
+	else if(GetEngineTime() - g_devmapTime <= 35.0 || GetEngineTime() - g_afkTime <= 30.0)
+	{
+		//PrintToChat(client, "Devmap vote is not allowed yet.");
+		PrintToChat(client, "\x01%T", "DevMapNotAllowed", client);
+
+		//return Plugin_Handled;
+	}
+
+	return Plugin_Handled;
+}
+
+public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					g_devmapCount[1]++;
+
+					g_voters--;
+
+					Devmap(false);
+					//return param2;
+				}
+
+				case 1:
+				{
+					g_devmapCount[0]++;
+
+					g_voters--;
+
+					Devmap(false);
+					//return param2;
+				}
+				//return param2;
+			}
+			return param2;
+		}
+		//return param2;
+	}
+	return param2;
+}
+
+public Action timer_devmap(Handle timer)
+{
+	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
+	Devmap(true);
+
+	return Plugin_Continue;
+}
+
+public void Devmap(bool force)
+{
+	if(force == true || g_voters == 0)
+	{
+		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] >= g_devmapCount[0])
+		{
+			if(g_devmap == true)
+			{
+				PrintToChatAll("Devmap will be disabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+			}
+
+			else if(g_devmap == false)
+			{
+				PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+			}
+
+			CreateTimer(5.0, timer_changelevel, g_devmap ? false : true);
+		}
+
+		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] <= g_devmapCount[0])
+		{
+			if(g_devmap == true)
+			{
+				//PrintToChatAll("Devmap will be continue. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]); //google translate russian to english.
+				PrintToChatAll("\x01%T", "DevMapContinue", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+			}
+
+			else if(g_devmap == false)
+			{
+				PrintToChatAll("\x01%T", "DevMapWillNotBe", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+				//PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+			}
+		}
+
+		for(int i = 0; i <= 1; i++)
+		{
+			g_devmapCount[i] = 0;
+		}
+	}
+
+	return;
+}
+
+public Action timer_changelevel(Handle timer, bool value)
+{
+	g_devmap = value;
+
+	ForceChangeLevel(g_map, "Reason: Devmap");
+
+	return Plugin_Continue;
+}
+
+public Action cmd_top(int client, int args)
+{
+	CreateTimer(0.1, timer_motd, client, TIMER_FLAG_NO_MAPCHANGE); //OnMapStart() is not work from first try.
+
+	return Plugin_Handled;
+}
+
+public Action timer_motd(Handle timer, int client)
+{
+	if(IsClientInGame(client) == true)
+	{
+		ConVar hostname = FindConVar("hostname");
+
+		static char hostnameBuffer[256];
+
+		hostname.GetString(hostnameBuffer, sizeof(hostnameBuffer));
+
+		static char url[192];
+
+		g_urlTop.GetString(url, sizeof(url));
+
+		Format(url, sizeof(url), "%s%s", url, g_map);
+
+		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL); //https://forums.alliedmods.net/showthread.php?t=232476
+
+		//return Plugin_Continue;
+	}
+
+	else if(IsClientInGame(client) == false)
+	{
+		PrintToServer("Player %N (ID: %i) is not in-game.", client, client)
+
+		//return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action cmd_afk(int client, int args)
+{
+	bool convar = GetConVarBool(gCV_afk);
+
+	if(convar == true && (GetEngineTime() - g_afkTime > 30.0 && GetEngineTime() - g_devmapTime > 35.0))
+	{
+		g_voters = 0;
+
+		g_afkClient = client;
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false && IsPlayerAlive(i) == false && client != i)
+			{
+				g_afk[i] = false;
+
+				g_voters++;
+
+				Menu menu = new Menu(afk_handler);
+				//c
+				//menu.SetTitle("Are you here?");
+				menu.SetTitle("%T", "AreYouHere?", client);
+
+				//menu.AddItem("yes", "Yes");
+				static char format[256];
+				Format(format, sizeof(format), "%T", "Yes", client);
+				menu.AddItem("yes", format);
+				static char format2[256];
+				Format(format, sizeof(format), "%T", "No", client);
+				menu.AddItem("no", format2);
+
+				menu.Display(i, 20);
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+
+		g_afkTime = GetEngineTime();
+
+		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE);
+
+		//PrintToChatAll("Afk check - vote started by %N", client);
+		static char name[MAX_NAME_LENGTH];
+		GetClientName(client, name, sizeof(name));
+		PrintToChatAll("\x01%T", "AFKCHECK", name, client);
+
+		//return Plugin_Handled;
+	}
+	else if(GetEngineTime() - g_afkTime <= 30.0 || GetEngineTime() - g_devmapTime <= 35.0)
+	{
+		//PrintToChat(client, "Afk vote is not allowed yet.");
+		//PrintToChatAll("\x01%T");
+		PrintToChat(client, "\x01%T", "AFKCHECK2", client);
+
+		//return Plugin_Handled;
+	}
+
+	return Plugin_Handled;
+}
+
+public int afk_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					g_afk[param1] = true;
+
+					g_voters--;
+
+					AFK(g_afkClient, false);
+
+					//return param2;
+				}
+
+				case 1:
+				{
+					g_voters--;
+
+					AFK(g_afkClient, false);
+
+					//return param2;
+				}
+				//return param2;
+			}
+			return param2;
+		}
+		//return param2;
+	}
+	return param2;
+}
+
+public Action timer_afk(Handle timer, int client)
+{
+	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
+	AFK(client, true);
+
+	return Plugin_Continue;
+}
+
+public void AFK(int client, bool force)
+{
+	if(force == true || g_voters == 0)
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false && g_afk[i] == false && client != i)
+			{
+				//KickClient(i, "Away from keyboard");
+				KickClient(i, "%T", "AwayFromKeyboard", i);
+			}
+		}
+		//return Plugin_Continue;
+	}
+}
+
+public Action cmd_noclip(int client, int args)
+{
+	bool convar = GetConVarBool(gCV_noclip);
+
+	if(convar == true)
+	{
+		Noclip(client);
+	}
+
+	return Plugin_Handled;
+}
+
+public void Noclip(int client)
+{
+	if(0 < client <= MaxClients)
+	{
+		if(g_devmap == true)
+		{
+			SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
+
+			//PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.");
+
+			if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
+			{
+				PrintToChat(client, "\x01%T", "NoClipEnabled");
+			}
+
+			else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
+			{
+				PrintToChat(client, "\x01%T", "NoClipDisabled");
+			}
+		}
+
+		else if(g_devmap == false)
+		{
+			//PrintToChat(client, "Turn on devmap.");
+			PrintToChat(client, "\x01%T", "DevMapIsOFF");
+		}
+	}
+}
+
+public Action cmd_spec(int client, int args)
+{
+	bool convar = GetConVarBool(gCV_spec);
+
+	if(convar == true)
+	{
+		ChangeClientTeam(client, CS_TEAM_SPECTATOR);
+	}
+
+	return Plugin_Handled;
+}
+
+public Action cmd_hud(int client, int args)
+{
+	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+
+	menu.SetTitle("Hud");
+
+	menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
+	menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
+
+	menu.Display(client, 20);
+
+	return Plugin_Handled;
+}
+
+public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
+		{
+			g_menuOpened[param1] = true;
+
+			//return param1;
+		}
+
+		case MenuAction_Select:
+		{
+			static char value[16];
+
+			switch(param2)
+			{
+				case 0:
+				{
+					g_hudVel[param1] = !g_hudVel[param1];
+
+					IntToString(g_hudVel[param1], value, sizeof(value));
+
+					SetClientCookie(param1, g_cookie[0], value);
+					//return param1;
+				}
+
+				case 1:
+				{
+					g_mlstats[param1] = !g_mlstats[param1];
+
+					IntToString(g_mlstats[param1], value, sizeof(value));
+
+					SetClientCookie(param1, g_cookie[1], value);
+					//return param1;
+				}
+			}
+
+			cmd_hud(param1, 0);
+
+			//return param2;
+		}
+		case MenuAction_Cancel:
+		{
+			g_menuOpened[param1] = false; //Idea from expert zone.
+			//return param1;
+		}
+
+		case MenuAction_Display:
+		{
+			g_menuOpened[param1] = true;
+			//return param1;
+		}
+	}
+
+	return param2;
+}
+
+public void Hud(int client)
+{
+	float vel[3];
+
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
+
+	float velXY = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
+
+	if(g_hudVel[client] == true)
+	{
+		PrintHintText(client, "%.0f", velXY);
+	}
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) == true && IsPlayerAlive(i) == false)
+		{
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+			if(observerMode < 7 && observerTarget == client && g_hudVel[i] == true)
+			{
+				PrintHintText(i, "%.0f", velXY);
+			}
+		}
+	}
+
+	return;
+}
+
+public Action cmd_mlstats(int client, int args)
+{
+	g_mlstats[client] = !g_mlstats[client];
+
+	static char value[16];
+
+	IntToString(g_mlstats[client], value, sizeof(value));
+
+	SetClientCookie(client, g_cookie[1], value);
+
+	//PrintToChat(client, g_mlstats[client] ? "ML stats is on." : "ML stats is off.");
+
+	if(g_mlstats[client] == true)
+	{
+		PrintToChat(client, "\x01%T", "MLStatsON");
+	}
+
+	else if(g_mlstats[client] == false)
+	{
+		PrintToChat(client, "\x01%T", "MLStatsOFF");
+	}
+
+	return Plugin_Handled;
+}
+
+public Action cmd_button(int client, int args)
+{
+	g_button[client] = !g_button[client];
+
+	static char value[16];
+
+	IntToString(g_button[client], value, sizeof(value));
+
+	SetClientCookie(client, g_cookie[2], value);
+
+	//PrintToChat(client, g_button[client] ? "Button announcer is on." : "Button announcer is off.");
+
+	if(g_button[client] == true)
+	{
+		PrintToChat(client, "\x01%T", "ButtonAnnounserON");
+	}
+
+	else if(g_button[client] == false)
+	{
+		PrintToChat(client, "\x01%T", "ButtonAnnonserOFF");
+	}
+
+	return Plugin_Handled;
+}
+
+public Action cmd_pbutton(int client, int args)
+{
+	g_pbutton[client] = !g_pbutton[client]; //toggling
+
+	static char value[16];
+
+	IntToString(g_pbutton[client], value, sizeof(value));
+
+	SetClientCookie(client, g_cookie[3], value);
+
+	//PrintToChat(client, g_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.");
+
+	if(g_pbutton[client] == true)
+	{
+		PrintToChat(client, "\x01%T", "ButtonAnnouncerPartnerON");
+	}
+
+	else if(g_pbutton[client] == false)
+	{
+		PrintToChat(client, "\x01%T", "ButtonAnnouncerPartnerOFF");
+	}
+
+	return Plugin_Handled;
+}
+
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	if(IsChatTrigger() == false)
+	{
+		if(StrEqual(sArgs, "t", false) || StrEqual(sArgs, "trikz", false))
+		{
+			if(g_menuOpened[client] == false)
+			{
+				Trikz(client);
+
+				return Plugin_Continue;
+			}
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "bl", false) || StrEqual(sArgs, "block", false))
+		{
+			Block(client);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "p", false) || StrEqual(sArgs, "partner", false))
+		{
+			Partner(client);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
+		{
+			ColorZ(client, true, -1);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 0", false) || StrEqual(sArgs, "c white", false) || StrEqual(sArgs, "color 0", false) || StrEqual(sArgs, "color white", false))
+		{
+			ColorZ(client, true, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 1", false) || StrEqual(sArgs, "c red", false) || StrEqual(sArgs, "color 1", false) || StrEqual(sArgs, "color red", false))
+		{
+			ColorZ(client, true, 1);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 2", false) || StrEqual(sArgs, "c orange", false) || StrEqual(sArgs, "color 2", false) || StrEqual(sArgs, "color orange", false))
+		{
+			ColorZ(client, true, 2);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 3", false) || StrEqual(sArgs, "c yellow", false) || StrEqual(sArgs, "color 3", false) || StrEqual(sArgs, "color yellow", false))
+		{
+			ColorZ(client, true, 3);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 4", false) || StrEqual(sArgs, "c lime", false) || StrEqual(sArgs, "color 4", false) || StrEqual(sArgs, "color lime", false))
+		{
+			ColorZ(client, true, 4);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 5", false) || StrEqual(sArgs, "c aqua", false) || StrEqual(sArgs, "color 5", false) || StrEqual(sArgs, "color aqua", false))
+		{
+			ColorZ(client, true, 5);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 6", false) || StrEqual(sArgs, "c deep sky blue", false) || StrEqual(sArgs, "color 6", false) || StrEqual(sArgs, "color deep sky blue", false))
+		{
+			ColorZ(client, true, 6);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "c 7", false) || StrEqual(sArgs, "c blue", false) || StrEqual(sArgs, "color 7", false) || StrEqual(sArgs, "color blue", false))
+		{
+			ColorZ(client, true, 7);
+
+			return Plugin_Continue;
+		}
+		else if(StrEqual(sArgs, "c 8", false) || StrEqual(sArgs, "c magenta", false) || StrEqual(sArgs, "color 8", false) || StrEqual(sArgs, "color magenta", false))
+		{
+			ColorZ(client, true, 8);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
+		{
+			Restart(client)
+
+			//if(g_partner[client] == true)
+			if(g_partner[client] == 0)
+			{
+				Restart(g_partner[client]);
+
+				return Plugin_Continue;
+			}
+
+			return Plugin_Continue;
+		}
+		//else if(StrEqual(sArgs, "time"))
+		//	cmd_time(client, 0)
+		else if(StrEqual(sArgs, "devmap", false))
+		{
+			cmd_devmap(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "top", false))
+		{
+			cmd_top(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "cp", false))
+		{
+			Checkpoint(client);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "afk", false))
+		{
+			cmd_afk(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "nc", false) || StrEqual(sArgs, "noclip", false))
+		{
+			Noclip(client);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "sp", false) || StrEqual(sArgs, "spec", false))
+		{
+			cmd_spec(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "hud", false))
+		{
+			cmd_hud(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "mls", false))
+		{
+			cmd_mlstats(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "button", false))
+		{
+			cmd_button(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "pbutton", false))
+		{
+			cmd_pbutton(client, 0);
+
+			return Plugin_Continue;
+		}
+
+		return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action ProjectileBoostFixEndTouch(int entity, int other)
+{
+	if(other == 0)
+	{
+		g_bouncedOff[entity] = true; //Get from Tengu github "tengulawl" scriptig "boost-fix.sp".
+
+		return Plugin_Continue;
+	}
+
+	else if(other > 0)
+	{
+		return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action cmd_time(int client, int args)
+{
+	if(IsPlayerAlive(client))
+	{
+		//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+		int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
+		int second = RoundToFloor(g_timerTime[client]) % 60;
+
+		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
+
+		if(g_partner[client])
+		{
+			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second);
+			return Plugin_Handled;
+		}
+
+		return Plugin_Handled;
+	}
+	else
+	{
+		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
+		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
+
+		if(observerMode < 7)
+		{
+			//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+			int hour = (RoundToFloor(g_timerTime[observerTarget]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+			int minute = (RoundToFloor(g_timerTime[observerTarget]) / 60) % 60;
+			int second = RoundToFloor(g_timerTime[observerTarget]) % 60;
+
+			PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second)
+
+			return Plugin_Handled;
+		}
+
+		return Plugin_Handled;
+	}
+	//return Plugin_Handled;
+}
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	if(StrEqual(classname, "flashbang_projectile", false))
+	{
+		g_bouncedOff[entity] = false; //"Tengulawl" "boost-fix.sp".
+
+		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix);
+		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch);
+		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile);
+		SDKHook(entity, SDKHook_StartTouch, SDKStopSpam);
+	}
+}
+
+public void SDKProjectile(int entity)
+{
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+
+	if(IsValidEntity(entity) == true && IsValidEntity(client) == true)
+	{
+		bool convar = GetConVarBool(gCV_autoflashbang);
+
+		if(convar == true && g_autoflash[client] == true)
+		{
+			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+		}
+
+		RequestFrame(frame_blockExplosion, entity);
+
+		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE);
+
+		if(g_color[client][1] == true)
+		{
+			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
+			SetEntProp(entity, Prop_Data, "m_nSkin", 1);
+
+			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+			//return Plugin_Continue;
+		}
+		//return Plugin_Continue;
+	}
+}
+
+public Action SDKStopSpam(int entity, int other)
+{
+	if(0 < other <= MaxClients && IsClientInGame(other) == true)
+	{
+		static float originOther[3];
+		GetClientAbsOrigin(other, originOther);
+
+		static float originEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
+
+		static float maxsEntity[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
+
+		static float delta = 0.0;
+		delta = originOther[2] - originEntity[2] - maxsEntity[2];
+
+		if(delta == -66.015251)
+		{
+			int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+			//if(owner < 0)
+			//{
+				//owner = 0;
+				//return Plugin_Continue;
+			//}
+			g_projectileSoundLoud[owner > 0 ? owner : 0] = entity;
+
+			//return Plugin_Continue;
+		}
+
+		//return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public void frame_blockExplosion(int entity)
+{
+	if(IsValidEntity(entity) == true)
+	{
+		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0); //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+	}
+
+	return;
+}
+
+public Action timer_deleteProjectile(Handle timer, int entity)
+{
+	if(IsValidEntity(entity) == true)
+	{
+		FlashbangEffect(entity);
+
+		RemoveEntity(entity);
+
+		//return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public void FlashbangEffect(const int entity)
+{
+	bool filter = LibraryExists("trueexpert-entityfilter");
+
+	float origin[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
+
+	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
+
+	int clients[MAXPLAYERS + 1];
+	int count = 0;
+
+	if(filter == true)
+	{
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+		if(owner == -1)
+		{
+			owner = 0;
+		}
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true)
+			{
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+
+				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || observerTarget == owner)
+				{
+					clients[count++] = i;
+				}
+			}
+		}
+
+		TE_Send(clients, count);
+	}
+
+	else if(filter == false)
+	{
+		TE_SendToAll();
+	}
+
+	float dir[3]; //https://forums.alliedmods.net/showthread.php?t=274452
+
+	dir[0] = GetRandomFloat(-1.0, 1.0);
+	dir[1] = GetRandomFloat(-1.0, 1.0);
+	dir[2] = GetRandomFloat(-1.0, 1.0);
+
+	TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2));
+
+	if(filter == true)
+	{
+		TE_Send(clients, count);
+	}
+
+	else if(filter == false)
+	{
+		TE_SendToAll(); //Idea from "Expert-Zone". So, we just made non empty event.
+	}
+
+	char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"};
+
+	if(filter == true)
+	{
+		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL);
+	}
+
+	else if(filter == false)
+	{
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+	}
+}
+
+public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
+{
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR); //https://forums.alliedmods.net/showthread.php?p=1687371
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR);
+
+	return Plugin_Handled; //Full god-mode.
+}
+
+public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
+{
+	int convar = GetConVarInt(gCV_autoflashbang);
+	
+	if(convar == 1 && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
+		GivePlayerItem(client, "weapon_flashbang");
+		GivePlayerItem(client, "weapon_flashbang");
+	}
+}
+
+public Action SDKWeaponDrop(int client, int weapon)
+{
+	if(IsValidEntity(weapon) == true)
+	//if()
+	{
+		RemoveEntity(weapon);
+
+		return Plugin_Continue;
+	}
+
+	else if(IsValidEntity(weapon) == false)
+	{
+		PrintToServer("Weapon %i is not valid.", weapon);
+
+		return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public void SDKThink(int client)
+{
+	if(IsFakeClient(client) == false)
+	{
+		if(GetClientButtons(client) & IN_ATTACK)
+		{
+			g_readyToFix[client] = true;
+		}
+
+		if(g_readyToFix[client] == true)
+		{
+			char classname[32];
+
+			GetClientWeapon(client, classname, sizeof(classname));
+
+			if(StrEqual(classname, "weapon_flashbang", false))
+			{
+				bool convar = GetConVarBool(gCV_autoswitch);
+				
+				if(convar == true && g_autoswitch[client] == true && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
+				{
+					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+
+					g_readyToFix[client] = false;
+
+					g_silentKnife = true;
+
+					FakeClientCommandEx(client, "use weapon_knife");
+
+					RequestFrame(frame_fix, client);
+				}
+			}
+		}
+	}
+}
+
+public void frame_fix(int client)
+{
+	if(IsClientInGame(client) == true)
+	{
+		RequestFrame(frame_fix2, client);
+	}
+}
+
+public void frame_fix2(int client)
+{
+	if(IsClientInGame(client) == true)
+	{
+		RequestFrame(frame_fix3, client);
+	}
+}
+
+public void frame_fix3(int client)
+{
+	if(IsClientInGame(client) == true)
+	{
+		RequestFrame(frame_fix4, client);
+	}
+}
+
+public void frame_fix4(int client)
+{
+	if(IsClientInGame(client) == true)
+	{
+		RequestFrame(frame_fix5, client);
+	}
+}
+
+public void frame_fix5(int client)
+{
+	if(IsClientInGame(client) == true)
+	{
+		FakeClientCommandEx(client, "use weapon_flashbang");
+
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
+	}
+}
+
+public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
+{
+	if(LibraryExists("trueexpert-entityfilter") == true)
+	{
+		if(Trikz_GetEntityFilter(client, entity) == false)
+		{
+			if(entity > MaxClients)
+			{
+				return true;
+			}
+			//return entity > MaxClients;
+		}
+
+		else if(Trikz_GetEntityFilter(client, entity) == true)
+		{
+			//return 0;
+			return false;
+		}
+		
+		return false;
+	}
+
+	else if(LibraryExists("trueexpert-entityfilter") == false)
+	{
+		if(entity > MaxClients)
+		{
+			return true;
+		}
+		else if(entity <= MaxClients)
+		{
+			return false;
+		}
+
+		return false;
+		//;return entity > MaxClients;
+	}
+
+	return false;
+	//else
+	//{
+	//	return 0;
+	//}
+}
+
+public Action timer_removePing(Handle timer, int client)
+{
+	if(g_pingModel[client] > 0)
+	{
+		RemoveEntity(g_pingModel[client]);
+
+		g_pingModel[client] = 0;
+
+		return Plugin_Continue;
+	}
+
+	else if(g_pingModel[client] == 0)
+	{
+		PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
+
+		return Plugin_Continue;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action SDKSetTransmitPing(int entity, int client)
+{
+	if(IsPlayerAlive(client) == true && g_pingModelOwner[entity] != client && g_partner[g_pingModelOwner[entity]] != g_partner[g_partner[client]])
+	{
+		return Plugin_Handled;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
+{
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) && g_silentKnife == true)
+	{
+		g_silentKnife = false;
+
+		return Plugin_Handled;
+	}
+
+	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav", false))
+	{
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+		//if(owner < 0)
+		//{
+			//owner = 0;
+			//return Plugin_Continue;
+		//}
+
+		if(g_projectileSoundLoud[owner > 0 ? owner : 0] == entity)
+		{
+			return Plugin_Handled;
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public Action timer_clantag(Handle timer, int client)
+{
+	if(0 < client <= MaxClients && IsClientInGame(client) == true)
+	{
+		if(g_state[client] == true)
+		{
+			CS_SetClientClanTag(client, g_clantag[client][1]);
+
+			return Plugin_Continue;
+		}
+
+		else if(g_state[client] == false)
+		{
+			CS_SetClientClanTag(client, g_clantag[client][0]);
+
+			return Plugin_Stop;
+		}
+	}
+
+	return Plugin_Stop;
+}
+
+public void MLStats(const int client, bool ground)
+{
+	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
+	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
+
+	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost);
+
+	char print[256];
+
+	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
+	{
+		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i]);
+	}
+
+	if(g_mlsCount[client] > 10)
+	{
+		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]]);
+	}
+
+	if(ground == true)
+	{
+		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0];
+		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
+
+		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+
+		g_teleported[client] = false;
+	}
+
+	if(g_mlstats[g_mlsFlyer[client]] == true)
+	{
+		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client]);
+
+		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+		bfmsg.WriteByte(true);
+
+		bfmsg.WriteString(print);
+
+		EndMessage();
+	}
+
+	if(g_mlstats[client] == true)
+	{
+		Handle KeyHintText = StartMessageOne("KeyHintText", client);
+
+		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+		bfmsg.WriteByte(true);
+
+		bfmsg.WriteString(print);
+
+		EndMessage();
+	}
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+		{
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+			if(observerMode < 7 && (observerTarget == client || observerTarget == g_mlsFlyer[client]) && g_mlstats[i] == true)
+			{
+				Handle KeyHintText = StartMessageOne("KeyHintText", i);
+
+				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+				bfmsg.WriteByte(true);
+
+				bfmsg.WriteString(print);
+
+				EndMessage();
+			}
+		}
+	}
+}
+
+public int Stuck(int client)
+{
+	float mins[3];
+	float maxs[3];
+	float origin[3];
+
+	GetClientMins(client, mins);
+	GetClientMaxs(client, maxs);
+
+	GetClientAbsOrigin(client, origin);
+
+	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client); //Skiper, Gurman idea, plugin 2020 year.
+
+	return TR_GetEntityIndex();
+}
+
+public bool TR_donthitself(int entity, int mask, int client)
+{
+	if(LibraryExists("trueexpert-entityfilter") == true)
+	{
+		if(entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]])
+		{
+			return true;
+		}
+	}
+
+	else if(LibraryExists("trueexpert-entityfilter") == false)
+	{
+		if(entity != client && 0 < entity <= MaxClients)
+		{
+			return true;
+		}
+	}
+
+	return false
+}
+
+public int Native_GetClientButtons(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+
+	return g_entityButtons[client];
+}
+
+public int Native_GetClientPartner(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+
+	return g_partner[client];
+}
+
+public int Native_GetTimerState(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+
+	if(IsFakeClient(client) == false)
+	{
+		if(g_state[client] == true)
+		{
+			return true;
+		}
+	}
+
+	else if(IsFakeClient(client) == true)
+	{
+		return 0;
+	}
+
+	return 0;
+}
+
+public int Native_SetPartner(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	int partner = GetNativeCell(2);
+
+	g_partner[client] = partner;
+	g_partner[partner] = client;
+
+	return partner;
+}
+
+public int Native_Restart(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+
+	Restart(client);
+	Restart(g_partner[client]);
+
+	if(0 < client <= MaxClients)
+	{
+		int value = g_partner[client];
+		//if(g_partner[client] == true)
+		//{
+		return value;
+		//}
+	}
+
+	else if(!(0 < client <= MaxClients))
+	{
+		return 0;
+	}
+
+	return 0;
+}
+
+public int Native_GetDevmap(Handle plugin, int numParams)
+{
+	return g_devmap;
+}
+
+public Action timer_clearlag(Handle timer)
+{
+	ServerCommand("mat_texture_list_txlod_sync reset");
+
+	return Plugin_Continue;
+}
+
+static float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+{
+	float origin[3];
+	GetClientAbsOrigin(client, origin);
+
+	float originDir[3];
+	GetClientAbsOrigin(client, originDir);
+
+	originDir[2] -= 90.0;
+
+	float mins[3];
+	GetClientMins(client, mins);
+
+	float maxs[3];
+	GetClientMaxs(client, maxs);
+
+	float pos[3];
+	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
+	TR_GetEndPosition(pos);
+	
+	return pos[2];
+	//bool didHit = TR_DitHit(null);
+	//if(TR_DitHit(INVALID_HANDLE) == true)
+	//{
+	//}
+	//if(didHit == true)
+	//{
+	//}
+		//TR_GetEndPosition(pos);
+
+		//return pos[2];
+	//else if(TR_DitHit(null) == false)
+	//{
+		//PrintToServer("Is not hited ground for player %N", client);
+
+		//return pos[2];
+	//}
+
+	//return pos[2];
+	//if(TR_DidHit(null) != true) //sweeden information
+	//else if(TR_DitHit(null) == false)
+}
+
+public int GetColour(const int r, const int g, const int b, const int a)
+{
+	int color = 0;
+
+	color |= (r & 255) << 24;
+	color |= (g & 255) << 16;
+	color |= (b & 255) << 8;
+	color |= (a & 255) << 0;
+
+	return color;
+}", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 								SendMessage(textCP, true, other);
 							}
 
@@ -6534,499 +9469,4 @@ public void FlashbangEffect(const int entity)
 
 	else if(filter == false)
 	{
-		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
-	}
-}
-
-public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
-{
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR); //https://forums.alliedmods.net/showthread.php?p=1687371
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR);
-
-	return Plugin_Handled; //Full god-mode.
-}
-
-public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
-{
-	int convar = GetConVarInt(gCV_autoflashbang);
-	
-	if(convar == 1 && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	{
-		GivePlayerItem(client, "weapon_flashbang");
-		GivePlayerItem(client, "weapon_flashbang");
-	}
-}
-
-public Action SDKWeaponDrop(int client, int weapon)
-{
-	if(IsValidEntity(weapon) == true)
-	//if()
-	{
-		RemoveEntity(weapon);
-
-		return Plugin_Continue;
-	}
-
-	else if(IsValidEntity(weapon) == false)
-	{
-		PrintToServer("Weapon %i is not valid.", weapon);
-
-		return Plugin_Continue;
-	}
-
-	return Plugin_Continue;
-}
-
-public void SDKThink(int client)
-{
-	if(IsFakeClient(client) == false)
-	{
-		if(GetClientButtons(client) & IN_ATTACK)
-		{
-			g_readyToFix[client] = true;
-		}
-
-		if(g_readyToFix[client] == true)
-		{
-			char classname[32];
-
-			GetClientWeapon(client, classname, sizeof(classname));
-
-			if(StrEqual(classname, "weapon_flashbang", false))
-			{
-				bool convar = GetConVarBool(gCV_autoswitch);
-				
-				if(convar == true && g_autoswitch[client] == true && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
-				{
-					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
-
-					g_readyToFix[client] = false;
-
-					g_silentKnife = true;
-
-					FakeClientCommandEx(client, "use weapon_knife");
-
-					RequestFrame(frame_fix, client);
-				}
-			}
-		}
-	}
-}
-
-public void frame_fix(int client)
-{
-	if(IsClientInGame(client) == true)
-	{
-		RequestFrame(frame_fix2, client);
-	}
-}
-
-public void frame_fix2(int client)
-{
-	if(IsClientInGame(client) == true)
-	{
-		RequestFrame(frame_fix3, client);
-	}
-}
-
-public void frame_fix3(int client)
-{
-	if(IsClientInGame(client) == true)
-	{
-		RequestFrame(frame_fix4, client);
-	}
-}
-
-public void frame_fix4(int client)
-{
-	if(IsClientInGame(client) == true)
-	{
-		RequestFrame(frame_fix5, client);
-	}
-}
-
-public void frame_fix5(int client)
-{
-	if(IsClientInGame(client) == true)
-	{
-		FakeClientCommandEx(client, "use weapon_flashbang");
-
-		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
-	}
-}
-
-public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
-{
-	if(LibraryExists("fakeexpert-entityfilter") == true)
-	{
-		if(Trikz_GetEntityFilter(client, entity) == false)
-		{
-			if(entity > MaxClients)
-			{
-				return true;
-			}
-			//return entity > MaxClients;
-		}
-
-		else if(Trikz_GetEntityFilter(client, entity) == true)
-		{
-			//return 0;
-			return false;
-		}
-		
-		return false;
-	}
-
-	else if(LibraryExists("fakeexpert-entityfilter") == false)
-	{
-		if(entity > MaxClients)
-		{
-			return true;
-		}
-		else if(entity <= MaxClients)
-		{
-			return false;
-		}
-
-		return false;
-		//;return entity > MaxClients;
-	}
-
-	return false;
-	//else
-	//{
-	//	return 0;
-	//}
-}
-
-public Action timer_removePing(Handle timer, int client)
-{
-	if(g_pingModel[client] > 0)
-	{
-		RemoveEntity(g_pingModel[client]);
-
-		g_pingModel[client] = 0;
-
-		return Plugin_Continue;
-	}
-
-	else if(g_pingModel[client] == 0)
-	{
-		PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
-
-		return Plugin_Continue;
-	}
-
-	return Plugin_Continue;
-}
-
-public Action SDKSetTransmitPing(int entity, int client)
-{
-	if(IsPlayerAlive(client) == true && g_pingModelOwner[entity] != client && g_partner[g_pingModelOwner[entity]] != g_partner[g_partner[client]])
-	{
-		return Plugin_Handled;
-	}
-
-	return Plugin_Continue;
-}
-
-public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
-{
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) && g_silentKnife == true)
-	{
-		g_silentKnife = false;
-
-		return Plugin_Handled;
-	}
-
-	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav", false))
-	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-
-		//if(owner < 0)
-		//{
-			//owner = 0;
-			//return Plugin_Continue;
-		//}
-
-		if(g_projectileSoundLoud[owner > 0 ? owner : 0] == entity)
-		{
-			return Plugin_Handled;
-		}
-	}
-
-	return Plugin_Continue;
-}
-
-public Action timer_clantag(Handle timer, int client)
-{
-	if(0 < client <= MaxClients && IsClientInGame(client) == true)
-	{
-		if(g_state[client] == true)
-		{
-			CS_SetClientClanTag(client, g_clantag[client][1]);
-
-			return Plugin_Continue;
-		}
-
-		else if(g_state[client] == false)
-		{
-			CS_SetClientClanTag(client, g_clantag[client][0]);
-
-			return Plugin_Stop;
-		}
-	}
-
-	return Plugin_Stop;
-}
-
-public void MLStats(const int client, bool ground)
-{
-	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
-	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
-
-	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost);
-
-	char print[256];
-
-	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
-	{
-		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i]);
-	}
-
-	if(g_mlsCount[client] > 10)
-	{
-		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]]);
-	}
-
-	if(ground == true)
-	{
-		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0];
-		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
-
-		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
-
-		g_teleported[client] = false;
-	}
-
-	if(g_mlstats[g_mlsFlyer[client]] == true)
-	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client]);
-
-		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
-		bfmsg.WriteByte(true);
-
-		bfmsg.WriteString(print);
-
-		EndMessage();
-	}
-
-	if(g_mlstats[client] == true)
-	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", client);
-
-		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
-		bfmsg.WriteByte(true);
-
-		bfmsg.WriteString(print);
-
-		EndMessage();
-	}
-
-	for(int i = 1; i <= MaxClients; i++)
-	{
-		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
-
-			if(observerMode < 7 && (observerTarget == client || observerTarget == g_mlsFlyer[client]) && g_mlstats[i] == true)
-			{
-				Handle KeyHintText = StartMessageOne("KeyHintText", i);
-
-				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
-				bfmsg.WriteByte(true);
-
-				bfmsg.WriteString(print);
-
-				EndMessage();
-			}
-		}
-	}
-}
-
-public int Stuck(int client)
-{
-	float mins[3];
-	float maxs[3];
-	float origin[3];
-
-	GetClientMins(client, mins);
-	GetClientMaxs(client, maxs);
-
-	GetClientAbsOrigin(client, origin);
-
-	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client); //Skiper, Gurman idea, plugin 2020 year.
-
-	return TR_GetEntityIndex();
-}
-
-public bool TR_donthitself(int entity, int mask, int client)
-{
-	if(LibraryExists("fakeexpert-entityfilter") == true)
-	{
-		if(entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]])
-		{
-			return true;
-		}
-	}
-
-	else if(LibraryExists("fakeexpert-entityfilter") == false)
-	{
-		if(entity != client && 0 < entity <= MaxClients)
-		{
-			return true;
-		}
-	}
-
-	return false
-}
-
-public int Native_GetClientButtons(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1);
-
-	return g_entityButtons[client];
-}
-
-public int Native_GetClientPartner(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1);
-
-	return g_partner[client];
-}
-
-public int Native_GetTimerState(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1);
-
-	if(IsFakeClient(client) == false)
-	{
-		if(g_state[client] == true)
-		{
-			return true;
-		}
-	}
-
-	else if(IsFakeClient(client) == true)
-	{
-		return 0;
-	}
-
-	return 0;
-}
-
-public int Native_SetPartner(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1);
-	int partner = GetNativeCell(2);
-
-	g_partner[client] = partner;
-	g_partner[partner] = client;
-
-	return partner;
-}
-
-public int Native_Restart(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1);
-
-	Restart(client);
-	Restart(g_partner[client]);
-
-	if(0 < client <= MaxClients)
-	{
-		int value = g_partner[client];
-		//if(g_partner[client] == true)
-		//{
-		return value;
-		//}
-	}
-
-	else if(!(0 < client <= MaxClients))
-	{
-		return 0;
-	}
-
-	return 0;
-}
-
-public int Native_GetDevmap(Handle plugin, int numParams)
-{
-	return g_devmap;
-}
-
-public Action timer_clearlag(Handle timer)
-{
-	ServerCommand("mat_texture_list_txlod_sync reset");
-
-	return Plugin_Continue;
-}
-
-static float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
-{
-	float origin[3];
-	GetClientAbsOrigin(client, origin);
-
-	float originDir[3];
-	GetClientAbsOrigin(client, originDir);
-
-	originDir[2] -= 90.0;
-
-	float mins[3];
-	GetClientMins(client, mins);
-
-	float maxs[3];
-	GetClientMaxs(client, maxs);
-
-	float pos[3];
-	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
-	TR_GetEndPosition(pos);
-	
-	return pos[2];
-	//bool didHit = TR_DitHit(null);
-	//if(TR_DitHit(INVALID_HANDLE) == true)
-	//{
-	//}
-	//if(didHit == true)
-	//{
-	//}
-		//TR_GetEndPosition(pos);
-
-		//return pos[2];
-	//else if(TR_DitHit(null) == false)
-	//{
-		//PrintToServer("Is not hited ground for player %N", client);
-
-		//return pos[2];
-	//}
-
-	//return pos[2];
-	//if(TR_DidHit(null) != true) //sweeden information
-	//else if(TR_DitHit(null) == false)
-}
-
-public int GetColour(const int r, const int g, const int b, const int a)
-{
-	int color = 0;
-
-	color |= (r & 255) << 24;
-	color |= (g & 255) << 16;
-	color |= (b & 255) << 8;
-	color |= (a & 255) << 0;
-
-	return color;
-}
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357
