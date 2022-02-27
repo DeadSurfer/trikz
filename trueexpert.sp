@@ -175,10 +175,10 @@ bool g_bhop[MAXPLAYERS + 1];
 
 public Plugin myinfo =
 {
-	name = "trikz + timer",
-	author = "Smesh(Nick Yurevich)",
+	name = "TrueExpert",
+	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "3.6",
+	version = "3.7",
 	url = "http://www.sourcemod.net/"
 }
 
