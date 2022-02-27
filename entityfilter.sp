@@ -103,7 +103,7 @@ public void OnPluginStart()
 	delete gamedata
 	delete g_PassServerEntityFilter
 	g_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell)
-	RegPluginLibrary("fakeexpert-entityfilter")
+	RegPluginLibrary("trueexpert-entityfilter")
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
