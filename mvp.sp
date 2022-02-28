@@ -83,7 +83,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 			CS_SetMVPCount(attacker, CS_GetMVPCount(attacker) + 1)
 			//PrintToChat(attacker, "[SM] You received mvp star by %i kills.", gI_killCount[attacker])
 			char format[256];
-			Format(format, sizeof(format), "\x01%T", "MVP", attacker);
+			Format(format, sizeof(format), "\x01%T", "MVP", attacker, gI_killCount[attacker]);
 			PrintToChat(attacker, format);
 		}
 	}
