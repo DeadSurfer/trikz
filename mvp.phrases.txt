@@ -1,0 +1,8 @@
+"Phrases"
+{
+	"MVP"
+	{
+		"#format"	"{1:i}"
+		"en"	"[SM] You received mvp star by {1} kills."
+	}
+}
