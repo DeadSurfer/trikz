@@ -51,7 +51,7 @@ public void OnPluginStart()
 	gCV_MVPLimit = CreateConVar("sm_mvplimit", "9999", "Stop giving mvp stars (9999 engine limit CS:S OB).")
 	gCV_MVPStep = CreateConVar("sm_mvpstep", "6", "Give mvp star each step number (ex. 6, 12, 18).")
 	AutoExecConfig(true)
-	LoadTranslations(mvp.phrases);
+	LoadTranslations("mvp.phrases");
 }
 
 public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
