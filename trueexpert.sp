@@ -204,7 +204,7 @@ public void OnPluginStart()
 	gCV_bhop = CreateConVar("bhop", "0.0", "Autobhop.", 0, false, 0.0, true, 1.0);
 	gCV_autoswitch = CreateConVar("autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0, false, 0.0, true, 1.0);
 	gCV_autoflashbang = CreateConVar("autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
-	gCV_macro = CreateConVar("sm_macro", "0.0", "Allow to use macro for each player.", 0, false, 0.0, true, 1.0);
+	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", 0, false, 0.0, true, 1.0);
 	
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -379,19 +379,21 @@ public void OnMapStart()
 	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true);
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true);
 
-	char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/models/weapons/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/models/weapons/w_models/w_eq_flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
+	char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/models/flashbang/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
-		//PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
+		PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
 		DirectoryListing dir = OpenDirectory(path[i]);
+		PrintToServer("01: %s", path[i]);
 		//char filename[12][PLATFORM_MAX_PATH];
 		char filename[PLATFORM_MAX_PATH][12];
+		//char filename[12][PLATFORM_MAX_PATH];
 		FileType type;
 		//char pathFull[12][PLATFORM_MAX_PATH];
 		char pathFull[PLATFORM_MAX_PATH][2];
 
-		while(dir.GetNext(filename[i], sizeof(filename), type))
+		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
 		{
 			if(type == FileType_File)
 			{
@@ -3710,6 +3712,8 @@ public void CPSetup(int client)
 {
 	g_cpCount = 0;
 
+	PrintToServer("must be 0, real number: %i", g_cpCount);
+
 	char query[512];
 
 	for(int i = 1; i <= 10; i++)
@@ -4962,7 +4966,7 @@ public void DrawZone(int client, float life, float size, int speed)
 	static float start[24][3]
 	static float end[24][3]
 
-	start[0][0] = (g_zoneStartOrigin[0][0] < g_zoneStartOrigin[1][0]) ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0]
+	start[0][0] = (g_zoneStartOrigin[0][0] < g_zoneStartOrigin[1][0]) ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0] //zones calculation from tengu (tengulawl)
 	start[0][1] = (g_zoneStartOrigin[0][1] < g_zoneStartOrigin[1][1]) ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1]
 	start[0][2] = (g_zoneStartOrigin[0][2] < g_zoneStartOrigin[1][2]) ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2]
 
@@ -4986,18 +4990,20 @@ public void DrawZone(int client, float life, float size, int speed)
 
 	end[1][2] += size
 
-	static int zones = 1
+	//static int zones = 1;
+	int zones = 1;
+	//PrintToServer("zones: %i", zones);
 
 	if(g_cpCount > 0)
 	{
 		zones += g_cpCount
-		PrintToServer("a %i", zones)
+		//PrintToServer("a g_cpCount: %i", zones)
 
-		for(int i = 2; i <= zones; i++)
+		for(int i = 2; i < zones; i++)
 		{
 			int cpnum = i - 1
 			//int cpnum = i
-			PrintToServer("z %i", i)
+			//PrintToServer("z %i", i)
 			
 			start[i][0] = (g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0]) ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0]
 			start[i][1] = (g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1]) ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1]
