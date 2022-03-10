@@ -23,9 +23,9 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	RegConsoleCmd("sm_macro", cmd_macro);
-	gCV_enableMacro = CreateConVar("enableMacro", "0.0", "Do enable plugin here.", 0, false, 0.0, true, 1.0);
-	gCV_mainDelay = CreateConVar("mainDelay", "0.11", "Make main delay for attack2", 0, false, 0.0, true, 0.11);
-	gCV_repeatDelay = CreateConVar("repeatDelay", "0.34", "Make repeat delay if hold attack2", 0, false, 0.0, true, 0.4);
+	gCV_enableMacro = CreateConVar("sm_enable_macro", "0.0", "Do enable plugin here.", 0, false, 0.0, true, 1.0);
+	gCV_mainDelay = CreateConVar("sm_main_delay", "0.11", "Make main delay for attack2", 0, false, 0.0, true, 0.11);
+	gCV_repeatDelay = CreateConVar("sm_repeat_delay", "0.34", "Make repeat delay if hold attack2", 0, false, 0.0, true, 0.4);
 	AutoExecConfig(true);
 	//g_macroMainDelay = GetConVarFloat(gCV_mainDelay);
 	//g_macroRepeatDelay = GetConVarFloat(gCV_repeatDelay);
