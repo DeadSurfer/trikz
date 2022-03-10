@@ -379,25 +379,27 @@ public void OnMapStart()
 	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true);
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true);
 
-	char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/models/flashbang/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
+	char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/flashbang/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
 		PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
 		DirectoryListing dir = OpenDirectory(path[i]);
 		PrintToServer("01: %s", path[i]);
+
 		//char filename[12][PLATFORM_MAX_PATH];
-		char filename[PLATFORM_MAX_PATH][12];
-		//char filename[12][PLATFORM_MAX_PATH];
+		//char filename[PLATFORM_MAX_PATH][12];
+		char filename[12][PLATFORM_MAX_PATH];
+
 		FileType type;
-		//char pathFull[12][PLATFORM_MAX_PATH];
-		char pathFull[PLATFORM_MAX_PATH][2];
+		char pathFull[12][PLATFORM_MAX_PATH];
+		//char pathFull[PLATFORM_MAX_PATH][2];
 
 		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
 		{
 			if(type == FileType_File)
 			{
-				Format(pathFull[i], sizeof(pathFull), "%s%s", path[i], filename[i]);
+				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i]);
 
 				if(StrContains(pathFull[i], ".mdl", false) != -1)
 				{
