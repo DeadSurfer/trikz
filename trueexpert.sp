@@ -100,7 +100,7 @@ bool g_color[MAXPLAYERS + 1][2];
 int g_wModelPlayer[5];
 int g_pingModel[MAXPLAYERS + 1];
 int g_pingModelOwner[2048 + 1];
-Handle g_pingTimer[MAXPLAYERS + 1];
+//Handle g_pingTimer[MAXPLAYERS + 1];
 
 bool g_zoneFirst[3];
 
@@ -109,7 +109,7 @@ int g_colorBuffer[MAXPLAYERS + 1][3][2];
 int g_colorCount[MAXPLAYERS + 1][2];
 
 int g_zoneModel[3];
-int g_laserBeam;
+//int g_laserBeam;
 bool g_sourcetvchangedFileName = true;
 float g_entityVel[MAXPLAYERS + 1][3];
 float g_clientVel[MAXPLAYERS + 1][3];
@@ -120,8 +120,8 @@ bool g_afk[MAXPLAYERS + 1];
 float g_center[12][3];
 bool g_zoneDraw[MAXPLAYERS + 1];
 float g_engineTime;
-float g_pingTime[MAXPLAYERS + 1];
-bool g_pingLock[MAXPLAYERS + 1];
+//float g_pingTime[MAXPLAYERS + 1];
+//bool g_pingLock[MAXPLAYERS + 1];
 bool g_msg[MAXPLAYERS + 1];
 int g_voters;
 int g_afkClient;
@@ -182,7 +182,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "3.8",
+	version = "3.9",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -214,8 +214,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_block", cmd_block);
 	RegConsoleCmd("sm_p", cmd_partner);
 	RegConsoleCmd("sm_partner", cmd_partner);
-	RegConsoleCmd("sm_c", cmd_color);
-	RegConsoleCmd("sm_color", cmd_color);
+	//RegConsoleCmd("sm_c", cmd_color);
+	//RegConsoleCmd("sm_color", cmd_color);
 	RegConsoleCmd("sm_r", cmd_restart);
 	RegConsoleCmd("sm_restart", cmd_restart);
 	RegConsoleCmd("sm_autoflash", cmd_autoflash);	
@@ -360,28 +360,28 @@ public void OnMapStart()
 		ForceChangeLevel(g_map, "Turn on sourcetv");
 	}
 
-	g_wModelThrown = PrecacheModel("models/trueexpert/models/weapons/w_eq_flashbang_thrown.mdl", true);
+	//g_wModelThrown = PrecacheModel("models/trueexpert/models/weapons/w_eq_flashbang_thrown.mdl", true);
 
-	g_wModelPlayer[1] = PrecacheModel("models/trueexpert/player/ct_urban.mdl", true);
-	g_wModelPlayer[2] = PrecacheModel("models/trueexpert/player/ct_gsg9.mdl", true);
-	g_wModelPlayer[3] = PrecacheModel("models/trueexpert/player/ct_sas.mdl", true);
-	g_wModelPlayer[4] = PrecacheModel("models/trueexpert/player/ct_gign.mdl", true);
+	//g_wModelPlayer[1] = PrecacheModel("models/trueexpert/player/ct_urban.mdl", true);
+	//g_wModelPlayer[2] = PrecacheModel("models/trueexpert/player/ct_gsg9.mdl", true);
+	//g_wModelPlayer[3] = PrecacheModel("models/trueexpert/player/ct_sas.mdl", true);
+	//g_wModelPlayer[4] = PrecacheModel("models/trueexpert/player/ct_gign.mdl", true);
 
-	PrecacheSound("trueexpert/pingtool/click.wav", true); //https://forums.alliedmods.net/showthread.php?t=333211
+	//PrecacheSound("trueexpert/pingtool/click.wav", true); //https://forums.alliedmods.net/showthread.php?t=333211
 
-	g_zoneModel[0] = PrecacheModel("materials/trueexpert/zones/start.vmt", true);
-	g_zoneModel[1] = PrecacheModel("materials/trueexpert/zones/finish.vmt", true);
-	g_zoneModel[2] = PrecacheModel("materials/trueexpert/zones/check_point.vmt", true);
+	//g_zoneModel[0] = PrecacheModel("materials/trueexpert/zones/start.vmt", true);
+	//g_zoneModel[1] = PrecacheModel("materials/trueexpert/zones/finish.vmt", true);
+	//g_zoneModel[2] = PrecacheModel("materials/trueexpert/zones/check_point.vmt", true);
 
-	g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true);
+	//g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_smoke = PrecacheModel("materials/sprites/smoke.vmt", true);
 
 	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true);
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true);
 
-	char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/flashbang/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
+	//char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/flashbang/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
 
-	for(int i = 0; i < sizeof(path); i++)
+	/*for(int i = 0; i < sizeof(path); i++)
 	{
 		PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
 		DirectoryListing dir = OpenDirectory(path[i]);
@@ -413,7 +413,7 @@ public void OnMapStart()
 		}
 
 		delete dir;
-	}
+	}*/
 
 	//g_turbophysics = FindConVar("sv_turbophysics"); //thnaks to maru.
 
@@ -904,7 +904,7 @@ public Action autobuy(int client, const char[] command, int argc)
 
 public Action rebuy(int client, const char[] command, int argc)
 {
-	ColorZ(client, true, -1);
+	//ColorZ(client, true, -1);
 
 	return Plugin_Continue;
 }
@@ -999,7 +999,7 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	
 	if(convar == true)
 	{
-		ColorFlashbang(client, true, -1);
+		//ColorFlashbang(client, true, -1);
 	}
 
 	return Plugin_Continue;
@@ -1212,8 +1212,8 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
-	ColorZ(client, false, -1);
-	ColorFlashbang(client, false, -1);
+	//ColorZ(client, false, -1);
+	//ColorFlashbang(client, false, -1);
 
 	g_color[client][0] = false;
 	g_color[client][1] = false;
@@ -1575,27 +1575,27 @@ public void Trikz(int client)
 			menu.AddItem("partner", format, ITEMDRAW_DEFAULT);
 		}
 	}
-	Format(format, sizeof(format), "%T", "Color", client);
-	if(g_devmap == true)
-	{
+	//Format(format, sizeof(format), "%T", "Color", client);
+	//if(g_devmap == true)
+	//{
 		//menu.AddItem("color", "Color");
-		menu.AddItem("color", format);
-	}
+		//menu.AddItem("color", format);
+	//}
 
 	else if(g_devmap == false)
 	{
 		//menu.AddItem("color", "Color", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		//if(g_partner[client] == true)
-		if(g_partner[client] > 0)
-		{
-			menu.AddItem("color", format, ITEMDRAW_DEFAULT);
-		}
+		//if(g_partner[client] > 0)
+		//{
+		//	menu.AddItem("color", format, ITEMDRAW_DEFAULT);
+		//}
 		
 		//else if(g_partner[client] == false)
-		else if(g_partner[client] == 0)
-		{
-			menu.AddItem("color", format, ITEMDRAW_DISABLED);
-		}
+		//else if(g_partner[client] == 0)
+		//{
+		//	menu.AddItem("color", format, ITEMDRAW_DISABLED);
+		//}
 	}
 	Format(format, sizeof(format), "%T", "Restart", client);
 	//menu.AddItem("restart", "Restart", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED); //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
@@ -1657,25 +1657,25 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Partner(param1);
 				}
 
-				case 2:
-				{
-					ColorZ(param1, true, -1);
-					Trikz(param1);
-				}
+				//case 2:
+				//{
+					//ColorZ(param1, true, -1);
+					//Trikz(param1);
+				//}
 
-				case 3:
+				case 2:
 				{
 					Restart(param1);
 					Restart(g_partner[param1]);
 				}
 
-				case 4:
+				case 3:
 				{
 					g_menuOpened[param1] = false;
 					Checkpoint(param1);
 				}
 
-				case 5:
+				case 4:
 				{
 					Noclip(param1);
 					Trikz(param1);
@@ -1945,8 +1945,8 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 			{
 				case 0:
 				{
-					ColorZ(param1, false, -1);
-					ColorFlashbang(param1, false, -1);
+					//ColorZ(param1, false, -1);
+					//ColorFlashbang(param1, false, -1);
 
 					g_partner[param1] = 0;
 					g_partner[partner] = 0;
@@ -5138,7 +5138,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(g_boost[client] > 0)
 		{
-			static float velocity[3];
+			//static float velocity[3];
+			float velocity[3];
 
 			if(g_boost[client] == 2)
 			{
@@ -5183,7 +5184,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//return Plugin_Continue;
 			}
 		}
-		if(IsPlayerAlive(client) == true && (g_partner[client] > 0 || g_devmap == true))
+		/*if(IsPlayerAlive(client) == true && (g_partner[client] > 0 || g_devmap == true))
 		{
 			if(buttons & IN_USE)
 			{
@@ -5352,7 +5353,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
 				//return Plugin_Continue;
 			}
-		}
+		}*/
 		ConVar cvPhysics = FindConVar("sv_turbophysics");
 		//int physics = g_turbophysics.IntValue;
 		//int physics = cvPhysics = FindConVar("sv_turbophysics");
@@ -6264,7 +6265,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			return Plugin_Continue;
 		}
 
-		else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
+		/*else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
 		{
 			ColorZ(client, true, -1);
 
@@ -6331,7 +6332,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			ColorZ(client, true, 8);
 
 			return Plugin_Continue;
-		}
+		}*/
 
 		else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
 		{
