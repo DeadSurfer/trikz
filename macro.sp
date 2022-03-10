@@ -7,6 +7,7 @@ bool g_macroOpened[MAXPLAYERS + 1];
 bool g_macroDisabled[MAXPLAYERS + 1];
 ConVar gCV_mainDelay;
 ConVar gCV_repeatDelay;
+ConVar gCV_enableMacro;
 float g_macroMainDelay;
 float g_macroRepeatDelay;
 
@@ -15,13 +16,14 @@ public Plugin myinfo =
 	name = "Macro",
 	author = "Nick Jurevich",
 	description = "Make trikz game more comfortable.",
-	version = "0.9",
+	version = "0.91",
 	url = "http://www.sourcemod.net/"
 }
 
 public void OnPluginStart()
 {
 	RegConsoleCmd("sm_macro", cmd_macro);
+	gCV_enableMacro = CreateConVar("enableMacro", "0.0", "Do enable plugin here.", 0, false, 0.0, true, 1.0);
 	gCV_mainDelay = CreateConVar("mainDelay", "0.11", "Make main delay for attack2", 0, false, 0.0, true, 0.11);
 	gCV_repeatDelay = CreateConVar("repeatDelay", "0.34", "Make repeat delay if hold attack2", 0, false, 0.0, true, 0.4);
 	AutoExecConfig(true);
@@ -31,6 +33,13 @@ public void OnPluginStart()
 
 public Action cmd_macro(int client, int args)
 {
+	float convar = GetConVarFloat(gCV_enableMacro);
+
+	if(convar == 0.0)
+	{
+		return Plugin_Continue;
+	}
+
 	g_macroDisabled[client] = !g_macroDisabled[client];
 
 	PrintToServer("Macro is %s", g_macroDisabled[client] ? "Macro is disabled." : "Macro is enabled.");
@@ -40,6 +49,13 @@ public Action cmd_macro(int client, int args)
 
 public void OnClientPutInServer(int client)
 {
+	float convar = GetConVarFloat(gCV_enableMacro);
+	
+	if(convar == 0.0)
+	{
+		return;
+	}
+
 	g_macroDisabled[client] = false;
 	g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
@@ -49,6 +65,13 @@ public void OnClientPutInServer(int client)
 
 public Action OnPlayerRunCmd(int client, int& buttons)
 {
+	float convar = GetConVarFloat(gCV_enableMacro);
+
+	if(convar == 0.0)
+	{
+		return Plugin_Continue;
+	}
+
 	if(buttons & IN_ATTACK2)
 	{
 		char classname[32];
