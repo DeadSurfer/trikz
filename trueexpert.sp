@@ -1491,7 +1491,7 @@ public void SDKBoostFix(int client)
 	if(g_boost[client] == 1)
 	{
 		int entity = EntRefToEntIndex(g_flash[client]);
-
+		PrintToServer("%i", entity);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			float velEntity[3];
@@ -1508,8 +1508,10 @@ public void SDKBoostFix(int client)
 			}
 
 			g_boost[client] = 2; //Trijās vietās kodā atrodas paātrināšana pēc Antona vārdiem.
+			PrintToServer("1x");
 		}
 	}
+	//PrintToServer("2x");
 }
 
 public Action cmd_trikz(int client, int args)
@@ -5094,7 +5096,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		bool convar = GetConVarBool(gCV_bhop);
 
-		if(convar == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
+		if(convar == true && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 		{
 			buttons &= ~IN_JUMP; //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 			//return Plugin_Continue;
@@ -5625,7 +5627,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < entity <= MaxClients && 0 < other <= MaxClients && IsClientInGame(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
+	if(0 < other <= MaxClients && IsClientInGame(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
 		float originOther[3];
 		GetClientAbsOrigin(other, originOther);
@@ -5636,9 +5638,8 @@ public Action ProjectileBoostFix(int entity, int other)
 		float maxsEntity[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
-		float delta = 0.0;
-		delta = originOther[2] - originEntity[2] - maxsEntity[2];
-
+		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
+		PrintToServer("%f", delta);
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //Tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
