@@ -1334,7 +1334,6 @@ public void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const cha
 
 	else if(strlen(error) == 0)
 	{
-		
 		int client = GetClientFromSerial(data);
 		//if(!client)
 		//	return
@@ -1411,7 +1410,7 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 
 			//else if(strlen(error) == 0)
 			//{
-			if(results.FetchRow() == false)
+			else if(results.FetchRow() == false)
 			{
 				g_haveRecord[client] = 0.0;
 			}
@@ -1453,34 +1452,51 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				g_skyVel[other][2] = velBooster[2];
 
-				if(velFlyer[2] > -700.0)
+				if(velFlyer[2] >= -700.0)
 				{
-					if((g_entityFlags[client] & FL_INWATER))
+					if(g_entityFlags[client] & FL_INWATER)
 					{
-						if(velBooster[2] > 300.0)
+						if(velBooster[2] >= 300.0)
 						{
 							g_skyVel[other][2] = 500.0;
 						}
 					}
-					else
+
+					else if(!(g_entityFlags[client] & FL_INWATER))
 					{
-						if(velBooster[2] > 750.0)
+						if(velBooster[2] >= 750.0)
 						{
 							g_skyVel[other][2] = 750.0;
 						}
 					}
 				}
-				else
+
+				else if(!(velFlyer[2] >= -700.0))
 				{
-					if(velBooster[2] > 800.0)
+					if(velBooster[2] >= 800.0)
 					{
 						g_skyVel[other][2] = 800.0;
 					}
 				}
-				if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+
+				//if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				//if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other] ))
+				//{
+				//	g_skyBoost[other] = 1;
+				//}
+				//else if(g_entityFlags & FL_INWATER ? g_skyBoost[other] == 0 GetGameTime() - g_skyAble[other] > 0.5)
+
+				if(g_entityFlags[client] & FL_INWATER && g_skyBoost[other] == 0 && FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04)
 				{
 					g_skyBoost[other] = 1;
 				}
+
+				else if(g_entityFlags[client] & FL_INWATER && g_skyBoost[other] > 0 && GetGameTime() - g_skyAble[other] > 0.5)
+				{
+					g_skyBoost[other] = 1;
+				}
+				//}
+				//}
 			}
 		}
 	}
@@ -1780,8 +1796,8 @@ public void Partner(int client)
 			//char format[128]
 			//Format(format, sizeof(format), "%T", "ChoosePartner");
 			menu.SetTitle("%T", "ChoosePartner", client);
-			char name[MAX_NAME_LENGTH];
-			bool player;
+			char name[MAX_NAME_LENGTH] = "";
+			bool player = false;
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -1792,7 +1808,7 @@ public void Partner(int client)
 					{
 						GetClientName(i, name, sizeof(name));
 
-						char nameID[32];
+						char nameID[32] = "";
 						IntToString(i, nameID, sizeof(nameID));
 						menu.AddItem(nameID, name);
 
@@ -1820,13 +1836,13 @@ public void Partner(int client)
 		//else if(g_partner[client] == true)
 		else if(g_partner[client] > 0)
 		{
-			char partner[32];
+			char partner[32] = "";
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
 			
 			Menu menu = new Menu(cancelpartner_handler);
 
 			//menu.SetTitle("Cancel partnership with %N", g_partner[client]);
-			char name[MAX_NAME_LENGTH];
+			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(g_partner[client], name, sizeof(name));
 			menu.SetTitle("%T", "CancelPartnership", client, g_partner[client]);
 			menu.AddItem(partner, "Yes");
@@ -1843,18 +1859,18 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			char item[32];
+			char item[32] = "";
 			menu.GetItem(param2, item, sizeof(item));
 			
 			int partner = StringToInt(item);
 			
 			Menu menu2 = new Menu(askpartner_handle);
 			//menu2.SetTitle("Agree partner with %N?", param1);
-			char name[MAX_NAME_LENGTH];
+			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(param1, name, sizeof(name));
 			menu2.SetTitle("%T", "AgreePartner", partner, name);
 			
-			char buffer[32];
+			char buffer[32] = "";
 			IntToString(param1, buffer, sizeof(buffer));
 
 			menu2.AddItem(buffer, "Yes");
@@ -1873,7 +1889,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 	{
 		case MenuAction_Select:
 		{
-			char item[32];
+			char item[32] = "";
 
 			menu.GetItem(param2, item, sizeof(item));
 
@@ -1890,7 +1906,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						g_partner[partner] = param1;
 
 						//PrintToChat(param1, "Partnersheep agreed with %N.", partner); //reciever
-						char name[MAX_NAME_LENGTH];
+						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
 						PrintToChat(param1, "\x01%T", "GroupAgreed", param1, name);
 						//PrintToChat(partner, "You have %N as partner.", param1); //sender
@@ -1905,7 +1921,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 							Trikz(partner);
 						}
 
-						char query[512];
+						char query[512] = "";
 						
 						Format(query, sizeof(query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
 						
@@ -1922,7 +1938,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 				case 1:
 				{
-					char name[MAX_NAME_LENGTH];
+					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(param1, name, sizeof(name));
 					//PrintToChat(param1, "Partnersheep declined with %N.", partner);
 					PrintToChat(param1, "\x01%T", "PartnerDeclined", param1, name);
@@ -1940,7 +1956,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 	{
 		case MenuAction_Select:
 		{
-			char item[32];
+			char item[32] = "";
 
 			menu.GetItem(param2, item, sizeof(item));
 
@@ -1960,7 +1976,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					ResetFactory(partner);
 					
 					//PrintToChat(param1, "Partnership is canceled with %N", partner);
-					char name[MAX_NAME_LENGTH];
+					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(partner, name, sizeof(name));
 					PrintToChat(param1, "\x01%T", "PartnerCanceled", param1, name);
 					//PrintToChat(partner, "Partnership is canceled by %N", param1);
@@ -2293,7 +2309,7 @@ public void Restart(int client)
 
 					CS_RespawnPlayer(client);
 
-					float velNull[3];
+					float velNull[3] = {0.0, 0.0, 0.0};
 
 					TeleportEntity(client, g_originStart, NULL_VECTOR, velNull);
 
@@ -2380,14 +2396,14 @@ public Action cmd_autoflash(int client, int args)
 
 	g_autoflash[client] = !g_autoflash[client];
 
-	char sValue[16];
+	char sValue[16] = "";
 	IntToString(g_autoflash[client], sValue, sizeof(sValue));
 	SetClientCookie(client, g_cookie[4], sValue);
 
 	if(g_autoflash[client] == true)
 	{
 		//PrintToChat(client, "\x01%T", "AutoflashON", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "AutoflashON", client);
 		SendMessage(format, false, client);
 	}
@@ -2448,14 +2464,14 @@ public Action cmd_bhop(int client, int args)
 
 	g_bhop[client] = !g_bhop[client];
 	
-	char sValue[16];
+	char sValue[16] = "";
 	IntToString(g_bhop[client], sValue, sizeof(sValue));
 	SetClientCookie(client, g_cookie[6], sValue);
 	
 	if(g_bhop[client] == true)
 	{
 		//PrintToChat(client, "\x01%T", "BhopON", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "BhopON", client);
 		SendMessage(format, false, client);
 	}
@@ -2464,7 +2480,7 @@ public Action cmd_bhop(int client, int args)
 	{
 		//PrintToChat(client, "\x01%T", "BhopOFF", client);
 		//SendMessage(format, sizeof(format), "BhopOFF", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "BhopOFF", client);
 		SendMessage(format, false, client);
 	}
@@ -2483,13 +2499,13 @@ public Action cmd_macro(int client, int args)
 
 	g_macroDisabled[client] = !g_macroDisabled[client];
 	
-	char value[16];
+	char value[16] = "";
 	IntToString(g_macroDisabled[client], value, sizeof(value));
 	
 	if(g_macroDisabled[client] == false)
 	{
 		//PrintToChat(client, "\x01%T", "MacroON", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "\x01%T", "MacroON", client);
 		SendMessage(format, false, client);
 	}
@@ -2497,7 +2513,7 @@ public Action cmd_macro(int client, int args)
 	else if(g_macroDisabled[client] == true)
 	{
 		//PrintToChat(client, "\x01%T", "MacroOFF", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "\x01%T", "MacroOFF", client);
 		SendMessage(format, false, client);
 	}
@@ -2517,7 +2533,7 @@ public Action timer_resetfactory(Handle timer, int client)
 
 public void CreateStart()
 {
-	int entity = CreateEntityByName("trigger_multiple");
+	int entity = CreateEntityByName("trigger_multiple", -1);
 
 	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0");
@@ -2538,8 +2554,8 @@ public void CreateStart()
 	g_originStart[1] = g_center[0][1];
 	g_originStart[2] = g_center[0][2] + 1.0;
 
-	float mins[3];
-	float maxs[3];
+	float mins[3] = {0.0, 0.0, 0.0};
+	float maxs[3] = {0.0, 0.0, 0.0};
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -2578,7 +2594,7 @@ public void CreateStart()
 
 public void CreateEnd()
 {
-	int entity = CreateEntityByName("trigger_multiple");
+	int entity = CreateEntityByName("trigger_multiple", -1);
 
 	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0");
@@ -2595,8 +2611,8 @@ public void CreateEnd()
 
 	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
-	float mins[3];
-	float maxs[3];
+	float mins[3] = {0.0, 0.0, 0.0};
+	float maxs[3] = {0.0, 0.0, 0.0};
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -2655,7 +2671,10 @@ public Action cmd_startmins(int client, int args)
 		else if(g_devmap == false)
 		{
 			//PrintToChat(client, "Turn on devmap.");
-			PrintToChat(client, "DevMapIsOFF", client);
+			//PrintToChat(client, "DevMapIsOFF", client);
+			char format[256] = "";
+			Format(format, sizeof(format), "DevMapIsOFF", client);
+			SendMessage(format, false, client);
 		}
 
 		return Plugin_Handled;
@@ -2673,7 +2692,7 @@ public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] er
 
 	else if(strlen(error) == 0)
 	{
-		char query[512];
+		char query[512] = "";
 
 		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
 
@@ -2697,7 +2716,7 @@ public Action cmd_deleteallcp(int client, int args)
 	{
 		if(g_devmap == true)
 		{
-			char query[512];
+			char query[512] = "";
 
 			Format(query, sizeof(query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
 
@@ -2707,7 +2726,10 @@ public Action cmd_deleteallcp(int client, int args)
 		else if(g_devmap == false)
 		{
 			//PrintToChat(client, "Turn on devmap.");
-			PrintToChat(client, "DevMapIsOFF", client);
+			//PrintToChat(client, "DevMapIsOFF", client);
+			char format[256] = "";
+			Format(format, sizeof(format), "DevMapIsOFF", client);
+			SendMessage(format, false, client);
 		}
 	}
 
@@ -2741,7 +2763,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	if(g_devmap == false)
 	{
-		char cmd[64]; //https://forums.alliedmods.net/showthread.php?t=270684
+		char cmd[64] = ""; //https://forums.alliedmods.net/showthread.php?t=270684
 		kv.GetSectionName(cmd, sizeof(cmd));
 
 		if(StrEqual(cmd, "ClanTagChanged", false))
@@ -2767,7 +2789,7 @@ public Action cmd_test(int client, int args)
 
 	if(flags & ADMFLAG_CUSTOM1)
 	{
-		char arg[256];
+		char arg[256] = "";
 
 		GetCmdArgString(arg, sizeof(arg));
 
@@ -2806,11 +2828,12 @@ public Action cmd_test(int client, int args)
 
 		PrintToChat(client, "\x08%08XCOLOR", color);
 
-		char auth64[64];
+		char auth64[64] = "";
 		GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64));
-
+		char authid3[64] = "";
+		GetClientAuthId(client, AuthId_Steam3, authid3, sizeof(authid3));
 		//PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
-
+		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3 after 2nd semicolon)", auth64, authid3);
 		return Plugin_Handled;
 	}
 
@@ -2820,13 +2843,13 @@ public Action cmd_test(int client, int args)
 public void SendMessage(const char[] text, bool all, int client)
 {
 	//char text[256];
-	char name[MAX_NAME_LENGTH];
+	char name[MAX_NAME_LENGTH] = "";
 	GetClientName(client, name, sizeof(name));
 
 	int team = GetClientTeam(client);
 
-	char teamName[32];
-	char teamColor[32];
+	char teamName[32] = "";
+	char teamColor[32] = "";
 
 	switch(team)
 	{
@@ -2850,7 +2873,7 @@ public void SendMessage(const char[] text, bool all, int client)
 	}
 
 	//Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName);
-	char textReplaced[256];
+	char textReplaced[256] = "";
 	Format(textReplaced, sizeof(textReplaced), "%s", text);
 	ReplaceString(textReplaced, sizeof(textReplaced), ";#", "\x07");
 	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
