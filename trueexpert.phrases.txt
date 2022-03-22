@@ -59,11 +59,19 @@
 	{
 		"en"	"ML stats is on"
 	}
-	"ButtonAnonserON"
+	"MLStatsMenuON"
+	{
+		"en"	"ML Stats [v]"
+	}
+	"MLStatsMenuOFF"
+	{
+		"en"	"ML Stats [x]"
+	}
+	"ButtonAnnoncerON"
 	{
 		"en"	"Button announcer is on."
 	}
-	"ButtonAnonserOFF"
+	"ButtonAnnoncerOFF"
 	{
 		"en"	"Button announcer is off."
 	}
@@ -145,6 +153,16 @@
 	{
 		"en"	"No free player."
 	}
+	//"DevMapWillBeDisabled"
+	//{
+		//"#format"	"{1:i},{2:i},{3:i}"
+		//"en"	"Devmap will be disabled. \"Yes\" {1} or {2} of {3} players."
+	//}
+	//"DevMapWillBeEnabled"
+	//{
+		//"#format"	"{1:i},{2:i},{3:i}"
+		//"en"	"Devmap will be enabled. \"Yes\" {1} or {2} of {3} players."
+	//}
 	"DevMapContinue"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
