@@ -1057,7 +1057,10 @@ public void Checkpoint(int client)
 	else if(g_devmap == false)
 	{
 		//PrintToChat(client, "Turn on devmap.");
-		PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+		//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+		char format[256];
+		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
+		SendMessage(format, false, client);
 	}
 }
 
@@ -2405,7 +2408,7 @@ public Action cmd_autoflash(int client, int args)
 	{
 		//PrintToChat(client, "\x01%T", "AutoflashON", client);
 		char format[256] = "";
-		Format(format, sizeof(format), "AutoflashON", client);
+		Format(format, sizeof(format), "%T", "AutoflashON", client);
 		SendMessage(format, false, client);
 	}
 
@@ -2413,7 +2416,7 @@ public Action cmd_autoflash(int client, int args)
 	{
 		//PrintToChat(client, "\x01%T", "AutoflashOFF", client);
 		char format[256];
-		Format(format, sizeof(format), "AutoflashOFF", client);
+		Format(format, sizeof(format), "%T", "AutoflashOFF", client);
 		SendMessage(format, false, client);
 	}
 
@@ -2439,7 +2442,7 @@ public Action cmd_autoswitch(int client, int args)
 	{
 		//PrintToChat(client, "\x01%T", "AutoswitchON", client);
 		char format[256];
-		Format(format, sizeof(format), "AutoswitchON", client);
+		Format(format, sizeof(format), "%T", "AutoswitchON", client);
 		SendMessage(format, false, client);
 	}
 	
@@ -2447,7 +2450,7 @@ public Action cmd_autoswitch(int client, int args)
 	{
 		//PrintToChat(client, "\x01%T", "AutoswitchOFF", client);
 		char format[256];
-		Format(format, sizeof(format), "AutoswitchOFF", client);
+		Format(format, sizeof(format), "%T", "AutoswitchOFF", client);
 		SendMessage(format, false, client);
 	}
 
@@ -2469,22 +2472,26 @@ public Action cmd_bhop(int client, int args)
 	IntToString(g_bhop[client], sValue, sizeof(sValue));
 	SetClientCookie(client, g_cookie[6], sValue);
 	
-	if(g_bhop[client] == true)
-	{
+	//if(g_bhop[client] == true)
+	//{
 		//PrintToChat(client, "\x01%T", "BhopON", client);
-		char format[256] = "";
-		Format(format, sizeof(format), "BhopON", client);
-		SendMessage(format, false, client);
-	}
+		//char format[256] = "";
+		//Format(format, sizeof(format), "%T", "BhopON");
+		//SendMessage(format, false, client);
+	//}
 
-	else if(g_bhop[client] == false)
-	{
+	//else if(g_bhop[client] == false)
+	//{
 		//PrintToChat(client, "\x01%T", "BhopOFF", client);
 		//SendMessage(format, sizeof(format), "BhopOFF", client);
-		char format[256] = "";
-		Format(format, sizeof(format), "BhopOFF", client);
-		SendMessage(format, false, client);
-	}
+		//char format[256] = "";
+		//Format(format, sizeof(format), "%T", client, "BhopOFF");
+		//SendMessage(format, false, client);
+	//}
+
+	char format[256];
+	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopON" : "BhopOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
@@ -2503,21 +2510,25 @@ public Action cmd_macro(int client, int args)
 	char value[16] = "";
 	IntToString(g_macroDisabled[client], value, sizeof(value));
 	
-	if(g_macroDisabled[client] == false)
-	{
+	//if(g_macroDisabled[client] == false)
+	//{
 		//PrintToChat(client, "\x01%T", "MacroON", client);
-		char format[256] = "";
-		Format(format, sizeof(format), "\x01%T", "MacroON", client);
-		SendMessage(format, false, client);
-	}
+	//	char format[256] = "";
+	//	Format(format, sizeof(format), "%T", "MacroON", client);
+	//	SendMessage(format, false, client);
+	//}
 	
-	else if(g_macroDisabled[client] == true)
-	{
+	//else if(g_macroDisabled[client] == true)
+	//{
 		//PrintToChat(client, "\x01%T", "MacroOFF", client);
-		char format[256] = "";
-		Format(format, sizeof(format), "\x01%T", "MacroOFF", client);
-		SendMessage(format, false, client);
-	}
+	//	char format[256] = "";
+	//	Format(format, sizeof(format), "%T", "MacroOFF", client);
+		//SendMessage(format, false, client);
+	//}
+
+	char format[256];
+	Format(format, sizeof(format), "%T", g_macroDisabled[client] ? "MacroON" : "MacroOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
@@ -2597,8 +2608,8 @@ public void CreateEnd()
 {
 	int entity = CreateEntityByName("trigger_multiple", -1);
 
-	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer
-	DispatchKeyValue(entity, "wait", "0");
+	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer //from developer valvesoftware it means make able to work with client
+	DispatchKeyValue(entity, "wait", "0"); //this point makes refresh time so its refreshing by server tickrate. or its going 0.2 seconds by developer valvesoftware, second one will be correct.
 	DispatchKeyValue(entity, "targetname", "trueexpert_endzone");
 
 	DispatchSpawn(entity);
@@ -2606,7 +2617,7 @@ public void CreateEnd()
 	SetEntityModel(entity, "models/player/t_arctic.mdl");
 
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	g_center[1][0] = (g_zoneEndOrigin[0][0] + g_zoneEndOrigin[1][0]) / 2.0;
+	g_center[1][0] = (g_zoneEndOrigin[0][0] + g_zoneEndOrigin[1][0]) / 2.0; // so its mins and maxs in cube devide to two.
 	g_center[1][1] = (g_zoneEndOrigin[0][1] + g_zoneEndOrigin[1][1]) / 2.0;
 	g_center[1][2] = (g_zoneEndOrigin[0][2] + g_zoneEndOrigin[1][2]) / 2.0;
 
@@ -2674,7 +2685,7 @@ public Action cmd_startmins(int client, int args)
 			//PrintToChat(client, "Turn on devmap.");
 			//PrintToChat(client, "DevMapIsOFF", client);
 			char format[256] = "";
-			Format(format, sizeof(format), "DevMapIsOFF", client);
+			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, false, client);
 		}
 
@@ -2729,7 +2740,7 @@ public Action cmd_deleteallcp(int client, int args)
 			//PrintToChat(client, "Turn on devmap.");
 			//PrintToChat(client, "DevMapIsOFF", client);
 			char format[256] = "";
-			Format(format, sizeof(format), "DevMapIsOFF", client);
+			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, false, client);
 		}
 	}
@@ -2924,7 +2935,7 @@ public Action cmd_endmins(int client, int args)
 			//PrintToChat(client, "Turn on devmap.");
 			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 			char format[256] = "";
-			Format(format, sizeof(format), "DevMapIsOFF", client);
+			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, false, client);
 		}
 
@@ -2990,7 +3001,7 @@ public Action cmd_maptier(int client, int args)
 			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 			//PrintToChat(client, "Turn on devmap.");
 			char format[256];
-			Format(format, sizeof(format), "DevMapIsOFF", client);
+			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, false, client);
 		}
 
@@ -3178,7 +3189,7 @@ public Action cmd_cpmins(int client, int args)
 			//PrintToChat(client, "Turn on devmap.");
 			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 			char format[256] = "";
-			Format(format, sizeof(format), "DevMapIsOFF", client);
+			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, false, client);
 		}
 
@@ -3304,7 +3315,7 @@ public Action cmd_zones(int client, int args)
 			//PrintToChat(client, "Turn on devmap.");
 			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 			char format[256] = "";
-			Format(format, sizeof(format), "DevMapIsOFF", client);
+			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, false, client);
 
 			return Plugin_Handled;
@@ -6397,7 +6408,7 @@ public Action cmd_pbutton(int client, int args)
 	//}
 
 	char format[256];
-	Format(format, sizeof(format), g_pbutton ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
+	Format(format, sizeof(format), "%T", g_pbutton ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
 	SendMessage(format, false, client);
 
 	return Plugin_Handled;
