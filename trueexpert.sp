@@ -2893,7 +2893,9 @@ public void SendMessage(const char[] text, bool all, int client)
 			PrintToChat(client, "%s", textReplaced);
 		}
 	}
-
+	#if debug true
+	//PrintToChat(client, "%i MessageDebug", client)
+	#endif
 	return;
 }
 
@@ -5250,7 +5252,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(g_boost[client] > 0)
 		{
 			//float velocity[3];
-			float velocity[3];
+			float velocity[3] = {0.0, 0.0, 0.0};
 
 			if(g_boost[client] == 2)
 			{
@@ -5537,7 +5539,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity");
 
-				char class[32];
+				char class[32] = "";
 
 				if(IsValidEntity(groundEntity) == true)
 				{
@@ -5694,7 +5696,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(buttons & IN_ATTACK2)
 			{
-				char classname[32];
+				char classname[32] = "";
 				GetClientWeapon(client, classname, sizeof(classname));
 
 				if(StrEqual(classname, "weapon_flashbang", false))
@@ -5735,17 +5737,19 @@ public Action ProjectileBoostFix(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsClientInGame(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
-		float originOther[3];
+		float originOther[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(other, originOther);
 
-		float originEntity[3];
+		float originEntity[3] = {0.0, 0.0, 0.0};
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
 
-		float maxsEntity[3];
+		float maxsEntity[3] = {0.0, 0.0, 0.0};
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
-		PrintToServer("%f", delta);
+		#if debug true
+		PrintToServer("delta: %f", delta);
+		#endif
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //Tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
@@ -5760,7 +5764,7 @@ public Action ProjectileBoostFix(int entity, int other)
 			g_flash[other] = EntIndexToEntRef(entity); //Thats should never happen.
 			g_boost[other] = 1;
 
-			float vel[3];
+			float vel[3] = {0.0, 0.0, 0.0};
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel);
 
 			g_mlsVel[other][0][0] = vel[0];
@@ -5832,8 +5836,10 @@ public Action cmd_devmap(int client, int args)
 		char name[MAX_NAME_LENGTH];
 		GetClientName(client, name, sizeof(name));
 
-		PrintToChatAll("\x01%T", "DevMapStart", client, name);
-
+		//PrintToChatAll("\x01%T", "DevMapStart", client, name);
+		char format[256];
+		Format(format, sizeof(format), "%T", "DevMapStart", client, name);
+		SendMessage(format, true, client);
 		//return Plugin_Handled;
 	}
 
@@ -5841,7 +5847,9 @@ public Action cmd_devmap(int client, int args)
 	{
 		//PrintToChat(client, "Devmap vote is not allowed yet.");
 		PrintToChat(client, "\x01%T", "DevMapNotAllowed", client);
-
+		char format[256];
+		Format(format, sizeof(format), "%T", "DevMapNotAlloed", client);
+		SendMessage(format, false, client);
 		//return Plugin_Handled;
 	}
 
@@ -5877,7 +5885,7 @@ public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				//return param2;
 			}
-			return param2;
+			//return param2;
 		}
 		//return param2;
 	}
@@ -5906,6 +5914,8 @@ public void Devmap(bool force)
 			else if(g_devmap == false)
 			{
 				PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+				//char format[256];
+				//Format(format, sizeof(format), "%T", "DevMapWillBeEnabled")
 			}
 
 			CreateTimer(5.0, timer_changelevel, g_devmap ? false : true);
@@ -5920,7 +5930,10 @@ public void Devmap(bool force)
 				{
 					if(IsClientInGame(i))
 					{
-						PrintToChat(i, "\x01%T", "DevMapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						//PrintToChat(i, "\x01%T", "DevMapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						char format[256];
+						Format(format, sizeof(format), "%T", "DevMapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(format, false, i);
 					}
 				}
 			}
@@ -5934,7 +5947,10 @@ public void Devmap(bool force)
 				{
 					if(IsClientInGame(i))
 					{
-						PrintToChat(i, "\x01%T", "DevMapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						//PrintToChat(i, "\x01%T", "DevMapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						char format[256];
+						Format(format, sizeof(format), "%T", "DevMapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(format, false, i);
 					}
 				}
 				//PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
@@ -5972,11 +5988,11 @@ public Action timer_motd(Handle timer, int client)
 	{
 		ConVar hostname = FindConVar("hostname");
 
-		char hostnameBuffer[256];
+		char hostnameBuffer[256] = "";
 
 		hostname.GetString(hostnameBuffer, sizeof(hostnameBuffer));
 
-		char url[192];
+		char url[192] = "";
 
 		g_urlTop.GetString(url, sizeof(url));
 
