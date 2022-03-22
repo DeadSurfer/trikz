@@ -6037,10 +6037,10 @@ public Action cmd_afk(int client, int args)
 				menu.SetTitle("%T", "AreYouHere?", client);
 
 				//menu.AddItem("yes", "Yes");
-				char format[256];
+				char format[256] = "";
 				Format(format, sizeof(format), "%T", "Yes", client);
 				menu.AddItem("yes", format);
-				char format2[256];
+				char format2[256] = "";
 				Format(format, sizeof(format), "%T", "No", client);
 				menu.AddItem("no", format2);
 
@@ -6055,7 +6055,7 @@ public Action cmd_afk(int client, int args)
 		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE);
 
 		//PrintToChatAll("Afk check - vote started by %N", client);
-		char name[MAX_NAME_LENGTH];
+		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
 		PrintToChatAll("\x01%T", "AFKCHECK", name, client);
 
@@ -6065,8 +6065,10 @@ public Action cmd_afk(int client, int args)
 	{
 		//PrintToChat(client, "Afk vote is not allowed yet.");
 		//PrintToChatAll("\x01%T");
-		PrintToChat(client, "\x01%T", "AFKCHECK2", client);
-
+		//PrintToChat(client, "\x01%T", "AFKCHECK2", client);
+		char format[256];
+		Format(format, sizeof(format), "%T", "AFKCHECK2", client);
+		SendMessage(format, false, client);
 		//return Plugin_Handled;
 	}
 
@@ -6157,19 +6159,28 @@ public void Noclip(int client)
 
 			if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
 			{
-				PrintToChat(client, "\x01%T", "NoClipEnabled", client);
+				//PrintToChat(client, "\x01%T", "NoClipEnabled", client);
+				char format[256];
+				Format(format, sizeof(format), "%T", "NoClipEnabled", client);
+				SendMessage(format, false, client);
 			}
 
 			else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
 			{
-				PrintToChat(client, "\x01%T", "NoClipDisabled", client);
+				//PrintToChat(client, "\x01%T", "NoClipDisabled", client);
+				char format[256];
+				Format(format, sizeof(format), "%T", "NoClipDisabled", client);
+				SendMessage(format, false, client);
 			}
 		}
 
 		else if(g_devmap == false)
 		{
 			//PrintToChat(client, "Turn on devmap.");
-			PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			char format[256];
+			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
+			SendMessage(format, false, client);
 		}
 	}
 }
@@ -6213,7 +6224,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_Select:
 		{
-			char value[16];
+			char value[16] = "";
 
 			switch(param2)
 			{
