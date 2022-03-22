@@ -6202,9 +6202,14 @@ public Action cmd_hud(int client, int args)
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 
 	menu.SetTitle("Hud");
-
-	menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
-	menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
+	char format[128];
+	Format(format, sizeof(format), "%T", client, g_hudVel[client] ? "VelMenuON" : "VelMenuOFF");
+	//menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
+	menu.AddItem("vel", format);
+	//menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
+	//char
+	Format(format, sizeof(format), "%T", client, g_mlstats[client] ? "MLStatsMenuON" : "MLStatsMenuOFF");
+	menu.AddItem("mls", format);
 
 	menu.Display(client, 20);
 
@@ -6271,7 +6276,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public void Hud(int client)
 {
-	float vel[3];
+	float vel[3] = {0.0, 0.0, 0.0};
 
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
 
@@ -6303,7 +6308,7 @@ public Action cmd_mlstats(int client, int args)
 {
 	g_mlstats[client] = !g_mlstats[client];
 
-	char value[16];
+	char value[16] = "";
 
 	IntToString(g_mlstats[client], value, sizeof(value));
 
@@ -6311,15 +6316,25 @@ public Action cmd_mlstats(int client, int args)
 
 	//PrintToChat(client, g_mlstats[client] ? "ML stats is on." : "ML stats is off.");
 
-	if(g_mlstats[client] == true)
-	{
-		PrintToChat(client, "\x01%T", "MLStatsON", client);
-	}
+	//if(g_mlstats[client] == true)
+	//{
+		//PrintToChat(client, "\x01%T", "MLStatsON", client);
+		//char format[256];
+		//Format(format, sizeof(format), "%T", "MLStatsON", client);
+		//SendMessage(format, false, client);
+	//}
 
-	else if(g_mlstats[client] == false)
-	{
-		PrintToChat(client, "\x01%T", "MLStatsOFF", client);
-	}
+	//else if(g_mlstats[client] == false)
+	//{
+		//PrintToChat(client, "\x01%T", "MLStatsOFF", client);
+		//char format[256];
+		//Format(format, sizeof(format), "%T", "MLStatsOFF", client);
+		//SendMessage(format, false, client);
+	//}
+
+	char format[256];
+	Format(format, sizeof(format), "%T", g_mlstats[client] ? "MLStatsON" : "MLStatsOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
@@ -6328,7 +6343,7 @@ public Action cmd_button(int client, int args)
 {
 	g_button[client] = !g_button[client];
 
-	char value[16];
+	char value[16] = "";
 
 	IntToString(g_button[client], value, sizeof(value));
 
@@ -6336,15 +6351,25 @@ public Action cmd_button(int client, int args)
 
 	//PrintToChat(client, g_button[client] ? "Button announcer is on." : "Button announcer is off.");
 
-	if(g_button[client] == true)
-	{
-		PrintToChat(client, "\x01%T", "ButtonAnnounserON", client);
-	}
+	//if(g_button[client] == true)
+	//{
+		//PrintToChat(client, "\x01%T", "ButtonAnnounserON", client);
+		//char format[256];
+		//Format(format, sizeof(format), "%T", "ButtonAnnounserON", client);
+		//SendMessage(format, false, client);
+	//}
 
-	else if(g_button[client] == false)
-	{
-		PrintToChat(client, "\x01%T", "ButtonAnnonserOFF", client);
-	}
+	//else if(g_button[client] == false)
+	//{
+		//PrintToChat(client, "\x01%T", "ButtonAnnonserOFF", client);
+		//char format[256];
+		//Format(format, sizeof(format), "%T", "ButtonAnnounserOFF", client);
+		//SendMessage(format, false, client);
+	//}
+
+	char format[256];
+	Format(format, sizeof(format), "%T", g_button[client] ? "ButtonAnnonuncerON" : "ButtonAnnouncerOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
@@ -6353,7 +6378,7 @@ public Action cmd_pbutton(int client, int args)
 {
 	g_pbutton[client] = !g_pbutton[client]; //toggling
 
-	char value[16];
+	char value[16] = "";
 
 	IntToString(g_pbutton[client], value, sizeof(value));
 
@@ -6361,15 +6386,19 @@ public Action cmd_pbutton(int client, int args)
 
 	//PrintToChat(client, g_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.");
 
-	if(g_pbutton[client] == true)
-	{
-		PrintToChat(client, "\x01%T", "ButtonAnnouncerPartnerON", client);
-	}
+	//if(g_pbutton[client] == true)
+	//{
+	//	PrintToChat(client, "\x01%T", "ButtonAnnouncerPartnerON", client);
+	//}
 
-	else if(g_pbutton[client] == false)
-	{
-		PrintToChat(client, "\x01%T", "ButtonAnnouncerPartnerOFF", client);
-	}
+	//else if(g_pbutton[client] == false)
+	//{
+	//	PrintToChat(client, "\x01%T", "ButtonAnnouncerPartnerOFF", client);
+	//}
+
+	char format[256];
+	Format(format, sizeof(format), g_pbutton ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
@@ -6571,20 +6600,20 @@ public Action ProjectileBoostFixEndTouch(int entity, int other)
 	{
 		g_bouncedOff[entity] = true; //Get from Tengu github "tengulawl" scriptig "boost-fix.sp".
 
-		return Plugin_Continue;
+		//return Plugin_Continue;
 	}
 
-	else if(other > 0)
-	{
-		return Plugin_Continue;
-	}
+	//else if(other > 0)
+	//{
+	//	return Plugin_Continue;
+	//}
 
 	return Plugin_Continue;
 }
 
 public Action cmd_time(int client, int args)
 {
-	if(IsPlayerAlive(client))
+	if(IsPlayerAlive(client) == true)
 	{
 		//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
 		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
@@ -6596,12 +6625,13 @@ public Action cmd_time(int client, int args)
 		if(g_partner[client])
 		{
 			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second);
-			return Plugin_Handled;
+			//return Plugin_Handled;
 		}
 
-		return Plugin_Handled;
+		//return Plugin_Handled;
 	}
-	else
+
+	else if (IsPlayerAlive(client) == false)
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
@@ -6615,12 +6645,12 @@ public Action cmd_time(int client, int args)
 
 			PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
 
-			return Plugin_Handled;
+			//return Plugin_Handled;
 		}
 
-		return Plugin_Handled;
+		//return Plugin_Handled;
 	}
-	//return Plugin_Handled;
+	return Plugin_Handled;
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
@@ -6634,6 +6664,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile);
 		SDKHook(entity, SDKHook_StartTouch, SDKStopSpam);
 	}
+
+	return;
 }
 
 public void SDKProjectile(int entity)
@@ -6669,13 +6701,13 @@ public Action SDKStopSpam(int entity, int other)
 {
 	if(0 < other <= MaxClients && IsClientInGame(other) == true)
 	{
-		float originOther[3];
+		float originOther[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(other, originOther);
 
-		float originEntity[3];
+		float originEntity[3] = {0.0, 0.0, 0.0};
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
 
-		float maxsEntity[3];
+		float maxsEntity[3] = {0.0, 0.0, 0.0};
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
@@ -6727,7 +6759,7 @@ public void FlashbangEffect(const int entity)
 {
 	bool filter = LibraryExists("trueexpert-entityfilter");
 
-	float origin[3];
+	float origin[3] = {0.0, 0.0, 0.0};
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
 
 	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
@@ -6765,7 +6797,7 @@ public void FlashbangEffect(const int entity)
 		TE_SendToAll();
 	}
 
-	float dir[3]; //https://forums.alliedmods.net/showthread.php?t=274452
+	float dir[3] = {0.0, 0.0, 0.0}; //https://forums.alliedmods.net/showthread.php?t=274452
 
 	dir[0] = GetRandomFloat(-1.0, 1.0);
 	dir[1] = GetRandomFloat(-1.0, 1.0);
@@ -6846,7 +6878,7 @@ public void SDKThink(int client)
 
 		if(g_readyToFix[client] == true)
 		{
-			char classname[32];
+			char classname[32] = "";
 
 			GetClientWeapon(client, classname, sizeof(classname));
 
@@ -7045,7 +7077,7 @@ public void MLStats(const int client, bool ground)
 
 	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost);
 
-	char print[256];
+	char print[256] = "";
 
 	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
 	{
@@ -7118,9 +7150,9 @@ public void MLStats(const int client, bool ground)
 
 public int Stuck(int client)
 {
-	float mins[3];
-	float maxs[3];
-	float origin[3];
+	float mins[3] = {0.0, 0.0, 0.0};
+	float maxs[3] = {0.0, 0.0, 0.0};
+	float origin[3] = {0.0, 0.0, 0.0};
 
 	GetClientMins(client, mins);
 	GetClientMaxs(client, maxs);
@@ -7236,21 +7268,21 @@ public Action timer_clearlag(Handle timer)
 
 float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
-	float origin[3];
+	float origin[3] = {0.0, 0.0, 0.0};
 	GetClientAbsOrigin(client, origin);
 
-	float originDir[3];
+	float originDir[3] = {0.0, 0.0, 0.0};
 	GetClientAbsOrigin(client, originDir);
 
 	originDir[2] -= 90.0;
 
-	float mins[3];
+	float mins[3] = {0.0, 0.0, 0.0};
 	GetClientMins(client, mins);
 
-	float maxs[3];
+	float maxs[3] = {0.0, 0.0, 0.0};
 	GetClientMaxs(client, maxs);
 
-	float pos[3];
+	float pos[3] = {0.0, 0.0, 0.0};
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
 	TR_GetEndPosition(pos);
 	//PrintToServer("%f", pos[2])
