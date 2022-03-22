@@ -177,6 +177,7 @@ ConVar gCV_macro;
 bool g_macroDisabled[MAXPLAYER];
 float g_macroTime[MAXPLAYER];
 bool g_macroOpened[MAXPLAYER];
+#define debug false
 
 public Plugin myinfo =
 {
@@ -2874,7 +2875,7 @@ public void SendMessage(const char[] text, bool all, int client)
 
 	//Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName);
 	char textReplaced[256] = "";
-	Format(textReplaced, sizeof(textReplaced), "%s", text);
+	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
 	ReplaceString(textReplaced, sizeof(textReplaced), ";#", "\x07");
 	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
 
@@ -2919,7 +2920,10 @@ public Action cmd_endmins(int client, int args)
 		else if(g_devmap == false)
 		{
 			//PrintToChat(client, "Turn on devmap.");
-			PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			char format[256] = "";
+			Format(format, sizeof(format), "DevMapIsOFF", client);
+			SendMessage(format, false, client);
 		}
 
 		return Plugin_Handled;
@@ -2937,7 +2941,7 @@ public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] erro
 
 	else if(strlen(error) == 0)
 	{
-		char query[512];
+		char query[512] = "";
 
 		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
 
@@ -2961,7 +2965,7 @@ public Action cmd_maptier(int client, int args)
 	{
 		if(g_devmap == true)
 		{
-			char arg[512];
+			char arg[512] = "";
 
 			GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
@@ -2971,7 +2975,7 @@ public Action cmd_maptier(int client, int args)
 			{
 				PrintToServer("[Args] Tier: %i", tier);
 
-				char query[512];
+				char query[512] = "";
 
 				Format(query, sizeof(query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
 
@@ -2981,8 +2985,11 @@ public Action cmd_maptier(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 			//PrintToChat(client, "Turn on devmap.");
+			char format[256];
+			Format(format, sizeof(format), "DevMapIsOFF", client);
+			SendMessage(format, false, client);
 		}
 
 		return Plugin_Handled;
@@ -3000,7 +3007,7 @@ public void SQLTierRemove(Database db, DBResultSet results, const char[] error, 
 
 	else if(strlen(error) == 0)
 	{
-		char query[512];
+		char query[512] = "";
 
 		Format(query, sizeof(query), "INSERT INTO tier (tier, map) VALUES (%i, '%s')", data, g_map);
 
@@ -3041,6 +3048,11 @@ public void SQLSetStartZones(Database db, DBResultSet results, const char[] erro
 		{
 			PrintToServer("Start zone successfuly created.");
 		}
+
+		else if(results.HasResults == true)
+		{
+			PrintToServer("Start zone failed to create.");
+		}
 	}
 
 	return;
@@ -3055,9 +3067,14 @@ public void SQLSetEndZones(Database db, DBResultSet results, const char[] error,
 
 	else if(strlen(error) == 0)
 	{
-		if((results.HasResults == false))
+		if(results.HasResults == false)
 		{
 			PrintToServer("End zone successfuly created.");
+		}
+
+		else if(results.HasResults == true)
+		{
+			PrintToServer("End zone failed to create.");
 		}
 	}
 
@@ -3080,7 +3097,7 @@ public Action cmd_startmaxs(int client, int args)
 	{
 		GetClientAbsOrigin(client, g_zoneStartOrigin[1]);
 
-		char query[512];
+		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 
 		g_mysql.Query(SQLDeleteStartZone, query);
@@ -3109,7 +3126,7 @@ public Action cmd_endmaxs(int client, int args)
 	{
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1]);
 
-		char query[512];
+		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
 
 		g_mysql.Query(SQLDeleteEndZone, query);
@@ -3138,7 +3155,7 @@ public Action cmd_cpmins(int client, int args)
 	{
 		if(g_devmap == true)
 		{
-			char cmd[512];
+			char cmd[512] = "";
 
 			GetCmdArg(args, cmd, sizeof(cmd));
 
@@ -3157,7 +3174,10 @@ public Action cmd_cpmins(int client, int args)
 		else if(g_devmap == false)
 		{
 			//PrintToChat(client, "Turn on devmap.");
-			PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			char format[256] = "";
+			Format(format, sizeof(format), "DevMapIsOFF", client);
+			SendMessage(format, false, client);
 		}
 
 		return Plugin_Handled;
@@ -3180,7 +3200,12 @@ public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, a
 			PrintToServer("Checkpoint zone no. %i successfuly deleted.", data);
 		}
 
-		char query[512];
+		else if(results.HasResults == true)
+		{
+			PrintToServer("Checkpoint zone no. %i failed to delete.", data);
+		}
+
+		char query[512] = "";
 
 		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[0][data][0]), RoundFloat(g_cpPos[0][data][1]), RoundFloat(g_cpPos[0][data][2]), RoundFloat(g_cpPos[1][data][0]), RoundFloat(g_cpPos[1][data][1]), RoundFloat(g_cpPos[1][data][2]), g_map);
 
@@ -3204,7 +3229,7 @@ public Action cmd_cpmaxs(int client, int args)
 
 	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[2] == true)
 	{
-		char cmd[512];
+		char cmd[512] = "";
 
 		GetCmdArg(args, cmd, sizeof(cmd));
 
@@ -3214,7 +3239,7 @@ public Action cmd_cpmaxs(int client, int args)
 		{
 			GetClientAbsOrigin(client, g_cpPos[1][cpnum]);
 
-			char query[512];
+			char query[512] = "";
 			Format(query, sizeof(query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
 
 			g_mysql.Query(SQLCPRemoved, query, cpnum);
@@ -3240,6 +3265,11 @@ public void SQLCPInserted(Database db, DBResultSet results, const char[] error, 
 		if(results.HasResults == false)
 		{
 			PrintToServer("Checkpoint zone no. %i successfuly created.", data);
+		}
+
+		else if(results.HasResults == true)
+		{
+			PrintToServer("Checkpoint zone no. %i failed to create.");
 		}
 	}
 
@@ -3270,7 +3300,10 @@ public Action cmd_zones(int client, int args)
 		else if(g_devmap == false)
 		{
 			//PrintToChat(client, "Turn on devmap.");
-			PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+			char format[256] = "";
+			Format(format, sizeof(format), "DevMapIsOFF", client);
+			SendMessage(format, false, client);
 
 			return Plugin_Handled;
 		}
@@ -3310,7 +3343,7 @@ public void ZoneEditor2(int client)
 		{
 			Format(format, sizeof(format), "CP nr. %i zone", i);
 
-			char cp[16];
+			char cp[16] = "";
 
 			Format(cp, sizeof(cp), "%i", i);
 
@@ -3332,7 +3365,7 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			char item[16];
+			char item[16] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
 			Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
@@ -3371,7 +3404,7 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			for(int i = 1; i <= g_cpCount; i++)
 			{
-				char cp[16];
+				char cp[16] = "";
 
 				IntToString(i, cp, sizeof(cp));
 
@@ -3381,11 +3414,11 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					menu2.SetTitle("Zone editor - CP nr. %i zone", i);
 
-					char sButton[32];
+					char sButton[32] = "";
 
 					Format(sButton, sizeof(sButton), "Teleport to CP nr. %i zone", i);
 
-					char itemCP[16];
+					char itemCP[16] = "";
 
 					Format(itemCP, sizeof(itemCP), "%i;tp", i);
 
@@ -3449,7 +3482,7 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_Select:
 		{
-			char item[16];
+			char item[16] = "";
 
 			menu.GetItem(param2, item, sizeof(item));
 
@@ -3550,7 +3583,7 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			int cpnum = StringToInt(exploded[0]);
 
-			char cpFormated[16];
+			char cpFormated[16] = "";
 
 			Format(cpFormated, sizeof(cpFormated), "%i;tp", cpnum);
 
@@ -3615,7 +3648,7 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				g_cpPos[1][cpnum][1] -= 16.0;
 			}
 
-			char query[512];
+			char query[512] = "";
 
 			if(StrEqual(item, "startupdate", false))
 			{
@@ -3689,7 +3722,27 @@ public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, 
 				PrintToServer("CP zone nr. %i successfuly updated.", data - 1);
 			}
 		}
+
+		else if(results.HasResults == true)
+		{
+			if(data == 1)
+			{
+				PrintToServer("End zone failed to update.");
+			}
+
+			else if(data == 0)
+			{
+				PrintToServer("Start zone failed to update.");
+			}
+
+			else if(data > 1)
+			{
+				PrintToServer("CP zone nr. %i failed to update", data - 1);
+			}
+		}
 	}
+
+	return;
 }
 
 //https://forums.alliedmods.net/showthread.php?t=261378
@@ -3744,7 +3797,7 @@ public void CPSetup(int client)
 
 	PrintToServer("must be 0, real number: %i", g_cpCount);
 
-	char query[512];
+	char query[512] = "";
 
 	for(int i = 1; i <= 10; i++)
 	{
@@ -3821,11 +3874,11 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, Dat
 
 public void CreateCP(int cpnum)
 {
-	char trigger[64];
+	char trigger[64] = "";
 
 	Format(trigger, sizeof(trigger), "trueexpert_cp%i", cpnum);
 
-	int entity = CreateEntityByName("trigger_multiple");
+	int entity = CreateEntityByName("trigger_multiple", -1);
 
 	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer
 	DispatchKeyValue(entity, "wait", "0");
@@ -3842,8 +3895,8 @@ public void CreateCP(int cpnum)
 
 	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
-	float mins[3];
-	float maxs[3];
+	float mins[3] = {0.0, 0.0, 0.0};
+	float maxs[3] = {0.0, 0.0, 0.0};
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -3928,7 +3981,7 @@ public Action SDKEndTouch(int entity, int other)
 		g_state[g_partner[other]] = true;
 
 		g_mapFinished[other] = false;
-		g_mapFinished[g_partner[other]] = false;
+		g_mapFinished[g_partner[other]] = false; //expert zone idea
 
 		g_timerTimeStart[other] = GetEngineTime();
 		g_timerTimeStart[g_partner[other]] = GetEngineTime();
@@ -3969,7 +4022,7 @@ public Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && g_devmap == false && IsFakeClient(other) == false)
 	{
-		char trigger[32];
+		char trigger[32] = "";
 
 		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger));
 
@@ -3985,7 +4038,7 @@ public Action SDKStartTouch(int entity, int other)
 
 			if(g_mapFinished[g_partner[other]] == true && g_state[other] == true)
 			{
-				char query[512];
+				char query[512] = "";
 
 				int playerid = GetSteamAccountID(other);
 				int partnerid = GetSteamAccountID(g_partner[other]);
@@ -3994,13 +4047,13 @@ public Action SDKStartTouch(int entity, int other)
 				int personalMinute = (RoundToFloor(g_timerTime[other]) / 60) % 60;
 				int personalSecond = RoundToFloor(g_timerTime[other]) % 60;
 
-				char sPersonalHour[32];
+				char sPersonalHour[32] = "";
 				FormatEx(sPersonalHour, sizeof(sPersonalHour), "%02.i", personalHour);
 
-				char sPersonalMinute[32];
+				char sPersonalMinute[32] = "";
 				FormatEx(sPersonalMinute, sizeof(sPersonalMinute), "%02.i", personalMinute);
 
-				char sPersonalSecond[32];
+				char sPersonalSecond[32] = "";
 				FormatEx(sPersonalSecond, sizeof(sPersonalSecond), "%02.i", personalSecond);
 
 				if(g_ServerRecordTime > 0.0)
@@ -4015,30 +4068,33 @@ public Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
 							int srSecond = RoundToFloor(timeDiff) % 60;
 
-							char sSRHour[32];
+							char sSRHour[32] = "";
 							FormatEx(sSRHour, sizeof(sSRHour), "%02.i", srHour);
 
-							char sSRMinute[32];
+							char sSRMinute[32] = "";
 							FormatEx(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
 
-							char sSRSecond[32];
+							char sSRSecond[32] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
 
 							//PrintToChatAll("\x01\x077CFC00New server record!");
-							PrintToChatAll("\x01%T", "NewServerRecord");
+							//PrintToChatAll("\x01%T", "NewServerRecord");
+							char format[256] = "";
+							Format(format, sizeof(format), "NewServerRecord");
+							SendMessage(format, true, other); //smth like shavit functions.
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							
-							char sClient[MAX_NAME_LENGTH];
+							char sClient[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sClient, sizeof(sClient));
 
-							char sOther[MAX_NAME_LENGTH];
+							char sOther[MAX_NAME_LENGTH] = "";
 							GetClientName(g_partner[other], sOther, sizeof(sOther));
 
 							//FormatEx(sClient, sizeof(sClient), "%N", clie
 							//PrintToChatAll("\x01%T", "NewServerRecordDetail", sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 
-							char text2[256];
-							Format(text2, sizeof(text2), "\x01%T", "NewServerRecordDetail", sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+							char text2[256] = "";
+							Format(text2, sizeof(text2), "%T", "NewServerRecordDetail", sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 							SendMessage(text2, true, other);
 							//SendMessage(text2, true, g_partner[other]);
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
@@ -4049,7 +4105,7 @@ public Action SDKStartTouch(int entity, int other)
 							g_mysql.Query(SQLUpdateRecord, query);
 
 							g_haveRecord[other] = g_timerTime[other];
-							g_haveRecord[g_partner[other]] = g_timerTime[other];
+							g_haveRecord[g_partner[other]] = g_timerTime[other]; //logs help also expert zone ideas.
 
 							g_mateRecord[other] = g_timerTime[other];
 							g_mateRecord[g_partner[other]] = g_timerTime[other];
@@ -4075,21 +4131,21 @@ public Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
 							int srSecond = RoundToFloor(timeDiff) % 60;
 							
-							char sSRHour[32];
+							char sSRHour[32] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32];
+							char sSRMinute[32] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32];
+							char sSRSecond[32] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
 							
 							/*//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);*/
-							char text2[256];
-							char sName[MAX_NAME_LENGTH];
+							char text2[256] = "";
+							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
-							char sPartner[MAX_NAME_LENGTH];
+							char sPartner[MAX_NAME_LENGTH] = "";
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
 							//char sPartner(g_partner[other], sPartner, sizeof(sPartner));
-							Format(text2, sizeof(text2), "\x01%T", "PassedImproved", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+							Format(text2, sizeof(text2), "%T", "PassedImproved", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 							SendMessage(text2, true, other);
 							//SendMessage(text2, true, g_partner[other]);
 							
@@ -4109,19 +4165,19 @@ public Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
 							int srSecond = RoundToFloor(timeDiff) % 60;
 							
-							char sSRHour[32];
+							char sSRHour[32] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32];
+							char sSRMinute[32] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32];
+							char sSRSecond[32] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
 
-							char text2[256];
-							char sName[MAX_NAME_LENGTH];
+							char text2[256] = "";
+							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
-							char sPartner[MAX_NAME_LENGTH];
+							char sPartner[MAX_NAME_LENGTH] = "";
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
-							Format(text2, sizeof(text2), "\x01%T", "Passed", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+							Format(text2, sizeof(text2), "%T", "Passed", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 							SendMessage(text2, true, other);
 							//SendMessage(text2, true, g_partner[other]);
 							
@@ -4163,20 +4219,23 @@ public Action SDKStartTouch(int entity, int other)
 							int srSecond = RoundToFloor(timeDiff) % 60;
 
 							//PrintToChatAll("\x077CFC00New server record!");
-							PrintToChatAll("\x01%T", "NewServerRecord");
+							char format[256];
+							Format(format, sizeof(format), "%T", "NewServerRecord");
+							SendMessage(format, true, other); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
+							//PrintToChatAll("\x01%T", "NewServerRecord");
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							char sSRHour[32];
+							char sSRHour[32] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32];
+							char sSRMinute[32] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32];
+							char sSRSecond[32] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
-							char sName[MAX_NAME_LENGTH];
+							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
-							char sPartner[MAX_NAME_LENGTH];
+							char sPartner[MAX_NAME_LENGTH] = "";
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
-							char text2[256];
-							Format(text2, sizeof(text2), "\x01%T", "NewServerRecordDetailNew", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+							char text2[256] = "";
+							Format(text2, sizeof(text2), "%T", "NewServerRecordDetailNew", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 							SendMessage(text2, true, other);
 							//SendMessage(text2, true, g_partner[other]);
 
@@ -4216,19 +4275,19 @@ public Action SDKStartTouch(int entity, int other)
 							int srSecond = RoundToFloor(timeDiff) % 60;
 
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							char sSRHour[32];
+							char sSRHour[32] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32];
+							char sSRMinute[32] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32];
+							char sSRSecond[32] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
-							char sName[MAX_NAME_LENGTH];
+							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
-							char sPartner[MAX_NAME_LENGTH];
+							char sPartner[MAX_NAME_LENGTH] = "";
 							//Format(sPartner, sizeof(sPartner), ""
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
-							char text2[256];
-							Format(text2, sizeof(text2), "\x01%T", "JustPassed", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+							char text2[256] = ""; //i got george code from github but before it i got it from george friends.
+							Format(text2, sizeof(text2), "%T", "JustPassed", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 							SendMessage(text2, true, other);
 
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
@@ -4261,19 +4320,19 @@ public Action SDKStartTouch(int entity, int other)
 							int srCPMinute = (RoundToFloor(gF_cpDiff[i][other]) / 60) % 60;
 							int srCPSecond = RoundToFloor(gF_cpDiff[i][other]) % 60;
 							
-							char sSRCPHour[32];
+							char sSRCPHour[32] = ""; //trikz solid code was perfect for me but i didnt got how to make measure generic last level anti cheat triggers.
 							Format(sSRCPHour, sizeof(sSRCPHour), "%02.i", srCPHour);
-							char sSRCPMinute[32];
+							char sSRCPMinute[32] = "";
 							Format(sSRCPMinute, sizeof(sSRCPMinute), "%02.i", srCPMinute);
-							char sSRCPSecond[32];
+							char sSRCPSecond[32] = "";
 							Format(sSRCPSecond, sizeof(sSRCPSecond), "%02.i", srCPSecond);
 
 							if(g_cpTimeClient[i][other] < g_cpTime[i])
 							{
 								//PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond);
 								//char sSRCPHour[32];
-								char textCP[256];
-								Format(textCP, sizeof(textCP), "\x01%T", "CPImprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
+								char textCP[256] = "";
+								Format(textCP, sizeof(textCP), "%T", "CPImprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 								SendMessage(textCP, true, other);
 							}
 
@@ -4281,7 +4340,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond);
 								char textCP[256];
-								Format(textCP, sizeof(textCP), "\x01%T", "CPDeprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
+								Format(textCP, sizeof(textCP), "%T", "CPDeprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 								SendMessage(textCP, true, other);
 							}
 						}
@@ -4297,16 +4356,19 @@ public Action SDKStartTouch(int entity, int other)
 
 					g_mateRecord[other] = g_timerTime[other];
 					g_mateRecord[g_partner[other]] = g_timerTime[other];
-
+					char format[256];
+					Format(format, sizeof(format), "%T", "NewServerRecord");
+					SendMessage(format, true, other);
 					//PrintToChatAll("\x077CFC00New server record!");
-					PrintToChatAll("\x01%T", "NewServerRecord");
-					PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond);
+					//PrintToChatAll("\x01%T", "NewServerRecord");
+					//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond);
+					//Format(format, sizeof(format), )
 					char sName[MAX_NAME_LENGTH];
 					GetClientName(other, sName, sizeof(sName));
 					char sPartner[MAX_NAME_LENGTH];
 					GetClientName(g_partner[other], sPartner, sizeof(sPartner));
 					char text2[256];
-					Format(text2, sizeof(text2), "\x01%T", "NewServerRecordFist", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond);
+					Format(text2, sizeof(text2), "%T", "NewServerRecordFirst", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond);
 					SendMessage(text2, true, other);
 
 					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
@@ -4316,9 +4378,9 @@ public Action SDKStartTouch(int entity, int other)
 					{
 						if(g_cp[i][other])
 						{
-							PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i);
-							char textCP[256];
-							Format(textCP, sizeof(textCP), "\x01%T", "CPNEW", i);
+							//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i);
+							char textCP[256] = "";
+							Format(textCP, sizeof(textCP), "%T", "CPNEW", i);
 							SendMessage(textCP, true, other);
 						}
 					}
@@ -4346,7 +4408,7 @@ public Action SDKStartTouch(int entity, int other)
 
 		for(int i = 1; i <= g_cpCount; i++)
 		{
-			char triggerCP[64];
+			char triggerCP[64] = "";
 
 			Format(triggerCP, sizeof(triggerCP), "trueexpert_cp%i", i);
 
@@ -4391,21 +4453,21 @@ public Action SDKStartTouch(int entity, int other)
 
 public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, int personalSecond, int srHour, int srMinute, int srSecond)
 {
-	char sPersonalHour[32];
+	char sPersonalHour[32] = "";
 	Format(sPersonalHour, sizeof(sPersonalHour), "%i", personalHour);
-	char sPersonalMinute[32];
+	char sPersonalMinute[32] = "";
 	Format(sPersonalMinute, sizeof(sPersonalMinute), "%i", personalMinute);
-	char sPersonalSecond[32];
+	char sPersonalSecond[32] = "";
 	Format(sPersonalSecond, sizeof(sPersonalSecond), "%i", personalSecond);
 	
-	char sSRHour[32];
+	char sSRHour[32] = "";
 	Format(sSRHour, sizeof(sSRHour), "%i", srHour);
-	char sSRMinute[32];
+	char sSRMinute[32] = "";
 	Format(sSRMinute, sizeof(sSRMinute), "%i", srMinute);
-	char sSRSecond[32];
+	char sSRSecond[32] = "";
 	Format(sSRSecond, sizeof(sSRSecond), "%i", srSecond);
 
-	char format[256];
+	char format[256] = "";
 
 	if(onlyCP == true)
 	{
@@ -4717,6 +4779,13 @@ public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error
 	{
 		PrintToServer("SQLUpdateRecord: %s", error);
 	}
+
+	else if(strlen(error) == 0)
+	{
+		#if debug
+		PrintToServer("SQLUpdateRecord callback is finished.");
+		#endif
+	}
 }
 
 public void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -4724,6 +4793,13 @@ public void SQLInsertRecord(Database db, DBResultSet results, const char[] error
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLInsertRecord: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		#if debug
+		PrintToServer("SQLInsertRecord callback finished.");
+		#endif
 	}
 }
 
@@ -4748,10 +4824,10 @@ public Action timer_sourcetv(Handle timer)
 
 public Action timer_runsourcetv(Handle timer)
 {
-	char filenameOld[256];
+	char filenameOld[256] = "";
 	Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
 
-	char filenameNew[256];
+	char filenameNew[256] = "";
 	Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
 
 	RenameFile(filenameNew, filenameOld);
@@ -4761,7 +4837,7 @@ public Action timer_runsourcetv(Handle timer)
 
 	if(sourcetv == true)
 	{
-		PrintToServer("sourcetv start recording.");
+		PrintToServer("SourceTV is start recording.");
 
 		FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime());
 		FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime());
@@ -4788,7 +4864,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 		int other = GetClientFromSerial(data.ReadCell());
 		int cpnum = data.ReadCell();
 
-		char query[512];
+		char query[512] = "";
 
 		if(results.FetchRow() == true)
 		{
@@ -4877,6 +4953,13 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 	{
 		PrintToServer("SQLSetTries: %s", error);
 	}
+
+	else if(strlen(error) == 0)
+	{
+		#if debug
+		PrintToServer("SQLSetTries callback is finished.");
+		#endif
+	}
 }
 
 public Action cmd_createzones(int args)
@@ -4900,7 +4983,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 
 		g_dbPassed = true; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 
-		char query[512];
+		char query[512] = "";
 
 		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", g_map);
 
@@ -4917,7 +5000,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 
 public void ForceZonesSetup()
 {
-	char query[512];
+	char query[512] = "";
 
 	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 
