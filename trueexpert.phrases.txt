@@ -305,50 +305,50 @@
 	{
 		"en"	"Choose partner"
 	}
-	"CP-record"
+	"CP-recordHud"
 	{
 		"#format"	"{1:i}"
 		"en"	"{1}. CHECKPOINT RECORD!"
 	}
-	"CP-recordDetail"
+	"CP-recordDetailHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"CHECKPOINT: {1}:{2}:{3}"
 	}
-	"CP-DetailZero"
+	"CP-DetailZeroHud"
 	{
 		"en"	"+00:00:00"
 	}
-	"CP-recordNotFirst"
+	"CP-recordNotFirstHud"
 	{
 		"#format"	"{1:i}"
 		"en"	"{1}. CHECKPOINT RECORD!"
 	}
-	"CP-recordDetailNotFirst"
+	"CP-recordDetailNotFirstHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"CHECKPOINT: {1}:{2}:{3}"
 	}
-	"CP-recordImproveNotFirst"
+	"CP-recordImproveNotFirstHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"-{1}:{2}:{3}"
 	}
-	"CP-recordNon"
+	"CP-recordNonHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"CHECKPOINT: {1}:{2}:{3}"
 	}
-	"CP-recordDeprove"
+	"CP-recordDeproveHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"+{1}:{2}:{3}"
 	}
-	"MapFinishedFirstRecord"
+	"MapFinishedFirstRecordHud"
 	{
 		"en"	"MAP FINISHED!"
 	}
-	"NewServerRecordHud"
+	"NewServerRecordHudHud"
 	{
 		"en"	"NEW SERVER RECORD!"
 	}
@@ -361,34 +361,34 @@
 	{
 		"en"	"+00:00:00"
 	}
-	"NewServerRecordMapFinishedNotFirst"
+	"NewServerRecordMapFinishedNotFirstHud"
 	{
 		"en"	"MAP FINISHED!"
 	}
-	"NewServerRecordNotFirst"
+	"NewServerRecordNotFirstHud"
 	{
 		"en"	"NEW SERVER RECORD!"
 	}
-	"NewServerRecordDetailNotFirst"
+	"NewServerRecordDetailNotFirstHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"TIME: {1}:{2}:{3}"
 	}
-	"NewServerRecordImproveNotFirst"
+	"NewServerRecordImproveNotFirstHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"-{1}:{2}:{3}"
 	}
-	"MapFinishedDeprove"
+	"MapFinishedDeproveHud"
 	{
 		"en"	"MAP FINISHED!"
 	}
-	"MapFinishedTimeDeprove"
+	"MapFinishedTimeDeproveHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"TIME: {1}:{2}:{3}"
 	}
-	"MapFinishedTimeDeproveOwn"
+	"MapFinishedTimeDeproveOwnHud"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"+{1}:{2}:{3}"
