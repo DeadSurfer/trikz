@@ -4588,21 +4588,26 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 	{
 		if(firstCPRecord == true)
 		{
+			char text[256];
+			KeyValues kv = new KeyValues("TrueexpertHud");
+			kv.GotoFirstSubKey(false);
+			kv.GetString("CP-recordHud", text, sizeof(text), "");
+			PrintToServer("%s", text);
 			SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(format, sizeof(format), "%T", "CP-record", client, cpnum);
+			Format(format, sizeof(format), "%T", "CP-recordHud", client, cpnum);
 			ShowHudText(client, 1, format);
 
 			SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 			//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-			Format(format, sizeof(format), "%T", "CP-recordDetail", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+			Format(format, sizeof(format), "%T", "CP-recordDetailHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 			ShowHudText(client, 2, format);
 			
 			SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-			ShowHudText(client, 3, "+00:00:00");
+			//ShowHudText(client, 3, "+00:00:00");
 			//Format(format, sizeof(format), "+00:00:00");
 			//Show
-			Format(format, sizeof(format), "%T", "CP-DetailZero", client);
+			Format(format, sizeof(format), "%T", "CP-DetailZeroHud", client);
 			ShowHudText(client, 3, format);
 
 			for(int i = 1; i <= MaxClients; i++)
@@ -4616,15 +4621,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					{
 						SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 						//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
-						Format(format, sizeof(format), "%T", "CP-record", i, cpnum);
+						Format(format, sizeof(format), "%T", "CP-recordHud", i, cpnum);
 						ShowHudText(i, 1, format);
 
 						SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 						//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-						Format(format, sizeof(format), "%T", "CP-recordDetail", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+						Format(format, sizeof(format), "%T", "CP-recordDetailHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
 
 						SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-						Format(format, sizeof(format), "%T", "CP-DetailZero", i);
+						Format(format, sizeof(format), "%T", "CP-DetailZeroHud", i);
 						ShowHudText(i, 3, format);
 						//ShowHudText(i, 3, "+00:00:00");
 						
@@ -4639,16 +4644,16 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			{
 				SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157B3F4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-				Format(format, sizeof(format), "%T", "CP-recordNotFirst", client, cpnum);
+				Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", client, cpnum);
 				ShowHudText(client, 1, format);
 
 				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirst", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 2, format);
 
 				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-				Format(format, sizeof(format), "%T", "CP-recordImproveNotFirst", client, sSRHour, sSRMinute, sSRSecond);
+				Format(format, sizeof(format), "%T", "CP-recordImproveNotFirstHud", client, sSRHour, sSRMinute, sSRSecond);
 				ShowHudText(client, 3, format);
 				//ShowHudText(client, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 
@@ -4662,17 +4667,17 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						if(observerMode < 7 && observerTarget == client)
 						{
 							SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-							Format(format, sizeof(format), "%T", "CP-recordNotFist", i, cpnum);
+							Format(format, sizeof(format), "%T", "CP-recordNotFistHud", i, cpnum);
 							//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
 							ShowHudText(i, 1, format);
 
 							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(format, sizeof(format), "%T", "CP-recordDetailNotFirst", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
 							ShowHudText(i, 2, format);
 
 							SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-							Format(format, sizeof(format), "%T", "CP-recordImproveNotFirst", i, sSRHour, sSRMinute, sSRSecond);
+							Format(format, sizeof(format), "%T", "CP-recordImproveNotFirstHud", i, sSRHour, sSRMinute, sSRSecond);
 							ShowHudText(i, 3, format);
 							//ShowHudText(i, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 						}
@@ -4684,13 +4689,13 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			{
 				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				//Format(format, sizeof(format), "%T", "CP-recordDeprove"
-				Format(format, sizeof(format), "%T", "CP-recordNon", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				Format(format, sizeof(format), "%T", "CP-recordNonHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 1, format);
 				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 
 				SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				//ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				Format(format, sizeof(format), "%T", "CP-recordDeprove", client, srHour, srMinute, srSecond);
+				Format(format, sizeof(format), "%T", "CP-recordDeproveHud", client, srHour, srMinute, srSecond);
 				ShowHudText(client, 2, format);
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -4704,12 +4709,12 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						{
 							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							//ShowHudText(i, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(format, sizeof(format), "%T", "CP-recordNon", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							Format(format, sizeof(format), "%T", "CP-recordNonHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
 							ShowHudText(i, 1, format);
 
 							SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 							//ShowHudText(i, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							Format(format, sizeof(format), "%T", "CP-recordDeprove", i, sSRHour, sSRMinute, sSRSecond);
+							Format(format, sizeof(format), "%T", "CP-recordDeproveHud", i, sSRHour, sSRMinute, sSRSecond);
 							ShowHudText(i, 2, format);
 						}
 					}
@@ -4724,7 +4729,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 		{
 			SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 			//ShowHudText(client, 1, "MAP FINISHED!"); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(format, sizeof(format), "%T", "MapFinishedFirstRecord", client);
+			Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", client);
 			ShowHudText(client, 1, format);
 
 			SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
@@ -4754,13 +4759,13 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 						//ShowHudText(i, 1, "MAP FINISHED!");
 						//Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
-						Format(format, sizeof(format), "%T", "MapFinishedFirstRecord", i);
+						Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", i);
 						ShowHudText(i, 1, format);
 
 						SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 						ShowHudText(i, 2, "NEW SERVER RECORD!");
 						//ShowHudText(i, 2, "%T", ""
-						Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
+						Format(format, sizeof(format), "%T", "NewServerRecordHudHud", i);
 						ShowHudText(i, 2, format);
 
 						SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
@@ -4785,21 +4790,21 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 				ShowHudText(client, 1, "MAP FINISHED!");
 				
-				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirst", client);
+				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
 				ShowHudText(client, 2, format);
 				SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 				//ShowHudText(client, 2, "NEW SERVER RECORD!");
-				Format(format, sizeof(format), "%T", "NewServerRecordNotFirst", client);
+				Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", client);
 				ShowHudText(client, 2, format);
 
 				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirst", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 3, format);
 
 				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				//ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond); //https://youtu.be/j4L3YvHowv8?t=45
-				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirst", client);
+				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", client);
 				ShowHudText(client, 4, format);
 				
 				for(int i = 1; i <= MaxClients; i++)
@@ -4813,25 +4818,25 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						{
 							SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 							//ShowHudText(i, 1, "MAP FINISHED!");
-							Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirst", i);
+							Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", i);
 							ShowHudText(i, 1, format);
 							
 							SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 							//ShowHudText(i, 2, "NEW SERVER RECORD!");
-							Format(format, sizeof(format), "%T", "NewServerRecordNotFirst", i);
+							Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", i);
 							ShowHudText(i, 2, format);
 
 							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 							//ShowHudText(i
 							//Format(sizeof
-							Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirst", i);
+							Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", i);
 							ShowHudText(i, 3, format);
 
 							SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 							//ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 							//ShowHudText(i, 4,
-							Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirst", i);
+							Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", i);
 							ShowHudText(i, 3, format);
 						}
 					}
@@ -4842,17 +4847,17 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			{
 				SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 				//ShowHudText(client, 1, "MAP FINISHED!");
-				Format(format, sizeof(format), "%T", "MapFinishedDeprove", client);
+				Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", client);
 				ShowHudText(client, 1, format);
 				
 				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "MapFinishedTimeDeprove", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
+				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 2, format);
 				
 				SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				//ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwn", client, sSRHour, sSRMinute, sSRSecond);
+				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", client, sSRHour, sSRMinute, sSRSecond);
 				ShowHudText(client, 3, format);
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -4866,19 +4871,19 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						{
 							SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 							//char format[256];
-							Format(format, sizeof(format), "%T", "MapFinishedDeprove", i);
+							Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", i);
 							//ShowHudText(i, 1, "MAP FINISHED!");
 							ShowHudText(i, 1, format);
 
 							SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							
 							//ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(format, sizeof(format), "%T", "MapFinishedTimeDeprove", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
 							ShowHudText(i, 2, format);
 							
 							SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 							//ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwn", i, sSRHour, sSRMinute, sSRSecond);
+							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", i, sSRHour, sSRMinute, sSRSecond);
 							ShowHudText(i, 3, format);
 						}
 					}
@@ -7401,10 +7406,12 @@ float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=10
 	//PrintToServer("%f", pos[2])
 	//return pos[2];
 	//bool didHit = TR_DitHit(null);
-	if(TR_DitHit(INVALID_HANDLE) == true)
+	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
 		return pos[2];
 	}
+
+	return pos[2];
 	//if(didHit == true)
 	//{
 	//}
