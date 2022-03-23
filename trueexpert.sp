@@ -41,8 +41,8 @@
 int g_partner[MAXPLAYER];
 float g_partnerInHold[MAXPLAYER];
 bool g_partnerInHoldLock[MAXPLAYER];
-float g_zoneStartOrigin[2][3];
-float g_zoneEndOrigin[2][3];
+float g_zoneStartOrigin[2][3]; //start zone mins and maxs
+float g_zoneEndOrigin[2][3]; //end zone mins and maxs
 Database g_mysql;
 float g_timerTimeStart[MAXPLAYER];
 float g_timerTime[MAXPLAYER];
@@ -184,7 +184,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "3.9",
+	version = "4.0",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -192,20 +192,20 @@ public void OnPluginStart()
 {
 	//g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.", 0.0, false, 1.0, true);
 	//g_urlTop = CreateConVar("topurl", "", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0.0, false, 1.0, true);
-	gCV_trikz = CreateConVar("trikz", "0.0", "Trikz menu.", 0, false, 0.0, true, 1.0);
-	gCV_block = CreateConVar("block", "0.0", "Toggling block state.", 0, false, 0.0, true, 1.0);
-	gCV_partner = CreateConVar("partner", "0.0", "Toggling partner menu.", 0, false, 0.0, true, 1.0);
-	gCV_color = CreateConVar("color", "0.0", "Toggling color menu.", 0, false, 0.0, true, 1.0);
-	gCV_restart = CreateConVar("restartZ", "0.0", "Allow player to restart timer.", 0, false, 0.0, true, 1.0);
-	gCV_checkpoint = CreateConVar("checkpoint", "0.0", "Allow use checkpoint in dev mode.", 0, false, 0.0, true, 1.0);
-	gCV_afk = CreateConVar("afk", "0.0", "Allow to use !afk command for players.", 0, false, 0.0, true, 1.0);
-	gCV_noclip = CreateConVar("noclipZ", "0.0", "Allow to use noclip for players in dev mode.", 0, false, 0.0, true, 1.0);
-	gCV_spec = CreateConVar("spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", 0, false, 0.0, true, 1.0);
-	gCV_button = CreateConVar("button", "0.0", "Allow to use text message for button announcments.", 0, false, 0.0, true, 1.0);
-	gCV_pbutton = CreateConVar("pbutton", "0.0", "Allow to use text message for partner button announcments.", 0, false, 0.0, true, 1.0);
-	gCV_bhop = CreateConVar("bhop", "0.0", "Autobhop.", 0, false, 0.0, true, 1.0);
-	gCV_autoswitch = CreateConVar("autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0, false, 0.0, true, 1.0);
-	gCV_autoflashbang = CreateConVar("autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
+	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Trikz menu.", 0, false, 0.0, true, 1.0);
+	gCV_block = CreateConVar("sm_te_block", "0.0", "Toggling block state.", 0, false, 0.0, true, 1.0);
+	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Toggling partner menu.", 0, false, 0.0, true, 1.0);
+	gCV_color = CreateConVar("sm_te_color", "0.0", "Toggling color menu.", 0, false, 0.0, true, 1.0);
+	gCV_restart = CreateConVar("sm_te_restart", "0.0", "Allow player to restart timer.", 0, false, 0.0, true, 1.0);
+	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow use checkpoint in dev mode.", 0, false, 0.0, true, 1.0);
+	gCV_afk = CreateConVar("sm_te_afk", "0.0", "Allow to use !afk command for players.", 0, false, 0.0, true, 1.0);
+	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in dev mode.", 0, false, 0.0, true, 1.0);
+	gCV_spec = CreateConVar("sm_te_spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", 0, false, 0.0, true, 1.0);
+	gCV_button = CreateConVar("sm_te_button", "0.0", "Allow to use text message for button announcments.", 0, false, 0.0, true, 1.0);
+	gCV_pbutton = CreateConVar("sm_te_pbutton", "0.0", "Allow to use text message for partner button announcments.", 0, false, 0.0, true, 1.0);
+	gCV_bhop = CreateConVar("sm_te_bhop", "0.0", "Autobhop.", 0, false, 0.0, true, 1.0);
+	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0, false, 0.0, true, 1.0);
+	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
 	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", 0, false, 0.0, true, 1.0);
 	
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
@@ -286,14 +286,14 @@ public void OnPluginStart()
 
 	RegPluginLibrary("trueexpert");
 
-	g_cookie[0] = RegClientCookie("vel", "velocity in hint", CookieAccess_Protected);
-	g_cookie[1] = RegClientCookie("mls", "mega long stats", CookieAccess_Protected);
-	g_cookie[2] = RegClientCookie("button", "button", CookieAccess_Protected);
-	g_cookie[3] = RegClientCookie("pbutton", "partner button", CookieAccess_Protected);
-	g_cookie[4] = RegClientCookie("autoflash", "autoflash", CookieAccess_Protected);
-	g_cookie[5] = RegClientCookie("autoswitch", "autoswitch", CookieAccess_Protected);
-	g_cookie[6] = RegClientCookie("bhop", "bhop", CookieAccess_Protected);
-	g_cookie[7] = RegClientCookie("macro", "macro", CookieAccess_Protected);
+	g_cookie[0] = RegClientCookie("te_vel", "velocity in hint", CookieAccess_Protected);
+	g_cookie[1] = RegClientCookie("te_mls", "mega long stats", CookieAccess_Protected);
+	g_cookie[2] = RegClientCookie("te_button", "button", CookieAccess_Protected);
+	g_cookie[3] = RegClientCookie("te_pbutton", "partner button", CookieAccess_Protected);
+	g_cookie[4] = RegClientCookie("te_autoflash", "autoflash", CookieAccess_Protected);
+	g_cookie[5] = RegClientCookie("te_autoswitch", "autoswitch", CookieAccess_Protected);
+	g_cookie[6] = RegClientCookie("te_bhop", "bhop", CookieAccess_Protected);
+	g_cookie[7] = RegClientCookie("te_macro", "macro", CookieAccess_Protected);
 
 	CreateTimer(60.0, timer_clearlag);
 }
@@ -334,10 +334,10 @@ public void OnMapStart()
 	{
 		if(g_sourcetvchangedFileName == false)
 		{
-			char filenameOld[256];
+			char filenameOld[256] = "";
 			Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
 
-			char filenameNew[256];
+			char filenameNew[256] = "";
 			Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
 
 			RenameFile(filenameNew, filenameOld);
@@ -449,9 +449,9 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 	{
 		while(results.FetchRow() == true)
 		{
-			char map[192];
+			char map[192] = "";
 			results.FetchString(0, map, sizeof(map));
-			char query[512];
+			char query[512] = "";
 			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' ORDER BY time", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 			g_mysql.Query(SQLRecalculatePoints, query);
 		}
@@ -467,8 +467,8 @@ public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] 
 
 	else if(strlen(error) == 0)
 	{
-		int place;
-		char query[512];
+		int place = 0;
+		char query[512] = "";
 
 		while(results.FetchRow() == true)
 		{
@@ -507,7 +507,7 @@ public void SQLRecalculatePoints3(Database db, DBResultSet results, const char[]
 	{
 		while(results.FetchRow() == true)
 		{
-			char query[512];
+			char query[512] = "";
 			Format(query, sizeof(query), "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0)); //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
 			g_mysql.Query(SQLRecalculateUserPoints, query, results.FetchInt(0));
 		}
@@ -523,14 +523,14 @@ public void SQLRecalculateUserPoints(Database db, DBResultSet results, const cha
 
 	else if(strlen(error) == 0)
 	{
-		int points;
+		int points = 0;
 
 		while(results.FetchRow() == true)
 		{
 			points += results.FetchInt(0);
 		}
 
-		char query[512];
+		char query[512] = "";
 		Format(query, sizeof(query), "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, data);
 		g_queryLast++;
 		g_mysql.Query(SQLUpdateUserPoints, query);
@@ -569,7 +569,7 @@ public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] erro
 		{
 			g_pointsMaxs = results.FetchInt(0);
 
-			char query[512];
+			char query[512] = "";
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -592,12 +592,12 @@ public void OnMapEnd()
 	if(sourcetv == true)
 	{
 		ServerCommand("tv_stoprecord");
-		char filenameOld[256];
+		char filenameOld[256] = "";
 		Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
 
 		if(g_ServerRecord == true)
 		{
-			char filenameNew[256];
+			char filenameNew[256] = "";
 			Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
 			RenameFile(filenameNew, filenameOld);
 			g_ServerRecord = false;
@@ -616,13 +616,13 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 
 	msg.ReadByte();
 
-	char msgBuffer[32];
+	char msgBuffer[32] = "";
 	msg.ReadString(msgBuffer, sizeof(msgBuffer));
 
-	char name[MAX_NAME_LENGTH];
+	char name[MAX_NAME_LENGTH] = "";
 	msg.ReadString(name, sizeof(name));
 
-	char text[256];
+	char text[256] = "";
 	msg.ReadString(text, sizeof(text));
 
 	if(g_msg[client] == false)
@@ -632,13 +632,13 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 
 	g_msg[client] = false;
 
-	char msgFormated[32];
+	char msgFormated[32] = "";
 	Format(msgFormated, sizeof(msgFormated), "%s", msgBuffer);
 
-	char points[32];
+	char points[32] = "";
 	int precentage = g_points[client] / g_pointsMaxs * 100;
 
-	char color[8];
+	char color[8] = "";
 
 	if(precentage >= 90)
 	{
@@ -760,13 +760,13 @@ public void frame_SayText2(DataPack dp)
 
 	bool allchat = dp.ReadCell();
 
-	char text[256];
+	char text[256] = "";
 	dp.ReadString(text, sizeof(text));
 
 	if(IsClientInGame(client) == true)
 	{
 		int clients[MAXPLAYER];
-		int count;
+		int count = 0;
 		int team = GetClientTeam(client);
 
 		for(int i = 1; i <= MaxClients; i++)
@@ -795,7 +795,7 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
-	/*char model[PLATFORM_MAX_PATH];
+	/*char model[PLATFORM_MAX_PATH] = "";
 	GetClientModel(client, model, PLATFORM_MAX_PATH);
 
 	if(StrEqual(model, "models/player/ct_urban.mdl", false))
@@ -850,7 +850,10 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 		if(g_button[activator] == true && convar == 1)
 		{
 			//PrintToChat(activator, "You have pressed a button.");
-			PrintToChat(activator, "\x01%T", "YouPressedButton", activator);
+			//PrintToChat(activator, "\x01%T", "YouPressedButton", activator);
+			char format[256];
+			Format(format, sizeof(format), "%T", "YouPressedButton", activator);
+			SendMessage(format, false, activator);
 		}
 
 		int convar2 = GetConVarInt(gCV_pbutton);
@@ -858,9 +861,14 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 		if(g_pbutton[g_partner[activator]] == true && convar2 == 1)
 		{
 			//PrintToChat(g_partner[activator], "Your partner have pressed a button.");
-			PrintToChat(g_partner[activator], "\x01%T", "YourPartnerPressedButton", g_partner[activator]);
+			//PrintToChat(g_partner[activator], "\x01%T", "YourPartnerPressedButton", g_partner[activator]);
+			char format[256];
+			Format(format, sizeof(format), "%T", "YourPartnerPressedButton", g_partner[activator]);
+			SendMessage(format, false, g_partner[activator]);
 		}
 	}
+
+	return;
 }
 
 public Action OnJump(Event event, const char[] name, bool dontBroadcast)
@@ -1138,7 +1146,7 @@ public void OnClientPutInServer(int client)
 	{
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
 
-		char query[512];
+		char query[512] = "";
 		int steamid = GetSteamAccountID(client);
 		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, g_map);
 		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client));
@@ -1177,6 +1185,7 @@ public void OnClientPutInServer(int client)
 		g_autoflash[client] = false;
 		g_autoswitch[client] = false;
 		g_bhop[client] = false;
+		g_macroDisabled[client] = true;
 	}
 
 	ResetFactory(client);
@@ -1194,7 +1203,7 @@ public void OnClientPutInServer(int client)
 
 public void OnClientCookiesCached(int client)
 {
-	char value[16];
+	char value[16] = "";
 
 	GetClientCookie(client, g_cookie[0], value, sizeof(value));
 	g_hudVel[client] = view_as<bool>(StringToInt(value));
@@ -1216,6 +1225,9 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[6], value, sizeof(value));
 	g_bhop[client] = view_as<bool>(StringToInt(value));
+
+	GetClientCookie(client, g_cookie[7], value, sizeof(value));
+	g_macroDisabled[client] = view_as<bool>(StringToInt(value));
 }
 
 public void OnClientDisconnect(int client)
@@ -1238,7 +1250,7 @@ public void OnClientDisconnect(int client)
 	g_partner[client] = 0;
 	CancelClientMenu(client);
 
-	int entity;
+	int entity = 0;
 
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 	{
@@ -1277,13 +1289,21 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 			if(results.FetchRow() == true)
 			{
 				Format(query, sizeof(query), "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid);
-				g_mysql.Query(SQLUpdateUsername, query, GetClientSerial(client), DBPrio_High);
+				g_mysql.Query(SQLUpdateUser, query, GetClientSerial(client), DBPrio_High);
+
+				#if debug true
+				PrintToServer("SQLAddUser: User (%N) selecting...", client);
+				#endif
 			}
 
 			else if(results.FetchRow() == false)
 			{
 				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
 				g_mysql.Query(SQLUserAdded, query);
+
+				#if debug true
+				PrintToServer("SQLAddUser: User (%N) trying to add to database...", client);
+				#endif
 			}
 		}
 	}
@@ -1295,13 +1315,22 @@ public void SQLUserAdded(Database db, DBResultSet results, const char[] error, a
 	{
 		PrintToServer("SQLUserAdded: %s", error);
 	}
+
+	else if(strlen(error) == 0)
+	{
+		#if debug true
+		PrintToServer("SQLUserAdded: Successfuly added user.");
+		#endif
+	}
+
+	return; //void function return nothing. Here code will be escape and below code will be skiped in this function part.
 }
 
-public void SQLUpdateUsername(Database db, DBResultSet results, const char[] error, any data)
+public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLUpdateUsername: %s", error);
+		PrintToServer("SQLUpdateUser: %s", error);
 	}
 
 	else if(strlen(error) == 0)
@@ -1311,7 +1340,7 @@ public void SQLUpdateUsername(Database db, DBResultSet results, const char[] err
 		//	return
 		if(client > 0 && IsClientInGame(client) == true)
 		{
-			char query[512];
+			char query[512] = "";
 			int steamid = GetSteamAccountID(client);
 
 			if(results.FetchRow() == true)
@@ -1324,16 +1353,23 @@ public void SQLUpdateUsername(Database db, DBResultSet results, const char[] err
 				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
 			}
 
-			g_mysql.Query(SQLUpdateUsernameSuccess, query, GetClientSerial(client), DBPrio_High);
+			g_mysql.Query(SQLUpdateUserSuccess, query, GetClientSerial(client), DBPrio_High);
+
+			#if debug true
+//			PrintToServer("SQLUpdateUser: Successfuly updated user");
+			PrintToServer("SQLUpdateUser: User (%N) updating...", client);
+			#endif
 		}
 	}
+
+	return; // void return nothing
 }
 
-public void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const char[] error, any data)
+public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLUpdateUsernameSuccess: %s", error);
+		PrintToServer("SQLUpdateUserSuccess: %s", error);
 	}
 
 	else if(strlen(error) == 0)
@@ -1345,13 +1381,19 @@ public void SQLUpdateUsernameSuccess(Database db, DBResultSet results, const cha
 		{
 			if(results.HasResults == false)
 			{
-				char query[512];
+				char query[512] = "";
 				int steamid = GetSteamAccountID(client);
 				Format(query, sizeof(query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
 				g_mysql.Query(SQLGetPoints, query, GetClientSerial(client), DBPrio_High);
+
+				#if debug true
+				PrintToServer("SQLUpdateUserSuccess: Successfuly updated user");
+				#endif
 			}
 		}
 	}
+
+	return;
 }
 
 public void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data)
@@ -1371,6 +1413,8 @@ public void SQLGetPoints(Database db, DBResultSet results, const char[] error, a
 			g_points[client] = results.FetchInt(0);
 		}
 	}
+
+	return;
 }
 
 public void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -1392,6 +1436,8 @@ public void SQLGetServerRecord(Database db, DBResultSet results, const char[] er
 			g_ServerRecordTime = 0.0;
 		}
 	}
+
+	return;
 }
 
 public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -1421,31 +1467,33 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 			//}
 		}
 	}
+
+	return;
 }
 
 public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
 	{
-		float originBooster[3];
+		float originBooster[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(client, originBooster);
 
-		float originFlyer[3];
+		float originFlyer[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(other, originFlyer);
 
-		float maxsBooster[3];
+		float maxsBooster[3] = {0.0, 0.0, 0.0};
 		GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 
 		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
 
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			float velBooster[3];
+			float velBooster[3] = {0.0, 0.0, 0.0};
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
 
 			if(velBooster[2] > 0.0)
 			{
-				float velFlyer[3];
+				float velFlyer[3] = {0.0, 0.0, 0.0};
 
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
@@ -1511,7 +1559,11 @@ public void SDKBoostFix(int client)
 	if(g_boost[client] == 1)
 	{
 		int entity = EntRefToEntIndex(g_flash[client]);
+
+		#if debug true
 		PrintToServer("%i", entity);
+		#endif
+
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			float velEntity[3];
@@ -1528,7 +1580,10 @@ public void SDKBoostFix(int client)
 			}
 
 			g_boost[client] = 2; //Trijās vietās kodā atrodas paātrināšana pēc Antona vārdiem.
+
+			#if debug true
 			PrintToServer("1x");
+			#endif
 		}
 	}
 	//PrintToServer("2x");
@@ -1756,15 +1811,19 @@ public Action Block(int client) //thanks maru for optimization.
 	}
 
 	//PrintToChat(client, g_block[client] ? "Block enabled." : "Block disabled.");
-	if(g_block[client] == true)
-	{
-		PrintToChat(client, "\x01%T", "BlockChatON", client);
-	}
+//	if(g_block[client] == true)
+//	{
+//		PrintToChat(client, "\x01%T", "BlockChatON", client);
+//	}
 
-	else if(g_block[client] == false)
-	{
-		PrintToChat(client, "\x01%T", "BlockChatOFF", client);
-	}
+//	else if(g_block[client] == false)
+//	{
+	//	PrintToChat(client, "\x01%T", "BlockChatOFF", client);
+//	}
+
+	char format[256];
+	Format(format, sizeof(format), "%T", g_block[client] ? "BlockChatON" : "BlockChatOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
@@ -1786,7 +1845,10 @@ public void Partner(int client)
 	if(g_devmap == true)
 	{
 		//PrintToChat(client, "Turn off devmap.");
-		PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+	//	PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+		char format[256];
+		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
+		SendMessage(format, false, client);
 	}
 
 	else if(g_devmap == false)
@@ -1805,7 +1867,7 @@ public void Partner(int client)
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i) == true && IsFakeClient(i) == false) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635
+				if(IsClientInGame(i) == true && IsFakeClient(i) == false) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635 i copy it from denwo and save in github sorry denwo i lost password.
 				{
 					//if(client != i && g_partner[i] == false)
 					if(client != i && g_partner[i] == 0)
@@ -1826,7 +1888,10 @@ public void Partner(int client)
 				case false:
 				{
 					//PrintToChat(client, "No free player.");
-					PrintToChat(client, "\x01%T", "NoFreePlayer", client);
+				//	PrintToChat(client, "\x01%T", "NoFreePlayer", client);
+					char format[256];
+					Format(format, sizeof(format), "%T", "NoFreePlayer", client);
+					SendMessage(format, false, client);
 				}
 
 				case true:
@@ -1912,15 +1977,23 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						//PrintToChat(param1, "Partnersheep agreed with %N.", partner); //reciever
 						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
-						PrintToChat(param1, "\x01%T", "GroupAgreed", param1, name);
+
+						char format[256];
+						Format(format, sizeof(format), "%T", "GroupAgreed", param1, name);
+						SendMessage(format, false, param1);
+
+						//PrintToChat(param1, "\x01%T", "GroupAgreed", param1, name);
 						//PrintToChat(partner, "You have %N as partner.", param1); //sender
 						GetClientName(param1, name, sizeof(name));
-						PrintToChat(partner, "\x01%T", "GetAgreed", partner, name);
+						Format(format, sizeof(format), "%T", "GetAgreed", partner, name);
+						SendMessage(format, false, partner);
+
+						//PrintToChat(partner, "\x01%T", "GetAgreed", partner, name);
 
 						Restart(param1);
 						Restart(partner); //Expert-Zone idea.
 
-						if(g_menuOpened[partner])
+						if(g_menuOpened[partner] == true)
 						{
 							Trikz(partner);
 						}
@@ -1936,7 +2009,10 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 					else if(g_partner[partner] > 0)
 					{
 						//PrintToChat(param1, "A player already have a partner.");
-						PrintToChat(param1, "\x01%T", "AlreadyHavePartner", param1);
+						//PrintToChat(param1, "\x01%T", "AlreadyHavePartner", param1);
+						char format[256];
+						Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
+						SendMessage(format, false, param1);
 					}
 				}
 
@@ -1945,7 +2021,10 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(param1, name, sizeof(name));
 					//PrintToChat(param1, "Partnersheep declined with %N.", partner);
-					PrintToChat(param1, "\x01%T", "PartnerDeclined", param1, name);
+					//PrintToChat(param1, "\x01%T", "PartnerDeclined", param1, name);
+					char format[256];
+					Format(format, sizeof(format), "%T", "PartnerDeclined", param1, name);
+					SendMessage(format, false, param1);
 				}
 			}
 		}
@@ -1982,10 +2061,19 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					//PrintToChat(param1, "Partnership is canceled with %N", partner);
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(partner, name, sizeof(name));
-					PrintToChat(param1, "\x01%T", "PartnerCanceled", param1, name);
+
+					char format[256] = "";
+					Format(format, sizeof(format), "%T", "PartnerCanceled", param1, name);
+					SendMessage(format, false, partner);
+				//Format(format, sizeof(format), "%T", "PartnerCa");
+					//PrintToChat(param1, "\x01%T", "PartnerCanceled", param1, name);
 					//PrintToChat(partner, "Partnership is canceled by %N", param1);
+
 					GetClientName(param1, name, sizeof(name));
-					PrintToChat(partner, "\x01%T", "PartnerCanceledBy", partner, name);
+					//PrintToChat(partner, "\x01%T", "PartnerCanceledBy", partner, name);
+					Format(format, sizeof(format), "%T", "PartnerCanceledBy", partner, name);
+					SendMessage(format, false, param1);
+
 				}
 			}
 		}
@@ -2293,7 +2381,10 @@ public void Restart(int client)
 	if(g_devmap == true)
 	{
 		//PrintToChat(client, "Turn off devmap.");
-		PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+	//	PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+		char format[256];
+		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
+		SendMessage(format, false, client);
 	}
 
 	else if(g_devmap == false)
@@ -2381,7 +2472,10 @@ public void Restart(int client)
 			{
 				//PrintToChat(client, "You must have a partner.");
 				//PrintToChat(client, "\x01%T", "YMHP");
-				PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
+				//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
+				char format[256];
+				Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
+				SendMessage(format, false, client);
 			}
 		}
 	}
@@ -2404,21 +2498,25 @@ public Action cmd_autoflash(int client, int args)
 	IntToString(g_autoflash[client], sValue, sizeof(sValue));
 	SetClientCookie(client, g_cookie[4], sValue);
 
-	if(g_autoflash[client] == true)
-	{
+//	if(g_autoflash[client] == true)
+//	{
 		//PrintToChat(client, "\x01%T", "AutoflashON", client);
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", "AutoflashON", client);
-		SendMessage(format, false, client);
-	}
+	//	char format[256] = "";
+	//	Format(format, sizeof(format), "%T", "AutoflashON", client);
+	//	SendMessage(format, false, client);
+//	}
 
-	else if(g_autoflash[client] == false)
-	{
+//	else if(g_autoflash[client] == false)
+//	{
 		//PrintToChat(client, "\x01%T", "AutoflashOFF", client);
-		char format[256];
-		Format(format, sizeof(format), "%T", "AutoflashOFF", client);
-		SendMessage(format, false, client);
-	}
+	//	char format[256];
+	//	Format(format, sizeof(format), "%T", "AutoflashOFF", client);
+	//	SendMessage(format, false, client);
+//	}
+
+	char format[256];
+	Format(format, sizeof(format), "%T", g_autoflash[client] ? "AutoflashON" : "AutoflashOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
@@ -2427,32 +2525,36 @@ public Action cmd_autoswitch(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_autoswitch);
 	
-	if(convar ==false)
+	if(convar == false)
 	{
 		return Plugin_Handled;
 	}
 	
 	g_autoswitch[client] = !g_autoswitch[client];
 
-	char sValue[16];
+	char sValue[16] = "";
 	IntToString(g_autoswitch[client], sValue, sizeof(sValue));
 	SetClientCookie(client, g_cookie[5], sValue);
 
-	if(g_autoswitch[client] == true)
-	{
+//	if(g_autoswitch[client] == true)
+//	{
 		//PrintToChat(client, "\x01%T", "AutoswitchON", client);
-		char format[256];
-		Format(format, sizeof(format), "%T", "AutoswitchON", client);
-		SendMessage(format, false, client);
-	}
+	//	char format[256];
+	//	Format(format, sizeof(format), "%T", "AutoswitchON", client);
+	//	SendMessage(format, false, client);
+//	}
 	
-	else if(g_autoswitch[client] == false)
-	{
+//	else if(g_autoswitch[client] == false)
+//	{
 		//PrintToChat(client, "\x01%T", "AutoswitchOFF", client);
-		char format[256];
-		Format(format, sizeof(format), "%T", "AutoswitchOFF", client);
-		SendMessage(format, false, client);
-	}
+	//	char format[256];
+	//	Format(format, sizeof(format), "%T", "AutoswitchOFF", client);
+	//	SendMessage(format, false, client);
+//	}
+
+	char format[256];
+	Format(format, sizeof(format), "%T", g_autoswitch[client] ? "AutoswitchON" : "AutoswitchOFF", client);
+	SendMessage(format, false, client);
 
 	return Plugin_Handled;
 }
