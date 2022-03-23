@@ -145,7 +145,7 @@
 	{
 		"en"	"Devmap vote is not allowed yet."
 	}
-	"YouMustHaveAPartner"
+	"YouMustHavePartner"
 	{
 		"en"	"You must have a partner."
 	}
