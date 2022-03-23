@@ -7399,11 +7399,12 @@ float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=10
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
 	TR_GetEndPosition(pos);
 	//PrintToServer("%f", pos[2])
-	return pos[2];
+	//return pos[2];
 	//bool didHit = TR_DitHit(null);
-	//if(TR_DitHit(INVALID_HANDLE) == true)
-	//{
-	//}
+	if(TR_DitHit(INVALID_HANDLE) == true)
+	{
+		return pos[2];
+	}
 	//if(didHit == true)
 	//{
 	//}
