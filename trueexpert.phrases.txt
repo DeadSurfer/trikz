@@ -413,6 +413,14 @@
 	{
 		"en"	"Auto switch is turned off."
 	}
+	"BhopON"
+	{
+		"en"	"Bunnyhop is turned on now."
+	}
+	"BhopOFF"
+	{
+		"en"	"Bunnyhop is turned off now."
+	}
 	"MacroOFF"
 	{
 		"en"	"Macro is disabled."
@@ -420,5 +428,21 @@
 	"MacroON"
 	{
 		"en"	"Macro is enabled."
+	}
+	"EndMessageON"
+	{
+		"en"	"End message is turned on now."
+	}
+	"EndMessageOFF"
+	{
+		"en"	"End message is turned off now."
+	}
+	"EndMessageMenuON"
+	{
+		"en"	"End message [v]"
+	}
+	"EndMessageMenuOFF"
+	{
+		"en"	"End message [x]"
 	}
 }
