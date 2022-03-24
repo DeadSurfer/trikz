@@ -6662,7 +6662,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		if(GetEngineTime() - g_fixVisualFlashbang[client] > 0.01 && g_fixVisualFlashbangDoor[client] == true)
+		if(GetEngineTime() - g_fixVisualFlashbang[client] >= 0.05 && g_fixVisualFlashbangDoor[client] == true)
 		{
 			FakeClientCommandEx(client, "use weapon_flashbang");
 			SetEntProp(client, Prop_Send, "m_bDrawViewmodel", true);
