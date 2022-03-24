@@ -146,7 +146,7 @@ Handle g_start;
 Handle g_record;
 int g_pointsMaxs = 1;
 int g_queryLast;
-Handle g_cookie[8];
+Handle g_cookie[9];
 float g_skyAble[MAXPLAYER];
 native bool Trikz_GetEntityFilter(int client, int entity);
 float g_restartInHold[MAXPLAYER];
@@ -178,13 +178,14 @@ bool g_macroDisabled[MAXPLAYER];
 float g_macroTime[MAXPLAYER];
 bool g_macroOpened[MAXPLAYER];
 #define debug false
+bool g_endMessage[MAXPLAYER];
 
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.0",
+	version = "4.1",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -237,6 +238,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_pbutton", cmd_pbutton);
 	RegConsoleCmd("sm_macro", cmd_macro);
 	RegConsoleCmd("sm_bhop", cmd_bhop);
+	RegConsoleCmd("sm_endmsg", cmd_endmsg);
 
 	RegServerCmd("sm_createzones", cmd_createzones);
 	RegServerCmd("sm_createusers", cmd_createusers);
@@ -294,6 +296,7 @@ public void OnPluginStart()
 	g_cookie[5] = RegClientCookie("te_autoswitch", "autoswitch", CookieAccess_Protected);
 	g_cookie[6] = RegClientCookie("te_bhop", "bhop", CookieAccess_Protected);
 	g_cookie[7] = RegClientCookie("te_macro", "macro", CookieAccess_Protected);
+	g_cookie[8] = RegClientCookie("te_endmsg", "End message.", CookieAccess_Protected);
 
 	CreateTimer(60.0, timer_clearlag);
 }
@@ -1186,6 +1189,7 @@ public void OnClientPutInServer(int client)
 		g_autoswitch[client] = false;
 		g_bhop[client] = false;
 		g_macroDisabled[client] = true;
+		g_endMessage[client] = true;
 	}
 
 	ResetFactory(client);
@@ -1228,6 +1232,9 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[7], value, sizeof(value));
 	g_macroDisabled[client] = view_as<bool>(StringToInt(value));
+
+	GetClientCookie(client, g_cookie[8], value, sizeof(value));
+	g_endMessage[client] = view_as<bool>(StringToInt(value));
 }
 
 public void OnClientDisconnect(int client)
@@ -2599,6 +2606,19 @@ public Action cmd_bhop(int client, int args)
 	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopON" : "BhopOFF", client);
 	SendMessage(format, false, client);
 
+	return Plugin_Handled;
+}
+
+public Action cmd_endmsg(int client, int args)
+{
+	//bool convar = GetConVarBool(gCV_endmsg);
+	g_endMessage[client] = !g_endMessage[client];
+	char sValue[16];
+	IntToString(g_bhop[client], sValue, sizeof(sValue));
+	SetClientCookie(client, g_cookie[8], sValue);
+	char format[256];
+	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMsgON" : "EndMsgOFF", client);
+	SendMessage(format, false, client);
 	return Plugin_Handled;
 }
 
@@ -4572,6 +4592,11 @@ public Action SDKStartTouch(int entity, int other)
 
 public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, int personalSecond, int srHour, int srMinute, int srSecond)
 {
+	if(g_endMessage[client] == false)
+	{
+		return;
+	}
+
 	char sPersonalHour[32] = "";
 	Format(sPersonalHour, sizeof(sPersonalHour), "%i", personalHour);
 	char sPersonalMinute[32] = "";
@@ -5261,7 +5286,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 						//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 						SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
-						ShowHudText(i, 2, "NEW SERVER RECORD!");
+						//ShowHudText(i, 2, "NEW SERVER RECORD!");
 						//ShowHudText(i, 2, "%T", ""
 						Format(format, sizeof(format), "%T", "NewServerRecordHudHud", i);
 						ShowHudText(i, 2, format);
@@ -5270,7 +5295,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						SetHudTextParams(x3, y3, z3, r3, g3, b3, a3);
 						//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 						Format(format, sizeof(format), "%T", "FirstRecordHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
-						ShowHudText(i, 4, format);
+						ShowHudText(i, 3, format);
 
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 						SetHudTextParams(x4, y4, z4, r4, g4, b4, a4);
@@ -6731,7 +6756,7 @@ public Action cmd_devmap(int client, int args)
 		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE);
 
 		//PrintToChatAll("Devmap vote started by %N", client);
-		char name[MAX_NAME_LENGTH];
+		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
 
 		//PrintToChatAll("\x01%T", "DevMapStart", client, name);
@@ -6744,9 +6769,9 @@ public Action cmd_devmap(int client, int args)
 	else if(GetEngineTime() - g_devmapTime <= 35.0 || GetEngineTime() - g_afkTime <= 30.0)
 	{
 		//PrintToChat(client, "Devmap vote is not allowed yet.");
-		PrintToChat(client, "\x01%T", "DevMapNotAllowed", client);
-		char format[256];
-		Format(format, sizeof(format), "%T", "DevMapNotAlloed", client);
+		//PrintToChat(client, "\x01%T", "DevMapNotAllowed", client);
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", "DevMapNotAllowed", client);
 		SendMessage(format, false, client);
 		//return Plugin_Handled;
 	}
@@ -6829,7 +6854,7 @@ public void Devmap(bool force)
 					if(IsClientInGame(i))
 					{
 						//PrintToChat(i, "\x01%T", "DevMapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
-						char format[256];
+						char format[256] = "";
 						Format(format, sizeof(format), "%T", "DevMapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(format, false, i);
 					}
@@ -6846,7 +6871,7 @@ public void Devmap(bool force)
 					if(IsClientInGame(i))
 					{
 						//PrintToChat(i, "\x01%T", "DevMapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
-						char format[256];
+						char format[256] = "";
 						Format(format, sizeof(format), "%T", "DevMapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(format, false, i);
 					}
@@ -6964,7 +6989,7 @@ public Action cmd_afk(int client, int args)
 		//PrintToChat(client, "Afk vote is not allowed yet.");
 		//PrintToChatAll("\x01%T");
 		//PrintToChat(client, "\x01%T", "AFKCHECK2", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "%T", "AFKCHECK2", client);
 		SendMessage(format, false, client);
 		//return Plugin_Handled;
@@ -7002,7 +7027,7 @@ public int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 				//return param2;
 			}
-			return param2;
+			//return param2;
 		}
 		//return param2;
 	}
@@ -7058,7 +7083,7 @@ public void Noclip(int client)
 			if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
 			{
 				//PrintToChat(client, "\x01%T", "NoClipEnabled", client);
-				char format[256];
+				char format[256] = "";
 				Format(format, sizeof(format), "%T", "NoClipEnabled", client);
 				SendMessage(format, false, client);
 			}
@@ -7066,7 +7091,7 @@ public void Noclip(int client)
 			else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
 			{
 				//PrintToChat(client, "\x01%T", "NoClipDisabled", client);
-				char format[256];
+				char format[256] = "";
 				Format(format, sizeof(format), "%T", "NoClipDisabled", client);
 				SendMessage(format, false, client);
 			}
@@ -7076,7 +7101,7 @@ public void Noclip(int client)
 		{
 			//PrintToChat(client, "Turn on devmap.");
 			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, false, client);
 		}
@@ -7100,7 +7125,7 @@ public Action cmd_hud(int client, int args)
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 
 	menu.SetTitle("Hud");
-	char format[128];
+	char format[128] = "";
 	Format(format, sizeof(format), "%T", client, g_hudVel[client] ? "VelMenuON" : "VelMenuOFF");
 	//menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
 	menu.AddItem("vel", format);
@@ -7230,7 +7255,7 @@ public Action cmd_mlstats(int client, int args)
 		//SendMessage(format, false, client);
 	//}
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_mlstats[client] ? "MLStatsON" : "MLStatsOFF", client);
 	SendMessage(format, false, client);
 
@@ -7265,7 +7290,7 @@ public Action cmd_button(int client, int args)
 		//SendMessage(format, false, client);
 	//}
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_button[client] ? "ButtonAnnonuncerON" : "ButtonAnnouncerOFF", client);
 	SendMessage(format, false, client);
 
@@ -7294,7 +7319,7 @@ public Action cmd_pbutton(int client, int args)
 	//	PrintToChat(client, "\x01%T", "ButtonAnnouncerPartnerOFF", client);
 	//}
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_pbutton ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
 	SendMessage(format, false, client);
 
@@ -7311,24 +7336,24 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			{
 				Trikz(client);
 
-				return Plugin_Continue;
+				//return Plugin_Continue;
 			}
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "bl", false) || StrEqual(sArgs, "block", false))
 		{
 			Block(client);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "p", false) || StrEqual(sArgs, "partner", false))
 		{
 			Partner(client);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		/*else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
@@ -7409,10 +7434,10 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			{
 				Restart(g_partner[client]);
 
-				return Plugin_Continue;
+				//return Plugin_Continue;
 			}
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 		//else if(StrEqual(sArgs, "time"))
 		//	cmd_time(client, 0)
@@ -7420,73 +7445,73 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		{
 			cmd_devmap(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "top", false))
 		{
 			cmd_top(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "cp", false))
 		{
 			Checkpoint(client);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "afk", false))
 		{
 			cmd_afk(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "nc", false) || StrEqual(sArgs, "noclip", false))
 		{
 			Noclip(client);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "sp", false) || StrEqual(sArgs, "spec", false))
 		{
 			cmd_spec(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "hud", false))
 		{
 			cmd_hud(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "mls", false))
 		{
 			cmd_mlstats(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "button", false))
 		{
 			cmd_button(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "pbutton", false))
 		{
 			cmd_pbutton(client, 0);
 
-			return Plugin_Continue;
+			//return Plugin_Continue;
 		}
 
-		return Plugin_Continue;
+		//return Plugin_Continue;
 	}
 
 	return Plugin_Continue;
@@ -7619,7 +7644,9 @@ public Action SDKStopSpam(int entity, int other)
 				//return Plugin_Continue;
 			//}
 			g_projectileSoundLoud[owner > 0 ? owner : 0] = entity;
-
+			#if debug true
+			PrintToServer("SDKStopSpam: Collision group: %i", GetEntProp(entity, Prop_Data, "m_CollisionGroup"));
+			#endif
 			//return Plugin_Continue;
 		}
 
@@ -8164,7 +8191,7 @@ public Action timer_clearlag(Handle timer)
 	return Plugin_Continue;
 }
 
-float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float origin[3] = {0.0, 0.0, 0.0};
 	GetClientAbsOrigin(client, origin);
