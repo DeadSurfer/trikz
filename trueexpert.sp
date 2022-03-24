@@ -179,6 +179,8 @@ float g_macroTime[MAXPLAYER];
 bool g_macroOpened[MAXPLAYER];
 #define debug false
 bool g_endMessage[MAXPLAYER];
+float g_fixVisualFlashbang[MAXPLAYER];
+bool g_fixVisualFlashbangDoor[MAXPLAYER];
 
 public Plugin myinfo =
 {
@@ -1051,7 +1053,7 @@ public void Checkpoint(int client)
 		menu.SetTitle("%T", "Checkpoint", client);
 
 		//menu.AddItem("Save", "Save");
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "%T", "CP-save", client);
 		menu.AddItem("Save", format);
 		Format(format, sizeof(format), "%T", "CP-teleport", client);
@@ -1069,7 +1071,7 @@ public void Checkpoint(int client)
 	{
 		//PrintToChat(client, "Turn on devmap.");
 		//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 		SendMessage(format, false, client);
 	}
@@ -1144,6 +1146,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
 	SDKHook(client, SDKHook_PreThinkPost, SDKThink);
+	//SDKHook(client, SDKHook_SpawnPost, SDKClientSpawnPost);
 
 	if(IsClientInGame(client) == true && g_dbPassed == true)
 	{
@@ -1235,6 +1238,8 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[8], value, sizeof(value));
 	g_endMessage[client] = view_as<bool>(StringToInt(value));
+
+	GiveFlashbang(client);
 }
 
 public void OnClientDisconnect(int client)
@@ -1272,6 +1277,8 @@ public void OnClientDisconnect(int client)
 		ResetFactory(partner);
 		CS_SetClientClanTag(partner, g_clantag[partner][0]);
 	}
+
+	g_fixVisualFlashbangDoor[client] = false;
 }
 
 public void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
@@ -2393,7 +2400,7 @@ public void Restart(int client)
 	{
 		//PrintToChat(client, "Turn off devmap.");
 	//	PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 		SendMessage(format, false, client);
 	}
@@ -2602,7 +2609,7 @@ public Action cmd_bhop(int client, int args)
 		//SendMessage(format, false, client);
 	//}
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopON" : "BhopOFF", client);
 	SendMessage(format, false, client);
 
@@ -2617,7 +2624,7 @@ public Action cmd_endmsg(int client, int args)
 	IntToString(g_bhop[client], sValue, sizeof(sValue));
 	SetClientCookie(client, g_cookie[8], sValue);
 	char format[256];
-	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMsgON" : "EndMsgOFF", client);
+	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageON" : "EndMessageOFF", client);
 	SendMessage(format, false, client);
 	return Plugin_Handled;
 }
@@ -6645,6 +6652,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
+		if(GetEngineTime() - g_fixVisualFlashbang[client] > 0.01 && g_fixVisualFlashbangDoor[client] == true)
+		{
+			FakeClientCommandEx(client, "use weapon_flashbang");
+			SetEntProp(client, Prop_Send, "m_bDrawViewmodel", true);
+			g_fixVisualFlashbangDoor[client] = false;
+		}
+
 		return Plugin_Continue;
 	}
 
@@ -7126,13 +7140,15 @@ public Action cmd_hud(int client, int args)
 
 	menu.SetTitle("Hud");
 	char format[128] = "";
-	Format(format, sizeof(format), "%T", client, g_hudVel[client] ? "VelMenuON" : "VelMenuOFF");
+	Format(format, sizeof(format), "%T", g_hudVel[client] ? "VelMenuON" : "VelMenuOFF", client);
 	//menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
 	menu.AddItem("vel", format);
 	//menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
 	//char
-	Format(format, sizeof(format), "%T", client, g_mlstats[client] ? "MLStatsMenuON" : "MLStatsMenuOFF");
+	Format(format, sizeof(format), "%T", g_mlstats[client] ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
 	menu.AddItem("mls", format);
+	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
+	menu.AddItem("endmsg", format);
 
 	menu.Display(client, 20);
 
@@ -7174,6 +7190,15 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					SetClientCookie(param1, g_cookie[1], value);
 					//return param1;
+				}
+
+				case 2:
+				{
+					g_endMessage[param1] = !g_endMessage[param1];
+
+					IntToString(g_endMessage[param1], value, sizeof(value));
+
+					SetClientCookie(param1, g_cookie[8], value);
 				}
 			}
 
@@ -7775,7 +7800,6 @@ public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/n
 public Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon) == true)
-	//if()
 	{
 		RemoveEntity(weapon);
 
@@ -7813,22 +7837,51 @@ public void SDKThink(int client)
 				
 				if(convar == true && g_autoswitch[client] == true && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
 				{
-					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+					SetEntProp(client, Prop_Send, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
 					g_readyToFix[client] = false;
 
 					g_silentKnife = true;
 
 					FakeClientCommandEx(client, "use weapon_knife");
-
-					RequestFrame(frame_fix, client);
+					
+					g_fixVisualFlashbang[client] = GetEngineTime();
+					g_fixVisualFlashbangDoor[client] = true;
+					//RequestFrame(frame_fix, client);
 				}
 			}
 		}
 	}
 }
 
-public void frame_fix(int client)
+/*public void SDKClientSpawnPost(int client)
+{
+	RequestFrame(rf_giveFlashbang, client);
+}
+
+public void rf_giveFlashbang(int client)
+{
+	int convar = GetConVarInt(gCV_autoflashbang);
+	
+	if(convar == 1 && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
+		GivePlayerItem(client, "weapon_flashbang");
+		GivePlayerItem(client, "weapon_flashbang");
+	}
+}*/
+
+public void GiveFlashbang(int client)
+{
+	int convar = GetConVarInt(gCV_autoflashbang);
+	
+	if(convar == 1 && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	{
+		GivePlayerItem(client, "weapon_flashbang");
+		GivePlayerItem(client, "weapon_flashbang");
+	}
+}
+
+/*public void frame_fix(int client)
 {
 	if(IsClientInGame(client) == true)
 	{
@@ -7868,7 +7921,7 @@ public void frame_fix5(int client)
 
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
 	}
-}
+}*/
 
 public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 {
