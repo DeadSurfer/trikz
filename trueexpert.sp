@@ -1239,7 +1239,10 @@ public void OnClientCookiesCached(int client)
 	GetClientCookie(client, g_cookie[8], value, sizeof(value));
 	g_endMessage[client] = view_as<bool>(StringToInt(value));
 
-	GiveFlashbang(client);
+	if(IsClientInGame(client) && IsPlayerAlive(client))
+	{
+		GiveFlashbang(client);
+	}
 }
 
 public void OnClientDisconnect(int client)
@@ -1552,7 +1555,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				//}
 				//else if(g_entityFlags & FL_INWATER ? g_skyBoost[other] == 0 GetGameTime() - g_skyAble[other] > 0.5)
 
-				if(g_entityFlags[client] & FL_INWATER && g_skyBoost[other] == 0 && FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04)
+				/*if(g_entityFlags[client] & FL_INWATER && g_skyBoost[other] == 0 && FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04)
 				{
 					g_skyBoost[other] = 1;
 				}
@@ -1560,9 +1563,12 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				else if(!(g_entityFlags[client] & FL_INWATER) && g_skyBoost[other] > 0 && GetGameTime() - g_skyAble[other] > 0.5) //airtime more than 0.5 secs
 				{
 					g_skyBoost[other] = 1;
+				}*/
+
+				if(g_skyBoost[other] == 0 && (FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5))
+				{
+					g_skyBoost[other] = 1;
 				}
-				//}
-				//}
 			}
 		}
 	}
@@ -1714,17 +1720,21 @@ public void Trikz(int client)
 		//menu.AddItem("checkpoint", "Checkpoint");
 		Format(format, sizeof(format), "%T", "Checkpoint", client);
 		menu.AddItem("checkpoint", format);
-		if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
-		{
-			Format(format, sizeof(format), "%T", "NoclipON", client);
-			menu.AddItem("noclip", format);
-		}
+	//	if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
+	//	{
+	//		Format(format, sizeof(format), "%T", "NoclipMenuON", client);
+	//		menu.AddItem("noclip", format);
+	//	}
 		
-		else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
-		{
-			Format(format, sizeof(format), "%T", "NoclipOFF", client);
-			menu.AddItem("noclip", format);
-		}
+	//	else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
+	//	{
+	//		Format(format, sizeof(format), "%T", "NoclipMenuOFF", client);
+	//		menu.AddItem("noclip", format);
+	//	}
+
+		//char format[256] = "";
+		Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
+		menu.AddItem("noclip", format);
 		//menu.AddItem("noclip", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]");
 	}
 
@@ -7094,21 +7104,25 @@ public void Noclip(int client)
 
 			//PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.");
 
-			if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
-			{
-				//PrintToChat(client, "\x01%T", "NoClipEnabled", client);
-				char format[256] = "";
-				Format(format, sizeof(format), "%T", "NoClipEnabled", client);
-				SendMessage(format, false, client);
-			}
+		//	if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
+		//	{
+		//		//PrintToChat(client, "\x01%T", "NoClipEnabled", client);
+		//		char format[256] = "";
+		//		Format(format, sizeof(format), "%T", "NoclipON", client);
+		//		SendMessage(format, false, client);
+		//	}
 
-			else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
-			{
+		//	else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
+		//	{
 				//PrintToChat(client, "\x01%T", "NoClipDisabled", client);
-				char format[256] = "";
-				Format(format, sizeof(format), "%T", "NoClipDisabled", client);
-				SendMessage(format, false, client);
-			}
+		//		char format[256] = "";
+		//		Format(format, sizeof(format), "%T", "NoclipOFF", client);
+		//		SendMessage(format, false, client);
+		//	}
+
+			char format[256] = "";
+			Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipON" : "NoclipOFF", client);
+			SendMessage(format, false, client);
 		}
 
 		else if(g_devmap == false)
