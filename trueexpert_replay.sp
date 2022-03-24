@@ -35,8 +35,8 @@
 
 #define MAXPLAYER MAXPLAYERS+1
 
-#define semicolon 1
-#define newdecls required
+#pragma semicolon 1
+#pragma newdecls required
 
 char g_map[192];
 ArrayList g_frame[MAXPLAYER];
@@ -126,6 +126,7 @@ public void OnPluginStart()
 	}
 
 	delete gamedata;
+
 	g_tickrate = 1.0 / GetTickInterval();
 }
 
@@ -139,8 +140,8 @@ public void OnMapStart()
 {
 	if(Trikz_GetDevmap() == 0)
 	{
-		GetCurrentMap(g_map, 192)
-		CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE)
+		GetCurrentMap(g_map, sizeof(g_map));
+		CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	else if(Trikz_GetDevmap() == 1)
@@ -164,7 +165,7 @@ public void OnClientDisconnect(int client)
 public Action timer_bot(Handle timer)
 {
 	char record[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/trueexpert/%s.replay", g_map)
+	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/trueexpert/%s.replay", g_map);
 
 	char recordPartner[PLATFORM_MAX_PATH] = "";
 	BuildPath(Path_SM, recordPartner, PLATFORM_MAX_PATH, "data/trueexpert/%s_partner.replay", g_map);
@@ -206,7 +207,8 @@ public Action timer_bot(Handle timer)
 
 		if(botShouldAdd == 0 && g_database != INVALID_HANDLE)
 		{
-			char query[512]
+			char query[512] = "";
+
 			for(int i = 0; i <= 1; i++)
 			{
 				Format(query, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[i]);
@@ -232,7 +234,8 @@ public Action timer_bot(Handle timer)
 				{
 					if(Trikz_GetClientPartner(g_bot[0]) == 0)
 					{
-						Trikz_SetPartner(g_bot[0], g_bot[1])
+						Trikz_SetPartner(g_bot[0], g_bot[1]);
+
 						if(IsClientInGame(g_bot[0]) && IsPlayerAlive(g_bot[0]) == false)
 						{
 							CS_RespawnPlayer(g_bot[0]);
@@ -264,7 +267,7 @@ public void SetupSave(int client, float time)
 	}
 
 	char dirBackup[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, dirBackup, PLATFORM_MAX_PATH, "data/trueexpert/backup")
+	BuildPath(Path_SM, dirBackup, PLATFORM_MAX_PATH, "data/trueexpert/backup");
 
 	if(DirExists(dirBackup) == false)
 	{
@@ -307,7 +310,7 @@ public void SaveRecord(int client, const char[] path, float time, bool load)
 
 	for(int i = 0; i < g_tick[client]; i++)
 	{
-		g_frame[client].GetArray(i, data, sizeof(eFrame))
+		g_frame[client].GetArray(i, data, sizeof(eFrame));
 
 		for(int j = 0; j < sizeof(eFrame); j++)
 		{
@@ -378,7 +381,7 @@ public void LoadRecord()
 		any data[sizeof(eFrame)];
 		delete g_frameCache[g_bot[0]];
 
-		g_frameCache[g_bot[0]] = new ArrayList(sizeof(eFrame), tickcount)
+		g_frameCache[g_bot[0]] = new ArrayList(sizeof(eFrame), tickcount);
 
 		for(int i = 0; i < tickcount; i++)
 		{
@@ -497,7 +500,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 					g_frame[client].Resize(g_tick[client] + (RoundToCeil(g_tickrate) * 2));
 				}
 
-				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame))
+				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 			}
 		}
 
@@ -508,7 +511,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 				g_frame[client].Resize(g_tick[client] + (RoundToCeil(g_tickrate) * 2));
 			}
 
-			g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame))
+			g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 		}
 	}
 }
@@ -672,7 +675,7 @@ public Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
 		SetEventBroadcast(event, true);
 	}
 
-	return Plugin_Continue
+	return Plugin_Continue;
 }
 
 public void ApplyFlags(int &flags1, int flags2, int flag)
@@ -700,7 +703,7 @@ public void SDKWeaponSwitch(int client, int weapon)
 		else if (g_switchPrevent[client] == false)
 		{
 			char classname[32] = "";
-			GetEntityClassname(weapon, classname, 32)
+			GetEntityClassname(weapon, classname, sizeof(classname));
 
 			char weaponName[32] = "";
 
