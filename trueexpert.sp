@@ -1543,7 +1543,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					g_skyBoost[other] = 1;
 				}
 
-				else if(g_entityFlags[client] & FL_INWATER && g_skyBoost[other] > 0 && GetGameTime() - g_skyAble[other] > 0.5)
+				else if(!(g_entityFlags[client] & FL_INWATER) && g_skyBoost[other] > 0 && GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					g_skyBoost[other] = 1;
 				}
