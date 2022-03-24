@@ -43,13 +43,21 @@
 		//"#format"	""
 		"en"	"Turn on devmap."
 	}
-	"NoClipEnabled"
+	//"NoclipEnabled"
+	//{
+	//	"en"	"Noclip enabled."
+	//}
+	//"NoclipDisabled"
+	//{
+	//	"en"	"Noclip disabled."
+	//}
+	"NoclipMenuON"
 	{
-		"en"	"Noclip enabled."
+		"en"	"Noclip [v]"
 	}
-	"NoClipDisabled"
+	"NoclipMenuOFF"
 	{
-		"en"	"Noclip disabled."
+		"en"	"Noclip [x]"
 	}
 	"MLStatsOFF"
 	{
