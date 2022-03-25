@@ -185,6 +185,7 @@ float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
 ConVar gCV_pingtool;
 int g_top10Count;
+//float g_srPrevTime;
 
 public Plugin myinfo =
 {
@@ -2652,12 +2653,15 @@ public Action cmd_endmsg(int client, int args)
 {
 	//bool convar = GetConVarBool(gCV_endmsg);
 	g_endMessage[client] = !g_endMessage[client];
+
 	char sValue[16];
 	IntToString(g_bhop[client], sValue, sizeof(sValue));
 	SetClientCookie(client, g_cookie[8], sValue);
+
 	char format[256];
 	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageON" : "EndMessageOFF", client);
 	SendMessage(format, false, client);
+
 	return Plugin_Handled;
 }
 
@@ -2704,7 +2708,7 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 {
 	float time = data;
 
-	if(results.FetchRow())
+	if(results.FetchRow() == true)
 	{
 		char name1[MAX_NAME_LENGTH] = "";
 		char name2[MAX_NAME_LENGTH] = "";
@@ -2720,23 +2724,56 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		//Format(format2, sizeof(format2), "%T", "Top10", c);
 		//PrintToServer("%i. %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
 		//PrintToChatAll("%i, %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
-		int count = g_top10Count++;
-		//g_top10Count = g_top10Count + 1;
-		//int count = g_top10Count;
+		//int count = ++g_top10Count;
+		g_top10Count = g_top10Count + 1;
+		int count = g_top10Count;
 		#if debug true
 		//PrintToServer("%i", count);
 		#endif
+		char format2[256] = "";
+		//g_srPrev = time;
+		#if debug true
+		float localPrevTime;
+		localPrevTime = time - g_srPrevTime;
+		PrintToServer("x: %f, y: %f", localPrevTime, time);
+		#endif
+		float serverRecord;
+		//localPrevTime = g_srPrevTime
+		#if debug true
+		//PrintToServer("%f %f %f %N %N", localPrevTime, time, g_srPrevTime, client, i);
+		#endif
+
+		if(count == 1)
+		{
+			//localPrevTime = 0.0;
+			serverRecord = time;
+		}
+
+		float timeDiffer = time - serverRecord;
+		int hour2 = (RoundToFloor(timeDiffer) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+		int minute2 = (RoundToFloor(timeDiffer) / 60) % 60;
+		int second2 = RoundToFloor(timeDiffer) % 60;
+		char formatX[64] = "";
+		Format(formatX, sizeof(formatX), "%02.i:%02.i:%02.i", hour2, minute2, second2);
+		PrintToServer("formatX: %s", formatX);
+
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) == true)
 			{
 				int client = GetClientFromSerial(i);
-				char format2[256] = "";
-				Format(format2, sizeof(format2), "%T", "Top10", client, count, name1, name2, format);
 				//PrintToChatAll("%T", "Top10", client);
-				PrintToChat(i, "%s", format2);
+				//PrintToChat(i, "%s", format2);
+				Format(format2, sizeof(format2), "%T", "Top10", client, count, name1, name2, format, formatX);
+				//Format(format2, sizeof(format2), "%T", "Top10", client, count, name1, name2, format, formatX);
+				SendMessage(format2, false, i);
 			}
 		}
+		
+		//g_srPrevTime = time;
+		#if debug true
+		//PrintToServer("%f", g_srPrevTime);
+		#endif
 	}
 }
 
