@@ -4810,6 +4810,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
 						//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 						Format(format, sizeof(format), "%T", "CP-recordDetailHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
+						ShowHudText(i, 2, format);
 
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 						SetHudTextParams(x3, y3, z3, r3, g3, b3, a3);
@@ -5515,7 +5516,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 						if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 						{
-							SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+							//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 							SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
 							//ShowHudText(i, 1, "MAP FINISHED!");
 							Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", i);
@@ -5630,9 +5631,9 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				}
 				while(kv.GotoNextKey(false));
 
-				SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
-				ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+				//ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 2, format);
 
