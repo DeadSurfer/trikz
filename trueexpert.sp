@@ -197,7 +197,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	//g_steamid = CreateConVar("steamid", "", "Set steamid for control the plugin ex. 120192594. Use status to check your uniqueid, without 'U:1:'.", 0.0, false, 1.0, true);
-	//g_urlTop = CreateConVar("topurl", "", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0.0, false, 1.0, true);
+	g_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0, false, 0.0, true, 1.0);
 	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Trikz menu.", 0, false, 0.0, true, 1.0);
 	gCV_block = CreateConVar("sm_te_block", "0.0", "Toggling block state.", 0, false, 0.0, true, 1.0);
 	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Toggling partner menu.", 0, false, 0.0, true, 1.0);
@@ -6264,6 +6264,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					g_pingTime[client] = GetEngineTime();
 					g_pingLock[client] = false;
+
+					#if debug true
+					PrintToServer("ping 1");
+					#endif
 					//return Plugin_Continue;
 				}
 				//return Plugin_Continue;
@@ -6274,6 +6278,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(g_pingLock[client] == false)
 				{
 					g_pingLock[client] = true;
+
+					#if debug true
+					PrintToServer("ping 2");
+					#endif
 					//return Plugin_Continue;
 				}
 				//return Plugin_Continue;
@@ -6306,9 +6314,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				SetEntProp(g_pingModel[client], Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
 
-				float start[3];
-				float angle[3];
-				float end[3];
+				float start[3] = {0.0, 0.0, 0.0};
+				float angle[3] = {0.0, 0.0, 0.0};
+				float end[3] = {0.0, 0.0, 0.0};
 
 				GetClientEyePosition(client, start);
 
@@ -7375,7 +7383,7 @@ public Action cmd_button(int client, int args)
 	//}
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_button[client] ? "ButtonAnnonuncerON" : "ButtonAnnouncerOFF", client);
+	Format(format, sizeof(format), "%T", g_button[client] ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
 	SendMessage(format, false, client);
 
 	return Plugin_Handled;
@@ -7404,7 +7412,7 @@ public Action cmd_pbutton(int client, int args)
 	//}
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_pbutton ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
+	Format(format, sizeof(format), "%T", g_pbutton[client] ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
 	SendMessage(format, false, client);
 
 	return Plugin_Handled;
