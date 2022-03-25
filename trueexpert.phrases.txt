@@ -461,4 +461,9 @@
 	{
 		"en"	"End message [x]"
 	}
+	"Top10"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s}"
+		"en"	"{1}. {2} and {3} finished map in {4}"
+	}
 }
