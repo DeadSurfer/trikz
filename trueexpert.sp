@@ -96,21 +96,21 @@ float g_mateRecord[MAXPLAYER];
 bool g_sourcetv;
 bool g_block[MAXPLAYER];
 //int g_wModelThrown;
-//int g_class[MAXPLAYER];
-//bool g_color[MAXPLAYER][2];
+int g_class[MAXPLAYER];
+bool g_color[MAXPLAYER][2];
 //int g_wModelPlayer[5];
-//int g_pingModel[MAXPLAYER];
-//int g_pingModelOwner[2048 + 1];
-//Handle g_pingTimer[MAXPLAYER];
+int g_pingModel[MAXPLAYER];
+int g_pingModelOwner[2048 + 1];
+Handle g_pingTimer[MAXPLAYER];
 
 bool g_zoneFirst[3];
 
-//char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
-//int g_colorBuffer[MAXPLAYER][3][2];
-//int g_colorCount[MAXPLAYER][2];
+char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
+int g_colorBuffer[MAXPLAYER][3][2];
+int g_colorCount[MAXPLAYER][2];
 
 //int g_zoneModel[3];
-//int g_laserBeam;
+int g_laserBeam;
 bool g_sourcetvchangedFileName = true;
 float g_entityVel[MAXPLAYER][3];
 float g_clientVel[MAXPLAYER][3];
@@ -121,8 +121,8 @@ bool g_afk[MAXPLAYER];
 float g_center[12][3];
 bool g_zoneDraw[MAXPLAYER];
 //float g_engineTime;
-//float g_pingTime[MAXPLAYER];
-//bool g_pingLock[MAXPLAYER];
+float g_pingTime[MAXPLAYER];
+bool g_pingLock[MAXPLAYER];
 bool g_msg[MAXPLAYER];
 int g_voters;
 int g_afkClient;
@@ -153,7 +153,7 @@ float g_restartInHold[MAXPLAYER];
 bool g_restartInHoldLock[MAXPLAYER];
 int g_smoke;
 bool g_clantagOnce[MAXPLAYER];
-//bool g_seperate[MAXPLAYER];
+bool g_seperate[MAXPLAYER];
 int g_projectileSoundLoud[MAXPLAYER];
 bool g_readyToFix[MAXPLAYER];
 ConVar gCV_trikz;
@@ -179,15 +179,18 @@ float g_macroTime[MAXPLAYER];
 bool g_macroOpened[MAXPLAYER];
 #define debug false
 bool g_endMessage[MAXPLAYER];
-float g_fixVisualFlashbang[MAXPLAYER];
-bool g_fixVisualFlashbangDoor[MAXPLAYER];
+//float g_fixVisualFlashbang[MAXPLAYER];
+//bool g_fixVisualFlashbangDoor[MAXPLAYER][2];
+float g_flashbangTime[MAXPLAYER];
+bool g_flashbangDoor[MAXPLAYER][2];
+ConVar gCV_pingtool;
 
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.1",
+	version = "4.2",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -210,6 +213,7 @@ public void OnPluginStart()
 	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0, false, 0.0, true, 1.0);
 	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
 	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", 0, false, 0.0, true, 1.0);
+	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use", 0, false, 0.0, true, 1.0);
 	
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -376,12 +380,13 @@ public void OnMapStart()
 	//g_wModelPlayer[4] = PrecacheModel("models/trueexpert/player/ct_gign.mdl", true);
 
 	//PrecacheSound("trueexpert/pingtool/click.wav", true); //https://forums.alliedmods.net/showthread.php?t=333211
+	PrecacheSound("items/gift_drop.wav", true);
 
 	//g_zoneModel[0] = PrecacheModel("materials/trueexpert/zones/start.vmt", true);
 	//g_zoneModel[1] = PrecacheModel("materials/trueexpert/zones/finish.vmt", true);
 	//g_zoneModel[2] = PrecacheModel("materials/trueexpert/zones/check_point.vmt", true);
 
-	//g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true);
+	g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_smoke = PrecacheModel("materials/sprites/smoke.vmt", true);
 
 	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true);
@@ -422,6 +427,8 @@ public void OnMapStart()
 
 		delete dir;
 	}*/
+
+	PrecacheModel("models/effects/combineball.mdl", true);
 
 	//g_turbophysics = FindConVar("sv_turbophysics"); //thnaks to maru.
 
@@ -800,7 +807,7 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
-	/*char model[PLATFORM_MAX_PATH] = "";
+	char model[PLATFORM_MAX_PATH] = "";
 	GetClientModel(client, model, PLATFORM_MAX_PATH);
 
 	if(StrEqual(model, "models/player/ct_urban.mdl", false))
@@ -825,8 +832,8 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	if(g_color[client][0] == true)
 	{
-		SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-		DispatchKeyValue(client, "skin", "2");
+	//	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
+		//DispatchKeyValue(client, "skin", "2");
 		SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 	}
 
@@ -835,7 +842,7 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		SetEntityRenderColor(client, 255, 255, 255, 255);
 	}
 
-	SetEntityRenderMode(client, RENDER_TRANSALPHA);*/ //maru is genius person who fix this bug. thanks maru for idea.
+	SetEntityRenderMode(client, RENDER_TRANSALPHA); //maru is genius person who fix this bug. thanks maru for idea.
 
 	if(g_devmap == false && g_clantagOnce[client] == false)
 	{
@@ -922,7 +929,7 @@ public Action autobuy(int client, const char[] command, int argc)
 
 public Action rebuy(int client, const char[] command, int argc)
 {
-	//ColorZ(client, true, -1);
+	ColorZ(client, true, -1);
 
 	return Plugin_Continue;
 }
@@ -1017,7 +1024,7 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	
 	if(convar == true)
 	{
-		//ColorFlashbang(client, true, -1);
+		ColorFlashbang(client, true, -1);
 	}
 
 	return Plugin_Continue;
@@ -1281,7 +1288,12 @@ public void OnClientDisconnect(int client)
 		CS_SetClientClanTag(partner, g_clantag[partner][0]);
 	}
 
-	g_fixVisualFlashbangDoor[client] = false;
+	//g_fixVisualFlashbangDoor[client][0] = false;
+	//g_fixVisualFlashbangDoor[client][1] = false;
+	for(int i = 0; i <= 1; i++)
+	{
+		g_flashbangDoor[client][i] = false;
+	}
 }
 
 public void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
@@ -1679,12 +1691,12 @@ public void Trikz(int client)
 			menu.AddItem("partner", format, ITEMDRAW_DEFAULT);
 		}
 	}
-	//Format(format, sizeof(format), "%T", "Color", client);
-	//if(g_devmap == true)
-	//{
+	Format(format, sizeof(format), "%T", "Color", client);
+	if(g_devmap == true)
+	{
 		//menu.AddItem("color", "Color");
-		//menu.AddItem("color", format);
-	//}
+		menu.AddItem("color", format);
+	}
 
 	else if(g_devmap == false)
 	{
@@ -1700,6 +1712,7 @@ public void Trikz(int client)
 		//{
 		//	menu.AddItem("color", format, ITEMDRAW_DISABLED);
 		//}
+		menu.AddItem("color", format, g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 	Format(format, sizeof(format), "%T", "Restart", client);
 	//menu.AddItem("restart", "Restart", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED); //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
@@ -1765,25 +1778,25 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 					Partner(param1);
 				}
 
-				//case 2:
-				//{
-					//ColorZ(param1, true, -1);
-					//Trikz(param1);
-				//}
-
 				case 2:
+				{
+					ColorZ(param1, true, -1);
+					Trikz(param1);
+				}
+
+				case 3:
 				{
 					Restart(param1);
 					Restart(g_partner[param1]);
 				}
 
-				case 3:
+				case 4:
 				{
 					g_menuOpened[param1] = false;
 					Checkpoint(param1);
 				}
 
-				case 4:
+				case 5:
 				{
 					Noclip(param1);
 					Trikz(param1);
@@ -1823,7 +1836,7 @@ public Action Block(int client) //thanks maru for optimization.
 
 	SetEntProp(client, Prop_Data, "m_CollisionGroup", g_block[client] ? 5 : 2);
 
-	/*if(g_color[client][0] == true)
+	if(g_color[client][0] == true)
 	{
 		SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125);
 	}
@@ -1831,7 +1844,7 @@ public Action Block(int client) //thanks maru for optimization.
 	else if(g_color[client][0] == false)
 	{
 		SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125);
-	}*/
+	}
 
 	if(g_menuOpened[client] == true)
 	{
@@ -2110,7 +2123,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 	return 0;
 }
 
-/*public Action cmd_color(int client, int args)
+public Action cmd_color(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_color);
 
@@ -2181,9 +2194,9 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 	}
 
 	return Plugin_Handled;
-}*/
+}
 
-/*public void ColorZ(int client, bool customSkin, int color)
+public void ColorZ(int client, bool customSkin, int color)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2201,11 +2214,11 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 			g_color[client][0] = true;
 			g_color[g_partner[client]][0] = true;
 
-			SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-			SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]]);
+		//	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
+		//	SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]]);
 
-			DispatchKeyValue(client, "skin", "2");
-			DispatchKeyValue(g_partner[client], "skin", "2");
+		//	DispatchKeyValue(client, "skin", "2");
+		//	DispatchKeyValue(g_partner[client], "skin", "2");
 
 			char colorTypeExploded[32][4];
 
@@ -2357,7 +2370,7 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 	}
 
 	return;
-}*/
+}
 
 public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -2435,6 +2448,8 @@ public void Restart(int client)
 					float velNull[3] = {0.0, 0.0, 0.0};
 
 					TeleportEntity(client, g_originStart, NULL_VECTOR, velNull);
+
+					g_block[client] = true;
 
 					if(g_menuOpened[client] == true)
 					{
@@ -2545,6 +2560,8 @@ public Action cmd_autoflash(int client, int args)
 	char format[256];
 	Format(format, sizeof(format), "%T", g_autoflash[client] ? "AutoflashON" : "AutoflashOFF", client);
 	SendMessage(format, false, client);
+
+	GiveFlashbang(client);
 
 	return Plugin_Handled;
 }
@@ -6238,7 +6255,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//return Plugin_Continue;
 			}
 		}
-		/*if(IsPlayerAlive(client) == true && (g_partner[client] > 0 || g_devmap == true))
+
+		if(IsPlayerAlive(client) == true && (g_partner[client] > 0 || g_devmap == true))
 		{
 			if(buttons & IN_USE)
 			{
@@ -6261,7 +6279,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//return Plugin_Continue;
 			}
 
-			if(g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] > 0.7)
+			bool convar2 = GetConVarBool(gCV_pingtool);
+
+			if(convar2 == true && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] > 0.2)
 			{
 				g_pingLock[client] = true;
 
@@ -6280,8 +6300,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				g_pingModel[client] = CreateEntityByName("prop_dynamic_override"); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 
-				SetEntityModel(g_pingModel[client], "models/trueexpert/pingtool/pingtool.mdl");
-
+			//	SetEntityModel(g_pingModel[client], "models/trueexpert/pingtool/pingtool.mdl");
+				SetEntityModel(g_pingModel[client], "models/effects/combineball.mdl");
 				DispatchSpawn(g_pingModel[client]);
 
 				SetEntProp(g_pingModel[client], Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
@@ -6304,11 +6324,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client);
 
-				if(TR_DidHit(null))
+				if(TR_DidHit(null) == true)
 				{
 					TR_GetEndPosition(end);
 
-					float normal[3];
+					float normal[3] = {0.0, 0.0, 0.0};
 
 					TR_GetPlaneNormal(null, normal); //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
 
@@ -6321,7 +6341,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						end[i] += angle[i];
 					}
 
-					normal[0] -= 270.0;
+					//normal[0] -= 270.0;
+					normal[0] -= 360.0;
 
 					SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal);
 					//return Plugin_Continue;
@@ -6392,7 +6413,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 					TE_Send(clients, count);
 
-					EmitSound(clients, count, "trueexpert/pingtool/click.wav", client);
+				//	EmitSound(clients, count, "trueexpert/pingtool/click.wav", client);
+					EmitSound(clients, count, "items/gift_drop.wav", client);
 					//return Plugin_Continue;
 				}
 
@@ -6400,14 +6422,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					TE_SendToAll();
 
-					EmitSoundToAll("trueexpert/pingtool/click.wav", client);
+				//	EmitSoundToAll("trueexpert/pingtool/click.wav", client);
+					EmitSoundToAll("items/gift_drop.wav", client);
 					//return Plugin_Continue;
 				}
 
 				g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
 				//return Plugin_Continue;
 			}
-		}*/
+		}
 		ConVar cvPhysics = FindConVar("sv_turbophysics");
 		//int physics = g_turbophysics.IntValue;
 		//int physics = cvPhysics = FindConVar("sv_turbophysics");
@@ -6511,18 +6534,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				SetEntProp(other, Prop_Data, "m_CollisionGroup", 2);
 
-				//if(g_color[other][0] == true)
-				//{
-					//SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
-				SetEntityRenderColor(other, 255, 255, 255, 125);
-					//return Plugin_Continue;
-				//}
-
-				//else if(g_color[other][0] == false)
-				//{
+				if(g_color[other][0] == true)
+				{
+					SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
 					//SetEntityRenderColor(other, 255, 255, 255, 125);
 					//return Plugin_Continue;
-				//}
+				}
+
+				else if(g_color[other][0] == false)
+				{
+					SetEntityRenderColor(other, 255, 255, 255, 125);
+					//return Plugin_Continue;
+				}
 				//return Plugin_Continue;
 			}
 		}
@@ -6533,18 +6556,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5);
 
-				//if(g_color[client][0] == true)
-				//{
-					//SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
-				SetEntityRenderColor(client, 255, 255, 255, 255);
+				if(g_color[client][0] == true)
+				{
+					SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+				//	SetEntityRenderColor(client, 255, 255, 255, 255);
 					//return Plugin_Continue;
-				//}
+				}
 
-				//else if(g_color[client][0] == false)
-				//{
-					//SetEntityRenderColor(client, 255, 255, 255, 255);
+				else if(g_color[client][0] == false)
+				{
+					SetEntityRenderColor(client, 255, 255, 255, 255);
 					//return Plugin_Continue;
-				//}
+				}
 				//return Plugin_Continue;
 			}
 			//return Plugin_Continue;
@@ -6663,12 +6686,33 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		if(GetEngineTime() - g_fixVisualFlashbang[client] >= 0.05 && g_fixVisualFlashbangDoor[client] == true)
+		//float fix = GetEngineTime() - g_fixVisualFlashbang[client];
+		float fix = GetEngineTime() - g_flashbangTime[client];
+
+		//if(GetEngineTime() - g_fixVisualFlashbang[client] >= 0.1 && g_fixVisualFlashbangDoor[client] == true)
+		//if(fix >= 0.1 && g_fixVisualFlashbangDoor[client][0] == true)
+		if(fix >= 0.1 && (g_flashbangDoor[client][0] == true || g_flashbangDoor[client][1] == true))
 		{
-			FakeClientCommandEx(client, "use weapon_flashbang");
-			SetEntProp(client, Prop_Send, "m_bDrawViewmodel", true);
-			g_fixVisualFlashbangDoor[client] = false;
+			if(g_flashbangDoor[client][0] == true)
+			{
+				FakeClientCommandEx(client, "use weapon_flashbang");
+				g_flashbangDoor[client][0] = false;
+				//g_flashbangDoor[client][1] = true;
+			}
+
+			if(fix >= 0.15 && g_flashbangDoor[client][1] == true)
+			{
+				SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
+				//g_fixVisualFlashbangDoor[client] = false;
+				g_flashbangDoor[client][1] = false;
+			}
 		}
+
+		//if(0.11 <= GetEngineTime() - g_fixVisualFlashbang[client] >= 0.15 && g_fixVisualFlashbangDoor[client] == true)
+		//{
+		//	SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
+		//	g_fixVisualFlashbangDoor[client] == false;
+		//}
 
 		return Plugin_Continue;
 	}
@@ -7396,7 +7440,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			//return Plugin_Continue;
 		}
 
-		/*else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
+		else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
 		{
 			ColorZ(client, true, -1);
 
@@ -7463,7 +7507,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			ColorZ(client, true, 8);
 
 			return Plugin_Continue;
-		}*/
+		}
 
 		else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
 		{
@@ -7648,14 +7692,14 @@ public void SDKProjectile(int entity)
 
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE);
 
-		/*if(g_color[client][1] == true)
+		if(g_color[client][1] == true)
 		{
-			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
-			SetEntProp(entity, Prop_Data, "m_nSkin", 1);
+			//SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
+			//SetEntProp(entity, Prop_Data, "m_nSkin", 1);
 
 			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 			//return Plugin_Continue;
-		}*/
+		}
 		//return Plugin_Continue;
 	}
 }
@@ -7852,7 +7896,7 @@ public void SDKThink(int client)
 				
 				if(convar == true && g_autoswitch[client] == true && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
 				{
-					SetEntProp(client, Prop_Send, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+					SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
 					g_readyToFix[client] = false;
 
@@ -7860,9 +7904,14 @@ public void SDKThink(int client)
 
 					FakeClientCommandEx(client, "use weapon_knife");
 					
-					g_fixVisualFlashbang[client] = GetEngineTime();
-					g_fixVisualFlashbangDoor[client] = true;
+					//g_fixVisualFlashbang[client] = GetEngineTime();
+				//	g_fixVisualFlashbangDoor[client] = true;
+					//g_flashbangDoor[client][0] = true;
+					//g_flashbangDoor
 					//RequestFrame(frame_fix, client);
+					g_flashbangTime[client] = GetEngineTime();
+					g_flashbangDoor[client][0] = true;
+					g_flashbangDoor[client][1] = true;
 				}
 			}
 		}
@@ -7982,7 +8031,7 @@ public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 	//}
 }
 
-/*public Action timer_removePing(Handle timer, int client)
+public Action timer_removePing(Handle timer, int client)
 {
 	if(g_pingModel[client] > 0)
 	{
@@ -8011,7 +8060,7 @@ public Action SDKSetTransmitPing(int entity, int client)
 	}
 
 	return Plugin_Continue;
-}*/
+}
 
 public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
