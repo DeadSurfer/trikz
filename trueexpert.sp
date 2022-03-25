@@ -184,6 +184,7 @@ bool g_endMessage[MAXPLAYER];
 float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
 ConVar gCV_pingtool;
+int g_top10Count;
 
 public Plugin myinfo =
 {
@@ -245,6 +246,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_macro", cmd_macro);
 	RegConsoleCmd("sm_bhop", cmd_bhop);
 	RegConsoleCmd("sm_endmsg", cmd_endmsg);
+	RegConsoleCmd("sm_top10", cmd_top10);
 
 	RegServerCmd("sm_createzones", cmd_createzones);
 	RegServerCmd("sm_createusers", cmd_createusers);
@@ -2307,7 +2309,10 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 		if(g_devmap == false && g_partner[client] == 0)
 		{
 			//PrintToChat(client, "You must have a partner.");
-			PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
+			//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
+			char format[256];
+			Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
+			SendMessage(format, false, client);
 
 			return;
 		}
@@ -2654,6 +2659,85 @@ public Action cmd_endmsg(int client, int args)
 	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageON" : "EndMessageOFF", client);
 	SendMessage(format, false, client);
 	return Plugin_Handled;
+}
+
+public Action cmd_top10(int client, int args)
+{
+	Top10();
+
+	return Plugin_Handled;
+}
+
+public void Top10()
+{
+	char query[512] = "";
+	Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records ORDER BY time LIMIT 10");
+	g_mysql.Query(SQLTop10, query);
+
+	return;
+}
+
+public void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
+{
+	g_top10Count = 0;
+
+	while(results.FetchRow())
+	{
+		int clientX[2];
+		//int playerid = results.FetchInt(0);
+		//int partnerid = results.FetchInt(1);
+		clientX[0] = results.FetchInt(0);
+		clientX[1] = results.FetchInt(1);
+		float time = results.FetchFloat(2);
+
+		char query[512] = "";
+
+		//for(int i = 0; i <= 1; i++)
+		//{
+		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", clientX[1], clientX[0]);
+		g_mysql.Query(SQLTop10_2, query, time);
+		//}
+	}
+}
+
+public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
+{
+	float time = data;
+
+	if(results.FetchRow())
+	{
+		char name1[MAX_NAME_LENGTH] = "";
+		char name2[MAX_NAME_LENGTH] = "";
+		results.FetchString(0, name1, sizeof(name1));
+		results.FetchString(1, name2, sizeof(name2));
+		//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
+		int hour = (RoundToFloor(time) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+		int minute = (RoundToFloor(time) / 60) % 60;
+		int second = RoundToFloor(time) % 60;
+		char format[64] = "";
+		Format(format, sizeof(format), "%02.i:%02.i:%02.i", hour, minute, second);
+		//char format2[256] = "";
+		//Format(format2, sizeof(format2), "%T", "Top10", c);
+		//PrintToServer("%i. %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
+		//PrintToChatAll("%i, %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
+		int count = g_top10Count++;
+		//g_top10Count = g_top10Count + 1;
+		//int count = g_top10Count;
+		#if debug true
+		//PrintToServer("%i", count);
+		#endif
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true)
+			{
+				int client = GetClientFromSerial(i);
+				char format2[256] = "";
+				Format(format2, sizeof(format2), "%T", "Top10", client, count, name1, name2, format);
+				//PrintToChatAll("%T", "Top10", client);
+				PrintToChat(i, "%s", format2);
+			}
+		}
+	}
 }
 
 public Action cmd_macro(int client, int args)
