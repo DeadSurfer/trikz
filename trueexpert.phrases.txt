@@ -75,6 +75,14 @@
 	{
 		"en"	"ML Stats [x]"
 	}
+	"VelMenuON"
+	{
+		"en"	"Velocity [v]"
+	}
+	"VelMenuOFF"
+	{
+		"en"	"Velocity [x]"
+	}
 	"ButtonAnnoncerON"
 	{
 		"en"	"Button announcer is on."
