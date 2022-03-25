@@ -83,11 +83,11 @@
 	{
 		"en"	"Velocity [x]"
 	}
-	"ButtonAnnoncerON"
+	"ButtonAnnouncerON"
 	{
 		"en"	"Button announcer is on."
 	}
-	"ButtonAnnoncerOFF"
+	"ButtonAnnouncerOFF"
 	{
 		"en"	"Button announcer is off."
 	}
