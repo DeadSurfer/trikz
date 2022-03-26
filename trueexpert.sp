@@ -225,8 +225,9 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_block", cmd_block);
 	RegConsoleCmd("sm_p", cmd_partner);
 	RegConsoleCmd("sm_partner", cmd_partner);
-	//RegConsoleCmd("sm_c", cmd_color);
-	//RegConsoleCmd("sm_color", cmd_color);
+	RegConsoleCmd("sm_c", cmd_color);
+	RegConsoleCmd("sm_color", cmd_color);
+	RegConsoleCmd("sm_fl", cmd_colorflash);
 	RegConsoleCmd("sm_r", cmd_restart);
 	RegConsoleCmd("sm_restart", cmd_restart);
 	RegConsoleCmd("sm_autoflash", cmd_autoflash);	
@@ -248,6 +249,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_bhop", cmd_bhop);
 	RegConsoleCmd("sm_endmsg", cmd_endmsg);
 	RegConsoleCmd("sm_top10", cmd_top10);
+	RegConsoleCmd("sm_help", cmd_control);
+	RegConsoleCmd("sm_control", cmd_control);
 
 	RegServerCmd("sm_createzones", cmd_createzones);
 	RegServerCmd("sm_createusers", cmd_createusers);
@@ -949,6 +952,13 @@ public Action cheer(int client, const char[] command, int argc)
 
 public Action showbriefing(int client, const char[] command, int argc)
 {
+	Control(client);
+
+	return Plugin_Continue;
+}
+
+public void Control(int client)
+{
 	Menu menu = new Menu(menu_info_handler);
 
 	menu.SetTitle("Control");
@@ -960,11 +970,12 @@ public Action showbriefing(int client, const char[] command, int argc)
 	menu.AddItem("button", "!button");
 	menu.AddItem("pbutton", "!pbutton");
 	menu.AddItem("spec", "!spec");
+	menu.AddItem("colorflash", "!colorflash");
 	menu.AddItem("trikz", "!trikz");
 
 	menu.Display(client, 20);
 
-	return Plugin_Continue;
+	return;
 }
 
 public int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -1011,6 +1022,11 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 				}
 
 				case 7:
+				{
+					ColorFlashbang(param1, true, -1);
+				}
+
+				case 8:
 				{
 					Trikz(param1);
 				}
@@ -2199,6 +2215,20 @@ public Action cmd_color(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action cmd_colorflash(int client, int args)
+{
+	bool convar = GetConVarBool(gCV_color);
+
+	if(convar == false)
+	{
+		return Plugin_Handled;
+	}
+
+	ColorFlashbang(client, true, -1);
+
+	return Plugin_Handled;
+}
+
 public void ColorZ(int client, bool customSkin, int color)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
@@ -2206,8 +2236,11 @@ public void ColorZ(int client, bool customSkin, int color)
 		//if(g_devmap == false && g_partner[client] == false)
 		if(g_devmap == false && g_partner[client] == 0)
 		{
-			PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
+			//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
 			//PrintToChat(client, "You must have a partner.");
+			char format[256];
+			Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
+			SendMessage(format, false, client);
 
 			return;
 		}
@@ -2306,6 +2339,13 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
+		bool convar = GetConVarBool(gCV_color);
+
+		if(convar == false)
+		{
+			return;
+		}
+
 		//if(g_devmap == false && g_partner[client] == false)
 		if(g_devmap == false && g_partner[client] == 0)
 		{
@@ -2775,6 +2815,13 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		//PrintToServer("%f", g_srPrevTime);
 		#endif
 	}
+}
+
+public Action cmd_control(int client, int args)
+{
+	Control(client);
+
+	return Plugin_Handled;
 }
 
 public Action cmd_macro(int client, int args)
