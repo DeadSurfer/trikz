@@ -43,6 +43,14 @@
 		//"#format"	""
 		"en"	"Turn on devmap."
 	}
+	"TurnOFFDevMap"
+	{
+		"en"	"Turn off dev map?"
+	}
+	"TurnONDevMap"
+	{
+		"en"	"Turn on dev map?"
+	}
 	//"NoclipEnabled"
 	//{
 	//	"en"	"Noclip enabled."
@@ -169,16 +177,16 @@
 	{
 		"en"	"No free player."
 	}
-	//"DevMapWillBeDisabled"
-	//{
-		//"#format"	"{1:i},{2:i},{3:i}"
-		//"en"	"Devmap will be disabled. \"Yes\" {1} or {2} of {3} players."
-	//}
-	//"DevMapWillBeEnabled"
-	//{
-		//"#format"	"{1:i},{2:i},{3:i}"
-		//"en"	"Devmap will be enabled. \"Yes\" {1} or {2} of {3} players."
-	//}
+	"DevMapWillBeDisabled"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will be disabled. \"Yes\" {1}%%% or {2} of {3} players."
+	}
+	"DevMapWillBeEnabled"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will be enabled. \"Yes\" {1}%%% or {2} of {3} players."
+	}
 	"DevMapContinue"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
@@ -468,4 +476,64 @@
 		//"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}}{default})"
 		"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}{default})"
 	}
+	/*"Cstrike_Chat_AllSpec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*SPEC* [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_Spec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#CCCCCC{2}} {default}:  {3}"
+	}
+	"Cstrike_Chat_All"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"[{1}}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"[{1}}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD* [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD* [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}*/
 }
