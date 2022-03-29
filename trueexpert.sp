@@ -192,7 +192,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.2",
+	version = "4.3",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -706,11 +706,13 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec", false))
 	{
 		Format(text, sizeof(text), "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
+		//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllSpec", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec", false))
 	{
 		Format(text, sizeof(text), "\x01(Spectator) [%s] \x07CCCCCC%s \x01:  %s", points, name, text);
+		//Format(text, sizeof(text), "%T", "Cstrike_Chat_Spec", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_All", false))
@@ -718,11 +720,13 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 		if(GetClientTeam(client) == 2)
 		{
 			Format(text, sizeof(text), "\x01[%s] \x07FF4040%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
+			//Format(text, sizeof(text), "%T", "Cstrike_Chat_All", client, points, name, text);
 		}
 
 		else if(GetClientTeam(client) == 3)
 		{
 			Format(text, sizeof(text), "\x01[%s] \x0799CCFF%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
+			//Format(text, sizeof(text), "%T", "Cstrike_Chat_All2", client, points, name, text);
 		}
 	}
 
@@ -731,32 +735,38 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 		if(GetClientTeam(client) == 2)
 		{
 			Format(text, sizeof(text), "\x01*DEAD* [%s] \x07FF4040%s \x01:  %s", points, name, text);
+			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead", client, points, name, text);
 		}
 
 		else if(GetClientTeam(client) == 3)
 		{
 			Format(text, sizeof(text), "\x01*DEAD* [%s] \x0799CCFF%s \x01:  %s", points, name, text);
+			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead2", client, points, name, text);
 		}
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT", false))
 	{
 		Format(text, sizeof(text), "\x01(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text);
+		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT_Dead", false))
 	{
 		Format(text, sizeof(text), "\x01*DEAD*(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text);
+		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT_Dead", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T", false))
 	{
 		Format(text, sizeof(text), "\x01(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text); //https://forums.alliedmods.net/showthread.php?t=185016
+		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T_Dead", false))
 	{
 		Format(text, sizeof(text), "\x01*DEAD*(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text);
+		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T_Dead", client, points, name, text);
 	}
 
 	DataPack dp = new DataPack();
@@ -1596,7 +1606,8 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					g_skyBoost[other] = 1;
 				}*/
 
-				if(g_skyBoost[other] == 0 && (FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5))
+				//if(g_skyBoost[other] == 0 && (FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5))
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					g_skyBoost[other] = 1;
 				}
@@ -1733,7 +1744,9 @@ public void Trikz(int client)
 		//}
 		menu.AddItem("color", format, g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
+
 	Format(format, sizeof(format), "%T", "Restart", client);
+
 	//menu.AddItem("restart", "Restart", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED); //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
 	//if(g_partner[client] == true)
 	if(g_partner[client] > 0)
@@ -2727,18 +2740,18 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 
 	while(results.FetchRow())
 	{
-		int clientX[2];
+		//int client[2];
 		//int playerid = results.FetchInt(0);
 		//int partnerid = results.FetchInt(1);
-		clientX[0] = results.FetchInt(0);
-		clientX[1] = results.FetchInt(1);
+		int playerid = results.FetchInt(0);
+		int partnerid = results.FetchInt(1);
 		float time = results.FetchFloat(2);
 
 		char query[512] = "";
 
 		//for(int i = 0; i <= 1; i++)
 		//{
-		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", clientX[1], clientX[0]);
+		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
 		g_mysql.Query(SQLTop10_2, query, time);
 		//}
 	}
@@ -2764,18 +2777,18 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		//Format(format2, sizeof(format2), "%T", "Top10", c);
 		//PrintToServer("%i. %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
 		//PrintToChatAll("%i, %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
-		//int count = ++g_top10Count;
-		g_top10Count = g_top10Count + 1;
-		int count = g_top10Count;
+		int count = g_top10Count++;
+		//g_top10Count = g_top10Count + 1;
+		//int count = g_top10Count;
 		#if debug true
 		//PrintToServer("%i", count);
 		#endif
 		char format2[256] = "";
 		//g_srPrev = time;
 		#if debug true
-		float localPrevTime;
-		localPrevTime = time - g_srPrevTime;
-		PrintToServer("x: %f, y: %f", localPrevTime, time);
+		//float localPrevTime;
+		//localPrevTime = time - g_srPrevTime;
+		//PrintToServer("x: %f, y: %f", localPrevTime, time);
 		#endif
 		float serverRecord;
 		//localPrevTime = g_srPrevTime
@@ -2793,9 +2806,13 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		int hour2 = (RoundToFloor(timeDiffer) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		int minute2 = (RoundToFloor(timeDiffer) / 60) % 60;
 		int second2 = RoundToFloor(timeDiffer) % 60;
+
 		char formatX[64] = "";
 		Format(formatX, sizeof(formatX), "%02.i:%02.i:%02.i", hour2, minute2, second2);
+
+		#if debug true
 		PrintToServer("formatX: %s", formatX);
+		#endif
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -3141,7 +3158,9 @@ public Action cmd_test(int client, int args)
 			g_partner[client] = partner;
 
 			Call_StartForward(g_start);
+
 			Call_PushCell(client);
+
 			Call_Finish();
 
 			Restart(client);
@@ -3152,7 +3171,9 @@ public Action cmd_test(int client, int args)
 			if(IsClientInGame(i) == true)
 			{
 				PrintToServer("(%i %N)", i, i);
+
 				PrintToServer("CollisionGroup: %i %N", GetEntProp(i, Prop_Data, "m_CollisionGroup"), i);
+
 				PrintToServer("%i %N", g_partner[i], i);
 			}
 		}
@@ -3170,10 +3191,13 @@ public Action cmd_test(int client, int args)
 
 		char auth64[64] = "";
 		GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64));
+
 		char authid3[64] = "";
 		GetClientAuthId(client, AuthId_Steam3, authid3, sizeof(authid3));
+
 		//PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3 after 2nd semicolon)", auth64, authid3);
+
 		return Plugin_Handled;
 	}
 
@@ -3196,6 +3220,7 @@ public void SendMessage(const char[] text, bool all, int client)
 		case 1:
 		{
 			Format(teamName, sizeof(teamName), "\x01%T", "Spectator", client);
+			//Format(teamName, sizeof(teamName), "\x01%T")
 			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
 		}
 
@@ -3215,9 +3240,9 @@ public void SendMessage(const char[] text, bool all, int client)
 	//Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName);
 	char textReplaced[256] = "";
 	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
+
 	ReplaceString(textReplaced, sizeof(textReplaced), ";#", "\x07");
 	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
-
 	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
 
 	if(all == true)
@@ -3232,6 +3257,7 @@ public void SendMessage(const char[] text, bool all, int client)
 			PrintToChat(client, "%s", textReplaced);
 		}
 	}
+
 	#if debug true
 	//PrintToChat(client, "%i MessageDebug", client)
 	#endif
@@ -6405,7 +6431,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					//return Plugin_Continue;
 				}
 
-				else
+				else if (g_groundBoost[client] == false)
 				{
 					velocity[0] += g_entityVel[client][0] * 0.135;
 					velocity[1] += g_entityVel[client][1] * 0.135;
@@ -6607,10 +6633,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//return Plugin_Continue;
 			}
 		}
+
 		ConVar cvPhysics = FindConVar("sv_turbophysics");
+
 		//int physics = g_turbophysics.IntValue;
 		//int physics = cvPhysics = FindConVar("sv_turbophysics");
 		int physics = cvPhysics.IntValue;
+
 		//if(g_turbophysics.IntValue == 0)
 		//if(GetConVarInt(g_turbophysics) == 0)
 		if(physics == 0)
@@ -6969,14 +6998,21 @@ public Action cmd_devmap(int client, int args)
 			{
 				g_voters++;
 
+				char format[256];
+
 				if(g_devmap == true)
 				{
 					Menu menu = new Menu(devmap_handler);
 
-					menu.SetTitle("Turn off dev map?");
+					//menu.SetTitle("Turn off dev map?");
+					menu.SetTitle("%T", "TurnOFFDevMap", client);
+					
+					Format(format, sizeof(format), "%T", "Yes", client);
+					menu.AddItem("yes", format);
+					//menu.AddItem("yes", "Yes");
 
-					menu.AddItem("yes", "Yes");
-					menu.AddItem("no", "No");
+					Format(format, sizeof(format), "%T", "No", client);
+					menu.AddItem("no", format);
 
 					menu.Display(i, 20);
 				}
@@ -6985,10 +7021,14 @@ public Action cmd_devmap(int client, int args)
 				{
 					Menu menu = new Menu(devmap_handler);
 
-					menu.SetTitle("Turn on dev map?");
+					//menu.SetTitle("Turn on dev map?");
+					menu.SetTitle("%T", "TurnONDevMap", client);
 
-					menu.AddItem("yes", "Yes");
-					menu.AddItem("no", "No");
+					Format(format, sizeof(format), "%T", "Yes", client);
+					menu.AddItem("yes", format);
+
+					Format(format, sizeof(format), "%T", "No", client);
+					menu.AddItem("no", format);
 					menu.Display(i, 20);
 
 					//return Plugin_Continue;
@@ -7076,14 +7116,34 @@ public void Devmap(bool force)
 		{
 			if(g_devmap == true)
 			{
-				PrintToChatAll("Devmap will be disabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+				//PrintToChatAll("Devmap will be disabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+				char format[256];
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) == true)
+					{
+						int client = GetClientFromSerial(i);
+						Format(format, sizeof(format), "%T", "DevMapWillBeDisabled", client, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(format, false, i);
+					}
+				}
 			}
 
 			else if(g_devmap == false)
 			{
-				PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-				//char format[256];
-				//Format(format, sizeof(format), "%T", "DevMapWillBeEnabled")
+				//PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+				char format[256];
+				//Format(format, sizeof(format), "%T", "DevMapWillBeEnabled");
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(IsClientInGame(i) == true)
+					{
+						int client = GetClientFromSerial(i);
+						Format(format, sizeof(format), "%T", "DevMapWillBeEnabled", client, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						//PrintToChat(client, format);
+						SendMessage(format, false, i);
+					}
+				}
 			}
 
 			CreateTimer(5.0, timer_changelevel, g_devmap ? false : true);
