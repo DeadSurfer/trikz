@@ -192,7 +192,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.3",
+	version = "4.31",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -2777,7 +2777,7 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		//Format(format2, sizeof(format2), "%T", "Top10", c);
 		//PrintToServer("%i. %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
 		//PrintToChatAll("%i, %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
-		int count = g_top10Count++;
+		int count = ++g_top10Count;
 		//g_top10Count = g_top10Count + 1;
 		//int count = g_top10Count;
 		#if debug true
@@ -2818,10 +2818,10 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		{
 			if(IsClientInGame(i) == true)
 			{
-				int client = GetClientFromSerial(i);
+				//int client = GetClientFromSerial(i);
 				//PrintToChatAll("%T", "Top10", client);
 				//PrintToChat(i, "%s", format2);
-				Format(format2, sizeof(format2), "%T", "Top10", client, count, name1, name2, format, formatX);
+				Format(format2, sizeof(format2), "%T", "Top10", i, count, name1, name2, format, formatX);
 				//Format(format2, sizeof(format2), "%T", "Top10", client, count, name1, name2, format, formatX);
 				SendMessage(format2, false, i);
 			}
@@ -7120,10 +7120,10 @@ public void Devmap(bool force)
 				char format[256];
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) == true)
+					if(IsClientInGame(i) == true && !IsFakeClient(i))
 					{
-						int client = GetClientFromSerial(i);
-						Format(format, sizeof(format), "%T", "DevMapWillBeDisabled", client, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						//int client = GetClientFromSerial(i);
+						Format(format, sizeof(format), "%T", "DevMapWillBeDisabled", i, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(format, false, i);
 					}
 				}
@@ -7136,10 +7136,10 @@ public void Devmap(bool force)
 				//Format(format, sizeof(format), "%T", "DevMapWillBeEnabled");
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) == true)
+					if(IsClientInGame(i) == true && !IsFakeClient(i))
 					{
-						int client = GetClientFromSerial(i);
-						Format(format, sizeof(format), "%T", "DevMapWillBeEnabled", client, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						//int client = GetClientFromSerial(i);
+						Format(format, sizeof(format), "%T", "DevMapWillBeEnabled", i, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						//PrintToChat(client, format);
 						SendMessage(format, false, i);
 					}
