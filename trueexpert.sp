@@ -192,7 +192,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.32",
+	version = "4.33",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -7829,6 +7829,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			cmd_pbutton(client, 0);
 
 			//return Plugin_Continue;
+		}
+
+		else if(StrEqual(sArgs, "top10", false))
+		{
+			Top10();
 		}
 
 		//return Plugin_Continue;
