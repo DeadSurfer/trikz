@@ -28,52 +28,129 @@
 	any other work released this way by its authors. You can apply it to
 	your programs, too.
 */
+#pragma semicolon 1
+#pragma newdecls required
+
 public Plugin myinfo =
 {
 	name = "Visit announcement",
 	author = "Smesh",
 	description = "Always show connect, disconnect, team changes message in the chat.",
-	version = "0.1",
+	version = "0.31",
 	url = "http://www.sourcemod.net/"
-}
+};
 
 public void OnPluginStart()
 {
-	HookEvent("player_connect_client", connect, EventHookMode_Pre)
-	HookEvent("player_disconnect", disconnect, EventHookMode_Pre)
-	HookEvent("player_team", teamjoin, EventHookMode_Pre)
+	HookEvent("player_connect_client", connect, EventHookMode_Pre);
+	HookEvent("player_disconnect", disconnect, EventHookMode_Pre);
+	HookEvent("player_team", teamjoin, EventHookMode_Pre);
+
+	LoadTranslations("visit.phrases");
 }
 
-Action connect(Event event, const char[] name, bool dontBroadcast)
+public Action connect(Event event, const char[] name, bool dontBroadcast)
 {
-	char name_[MAX_NAME_LENGTH]
-	event.GetString("name", name_, MAX_NAME_LENGTH)
-	PrintToChatAll("Player %s has joined the game", name_)
-	SetEventBroadcast(event, true)
+	char sName[MAX_NAME_LENGTH];
+	event.GetString("name", sName, sizeof(sName));
+	//PrintToChatAll("Player %s has joined the game", name_)
+	//PrintToChatAll("%T", "connect", 0, name_);
+	//PrintToChatAll("%t", "connect");
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			//PrintToChat(i, "\x01%T", "connect", i, sName);
+			PrintToChat(i, "\x01%T", "connect", i, sName);
+		}
+	}
+
+	SetEventBroadcast(event, true);
+
+	return Plugin_Continue;
 }
 
-Action disconnect(Event event, const char[] name, bool dontBroadcast)
+public Action disconnect(Event event, const char[] name, bool dontBroadcast)
 {
-	char reason[64]
-	event.GetString("reason", reason, 64)
-	char name_[MAX_NAME_LENGTH]
-	event.GetString("name", name_, MAX_NAME_LENGTH)
-	PrintToChatAll("Player %s left the game (%s)", name_, reason)
-	SetEventBroadcast(event, true)
+	char sReason[64];
+	event.GetString("reason", sReason, sizeof(sReason));
+	char sName[MAX_NAME_LENGTH];
+	event.GetString("name", sName, sizeof(sName));
+	//PrintToChatAll("Player %s left the game (%s)", name_, reason)
+	//PrintToChatAll("\x01%T", "disconnect", sName, sReason);
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			PrintToChat(i, "\x01%T", "disconnect", i, sName, sReason);
+		}
+	}
+
+	SetEventBroadcast(event, true);
+
+	return Plugin_Continue;
 }
 
-Action teamjoin(Event event, const char[] name, bool dontBroadcast)
+public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"))
-	int team = event.GetInt("team")
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	int team = event.GetInt("team");
+
+	char sName[MAX_NAME_LENGTH];
+	GetClientName(client, sName, sizeof(sName));
+
 	switch(team)
 	{
 		case 1:
-			PrintToChatAll("%N is joining the Spectators", client)
+		{
+			//PrintToChatAll("%N is joining the Spectators", client);
+			//PrintToChatAll("\x01%T", "joinSpectator", sName);
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i))
+				{
+					PrintToChat(i, "\x01%T", "joinSpectator", i, sName);
+				}
+			}
+		}
+
 		case 2:
-			PrintToChatAll("%N is joining the Terrorist force", client)
+		{
+			//PrintToChatAll("%N is joining the Terrorist force", client);
+			//PrintToChatAll("\x01%T", "joinTerrorist", sName);
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i))
+				{
+					PrintToChat(i, "\x01%T", "joinTerrorist", i, sName);
+				}
+			}
+		}
+
 		case 3:
-			PrintToChatAll("%N is joining the Counter-Terrorist force", client)
+		{
+			//PrintToChatAll("%N is joining the Counter-Terrorist force", client);
+			//PrintToChatAll("\x01%T", "joinCounterTerrorist", sName);
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i))
+				{
+					PrintToChat(i, "\x01%T", "joinCounterTerrorist", i, sName);
+				}
+			}
+		}
 	}
-	SetEventBroadcast(event, true)
+
+	SetEventBroadcast(event, true);
+
+	return Plugin_Continue;
 }
+
+/*public void SendMessage(int client, bool all)
+{
+	if(IsClientInGame(i))
+	{
+	}
+}*/
