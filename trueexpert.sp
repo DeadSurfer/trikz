@@ -192,7 +192,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.31",
+	version = "4.32",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -2728,7 +2728,7 @@ public Action cmd_top10(int client, int args)
 public void Top10()
 {
 	char query[512] = "";
-	Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records ORDER BY time LIMIT 10");
+	Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' ORDER BY time LIMIT 10", g_map);
 	g_mysql.Query(SQLTop10, query);
 
 	return;
