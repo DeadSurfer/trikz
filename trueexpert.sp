@@ -310,7 +310,7 @@ public void OnPluginStart()
 	g_cookie[7] = RegClientCookie("te_macro", "macro", CookieAccess_Protected);
 	g_cookie[8] = RegClientCookie("te_endmsg", "End message.", CookieAccess_Protected);
 
-	CreateTimer(60.0, timer_clearlag);
+	//CreateTimer(60.0, timer_clearlag);
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -1696,6 +1696,7 @@ public void Trikz(int client)
 	{
 		//menu.AddItem("partner", g_partner[client] ? "Breakup" : "Partner", g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		Format(format, sizeof(format), "%T", "Breakup", client);
+
 		if(g_devmap == true)
 		{
 			menu.AddItem("breakup", format, ITEMDRAW_DISABLED);
@@ -1721,7 +1722,9 @@ public void Trikz(int client)
 			menu.AddItem("partner", format, ITEMDRAW_DEFAULT);
 		}
 	}
+
 	Format(format, sizeof(format), "%T", "Color", client);
+
 	if(g_devmap == true)
 	{
 		//menu.AddItem("color", "Color");
@@ -2294,6 +2297,18 @@ public void ColorZ(int client, bool customSkin, int color)
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125);
 			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] ? 255 : 125);
 
+			static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+
+			//if(h)
+			hForward = new GlobalForward("Trikz_ColorZ", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
+
+			Call_StartForward(hForward);
+			Call_PushCell(client);
+			Call_PushCell(g_colorBuffer[client][0][0]);
+			Call_PushCell(g_colorBuffer[client][1][0]);
+			Call_PushCell(g_colorBuffer[client][2][0]);
+			Call_Finish();
+
 			g_colorCount[client][0]++;
 			g_colorCount[g_partner[client]][0]++;
 
@@ -2402,6 +2417,18 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 				g_colorBuffer[g_partner[client]][i][1] = StringToInt(colorTypeExploded[i]);
 			}
 
+			static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+
+			//if(h)
+			hForward = new GlobalForward("Trikz_ColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_ColorFlashbang(int client, int red, int green, int blue)
+
+			Call_StartForward(hForward);
+			Call_PushCell(client);
+			Call_PushCell(g_colorBuffer[client][0][0]);
+			Call_PushCell(g_colorBuffer[client][1][0]);
+			Call_PushCell(g_colorBuffer[client][2][0]);
+			Call_Finish();
+
 			g_colorCount[client][1]++;
 			g_colorCount[g_partner[client]][1]++;
 
@@ -2476,7 +2503,7 @@ public Action cmd_restart(int client, int args)
 	return Plugin_Handled;
 }
 
-public void Restart(int client)
+public bool Restart(int client)
 {
 	if(g_devmap == true)
 	{
@@ -2485,6 +2512,8 @@ public void Restart(int client)
 		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 		SendMessage(format, false, client);
+
+		return false;
 	}
 
 	else if(g_devmap == false)
@@ -2568,6 +2597,8 @@ public void Restart(int client)
 						Restart(g_partner[client]);
 					}
 				}
+
+				return true;
 			}
 
 			else
@@ -2578,11 +2609,18 @@ public void Restart(int client)
 				char format[256];
 				Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 				SendMessage(format, false, client);
+
+				return false;
 			}
+		}
+
+		else if (g_zoneHave[0] == false || g_zoneHave[1] == false)
+		{
+			return false;
 		}
 	}
 
-	return;
+	return false;
 }
 
 public Action cmd_autoflash(int client, int args)
@@ -8520,16 +8558,35 @@ public int Native_Restart(Handle plugin, int numParams)
 	Restart(client);
 	Restart(g_partner[client]);
 
-	if(0 < client <= MaxClients)
-	{
-		int value = g_partner[client];
+	//if(0 < client <= MaxClients)
+	//{
+		//int value = g_partner[client];
 		//if(g_partner[client] == true)
 		//{
-		return value;
+		//return value;
 		//}
+	//}
+
+	//else if(!(0 < client <= MaxClients))
+	//{
+	//	return 0;
+	//}
+
+	//return 0;
+
+	if(0 < client <= MaxClients)
+	{
+		return g_partner[client];
 	}
 
-	else if(!(0 < client <= MaxClients))
+	//else if (0 > client || MaxClients < client)
+
+	if(Restart(g_partner[client]) == true)
+	{
+		return 1;
+	}
+
+	else if(Restart(g_partner[client]) == false)
 	{
 		return 0;
 	}
@@ -8542,12 +8599,12 @@ public int Native_GetDevmap(Handle plugin, int numParams)
 	return g_devmap;
 }
 
-public Action timer_clearlag(Handle timer)
+/*public Action timer_clearlag(Handle timer)
 {
 	ServerCommand("mat_texture_list_txlod_sync reset");
 
 	return Plugin_Continue;
-}
+}*/
 
 stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
