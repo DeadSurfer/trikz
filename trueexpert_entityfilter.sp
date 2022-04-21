@@ -460,7 +460,7 @@ stock void OutputInput(int entity, char[] output, char[] target = "")
 
 			for(int j = 0; j < 16; j++)
 			{
-				Format(name, 64, "m_iszTemplateEntityNames[%i]", j);
+				Format(name, sizeof(name), "m_iszTemplateEntityNames[%i]", j);
 				GetEntPropString(template, Prop_Data, name, name, sizeof(name));
 
 				if(StrEqual(target, name, false))
@@ -978,6 +978,7 @@ public Action EntityVisibleTransmit(int entity, int client)
 			if(0 < target <= MaxClients)
 			{
 				int partner = Trikz_GetClientPartner(target);
+				
 				if(g_stateDisabled[partner][entity] == true)
 				{
 					return Plugin_Handled;
@@ -1030,6 +1031,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 	{
 		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity");
 		//PrintToServer("%i %i", activator, GetEntPropEnt(caller, Prop_Data, "m_hActivator"))
+
 		if(activator < 0)
 		{
 			activator = 0;
@@ -1116,7 +1118,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 				else if(StrContains(output, "OnEndTouch", false) != -1)
 				{
-					if(g_stateDisabled[partner][caller] == true && !g_StartTouchArtifacial[partner][1][caller] == false)
+					if(g_stateDisabled[partner][caller] == true && g_StartTouchArtifacial[partner][1][caller] == false)
 					{
 						return Plugin_Handled;
 					}
@@ -1134,6 +1136,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 			{
 				Format(outputFormated, 32, "m_OnHitMax", output);
 			}
+
 			else if(StrEqual(output, "OnUser4", false))
 			{
 				Format(outputFormated, 32, "m_OnHitMin", output);
@@ -1144,6 +1147,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 				if(g_mathID[i] == caller)
 				{
 					int math = i;
+
 					for(int j = 1; j <= g_maxMathLinks[math]; j++)
 					{
 						if(partner > 0)
@@ -1196,11 +1200,13 @@ public MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	if(0 < ent2 <= MaxClients)
 	{
 		partner = Trikz_GetClientPartner(ent2);
+
 		if(g_stateDisabled[partner][ent1] == false)
 		{
 			return MRES_Ignored;
 		}
 	}
+
 	char classname[32] = "";
 
 	GetEntityClassname(ent2, classname, sizeof(classname));
