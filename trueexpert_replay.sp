@@ -82,7 +82,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for fakeexpert.",
-	version = "0.2",
+	version = "0.21",
 	url = "http://www.sourcemod.net/"
 };
 
