@@ -35,3 +35,27 @@ Swoobles.com model editor 1.7 versija. Un izmontojot gcfscape programatūru. At�
 Izmantots arī ir hlmod.ru un ws.org
 Ņagas vairāk nav. Xampp programatūra ir izmantota kā mysql datubāze.
 GNU OPENSOURCE LICENSE. PUBLIC. Used tengulawl or tengu zones for trueexpert so calculate vectors bettwen two points and make corners of calculation.
+
+Natives:
+native int Trikz_GetClientPartner(int client); //Get partner
+native int Trikz_SetPartner(int client, int partner); //Set partner
+native int Trikz_Restart(int client); //Do restart
+native bool Trikz_GetTimerState(int client); //Is timer runing (true/false)
+
+Forwards:
+public void Trikz_ColorZ(client, red, green, blue) //On do color for skin
+{
+}
+
+public void Trikz_ColorFlashbang(client, red, green, blue) //On do color for flashbang
+{
+}
+
+public void Trikz_Start(int client) //On timer start
+{
+}
+
+public void Trikz_Record(int client, float time) //On new server record
+{
+
+}
