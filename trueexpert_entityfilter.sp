@@ -1134,12 +1134,12 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 			if(StrEqual(output, "OnUser3", false))
 			{
-				Format(outputFormated, 32, "m_OnHitMax", output);
+				Format(outputFormated, sizeof(outputFormated), "m_OnHitMax", output);
 			}
 
 			else if(StrEqual(output, "OnUser4", false))
 			{
-				Format(outputFormated, 32, "m_OnHitMin", output);
+				Format(outputFormated, sizeof(outputFormated), "m_OnHitMin", output);
 			}
 
 			for(int i = 1; i <= g_mathTotalCount; i++)
