@@ -165,10 +165,10 @@ public void OnClientDisconnect(int client)
 public Action timer_bot(Handle timer)
 {
 	char record[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/trueexpert/%s.replay", g_map);
+	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s.replay", g_map);
 
 	char recordPartner[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, recordPartner, PLATFORM_MAX_PATH, "data/trueexpert/%s_partner.replay", g_map);
+	BuildPath(Path_SM, recordPartner, sizeof(recordPartner), "data/trueexpert/%s_partner.replay", g_map);
 
 	if(FileExists(record) == true && FileExists(recordPartner) == true)
 	{
@@ -211,7 +211,7 @@ public Action timer_bot(Handle timer)
 
 			for(int i = 0; i <= 1; i++)
 			{
-				Format(query, 512, "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[i]);
+				Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[i]);
 				g_database.Query(SQLGetName, query, i);
 			}
 		}
@@ -259,7 +259,7 @@ public Action timer_bot(Handle timer)
 public void SetupSave(int client, float time)
 {
 	char dir[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, dir, PLATFORM_MAX_PATH, "data/trueexpert");
+	BuildPath(Path_SM, dir, sizeof(dir), "data/trueexpert");
 
 	if(DirExists(dir) == false)
 	{
@@ -267,7 +267,7 @@ public void SetupSave(int client, float time)
 	}
 
 	char dirBackup[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, dirBackup, PLATFORM_MAX_PATH, "data/trueexpert/backup");
+	BuildPath(Path_SM, dirBackup, sizeof(dirBackup), "data/trueexpert/backup");
 
 	if(DirExists(dirBackup) == false)
 	{
@@ -276,22 +276,23 @@ public void SetupSave(int client, float time)
 
 	char record[PLATFORM_MAX_PATH] = "";
 
-	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/trueexpert/%s.replay", g_map);
+	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s.replay", g_map);
 	SaveRecord(client, record, time, false);
 
-	BuildPath(Path_SM, record, PLATFORM_MAX_PATH, "data/trueexpert/%s_partner.replay", g_map);
-	SaveRecord(Trikz_GetClientPartner(client), record, time, false);
+	int partner = Trikz_GetClientPartner(client);
+	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s_partner.replay", g_map);
+	SaveRecord(partner, record, time, false);
 
 	char recordBackup[PLATFORM_MAX_PATH] = "";
 	char timeFormat[32] = "";
 
-	FormatTime(timeFormat, 32, "%Y%b%d_%H_%M_%S", GetTime());
+	FormatTime(timeFormat, sizeof(timeFormat), "%Y%b%d_%H_%M_%S", GetTime());
 
-	BuildPath(Path_SM, recordBackup, PLATFORM_MAX_PATH, "data/trueexpert/backup/%s_%s.replay", g_map, timeFormat);
+	BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s.replay", g_map, timeFormat);
 	SaveRecord(client, recordBackup, time, false);
 
-	BuildPath(Path_SM, recordBackup, PLATFORM_MAX_PATH, "data/trueexpert/backup/%s_%s_partner.replay", g_map, timeFormat);
-	SaveRecord(Trikz_GetClientPartner(client), recordBackup, time, true);
+	BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s_partner.replay", g_map, timeFormat);
+	SaveRecord(partner, recordBackup, time, true);
 }
 
 public void SaveRecord(int client, const char[] path, float time, bool load)
@@ -344,13 +345,13 @@ public void SQLGetName(Database db, DBResultSet results, const char[] error, any
 		if(results.FetchRow() == true)
 		{
 			char name[MAX_NAME_LENGTH] = "";
-			results.FetchString(0, name, MAX_NAME_LENGTH);
+			results.FetchString(0, name, sizeof(name));
 
 			Format(name, sizeof(name), "RECORD %s", name);
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i) && IsFakeClient(i) && IsPlayerAlive(i))
+				if(IsClientInGame(i) == true && IsFakeClient(i) == true && IsPlayerAlive(i) == true)
 				{
 					if(g_bot[data] == i && g_steamid3[data] > 0)
 					{
@@ -365,7 +366,7 @@ public void SQLGetName(Database db, DBResultSet results, const char[] error, any
 public void LoadRecord()
 {
 	char filePath[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, filePath, PLATFORM_MAX_PATH, "data/fakeexpert/%s.replay", g_map);
+	BuildPath(Path_SM, filePath, sizeof(filePath), "data/fakeexpert/%s.replay", g_map);
 
 	if(FileExists(filePath) == true)
 	{
@@ -396,7 +397,7 @@ public void LoadRecord()
 		if(g_database != INVALID_HANDLE)
 		{
 			char query[512] = "";
-			Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[0]);
+			Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i", g_steamid3[0]);
 			g_database.Query(SQLGetName, query, 0);
 		}
 
@@ -404,7 +405,7 @@ public void LoadRecord()
 		g_tick[g_bot[0]] = 0;
 	}
 
-	BuildPath(Path_SM, filePath, PLATFORM_MAX_PATH, "data/fakeexpert/%s_partner.replay", g_map);
+	BuildPath(Path_SM, filePath, sizeof(filePath), "data/fakeexpert/%s_partner.replay", g_map);
 
 	if(FileExists(filePath) == true)
 	{
@@ -435,7 +436,7 @@ public void LoadRecord()
 		if(g_database != INVALID_HANDLE)
 		{
 			char query[512] = "";
-			Format(query, 512, "SELECT username FROM users WHERE steamid = %i", g_steamid3[1]);
+			Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i", g_steamid3[1]);
 			g_database.Query(SQLGetName, query, 1);
 		}
 
@@ -446,7 +447,7 @@ public void LoadRecord()
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
-	if(Trikz_GetTimerState(client) == true && g_frame[client])
+	if(Trikz_GetTimerState(client) == true && g_frame[client] != INVALID_HANDLE)
 	{
 		eFrame frame;
 		GetClientAbsOrigin(client, frame.pos);
@@ -477,7 +478,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 					if(frame.weapon == i + 1)
 					{
 						char format[32] = "";
-						Format(format, 32, "weapon_%s", g_weaponName[i]);
+						Format(format, sizeof(format), "weapon_%s", g_weaponName[i]);
 
 						if(StrEqual(weaponName, g_weaponName[i], true))
 						{
@@ -518,7 +519,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsFakeClient(client) && IsPlayerAlive(client) && g_tick[client] < g_replayTickcount[client] && g_loaded[0] == true && g_loaded[1] == true)
+	if(IsFakeClient(client) == true && IsPlayerAlive(client) == true && g_tick[client] < g_replayTickcount[client] && g_loaded[0] == true && g_loaded[1] == true)
 	{
 		if(IsClientInGame(client) == true && g_tick[client] == 0)
 		{
@@ -603,7 +604,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(client, NULL_VECTOR, ang, velPos);
 		}
 
-		else if(g_tick[client] == g_replayTickcount[client])
+		else if(g_tick[client] == g_replayTickcount[client]) //Do unstuck
 		{
 			TeleportEntity(client, frame.pos, ang, NULL_VECTOR);
 		}
@@ -648,6 +649,8 @@ public void Trikz_Start(int client)
 public void Trikz_Record(int client, float time)
 {
 	SetupSave(client, time);
+
+	return;
 }
 
 public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -709,7 +712,7 @@ public void SDKWeaponSwitch(int client, int weapon)
 
 			for(int i = 0; i < sizeof(g_weaponName); i++)
 			{
-				Format(weaponName, 32, "weapon_%s", g_weaponName[i]);
+				Format(weaponName, sizeof(weaponName), "weapon_%s", g_weaponName[i]);
 
 				if(StrEqual(classname, weaponName, true))
 				{
