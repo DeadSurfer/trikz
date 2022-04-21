@@ -42,6 +42,7 @@ native int Trikz_GetClientPartner(int client); //Get partner<br>
 native int Trikz_SetPartner(int client, int partner); //Set partner<br>
 native int Trikz_Restart(int client); //Do restart<br>
 native bool Trikz_GetTimerState(int client); //Is timer runing (true/false)<br>
+native int Trikz_GetDevmap(); //Is devmap now (true/false)<br>
 
 Forwards:<br>
 public void Trikz_ColorZ(client, red, green, blue) //On do color for skin<br>
