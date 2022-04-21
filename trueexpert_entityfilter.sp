@@ -69,7 +69,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Niks Smesh Jurēvičs",
 	description = "Makes the trikz game more personal.",
-	version = "0.2",
+	version = "0.21",
 	url = "http://www.sourcemod.net/"
 };
 
