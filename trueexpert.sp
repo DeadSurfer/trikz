@@ -192,7 +192,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.36",
+	version = "4.37",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -980,6 +980,7 @@ public void Control(int client)
 	menu.AddItem("button", "!button");
 	menu.AddItem("pbutton", "!pbutton");
 	menu.AddItem("spec", "!spec");
+	menu.AddItem("color", "!color");
 	menu.AddItem("colorflash", "!colorflash");
 	menu.AddItem("trikz", "!trikz");
 
@@ -1033,10 +1034,15 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 
 				case 7:
 				{
-					ColorFlashbang(param1, true, -1);
+					ColorZ(param1, true, -1);
 				}
 
 				case 8:
+				{
+					ColorFlashbang(param1, true, -1);
+				}
+
+				case 9:
 				{
 					Trikz(param1);
 				}
@@ -2060,13 +2066,13 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						GetClientName(partner, name, sizeof(name));
 
 						char format[256];
-						Format(format, sizeof(format), "%T", "GroupAgreed", param1, name);
+						Format(format, sizeof(format), "\x01%T", "GroupAgreed", param1, name);
 						SendMessage(format, false, param1);
 
 						//PrintToChat(param1, "\x01%T", "GroupAgreed", param1, name);
 						//PrintToChat(partner, "You have %N as partner.", param1); //sender
 						GetClientName(param1, name, sizeof(name));
-						Format(format, sizeof(format), "%T", "GetAgreed", partner, name);
+						Format(format, sizeof(format), "\x01%T", "GetAgreed", partner, name);
 						SendMessage(format, false, partner);
 
 						//PrintToChat(partner, "\x01%T", "GetAgreed", partner, name);
@@ -2092,7 +2098,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						//PrintToChat(param1, "A player already have a partner.");
 						//PrintToChat(param1, "\x01%T", "AlreadyHavePartner", param1);
 						char format[256];
-						Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
+						Format(format, sizeof(format), "\x01%T", "AlreadyHavePartner", param1);
 						SendMessage(format, false, param1);
 					}
 				}
@@ -2104,7 +2110,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 					//PrintToChat(param1, "Partnersheep declined with %N.", partner);
 					//PrintToChat(param1, "\x01%T", "PartnerDeclined", param1, name);
 					char format[256];
-					Format(format, sizeof(format), "%T", "PartnerDeclined", param1, name);
+					Format(format, sizeof(format), "\x01%T", "PartnerDeclined", param1, name);
 					SendMessage(format, false, param1);
 				}
 			}
@@ -2130,8 +2136,8 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 			{
 				case 0:
 				{
-					//ColorZ(param1, false, -1);
-					//ColorFlashbang(param1, false, -1);
+					ColorZ(param1, false, -1);
+					ColorFlashbang(param1, false, -1);
 
 					g_partner[param1] = 0;
 					g_partner[partner] = 0;
@@ -2144,17 +2150,16 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					GetClientName(partner, name, sizeof(name));
 
 					char format[256] = "";
-					Format(format, sizeof(format), "%T", "PartnerCanceled", param1, name);
-					SendMessage(format, false, partner);
-				//Format(format, sizeof(format), "%T", "PartnerCa");
+					Format(format, sizeof(format), "\x01%T", "PartnerCanceled", param1, name);
+					SendMessage(format, false, param1);
+					//Format(format, sizeof(format), "%T", "PartnerCa");
 					//PrintToChat(param1, "\x01%T", "PartnerCanceled", param1, name);
 					//PrintToChat(partner, "Partnership is canceled by %N", param1);
 
 					GetClientName(param1, name, sizeof(name));
 					//PrintToChat(partner, "\x01%T", "PartnerCanceledBy", partner, name);
-					Format(format, sizeof(format), "%T", "PartnerCanceledBy", partner, name);
-					SendMessage(format, false, param1);
-
+					Format(format, sizeof(format), "\x01%T", "PartnerCanceledBy", partner, name);
+					SendMessage(format, false, partner);
 				}
 			}
 		}
