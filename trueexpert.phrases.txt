@@ -180,12 +180,12 @@
 	"DevMapWillBeDisabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
-		"en"	"Devmap will be disabled. \"Yes\" {1}%%% or {2} of {3} players."
+		"en"	"Devmap will be disabled. \"Yes\" chose {1}%%% or {2} of {3} players."
 	}
 	"DevMapWillBeEnabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
-		"en"	"Devmap will be enabled. \"Yes\" {1}%%% or {2} of {3} players."
+		"en"	"Devmap will be enabled. \"Yes\" chose {1}%%% or {2} of {3} players."
 	}
 	"DevMapContinue"
 	{
