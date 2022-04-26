@@ -162,7 +162,7 @@
 	}
 	"PartnerCanceledBy"
 	{
-		"#foramt"	"{1:s}"
+		"#format"	"{1:s}"
 		"en"	"Partnership is canceled by {1}."
 	}
 	"DevMapNotAllowed"
