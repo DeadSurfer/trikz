@@ -192,7 +192,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.35",
+	version = "4.36",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -1283,12 +1283,12 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
-	//ColorZ(client, false, -1);
-	//ColorFlashbang(client, false, -1);
+	ColorZ(client, false, -1);
+	ColorFlashbang(client, false, -1);
 
-	//g_color[client][0] = false;
-	//g_color[client][1] = false;
-	//g_seperate[client] = false;
+	g_color[client][0] = false;
+	g_color[client][1] = false;
+	g_seperate[client] = false;
 
 	int partner = g_partner[client];
 	g_partner[g_partner[client]] = 0;
