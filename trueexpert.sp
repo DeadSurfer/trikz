@@ -192,7 +192,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.34",
+	version = "4.35",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -1583,11 +1583,16 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				else if(!(velFlyer[2] >= -700.0))
 				{
-					if(velBooster[2] >= 800.0)
+					//if(velBooster[2] >= 810.0)
+					if(velBooster[2] >= 750.0)
 					{
-						g_skyVel[other][2] = 800.0;
+						g_skyVel[other][2] = 820.0;
 					}
 				}
+
+				#if debug true
+				PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+				#endif
 
 				//if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				//if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other] ))
