@@ -225,7 +225,7 @@
 	{
 		"en"	"Spectator"
 	}
-	"Terorrist"
+	"Terrorist"
 	{
 		"en"	"Terrorist"
 	}
