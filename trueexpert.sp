@@ -2513,17 +2513,17 @@ public Action cmd_restart(int client, int args)
 	return Plugin_Handled;
 }
 
-public bool Restart(int client)
+public void Restart(int client)
 {
 	if(g_devmap == true)
 	{
 		//PrintToChat(client, "Turn off devmap.");
-	//	PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+		//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 		SendMessage(format, false, client);
 
-		return false;
+		//return false;
 	}
 
 	else if(g_devmap == false)
@@ -2608,7 +2608,7 @@ public bool Restart(int client)
 					}
 				}
 
-				return true;
+				//return true;
 			}
 
 			else
@@ -2620,17 +2620,17 @@ public bool Restart(int client)
 				Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 				SendMessage(format, false, client);
 
-				return false;
+				//return false;
 			}
 		}
 
 		else if (g_zoneHave[0] == false || g_zoneHave[1] == false)
 		{
-			return false;
+			//return false;
 		}
 	}
 
-	return false;
+	//return false;
 }
 
 public Action cmd_autoflash(int client, int args)
@@ -4495,8 +4495,14 @@ public Action SDKStartTouch(int entity, int other)
 							//PrintToChatAll("\x01\x077CFC00New server record!");
 							//PrintToChatAll("\x01%T", "NewServerRecord");
 							char format[256] = "";
-							Format(format, sizeof(format), "NewServerRecord");
-							SendMessage(format, true, other); //smth like shavit functions.
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i))
+								{
+									Format(format, sizeof(format), "\x01%T", "NewServerRecord", i);
+									SendMessage(format, false, i); //smth like shavit functions.
+								}
+							}
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond)
 							
 							char sClient[MAX_NAME_LENGTH] = "";
@@ -4509,8 +4515,16 @@ public Action SDKStartTouch(int entity, int other)
 							//PrintToChatAll("\x01%T", "NewServerRecordDetail", sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 
 							char text2[256] = "";
-							Format(text2, sizeof(text2), "%T", "NewServerRecordDetail", sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
-							SendMessage(text2, true, other);
+
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i))
+								{
+									Format(text2, sizeof(text2), "%T", "NewServerRecordDetail", i, sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									SendMessage(text2, false, i);
+								}
+							}
+
 							//SendMessage(text2, true, g_partner[other]);
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 							FinishMSG(g_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
@@ -4560,8 +4574,16 @@ public Action SDKStartTouch(int entity, int other)
 							char sPartner[MAX_NAME_LENGTH] = "";
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
 							//char sPartner(g_partner[other], sPartner, sizeof(sPartner));
-							Format(text2, sizeof(text2), "%T", "PassedImproved", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
-							SendMessage(text2, true, other);
+
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i))
+								{
+									Format(text2, sizeof(text2), "\x01%T", "PassedImproved", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									SendMessage(text2, false, i);
+								}
+							}
+
 							//SendMessage(text2, true, g_partner[other]);
 							
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
@@ -4592,8 +4614,15 @@ public Action SDKStartTouch(int entity, int other)
 							GetClientName(other, sName, sizeof(sName));
 							char sPartner[MAX_NAME_LENGTH] = "";
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
-							Format(text2, sizeof(text2), "%T", "Passed", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
-							SendMessage(text2, true, other);
+
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i))
+								{
+									Format(text2, sizeof(text2), "\x01%T", "Passed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									SendMessage(text2, false, i);
+								}
+							}
 							//SendMessage(text2, true, g_partner[other]);
 							
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
@@ -4650,8 +4679,16 @@ public Action SDKStartTouch(int entity, int other)
 							char sPartner[MAX_NAME_LENGTH] = "";
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
 							char text2[256] = "";
-							Format(text2, sizeof(text2), "%T", "NewServerRecordDetailNew", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
-							SendMessage(text2, true, other);
+
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i))
+								{
+									Format(text2, sizeof(text2), "\x01%T", "NewServerRecordDetailNew", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									SendMessage(text2, false, i);
+								}
+							}
+
 							//SendMessage(text2, true, g_partner[other]);
 
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
@@ -4702,8 +4739,15 @@ public Action SDKStartTouch(int entity, int other)
 							//Format(sPartner, sizeof(sPartner), ""
 							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
 							char text2[256] = ""; //i got george code from github but before it i got it from george friends.
-							Format(text2, sizeof(text2), "%T", "JustPassed", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
-							SendMessage(text2, true, other);
+
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i))
+								{
+									Format(text2, sizeof(text2), "\x01%T", "JustPassed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									SendMessage(text2, false, i);
+								}
+							}
 
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
@@ -4747,16 +4791,29 @@ public Action SDKStartTouch(int entity, int other)
 								//PrintToChatAll("\x01%i. Checkpoint: \x077CFC00-%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond);
 								//char sSRCPHour[32];
 								char textCP[256] = "";
-								Format(textCP, sizeof(textCP), "%T", "CPImprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
-								SendMessage(textCP, true, other);
+
+								for(int j = 1; j <= MaxClients; j++)
+								{
+									if(IsClientInGame(j))
+									{
+										Format(textCP, sizeof(textCP), "\x01%T", "CPImprove", j, sSRCPHour, sSRCPMinute, sSRCPSecond);
+										SendMessage(textCP, false, j);
+									}
+								}
 							}
 
 							else if(g_cpTimeClient[i][other] > g_cpTime[i])
 							{
 								//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond);
 								char textCP[256];
-								Format(textCP, sizeof(textCP), "%T", "CPDeprove", i, sSRCPHour, sSRCPMinute, sSRCPSecond);
-								SendMessage(textCP, true, other);
+								for(int j = 1; j <= MaxClients; j++)
+								{
+									if(IsClientInGame(j))
+									{
+										Format(textCP, sizeof(textCP), "\x01%T", "CPDeprove", j, sSRCPHour, sSRCPMinute, sSRCPSecond);
+										SendMessage(textCP, false, j);
+									}
+								}
 							}
 						}
 					}
@@ -4771,20 +4828,33 @@ public Action SDKStartTouch(int entity, int other)
 
 					g_mateRecord[other] = g_timerTime[other];
 					g_mateRecord[g_partner[other]] = g_timerTime[other];
+
 					char format[256];
-					Format(format, sizeof(format), "%T", "NewServerRecord");
-					SendMessage(format, true, other);
-					//PrintToChatAll("\x077CFC00New server record!");
-					//PrintToChatAll("\x01%T", "NewServerRecord");
-					//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond);
-					//Format(format, sizeof(format), )
 					char sName[MAX_NAME_LENGTH] = "";
 					GetClientName(other, sName, sizeof(sName));
 					char sPartner[MAX_NAME_LENGTH] = "";
 					GetClientName(g_partner[other], sPartner, sizeof(sPartner));
 					char text2[256] = "";
-					Format(text2, sizeof(text2), "%T", "NewServerRecordFirst", sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond);
-					SendMessage(text2, true, other);
+
+					for(int i = 1; i <= MaxClients; i++)
+					{
+						if(IsClientInGame(i))
+						{
+							Format(format, sizeof(format), "%T", "NewServerRecord", i);
+							SendMessage(format, false, i);
+							//PrintToChatAll("\x077CFC00New server record!");
+							//PrintToChatAll("\x01%T", "NewServerRecord");
+							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+00:00:00\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond);
+							//Format(format, sizeof(format), )
+							//char sName[MAX_NAME_LENGTH] = "";
+							//GetClientName(other, sName, sizeof(sName));
+							//char sPartner[MAX_NAME_LENGTH] = "";
+							//GetClientName(g_partner[other], sPartner, sizeof(sPartner));
+							//char text2[256] = "";
+							Format(text2, sizeof(text2), "\x01%T", "NewServerRecordFirst", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							SendMessage(text2, false, i);
+						}
+					}
 
 					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
 					FinishMSG(g_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
@@ -4795,8 +4865,15 @@ public Action SDKStartTouch(int entity, int other)
 						{
 							//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+00:00:00", i);
 							char textCP[256] = "";
-							Format(textCP, sizeof(textCP), "%T", "CPNEW", i);
-							SendMessage(textCP, true, other);
+
+							for(int j = 1; j <= MaxClients; j++)
+							{
+								if(IsClientInGame(j))
+								{
+									Format(textCP, sizeof(textCP), "\x01%T", "CPNEW", j);
+									SendMessage(textCP, false, j);
+								}
+							}
 						}
 					}
 
@@ -8561,7 +8638,7 @@ public int Native_SetPartner(Handle plugin, int numParams)
 	return partner;
 }
 
-public int Native_Restart(Handle plugin, int numParams)
+int Native_Restart(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
@@ -8584,14 +8661,14 @@ public int Native_Restart(Handle plugin, int numParams)
 
 	//return 0;
 
-	if(0 < client <= MaxClients)
-	{
-		return g_partner[client];
-	}
+	//if(0 < client <= MaxClients)
+	//{
+	return g_partner[client];
+	//}
 
 	//else if (0 > client || MaxClients < client)
 
-	if(Restart(g_partner[client]) == true)
+	/*if(Restart(g_partner[client]) == true)
 	{
 		return 1;
 	}
@@ -8601,7 +8678,7 @@ public int Native_Restart(Handle plugin, int numParams)
 		return 0;
 	}
 
-	return 0;
+	return 0;*/
 }
 
 public int Native_GetDevmap(Handle plugin, int numParams)
