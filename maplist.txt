@@ -34,6 +34,7 @@ trikz_legends_b1
 trikz_measuregeneric
 trikz_measuregeneric2
 trikz_minecraft
+trikz_misery
 trikz_MoscowDno
 trikz_move
 trikz_noxious
