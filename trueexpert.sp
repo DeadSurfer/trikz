@@ -4796,7 +4796,7 @@ public Action SDKStartTouch(int entity, int other)
 								{
 									if(IsClientInGame(j))
 									{
-										Format(textCP, sizeof(textCP), "\x01%T", "CPImprove", j, sSRCPHour, sSRCPMinute, sSRCPSecond);
+										Format(textCP, sizeof(textCP), "\x01%T", "CPImprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 										SendMessage(textCP, false, j);
 									}
 								}
@@ -4810,7 +4810,7 @@ public Action SDKStartTouch(int entity, int other)
 								{
 									if(IsClientInGame(j))
 									{
-										Format(textCP, sizeof(textCP), "\x01%T", "CPDeprove", j, sSRCPHour, sSRCPMinute, sSRCPSecond);
+										Format(textCP, sizeof(textCP), "\x01%T", "CPDeprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 										SendMessage(textCP, false, j);
 									}
 								}
@@ -4870,7 +4870,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(j))
 								{
-									Format(textCP, sizeof(textCP), "\x01%T", "CPNEW", j);
+									Format(textCP, sizeof(textCP), "\x01%T", "CPNEW", j, i);
 									SendMessage(textCP, false, j);
 								}
 							}
