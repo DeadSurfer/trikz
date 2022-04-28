@@ -93,7 +93,7 @@ public void OnPluginStart()
 	HookEvent("player_spawn", OnSpawn, EventHookMode_Post);
 	HookEvent("player_changename", OnChangeName, EventHookMode_Pre);
 
-	GameData gamedata = new GameData("trueexpert.gamedata");
+	GameData gamedata = new GameData("trueexpert.games");
 
 	g_Linux = (gamedata.GetOffset("OS") == 2);
 	StartPrepSDKCall(g_Linux ? SDKCall_Static : SDKCall_Player);
