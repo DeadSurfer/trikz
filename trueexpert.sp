@@ -2000,7 +2000,7 @@ public void Partner(int client)
 			//menu.SetTitle("Cancel partnership with %N", g_partner[client]);
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(g_partner[client], name, sizeof(name));
-			menu.SetTitle("%T", "CancelPartnership", client, g_partner[client]);
+			menu.SetTitle("%T", "CancelPartnership", client, name);
 			menu.AddItem(partner, "Yes");
 			menu.AddItem("", "No");
 
