@@ -229,7 +229,7 @@ body
 <body> <!--https://www.w3docs.com/snippets/html/how-to-set-background-color-in-html.html-->
 	<div class=header><h1>Trikz Timer</h1> 
 	<?php
-		$db = mysqli_connect('78.84.184.120','fakeexpert','','fakeexpert') or die ('Error connecting to MySQL server.');
+		$db = mysqli_connect('78.84.184.120','trueexpert','','trueexpert') or die ('Error connecting to MySQL server.');
 		$sql = "SELECT map FROM zones WHERE type = 0 ORDER BY map";
 		echo "<div class=dropdown><button onclick=myFunction() class=dropbtn>Choose a map</button><div id=myDropdown class=dropdown-content>";
 		$rs = mysqli_query($db, $sql);
@@ -409,7 +409,7 @@ body
 	<div class=footer>
 		<?php
 			$year = date("Y");
-			echo "<p>Copyleft FakeExpert 2021 - $year year.</p>"; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
+			echo "<p>Copyleft TrueExpert 2021 - $year year.</p>"; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
 		?>
 	</div>
 </body>
