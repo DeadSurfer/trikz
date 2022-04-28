@@ -244,7 +244,7 @@ public Action timer_load(Handle timer)
 	return Plugin_Continue;
 }
 
-public void EntityLinked(int entity, char[] output)
+void EntityLinked(int entity, char[] output)
 {
 	int count = GetOutputActionCount(entity, output);
 	char input[32] = "";
@@ -495,16 +495,21 @@ stock void OutputInput(int entity, char[] output, char[] target = "")
 	{
 		if(IsValidEntity(entity) && (!GetOutputActionCount(entity, "m_OutValue") || !GetOutputActionCount(entity, "m_OnGetValue") || !GetOutputActionCount(entity, "m_OnUser3") || !GetOutputActionCount(entity, "m_OnUser4"))) //thanks to george for original code.
 		{
-			g_mathValueDefault[g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
-			g_mathValue[0][g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
+			if(entity != 0)
+			{
+				//g_mathValueDefault[g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
+				//g_mathValue[0][g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
+				g_mathValueDefault[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_OutValue");
+				g_mathValue[0][g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_OutValue");
 
-			g_mathMin[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin");
-			g_mathMax[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax");
+				g_mathMin[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin");
+				g_mathMax[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax");
 
-			AddOutput(entity, "m_OnHitMin", "OnUser4");
-			AddOutput(entity, "m_OnHitMax", "OnUser3");
+				AddOutput(entity, "m_OnHitMin", "OnUser4");
+				AddOutput(entity, "m_OnHitMax", "OnUser3");
 
-			DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath);
+				DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath);
+			}
 		}
 	}
 
@@ -641,6 +646,7 @@ public MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			if(StrEqual(input, "Volume", false) || StrEqual(input, "ToggleSound", false) || StrEqual(input, "PlaySound", false) || StrEqual(input, "StopSound", false)) //https://github.com/Kxnrl/MapMusic-API/blob/master/mapmusic.sp
 			{
 				DHookSetReturn(hReturn, false);
+				
 				return MRES_Supercede;
 			}
 		}
