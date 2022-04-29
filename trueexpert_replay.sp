@@ -81,7 +81,7 @@ public Plugin myinfo =
 {
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
-	description = "Replay module for fakeexpert.",
+	description = "Replay module for trueexpert.",
 	version = "0.21",
 	url = "http://www.sourcemod.net/"
 };
@@ -366,7 +366,7 @@ public void SQLGetName(Database db, DBResultSet results, const char[] error, any
 public void LoadRecord()
 {
 	char filePath[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, filePath, sizeof(filePath), "data/fakeexpert/%s.replay", g_map);
+	BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s.replay", g_map);
 
 	if(FileExists(filePath) == true)
 	{
@@ -405,7 +405,7 @@ public void LoadRecord()
 		g_tick[g_bot[0]] = 0;
 	}
 
-	BuildPath(Path_SM, filePath, sizeof(filePath), "data/fakeexpert/%s_partner.replay", g_map);
+	BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s_partner.replay", g_map);
 
 	if(FileExists(filePath) == true)
 	{
