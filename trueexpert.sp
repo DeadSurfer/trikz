@@ -2532,7 +2532,7 @@ public void Restart(int client)
 		{
 			if(g_partner[client] > 0)
 			{
-				if(IsPlayerAlive(client) == true && IsPlayerAlive(g_partner[client]) == true)
+				//if(IsPlayerAlive(client) == true && IsPlayerAlive(g_partner[client]) == true)
 				{
 					CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -2540,6 +2540,35 @@ public void Restart(int client)
 					Call_PushCell(client);
 
 					Call_Finish();
+
+					int entity = 0;
+
+					bool ct = false;
+					//bool t = false;
+
+					//int team = GetClientTeam(client);
+					//int teamPartner = GetClientTeam(g_partner[client]);
+
+					while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
+					{
+						ct = true;
+
+						CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
+
+						break;
+					}
+
+					while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
+					{
+						if(ct == false)
+						{
+							//t = true;
+
+							CS_SwitchTeam(client, CS_TEAM_T);
+						}
+
+						break;
+					}
 
 					CS_RespawnPlayer(client);
 
@@ -2555,58 +2584,99 @@ public void Restart(int client)
 					}
 				}
 
-				else if(IsPlayerAlive(client) == true)
+				//else if(IsPlayerAlive(client) == true)
 				{
-					int entity = 0;
 
-					bool ct = false;
-					bool t = false;
 
-					while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
-					{
-						ct = true;
+					//if(ct == true)
+					//{
+						//CS_SwitchTeam(client, CS_TEAM_CT); 
 
-						break;
-					}
+						//CS_RespawnPlayer(client);
 
-					while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
-					{
-						if(ct == false)
+						/*if(team == CS_TEAM_SPECTATOR)
 						{
-							t = true;
+							CS_SwitchTeam(client, CS_TEAM_CT);
 						}
 
-						break;
-					}
+						else if (team == CS_TEAM_CT)
+						{
+							CS_RespawnPlayer(client);
+						}
 
-					if(ct == true)
-					{
-						CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
-						CS_RespawnPlayer(client);
+						if(teamPartner == CS_TEAM_SPECTATOR)
+						{
+							CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
+						}
 
-						if(IsPlayerAlive(g_partner[client]) == false)
+						else if(teamPartner == CS_TEAM_CT)
 						{
 							CS_RespawnPlayer(g_partner[client]);
 						}
 
-						Restart(client);
-						Restart(g_partner[client]);
-					}
-
-					if(t == true)
-					{
-						CS_SwitchTeam(client, CS_TEAM_T);
-						CS_RespawnPlayer(client);
+						if(IsPlayerAlive(client) == false)
+						{
+							//CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
+							CS_RespawnPlayer(client);
+						}
 
 						if(IsPlayerAlive(g_partner[client]) == false)
 						{
+							//CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
 							CS_RespawnPlayer(g_partner[client]);
-						}
+						}*/
+						
+						/*if(team == CS_TEAM_SPECTATOR)
+						{
+							//PrintToServer("team: %i", team);
+							CS_SwitchTeam(client, CS_TEAM_CT);
+							CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
 
-						Restart(client);
-						Restart(g_partner[client]);
-					}
+							CS_RespawnPlayer(client);
+							CS_RespawnPlayer(g_partner[client]);
+						}*/
+
+						//CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
+						
+						//CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
+
+						//CS_RespawnPlayer(client);
+						//CS_RespawnPlayer(g_partner[client]);
+
+						//Restart(client);
+						//Restart(g_partner[client]);
+					//}
+
+					//if(t == true)
+					//{
+						//CS_SwitchTeam(client, CS_TEAM_T);
+
+						//CS_RespawnPlayer(client);
+						//CS_RespawnPlayer(g_partner[client]);
+
+						//if(IsPlayerAlive(g_partner[client]) == false)
+						//{
+						//	CS_SwitchTeam(g_partner[client], CS_TEAM_T);
+						//	CS_RespawnPlayer(g_partner[client]);
+						//}
+
+						//if(team == CS_TEAM_SPECTATOR)
+						//{
+							//PrintToServer("team: %i", team);
+						//	CS_SwitchTeam(client, CS_TEAM_T);
+						//	CS_SwitchTeam(g_partner[client], CS_TEAM_T);
+
+
+						//	CS_RespawnPlayer(client);
+						//	CS_RespawnPlayer(g_partner[client]);
+						//}
+
+						//Restart(client);
+						//Restart(g_partner[client]);
+					//}
 				}
+
+				//else if (!IsPlayerAlive(client))
 
 				//return true;
 			}
