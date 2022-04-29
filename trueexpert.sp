@@ -35,8 +35,8 @@
 
 #pragma semicolon 1
 #pragma newdecls required
-//#define MAXPLAYER = {MAXPLAYER}
-#define MAXPLAYER MAXPLAYERS+1
+
+#define MAXPLAYER MAXPLAYERS + 1
 
 int g_partner[MAXPLAYER];
 float g_partnerInHold[MAXPLAYER];
@@ -59,7 +59,7 @@ float g_cpPos[2][24][3];
 bool g_cp[11][MAXPLAYER];
 bool g_cpLock[11][MAXPLAYER];
 float g_cpTimeClient[11][MAXPLAYER];
-float gF_cpDiff[11][MAXPLAYER];
+float g_cpDiff[11][MAXPLAYER];
 float g_cpTime[11];
 
 float g_haveRecord[MAXPLAYER];
@@ -4775,9 +4775,9 @@ public Action SDKStartTouch(int entity, int other)
 					{
 						if(g_cp[i][other])
 						{
-							int srCPHour = (RoundToFloor(gF_cpDiff[i][other]) / 3600) % 24;
-							int srCPMinute = (RoundToFloor(gF_cpDiff[i][other]) / 60) % 60;
-							int srCPSecond = RoundToFloor(gF_cpDiff[i][other]) % 60;
+							int srCPHour = (RoundToFloor(g_cpDiff[i][other]) / 3600) % 24;
+							int srCPMinute = (RoundToFloor(g_cpDiff[i][other]) / 60) % 60;
+							int srCPSecond = RoundToFloor(g_cpDiff[i][other]) % 60;
 							
 							char sSRCPHour[32] = ""; //trikz solid code was perfect for me but i didnt got how to make measure generic last level anti cheat triggers.
 							Format(sSRCPHour, sizeof(sSRCPHour), "%02.i", srCPHour);
@@ -5918,6 +5918,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 							//PrintTo
 							delete kv;
 							//return;
+
+							PrintToServer("%i %i %i %i %i %i %i", x, y , z, r, g, b, a);
 						}
 					}
 				}
@@ -6193,12 +6195,12 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 			if(g_cpTimeClient[cpnum][other] < g_cpTime[cpnum])
 			{
-				gF_cpDiff[cpnum][other] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
-				gF_cpDiff[cpnum][g_partner[other]] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
+				g_cpDiff[cpnum][other] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
+				g_cpDiff[cpnum][g_partner[other]] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
 
-				int srCPHour = (RoundToFloor(gF_cpDiff[cpnum][other]) / 3600) % 24;
-				int srCPMinute = (RoundToFloor(gF_cpDiff[cpnum][other]) / 60) % 60;
-				int srCPSecond = RoundToFloor(gF_cpDiff[cpnum][other]) % 60;
+				int srCPHour = (RoundToFloor(g_cpDiff[cpnum][other]) / 3600) % 24;
+				int srCPMinute = (RoundToFloor(g_cpDiff[cpnum][other]) / 60) % 60;
+				int srCPSecond = RoundToFloor(g_cpDiff[cpnum][other]) % 60;
 
 				FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
 				FinishMSG(g_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
@@ -6206,12 +6208,12 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 			else
 			{
-				gF_cpDiff[cpnum][other] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
-				gF_cpDiff[cpnum][g_partner[other]] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
+				g_cpDiff[cpnum][other] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
+				g_cpDiff[cpnum][g_partner[other]] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
 
-				int srCPHour = (RoundToFloor(gF_cpDiff[cpnum][other]) / 3600) % 24;
-				int srCPMinute = (RoundToFloor(gF_cpDiff[cpnum][other]) / 60) % 60;
-				int srCPSecond = RoundToFloor(gF_cpDiff[cpnum][other]) % 60;
+				int srCPHour = (RoundToFloor(g_cpDiff[cpnum][other]) / 3600) % 24;
+				int srCPMinute = (RoundToFloor(g_cpDiff[cpnum][other]) / 60) % 60;
+				int srCPSecond = RoundToFloor(g_cpDiff[cpnum][other]) % 60;
 
 				FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
 				FinishMSG(g_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
@@ -6473,8 +6475,8 @@ public void ResetFactory(int client)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsFakeClient(client) == false)
-	{
+	//if(IsFakeClient(client) == false)
+	//{
 		g_entityFlags[client] = GetEntityFlags(client);
 
 		g_entityButtons[client] = buttons;
@@ -6488,7 +6490,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 
 		//Timer
-		if(g_state[client] == true && g_partner[client] > 0)
+		if(!IsFakeClient(client) && g_state[client] == true && g_partner[client] > 0)
 		{
 			g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
 
@@ -7045,14 +7047,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//}
 
 		return Plugin_Continue;
-	}
+	//}
 
-	else if(IsFakeClient(client) == true)
-	{
-		return Plugin_Continue;
-	}
+	//else if(IsFakeClient(client) == true)
+	//{
+	//	return Plugin_Continue;
+	//}
 
-	return Plugin_Continue;
+	//return Plugin_Continue;
 }
 
 public Action ProjectileBoostFix(int entity, int other)
@@ -7600,6 +7602,10 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					SetClientCookie(param1, g_cookie[0], value);
 					//return param1;
+
+					char format[256] = "";
+					Format(format, sizeof(format), "%T", g_hudVel[param1] ? "VelON" : "VelOFF", param1);
+					SendMessage(format, false, param1);
 				}
 
 				case 1:
@@ -7610,6 +7616,10 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					SetClientCookie(param1, g_cookie[1], value);
 					//return param1;
+
+					char format[256] = "";
+					Format(format, sizeof(format), "%T", g_hudVel[param1] ? "MLStatsON" : "MLStatsOFF", param1);
+					SendMessage(format, false, param1);
 				}
 
 				case 2:
@@ -7619,6 +7629,10 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 					IntToString(g_endMessage[param1], value, sizeof(value));
 
 					SetClientCookie(param1, g_cookie[8], value);
+
+					char format[256] = "";
+					Format(format, sizeof(format), "%T", g_hudVel[param1] ? "EndMsgON" : "EndMsgOFF", param1);
+					SendMessage(format, false, param1);
 				}
 			}
 
@@ -8049,7 +8063,7 @@ public void SDKProjectile(int entity)
 	{
 		bool convar = GetConVarBool(gCV_autoflashbang);
 
-		if(convar == true && g_autoflash[client] == true)
+		if(convar == true && (g_autoflash[client] == true || IsFakeClient(client)))
 		{
 			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		}
@@ -8215,7 +8229,7 @@ public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/n
 {
 	int convar = GetConVarInt(gCV_autoflashbang);
 	
-	if(convar == 1 && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if(convar == 1 && (g_autoflash[client] == true || IsFakeClient(client)) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang");
 		GivePlayerItem(client, "weapon_flashbang");
