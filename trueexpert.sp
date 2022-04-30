@@ -4734,8 +4734,16 @@ public Action SDKStartTouch(int entity, int other)
 
 							//PrintToChatAll("\x077CFC00New server record!");
 							char format[256] = "";
-							Format(format, sizeof(format), "%T", "NewServerRecord");
-							SendMessage(format, true, other); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
+
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(IsClientInGame(i))
+								{
+									Format(format, sizeof(format), "\x01%T", "NewServerRecord", i);
+									SendMessage(format, false, i); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
+								}
+							}
+
 							//PrintToChatAll("\x01%T", "NewServerRecord");
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 							char sSRHour[32] = "";
@@ -5037,6 +5045,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 	char format[256] = "";
 
 	KeyValues kv = new KeyValues("TrueexpertHud");
+	
+	kv.ImportFromFile("trueexpert_hud.cfg");
 
 	char posColor[64] = "";
 
@@ -5712,7 +5722,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
 						//ShowHudText(i, 2, "NEW SERVER RECORD!");
 						//ShowHudText(i, 2, "%T", ""
-						Format(format, sizeof(format), "%T", "NewServerRecordHudHud", i);
+						Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
 						ShowHudText(i, 2, format);
 
 						//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
@@ -5910,7 +5920,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
 				//ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond); //https://youtu.be/j4L3YvHowv8?t=45
-				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", client);
+				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", client, sSRHour, sSRMinute, sSRSecond);
 				ShowHudText(client, 4, format);
 				
 				for(int i = 1; i <= MaxClients; i++)
@@ -5939,14 +5949,14 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 							//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 							//ShowHudText(i
 							//Format(sizeof
-							Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", i);
+							Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", i, sPersonalHour, sPersonalMinute, sPersonalSecond);
 							ShowHudText(i, 3, format);
 
 							//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 							SetHudTextParams(x4, y4, z4, r4, g4, b4, a4);
 							//ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 							//ShowHudText(i, 4,
-							Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", i);
+							Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", i, sSRHour, sSRMinute, sSRSecond);
 							ShowHudText(i, 4, format);
 						}
 					}
