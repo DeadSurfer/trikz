@@ -257,8 +257,9 @@ void EntityLinked(int entity, char[] output)
 		else if(StrEqual(input, "Add", false) || StrEqual(input, "Subtract", false))
 		{
 			int entityLinked
-			FindLinkedEntity(entityLinked, "math_counter", target)
-			OutputInput(entityLinked, "math_counter")
+			while((entityLinked = FindLinkedEntity(entityLinked, "math_counter", target)) != INVALID_ENT_REFERENCE)
+				OutputInput(entityLinked, "math_counter")
+
 		}
 	}
 }
