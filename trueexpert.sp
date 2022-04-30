@@ -32,6 +32,7 @@
 #include <sdkhooks>
 #include <cstrike>
 #include <clientprefs>
+#include <dhooks>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -154,7 +155,7 @@ bool g_restartInHoldLock[MAXPLAYER];
 int g_smoke;
 bool g_clantagOnce[MAXPLAYER];
 bool g_seperate[MAXPLAYER];
-int g_projectileSoundLoud[MAXPLAYER];
+//int g_projectileSoundLoud[MAXPLAYER];
 bool g_readyToFix[MAXPLAYER];
 ConVar gCV_trikz;
 ConVar gCV_block;
@@ -186,13 +187,14 @@ bool g_flashbangDoor[MAXPLAYER][2];
 ConVar gCV_pingtool;
 int g_top10Count;
 //float g_srPrevTime;
+Handle g_teleport;
 
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.37",
+	version = "4.38",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -285,13 +287,13 @@ public void OnPluginStart()
 	AddCommandListener(showbriefing, "showbriefing");
 	AddCommandListener(headtrack_reset_home_pos, "headtrack_reset_home_pos");
 
-	char output[5][16] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
+	//char output[5][16] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
 
-	for(int i = 0; i < sizeof(output); i++)
-	{
-		HookEntityOutput("trigger_teleport", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport
-		HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
-	}
+	//for(int i = 0; i < sizeof(output); i++)
+	//{
+	//	HookEntityOutput("trigger_teleport", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport
+	//	HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+	//}
 
 	LoadTranslations("trueexpert.phrases"); //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 
@@ -311,6 +313,28 @@ public void OnPluginStart()
 	g_cookie[8] = RegClientCookie("te_endmsg", "End message.", CookieAccess_Protected);
 
 	//CreateTimer(60.0, timer_clearlag);
+
+	Handle gamedata = LoadGameConfigFile("sdktools.games");
+	int offset = GameConfGetOffset(gamedata, "Teleport");
+	delete gamedata;
+	
+	if(offset == -1)
+	{
+		SetFailState("[DHooks] Offset for Teleport function is not found!");
+		return;
+	}
+	
+	g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooks_OnTeleport);
+
+	if(g_teleport == INVALID_HANDLE)
+	{
+		SetFailState("[DHooks] Could not create Teleport hook function!");
+		return;
+	}
+	
+	DHookAddParam(g_teleport, HookParamType_VectorPtr);
+	DHookAddParam(g_teleport, HookParamType_ObjectPtr);
+	DHookAddParam(g_teleport, HookParamType_VectorPtr);
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -1065,13 +1089,13 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	return Plugin_Continue;
 }
 
-public void output_teleport(const char[] output, int caller, int activator, float delay)
+/*public void output_teleport(const char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
 	{
 		g_teleported[activator] = true;
 	}
-}
+}*/
 
 public Action cmd_checkpoint(int client, int args)
 {
@@ -1187,7 +1211,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
-	SDKHook(client, SDKHook_PreThinkPost, SDKThink);
+	//SDKHook(client, SDKHook_PreThinkPost, SDKThink);
 	//SDKHook(client, SDKHook_SpawnPost, SDKClientSpawnPost);
 
 	if(IsClientInGame(client) == true && g_dbPassed == true)
@@ -1248,6 +1272,8 @@ public void OnClientPutInServer(int client)
 	g_clantagOnce[client] = false;
 	g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
+
+	DHookEntity(g_teleport, true, client);
 }
 
 public void OnClientCookiesCached(int client)
@@ -2574,7 +2600,7 @@ public void Restart(int client)
 						if(ct == false)
 						{
 							//t = true;
-							
+
 							if(team == CS_TEAM_T)
 							{
 								CS_SwitchTeam(client, CS_TEAM_T);
@@ -8151,7 +8177,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix);
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch);
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile);
-		SDKHook(entity, SDKHook_StartTouch, SDKStopSpam);
+		//SDKHook(entity, SDKHook_StartTouch, SDKStopSpam);
 	}
 
 	return;
@@ -8183,25 +8209,62 @@ public void SDKProjectile(int entity)
 			//return Plugin_Continue;
 		}
 		//return Plugin_Continue;
+
+		//char classname[32] = "";
+
+		//GetClientWeapon(client, classname, sizeof(classname));
+
+		//if(StrEqual(classname, "weapon_flashbang", false))
+		//{
+		bool convar2 = GetConVarBool(gCV_autoswitch);
+			
+			//if(convar == true && g_autoswitch[client] == true && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
+		if(convar2 == true && g_autoswitch[client] == true)
+		{
+			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+
+			g_readyToFix[client] = false;
+
+			g_silentKnife = true;
+
+			FakeClientCommandEx(client, "use weapon_knife");
+			
+			//g_fixVisualFlashbang[client] = GetEngineTime();
+		//	g_fixVisualFlashbangDoor[client] = true;
+			//g_flashbangDoor[client][0] = true;
+			//g_flashbangDoor
+			//RequestFrame(frame_fix, client);
+			g_flashbangTime[client] = GetEngineTime();
+			g_flashbangDoor[client][0] = true;
+			g_flashbangDoor[client][1] = true;
+		}
+		//}
 	}
 }
 
-public Action SDKStopSpam(int entity, int other)
+/*public Action SDKStopSpam(int entity, int other)
 {
+	//PrintToServer("%i %i", entity, other);
+
 	if(0 < other <= MaxClients && IsClientInGame(other) == true)
 	{
-		float originOther[3] = {0.0, 0.0, 0.0};
+		float originOther[3];
 		GetClientAbsOrigin(other, originOther);
 
-		float originEntity[3] = {0.0, 0.0, 0.0};
+		float originEntity[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
 
-		float maxsEntity[3] = {0.0, 0.0, 0.0};
+		float maxsEntity[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
-		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
+		float delta = originEntity[2] - originOther[2] - maxsEntity[2];
+		//float delta2 = originEntity[2] - originOther[2] - maxsEntity[2];
+		//PrintToServer("new delta: %f", delta2);
+		//PrintToServer("delta: %f", delta);
 
-		if(delta == -66.015251)
+		//if(delta == -66.015251)
+		//if(4 <= delta < 5)
+		if((62.0 <= delta < 63.0) || (4.0 <= delta < 5.0))
 		{
 			int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 			//if(owner < 0)
@@ -8209,18 +8272,46 @@ public Action SDKStopSpam(int entity, int other)
 				//owner = 0;
 				//return Plugin_Continue;
 			//}
-			g_projectileSoundLoud[owner > 0 ? owner : 0] = entity;
+			//g_projectileSoundLoud[owner > 0 ? owner : 0] = entity;
+			g_projectileSoundLoud[owner > 0 ? owner : 0] = EntIndexToEntRef(entity);
 			#if debug true
 			PrintToServer("SDKStopSpam: Collision group: %i", GetEntProp(entity, Prop_Data, "m_CollisionGroup"));
 			#endif
 			//return Plugin_Continue;
 		}
-
 		//return Plugin_Continue;
 	}
 
+	if(other > MaxClients)
+	{
+		char classname[32];
+		GetEntityClassname(other, classname, sizeof(classname));
+
+		if(StrContains(classname, "projectile", true) != -1)
+		{
+			float originNade1[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originNade1);
+
+			float originNade2[3];
+			GetEntPropVector(other, Prop_Send, "m_vecOrigin", originNade2);
+
+			float maxsNade[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsNade);
+
+			float deltaNade = originNade2[2] - originNade1[2] - maxsNade[2];
+			PrintToServer("%f", deltaNade);
+
+			if(-6 <= deltaNade <= 2)
+			{
+				int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+				g_projectileSoundLoud[owner > 0 ? owner : 0] = EntIndexToEntRef(entity);
+			}
+		}
+	}
+
 	return Plugin_Continue;
-}
+}*/
 
 public void frame_blockExplosion(int entity)
 {
@@ -8344,20 +8435,20 @@ public Action SDKWeaponDrop(int client, int weapon)
 	{
 		RemoveEntity(weapon);
 
-		return Plugin_Continue;
+		//return Plugin_Continue;
 	}
 
-	else if(IsValidEntity(weapon) == false)
+	/*else if(IsValidEntity(weapon) == false)
 	{
 		PrintToServer("Weapon %i is not valid.", weapon);
 
 		return Plugin_Continue;
-	}
+	}*/
 
 	return Plugin_Continue;
 }
 
-public void SDKThink(int client)
+/*public void SDKThink(int client)
 {
 	if(IsFakeClient(client) == false)
 	{
@@ -8398,7 +8489,7 @@ public void SDKThink(int client)
 			}
 		}
 	}
-}
+}*/
 
 /*public void SDKClientSpawnPost(int client)
 {
@@ -8553,9 +8644,11 @@ public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLAT
 		return Plugin_Handled;
 	}
 
-	if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav", false))
-	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	//PrintToServer("%s", sample);
+
+	//if(StrEqual(sample, "weapons/flashbang/grenade_hit1.wav", false))
+	//{
+		//int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 
 		//if(owner < 0)
 		//{
@@ -8563,11 +8656,11 @@ public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLAT
 			//return Plugin_Continue;
 		//}
 
-		if(g_projectileSoundLoud[owner > 0 ? owner : 0] == entity)
-		{
-			return Plugin_Handled;
-		}
-	}
+		//if(g_projectileSoundLoud[owner > 0 ? owner : 0] == EntIndexToEntRef(entity))
+		//{
+		//	return Plugin_Handled;
+		//}
+	//}
 
 	return Plugin_Continue;
 }
@@ -8599,7 +8692,7 @@ public void MLStats(const int client, bool ground)
 	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
 	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
 
-	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.1f - %.1f\n", g_mlsCount[client], velPre, velPost);
+	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.10f - %.0f\n", g_mlsCount[client], velPre, velPost);
 
 	char print[256] = "";
 
@@ -8618,7 +8711,7 @@ public void MLStats(const int client, bool ground)
 		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0];
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
 
-		Format(print, sizeof(print), "%s\nDistance: %.1f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
 
 		g_teleported[client] = false;
 	}
@@ -8865,4 +8958,23 @@ public int GetColour(const int r, const int g, const int b, const int a)
 	color |= (a & 255) << 0;
 
 	return color;
+}
+
+MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+{
+	bool bOriginNull = DHookIsNullParam(hParams, 1);
+	
+	if(bOriginNull)
+	{
+		return MRES_Ignored;
+	}
+	
+	//Float origin[3];
+	//DHookGetParamVector(hParams, 1, origin);
+	
+	//CheckStuck(client, origin);
+	g_teleported[client] = true;
+	//PrintToServer("Teleported.");
+	
+	return MRES_Ignored;
 }
