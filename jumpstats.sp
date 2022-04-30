@@ -31,6 +31,7 @@
 #include <sdkhooks>
 #include <sdktools>
 #include <clientprefs>
+#include <dhooks>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -66,13 +67,14 @@ Handle g_cookie;
 float g_skyAble[MAXPLAYER];
 float g_gain[MAXPLAYER];
 int g_entityFlags[MAXPLAYER];
+Handle g_teleport;
 
 public Plugin myinfo =
 {
 	name = "Jump stats",
 	author = "Smesh",
 	description = "Measures distance difference between two vectors",
-	version = "0.1",
+	version = "0.2",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -83,13 +85,38 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsValidEntity(i))
 			OnClientPutInServer(i);
+
 	RegConsoleCmd("sm_js", cmd_jumpstats);
-	char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
-	for(int i = 0; i < sizeof(output); i++)
+
+	//char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
+
+	//for(int i = 0; i < sizeof(output); i++)
+	//{
+	//	HookEntityOutput("trigger_teleport", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport
+	//	HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+	//}
+
+	Handle gamedata = LoadGameConfigFile("sdktools.games");
+	int offset = GameConfGetOffset(gamedata, "Teleport");
+	delete gamedata;
+	
+	if(offset == -1)
 	{
-		HookEntityOutput("trigger_teleport", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport
-		HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+		SetFailState("[DHooks] Offset for Teleport function is not found!");
+		return;
 	}
+	
+	g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooks_OnTeleport);
+
+	if(g_teleport == INVALID_HANDLE)
+	{
+		SetFailState("[DHooks] Could not create Teleport hook function!");
+		return;
+	}
+	
+	DHookAddParam(g_teleport, HookParamType_VectorPtr);
+	DHookAddParam(g_teleport, HookParamType_ObjectPtr);
+	DHookAddParam(g_teleport, HookParamType_VectorPtr);
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -131,11 +158,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	return Plugin_Continue;
 }
 
-void output_teleport(const char[] output, int caller, int activator, float delay)
+/*void output_teleport(const char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
 		g_teleported[activator] = true;
-}
+}*/
 
 Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
@@ -591,4 +618,23 @@ void Gain(int client, float vel[3], float angles[3])
 			gaincoeff = (wishspd - FloatAbs(currentgain)) / wishspd;
 		g_gain[client] += gaincoeff;
 	}
+}
+
+MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+{
+	bool bOriginNull = DHookIsNullParam(hParams, 1);
+	
+	if(bOriginNull)
+	{
+		return MRES_Ignored;
+	}
+	
+	//Float origin[3];
+	//DHookGetParamVector(hParams, 1, origin);
+	
+	//CheckStuck(client, origin);
+	g_teleported[client] = true;
+	//PrintToServer("Teleported.");
+	
+	return MRES_Ignored;
 }
