@@ -2546,14 +2546,25 @@ public void Restart(int client)
 					bool ct = false;
 					//bool t = false;
 
-					//int team = GetClientTeam(client);
+					int team = GetClientTeam(client);
 					//int teamPartner = GetClientTeam(g_partner[client]);
 
 					while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
 					{
 						ct = true;
 
-						CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
+						if(team == CS_TEAM_T)
+						{
+							CS_SwitchTeam(client, CS_TEAM_T);
+						}
+						else if (team == CS_TEAM_CT)
+						{
+							CS_SwitchTeam(client, CS_TEAM_CT);
+						}
+						else if(team == CS_TEAM_SPECTATOR)
+						{
+							CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
+						}
 
 						break;
 					}
@@ -2563,8 +2574,19 @@ public void Restart(int client)
 						if(ct == false)
 						{
 							//t = true;
-
-							CS_SwitchTeam(client, CS_TEAM_T);
+							
+							if(team == CS_TEAM_T)
+							{
+								CS_SwitchTeam(client, CS_TEAM_T);
+							}
+							else if (team == CS_TEAM_CT)
+							{
+								CS_SwitchTeam(client, CS_TEAM_CT);
+							}
+							else if(team == CS_TEAM_SPECTATOR)
+							{
+								CS_SwitchTeam(client, CS_TEAM_T);
+							}
 						}
 
 						break;
@@ -5045,8 +5067,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 	char format[256] = "";
 
 	KeyValues kv = new KeyValues("TrueexpertHud");
-	
-	kv.ImportFromFile("trueexpert_hud.cfg");
+
+	kv.ImportFromFile("configs/trueexpert_hud.cfg");
 
 	char posColor[64] = "";
 
