@@ -75,6 +75,22 @@
 	{
 		"en"	"ML stats is on"
 	}
+	"VelOFF"
+	{
+		"en"	"Hide velocity now"
+	}
+	"VelON"
+	{
+		"en"	"Show Velocity now"
+	}
+	"EndMsgOFF"
+	{
+		"en"	"End message is off now"
+	}
+	"EndMsgON"
+	{
+		"en"	"End message is on now"
+	}
 	"MLStatsMenuON"
 	{
 		"en"	"ML Stats [v]"
@@ -248,9 +264,14 @@
 		"#format"	"{1:i},{2:s},{3:s},{4:s}"
 		"en"	"{1}. Checkpoint: ;#FF0000+{2}:{3}:{4}"
 	}
+	"NewServerRecordFirst"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+00:00:00{default})"
+	}
 	"CPNEW"
 	{
-		"#format"	"{1:s}"
+		"#format"	"{1:i}"
 		"en"	"{1}. Checkpoint: ;#FF0000+00:00:00"
 	}
 	"YouPressedButton"
@@ -372,7 +393,7 @@
 	{
 		"en"	"MAP FINISHED!"
 	}
-	"NewServerRecordHudHud"
+	"NewServerRecordHud"
 	{
 		"en"	"NEW SERVER RECORD!"
 	}
@@ -389,7 +410,7 @@
 	{
 		"en"	"MAP FINISHED!"
 	}
-	"NewServerRecordNotFirstHUD"
+	"NewServerRecordNotFirstHud"
 	{
 		"en"	"NEW SERVER RECORD!"
 	}
