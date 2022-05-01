@@ -1728,6 +1728,15 @@ public void Trikz(int client)
 	Format(format, sizeof(format), "%T", g_block[client] ? "BlockON" : "BlockOFF", client);
 	menu.AddItem("block", format);
 
+	Format(format, sizeof(format), "%T", g_autoflash[client] ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
+	menu.AddItem("autoflash", format);
+
+	Format(format, sizeof(format), "%T", g_autoswitch[client] ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
+	menu.AddItem("autoswitch", format);
+
+	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopMenuON" : "BhopMenuOFF", client);
+	menu.AddItem("bhop", format);
+
 	//if(g_partner[client] == true)
 	if(g_partner[client] > 0)
 	{
@@ -1846,29 +1855,44 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 1:
 				{
-					g_menuOpened[param1] = false;
-					Partner(param1);
+					cmd_autoflash(param1, 0);
 				}
 
 				case 2:
 				{
-					ColorZ(param1, true, -1);
-					Trikz(param1);
+					cmd_autoswitch(param1, 0);
 				}
 
 				case 3:
 				{
-					Restart(param1);
-					Restart(g_partner[param1]);
+					cmd_bhop(param1, 0);
 				}
 
 				case 4:
 				{
 					g_menuOpened[param1] = false;
-					Checkpoint(param1);
+					Partner(param1);
 				}
 
 				case 5:
+				{
+					ColorZ(param1, true, -1);
+					Trikz(param1);
+				}
+
+				case 6:
+				{
+					Restart(param1);
+					Restart(g_partner[param1]);
+				}
+
+				case 7:
+				{
+					g_menuOpened[param1] = false;
+					Checkpoint(param1);
+				}
+
+				case 8:
 				{
 					Noclip(param1);
 					Trikz(param1);
@@ -2339,10 +2363,12 @@ public void ColorZ(int client, bool customSkin, int color)
 			hForward = new GlobalForward("Trikz_ColorZ", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
 
 			Call_StartForward(hForward);
+			
 			Call_PushCell(client);
 			Call_PushCell(g_colorBuffer[client][0][0]);
 			Call_PushCell(g_colorBuffer[client][1][0]);
 			Call_PushCell(g_colorBuffer[client][2][0]);
+
 			Call_Finish();
 
 			g_colorCount[client][0]++;
@@ -2788,6 +2814,9 @@ public Action cmd_autoflash(int client, int args)
 
 	GiveFlashbang(client);
 
+	if(g_menuOpened[client])
+		Trikz(client);
+
 	return Plugin_Handled;
 }
 
@@ -2825,6 +2854,9 @@ public Action cmd_autoswitch(int client, int args)
 	char format[256];
 	Format(format, sizeof(format), "%T", g_autoswitch[client] ? "AutoswitchON" : "AutoswitchOFF", client);
 	SendMessage(format, false, client);
+
+	if(g_menuOpened[client])
+		Trikz(client);
 
 	return Plugin_Handled;
 }
@@ -2864,6 +2896,9 @@ public Action cmd_bhop(int client, int args)
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopON" : "BhopOFF", client);
 	SendMessage(format, false, client);
+
+	if(g_menuOpened[client])
+		Trikz(client);
 
 	return Plugin_Handled;
 }
@@ -4328,7 +4363,7 @@ public void CPSetup(int client)
 {
 	g_cpCount = 0;
 
-	PrintToServer("must be 0, real number: %i", g_cpCount);
+	//PrintToServer("must be 0, real number: %i", g_cpCount);
 
 	char query[512] = "";
 
