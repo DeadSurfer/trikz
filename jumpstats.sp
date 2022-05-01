@@ -391,6 +391,7 @@ void TouchClient(int client, int other)
 				gB_runboost[i] = false;
 				g_rbBooster[i] = 0;
 			}
+			
 			gB_runboost[client] = true;
 			g_rbBooster[client] = other;
 		}
@@ -403,24 +404,32 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 	{
 		float originBooster[3];
 		GetClientAbsOrigin(client, originBooster);
+
 		float originFlyer[3];
 		GetClientAbsOrigin(other, originFlyer);
+
 		float maxsBooster[3];
 		GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+
 		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
+
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			float velBooster[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
+
 			if(velBooster[2] > 0.0)
 			{
 				float velFlyer[3];
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
+
 				velBooster[2] *= 3.0;
+
 				float velNew[3];
 				//velNew[0] = velFlyer[0];
 				//velNew[1] = velFlyer[1];
 				velNew[2] = velBooster[2];
+
 				if(velFlyer[2] > -700.0)
 				{
 					if((g_entityFlags[client] & FL_INWATER))
@@ -434,24 +443,41 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 							velNew[2] = 750.0;
 					}
 				}
-				else
-					if(velBooster[2] > 800.0)
-						velNew[2] = 800.0;
+
+				else if(!(velFlyer[2] >= -700.0))
+				{
+					//if(velBooster[2] >= 810.0)
+					if(velBooster[2] >= 750.0)
+					{
+						velNew[2] = 820.0;
+					}
+				}
+
 				if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar gravity = FindConVar("sv_gravity");
+
 					if(g_jumpstats[client])
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
+					{
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
+					} 
+
 					if(g_jumpstats[other])
+					{
 						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+					}
+
 					for(int i = 1; i <= MaxClients; i++)
 					{
 						if(IsClientInGame(i) && IsClientObserver(i))
 						{
 							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
 							if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
+							{
 								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+							}
 						}
 					}
 				}
@@ -464,17 +490,26 @@ float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=10
 {
 	float origin[3];
 	GetClientAbsOrigin(client, origin);
+
 	float originDir[3];
 	GetClientAbsOrigin(client, originDir);
 	originDir[2] -= 90.0;
+
 	float mins[3];
 	GetClientMins(client, mins);
+
 	float maxs[3];
 	GetClientMaxs(client, maxs);
+
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
+
 	float pos[3];
+
 	if(TR_DidHit())
+	{
 		TR_GetEndPosition(pos);
+	}
+
 	return pos[2];
 }
 
