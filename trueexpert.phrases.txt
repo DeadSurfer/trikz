@@ -314,6 +314,30 @@
 	{
 		"en"	"Block [x]"
 	}
+	"AutoflashMenuON"
+	{
+		"en"	"Autoflash [v]"
+	}
+	"AutoflashMenuOFF"
+	{
+		"en"	"Autoflash [x]"
+	}
+	"AutoswitchMenuON"
+	{
+		"en"	"Autoswitch [v]"
+	}
+	"AutoswitchMenuOFF"
+	{
+		"en"	"Autoswitch [x]"
+	}
+	"BhopMenuON"
+	{
+		"en"	"Bhop [v]"
+	}
+	"BhopMenuOFF"
+	{
+		"en"	"Bhop [x]"
+	}
 	"BlockChatON"
 	{
 		"en"	"Block is turned on now."
