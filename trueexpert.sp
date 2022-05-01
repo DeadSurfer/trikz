@@ -3379,7 +3379,7 @@ public Action cmd_test(int client, int args)
 			}
 		}
 
-		PrintToServer("LibraryExists (trueexpert-entityfilter): %i", LibraryExists("expert-entityfilter"));
+		PrintToServer("LibraryExists (trueexpert-entityfilter): %i", LibraryExists("trueexpert-entityfilter"));
 
 		//https://forums.alliedmods.net/showthread.php?t=187746
 		int color = 0;
@@ -8722,12 +8722,12 @@ public Action timer_clantag(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-public void MLStats(const int client, bool ground)
+public void MLStats(int client, bool ground)
 {
 	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
 	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
 
-	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.10f - %.0f\n", g_mlsCount[client], velPre, velPost);
+	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.0f - %.0f\n", g_mlsCount[client], velPre, velPost);
 
 	char print[256] = "";
 
@@ -9010,6 +9010,17 @@ MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fa
 	//CheckStuck(client, origin);
 	g_teleported[client] = true;
 	//PrintToServer("Teleported.");
+
+	static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+
+	//if(h)
+	hForward = new GlobalForward("Trikz_Teleport", ET_Ignore, Param_Cell);
+
+	Call_StartForward(hForward);
+	
+	Call_PushCell(client);
+
+	Call_Finish();
 	
 	return MRES_Ignored;
 }
