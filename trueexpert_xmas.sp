@@ -284,7 +284,7 @@ public Action SDKTransmit(int entity, int client)
 		return Plugin_Handled;
 	}
 
-	if(LibraryExists("fakeexpert") == true && LibraryExists("fakeexpert-entityfilter") == true)
+	if(LibraryExists("trueexpert") == true && LibraryExists("trueexpert-entityfilter") == true)
 	{
 		if(IsPlayerAlive(client) == true && GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
 		{
@@ -292,7 +292,7 @@ public Action SDKTransmit(int entity, int client)
 		}
 	}
 
-	if(LibraryExists("fakeexpert_bhop") == true && IsClientObserver(client) == false)
+	if(LibraryExists("trueexpert_bhop") == true && IsClientObserver(client) == false)
 	{
 		return Plugin_Handled;
 	}
