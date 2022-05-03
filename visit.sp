@@ -31,6 +31,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define debug false
+
 public Plugin myinfo =
 {
 	name = "Visit announcement",
@@ -56,13 +58,16 @@ public Action connect(Event event, const char[] name, bool dontBroadcast)
 	//PrintToChatAll("Player %s has joined the game", name_)
 	//PrintToChatAll("%T", "connect", 0, name_);
 	//PrintToChatAll("%t", "connect");
+	char format[256];
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i))
 		{
 			//PrintToChat(i, "\x01%T", "connect", i, sName);
-			PrintToChat(i, "\x01%T", "connect", i, sName);
+			//PrintToChat(i, "\x01%T", "connect", i, sName);
+			Format(format, sizeof(format), "%T", "connect", i, sName);
+			SendMessage(format, false, i);
 		}
 	}
 
@@ -79,12 +84,15 @@ public Action disconnect(Event event, const char[] name, bool dontBroadcast)
 	event.GetString("name", sName, sizeof(sName));
 	//PrintToChatAll("Player %s left the game (%s)", name_, reason)
 	//PrintToChatAll("\x01%T", "disconnect", sName, sReason);
+	char format[256];
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i))
 		{
-			PrintToChat(i, "\x01%T", "disconnect", i, sName, sReason);
+			//PrintToChat(i, "\x01%T", "disconnect", i, sName, sReason);
+			Format(format, sizeof(format), "%T", "disconnect", i, sName, sReason);
+			SendMessage(format, false, i);
 		}
 	}
 
@@ -101,6 +109,8 @@ public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 	char sName[MAX_NAME_LENGTH];
 	GetClientName(client, sName, sizeof(sName));
 
+	char format[256];
+
 	switch(team)
 	{
 		case 1:
@@ -111,7 +121,9 @@ public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 			{
 				if(IsClientInGame(i))
 				{
-					PrintToChat(i, "\x01%T", "joinSpectator", i, sName);
+					Format(format, sizeof(format), "%T", "joinSpectator", i, sName);
+					SendMessage(format, false, i);
+					//PrintToChat(i, "\x01%T", "joinSpectator", i, sName);
 				}
 			}
 		}
@@ -124,7 +136,9 @@ public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 			{
 				if(IsClientInGame(i))
 				{
-					PrintToChat(i, "\x01%T", "joinTerrorist", i, sName);
+					//PrintToChat(i, "\x01%T", "joinTerrorist", i, sName);
+					Format(format, sizeof(format), "%T", "joinTerrorist", i, sName);
+					SendMessage(format, false, i);
 				}
 			}
 		}
@@ -133,11 +147,14 @@ public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 		{
 			//PrintToChatAll("%N is joining the Counter-Terrorist force", client);
 			//PrintToChatAll("\x01%T", "joinCounterTerrorist", sName);
+
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i))
 				{
-					PrintToChat(i, "\x01%T", "joinCounterTerrorist", i, sName);
+					Format(format, sizeof(format), "%T", "joinCounterTerrorist", i, sName);
+					SendMessage(format, false, i);
+					//PrintToChat(i, "\x01%T", "joinCounterTerrorist", i, sName);
 				}
 			}
 		}
@@ -154,3 +171,64 @@ public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 	{
 	}
 }*/
+
+
+public void SendMessage(const char[] text, bool all, int client)
+{
+	//char text[256];
+	char name[MAX_NAME_LENGTH] = "";
+	GetClientName(client, name, sizeof(name));
+
+	int team = GetClientTeam(client);
+
+	char teamName[32] = "";
+	char teamColor[32] = "";
+
+	switch(team)
+	{
+		case 1:
+		{
+			Format(teamName, sizeof(teamName), "\x01%T", "Spectator", client);
+			//Format(teamName, sizeof(teamName), "\x01%T")
+			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
+		}
+
+		case 2:
+		{
+			Format(teamName, sizeof(teamName), "\x01%T", "Terrorist", client);
+			Format(teamColor, sizeof(teamColor), "\x07FF4040");
+		}
+
+		case 3:
+		{
+			Format(teamName, sizeof(teamName), "\x01%T", "Counter-Terrorist", client);
+			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
+		}
+	}
+
+	//Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName);
+	char textReplaced[256] = "";
+	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
+
+	ReplaceString(textReplaced, sizeof(textReplaced), ";#", "\x07");
+	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
+	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
+
+	if(all == true)
+	{
+		PrintToChatAll("%s", textReplaced);
+	}
+
+	else if(all == false)
+	{
+		if(client > 0 && IsClientInGame(client) == true)
+		{
+			PrintToChat(client, "%s", textReplaced);
+		}
+	}
+
+	#if debug true
+	//PrintToChat(client, "%i MessageDebug", client)
+	#endif
+	return;
+}
