@@ -59,7 +59,7 @@ public Action connect(Event event, const char[] name, bool dontBroadcast)
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(IsClientInGame(i) && !IsClientSourceTV(i))
+		if(IsClientInGame(i))
 		{
 			//PrintToChat(i, "\x01%T", "connect", i, sName);
 			PrintToChat(i, "\x01%T", "connect", i, sName);
