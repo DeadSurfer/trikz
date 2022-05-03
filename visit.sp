@@ -36,7 +36,7 @@ public Plugin myinfo =
 	name = "Visit announcement",
 	author = "Smesh",
 	description = "Always show connect, disconnect, team changes message in the chat.",
-	version = "0.31",
+	version = "0.32",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -59,7 +59,7 @@ public Action connect(Event event, const char[] name, bool dontBroadcast)
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(IsClientInGame(i))
+		if(IsClientInGame(i) && !IsClientSourceTV(i))
 		{
 			//PrintToChat(i, "\x01%T", "connect", i, sName);
 			PrintToChat(i, "\x01%T", "connect", i, sName);
@@ -73,7 +73,7 @@ public Action connect(Event event, const char[] name, bool dontBroadcast)
 
 public Action disconnect(Event event, const char[] name, bool dontBroadcast)
 {
-	char sReason[64];
+	char sReason[128];
 	event.GetString("reason", sReason, sizeof(sReason));
 	char sName[MAX_NAME_LENGTH];
 	event.GetString("name", sName, sizeof(sName));
