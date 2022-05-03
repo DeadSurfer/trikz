@@ -1,0 +1,28 @@
+"Phrases"
+{
+	"connect"
+	{
+		"#format"	"{1:s}"
+		"en"	"Player {1} has joined the game"
+	}
+	"disconnect"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"	"Player {1} left the game ({2})"
+	}
+	"joinSpectator"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1} is joining the Spectators"
+	}
+	"joinTerrorist"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1} is joining the Terrosist force"
+	}
+	"joinCounterTerrorist"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1} is joining the Counter-Terrorist force"
+	}
+}
