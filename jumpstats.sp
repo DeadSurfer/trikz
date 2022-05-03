@@ -96,27 +96,30 @@ public void OnPluginStart()
 	//	HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
 	//}
 
-	Handle gamedata = LoadGameConfigFile("sdktools.games");
-	int offset = GameConfGetOffset(gamedata, "Teleport");
-	delete gamedata;
-	
-	if(offset == -1)
+	if(!LibraryExists("trueexpert"))
 	{
-		SetFailState("[DHooks] Offset for Teleport function is not found!");
-		return;
-	}
-	
-	g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooks_OnTeleport);
+		Handle gamedata = LoadGameConfigFile("sdktools.games");
+		int offset = GameConfGetOffset(gamedata, "Teleport");
+		delete gamedata;
+		
+		if(offset == -1)
+		{
+			SetFailState("[DHooks] Offset for Teleport function is not found!");
+			return;
+		}
+		
+		g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooks_OnTeleport);
 
-	if(g_teleport == INVALID_HANDLE)
-	{
-		SetFailState("[DHooks] Could not create Teleport hook function!");
-		return;
+		if(g_teleport == INVALID_HANDLE)
+		{
+			SetFailState("[DHooks] Could not create Teleport hook function!");
+			return;
+		}
+		
+		DHookAddParam(g_teleport, HookParamType_VectorPtr);
+		DHookAddParam(g_teleport, HookParamType_ObjectPtr);
+		DHookAddParam(g_teleport, HookParamType_VectorPtr);
 	}
-	
-	DHookAddParam(g_teleport, HookParamType_VectorPtr);
-	DHookAddParam(g_teleport, HookParamType_ObjectPtr);
-	DHookAddParam(g_teleport, HookParamType_VectorPtr);
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -278,7 +281,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		GetClientAbsOrigin(client, origin);
 		g_origin[client][0] = origin[0];
 		g_origin[client][1] = origin[1];
-		g_origin[client][2] = GetGroundPos(client);
+		//g_origin[client][2] = GetGroundPos(client);
+		//g_origin[client][2] = GetClientAbsOrigin(client,)
+		g_origin[client][2] = origin[2];
 		g_strafeFirst[client] = true;
 	}
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && g_ladder[client])
@@ -290,7 +295,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		float origin[3];
 		GetClientAbsOrigin(client, origin);
-		if(GetGroundPos(client) - g_origin[client][2] == 0.0)
+		//if(GetGroundPos(client) - g_origin[client][2] == 0.0)
+		if(-3.0 < GetGroundPos(client) - g_origin[client][2] < 3.0)
 		{
 			float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0));
 			float sync = -1.0;
@@ -301,6 +307,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					sync = 0.0;
 				sync /= float(g_tickAir[client]);
 				sync *= 100.0;
+				PrintToServer("yes %f", GetGroundPos(client) - g_origin[client][2]);
 				if(g_jumpstats[client])
 					if(190.0 > distance >= 22.0)
 						PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f, Gain: %.1f%%", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
@@ -423,14 +430,14 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				float velFlyer[3];
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
-				velBooster[2] *= 3.0;
+				velBooster[2] *= 3.5;
 
 				float velNew[3];
 				//velNew[0] = velFlyer[0];
 				//velNew[1] = velFlyer[1];
 				velNew[2] = velBooster[2];
 
-				if(velFlyer[2] > -700.0)
+				if(velFlyer[2] > -600.0)
 				{
 					if((g_entityFlags[client] & FL_INWATER))
 					{
@@ -439,32 +446,33 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					}
 					else
 					{
-						if(velBooster[2] > 750.0)
+						if(velBooster[2] > 650.0)
 							velNew[2] = 750.0;
 					}
 				}
 
-				else if(!(velFlyer[2] >= -700.0))
+				else if(!(velFlyer[2] >= -600.0))
 				{
 					//if(velBooster[2] >= 810.0)
-					if(velBooster[2] >= 750.0)
+					if(velBooster[2] >= 650.0)
 					{
 						velNew[2] = 820.0;
 					}
 				}
 
-				if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				//if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar gravity = FindConVar("sv_gravity");
 
 					if(g_jumpstats[client])
 					{
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
 					} 
 
 					if(g_jumpstats[other])
 					{
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue))); //1.666666666666
 					}
 
 					for(int i = 1; i <= MaxClients; i++)
@@ -476,7 +484,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 							if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
 							{
-								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue)));
 							}
 						}
 					}
@@ -558,7 +566,7 @@ void Sync(int client, int buttons, int mouse[2])
 	}
 	else if(gF_dot[client] > 0.9) //forward
 	{
-		if(g_jumped[client])
+		if(g_jumped[client] || g_ladder[client])
 		{
 			if(mouse[0] > 0)
 			{
@@ -592,7 +600,7 @@ void Sync(int client, int buttons, int mouse[2])
 	}
 	else //sideways
 	{
-		if(g_jumped[client])
+		if(g_jumped[client] || g_ladder[client])
 		{
 			if(mouse[0] > 0)
 			{
@@ -672,4 +680,9 @@ MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fa
 	//PrintToServer("Teleported.");
 	
 	return MRES_Ignored;
+}
+
+public void Trikz_Teleport(int client)
+{
+	g_teleported[client] = true;
 }
