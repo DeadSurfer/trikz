@@ -156,7 +156,7 @@ int g_smoke;
 bool g_clantagOnce[MAXPLAYER];
 bool g_seperate[MAXPLAYER];
 //int g_projectileSoundLoud[MAXPLAYER];
-bool g_readyToFix[MAXPLAYER];
+//bool g_readyToFix[MAXPLAYER];
 ConVar gCV_trikz;
 ConVar gCV_block;
 ConVar gCV_partner;
@@ -1590,11 +1590,13 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				g_skyVel[other][0] = velFlyer[0];
 				g_skyVel[other][1] = velFlyer[1];
 			
-				velBooster[2] *= 3.0;
+				velBooster[2] *= 3.5; //3.0
 
 				g_skyVel[other][2] = velBooster[2];
 
-				if(velFlyer[2] >= -700.0)
+				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+
+				if(velFlyer[2] >= -600.0) //700.0
 				{
 					if(g_entityFlags[client] & FL_INWATER)
 					{
@@ -1606,17 +1608,17 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 					else if(!(g_entityFlags[client] & FL_INWATER))
 					{
-						if(velBooster[2] >= 750.0)
+						if(velBooster[2] >= 650.0) //750.0
 						{
 							g_skyVel[other][2] = 750.0;
 						}
 					}
 				}
 
-				else if(!(velFlyer[2] >= -700.0))
+				else if(!(velFlyer[2] >= -600.0)) //700.0
 				{
 					//if(velBooster[2] >= 810.0)
-					if(velBooster[2] >= 750.0)
+					if(velBooster[2] >= 650.0) //750.0
 					{
 						g_skyVel[other][2] = 820.0;
 					}
@@ -8258,7 +8260,7 @@ public void SDKProjectile(int entity)
 		{
 			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
-			g_readyToFix[client] = false;
+			//g_readyToFix[client] = false;
 
 			g_silentKnife = true;
 
@@ -8372,7 +8374,7 @@ public Action timer_deleteProjectile(Handle timer, int entity)
 	return Plugin_Continue;
 }
 
-public void FlashbangEffect(const int entity)
+public void FlashbangEffect(int entity)
 {
 	bool filter = LibraryExists("trueexpert-entityfilter");
 
