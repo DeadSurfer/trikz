@@ -181,27 +181,27 @@ public void SendMessage(const char[] text, bool all, int client)
 
 	int team = GetClientTeam(client);
 
-	char teamName[32] = "";
+	//char teamName[32] = "";
 	char teamColor[32] = "";
 
 	switch(team)
 	{
 		case 1:
 		{
-			Format(teamName, sizeof(teamName), "\x01%T", "Spectator", client);
+			//Format(teamName, sizeof(teamName), "\x01%T", "Spectator", client);
 			//Format(teamName, sizeof(teamName), "\x01%T")
 			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
 		}
 
 		case 2:
 		{
-			Format(teamName, sizeof(teamName), "\x01%T", "Terrorist", client);
+			//Format(teamName, sizeof(teamName), "\x01%T", "Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x07FF4040");
 		}
 
 		case 3:
 		{
-			Format(teamName, sizeof(teamName), "\x01%T", "Counter-Terrorist", client);
+			//Format(teamName, sizeof(teamName), "\x01%T", "Counter-Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
 		}
 	}
