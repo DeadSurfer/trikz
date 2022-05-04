@@ -69,11 +69,11 @@
 	}
 	"MLStatsOFF"
 	{
-		"en"	"ML stats is off"
+		"en"	"ML stats is off now"
 	}
 	"MLStatsON"
 	{
-		"en"	"ML stats is on"
+		"en"	"ML stats is on now"
 	}
 	"VelOFF"
 	{
@@ -109,19 +109,19 @@
 	}
 	"ButtonAnnouncerON"
 	{
-		"en"	"Button announcer is on."
+		"en"	"Button announcer is on now."
 	}
 	"ButtonAnnouncerOFF"
 	{
-		"en"	"Button announcer is off."
+		"en"	"Button announcer is off now."
 	}
 	"ButtonAnnouncerPartnerON"
 	{
-		"en"	"Partner button announcer is on."
+		"en"	"Partner button announcer is on now."
 	}
 	"ButtonAnnouncerPartnerOFF"
 	{
-		"en"	"Partner button announcer is off."
+		"en"	"Partner button announcer is off now."
 	}
 	"AFKCHECK"
 	{
@@ -468,19 +468,19 @@
 	}
 	"AutoflashON"
 	{
-		"en"	"Auto flashbang is turned on."
+		"en"	"Auto flashbang is turned on now."
 	}
 	"AutoflashOFF"
 	{
-		"en"	"Auto flashbang is turned off."
+		"en"	"Auto flashbang is turned off now."
 	}
 	"AutoswitchON"
 	{
-		"en"	"Auto switch is truned on."
+		"en"	"Auto switch is truned on now."
 	}
 	"AutoswitchOFF"
 	{
-		"en"	"Auto switch is turned off."
+		"en"	"Auto switch is turned off now."
 	}
 	"BhopON"
 	{
