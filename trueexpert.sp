@@ -8431,7 +8431,8 @@ public void FlashbangEffect(int entity)
 
 	dir[0] = GetRandomFloat(-1.0, 1.0);
 	dir[1] = GetRandomFloat(-1.0, 1.0);
-	dir[2] = GetRandomFloat(-1.0, 1.0);
+	//dir[2] = GetRandomFloat(-1.0, 1.0);
+	dir[2] = 1.0;
 
 	TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2));
 
