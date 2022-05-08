@@ -40,8 +40,8 @@
 #define MAXPLAYER MAXPLAYERS + 1
 
 int g_partner[MAXPLAYER];
-float g_partnerInHold[MAXPLAYER];
-bool g_partnerInHoldLock[MAXPLAYER];
+//float g_partnerInHold[MAXPLAYER];
+//bool g_partnerInHoldLock[MAXPLAYER];
 float g_zoneStartOrigin[2][3]; //start zone mins and maxs
 float g_zoneEndOrigin[2][3]; //end zone mins and maxs
 Database g_mysql;
@@ -2311,8 +2311,15 @@ public void ColorZ(int client, bool customSkin, int color)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
+		bool convar = GetConVarBool(gCV_color);
+
+		if(convar == false)
+		{
+			return;
+		}
+		
 		//if(g_devmap == false && g_partner[client] == false)
-		if(g_devmap == false && g_partner[client] == 0)
+		/*if(g_devmap == false && g_partner[client] == 0)
 		{
 			//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
 			//PrintToChat(client, "You must have a partner.");
@@ -2321,7 +2328,7 @@ public void ColorZ(int client, bool customSkin, int color)
 			SendMessage(format, false, client);
 
 			return;
-		}
+		}*/
 
 		if(customSkin == true)
 		{
@@ -2439,7 +2446,7 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 		}
 
 		//if(g_devmap == false && g_partner[client] == false)
-		if(g_devmap == false && g_partner[client] == 0)
+		/*if(g_devmap == false && g_partner[client] == 0)
 		{
 			//PrintToChat(client, "You must have a partner.");
 			//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
@@ -2448,7 +2455,7 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 			SendMessage(format, false, client);
 
 			return;
-		}
+		}*/
 
 		if(customSkin == true)
 		{
@@ -6742,7 +6749,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		if(IsPlayerAlive(client) == true && (g_partner[client] > 0 || g_devmap == true))
+		//if(IsPlayerAlive(client) == true && (g_partner[client] > 0 || g_devmap == true))
+		if(IsPlayerAlive(client) == true)
 		{
 			if(buttons & IN_USE)
 			{
@@ -7080,7 +7088,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//if(IsPlayerAlive(client) == true && g_partner[client] == false)
 			if(IsPlayerAlive(client) == true && g_partner[client] == 0)
 			{
-				if(buttons & IN_USE)
+				/*if(buttons & IN_USE)
 				{
 					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
 					{
@@ -7108,7 +7116,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					Partner(client);
 
 					//return Plugin_Continue;
-				}
+				}*/
 				//return Plugin_Continue;
 			}
 
