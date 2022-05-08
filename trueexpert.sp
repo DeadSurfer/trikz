@@ -2118,13 +2118,13 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						GetClientName(partner, name, sizeof(name));
 
 						char format[256];
-						Format(format, sizeof(format), "\x01%T", "GroupAgreed", param1, name);
+						Format(format, sizeof(format), "%T", "GroupAgreed", param1, name);
 						SendMessage(format, false, param1);
 
 						//PrintToChat(param1, "\x01%T", "GroupAgreed", param1, name);
 						//PrintToChat(partner, "You have %N as partner.", param1); //sender
 						GetClientName(param1, name, sizeof(name));
-						Format(format, sizeof(format), "\x01%T", "GetAgreed", partner, name);
+						Format(format, sizeof(format), "%T", "GetAgreed", partner, name);
 						SendMessage(format, false, partner);
 
 						//PrintToChat(partner, "\x01%T", "GetAgreed", partner, name);
@@ -2150,7 +2150,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						//PrintToChat(param1, "A player already have a partner.");
 						//PrintToChat(param1, "\x01%T", "AlreadyHavePartner", param1);
 						char format[256];
-						Format(format, sizeof(format), "\x01%T", "AlreadyHavePartner", param1);
+						Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
 						SendMessage(format, false, param1);
 					}
 				}
@@ -2162,7 +2162,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 					//PrintToChat(param1, "Partnersheep declined with %N.", partner);
 					//PrintToChat(param1, "\x01%T", "PartnerDeclined", param1, name);
 					char format[256];
-					Format(format, sizeof(format), "\x01%T", "PartnerDeclined", param1, name);
+					Format(format, sizeof(format), "%T", "PartnerDeclined", param1, name);
 					SendMessage(format, false, param1);
 				}
 			}
@@ -2202,7 +2202,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					GetClientName(partner, name, sizeof(name));
 
 					char format[256] = "";
-					Format(format, sizeof(format), "\x01%T", "PartnerCanceled", param1, name);
+					Format(format, sizeof(format), "%T", "PartnerCanceled", param1, name);
 					SendMessage(format, false, param1);
 					//Format(format, sizeof(format), "%T", "PartnerCa");
 					//PrintToChat(param1, "\x01%T", "PartnerCanceled", param1, name);
@@ -2210,7 +2210,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 					GetClientName(param1, name, sizeof(name));
 					//PrintToChat(partner, "\x01%T", "PartnerCanceledBy", partner, name);
-					Format(format, sizeof(format), "\x01%T", "PartnerCanceledBy", partner, name);
+					Format(format, sizeof(format), "%T", "PartnerCanceledBy", partner, name);
 					SendMessage(format, false, partner);
 				}
 			}
@@ -4654,7 +4654,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i))
 								{
-									Format(format, sizeof(format), "\x01%T", "NewServerRecord", i);
+									Format(format, sizeof(format), "%T", "NewServerRecord", i);
 									SendMessage(format, false, i); //smth like shavit functions.
 								}
 							}
@@ -4734,7 +4734,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i))
 								{
-									Format(text2, sizeof(text2), "\x01%T", "PassedImproved", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									Format(text2, sizeof(text2), "%T", "PassedImproved", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, false, i);
 								}
 							}
@@ -4774,7 +4774,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i))
 								{
-									Format(text2, sizeof(text2), "\x01%T", "Passed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									Format(text2, sizeof(text2), "%T", "Passed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, false, i);
 								}
 							}
@@ -4824,7 +4824,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i))
 								{
-									Format(format, sizeof(format), "\x01%T", "NewServerRecord", i);
+									Format(format, sizeof(format), "%T", "NewServerRecord", i);
 									SendMessage(format, false, i); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
 								}
 							}
@@ -4847,7 +4847,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i))
 								{
-									Format(text2, sizeof(text2), "\x01%T", "NewServerRecordDetailNew", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									Format(text2, sizeof(text2), "%T", "NewServerRecordDetailNew", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, false, i);
 								}
 							}
@@ -4907,7 +4907,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i))
 								{
-									Format(text2, sizeof(text2), "\x01%T", "JustPassed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
+									Format(text2, sizeof(text2), "%T", "JustPassed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, false, i);
 								}
 							}
@@ -4959,7 +4959,7 @@ public Action SDKStartTouch(int entity, int other)
 								{
 									if(IsClientInGame(j))
 									{
-										Format(textCP, sizeof(textCP), "\x01%T", "CPImprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
+										Format(textCP, sizeof(textCP), "%T", "CPImprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 										SendMessage(textCP, false, j);
 									}
 								}
@@ -4973,7 +4973,7 @@ public Action SDKStartTouch(int entity, int other)
 								{
 									if(IsClientInGame(j))
 									{
-										Format(textCP, sizeof(textCP), "\x01%T", "CPDeprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
+										Format(textCP, sizeof(textCP), "%T", "CPDeprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 										SendMessage(textCP, false, j);
 									}
 								}
@@ -5014,7 +5014,7 @@ public Action SDKStartTouch(int entity, int other)
 							//char sPartner[MAX_NAME_LENGTH] = "";
 							//GetClientName(g_partner[other], sPartner, sizeof(sPartner));
 							//char text2[256] = "";
-							Format(text2, sizeof(text2), "\x01%T", "NewServerRecordFirst", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond);
+							Format(text2, sizeof(text2), "%T", "NewServerRecordFirst", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond);
 							SendMessage(text2, false, i);
 						}
 					}
@@ -5033,7 +5033,7 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(j))
 								{
-									Format(textCP, sizeof(textCP), "\x01%T", "CPNEW", j, i);
+									Format(textCP, sizeof(textCP), "%T", "CPNEW", j, i);
 									SendMessage(textCP, false, j);
 								}
 							}
@@ -6805,6 +6805,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				float end[3] = {0.0, 0.0, 0.0};
 
 				GetClientEyePosition(client, start);
+				//start[2] -= 32.0;
 
 				GetClientEyeAngles(client, angle);
 
@@ -6863,6 +6864,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 					color[3] = 255;
 
+					start[2] -= 8.0;
+
 					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
 					//return Plugin_Continue;
 				}
@@ -6875,6 +6878,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					{
 						color[i] = 255;
 					}
+
+					start[2] -= 8.0;
 
 					TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
 					//return Plugin_Continue;
@@ -7338,8 +7343,14 @@ public Action cmd_devmap(int client, int args)
 
 		//PrintToChatAll("\x01%T", "DevMapStart", client, name);
 		char format[256];
-		Format(format, sizeof(format), "%T", "DevMapStart", client, name);
-		SendMessage(format, true, client);
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				Format(format, sizeof(format), "%T", "DevMapStart", i, name);
+				SendMessage(format, false, i);
+			}
+		}
 		//return Plugin_Handled;
 	}
 
