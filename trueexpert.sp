@@ -188,6 +188,7 @@ ConVar gCV_pingtool;
 int g_top10Count;
 //float g_srPrevTime;
 Handle g_teleport;
+KeyValues g_kv;
 
 public Plugin myinfo =
 {
@@ -386,7 +387,7 @@ public void OnMapStart()
 
 		if(g_devmap == false)
 		{
-			PrintToServer("sourcetv start recording.");
+			PrintToServer("SourceTV start recording.");
 
 			FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime());
 			FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime());
@@ -399,7 +400,7 @@ public void OnMapStart()
 	{
 		g_sourcetv = true;
 
-		ForceChangeLevel(g_map, "Turn on sourcetv");
+		ForceChangeLevel(g_map, "Turning on SourceTV");
 	}
 
 	//g_wModelThrown = PrecacheModel("models/trueexpert/models/weapons/w_eq_flashbang_thrown.mdl", true);
@@ -463,6 +464,11 @@ public void OnMapStart()
 	//g_turbophysics = FindConVar("sv_turbophysics"); //thnaks to maru.
 
 	RecalculatePoints();
+
+	delete g_kv;
+
+	g_kv = new KeyValues("TrueExpertHud");
+	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 }
 
 public void RecalculatePoints()
@@ -4724,11 +4730,11 @@ public Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
 							int srSecond = RoundToFloor(timeDiff) % 60;
 							
-							char sSRHour[32] = "";
+							char sSRHour[8] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32] = "";
+							char sSRMinute[8] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32] = "";
+							char sSRSecond[8] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
 							
 							/*//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);*/
@@ -4766,11 +4772,11 @@ public Action SDKStartTouch(int entity, int other)
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
 							int srSecond = RoundToFloor(timeDiff) % 60;
 							
-							char sSRHour[32] = "";
+							char sSRHour[8] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32] = "";
+							char sSRMinute[8] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32] = "";
+							char sSRSecond[8] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
 
 							char text2[256] = "";
@@ -4840,12 +4846,13 @@ public Action SDKStartTouch(int entity, int other)
 
 							//PrintToChatAll("\x01%T", "NewServerRecord");
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x077CFC00-%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							char sSRHour[32] = "";
+							char sSRHour[8] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32] = "";
+							char sSRMinute[8] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32] = "";
+							char sSRSecond[8] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
+
 							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
 							char sPartner[MAX_NAME_LENGTH] = "";
@@ -4899,12 +4906,13 @@ public Action SDKStartTouch(int entity, int other)
 							int srSecond = RoundToFloor(timeDiff) % 60;
 
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							char sSRHour[32] = "";
+							char sSRHour[8] = "";
 							Format(sSRHour, sizeof(sSRHour), "%02.i", srHour);
-							char sSRMinute[32] = "";
+							char sSRMinute[8] = "";
 							Format(sSRMinute, sizeof(sSRMinute), "%02.i", srMinute);
-							char sSRSecond[32] = "";
+							char sSRSecond[8] = "";
 							Format(sSRSecond, sizeof(sSRSecond), "%02.i", srSecond);
+
 							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
 							char sPartner[MAX_NAME_LENGTH] = "";
@@ -4951,11 +4959,11 @@ public Action SDKStartTouch(int entity, int other)
 							int srCPMinute = (RoundToFloor(g_cpDiff[i][other]) / 60) % 60;
 							int srCPSecond = RoundToFloor(g_cpDiff[i][other]) % 60;
 							
-							char sSRCPHour[32] = ""; //trikz solid code was perfect for me but i didnt got how to make measure generic last level anti cheat triggers.
+							char sSRCPHour[8] = ""; //trikz solid code was perfect for me but i didnt got how to make measure generic last level anti cheat triggers.
 							Format(sSRCPHour, sizeof(sSRCPHour), "%02.i", srCPHour);
-							char sSRCPMinute[32] = "";
+							char sSRCPMinute[8] = "";
 							Format(sSRCPMinute, sizeof(sSRCPMinute), "%02.i", srCPMinute);
-							char sSRCPSecond[32] = "";
+							char sSRCPSecond[8] = "";
 							Format(sSRCPSecond, sizeof(sSRCPSecond), "%02.i", srCPSecond);
 
 							if(g_cpTimeClient[i][other] < g_cpTime[i])
@@ -5138,9 +5146,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 	char format[256] = "";
 
-	KeyValues kv = new KeyValues("TrueExpertHud");
+	//KeyValues kv = new KeyValues("TrueExpertHud");
 
-	kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+	//kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+	KeyValues kv = g_kv;
 
 	char posColor[64] = "";
 
@@ -5164,7 +5173,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 		if(firstCPRecord == true)
 		{
 			//char text[256] = "";
-			kv.GotoFirstSubKey(true);
+			kv.GotoFirstSubKey();
+			//g_kv.JumpToKey("CP-recordHud");
 			//kv.GetString("CP-recordHud", text, sizeof(text), "");
 			//PrintToServer("%s", text);
 			do
@@ -5202,14 +5212,16 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 			}
-			while(kv.GotoNextKey(true));
+			while(kv.GotoNextKey());
+
 			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 			SetHudTextParams(x, y, z, r, g, b, a);
 			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 			Format(format, sizeof(format), "%T", "CP-recordHud", client, cpnum);
 			ShowHudText(client, 1, format);
 
-			kv.GotoFirstSubKey(true);
+			kv.GotoFirstSubKey();
+			//kv.JumpToKey("CP-recordHud");
 
 			do
 			{
@@ -5248,7 +5260,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 				//else if(kv.GotoFirstSubKey(false) == false)
 			}
-			while(kv.GotoNextKey(true));
+			while(kv.GotoNextKey());
 
 			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5256,7 +5268,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			Format(format, sizeof(format), "%T", "CP-recordDetailHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 			ShowHudText(client, 2, format);
 
-			kv.GotoFirstSubKey(true);
+			kv.GotoFirstSubKey();
+			//g_kv.JumpToKey("CP-recordHud");
 
 			do
 			{
@@ -5295,9 +5308,9 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 				//else if(kv.GotoFirstSubKey(false) == false)
 			}
-			while(kv.GotoNextKey(true));
+			while(kv.GotoNextKey());
 
-			delete kv;
+			//delete kv;
 			
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5343,7 +5356,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 		{
 			if(cpRecord == true)
 			{
-				kv.GotoFirstSubKey(true);
+				//g_kv.GotoFirstSubKey();
+				kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -5381,7 +5395,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+				while(kv.GotoNextKey());
 
 				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5389,7 +5403,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", client, cpnum);
 				ShowHudText(client, 1, format);
 
-				kv.GotoFirstSubKey(true);
+				kv.GotoFirstSubKey();
+				//kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -5426,7 +5441,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+				while(kv.GotoNextKey());
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5434,7 +5449,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 2, format);
 
-				kv.GotoFirstSubKey(true);
+				kv.GotoFirstSubKey();
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -5471,9 +5487,9 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+				while(kv.GotoNextKey());
 
-				delete kv;
+				//delete kv;
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5515,6 +5531,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			else if(cpRecord == false)
 			{
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -5552,7 +5569,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+				while(kv.GotoNextKey());
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5561,7 +5578,8 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				ShowHudText(client, 1, format);
 				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 
-				kv.GotoFirstSubKey(true);
+				kv.GotoFirstSubKey();
+				//g_kv.JumpToKey("CP-recordHud");
 				
 				do
 				{
@@ -5599,9 +5617,9 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+				while(kv.GotoNextKey());
 
-				delete kv;
+				//delete kv;
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5641,6 +5659,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 		if(firstServerRecord == true)
 		{
 			kv.GotoFirstSubKey(true);
+			//g_kv.JumpToKey("CP-recordHud");
 
 			do
 			{
@@ -5687,6 +5706,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			ShowHudText(client, 1, format);
 
 			kv.GotoFirstSubKey(true);
+			//g_kv.JumpToKey("CP-recordHud");
 
 			do
 			{
@@ -5733,6 +5753,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			ShowHudText(client, 2, format);
 
 			kv.GotoFirstSubKey(true);
+			//g_kv.JumpToKey("CP-recordHud");
 
 			do
 			{
@@ -5779,6 +5800,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			ShowHudText(client, 3, format);
 
 			kv.GotoFirstSubKey(true);
+			//g_kv.JumpToKey("CP-recordHud");
 
 			do
 			{
@@ -5818,7 +5840,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			}
 			while(kv.GotoNextKey(true));
 
-			delete kv;
+			//delete kv;
 
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5870,6 +5892,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			if(serverRecord == true)
 			{
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -5918,6 +5941,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//ShowHudText(client, 2, format);
 
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -5964,6 +5988,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				ShowHudText(client, 2, format);
 
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -6010,6 +6035,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				ShowHudText(client, 3, format);
 
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -6049,7 +6075,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				}
 				while(kv.GotoNextKey(true));
 
-				delete kv;
+				//delete kv;
 
 				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -6100,6 +6126,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			else if(serverRecord == false)
 			{
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -6108,7 +6135,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					{
 						char section[64] = "";
 						kv.GetSectionName(section, sizeof(section));
-						PrintToServer("%s", section);
+						//PrintToServer("%s", section);
 						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true))
 						{
 							kv.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
@@ -6151,6 +6178,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				ShowHudText(client, 1, format);
 
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -6197,6 +6225,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				ShowHudText(client, 2, format);
 				
 				kv.GotoFirstSubKey(true);
+				//g_kv.JumpToKey("CP-recordHud");
 
 				do
 				{
@@ -6273,7 +6302,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 
-				delete kv;
+				//delete kv;
 			}
 		}
 	}
