@@ -3402,6 +3402,7 @@ public Action cmd_test(int client, int args)
 		if(partner <= MaxClients && g_partner[client] == 0)
 		{
 			g_partner[client] = partner;
+			g_partner[partner] = client;
 
 			Call_StartForward(g_start);
 
@@ -7018,11 +7019,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					{
 						if(IsClientInGame(i) == true)
 						{
-							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+							//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 
-							if(g_partner[client] == g_partner[g_partner[i]] || i == client || observerTarget == client)
+							//if(g_partner[client] == g_partner[g_partner[i]] || i == client || observerTarget == client)
+							if(g_partner[client] == g_partner[g_partner[i]] || i == client)
 							{
 								clients[count++] = i;
+								//PrintToServer("%N", i);
 								//return Plugin_Continue;
 							}
 							//return Plugin_Continue;
@@ -7044,6 +7047,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//	EmitSoundToAll("trueexpert/pingtool/click.wav", client);
 					EmitSoundToAll("items/gift_drop.wav", client);
 					//return Plugin_Continue;
+					//PrintToServer("yes");
 				}
 
 				g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -8530,9 +8534,10 @@ public void FlashbangEffect(int entity)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+				//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 
-				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || observerTarget == owner)
+				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || observerTarget == owner)
+				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
 				{
 					clients[count++] = i;
 				}
@@ -8552,29 +8557,23 @@ public void FlashbangEffect(int entity)
 	dir[0] = GetRandomFloat(-1.0, 1.0);
 	dir[1] = GetRandomFloat(-1.0, 1.0);
 	//dir[2] = GetRandomFloat(-1.0, 1.0);
-	dir[2] = 1.0;
+	dir[2] = 1.0; //always up
 
 	TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2));
-
-	if(filter == true)
-	{
-		TE_Send(clients, count);
-	}
-
-	else if(filter == false)
-	{
-		TE_SendToAll(); //Idea from "Expert-Zone". So, we just made non empty event.
-	}
 
 	char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"};
 
 	if(filter == true)
 	{
+		TE_Send(clients, count);
+
 		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL);
 	}
 
 	else if(filter == false)
 	{
+		TE_SendToAll(); //Idea from "Expert-Zone". So, we just made non empty event.
+
 		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 	}
 }
