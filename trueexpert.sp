@@ -3529,7 +3529,16 @@ public void SendMessage(const char[] text, bool all, int client)
 	{
 		if(client > 0 && IsClientInGame(client) == true)
 		{
-			PrintToChat(client, "%s", textReplaced);
+			//PrintToChat(client, "%s", textReplaced);
+
+			Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
+
+			BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
+			bf.WriteByte(client); // Message author
+			bf.WriteByte(true); // Chat message
+			bf.WriteString(textReplaced); // Message text
+
+			EndMessage();
 		}
 	}
 
