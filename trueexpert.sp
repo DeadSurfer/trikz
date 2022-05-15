@@ -905,9 +905,9 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 {
 	if(0 < activator <= MaxClients && IsClientInGame(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
-		int convar = GetConVarInt(gCV_button);
+		bool convar = GetConVarBool(gCV_button);
 
-		if(g_button[activator] == true && convar == 1)
+		if(g_button[activator] == true && convar == true)
 		{
 			//PrintToChat(activator, "You have pressed a button.");
 			//PrintToChat(activator, "\x01%T", "YouPressedButton", activator);
@@ -916,9 +916,9 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 			SendMessage(format, false, activator);
 		}
 
-		int convar2 = GetConVarInt(gCV_pbutton);
+		bool convar2 = GetConVarBool(gCV_pbutton);
 
-		if(g_pbutton[g_partner[activator]] == true && convar2 == 1)
+		if(g_pbutton[g_partner[activator]] == true && convar2 == true)
 		{
 			//PrintToChat(g_partner[activator], "Your partner have pressed a button.");
 			//PrintToChat(g_partner[activator], "\x01%T", "YourPartnerPressedButton", g_partner[activator]);
@@ -1224,7 +1224,13 @@ public void OnClientPutInServer(int client)
 		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	}
 
-	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
+	bool convar2 = GetConVarBool(gCV_autoflashbang);
+
+	if(convar2 == true)
+	{
+		SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
+	}
+
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
 	//SDKHook(client, SDKHook_PreThinkPost, SDKThink);
 	//SDKHook(client, SDKHook_SpawnPost, SDKClientSpawnPost);
@@ -1791,7 +1797,7 @@ public void Trikz(int client)
 	if(g_devmap == true)
 	{
 		//menu.AddItem("color", "Color");
-		menu.AddItem("color", format);
+		menu.AddItem("color", format, ITEMDRAW_DISABLED);
 	}
 
 	else if(g_devmap == false)
@@ -1913,6 +1919,7 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					Noclip(param1);
 					Trikz(param1);
+					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER);
 				}
 			}
 		}
@@ -2332,6 +2339,11 @@ public void ColorZ(int client, bool customSkin, int color)
 		{
 			return;
 		}
+
+		//if(g_partner[client] == 0)
+		//{
+		//	return;
+		//}
 		
 		//if(g_devmap == false && g_partner[client] == false)
 		if(g_devmap == false && g_partner[client] == 0)
@@ -2340,6 +2352,15 @@ public void ColorZ(int client, bool customSkin, int color)
 			//PrintToChat(client, "You must have a partner.");
 			char format[256];
 			Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
+			SendMessage(format, false, client);
+
+			return;
+		}
+
+		if(g_devmap == true)
+		{
+			char format[256];
+			Format(format, sizeof(format), "%T", "DevMapIsON", client);
 			SendMessage(format, false, client);
 
 			return;
@@ -3068,9 +3089,9 @@ public Action cmd_control(int client, int args)
 
 public Action cmd_macro(int client, int args)
 {
-	int convar = GetConVarInt(gCV_macro);
+	bool convar = GetConVarBool(gCV_macro);
 	
-	if(convar == 0)
+	if(convar == false)
 	{
 		return Plugin_Handled;
 	}
@@ -7255,9 +7276,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//return Plugin_Continue;
 		}
 
-		float convarMacro = GetConVarFloat(gCV_macro);
+		bool convarMacro = GetConVarBool(gCV_macro);
 
-		if(convarMacro == 1.0)
+		if(convarMacro == true)
 		{
 			if(buttons & IN_ATTACK2)
 			{
@@ -8568,9 +8589,7 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	int convar = GetConVarInt(gCV_autoflashbang);
-	
-	if(convar == 1 && (g_autoflash[client] == true || IsFakeClient(client)) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if((g_autoflash[client] == true || IsFakeClient(client)) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang");
 		GivePlayerItem(client, "weapon_flashbang");
@@ -8657,9 +8676,9 @@ public void rf_giveFlashbang(int client)
 
 public void GiveFlashbang(int client)
 {
-	int convar = GetConVarInt(gCV_autoflashbang);
+	bool convar = GetConVarBool(gCV_autoflashbang);
 	
-	if(convar == 1 && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if(convar == true && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang");
 		GivePlayerItem(client, "weapon_flashbang");
