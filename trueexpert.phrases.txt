@@ -585,4 +585,9 @@
 		"#format"	"{1:s},{2:s},{3:s}"
 		"en"	"*DEAD*(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
 	}*/
+	"Top10ac"
+	{
+		"#format"	"{1:s}"
+		"en"	"Don't spam with \"top10\". Wait {1} seconds."
+	}
 }
