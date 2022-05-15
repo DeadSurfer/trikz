@@ -189,6 +189,7 @@ int g_top10Count;
 //float g_srPrevTime;
 Handle g_teleport;
 KeyValues g_kv;
+ConVar gCV_boostfix;
 
 public Plugin myinfo =
 {
@@ -219,6 +220,7 @@ public void OnPluginStart()
 	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
 	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", 0, false, 0.0, true, 1.0);
 	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use", 0, false, 0.0, true, 1.0);
+	gCV_boostfix = CreateConVar("sm_te_boostfix", "0.0", "Artifacial boost for nade and stack boost", 0, false, 0.0, true, 1.0);
 	
 	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -1213,8 +1215,15 @@ public int checkpoint_handler(Menu menu, MenuAction action, int param1, int para
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage);
-	SDKHook(client, SDKHook_StartTouch, SDKSkyFix);
-	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
+
+	bool convar = GetConVarBool(gCV_boostfix);
+
+	if(convar == true)
+	{
+		SDKHook(client, SDKHook_StartTouch, SDKSkyFix);
+		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
+	}
+
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
 	//SDKHook(client, SDKHook_PreThinkPost, SDKThink);
