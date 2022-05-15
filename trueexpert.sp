@@ -190,6 +190,7 @@ int g_top10Count;
 Handle g_teleport;
 KeyValues g_kv;
 ConVar gCV_boostfix;
+float g_top10ac;
 
 public Plugin myinfo =
 {
@@ -2973,6 +2974,33 @@ public Action cmd_top10(int client, int args)
 
 public void Top10()
 {
+	if(g_top10ac < GetGameTime())
+	{
+		g_top10ac = GetGameTime() + 10.0;
+	}
+
+	else if(g_top10ac > GetGameTime())
+	{
+		//PrintToServer("Don't spam with top10. Wait %.0f seconds.", g_top10ac - GetGameTime());
+
+		char time[8];
+		//FloatToString(g_top10ac - GetGameTime(), time, sizeof(time));
+		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
+
+		char format[256];
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				Format(format, sizeof(format), "%T", "Top10ac", i, time);
+				SendMessage(format, false, i);
+			}
+		}
+
+		return;
+	}
+
 	char query[512] = "";
 	Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' ORDER BY time LIMIT 10", g_map);
 	g_mysql.Query(SQLTop10, query);
