@@ -43,6 +43,10 @@
 		//"#format"	""
 		"en"	"Turn on devmap."
 	}
+	"DevMapIsON"
+	{
+		"en"	"Turn off devmap."
+	}
 	"TurnOFFDevMap"
 	{
 		"en"	"Turn off dev map?"
