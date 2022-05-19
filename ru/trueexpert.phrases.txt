@@ -16,7 +16,7 @@
 	//}
 	"NewServerRecord"
 	{
-		"ru"	";#7CFC00Новый рекорд сервера!"
+		"ru"	";#7CFC00Новый серверный рекорд!"
 	}
 	"NewServerRecordDetail"
 	{
@@ -431,7 +431,7 @@
 	}
 	"NewServerRecordHud"
 	{
-		"ru"	"НОВЫЙ РЕКОРД СЕРВЕРА!"
+		"ru"	"НОВЫЙ СЕРВЕРНЫЙ РЕКОРД!"
 	}
 	"FirstRecordHud"
 	{
@@ -448,7 +448,7 @@
 	}
 	"NewServerRecordNotFirstHud"
 	{
-		"ru"	"НОВЫЙ РЕКОРД СЕРВЕРА!"
+		"ru"	"НОВЫЙ СЕРВЕРНЫЙ РЕКОРД!"
 	}
 	//"NewServerRecordDetailNotFirstHud"
 	//{
