@@ -1,1 +1,593 @@
-
+"Phrases"
+{
+	//Example: "Hello, Bail! Welcome to FakeExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
+	"Hello"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"Hello, ;#FF5733{2}! {default}Welcome to ;#FF4040{1}. {default}Your team is {teamcolor}{3}."
+	}
+	"dbPressed"
+	{
+		"en"	"Database is not passed througt gate. Please check your database configuration."
+	}
+	//"YMHP"
+	//{
+	//	"en"	"You must have a partner."
+	//}
+	"NewServerRecord"
+	{
+		"en"	";#7CFC00New Server Record!"
+	}
+	"NewServerRecordDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+	}
+	"NewServerRecordDetailNew"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+	}
+	"NewServerRecordNew"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5}"
+	}
+	"DevMapStart"
+	{
+		"#format"	"{1:s}"
+		"en"	"Devmap vote started by {1}"
+	}
+	"DevMapIsOFF"
+	{
+		//"#format"	""
+		"en"	"Включите devmap."
+	}
+	"DevMapIsON"
+	{
+		"en"	"Выключите devmap."
+	}
+	"TurnOFFDevMap"
+	{
+		"en"	"Включить devmap?"
+	}
+	"TurnONDevMap"
+	{
+		"en"	"Выключить devmap?"
+	}
+	//"NoclipEnabled"
+	//{
+	//	"en"	"Noclip enabled."
+	//}
+	//"NoclipDisabled"
+	//{
+	//	"en"	"Noclip disabled."
+	//}
+	"NoclipMenuON"
+	{
+		"en"	"Полёт [v]"
+	}
+	"NoclipMenuOFF"
+	{
+		"en"	"Полёт [x]"
+	}
+	"MLStatsOFF"
+	{
+		"en"	"ML stats теперь выключен."
+	}
+	"MLStatsON"
+	{
+		"en"	"ML stats теперь включен."
+	}
+	"VelOFF"
+	{
+		"en"	"Hide velocity now"
+	}
+	"VelON"
+	{
+		"en"	"Show Velocity now"
+	}
+	"EndMsgOFF"
+	{
+		"en"	"End message is off now"
+	}
+	"EndMsgON"
+	{
+		"en"	"End message is on now"
+	}
+	"MLStatsMenuON"
+	{
+		"en"	"ML Stats [v]"
+	}
+	"MLStatsMenuOFF"
+	{
+		"en"	"ML Stats [x]"
+	}
+	"VelMenuON"
+	{
+		"en"	"Скорость [v]"
+	}
+	"VelMenuOFF"
+	{
+		"en"	"Скорость [x]"
+	}
+	"ButtonAnnouncerON"
+	{
+		"en"	"Оповещение о нажатие кнопки теперь включено."
+	}
+	"ButtonAnnouncerOFF"
+	{
+		"en"	"Оповещение о нажатии кнопки теперь выключено."
+	}
+	"ButtonAnnouncerPartnerON"
+	{
+		"en"	"Партнёрское оповещение о нажатии кнопки теперь включено."
+	}
+	"ButtonAnnouncerPartnerOFF"
+	{
+		"en"	"Оповещение о партнёрской нажатии кнопки теперь выключено."
+	}
+	"AFKCHECK"
+	{
+		"#format"	"{1:s}"
+		"en"	"Afk проверка - голосование начал {1}"
+	}
+	"AFKCHECK2"
+	{
+		"en"	"Afk vote is not allowed yet."
+	}
+	"AreYouHere?"
+	{
+		"en"	"Вы здесь?"
+	}
+	"Yes"
+	{
+		"en"	"Да"
+	}
+	"No"
+	{
+		"en"	"Нет"
+	}
+	"BlockON"
+	{
+		"en"	"Блокирование включено теперь."
+	}
+	"BlockOFF"
+	{
+		"en"	"Блокирование выключено теперь."
+	}
+	"GroupAgreed"
+	{
+		"#format"	"{1:s}"
+		"en"	"Вы потвердили {1}"
+	}
+	"GetAgreed"
+	{
+		"#format"	"{1:s}"
+		"en"	"Вы имеете {1} как партнера."
+	}
+	"AlreadyHavePartner"
+	{
+		"en"	"У данного игрока уже есть партнер."
+	}
+	"PartnerDeclined"
+	{
+		"#format"	"{1:s}"
+		"en"	"Partnersheep declined with {1}."
+	}
+	"PartnerCanceled"
+	{
+		"#format"	"{1:s}"
+		"en"	"Partnership is canceled with {1}."
+	}
+	"PartnerCanceledBy"
+	{
+		"#format"	"{1:s}"
+		"en"	"Partnership is canceled by {1}."
+	}
+	"DevMapNotAllowed"
+	{
+		"en"	"Devmap vote is not allowed yet."
+	}
+	"YouMustHavePartner"
+	{
+		"en"	"You must have a partner."
+	}
+	"NoFreePlayer"
+	{
+		"en"	"Нет свободных игроков."
+	}
+	"DevMapWillBeDisabled"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will be disabled. \"Yes\" chose {1}%%% or {2} of {3} players."
+	}
+	"DevMapWillBeEnabled"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will be enabled. \"Yes\" chose {1}%%% or {2} of {3} players."
+	}
+	"DevMapContinue"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will be be continue. \"No\" chose {1}%%% or {2} of {3} players."
+	}
+	"DevMapWillNotBe"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will not be enabled. \"No\" chose {1}%%% or {2} of {3} players."
+	}
+	"AwayFromKeyboard"
+	{
+		"en"	"Отошел от клавиатуры"
+	}
+	"CancelPartnership"
+	{
+		"#format"	"{1:s}"
+		"en"	"Cancel partnership with {1}"
+	}
+	"AgreePartner"
+	{
+		"#format"	"{1:s}"
+		"en"	"Agree partnership with {1}?"
+	}
+	"PassedImproved"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+	}
+	"Passed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+	}
+	"Spectator"
+	{
+		"en"	"Наблюдатель"
+	}
+	"Terrorist"
+	{
+		"en"	"Террорист"
+	}
+	"Counter-Terrorist"
+	{
+		"en"	"Спецназ"
+	}
+	"JustPassed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+	}
+	"CPImprove"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s}"
+		"en"	"{1}. Checkpoint: ;#7CFC00-{2}:{3}:{4}"
+	}
+	"CPDeprove"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s}"
+		"en"	"{1}. Checkpoint: ;#FF0000+{2}:{3}:{4}"
+	}
+	"NewServerRecordFirst"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+00:00:00{default})"
+	}
+	"CPNEW"
+	{
+		"#format"	"{1:i}"
+		"en"	"{1}. Checkpoint: ;#FF0000+00:00:00"
+	}
+	"YouPressedButton"
+	{
+		"en"	"You have pressed a button."
+	}
+	"YourPartnerPressedButton"
+	{
+		"en"	"Your partner have pressed a button."
+	}
+	"Checkpoint"
+	{
+		"en"	"Точка сохранения"
+	}
+	"CP-save"
+	{
+		"en"	"Сохраниться"
+	}
+	"CP-teleport"
+	{
+		"en"	"Телепортироватся"
+	}
+	"CP-saveSecond"
+	{
+		"en"	"Сохранится вторично"
+	}
+	"CP-teleportSecond"
+	{
+		"en"	"Телепортироватся вторично"
+	}
+	"Trikz"
+	{
+		"en"	"Трикз"
+	}
+	"BlockON"
+	{
+		"en"	"Блок [v]"
+	}
+	"BlockOFF"
+	{
+		"en"	"Блок [x]"
+	}
+	"AutoflashMenuON"
+	{
+		"en"	"Автофлеш [v]"
+	}
+	"AutoflashMenuOFF"
+	{
+		"en"	"Автофлеш [x]"
+	}
+	"AutoswitchMenuON"
+	{
+		"en"	"Автосвитч [v]"
+	}
+	"AutoswitchMenuOFF"
+	{
+		"en"	"Автосвитч [x]"
+	}
+	"BhopMenuON"
+	{
+		"en"	"Бхоп [v]"
+	}
+	"BhopMenuOFF"
+	{
+		"en"	"Бхоп [x]"
+	}
+	"BlockChatON"
+	{
+		"en"	"Block is turned on now."
+	}
+	"BlockChatOFF"
+	{
+		"en"	"Block is turned off now."
+	}
+	"Breakup"
+	{
+		"en"	"Разорвать партнерства"
+	}
+	"Color"
+	{
+		"en"	"Цвет команды"
+	}
+	"Partner"
+	{
+		"en"	"Партнер"
+	}
+	"Restart"
+	{
+		"en"	"Начать заного"
+	}
+	"NoclipON"
+	{
+		"en"	"Noclip is turned on now."
+	}
+	"NoclipOFF"
+	{
+		"en"	"Noclip is turned off now."
+	}
+	"ChoosePartner"
+	{
+		"en"	"Выбрать партнера"
+	}
+	"CP-recordHud"
+	{
+		"#format"	"{1:i}"
+		"en"	"{1}. CHECKPOINT RECORD!"
+	}
+	"CP-recordDetailHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"CHECKPOINT: {1}:{2}:{3}"
+	}
+	"CP-DetailZeroHud"
+	{
+		"en"	"+00:00:00"
+	}
+	"CP-recordNotFirstHud"
+	{
+		"#format"	"{1:i}"
+		"en"	"{1}. CHECKPOINT RECORD!"
+	}
+	"CP-recordDetailNotFirstHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"CHECKPOINT: {1}:{2}:{3}"
+	}
+	"CP-recordImproveNotFirstHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"-{1}:{2}:{3}"
+	}
+	"CP-recordNonHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"CHECKPOINT: {1}:{2}:{3}"
+	}
+	"CP-recordDeproveHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"+{1}:{2}:{3}"
+	}
+	"MapFinishedFirstRecordHud"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"NewServerRecordHud"
+	{
+		"en"	"NEW SERVER RECORD!"
+	}
+	"FirstRecordHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"TIME: {1}:{2}:{3}"
+	}
+	"FirstRecordZeroHud"
+	{
+		"en"	"+00:00:00"
+	}
+	"NewServerRecordMapFinishedNotFirstHud"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"NewServerRecordNotFirstHud"
+	{
+		"en"	"NEW SERVER RECORD!"
+	}
+	//"NewServerRecordDetailNotFirstHud"
+	//{
+	//	"en"	"NEW SERVER RECORD!"
+	//}
+	"NewServerRecordDetailNotFirstHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"TIME: {1}:{2}:{3}"
+	}
+	"NewServerRecordImproveNotFirstHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"-{1}:{2}:{3}"
+	}
+	"MapFinishedDeproveHud"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"MapFinishedTimeDeproveHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"TIME: {1}:{2}:{3}"
+	}
+	"MapFinishedTimeDeproveOwnHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"+{1}:{2}:{3}"
+	}
+	"AutoflashON"
+	{
+		"en"	"Auto flashbang is turned on now."
+	}
+	"AutoflashOFF"
+	{
+		"en"	"Auto flashbang is turned off now."
+	}
+	"AutoswitchON"
+	{
+		"en"	"Auto switch is truned on now."
+	}
+	"AutoswitchOFF"
+	{
+		"en"	"Auto switch is turned off now."
+	}
+	"BhopON"
+	{
+		"en"	"Bunnyhop is turned on now."
+	}
+	"BhopOFF"
+	{
+		"en"	"Bunnyhop is turned off now."
+	}
+	"MacroOFF"
+	{
+		"en"	"Macro is disabled."
+	}
+	"MacroON"
+	{
+		"en"	"Macro is enabled."
+	}
+	"EndMessageON"
+	{
+		"en"	"End message is turned on now."
+	}
+	"EndMessageOFF"
+	{
+		"en"	"End message is turned off now."
+	}
+	"EndMessageMenuON"
+	{
+		"en"	"End message [v]"
+	}
+	"EndMessageMenuOFF"
+	{
+		"en"	"End message [x]"
+	}
+	"Top10"
+	{
+		//"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		//"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}}{default})"
+		"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}{default})"
+	}
+	/*"Cstrike_Chat_AllSpec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*SPEC* [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_Spec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#CCCCCC{2}} {default}:  {3}"
+	}
+	"Cstrike_Chat_All"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"[{1}}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"[{1}}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD* [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD* [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}*/
+	"Top10ac"
+	{
+		"#format"	"{1:s}"
+		"en"	"Don't spam with \"top10\". Wait {1} seconds."
+	}
+}
