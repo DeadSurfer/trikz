@@ -364,7 +364,7 @@
 	}
 	"Color"
 	{
-		"en"	"Color"
+		"en"	"Team color"
 	}
 	"Partner"
 	{
