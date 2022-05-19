@@ -5217,7 +5217,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 	//KeyValues kv = new KeyValues("TrueExpertHud");
 
 	//kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-	KeyValues kv = g_kv;
+	//KeyValues kv = g_kv;
 
 	char posColor[64] = "";
 
@@ -5240,9 +5240,14 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 	{
 		if(firstCPRecord == true)
 		{
+			//KeyValues kv = g_kv;
 			//char text[256] = "";
+			KeyValues kv = new KeyValues("TrueExpertHud");
+
+			kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
 			kv.GotoFirstSubKey();
-			//g_kv.JumpToKey("CP-recordHud");
+			//kv.JumpToKey("CP-recordHud");
 			//kv.GetString("CP-recordHud", text, sizeof(text), "");
 			//PrintToServer("%s", text);
 			do
@@ -5252,11 +5257,14 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				{
 					char section[64] = "";
 					kv.GetSectionName(section, sizeof(section));
+
 					if(StrEqual(section, "onlyCP_firstCPRecord", true))
 					{
 						kv.GetString("CP-RecordHud", posColor, sizeof(posColor));
+
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 						x = StringToFloat(exploded[0]);
 						y = StringToFloat(exploded[1]);
 						z = StringToFloat(exploded[2]);
@@ -5280,15 +5288,24 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 			}
+
 			while(kv.GotoNextKey());
+
+			delete kv;
 
 			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 			SetHudTextParams(x, y, z, r, g, b, a);
 			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 			Format(format, sizeof(format), "%T", "CP-recordHud", client, cpnum);
 			ShowHudText(client, 1, format);
+			
+			//kv = g_kv;
 
-			kv.GotoFirstSubKey();
+			KeyValues kv2 = new KeyValues("TrueExpertHud");
+
+			kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+			kv2.GotoFirstSubKey();
 			//kv.JumpToKey("CP-recordHud");
 
 			do
@@ -5297,10 +5314,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//if(kv.GotoFirstSubKey(false) == false)
 				{
 					char section[64] = "";
-					kv.GetSectionName(section, sizeof(section));
+					kv2.GetSectionName(section, sizeof(section));
 					if(StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 					{
-						kv.GetString("CP-RecordDetailHud", posColor, sizeof(posColor));
+						kv2.GetString("CP-RecordDetailHud", posColor, sizeof(posColor));
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						x = StringToFloat(exploded[0]);
@@ -5328,7 +5345,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 				//else if(kv.GotoFirstSubKey(false) == false)
 			}
-			while(kv.GotoNextKey());
+
+			while(kv2.GotoNextKey());
+
+			delete kv2;
 
 			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5336,8 +5356,13 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			Format(format, sizeof(format), "%T", "CP-recordDetailHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 			ShowHudText(client, 2, format);
 
-			kv.GotoFirstSubKey();
-			//g_kv.JumpToKey("CP-recordHud");
+			KeyValues kv3 = new KeyValues("TrueExpertHud");
+
+			kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+			//kv = g_kv;
+			kv3.GotoFirstSubKey();
+			//kv.JumpToKey("CP-recordHud");
 
 			do
 			{
@@ -5345,10 +5370,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//if(kv.GotoFirstSubKey(false) == false)
 				{
 					char section[64] = "";
-					kv.GetSectionName(section, sizeof(section));
+					kv3.GetSectionName(section, sizeof(section));
 					if(StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 					{
-						kv.GetString("CP-DetailZeroHud", posColor, sizeof(posColor));
+						kv3.GetString("CP-DetailZeroHud", posColor, sizeof(posColor));
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						x = StringToFloat(exploded[0]);
@@ -5376,9 +5401,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 				//else if(kv.GotoFirstSubKey(false) == false)
 			}
-			while(kv.GotoNextKey());
 
-			//delete kv;
+			while(kv3.GotoNextKey());
+
+			delete kv3;
 			
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5424,21 +5450,27 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 		{
 			if(cpRecord == true)
 			{
-				//g_kv.GotoFirstSubKey();
-				kv.JumpToKey("CP-recordHud");
+				KeyValues kv4 = new KeyValues("TrueExpertHud");
+
+				kv4.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+				kv4.GotoFirstSubKey();
+				//kv.JumpToKey("CP-recordHud");
 
 				do
 				{
 					// Content
-					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv4.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true))
 						{
-							kv.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
+							kv4.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -5463,7 +5495,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey());
+
+				while(kv4.GotoNextKey());
+
+				delete kv4;
 
 				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5471,7 +5506,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", client, cpnum);
 				ShowHudText(client, 1, format);
 
-				kv.GotoFirstSubKey();
+				KeyValues kv5 = new KeyValues("TrueExpertHud");
+
+				kv5.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+				//kv = g_kv;
+				kv5.GotoFirstSubKey();
 				//kv.JumpToKey("CP-recordHud");
 
 				do
@@ -5480,12 +5519,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv5.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true))
 						{
-							kv.GetString("CP-recordDetailNotFirstHud", posColor, sizeof(posColor));
+							kv5.GetString("CP-recordDetailNotFirstHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -5509,15 +5551,21 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey());
 
+				while(kv5.GotoNextKey());
+
+				delete kv5;
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
 				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 2, format);
 
-				kv.GotoFirstSubKey();
+				KeyValues kv6 = new KeyValues("TrueExpertHud");
+
+				kv6.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+				//kv = g_kv;
+				kv6.GotoFirstSubKey();
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -5526,12 +5574,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv6.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true))
 						{
-							kv.GetString("CP-recordImproveNotFirstHud", posColor, sizeof(posColor));
+							kv6.GetString("CP-recordImproveNotFirstHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+							
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -5555,9 +5606,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey());
 
-				//delete kv;
+				while(kv6.GotoNextKey());
+
+				delete kv6;
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5598,7 +5650,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 			else if(cpRecord == false)
 			{
-				kv.GotoFirstSubKey(true);
+				KeyValues kv7 = new KeyValues("TrueExpertHud");
+
+				kv7.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+				kv7.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -5607,12 +5662,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv7.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true))
 						{
-							kv.GetString("CP-RecordNonHud", posColor, sizeof(posColor));
+							kv7.GetString("CP-RecordNonHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -5637,7 +5695,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey());
+
+				while(kv7.GotoNextKey(true));
+
+				delete kv7;
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -5646,7 +5707,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				ShowHudText(client, 1, format);
 				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 
-				kv.GotoFirstSubKey();
+				KeyValues kv8 = new KeyValues("TrueExpertHud");
+
+				kv8.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+				//kv = g_kv;
+				kv8.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 				
 				do
@@ -5655,10 +5720,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv8.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true))
 						{
-							kv.GetString("CP-RecordDeproveHud", posColor, sizeof(posColor));
+							kv8.GetString("CP-RecordDeproveHud", posColor, sizeof(posColor));
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 							x = StringToFloat(exploded[0]);
@@ -5685,14 +5751,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey());
 
-				//delete kv;
+				while(kv8.GotoNextKey(true));
+
+				delete kv8;
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
 				//ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				Format(format, sizeof(format), "%T", "CP-recordDeproveHud", client, srHour, srMinute, srSecond);
+				Format(format, sizeof(format), "%T", "CP-recordDeproveHud", client, sSRHour, sSRMinute, sSRSecond);
 				ShowHudText(client, 2, format);
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -5724,9 +5791,14 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 	else if(onlyCP == false)
 	{
+		//KeyValues kv;
 		if(firstServerRecord == true)
 		{
-			kv.GotoFirstSubKey(true);
+			KeyValues kv9 = new KeyValues("TrueExpertHud");
+
+			kv9.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+			kv9.GotoFirstSubKey(true);
 			//g_kv.JumpToKey("CP-recordHud");
 
 			do
@@ -5735,10 +5807,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//if(kv.GotoFirstSubKey(false) == true)
 				{
 					char section[64] = "";
-					kv.GetSectionName(section, sizeof(section));
+					kv9.GetSectionName(section, sizeof(section));
+
 					if(StrEqual(section, "notOnlyCP_firstServerRecord", true))
 					{
-						kv.GetString("MapFinishedFirstRecordHud", posColor, sizeof(posColor));
+						kv9.GetString("MapFinishedFirstRecordHud", posColor, sizeof(posColor));
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						x = StringToFloat(exploded[0]);
@@ -5765,7 +5838,9 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 			}
-			while(kv.GotoNextKey(true));
+			while(kv9.GotoNextKey(true));
+
+			delete kv9;
 
 			//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5773,7 +5848,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", client);
 			ShowHudText(client, 1, format);
 
-			kv.GotoFirstSubKey(true);
+			KeyValues kv10 = new KeyValues("TrueExpertHud");
+
+			kv10.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+			kv10.GotoFirstSubKey(true);
 			//g_kv.JumpToKey("CP-recordHud");
 
 			do
@@ -5782,10 +5861,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//if(kv.GotoFirstSubKey(false) == true)
 				{
 					char section[64] = "";
-					kv.GetSectionName(section, sizeof(section));
+					kv10.GetSectionName(section, sizeof(section));
 					if(StrEqual(section, "notOnlyCP_firstServerRecord", true))
 					{
-						kv.GetString("NewServerRecordHud", posColor, sizeof(posColor));
+						kv10.GetString("NewServerRecordHud", posColor, sizeof(posColor));
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						x = StringToFloat(exploded[0]);
@@ -5812,7 +5891,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 			}
-			while(kv.GotoNextKey(true));
+
+			while(kv10.GotoNextKey(true));
+
+			delete kv10;
 
 			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5820,7 +5902,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			Format(format, sizeof(format), "%T", "NewServerRecordHud", client);
 			ShowHudText(client, 2, format);
 
-			kv.GotoFirstSubKey(true);
+			KeyValues kv11 = new KeyValues("TrueExpertHud");
+
+			kv11.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+			kv11.GotoFirstSubKey(true);
 			//g_kv.JumpToKey("CP-recordHud");
 
 			do
@@ -5829,10 +5915,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//if(kv.GotoFirstSubKey(false) == true)
 				{
 					char section[64] = "";
-					kv.GetSectionName(section, sizeof(section));
+					kv11.GetSectionName(section, sizeof(section));
 					if(StrEqual(section, "notOnlyCP_firstServerRecord", true))
 					{
-						kv.GetString("FirstRecordHud", posColor, sizeof(posColor));
+						kv11.GetString("FirstRecordHud", posColor, sizeof(posColor));
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						x = StringToFloat(exploded[0]);
@@ -5859,7 +5945,9 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 			}
-			while(kv.GotoNextKey(true));
+			while(kv11.GotoNextKey(true));
+
+			delete kv11;
 
 			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5867,7 +5955,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 			Format(format, sizeof(format), "%T", "FirstRecordHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 			ShowHudText(client, 3, format);
 
-			kv.GotoFirstSubKey(true);
+			KeyValues kv12 = new KeyValues("TrueExpertHud");
+
+			kv12.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+			kv12.GotoFirstSubKey(true);
 			//g_kv.JumpToKey("CP-recordHud");
 
 			do
@@ -5876,10 +5968,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//if(kv.GotoFirstSubKey(false) == true)
 				{
 					char section[64] = "";
-					kv.GetSectionName(section, sizeof(section));
+					kv12.GetSectionName(section, sizeof(section));
 					if(StrEqual(section, "notOnlyCP_firstServerRecord", true))
 					{
-						kv.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
+						kv12.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						x = StringToFloat(exploded[0]);
@@ -5906,9 +5998,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 			}
-			while(kv.GotoNextKey(true));
 
-			//delete kv;
+			while(kv12.GotoNextKey(true));
+
+			delete kv12;
 
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
@@ -5959,7 +6052,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 		{
 			if(serverRecord == true)
 			{
-				kv.GotoFirstSubKey(true);
+				KeyValues kv13 = new KeyValues("TrueExpertHud");
+
+				kv13.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+				kv13.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -5968,10 +6065,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv13.GetSectionName(section, sizeof(section));
 						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
 						{
-							kv.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
+							kv13.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 							x = StringToFloat(exploded[0]);
@@ -5998,7 +6095,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+
+				while(kv13.GotoNextKey(true));
+
+				delete kv13;
 
 				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -6008,7 +6108,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
 				//ShowHudText(client, 2, format);
 
-				kv.GotoFirstSubKey(true);
+				KeyValues kv14 = new KeyValues("TrueExpertHud");
+
+				kv14.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+				kv14.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -6017,10 +6121,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv14.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
 						{
-							kv.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
+							kv14.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 							x = StringToFloat(exploded[0]);
@@ -6047,7 +6152,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+
+				while(kv14.GotoNextKey(true));
+
+				delete kv14;
 
 				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -6055,7 +6163,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", client);
 				ShowHudText(client, 2, format);
 
-				kv.GotoFirstSubKey(true);
+				KeyValues kv15 = new KeyValues("TrueExpertHud");
+
+				kv15.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+				kv15.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -6064,12 +6176,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv15.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
 						{
-							kv.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
+							kv15.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -6094,7 +6209,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+
+				while(kv15.GotoNextKey(true));
+
+				delete kv15;
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -6102,7 +6220,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 3, format);
 
-				kv.GotoFirstSubKey(true);
+				KeyValues kv16 = new KeyValues("TrueExpertHud");
+
+				kv16.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+				kv16.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -6111,12 +6233,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv16.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
 						{
-							kv.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
+							kv16.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -6141,9 +6266,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
 
-				//delete kv;
+				while(kv16.GotoNextKey(true));
+
+				delete kv16;
 
 				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -6193,7 +6319,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 			else if(serverRecord == false)
 			{
-				kv.GotoFirstSubKey(true);
+				KeyValues kv17 = new KeyValues("TrueExpertHud");
+
+				kv17.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+				kv17.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -6202,11 +6332,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv17.GetSectionName(section, sizeof(section));
 						//PrintToServer("%s", section);
 						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true))
 						{
-							kv.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
+							kv17.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 							x = StringToFloat(exploded[0]);
@@ -6235,7 +6365,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey());
+
+				while(kv17.GotoNextKey());
+
+				delete kv17;
 
 				//PrintToServer("here");
 
@@ -6245,7 +6378,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				FormatEx(format, sizeof(format), "%T", "MapFinishedDeproveHud", client);
 				ShowHudText(client, 1, format);
 
-				kv.GotoFirstSubKey(true);
+				KeyValues kv18 = new KeyValues("TrueExpertHud");
+
+				kv18.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+				kv18.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -6254,12 +6391,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv18.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true))
 						{
-							kv.GetString("MapFinishedTimeDeproveHud", posColor, sizeof(posColor));
+							kv18.GetString("MapFinishedTimeDeproveHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -6284,15 +6424,22 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+
+				while(kv18.GotoNextKey(true));
+
+				delete kv18;
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
 				//ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 				FormatEx(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", client, sPersonalHour, sPersonalMinute, sPersonalSecond);
 				ShowHudText(client, 2, format);
+
+				KeyValues kv19 = new KeyValues("TrueExpertHud");
+
+				kv19.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 				
-				kv.GotoFirstSubKey(true);
+				kv19.GotoFirstSubKey(true);
 				//g_kv.JumpToKey("CP-recordHud");
 
 				do
@@ -6301,12 +6448,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					//if(kv.GotoFirstSubKey(false) == true)
 					{
 						char section[64] = "";
-						kv.GetSectionName(section, sizeof(section));
+						kv19.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true))
 						{
-							kv.GetString("MapFinishedTimeDeproveOwnHud", posColor, sizeof(posColor));
+							kv19.GetString("MapFinishedTimeDeproveOwnHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -6331,7 +6481,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-				while(kv.GotoNextKey(true));
+
+				while(kv19.GotoNextKey(true));
+
+				delete kv19;
 				
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
@@ -6369,11 +6522,11 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						}
 					}
 				}
-
-				//delete kv;
 			}
 		}
 	}
+
+	//delete kv;
 }
 
 public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
