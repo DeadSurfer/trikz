@@ -738,13 +738,13 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec", false))
 	{
-		Format(text, sizeof(text), "\x01*SPEC* [%s] \x07CCCCCC%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
+		Format(text, sizeof(text), "\x01*%T* [%s] \x07CCCCCC%s \x01:  %s", "Spec", client, points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllSpec", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec", false))
 	{
-		Format(text, sizeof(text), "\x01(Spectator) [%s] \x07CCCCCC%s \x01:  %s", points, name, text);
+		Format(text, sizeof(text), "\x01(%T) [%s] \x07CCCCCC%s \x01:  %s", "Spectator", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_Spec", client, points, name, text);
 	}
 
@@ -767,38 +767,38 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	{
 		if(GetClientTeam(client) == 2)
 		{
-			Format(text, sizeof(text), "\x01*DEAD* [%s] \x07FF4040%s \x01:  %s", points, name, text);
+			Format(text, sizeof(text), "\x01*%T* [%s] \x07FF4040%s \x01:  %s", "Dead", client, points, name, text);
 			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead", client, points, name, text);
 		}
 
 		else if(GetClientTeam(client) == 3)
 		{
-			Format(text, sizeof(text), "\x01*DEAD* [%s] \x0799CCFF%s \x01:  %s", points, name, text);
+			Format(text, sizeof(text), "\x01*%T* [%s] \x0799CCFF%s \x01:  %s", "Dead", client, points, name, text);
 			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead2", client, points, name, text);
 		}
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT", false))
 	{
-		Format(text, sizeof(text), "\x01(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text);
+		Format(text, sizeof(text), "\x01(%T) [%s] \x0799CCFF%s \x01:  %s", "Counter-Terrorist", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT_Dead", false))
 	{
-		Format(text, sizeof(text), "\x01*DEAD*(Counter-Terrorist) [%s] \x0799CCFF%s \x01:  %s", points, name, text);
+		Format(text, sizeof(text), "\x01*%T*(%T) [%s] \x0799CCFF%s \x01:  %s", "Dead", client, "Counter-Terrorist", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT_Dead", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T", false))
 	{
-		Format(text, sizeof(text), "\x01(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text); //https://forums.alliedmods.net/showthread.php?t=185016
+		Format(text, sizeof(text), "\x01(%T) [%s] \x07FF4040%s \x01:  %s", "Terrorist", client, points, name, text); //https://forums.alliedmods.net/showthread.php?t=185016
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T_Dead", false))
 	{
-		Format(text, sizeof(text), "\x01*DEAD*(Terrorist) [%s] \x07FF4040%s \x01:  %s", points, name, text);
+		Format(text, sizeof(text), "\x01*%T*(%T) [%s] \x07FF4040%s \x01:  %s", "Dead", client, "Terrorist", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T_Dead", client, points, name, text);
 	}
 
@@ -5969,11 +5969,14 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				{
 					char section[64] = "";
 					kv12.GetSectionName(section, sizeof(section));
+
 					if(StrEqual(section, "notOnlyCP_firstServerRecord", true))
 					{
 						kv12.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
+
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 						x = StringToFloat(exploded[0]);
 						y = StringToFloat(exploded[1]);
 						z = StringToFloat(exploded[2]);
@@ -6005,7 +6008,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x, y, z, r, g, b, a);
-			ShowHudText(client, 4, "+00:00:00");
+			//ShowHudText(client, 4, "+00:00:00");
 			Format(format, sizeof(format), "%T", "FirstRecordZeroHud", client);
 			ShowHudText(client, 4, format);
 
@@ -6066,11 +6069,14 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					{
 						char section[64] = "";
 						kv13.GetSectionName(section, sizeof(section));
+
 						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
 						{
 							kv13.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -6103,10 +6109,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
 				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
-				ShowHudText(client, 1, "MAP FINISHED!");
+				//ShowHudText(client, 1, "MAP FINISHED!");
 				
 				//Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
-				//ShowHudText(client, 2, format);
+				ShowHudText(client, 1, format);
 
 				KeyValues kv14 = new KeyValues("TrueExpertHud");
 
@@ -6126,8 +6132,10 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
 						{
 							kv14.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -6271,7 +6279,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 
 				delete kv16;
 
-				SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
+				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x, y, z, r, g, b, a);
 				//ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond); //https://youtu.be/j4L3YvHowv8?t=45
 				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", client, sSRHour, sSRMinute, sSRSecond);
@@ -6333,12 +6341,15 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					{
 						char section[64] = "";
 						kv17.GetSectionName(section, sizeof(section));
+
 						//PrintToServer("%s", section);
 						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true))
 						{
 							kv17.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
+
 							char exploded[7][8];
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
+
 							x = StringToFloat(exploded[0]);
 							y = StringToFloat(exploded[1]);
 							z = StringToFloat(exploded[2]);
@@ -6366,7 +6377,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 					}
 				}
 
-				while(kv17.GotoNextKey());
+				while(kv17.GotoNextKey(true));
 
 				delete kv17;
 
@@ -8108,7 +8119,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 					//return param1;
 
 					char format[256] = "";
-					Format(format, sizeof(format), "%T", g_hudVel[param1] ? "MLStatsON" : "MLStatsOFF", param1);
+					Format(format, sizeof(format), "%T", g_mlstats[param1] ? "MLStatsON" : "MLStatsOFF", param1);
 					SendMessage(format, false, param1);
 				}
 
@@ -8121,7 +8132,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 					SetClientCookie(param1, g_cookie[8], value);
 
 					char format[256] = "";
-					Format(format, sizeof(format), "%T", g_hudVel[param1] ? "EndMsgON" : "EndMsgOFF", param1);
+					Format(format, sizeof(format), "%T", g_endMessage[param1] ? "EndMsgON" : "EndMsgOFF", param1);
 					SendMessage(format, false, param1);
 				}
 			}
