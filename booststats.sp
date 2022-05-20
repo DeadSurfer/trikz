@@ -198,7 +198,7 @@ void OnJump(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_waitSpawn(Handle timer, int client)
 {
-	if(IsClientInGame(client) && 0.01 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3 && g_created[client])
+	if(IsClientInGame(client) && 0.011 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3 && g_created[client])
 	{
 		if(IsClientInGame(client) && g_boostStats[client])
 			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
