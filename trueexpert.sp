@@ -6070,7 +6070,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						char section[64] = "";
 						kv13.GetSectionName(section, sizeof(section));
 
-						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
+						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true))
 						{
 							kv13.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
 
@@ -6129,7 +6129,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						char section[64] = "";
 						kv14.GetSectionName(section, sizeof(section));
 
-						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
+						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true))
 						{
 							kv14.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
 
@@ -6186,7 +6186,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						char section[64] = "";
 						kv15.GetSectionName(section, sizeof(section));
 
-						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
+						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true))
 						{
 							kv15.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
 
@@ -6243,7 +6243,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						char section[64] = "";
 						kv16.GetSectionName(section, sizeof(section));
 
-						if(StrEqual(section, "notOnlyCP_firstServerRecord_serverRecord", true))
+						if(StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true))
 						{
 							kv16.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
 
