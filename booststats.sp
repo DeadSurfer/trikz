@@ -31,18 +31,23 @@
 #include <sdkhooks>
 #include <clientprefs>
 
-float g_boostTimeStart[MAXPLAYERS + 1]
-float g_boostTimeEnd[MAXPLAYERS + 1]
-float g_projectileVel[MAXPLAYERS + 1]
-float g_vel[MAXPLAYERS + 1]
-bool g_duck[MAXPLAYERS + 1]
-bool g_boostStats[MAXPLAYERS + 1]
-float g_angles[MAXPLAYERS + 1][3]
-Handle g_cookie
-bool g_boostProcess[MAXPLAYERS + 1]
-float g_boostPerf[MAXPLAYERS + 1][2]
-bool g_created[MAXPLAYERS + 1]
-native int Trikz_GetClientPartner(int client)
+#define semicolon 1
+#define newdecls required
+
+#define MAXPLAYER MAXPLAYERS + 1
+
+float g_boostTimeStart[MAXPLAYER];
+float g_boostTimeEnd[MAXPLAYER];
+float g_projectileVel[MAXPLAYER];
+float g_vel[MAXPLAYER];
+bool g_duck[MAXPLAYER];
+bool g_boostStats[MAXPLAYER];
+float g_angles[MAXPLAYER][3];
+Handle g_cookie;
+bool g_boostProcess[MAXPLAYER];
+float g_boostPerf[MAXPLAYER][2];
+bool g_created[MAXPLAYER];
+native int Trikz_GetClientPartner(int client);
 
 public Plugin myinfo =
 {
@@ -51,84 +56,100 @@ public Plugin myinfo =
 	description = "Measures time between attack and jump",
 	version = "0.3",
 	url = "http://www.sourcemod.net/"
-}
+};
 
 public void OnPluginStart()
 {
-	RegConsoleCmd("sm_bs", cmd_booststats)
-	g_cookie = RegClientCookie("bs", "booststats", CookieAccess_Protected)
+	RegConsoleCmd("sm_bs", cmd_booststats);
+
+	g_cookie = RegClientCookie("bs", "booststats", CookieAccess_Protected);
+
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsValidEntity(i))
-			OnClientPutInServer(i)
-	HookEvent("player_jump", OnJump, EventHookMode_PostNoCopy)
+			OnClientPutInServer(i);
+
+	HookEvent("player_jump", OnJump, EventHookMode_PostNoCopy);
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	MarkNativeAsOptional("Trikz_GetClientPartner")
-	return APLRes_Success
+	MarkNativeAsOptional("Trikz_GetClientPartner");
+
+	return APLRes_Success;
 }
 
 public void OnClientPutInServer(int client)
 {
 	if(!AreClientCookiesCached(client))
-		g_boostStats[client] = false
-	SDKHook(client, SDKHook_StartTouch, SDKStartTouch)
+		g_boostStats[client] = false;
+
+	SDKHook(client, SDKHook_StartTouch, SDKStartTouch);
 }
 
 public void OnClientCookiesCached(int client)
 {
-	char value[16]
-	GetClientCookie(client, g_cookie, value, 16)
-	g_boostStats[client] = view_as<bool>(StringToInt(value))
+	char value[16];
+	GetClientCookie(client, g_cookie, value, sizeof(value));
+	g_boostStats[client] = view_as<bool>(StringToInt(value));
 }
 
 Action cmd_booststats(int client, int args)
 {
-	g_boostStats[client] = !g_boostStats[client]
-	char value[16]
-	IntToString(g_boostStats[client], value, 16)
-	SetClientCookie(client, g_cookie, value)
-	PrintToChat(client, g_boostStats[client] ? "Boost stats is on." : "Boost stats is off.")
-	return Plugin_Handled
+	g_boostStats[client] = !g_boostStats[client];
+
+	char value[16];
+	IntToString(g_boostStats[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie, value);
+
+	PrintToChat(client, g_boostStats[client] ? "Boost stats is on." : "Boost stats is off.");
+
+	return Plugin_Handled;
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if(!IsChatTrigger())
 		if(StrEqual(sArgs, "bs"))
-			cmd_booststats(client, 0)
-	return Plugin_Continue
+			cmd_booststats(client, 0);
+
+	return Plugin_Continue;
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_ATTACK)
 	{
-		g_boostProcess[client] = true
-		g_boostTimeStart[client] = GetGameTime()
-		float velAbs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs)
-		g_vel[client] = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0))
-		g_duck[client] = view_as<bool>(buttons & IN_DUCK)
-		g_angles[client][0] = angles[0]
-		g_angles[client][1] = angles[1]
+		g_boostProcess[client] = true;
+		g_boostTimeStart[client] = GetGameTime();
+
+		float velAbs[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs);
+		g_vel[client] = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0));
+
+		g_duck[client] = view_as<bool>(buttons & IN_DUCK);
+
+		g_angles[client][0] = angles[0];
+		g_angles[client][1] = angles[1];
 	}
-	return Plugin_Continue
+
+	return Plugin_Continue;
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "flashbang_projectile"))
-		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile)
+		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile);
 }
 
 void SDKSpawnProjectile(int entity)
 {
-	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-	g_boostPerf[client][0] = GetGameTime()
-	RequestFrame(frame_projectileVel, entity)
-	g_created[client] = true
+	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+	g_boostPerf[client][0] = GetGameTime();
+
+	RequestFrame(frame_projectileVel, entity);
+
+	g_created[client] = true;
 }
 
 
@@ -136,23 +157,27 @@ void frame_projectileVel(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-		float vel[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
-		g_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+		float vel[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
+
+		g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 	}
 }
 Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && !g_projectileVel[other])
 	{
-		char classname[32]
-		GetEntityClassname(entity, classname, 32)
+		char classname[32];
+		GetEntityClassname(entity, classname, sizeof(classname));
+
 		if(StrEqual(classname, "flashbang_projectile"))
 		{
-			float vel[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel)
-			g_projectileVel[other] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+			float vel[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
+
+			g_projectileVel[other] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		}
 	}
 	return Plugin_Continue
@@ -160,12 +185,14 @@ Action SDKStartTouch(int entity, int other)
 
 void OnJump(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(g_boostProcess[client])
+	int client = GetClientOfUserId(event.GetInt("userid"));
+
+	if(g_boostProcess[client] == true)
 	{
-		g_boostTimeEnd[client] = GetGameTime()
-		g_boostPerf[client][1] = GetGameTime()
-		CreateTimer(0.1, timer_waitSpawn, client, TIMER_FLAG_NO_MAPCHANGE)
+		g_boostTimeEnd[client] = GetGameTime();
+		g_boostPerf[client][1] = GetGameTime();
+
+		CreateTimer(0.1, timer_waitSpawn, client, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
@@ -174,23 +201,29 @@ Action timer_waitSpawn(Handle timer, int client)
 	if(IsClientInGame(client) && 0.01 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3 && g_created[client])
 	{
 		if(IsClientInGame(client) && g_boostStats[client])
-			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+		
 		if(0 < Trikz_GetClientPartner(client) <= MaxClients && IsClientInGame(Trikz_GetClientPartner(client)) && g_boostStats[Trikz_GetClientPartner(client)])
-			PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+			PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+		
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
 				if(observerMode < 7 && observerTarget == client && g_boostStats[i])
-					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				
 				else if(0 < Trikz_GetClientPartner(client) <= MaxClients && observerMode < 7 && observerTarget == Trikz_GetClientPartner(client) && g_boostStats[i])
-					PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+					PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 			}
 		}
-		g_boostProcess[client] = false
-		g_created[client] = false
+
+		g_boostProcess[client] = false;
+		g_created[client] = false;
 	}
-	return Plugin_Continue
+
+	return Plugin_Continue;
 }
