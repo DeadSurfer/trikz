@@ -49,7 +49,7 @@ public Plugin myinfo =
 	name = "Boost stats",
 	author = "Smesh",
 	description = "Measures time between attack and jump",
-	version = "0.2",
+	version = "0.3",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -131,6 +131,7 @@ void SDKSpawnProjectile(int entity)
 	g_created[client] = true
 }
 
+
 void frame_projectileVel(int entity)
 {
 	if(IsValidEntity(entity))
@@ -141,7 +142,6 @@ void frame_projectileVel(int entity)
 		g_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 	}
 }
-
 Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && !g_projectileVel[other])
@@ -171,12 +171,12 @@ void OnJump(Event event, const char[] name, bool dontBroadcast)
 
 Action timer_waitSpawn(Handle timer, int client)
 {
-	if(IsClientInGame(client) && 0.0 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3 && g_created[client])
+	if(IsClientInGame(client) && 0.01 < g_boostTimeEnd[client] - g_boostTimeStart[client] < 0.3 && g_created[client])
 	{
 		if(IsClientInGame(client) && g_boostStats[client])
-			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+			PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 		if(0 < Trikz_GetClientPartner(client) <= MaxClients && IsClientInGame(Trikz_GetClientPartner(client)) && g_boostStats[Trikz_GetClientPartner(client)])
-			PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+			PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) && IsClientObserver(i))
@@ -184,9 +184,9 @@ Action timer_waitSpawn(Handle timer, int client)
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
 				if(observerMode < 7 && observerTarget == client && g_boostStats[i])
-					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+					PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 				else if(0 < Trikz_GetClientPartner(client) <= MaxClients && observerMode < 7 && observerTarget == Trikz_GetClientPartner(client) && g_boostStats[i])
-					PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
+					PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1])
 			}
 		}
 		g_boostProcess[client] = false
