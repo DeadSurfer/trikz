@@ -7913,7 +7913,16 @@ public Action cmd_afk(int client, int args)
 		//PrintToChatAll("Afk check - vote started by %N", client);
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
-		PrintToChatAll("\x01%T", "AFKCHECK", name, client);
+		char format[256] = "";
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				//PrintToChat(i, "\x01%T", "AFKCHECK", i, name);
+				Format(format, sizeof(format), "%T", "AFKCHECK", i, name);
+				SendMessage(format, false, i);
+			}
+		}
 
 		//return Plugin_Handled;
 	}
