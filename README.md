@@ -45,7 +45,7 @@ native bool Trikz_GetTimerState(int client); //Is timer runing (true/false)<br>
 native int Trikz_GetDevmap(); //Is devmap now (true/false)<br>
 
 Forwards:<br>
-public void Trikz_ColorZ(client, red, green, blue) //On do color for skin<br>
+public void Trikz_ColorTeam(client, red, green, blue) //On do color for skin<br>
 {
 <br>
 }
