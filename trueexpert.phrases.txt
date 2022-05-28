@@ -364,7 +364,15 @@
 	}
 	"Color"
 	{
-		"en"	"Team color"
+		"en"	"Color"
+	}
+	"ColorTeam"
+	{
+		"en"	"Team Color"
+	}
+	"ColorPingFL"
+	{
+		"en"	"Ping / Flashbang Color"
 	}
 	"Partner"
 	{
