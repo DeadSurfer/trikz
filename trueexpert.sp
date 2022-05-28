@@ -154,7 +154,7 @@ float g_restartInHold[MAXPLAYER];
 bool g_restartInHoldLock[MAXPLAYER];
 int g_smoke;
 bool g_clantagOnce[MAXPLAYER];
-bool g_seperate[MAXPLAYER];
+//bool g_seperate[MAXPLAYER];
 //int g_projectileSoundLoud[MAXPLAYER];
 //bool g_readyToFix[MAXPLAYER];
 ConVar gCV_trikz;
@@ -233,7 +233,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partner", cmd_partner);
 	RegConsoleCmd("sm_c", cmd_color);
 	RegConsoleCmd("sm_color", cmd_color);
-	RegConsoleCmd("sm_fl", cmd_colorflash);
+	//RegConsoleCmd("sm_fl", cmd_colorflash);
 	RegConsoleCmd("sm_r", cmd_restart);
 	RegConsoleCmd("sm_restart", cmd_restart);
 	RegConsoleCmd("sm_autoflash", cmd_autoflash);	
@@ -978,7 +978,8 @@ public Action autobuy(int client, const char[] command, int argc)
 
 public Action rebuy(int client, const char[] command, int argc)
 {
-	ColorZ(client, true, -1);
+	//ColorTeam(client, true, -1);
+	cmd_color(client, 0);
 
 	return Plugin_Continue;
 }
@@ -1007,6 +1008,7 @@ public void Control(int client)
 	menu.SetTitle("Control");
 
 	menu.AddItem("top", "!top");
+	menu.AddItem("top10", "!top10");
 	menu.AddItem("js", "!js");
 	menu.AddItem("bs", "!bs");
 	menu.AddItem("hud", "!hud");
@@ -1014,7 +1016,8 @@ public void Control(int client)
 	menu.AddItem("pbutton", "!pbutton");
 	menu.AddItem("spec", "!spec");
 	menu.AddItem("color", "!color");
-	menu.AddItem("colorflash", "!colorflash");
+	menu.AddItem("afk", "!afk");
+	//menu.AddItem("colorflash", "!colorflash");
 	menu.AddItem("trikz", "!trikz");
 
 	menu.Display(client, 20);
@@ -1037,45 +1040,56 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 
 				case 1:
 				{
-					FakeClientCommandEx(param1, "sm_js"); //faster cooamnd respond
+					Top10();
 				}
 
 				case 2:
 				{
-					FakeClientCommandEx(param1, "sm_bs"); //faster command respond
+					FakeClientCommandEx(param1, "sm_js"); //faster cooamnd respond
 				}
 
 				case 3:
 				{
-					cmd_hud(param1, 0);
+					FakeClientCommandEx(param1, "sm_bs"); //faster command respond
 				}
 
 				case 4:
 				{
-					cmd_button(param1, 0);
+					cmd_hud(param1, 0);
 				}
 
 				case 5:
 				{
-					cmd_pbutton(param1, 0);
+					cmd_button(param1, 0);
 				}
 
 				case 6:
 				{
-					cmd_spec(param1, 0);
+					cmd_pbutton(param1, 0);
 				}
 
 				case 7:
 				{
-					ColorZ(param1, true, -1);
+					cmd_spec(param1, 0);
 				}
 
 				case 8:
 				{
-					ColorFlashbang(param1, true, -1);
+					//ColorTeam(param1, true, -1);
+					cmd_color(param1, 0);
 				}
 
+				//case 8:
+				//{
+				//	ColorFlashbang(param1, true, -1);
+				//}
+
 				case 9:
+				{
+					cmd_afk(param1, 0);
+				}
+
+				case 10:
 				{
 					Trikz(param1);
 				}
@@ -1337,12 +1351,12 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
-	ColorZ(client, false, -1);
+	ColorTeam(client, false, -1);
 	ColorFlashbang(client, false, -1);
 
 	g_color[client][0] = false;
 	g_color[client][1] = false;
-	g_seperate[client] = false;
+	//g_seperate[client] = false;
 
 	int partner = g_partner[client];
 	g_partner[g_partner[client]] = 0;
@@ -1795,14 +1809,16 @@ public void Trikz(int client)
 
 	Format(format, sizeof(format), "%T", "Color", client);
 
-	if(g_devmap == true)
-	{
+	//if(g_devmap == true)
+	//{
 		//menu.AddItem("color", "Color");
-		menu.AddItem("color", format, ITEMDRAW_DISABLED);
-	}
+		//menu.AddItem("color", format, ITEMDRAW_DISABLED);
+	//}
 
-	else if(g_devmap == false)
-	{
+	menu.AddItem("color", format);
+
+	//else if(g_devmap == false)
+	//{
 		//menu.AddItem("color", "Color", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		//if(g_partner[client] == true)
 		//if(g_partner[client] > 0)
@@ -1815,8 +1831,9 @@ public void Trikz(int client)
 		//{
 		//	menu.AddItem("color", format, ITEMDRAW_DISABLED);
 		//}
-		menu.AddItem("color", format, g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	}
+		//menu.AddItem("color", format, g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		//menu.AddItem("color2", "Color");
+	//}
 
 	Format(format, sizeof(format), "%T", "Restart", client);
 
@@ -1900,8 +1917,9 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 5:
 				{
-					ColorZ(param1, true, -1);
-					Trikz(param1);
+					//ColorTeam(param1, true, -1);
+					//Trikz(param1);
+					cmd_color(param1, 0);
 				}
 
 				case 6:
@@ -2211,7 +2229,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 			{
 				case 0:
 				{
-					ColorZ(param1, false, -1);
+					ColorTeam(param1, false, -1);
 					ColorFlashbang(param1, false, -1);
 
 					g_partner[param1] = 0;
@@ -2243,7 +2261,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 	return 0;
 }
 
-public Action cmd_color(int client, int args)
+/*public Action cmd_color(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_color);
 
@@ -2305,18 +2323,97 @@ public Action cmd_color(int client, int args)
 
 	if(strlen(arg) && 0 <= color <= 8)
 	{
-		ColorZ(client, true, color);
+		ColorTeam(client, true, color);
 	}
 
 	else if(!color)
 	{
-		ColorZ(client, true, -1);
+		ColorTeam(client, true, -1);
 	}
+
+	return Plugin_Handled;
+}*/
+
+public Action cmd_color(int client, int args)
+{
+	bool convar = GetConVarBool(gCV_color);
+
+	if(convar == false)
+	{
+		return Plugin_Handled;
+	}
+
+	g_menuOpened[client] = false;
+
+	//Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
+	//Menu menu = new Menu(handler_menuColor, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+	Menu menu = new Menu(handler_menuColor);
+
+	menu.SetTitle("%T", "Color", client);
+
+	char format[256];
+	Format(format, sizeof(format), "%T", "ColorTeam", client);
+	menu.AddItem("team_color", format);
+	Format(format, sizeof(format), "%T", "ColorPingFL", client);
+	menu.AddItem("object_color", format);
+
+	menu.ExitBackButton = true;
+
+	menu.Display(client, 20);
 
 	return Plugin_Handled;
 }
 
-public Action cmd_colorflash(int client, int args)
+public int handler_menuColor(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		//case MenuAction_Start: //expert-zone idea. thank to ed, maru.
+		//{
+		//	g_menuOpened[param1] = true;
+		//}
+
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					ColorTeam(param1, true, -1);
+					cmd_color(param1, 0);
+				}
+
+				case 1:
+				{
+					ColorFlashbang(param1, true, -1);
+					cmd_color(param1, 0);
+				}
+			}
+		}
+
+		case MenuAction_Cancel:
+		{
+			//g_menuOpened[param1] = false; //idea from expert zone.
+			switch(param2)
+			{
+				case MenuCancel_ExitBack:
+				{
+					Trikz(param1);
+				}
+			}
+		}
+
+		//case MenuAction_Display:
+		//{
+		//	g_menuOpened[param1] = true;
+		//}
+	}
+
+	return view_as<int>(action);
+	//Menu menu = new Menu(handler_menuTeamColor);
+}
+
+/*public Action cmd_colorflash(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_color);
 
@@ -2328,9 +2425,9 @@ public Action cmd_colorflash(int client, int args)
 	ColorFlashbang(client, true, -1);
 
 	return Plugin_Handled;
-}
+}*/
 
-public void ColorZ(int client, bool customSkin, int color)
+public void ColorTeam(int client, bool customSkin, int color)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2380,10 +2477,14 @@ public void ColorZ(int client, bool customSkin, int color)
 
 			char colorTypeExploded[32][4];
 
+			//PrintToServer("ye2s %i", g_colorCount[client][0]);
+
 			if(g_colorCount[client][0] == 9)
 			{
 				g_colorCount[client][0] = 0;
 				g_colorCount[g_partner[client]][0] = 0;
+
+				//PrintToServer("yes");
 			}
 
 			else if(0 <= color <= 8)
@@ -2406,7 +2507,7 @@ public void ColorZ(int client, bool customSkin, int color)
 			static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
 			//if(h)
-			hForward = new GlobalForward("Trikz_ColorZ", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
+			hForward = new GlobalForward("Trikz_ColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
 
 			Call_StartForward(hForward);
 			
@@ -2422,17 +2523,19 @@ public void ColorZ(int client, bool customSkin, int color)
 
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 
-			if(g_seperate[client] == true)
+			//if(g_seperate[client] == true)
 			{
-				ShowHudText(client, 5, "%s (F2)", colorTypeExploded[3]);
+				ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
+				//ShowHudText(client, 5, "%s (F2)", colorTypeExploded[3]);
 
 				if(g_partner[client] > 0)
 				{
-					ShowHudText(g_partner[client], 5, "%s (F2)", colorTypeExploded[3]);
+					ShowHudText(g_partner[client], 5, "%s (TM)", colorTypeExploded[3]);
+					//ShowHudText(g_partner[client], 5, "%s (F2)", colorTypeExploded[3]);
 				}
 			}
 
-			else if(g_seperate[client] == false)
+			/*else if(g_seperate[client] == false)
 			{
 				g_color[client][1] = true;
 				g_color[g_partner[client]][1] = true;
@@ -2452,7 +2555,7 @@ public void ColorZ(int client, bool customSkin, int color)
 				{
 					ShowHudText(g_partner[client], 5, "%s (F2+)", colorTypeExploded[3]);
 				}
-			}
+			}*/
 		}
 
 		else
@@ -2499,8 +2602,8 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 			g_color[client][1] = true;
 			g_color[g_partner[client]][1] = true;
 
-			g_seperate[client] = true;
-			g_seperate[g_partner[client]] = true;
+			//g_seperate[client] = true;
+			//g_seperate[g_partner[client]] = true;
 
 			//char colorTypeExploded[4][32];
 			char colorTypeExploded[32][4];
@@ -2542,11 +2645,11 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
-			ShowHudText(client, 5, "%s", colorTypeExploded[3]);
+			ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
 
 			if(g_partner[client] > 0)
 			{
-				ShowHudText(g_partner[client], 5, "%s", colorTypeExploded[3]);
+				ShowHudText(g_partner[client], 5, "%s (FL)", colorTypeExploded[3]);
 			}
 		}
 
@@ -2555,8 +2658,8 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 			g_color[client][1] = false;
 			g_color[g_partner[client]][1] = false;
 
-			g_seperate[client] = false;
-			g_seperate[client] = false;
+			//g_seperate[client] = false;
+			//g_seperate[client] = false;
 
 			g_colorCount[client][1] = 0;
 			g_colorCount[g_partner[client]][1] = 0;
@@ -6985,7 +7088,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
 			int second = RoundToFloor(g_timerTime[client]) % 60;
 
-			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
+			if(hour > 0)
+				Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
+			else if (hour == 0)
+				Format(g_clantag[client][1], 256, "%02.i:%02.i", minute, second);
 
 			if(IsPlayerAlive(client) == false)
 			{
@@ -8327,69 +8433,69 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 		else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
 		{
-			ColorZ(client, true, -1);
+			ColorTeam(client, true, -1);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 0", false) || StrEqual(sArgs, "c white", false) || StrEqual(sArgs, "color 0", false) || StrEqual(sArgs, "color white", false))
 		{
-			ColorZ(client, true, 0);
+			ColorTeam(client, true, 0);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 1", false) || StrEqual(sArgs, "c red", false) || StrEqual(sArgs, "color 1", false) || StrEqual(sArgs, "color red", false))
 		{
-			ColorZ(client, true, 1);
+			ColorTeam(client, true, 1);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 2", false) || StrEqual(sArgs, "c orange", false) || StrEqual(sArgs, "color 2", false) || StrEqual(sArgs, "color orange", false))
 		{
-			ColorZ(client, true, 2);
+			ColorTeam(client, true, 2);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 3", false) || StrEqual(sArgs, "c yellow", false) || StrEqual(sArgs, "color 3", false) || StrEqual(sArgs, "color yellow", false))
 		{
-			ColorZ(client, true, 3);
+			ColorTeam(client, true, 3);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 4", false) || StrEqual(sArgs, "c lime", false) || StrEqual(sArgs, "color 4", false) || StrEqual(sArgs, "color lime", false))
 		{
-			ColorZ(client, true, 4);
+			ColorTeam(client, true, 4);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 5", false) || StrEqual(sArgs, "c aqua", false) || StrEqual(sArgs, "color 5", false) || StrEqual(sArgs, "color aqua", false))
 		{
-			ColorZ(client, true, 5);
+			ColorTeam(client, true, 5);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 6", false) || StrEqual(sArgs, "c deep sky blue", false) || StrEqual(sArgs, "color 6", false) || StrEqual(sArgs, "color deep sky blue", false))
 		{
-			ColorZ(client, true, 6);
+			ColorTeam(client, true, 6);
 
 			return Plugin_Continue;
 		}
 
 		else if(StrEqual(sArgs, "c 7", false) || StrEqual(sArgs, "c blue", false) || StrEqual(sArgs, "color 7", false) || StrEqual(sArgs, "color blue", false))
 		{
-			ColorZ(client, true, 7);
+			ColorTeam(client, true, 7);
 
 			return Plugin_Continue;
 		}
 		else if(StrEqual(sArgs, "c 8", false) || StrEqual(sArgs, "c magenta", false) || StrEqual(sArgs, "color 8", false) || StrEqual(sArgs, "color magenta", false))
 		{
-			ColorZ(client, true, 8);
+			ColorTeam(client, true, 8);
 
 			return Plugin_Continue;
 		}
