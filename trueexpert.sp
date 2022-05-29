@@ -7110,7 +7110,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(hour > 0)
 				Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
 			else if (hour == 0)
-				Format(g_clantag[client][1], 256, "   %02.i:%02.i", minute, second);
+				Format(g_clantag[client][1], 256, "%02.i:%02.i    ", minute, second);
 
 			if(IsPlayerAlive(client) == false)
 			{
