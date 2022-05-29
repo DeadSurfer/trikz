@@ -158,11 +158,14 @@ void frame_projectileVel(int entity)
 	if(IsValidEntity(entity))
 	{
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+		
+		if(0 < client <= MaxClients)
+		{
+			float vel[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
 
-		float vel[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
-
-		g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+			g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+		}
 	}
 }
 Action SDKStartTouch(int entity, int other)
