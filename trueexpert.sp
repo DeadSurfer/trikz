@@ -7502,7 +7502,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		else if(IsFakeClient(client) == true && IsPlayerAlive(client) == false && other == -1 && g_block[client] == true)
+		else if(IsFakeClient(client) == false && IsPlayerAlive(client) == false && other == -1 && g_block[client] == true)
 		{
 			if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			{
