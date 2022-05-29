@@ -1367,7 +1367,8 @@ public void OnClientDisconnect(int client)
 	}
 
 	g_partner[client] = 0;
-	CancelClientMenu(client);
+	if(0 < client <= MaxClients)
+		CancelClientMenu(client);
 
 	int entity = 0;
 
@@ -1742,6 +1743,7 @@ public void Trikz(int client)
 {
 	g_menuOpened[client] = true;
 
+	//Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	
 	char format[128];
@@ -1952,6 +1954,17 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			g_menuOpened[param1] = true;
 		}
+
+		/*case MenuAction_End:
+		{
+			if(0 < param1 <= MaxClients)
+			{
+				g_menuOpened[param1] = false;
+				PrintToServer("yes");
+				delete menu;
+			}
+			//
+		}*/
 	}
 
 	return 0;
@@ -8197,12 +8210,12 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
-		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
-		{
-			g_menuOpened[param1] = true;
+		//case MenuAction_Start: //expert-zone idea. thank to ed, maru.
+		//{
+			//g_menuOpened[param1] = true;
 
 			//return param1;
-		}
+		//}
 
 		case MenuAction_Select:
 		{
@@ -8256,17 +8269,18 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			//return param2;
 		}
-		case MenuAction_Cancel:
-		{
-			g_menuOpened[param1] = false; //Idea from expert zone.
-			//return param1;
-		}
 
-		case MenuAction_Display:
-		{
-			g_menuOpened[param1] = true;
+		//case MenuAction_Cancel:
+		//{
+		//	g_menuOpened[param1] = false; //Idea from expert zone.
 			//return param1;
-		}
+		//}
+
+		//case MenuAction_Display:
+		//{
+		//	g_menuOpened[param1] = true;
+			//return param1;
+		//}
 	}
 
 	return param2;
