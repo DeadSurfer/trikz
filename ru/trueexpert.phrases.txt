@@ -36,7 +36,7 @@
 	"DevMapStart"
 	{
 		"#format"	"{1:s}"
-		"ru"	"Devmap vote started by {1}"
+		"ru"	"Devmap голосование начал {1}"
 	}
 	"DevMapIsOFF"
 	{
@@ -73,11 +73,11 @@
 	}
 	"MLStatsOFF"
 	{
-		"ru"	"ML статистика теперь выключен."
+		"ru"	"ML статистика теперь выключена."
 	}
 	"MLStatsON"
 	{
-		"ru"	"ML статистика теперь включен."
+		"ru"	"ML статистика теперь включена."
 	}
 	"VelOFF"
 	{
@@ -89,11 +89,11 @@
 	}
 	"EndMsgOFF"
 	{
-		"ru"	"End message is off now"
+		"ru"	"Конечное оповещение теперь не будет отображатся."
 	}
 	"EndMsgON"
 	{
-		"ru"	"End message is on now"
+		"ru"	"Конечное оповещение теперь будет отображатся."
 	}
 	"MLStatsMenuON"
 	{
@@ -121,11 +121,11 @@
 	}
 	"ButtonAnnouncerPartnerON"
 	{
-		"ru"	"Партнёрское оповещение о нажатии кнопки теперь включено."
+		"ru"	"Оповещение о нажатии кнопки партнером теперь включено."
 	}
 	"ButtonAnnouncerPartnerOFF"
 	{
-		"ru"	"Оповещение о партнёрской нажатии кнопки теперь выключено."
+		"ru"	"Оповещение о нажатии кнопки партнером теперь выключено."
 	}
 	"AFKCHECK"
 	{
@@ -150,16 +150,16 @@
 	}
 	"BlockON"
 	{
-		"ru"	"Блокирование включено теперь."
+		"ru"	"Блокирование теперь включено."
 	}
 	"BlockOFF"
 	{
-		"ru"	"Блокирование выключено теперь."
+		"ru"	"Блокирование теперь выключено."
 	}
 	"GroupAgreed"
 	{
 		"#format"	"{1:s}"
-		"ru"	"Вы потвердили {1}"
+		"ru"	"Вы потвердили партнерство с {1}"
 	}
 	"GetAgreed"
 	{
@@ -173,21 +173,21 @@
 	"PartnerDeclined"
 	{
 		"#format"	"{1:s}"
-		"ru"	"Партнерсво отклонено с {1}."
+		"ru"	"Партнерсво отклонено с {1}"
 	}
 	"PartnerCanceled"
 	{
 		"#format"	"{1:s}"
-		"ru"	"Партнерсво разорвано с {1}."
+		"ru"	"Партнерсво разорвано с {1}"
 	}
 	"PartnerCanceledBy"
 	{
 		"#format"	"{1:s}"
-		"ru"	"Партнерсво разорвал {1}."
+		"ru"	"Партнерсво разорвал {1}"
 	}
 	"DevMapNotAllowed"
 	{
-		"ru"	"Devmap vote is not allowed yet."
+		"ru"	"Devmap голосование недоступно в данный момент."
 	}
 	"YouMustHavePartner"
 	{
@@ -200,22 +200,22 @@
 	"DevMapWillBeDisabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
-		"ru"	"Devmap будет выключено. \"Yes\" chose {1}%%% or {2} of {3} players."
+		"ru"	"Devmap будет выключено. \"Да\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"DevMapWillBeEnabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
-		"ru"	"Devmap будет включено. \"Yes\" chose {1}%%% or {2} of {3} players."
+		"ru"	"Devmap будет включено. \"Да\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"DevMapContinue"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
-		"ru"	"Devmap будет продолжено. \"No\" chose {1}%%% or {2} of {3} players."
+		"ru"	"Devmap будет продолжено. \"Нет\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"DevMapWillNotBe"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
-		"ru"	"Devmap не будет включено. \"No\" chose {1}%%% or {2} of {3} players."
+		"ru"	"Devmap не будет включено. \"Нет\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"AwayFromKeyboard"
 	{
@@ -284,7 +284,7 @@
 	"CPNEW"
 	{
 		"#format"	"{1:i}"
-		"ru"	"{1}. Чекпойнт: ;#FF0000+00:00:00"
+		"ru"	"{1}. Чекпоинт: ;#FF0000+00:00:00"
 	}
 	"YouPressedButton"
 	{
@@ -352,15 +352,15 @@
 	}
 	"BlockChatON"
 	{
-		"ru"	"Block is turned on now."
+		"ru"	"Блокирование теперь включено."
 	}
 	"BlockChatOFF"
 	{
-		"ru"	"Block is turned off now."
+		"ru"	"Блокирование теперь выключено."
 	}
 	"Breakup"
 	{
-		"ru"	"Разорвать партнерства"
+		"ru"	"Разорвать партнерство"
 	}
 	"Color"
 	{
@@ -384,11 +384,11 @@
 	}
 	"NoclipON"
 	{
-		"ru"	"Noclip is turned on now."
+		"ru"	"Полёт теперь включен."
 	}
 	"NoclipOFF"
 	{
-		"ru"	"Noclip is turned off now."
+		"ru"	"Полёт теперь выключен."
 	}
 	"ChoosePartner"
 	{
@@ -397,7 +397,7 @@
 	"CP-recordHud"
 	{
 		"#format"	"{1:i}"
-		"ru"	"{1}. ЧЕКПОЙНТ РЕКОРД!"
+		"ru"	"{1}. ЧЕКПОИНТ РЕКОРД!"
 	}
 	"CP-recordDetailHud"
 	{
@@ -411,7 +411,7 @@
 	"CP-recordNotFirstHud"
 	{
 		"#format"	"{1:i}"
-		"ru"	"{1}. ЧЕКПОЙНТ РЕКОРД!"
+		"ru"	"{1}. ЧЕКПОИНТ РЕКОРД!"
 	}
 	"CP-recordDetailNotFirstHud"
 	{
@@ -488,51 +488,51 @@
 	}
 	"AutoflashON"
 	{
-		"ru"	"Auto flashbang is turned on now."
+		"ru"	"Авто флеш теперь включен."
 	}
 	"AutoflashOFF"
 	{
-		"ru"	"Auto flashbang is turned off now."
+		"ru"	"Авто флеш теперь выключен."
 	}
 	"AutoswitchON"
 	{
-		"ru"	"Auto switch is truned on now."
+		"ru"	"Авто свитч теперь включен."
 	}
 	"AutoswitchOFF"
 	{
-		"ru"	"Auto switch is turned off now."
+		"ru"	"Авто свитч теперь выключен."
 	}
 	"BhopON"
 	{
-		"ru"	"Bunnyhop is turned on now."
+		"ru"	"Авто распрыжка теперь включена."
 	}
 	"BhopOFF"
 	{
-		"ru"	"Bunnyhop is turned off now."
+		"ru"	"Авто распражка теперь выключена."
 	}
 	"MacroOFF"
 	{
-		"ru"	"Macro is disabled."
+		"ru"	"Макрос теперь выключен."
 	}
 	"MacroON"
 	{
-		"ru"	"Macro is enabled."
+		"ru"	"Макрос теперь включен."
 	}
 	"EndMessageON"
 	{
-		"ru"	"End message is turned on now."
+		"ru"	"Конечное оповещение теперь включено."
 	}
 	"EndMessageOFF"
 	{
-		"ru"	"End message is turned off now."
+		"ru"	"Конечное оповещение теперь выключено."
 	}
 	"EndMessageMenuON"
 	{
-		"ru"	"End message [v]"
+		"ru"	"Конечное оповещение [v]"
 	}
 	"EndMessageMenuOFF"
 	{
-		"ru"	"End message [x]"
+		"ru"	"Конечное оповещение [x]"
 	}
 	"Top10"
 	{
