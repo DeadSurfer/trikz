@@ -70,6 +70,7 @@ float g_ServerRecordTime;
 ConVar g_urlTop;
 
 bool g_menuOpened[MAXPLAYER];
+bool g_menuOpenedHud[MAXPLAYER];
 
 int g_boost[MAXPLAYER];
 int g_skyBoost[MAXPLAYER];
@@ -1261,6 +1262,7 @@ public void OnClientPutInServer(int client)
 	}
 
 	g_menuOpened[client] = false;
+	g_menuOpenedHud[client] = false;
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -2407,6 +2409,7 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 		case MenuAction_Cancel:
 		{
 			//g_menuOpened[param1] = false; //idea from expert zone.
+
 			switch(param2)
 			{
 				case MenuCancel_ExitBack:
@@ -3077,6 +3080,9 @@ public Action cmd_endmsg(int client, int args)
 	char format[256];
 	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageON" : "EndMessageOFF", client);
 	SendMessage(format, false, client);
+
+	if(g_menuOpenedHud[client])
+		HudMenu(client);
 
 	return Plugin_Handled;
 }
@@ -7104,7 +7110,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(hour > 0)
 				Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
 			else if (hour == 0)
-				Format(g_clantag[client][1], 256, "%02.i:%02.i", minute, second);
+				Format(g_clantag[client][1], 256, "   %02.i:%02.i", minute, second);
 
 			if(IsPlayerAlive(client) == false)
 			{
@@ -8187,6 +8193,15 @@ public Action cmd_spec(int client, int args)
 
 public Action cmd_hud(int client, int args)
 {
+	HudMenu(client);
+
+	return Plugin_Handled;
+}
+
+public void HudMenu(int client)
+{
+	g_menuOpenedHud[client] = true;
+
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 
 	menu.SetTitle("Hud");
@@ -8202,20 +8217,18 @@ public Action cmd_hud(int client, int args)
 	menu.AddItem("endmsg", format);
 
 	menu.Display(client, 20);
-
-	return Plugin_Handled;
 }
 
 public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
-		//case MenuAction_Start: //expert-zone idea. thank to ed, maru.
-		//{
-			//g_menuOpened[param1] = true;
+		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
+		{
+			g_menuOpenedHud[param1] = true;
 
 			//return param1;
-		//}
+		}
 
 		case MenuAction_Select:
 		{
@@ -8270,17 +8283,17 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 			//return param2;
 		}
 
-		//case MenuAction_Cancel:
-		//{
-		//	g_menuOpened[param1] = false; //Idea from expert zone.
+		case MenuAction_Cancel:
+		{
+			g_menuOpenedHud[param1] = false; //Idea from expert zone.
 			//return param1;
-		//}
+		}
 
-		//case MenuAction_Display:
-		//{
-		//	g_menuOpened[param1] = true;
+		case MenuAction_Display:
+		{
+			g_menuOpenedHud[param1] = true;
 			//return param1;
-		//}
+		}
 	}
 
 	return param2;
@@ -8347,6 +8360,9 @@ public Action cmd_mlstats(int client, int args)
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_mlstats[client] ? "MLStatsON" : "MLStatsOFF", client);
 	SendMessage(format, false, client);
+
+	if(g_menuOpenedHud[client])
+		HudMenu(client);
 
 	return Plugin_Handled;
 }
