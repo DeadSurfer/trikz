@@ -56,7 +56,7 @@ float g_boostTime[MAXPLAYER];
 float g_skyVel[MAXPLAYER][3];
 bool g_readyToStart[MAXPLAYER];
 
-float g_cpPos[2][24][3];
+float g_cpPos[2][11][3];
 bool g_cp[11][MAXPLAYER];
 bool g_cpLock[11][MAXPLAYER];
 float g_cpTimeClient[11][MAXPLAYER];
@@ -97,10 +97,10 @@ bool g_silentKnife;
 float g_mateRecord[MAXPLAYER];
 bool g_sourcetv;
 bool g_block[MAXPLAYER];
-//int g_wModelThrown;
+int g_wModelThrown;
 int g_class[MAXPLAYER];
 bool g_color[MAXPLAYER][2];
-//int g_wModelPlayer[5];
+int g_wModelPlayer[5];
 int g_pingModel[MAXPLAYER];
 int g_pingModelOwner[2048 + 1];
 Handle g_pingTimer[MAXPLAYER];
@@ -111,7 +111,7 @@ char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", 
 int g_colorBuffer[MAXPLAYER][3][2];
 int g_colorCount[MAXPLAYER][2];
 
-//int g_zoneModel[3];
+int g_zoneModel[3];
 int g_laserBeam;
 bool g_sourcetvchangedFileName = true;
 float g_entityVel[MAXPLAYER][3];
@@ -122,7 +122,7 @@ float g_afkTime;
 bool g_afk[MAXPLAYER];
 float g_center[12][3];
 bool g_zoneDraw[MAXPLAYER];
-//float g_engineTime;
+float g_engineTime;
 float g_pingTime[MAXPLAYER];
 bool g_pingLock[MAXPLAYER];
 bool g_msg[MAXPLAYER];
@@ -189,7 +189,7 @@ ConVar gCV_pingtool;
 int g_top10Count;
 //float g_srPrevTime;
 Handle g_teleport;
-KeyValues g_kv;
+//KeyValues g_kv;
 ConVar gCV_boostfix;
 float g_top10ac;
 
@@ -407,12 +407,12 @@ public void OnMapStart()
 		ForceChangeLevel(g_map, "Turning on SourceTV");
 	}
 
-	//g_wModelThrown = PrecacheModel("models/trueexpert/models/weapons/w_eq_flashbang_thrown.mdl", true);
+	g_wModelThrown = PrecacheModel("models/trueexpert/flashbang/flashbang.mdl", true);
 
-	//g_wModelPlayer[1] = PrecacheModel("models/trueexpert/player/ct_urban.mdl", true);
-	//g_wModelPlayer[2] = PrecacheModel("models/trueexpert/player/ct_gsg9.mdl", true);
-	//g_wModelPlayer[3] = PrecacheModel("models/trueexpert/player/ct_sas.mdl", true);
-	//g_wModelPlayer[4] = PrecacheModel("models/trueexpert/player/ct_gign.mdl", true);
+	g_wModelPlayer[1] = PrecacheModel("models/trueexpert/player/ct_urban.mdl", true);
+	g_wModelPlayer[2] = PrecacheModel("models/trueexpert/player/ct_gsg9.mdl", true);
+	g_wModelPlayer[3] = PrecacheModel("models/trueexpert/player/ct_sas.mdl", true);
+	g_wModelPlayer[4] = PrecacheModel("models/trueexpert/player/ct_gign.mdl", true);
 
 	//PrecacheSound("trueexpert/pingtool/click.wav", true); //https://forums.alliedmods.net/showthread.php?t=333211
 	PrecacheSound("items/gift_drop.wav", true);
@@ -421,6 +421,10 @@ public void OnMapStart()
 	//g_zoneModel[1] = PrecacheModel("materials/trueexpert/zones/finish.vmt", true);
 	//g_zoneModel[2] = PrecacheModel("materials/trueexpert/zones/check_point.vmt", true);
 
+	g_zoneModel[0] = PrecacheModel("materials/expert_zone/zone_editor/zones/start.vmt", true);
+	g_zoneModel[1] = PrecacheModel("materials/expert_zone/zone_editor/zones/finish.vmt", true);
+	g_zoneModel[2] = PrecacheModel("materials/expert_zone/zone_editor/zones/check_point.vmt", true);
+
 	g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_smoke = PrecacheModel("materials/sprites/smoke.vmt", true);
 
@@ -428,8 +432,9 @@ public void OnMapStart()
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true);
 
 	//char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/flashbang/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
+	char path[8][PLATFORM_MAX_PATH] = {"models/trueexpert/flashbang/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/"};
 
-	/*for(int i = 0; i < sizeof(path); i++)
+	for(int i = 0; i < sizeof(path); i++)
 	{
 		PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
 		DirectoryListing dir = OpenDirectory(path[i]);
@@ -437,10 +442,12 @@ public void OnMapStart()
 
 		//char filename[12][PLATFORM_MAX_PATH];
 		//char filename[PLATFORM_MAX_PATH][12];
-		char filename[12][PLATFORM_MAX_PATH];
+		//char filename[12][PLATFORM_MAX_PATH];
+		char filename[8][PLATFORM_MAX_PATH];
 
 		FileType type;
-		char pathFull[12][PLATFORM_MAX_PATH];
+		//char pathFull[12][PLATFORM_MAX_PATH];
+		char pathFull[8][PLATFORM_MAX_PATH];
 		//char pathFull[PLATFORM_MAX_PATH][2];
 
 		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
@@ -461,7 +468,7 @@ public void OnMapStart()
 		}
 
 		delete dir;
-	}*/
+	}
 
 	PrecacheModel("models/effects/combineball.mdl", true);
 
@@ -469,10 +476,10 @@ public void OnMapStart()
 
 	RecalculatePoints();
 
-	delete g_kv;
+	//delete g_kv;
 
-	g_kv = new KeyValues("TrueExpertHud");
-	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+	//g_kv = new KeyValues("TrueExpertHud");
+	//g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 }
 
 public void RecalculatePoints()
@@ -697,27 +704,27 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 		Format(color, sizeof(color), "FF8000");
 	}
 
-	else if(precentage >= 70)
+	else if(90 > precentage >= 70)
 	{
 		Format(color, sizeof(color), "A335EE");
 	}
 
-	else if(precentage >= 55)
+	else if(70 > precentage >= 55)
 	{
 		Format(color, sizeof(color), "0070DD");
 	}
 
-	else if(precentage >= 40)
+	else if(55 > precentage >= 40)
 	{
 		Format(color, sizeof(color), "1EFF00");
 	}
 
-	else if(precentage >= 15)
+	else if(40 > precentage >= 15)
 	{
 		Format(color, sizeof(color), "FFFFFF");
 	}
 
-	else if(precentage >= 0)
+	else if(15 > precentage >= 0)
 	{
 		Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
 	}
@@ -882,8 +889,8 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	if(g_color[client][0] == true)
 	{
-	//	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-		//DispatchKeyValue(client, "skin", "2");
+		SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
+		DispatchKeyValue(client, "skin", "1");
 		SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 	}
 
@@ -1279,10 +1286,10 @@ public void OnClientPutInServer(int client)
 	g_block[client] = true;
 	//g_timerTime[client] = 0.0;
 
-	/*if(g_devmap == false && g_zoneHave[2] == true)
+	if(g_devmap == false && g_zoneHave[2] == true)
 	{
 		DrawZone(client, 0.0, 3.0, 10);
-	}*/
+	}
 
 	g_msg[client] = true;
 
@@ -2485,11 +2492,11 @@ public void ColorTeam(int client, bool customSkin, int color)
 			g_color[client][0] = true;
 			g_color[g_partner[client]][0] = true;
 
-		//	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-		//	SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]]);
+			SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
+			SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]]);
 
-		//	DispatchKeyValue(client, "skin", "2");
-		//	DispatchKeyValue(g_partner[client], "skin", "2");
+			DispatchKeyValue(client, "skin", "1");
+			DispatchKeyValue(g_partner[client], "skin", "1");
 
 			char colorTypeExploded[32][4];
 
@@ -3594,6 +3601,9 @@ public Action cmd_test(int client, int args)
 
 		//PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3 after 2nd semicolon)", auth64, authid3);
+
+		//SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
+		//DispatchKeyValue(client, "skin", arg);
 
 		return Plugin_Handled;
 	}
@@ -6963,7 +6973,7 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 	}
 }
 
-/*public void DrawZone(int client, float life, float size, int speed)
+public void DrawZone(int client, float life, float size, int speed)
 {
 	float start[24][3];
 	float end[24][3];
@@ -7001,10 +7011,10 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 		zones += g_cpCount;
 		//PrintToServer("a g_cpCount: %i", zones)
 
-		for(int i = 2; i < zones; i++)
+		for(int i = 2; i <= zones; i++)
 		{
-			int cpnum = i - 1;
-			//int cpnum = i
+			int cpnum = i - 1; // start count cp from 1.
+			//int cpnum = i;
 			//PrintToServer("z %i", i)
 			
 			start[i][0] = (g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0]) ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
@@ -7072,7 +7082,7 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 			TE_SendToClient(client);
 		}
 	}
-}*/
+}
 
 public void ResetFactory(int client)
 {
@@ -7234,9 +7244,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						//return Plugin_Continue;
 					}
 
-					g_pingModel[client] = 0;
+					if(g_pingModel[client] > 0)
+					{
+						g_pingModel[client] = 0;
+					}
 
-					KillTimer(g_pingTimer[client]);
+					if(g_pingTimer[client] != INVALID_HANDLE)
+					{
+						KillTimer(g_pingTimer[client]);
+					}
 				}
 
 				g_pingModel[client] = CreateEntityByName("prop_dynamic_override"); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
@@ -7408,7 +7424,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		/*if(g_zoneDraw[client] == true)
+		if(g_zoneDraw[client] == true)
 		{
 			if(GetEngineTime() - g_engineTime >= 0.1)
 			{
@@ -7426,7 +7442,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//return Plugin_Continue;
 			}
 			//return Plugin_Continue;
-		}*/
+		}
 
 		if(IsClientObserver(client) == true && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //Make able to swtich wtih E to the partner via spectate.
 		{
@@ -8720,8 +8736,8 @@ public void SDKProjectile(int entity)
 
 		if(g_color[client][1] == true)
 		{
-			//SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
-			//SetEntProp(entity, Prop_Data, "m_nSkin", 1);
+			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
+			SetEntProp(entity, Prop_Data, "m_nSkin", 1);
 
 			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 			//return Plugin_Continue;
