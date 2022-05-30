@@ -588,70 +588,82 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	if(!StrEqual(input, "Add", false) && !StrEqual(input, "Subtract", false) && !StrEqual(input, "SetValue", false) && !StrEqual(input, "SetValueNoFire", false))
 		return MRES_Ignored
 	int activator = DHookGetParam(hParams, 2)
-	int partner = Trikz_GetClientPartner(activator)
-	char value_[64]
-	DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, value_, 64)
-	float value = StringToFloat(value_)
-	int thisIndex
-	for(int i = 1; i <= g_mathTotalCount; i++)
+	if(0 < activator <= MaxClients)
 	{
-		if(g_mathID[i] == pThis)
+		int partner = Trikz_GetClientPartner(activator)
+		char value_[64]
+		DHookGetParamObjectPtrString(hParams, 4, 0, ObjectValueType_String, value_, 64)
+		float value = StringToFloat(value_)
+		int thisIndex
+		for(int i = 1; i <= g_mathTotalCount; i++)
 		{
-			thisIndex = i
-			break
-		}
-	}
-	if(!thisIndex)
-		return MRES_Ignored
-	if(StrEqual(input, "Add", false))
-	{
-		if(g_mathValue[activator][thisIndex] < g_mathMax[thisIndex])
-		{
-			g_mathValue[activator][thisIndex] += value
-			g_mathValue[partner][thisIndex] += value
-			if(g_mathValue[activator][thisIndex] >= g_mathMax[thisIndex])
+			if(g_mathID[i] == pThis)
 			{
-				g_mathValue[activator][thisIndex] = g_mathMax[thisIndex]
-				g_mathValue[partner][thisIndex] = g_mathMax[thisIndex]
-				AcceptEntityInput(pThis, "FireUser3", activator, activator)
+				thisIndex = i
+				break
 			}
 		}
-	}
-	else if(StrEqual(input, "Subtract", false))
-	{
-		if(g_mathValue[activator][thisIndex] > g_mathMin[thisIndex])
+		if(!thisIndex)
+			return MRES_Ignored
+		if(StrEqual(input, "Add", false))
 		{
-			g_mathValue[activator][thisIndex] -= value
-			g_mathValue[partner][thisIndex] -= value
-			if(g_mathValue[activator][thisIndex] <= g_mathMin[thisIndex])
+			if(g_mathValue[activator][thisIndex] < g_mathMax[thisIndex])
+			{
+				g_mathValue[activator][thisIndex] += value
+				g_mathValue[partner][thisIndex] += value
+				if(g_mathValue[activator][thisIndex] >= g_mathMax[thisIndex])
+				{
+					g_mathValue[activator][thisIndex] = g_mathMax[thisIndex]
+					g_mathValue[partner][thisIndex] = g_mathMax[thisIndex]
+					AcceptEntityInput(pThis, "FireUser3", activator, activator)
+				}
+			}
+		}
+		else if(StrEqual(input, "Subtract", false))
+		{
+			if(g_mathValue[activator][thisIndex] > g_mathMin[thisIndex])
+			{
+				g_mathValue[activator][thisIndex] -= value
+				g_mathValue[partner][thisIndex] -= value
+				if(g_mathValue[activator][thisIndex] <= g_mathMin[thisIndex])
+				{
+					g_mathValue[activator][thisIndex] = g_mathMin[thisIndex]
+					g_mathValue[partner][thisIndex] = g_mathMin[thisIndex]
+					AcceptEntityInput(pThis, "FireUser4", activator, activator)
+				}
+			}
+		}
+		else
+		{
+			g_mathValue[activator][thisIndex] = value
+			g_mathValue[partner][thisIndex] = value
+			if(g_mathValue[activator][thisIndex] < g_mathMin[thisIndex])
 			{
 				g_mathValue[activator][thisIndex] = g_mathMin[thisIndex]
 				g_mathValue[partner][thisIndex] = g_mathMin[thisIndex]
-				AcceptEntityInput(pThis, "FireUser4", activator, activator)
+			}
+			else if(g_mathValue[activator][thisIndex] > g_mathMax[thisIndex])
+			{
+				g_mathValue[activator][thisIndex] = g_mathMax[thisIndex]
+				g_mathValue[partner][thisIndex] = g_mathMax[thisIndex]
 			}
 		}
+		DHookSetReturn(hReturn, false)
+		return MRES_Supercede
 	}
-	else
-	{
-		g_mathValue[activator][thisIndex] = value
-		g_mathValue[partner][thisIndex] = value
-		if(g_mathValue[activator][thisIndex] < g_mathMin[thisIndex])
-		{
-			g_mathValue[activator][thisIndex] = g_mathMin[thisIndex]
-			g_mathValue[partner][thisIndex] = g_mathMin[thisIndex]
-		}
-		else if(g_mathValue[activator][thisIndex] > g_mathMax[thisIndex])
-		{
-			g_mathValue[activator][thisIndex] = g_mathMax[thisIndex]
-			g_mathValue[partner][thisIndex] = g_mathMax[thisIndex]
-		}
-	}
-	DHookSetReturn(hReturn, false)
-	return MRES_Supercede
+	return MRES_Ignored
 }
 
 Action TouchTrigger(int entity, int other)
 {
+	/*char classname[32]
+	GetEntityClassname(entity, classname, 32)
+	char classname2[32]
+	GetEntityClassname(other, classname2, 32)
+	PrintToServer("e: %i/%s o: %i/%s", entity, classname, other, classname2)
+	int owner = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity")
+	if(StrEqual(classname2, "flashbang_projectile", true))
+		AcceptEntityInput(entity, "StartTouch", owner, owner)*/
 	if(0 < other <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(other)
@@ -725,6 +737,7 @@ Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage
 
 Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 {
+	//PrintToServer("c:%i a: %i", caller, activator)
 	if(activator > MaxClients)
 	{
 		activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity")
