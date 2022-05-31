@@ -695,36 +695,36 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	Format(msgFormated, sizeof(msgFormated), "%s", msgBuffer);
 
 	char points[32] = "";
-	int precentage = g_points[client] / g_pointsMaxs * 100;
+	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100;
 
 	char color[8] = "";
 
-	if(precentage >= 90)
+	if(precentage >= 90.0)
 	{
 		Format(color, sizeof(color), "FF8000");
 	}
 
-	else if(90 > precentage >= 70)
+	else if(90.0 > precentage >= 70.0)
 	{
 		Format(color, sizeof(color), "A335EE");
 	}
 
-	else if(70 > precentage >= 55)
+	else if(70.0 > precentage >= 55.0)
 	{
 		Format(color, sizeof(color), "0070DD");
 	}
 
-	else if(55 > precentage >= 40)
+	else if(55.0 > precentage >= 40.0)
 	{
 		Format(color, sizeof(color), "1EFF00");
 	}
 
-	else if(40 > precentage >= 15)
+	else if(40.0 > precentage >= 15.0)
 	{
 		Format(color, sizeof(color), "FFFFFF");
 	}
 
-	else if(15 > precentage >= 0)
+	else if(15.0 > precentage >= 0.0)
 	{
 		Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
 	}
@@ -3604,6 +3604,10 @@ public Action cmd_test(int client, int args)
 
 		//SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
 		//DispatchKeyValue(client, "skin", arg);
+
+		//float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
+
+		//PrintToServer("%f %i %i %i", precentage, (315 / 545) * 100, g_points[client], g_pointsMaxs);
 
 		return Plugin_Handled;
 	}
