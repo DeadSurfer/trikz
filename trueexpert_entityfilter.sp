@@ -587,7 +587,9 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	DHookGetParamString(hParams, 1, input, 32)
 	if(!StrEqual(input, "Add", false) && !StrEqual(input, "Subtract", false) && !StrEqual(input, "SetValue", false) && !StrEqual(input, "SetValueNoFire", false))
 		return MRES_Ignored
-	int activator = DHookGetParam(hParams, 2)
+	int activator
+	if(!DHookIsNullParam(hParams, 2))
+		activator = DHookGetParam(hParams, 2)
 	if(0 < activator <= MaxClients)
 	{
 		int partner = Trikz_GetClientPartner(activator)
