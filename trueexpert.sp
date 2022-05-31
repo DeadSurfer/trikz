@@ -695,7 +695,7 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	Format(msgFormated, sizeof(msgFormated), "%s", msgBuffer);
 
 	char points[32] = "";
-	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100;
+	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
 
 	char color[8] = "";
 
