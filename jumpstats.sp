@@ -437,24 +437,24 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				//velNew[1] = velFlyer[1];
 				velNew[2] = velBooster[2];
 
-				if(velFlyer[2] > -600.0)
+				if(velFlyer[2] >= -700.0)
 				{
 					if((g_entityFlags[client] & FL_INWATER))
 					{
-						if(velBooster[2] > 300.0)
+						if(velBooster[2] >= 300.0)
 							velNew[2] = 500.0;
 					}
 					else
 					{
-						if(velBooster[2] > 650.0)
+						if(velBooster[2] >= 750.0)
 							velNew[2] = 750.0;
 					}
 				}
 
-				else if(!(velFlyer[2] >= -600.0))
+				else if(!(velFlyer[2] >= -700.0))
 				{
 					//if(velBooster[2] >= 810.0)
-					if(velBooster[2] >= 650.0)
+					if(velBooster[2] >= 750.0)
 					{
 						velNew[2] = 820.0;
 					}
