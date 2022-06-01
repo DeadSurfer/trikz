@@ -86,6 +86,8 @@ public Plugin myinfo =
 	url = "http://www.sourcemod.net/"
 };
 
+//some logic i used from https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-recorder.sp and https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp
+
 public void OnPluginStart()
 {
 	Database.Connect(SQLConnect, "trueexpert");
@@ -451,18 +453,25 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	{
 		eFrame frame;
 		GetClientAbsOrigin(client, frame.pos);
+
 		float ang[3] = {0.0, 0.0, 0.0};
 		GetClientEyeAngles(client, ang);
+
 		frame.ang[0] = ang[0];
 		frame.ang[1] = ang[1];
+
 		frame.buttons = buttons;
+
 		frame.flags = GetEntityFlags(client);
+
 		frame.movetype = GetEntityMoveType(client);
 
 		if(g_weapon[client] > 0)
 		{
 			g_switchPrevent[client] = true;
+
 			frame.weapon = g_weapon[client];
+
 			g_weapon[client] = 0;
 		}
 
@@ -483,6 +492,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 						if(StrEqual(weaponName, g_weaponName[i], true))
 						{
 							frame.weapon = i + 1;
+							
 							break;
 						}
 					}
@@ -524,11 +534,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(IsClientInGame(client) == true && g_tick[client] == 0)
 		{
 			Trikz_Restart(client);
+
+			//int flags = GetEntityFlags(client);
+
+			//if((flags & FL_ATCONTROLS) == 0)
+			//{
+			//	SetEntityFlags(client, (flags | FL_ATCONTROLS));
+			//}
 		}
 
 		vel[0] = 0.0; //prevent shakes at flat surface.
 		vel[1] = 0.0;
-		vel[2] = 0.0;
+		//vel[2] = 0.0;
 
 		eFrame frame;
 		g_frameCache[client].GetArray(g_tick[client]++, frame, sizeof(eFrame));
@@ -676,6 +693,8 @@ public Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
 	if(IsFakeClient(client) == true)
 	{
 		SetEventBroadcast(event, true);
+
+		return Plugin_Handled;
 	}
 
 	return Plugin_Continue;
