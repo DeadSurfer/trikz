@@ -1642,7 +1642,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 
-				if(velFlyer[2] >= -600.0) //700.0
+				if(velFlyer[2] >= -700.0) //700.0
 				{
 					if(g_entityFlags[client] & FL_INWATER)
 					{
@@ -1654,14 +1654,14 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 					else if(!(g_entityFlags[client] & FL_INWATER))
 					{
-						if(velBooster[2] >= 650.0) //750.0
+						if(velBooster[2] >= 750.0) //750.0
 						{
 							g_skyVel[other][2] = 750.0;
 						}
 					}
 				}
 
-				else if(!(velFlyer[2] >= -600.0)) //700.0
+				else if(!(velFlyer[2] >= -700.0)) //700.0
 				{
 					//if(velBooster[2] >= 810.0)
 					if(velBooster[2] >= 650.0) //750.0
