@@ -56,7 +56,7 @@ float g_boostTime[MAXPLAYER];
 float g_skyVel[MAXPLAYER][3];
 bool g_readyToStart[MAXPLAYER];
 
-float g_cpPos[2][11][3];
+float g_cpPos[2][12][3];
 bool g_cp[11][MAXPLAYER];
 bool g_cpLock[11][MAXPLAYER];
 float g_cpTimeClient[11][MAXPLAYER];
@@ -6979,8 +6979,8 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 
 public void DrawZone(int client, float life, float size, int speed)
 {
-	float start[24][3];
-	float end[24][3];
+	float start[12][3];
+	float end[12][3];
 
 	start[0][0] = (g_zoneStartOrigin[0][0] < g_zoneStartOrigin[1][0]) ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0]; //zones calculation from tengu (tengulawl)
 	start[0][1] = (g_zoneStartOrigin[0][1] < g_zoneStartOrigin[1][1]) ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1];
@@ -7035,7 +7035,7 @@ public void DrawZone(int client, float life, float size, int speed)
 		}
 	}
 
-	float corners[24][8][3]; //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
+	float corners[12][8][3]; //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
 
 	for(int i = 0; i <= zones; i++)
 	{
