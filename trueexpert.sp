@@ -56,7 +56,7 @@ float g_boostTime[MAXPLAYER];
 float g_skyVel[MAXPLAYER][3];
 bool g_readyToStart[MAXPLAYER];
 
-float g_cpPos[2][11][3];
+float g_cpPos[2][12][3];
 bool g_cp[11][MAXPLAYER];
 bool g_cpLock[11][MAXPLAYER];
 float g_cpTimeClient[11][MAXPLAYER];
