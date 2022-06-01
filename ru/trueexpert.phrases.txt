@@ -49,11 +49,11 @@
 	}
 	"TurnOFFDevMap"
 	{
-		"ru"	"Включить devmap?"
+		"ru"	"Выключить devmap?"
 	}
 	"TurnONDevMap"
 	{
-		"ru"	"Выключить devmap?"
+		"ru"	"Включить devmap?"
 	}
 	//"NoclipEnabled"
 	//{
