@@ -1,10 +1,43 @@
+/*
+	GNU GENERAL PUBLIC LICENSE
+
+	VERSION 2, JUNE 1991
+
+	Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+	51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
+
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
+
+	GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
+	Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
+
+							Preamble
+
+	The GNU General Public License is a free, copyleft license for
+	software and other kinds of works.
+
+	The licenses for most software and other practical works are designed
+	to take away your freedom to share and change the works. By contrast,
+	the GNU General Public license is intended to guarantee your freedom to 
+	share and change all versions of a progrm--to make sure it remins free
+	software for all its users. We, the Free Software Foundation, use the
+	GNU General Public license for most of our software; it applies also to
+	any other work released this way by its authors. You can apply it to
+	your programs, too.
+*/
 #include <sdkhooks>
 
+#define semicolon 1
 #define required newdecls
 
-float g_macroTime[MAXPLAYERS + 1];
-bool g_macroOpened[MAXPLAYERS + 1];
-bool g_macroDisabled[MAXPLAYERS + 1];
+#define MAXPLAYER MAXPLAYERS + 1
+
+float g_macroTime[MAXPLAYER];
+bool g_macroOpened[MAXPLAYER];
+bool g_macroDisabled[MAXPLAYER];
 ConVar gCV_mainDelay;
 ConVar gCV_repeatDelay;
 ConVar gCV_enableMacro;
@@ -16,19 +49,27 @@ public Plugin myinfo =
 	name = "Macro",
 	author = "Nick Jurevich",
 	description = "Make trikz game more comfortable.",
-	version = "0.91",
+	version = "0.93",
 	url = "http://www.sourcemod.net/"
 }
 
 public void OnPluginStart()
 {
 	RegConsoleCmd("sm_macro", cmd_macro);
+
 	gCV_enableMacro = CreateConVar("sm_enable_macro", "0.0", "Do enable plugin here.", 0, false, 0.0, true, 1.0);
-	gCV_mainDelay = CreateConVar("sm_main_delay", "0.11", "Make main delay for attack2", 0, false, 0.0, true, 0.11);
-	gCV_repeatDelay = CreateConVar("sm_repeat_delay", "0.34", "Make repeat delay if hold attack2", 0, false, 0.0, true, 0.4);
+	gCV_mainDelay = CreateConVar("sm_main_delay", "0.10", "Make main delay for attack2", 0, false, 0.0, true, 0.12);
+	gCV_repeatDelay = CreateConVar("sm_repeat_delay", "0.4", "Make repeat delay if hold attack2", 0, false, 0.0, true, 0.4);
+
 	AutoExecConfig(true);
-	//g_macroMainDelay = GetConVarFloat(gCV_mainDelay);
-	//g_macroRepeatDelay = GetConVarFloat(gCV_repeatDelay);
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			OnClientPutInServer(i);
+		}
+	}
 }
 
 public Action cmd_macro(int client, int args)
