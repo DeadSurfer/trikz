@@ -1636,7 +1636,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				g_skyVel[other][0] = velFlyer[0];
 				g_skyVel[other][1] = velFlyer[1];
 			
-				velBooster[2] *= 3.5; //3.0
+				velBooster[2] *= 3.2; //3.0
 
 				g_skyVel[other][2] = velBooster[2];
 
@@ -7553,86 +7553,86 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//return Plugin_Continue;
 		}
 
-		if(g_devmap == false)
-		{
+		//if(g_devmap == false)
+		//{
 			//if(IsPlayerAlive(client) == true && g_partner[client] == false)
-			if(IsPlayerAlive(client) == true && g_partner[client] == 0)
+		if(IsPlayerAlive(client) == true && g_partner[client] == 0)
+		{
+			/*if(buttons & IN_USE)
 			{
-				/*if(buttons & IN_USE)
+				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
 				{
-					if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
-					{
-						g_partnerInHold[client] = GetEngineTime();
-						g_partnerInHoldLock[client] = false;
-						//return Plugin_Continue;
-					}
+					g_partnerInHold[client] = GetEngineTime();
+					g_partnerInHoldLock[client] = false;
 					//return Plugin_Continue;
 				}
+				//return Plugin_Continue;
+			}
 
-				else if(!(buttons & IN_USE))
-				{
-					if(g_partnerInHoldLock[client] == false)
-					{
-						g_partnerInHoldLock[client] = true;
-						//return Plugin_Continue;
-					}
-					//return Plugin_Continue;
-				}
-
-				if(g_partnerInHoldLock[client] == false && GetEngineTime() - g_partnerInHold[client] > 0.7)
+			else if(!(buttons & IN_USE))
+			{
+				if(g_partnerInHoldLock[client] == false)
 				{
 					g_partnerInHoldLock[client] = true;
-
-					Partner(client);
-
-					//return Plugin_Continue;
-				}*/
-				//return Plugin_Continue;
-			}
-
-			if(buttons & IN_RELOAD)
-			{
-				if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
-				{
-					g_restartInHold[client] = GetEngineTime();
-
-					g_restartInHoldLock[client] = false;
-
 					//return Plugin_Continue;
 				}
 				//return Plugin_Continue;
 			}
 
-			else if(!(buttons & IN_RELOAD))
+			if(g_partnerInHoldLock[client] == false && GetEngineTime() - g_partnerInHold[client] > 0.7)
 			{
-				if(g_restartInHoldLock[client] == false)
-				{
-					g_restartInHoldLock[client] = true;
-					//return Plugin_Continue;
-				}
+				g_partnerInHoldLock[client] = true;
+
+				Partner(client);
+
 				//return Plugin_Continue;
-			}
+			}*/
+			//return Plugin_Continue;
+		}
 
-			if(g_restartInHoldLock[client] == false && GetEngineTime() - g_restartInHold[client] > 0.7)
+		if(buttons & IN_RELOAD)
+		{
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
 			{
-				g_restartInHoldLock[client] = true;
+				g_restartInHold[client] = GetEngineTime();
 
-				if(g_partner[client] > 0)
-				{
-					Restart(client);
-					Restart(g_partner[client]);
-					//return Plugin_Continue;
-				}
+				g_restartInHoldLock[client] = false;
 
-				else if(g_partner[client] == 0)
-				{
-					Partner(client);
-					//return Plugin_Continue;
-				}
 				//return Plugin_Continue;
 			}
 			//return Plugin_Continue;
 		}
+
+		else if(!(buttons & IN_RELOAD))
+		{
+			if(g_restartInHoldLock[client] == false)
+			{
+				g_restartInHoldLock[client] = true;
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+
+		if(g_restartInHoldLock[client] == false && GetEngineTime() - g_restartInHold[client] > 0.7)
+		{
+			g_restartInHoldLock[client] = true;
+
+			if(g_partner[client] > 0)
+			{
+				Restart(client);
+				Restart(g_partner[client]);
+				//return Plugin_Continue;
+			}
+
+			else if(g_partner[client] == 0)
+			{
+				Partner(client);
+				//return Plugin_Continue;
+			}
+			//return Plugin_Continue;
+		}
+			//return Plugin_Continue;
+		//}
 
 		bool convarMacro = GetConVarBool(gCV_macro);
 
@@ -9152,14 +9152,16 @@ public Action timer_removePing(Handle timer, int client)
 
 		g_pingModel[client] = 0;
 
-		return Plugin_Continue;
+		g_pingTimer[client] = INVALID_HANDLE;
+
+		//return Plugin_Continue;
 	}
 
 	else if(g_pingModel[client] == 0)
 	{
 		PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
 
-		return Plugin_Continue;
+		//return Plugin_Continue;
 	}
 
 	return Plugin_Continue;
