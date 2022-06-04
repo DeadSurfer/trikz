@@ -58,7 +58,7 @@ public Plugin myinfo =
 	name = "Boost stats",
 	author = "Smesh",
 	description = "Measures time between attack and jump.",
-	version = "0.34",
+	version = "0.35",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -88,7 +88,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnClientPutInServer(int client)
 {
-	if(!AreClientCookiesCached(client))
+	if(AreClientCookiesCached(client) == false)
 	{
 		g_boostStats[client] = false;
 	}
@@ -98,7 +98,7 @@ public void OnClientPutInServer(int client)
 
 public void OnClientCookiesCached(int client)
 {
-	char value[8];
+	char value[8] = "";
 	GetClientCookie(client, g_cookie, value, sizeof(value));
 	g_boostStats[client] = view_as<bool>(StringToInt(value));
 }
@@ -107,11 +107,11 @@ public Action cmd_booststats(int client, int args)
 {
 	g_boostStats[client] = !g_boostStats[client];
 
-	char value[8];
+	char value[8] = "";
 	IntToString(g_boostStats[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie, value);
 
-	PrintToChat(client, g_boostStats[client] ? "Boost stats is on." : "Boost stats is off.");
+	PrintToChat(client, g_boostStats[client] ? "Boost stats is on now." : "Boost stats is off now.");
 
 	return Plugin_Handled;
 }
@@ -120,7 +120,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 {
 	if(IsChatTrigger() == false)
 	{
-		if(StrEqual(sArgs, "bs", false))
+		if(StrEqual(sArgs, "bs", false) == true)
 		{
 			cmd_booststats(client, 0);
 		}
@@ -171,9 +171,9 @@ public void CalculationProcess(int client)
 	//g_boostTimeStart[client] = GetGameTime();
 	g_throwTime[client][0] = GetGameTime();
 
-	float velAbs[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs);
-	g_vel[client] = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0));
+	float vel[3] = {0.0, 0.0, 0.0};
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
+	g_vel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
 
 	//g_duck[client] = view_as<bool>(buttons & IN_DUCK);
 	//g_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking"));
@@ -186,7 +186,7 @@ public void CalculationProcess(int client)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "flashbang_projectile", false))
+	if(StrEqual(classname, "flashbang_projectile", false) == true)
 	{
 		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile);
 	}
@@ -214,7 +214,7 @@ public void frame_projectileVel(int entity)
 		
 		if(0 < client <= MaxClients && g_projectileVel[client] == 0.0)
 		{
-			float vel[3];
+			float vel[3] = {0.0, 0.0, 0.0};
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
 
 			g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
@@ -226,12 +226,12 @@ public Action SDKStartTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && g_projectileVel[other] == 0.0)
 	{
-		char classname[32];
+		char classname[32] = "";
 		GetEntityClassname(entity, classname, sizeof(classname));
 
-		if(StrEqual(classname, "flashbang_projectile", false))
+		if(StrEqual(classname, "flashbang_projectile", false) == true)
 		{
-			float vel[3];
+			float vel[3] = {0.0, 0.0, 0.0};
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
 
 			g_projectileVel[other] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
