@@ -2124,8 +2124,12 @@ public void Partner(int client)
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(g_partner[client], name, sizeof(name));
 			menu.SetTitle("%T", "CancelPartnership", client, name);
-			menu.AddItem(partner, "Yes");
-			menu.AddItem("", "No");
+			
+			char format[256];
+			Format(format, sizeof(format), "%T", "Yes", partner);
+			menu.AddItem(partner, format);
+			Format(format, sizeof(format), "%T", "No", partner);
+			menu.AddItem("", format);
 
 			menu.Display(client, 20);
 		}
@@ -2152,8 +2156,11 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 			char buffer[32] = "";
 			IntToString(param1, buffer, sizeof(buffer));
 
-			menu2.AddItem(buffer, "Yes");
-			menu2.AddItem(item, "No");
+			char format[256];
+			Format(format, sizeof(format), "%T", "Yes", partner);
+			menu2.AddItem(buffer, format);
+			Format(format, sizeof(format), "%T", "No", partner);
+			menu2.AddItem(item, format);
 
 			menu2.Display(partner, 20);
 		}
