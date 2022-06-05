@@ -134,7 +134,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	/*if(g_created[client] == false)
 	{
 		g_boostProcess[client] = true;
-		g_boostTimeStart[client] = GetGameTime();
+		g_boostTimeStart[client] = GetEngineTime();
 
 		float velAbs[3];
 		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs);
@@ -150,13 +150,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(g_groundTime[client] == 0.0)
 		{
-			g_groundTime[client] = GetGameTime();
+			g_groundTime[client] = GetEngineTime();
 		}
 	}
 
 	else if(!(GetEntityFlags(client) & FL_ONGROUND))
 	{
-		if(GetGameTime() - g_groundTime[client] < 0.15)
+		if(GetEngineTime() - g_groundTime[client] < 0.15)
 		{
 			g_groundTime[client] = 0.0;
 		}
@@ -168,8 +168,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public void CalculationProcess(int client)
 {
 	//g_boostProcess[client] = true;
-	//g_boostTimeStart[client] = GetGameTime();
-	g_throwTime[client][0] = GetGameTime();
+	//g_boostTimeStart[client] = GetEngineTime();
+	g_throwTime[client][0] = GetEngineTime();
 
 	float vel[3] = {0.0, 0.0, 0.0};
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
@@ -196,7 +196,7 @@ public void SDKSpawnProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 
-	//g_boostPerf[client][0] = GetGameTime();
+	//g_boostPerf[client][0] = GetEngineTime();
 
 	RequestFrame(frame_projectileVel, entity);
 
@@ -247,9 +247,9 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 
 	//if(g_boostProcess[client] == true)
 	{
-		//g_boostTimeEnd[client] = GetGameTime();
-		g_throwTime[client][1] = GetGameTime();
-		//g_boostPerf[client][1] = GetGameTime();
+		//g_boostTimeEnd[client] = GetEngineTime();
+		g_throwTime[client][1] = GetEngineTime();
+		//g_boostPerf[client][1] = GetEngineTime();
 
 		CreateTimer(0.1, timer_waitSpawn, client, TIMER_FLAG_NO_MAPCHANGE);
 	}
