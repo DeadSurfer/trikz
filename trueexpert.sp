@@ -8744,7 +8744,7 @@ public void SDKProjectile(int entity)
 	{
 		bool convar = GetConVarBool(gCV_autoflashbang);
 
-		if(convar == true && (g_autoflash[client] == true || IsFakeClient(client)))
+		if(convar == true && (g_autoflash[client] == true || IsFakeClient(client) == true))
 		{
 			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		}
@@ -8772,7 +8772,7 @@ public void SDKProjectile(int entity)
 		bool convar2 = GetConVarBool(gCV_autoswitch);
 			
 			//if(convar == true && g_autoswitch[client] == true && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") > 0.0 && GetEntPropFloat(GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon"), Prop_Send, "m_fThrowTime") < GetGameTime())
-		if(convar2 == true && g_autoswitch[client] == true)
+		if(convar2 == true && (g_autoswitch[client] == true || IsFakeClient(client) == true))
 		{
 			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
