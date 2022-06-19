@@ -1318,7 +1318,7 @@ public void OnClientPutInServer(int client)
 	//g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
 
-	DHookEntity(g_teleport, true, client);
+	DHookEntity(g_teleport, true, client); //this should provides a crash if reload plugin.
 }
 
 public void OnClientCookiesCached(int client)
