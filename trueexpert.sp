@@ -7653,7 +7653,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				if(StrEqual(classname, "weapon_flashbang", false))
 				{
-					if(g_macroOpened[client] == false && (g_macroTime[client] == 0.0 || GetEngineTime() - g_macroTime[client] >= 0.34))
+					if(g_macroOpened[client] == false && (g_macroTime[client] == 0.0 || GetEngineTime() - g_macroTime[client] >= 0.4))
 					{
 						g_macroTime[client] = GetEngineTime();
 						g_macroOpened[client] = true;
@@ -7666,7 +7666,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 			
-			if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.11)
+			if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.1)
 			{
 				buttons |= IN_JUMP;
 				g_macroTime[client] = GetEngineTime();
