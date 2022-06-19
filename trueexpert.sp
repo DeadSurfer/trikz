@@ -198,7 +198,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.38",
+	version = "4.39",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -1315,7 +1315,7 @@ public void OnClientPutInServer(int client)
 	}
 
 	g_clantagOnce[client] = false;
-	g_macroTime[client] = 0.0;
+	//g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
 
 	DHookEntity(g_teleport, true, client);
@@ -7646,27 +7646,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(convarMacro == true)
 		{
+			float time = GetEngineTime() - g_macroTime[client];
+			
 			if(buttons & IN_ATTACK2)
 			{
 				char classname[32] = "";
 				GetClientWeapon(client, classname, sizeof(classname));
 
-				if(StrEqual(classname, "weapon_flashbang", false))
+				if(StrEqual(classname, "weapon_flashbang", false) == true)
 				{
-					if(g_macroOpened[client] == false && (g_macroTime[client] == 0.0 || GetEngineTime() - g_macroTime[client] >= 0.4))
+					//if(g_macroOpened[client] == false && (g_macroTime[client] == 0.0 || GetEngineTime() - g_macroTime[client] >= 0.4))
+					if(g_macroOpened[client] == false && time >= 0.4)
 					{
 						g_macroTime[client] = GetEngineTime();
 						g_macroOpened[client] = true;
 					}
 	
-					if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.02)
+					if(g_macroOpened[client] == true && time <= 0.02)
 					{
 						buttons |= IN_ATTACK;
 					}
 				}
 			}
 			
-			if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.1)
+			if(g_macroOpened[client] == true && time >= 0.1)
 			{
 				buttons |= IN_JUMP;
 				g_macroTime[client] = GetEngineTime();
