@@ -49,7 +49,7 @@ public Plugin myinfo =
 	name = "Macro",
 	author = "Nick Jurevich",
 	description = "Make trikz game more comfortable.",
-	version = "0.93",
+	version = "0.94",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -104,7 +104,7 @@ public void OnClientPutInServer(int client)
 	g_macroRepeatDelay = GetConVarFloat(gCV_repeatDelay);
 }
 
-public Action OnPlayerRunCmd(int client, int& buttons)
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	float convar = GetConVarFloat(gCV_enableMacro);
 
@@ -120,7 +120,7 @@ public Action OnPlayerRunCmd(int client, int& buttons)
 
 		if(StrEqual(classname, "weapon_flashbang", false))
 		{
-			if(g_macroOpened[client] == false && (g_macroTime[client] == 0.0 || GetEngineTime() - g_macroTime[client] >= g_macroRepeatDelay))
+			if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= g_macroRepeatDelay)
 			{
 				g_macroTime[client] = GetEngineTime();
 				g_macroOpened[client] = true;
