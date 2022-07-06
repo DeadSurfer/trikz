@@ -198,7 +198,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.39",
+	version = "4.40",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -279,7 +279,8 @@ public void OnPluginStart()
 	AddNormalSoundHook(OnSound);
 
 	HookUserMessage(GetUserMessageId("SayText2"), OnSayMessage, true); //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
-	
+	HookUserMessage(GetUserMessageId("RadioText"), OnRadioMessage, true);
+
 	HookEvent("player_spawn", OnSpawn);
 	HookEntityOutput("func_button", "OnPressed", OnButton);
 	HookEvent("player_jump", OnJump);
@@ -669,7 +670,7 @@ public void OnMapEnd()
 	}
 }
 
-public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+stock Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	int client = msg.ReadByte();
 
@@ -821,7 +822,7 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	return Plugin_Handled;
 }
 
-public void frame_SayText2(DataPack dp)
+stock void frame_SayText2(DataPack dp)
 {
 	dp.Reset();
 
@@ -858,6 +859,366 @@ public void frame_SayText2(DataPack dp)
 
 		g_msg[client] = true;
 	}
+}
+
+/*public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+{
+	//char text[256];
+	//msg.ReadString(text, sizeof(text));
+	//PrintToServer("%s", text);
+
+	//char text2[256];
+	//msg.ReadString(text2, sizeof(text2));
+	//PrintToServer("%s", text2);
+
+	//msg.ReadByte();
+
+	//int client = msg.ReadByte();
+
+	char dist[256];
+	msg.ReadString(dist, sizeof(dist));
+	PrintToServer(dist);
+
+	char name[256];
+	msg.ReadString(name, sizeof(name));
+	PrintToServer(name);
+
+	//int client = msg.ReadByte();
+	//PrintToServer("%i", client);
+
+	char text[256];
+	msg.ReadString(text, sizeof(text));
+	PrintToServer(text);
+
+	//char text4[256];
+	//msg.ReadString(text4, sizeof(text4));
+	//PrintToServer(text4);
+
+	//char text5[256];
+	//msg.ReadString(text5, sizeof(text5));
+	//PrintToServer(text5);
+
+	//int count = 0;
+	//char textx[128][256];
+	//char textx[256];
+
+	//while(msg.ReadString(textx, sizeof(textx)) > 0)
+	//{
+		//count++;
+
+		//if(count == 2)
+		//{
+	char sName[MAX_NAME_LENGTH];
+	int client = 0;
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			GetClientName(i, sName, sizeof(sName));
+
+			if(StrEqual(name, sName, true))
+			{
+				client = i;
+			}
+		}
+	}
+		//}
+
+		//PrintToServer("%i %s", count, textx);
+	//}
+
+	char points[32] = "";
+	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
+
+	char color[8] = "";
+
+	if(precentage >= 90.0)
+	{
+		Format(color, sizeof(color), "FF8000");
+	}
+
+	else if(90.0 > precentage >= 70.0)
+	{
+		Format(color, sizeof(color), "A335EE");
+	}
+
+	else if(70.0 > precentage >= 55.0)
+	{
+		Format(color, sizeof(color), "0070DD");
+	}
+
+	else if(55.0 > precentage >= 40.0)
+	{
+		Format(color, sizeof(color), "1EFF00");
+	}
+
+	else if(40.0 > precentage >= 15.0)
+	{
+		Format(color, sizeof(color), "FFFFFF");
+	}
+
+	else if(15.0 > precentage >= 0.0)
+	{
+		Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
+	}
+
+	if(g_points[client] < 1000)
+	{
+		Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client]);
+	}
+
+	else if(g_points[client] > 999)
+	{
+		Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000);
+	}
+
+	else if(g_points[client] > 999999)
+	{
+		Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
+	}
+
+	//PrintToChat(client, "[%s] %N (RADIO): %s", points, client, text);
+
+	DataPack dp = new DataPack();
+
+	dp.WriteCell(GetClientSerial(client));
+	dp.WriteString(text);
+
+	RequestFrame(frame_RadioText, dp);
+
+	return Plugin_Handled;
+}*/
+
+/*stock void frame_RadioText(DataPack dp)
+{
+	dp.Reset();
+	int client = GetClientFromSerial(dp.ReadCell());
+
+	//bool allchat = dp.ReadCell();
+
+	char text[256] = "";
+	dp.ReadString(text, sizeof(text));
+
+	if(IsClientInGame(client) == true)
+	{
+		int clients[MAXPLAYER];
+		int count = 0;
+		int team = GetClientTeam(client);
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true && GetClientTeam(i) == team)
+			{
+				clients[count++] = i;
+			}
+		}
+
+		Handle RadioText = StartMessage("RadioText", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
+
+		BfWrite bfmsg = UserMessageToBfWrite(RadioText);
+
+		bfmsg.WriteByte(true);
+		bfmsg.WriteByte(client);
+		bfmsg.WriteString(text);
+
+		EndMessage();
+
+		//g_msg[client] = true;
+	}
+}*/
+
+//public Action RadioText(UserMsg msg_id, Handle bf, const players[], playersNum, bool:reliable, bool:init)
+
+public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+{
+    // Message is original ?
+    if(!reliable)
+    {
+        return Plugin_Continue;
+    }
+
+    char buffer[256];
+    buffer[0] = '\0';
+
+    // At least one player get this message
+    if(playersNum > 0)
+    {
+        Handle pack;
+
+        CreateDataTimer(0.0, timer_radiotxt, pack); // Start new message after this one
+
+        WritePackCell(pack, playersNum); // need first collect player amount in datapack
+
+        for(int i = 0; i < playersNum; i++) // List all players index in datapack
+        {
+            WritePackCell(pack, players[i]);
+        }
+
+        while(msg.ReadString(buffer, sizeof(buffer)) > 0) // Write all usermessage in datapack
+        {
+            WritePackString(pack, buffer);
+        }
+
+        WritePackString(pack, NULL_STRING); // NULL. Just some reason I add this.
+
+        ResetPack(pack); // Set position top of datapack;
+
+        return Plugin_Handled; // Block this original msg
+    }
+
+    return Plugin_Continue;
+}
+
+// New RadioText https://forums.alliedmods.net/showthread.php?t=183841
+public Action timer_radiotxt(Handle timer, Handle pack)
+{
+	// Copy players list from datapack
+	int playersNum = ReadPackCell(pack);
+	//int players[playersNum];
+	int[] players = new int[playersNum];
+
+	for(int i = 0; i < playersNum; i++)
+	{
+		players[i] = ReadPackCell(pack);
+	}
+
+	int pos = view_as<int>(GetPackPosition(pack));
+	// Start create new RadioText
+	char buffer[256];
+	Handle hBf;
+
+	for(int i = 0; i < playersNum; i++)
+	{
+		hBf = INVALID_HANDLE; // This not maybe usefull...
+
+		if(!IsClientInGame(players[i]) || IsFakeClient(players[i])) // Don't send new message unconnected and bots
+		{
+			continue;
+		}
+
+		SetPackPosition(pack, view_as<DataPackPos>(pos));
+
+		hBf = StartMessageOne("RadioText", players[i]);
+	
+	//	"RadioText" examples how those look. Translations found players ...cstrike/resource/cstrike_*.txt
+
+	//	\x03\x01#Game_radio_location
+	//	PlayerName
+	//	LocationName
+	//	#Cstrike_TitlesTXT_Go_go_go
+
+	//	\x03\x01#Game_radio
+	//	PlayerName
+	//	#Cstrike_TitlesTXT_Go_go_go
+
+	//	Sencond character in message can be anything... \x03(\xrandom crap), don't know why...
+
+	
+
+		ReadPackString(pack, buffer, sizeof(buffer));
+		BfWriteString(hBf, buffer);
+
+		// Do extra writing when radiotext have location included
+		if(StrEqual(buffer[2], "#Game_radio_location"))
+		{
+			ReadPackString(pack, buffer, sizeof(buffer));
+			BfWriteString(hBf, buffer);
+		}
+
+		ReadPackString(pack, buffer, sizeof(buffer));
+
+		char sName[MAX_NAME_LENGTH];
+		int client = 0;
+
+		for(int j = 1; j <= MaxClients; j++)
+		{
+			if(IsClientInGame(j))
+			{
+				GetClientName(j, sName, sizeof(sName));
+
+				if(StrEqual(buffer, sName, true))
+				{
+					client = j;
+				}
+			}
+		}
+			//}
+
+			//PrintToServer("%i %s", count, textx);
+		//}
+
+		//PrintToServer("%N %i", client, client);
+
+		char points[32] = "";
+		float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
+
+		char color[8] = "";
+
+		if(precentage >= 90.0)
+		{
+			Format(color, sizeof(color), "FF8000");
+		}
+
+		else if(90.0 > precentage >= 70.0)
+		{
+			Format(color, sizeof(color), "A335EE");
+		}
+
+		else if(70.0 > precentage >= 55.0)
+		{
+			Format(color, sizeof(color), "0070DD");
+		}
+
+		else if(55.0 > precentage >= 40.0)
+		{
+			Format(color, sizeof(color), "1EFF00");
+		}
+
+		else if(40.0 > precentage >= 15.0)
+		{
+			Format(color, sizeof(color), "FFFFFF");
+		}
+
+		else if(15.0 > precentage >= 0.0)
+		{
+			Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
+		}
+
+		if(g_points[client] < 1000)
+		{
+			Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client]);
+		}
+
+		else if(g_points[client] > 999)
+		{
+			Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000);
+		}
+
+		else if(g_points[client] > 999999)
+		{
+			Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
+		}
+
+		Format(buffer, sizeof(buffer), "[%s] %s", points, buffer);
+
+		//PrintToServer("%s", buffer);
+
+		BfWriteString(hBf, buffer);
+
+		ReadPackString(pack, buffer, sizeof(buffer));
+		// translation title and not "Fire_in_the_hole" message.
+		if(StrContains(buffer, "#Cstrike_TitlesTXT_") == 0 && StrContains(buffer, "Fire_in_the_hole") == -1)
+		{
+			// Re-write radiotxt message here
+			Format(buffer, sizeof(buffer), "%T", buffer[19], players[i]);
+		}
+
+		BfWriteString(hBf, buffer);
+		EndMessage();
+	}
+
+	return Plugin_Continue;
 }
 
 public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -1427,7 +1788,7 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 				Format(query, sizeof(query), "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid);
 				g_mysql.Query(SQLUpdateUser, query, GetClientSerial(client), DBPrio_High);
 
-				#if debug true
+				#if debug == true
 				PrintToServer("SQLAddUser: User (%N) selecting...", client);
 				#endif
 			}
@@ -1437,7 +1798,7 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
 				g_mysql.Query(SQLUserAdded, query);
 
-				#if debug true
+				#if debug == true
 				PrintToServer("SQLAddUser: User (%N) trying to add to database...", client);
 				#endif
 			}
@@ -1454,7 +1815,7 @@ public void SQLUserAdded(Database db, DBResultSet results, const char[] error, a
 
 	else if(strlen(error) == 0)
 	{
-		#if debug true
+		#if debug == true
 		PrintToServer("SQLUserAdded: Successfuly added user.");
 		#endif
 	}
@@ -1491,7 +1852,7 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 
 			g_mysql.Query(SQLUpdateUserSuccess, query, GetClientSerial(client), DBPrio_High);
 
-			#if debug true
+			#if debug == true
 //			PrintToServer("SQLUpdateUser: Successfuly updated user");
 			PrintToServer("SQLUpdateUser: User (%N) updating...", client);
 			#endif
@@ -1522,7 +1883,7 @@ public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] 
 				Format(query, sizeof(query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
 				g_mysql.Query(SQLGetPoints, query, GetClientSerial(client), DBPrio_High);
 
-				#if debug true
+				#if debug == true
 				PrintToServer("SQLUpdateUserSuccess: Successfuly updated user");
 				#endif
 			}
@@ -1678,7 +2039,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					}
 				}
 
-				#if debug true
+				#if debug == true
 				PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 				#endif
 
@@ -1715,7 +2076,7 @@ public void SDKBoostFix(int client)
 	{
 		int entity = EntRefToEntIndex(g_flash[client]);
 
-		#if debug true
+		#if debug == true
 		PrintToServer("%i", entity);
 		#endif
 
@@ -1736,7 +2097,7 @@ public void SDKBoostFix(int client)
 
 			g_boost[client] = 2; //Trijās vietās kodā atrodas paātrināšana pēc Antona vārdiem.
 
-			#if debug true
+			#if debug == true
 			PrintToServer("1x");
 			#endif
 		}
@@ -3198,19 +3559,19 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		int count = ++g_top10Count;
 		//g_top10Count = g_top10Count + 1;
 		//int count = g_top10Count;
-		#if debug true
+		#if debug == true
 		//PrintToServer("%i", count);
 		#endif
 		char format2[256] = "";
 		//g_srPrev = time;
-		#if debug true
+		#if debug == true
 		//float localPrevTime;
 		//localPrevTime = time - g_srPrevTime;
 		//PrintToServer("x: %f, y: %f", localPrevTime, time);
 		#endif
 		float serverRecord;
 		//localPrevTime = g_srPrevTime
-		#if debug true
+		#if debug == true
 		//PrintToServer("%f %f %f %N %N", localPrevTime, time, g_srPrevTime, client, i);
 		#endif
 
@@ -3228,7 +3589,7 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		char formatX[64] = "";
 		Format(formatX, sizeof(formatX), "%02.i:%02.i:%02.i", hour2, minute2, second2);
 
-		#if debug true
+		#if debug == true
 		PrintToServer("formatX: %s", formatX);
 		#endif
 
@@ -3246,7 +3607,7 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		}
 		
 		//g_srPrevTime = time;
-		#if debug true
+		#if debug == true
 		//PrintToServer("%f", g_srPrevTime);
 		#endif
 	}
@@ -3693,7 +4054,7 @@ public void SendMessage(const char[] text, bool all, int client)
 		}
 	}
 
-	#if debug true
+	#if debug == true
 	//PrintToChat(client, "%i MessageDebug", client)
 	#endif
 	return;
@@ -7227,7 +7588,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					g_pingTime[client] = GetEngineTime();
 					g_pingLock[client] = false;
 
-					#if debug true
+					#if debug == true
 					PrintToServer("ping 1");
 					#endif
 					//return Plugin_Continue;
@@ -7241,7 +7602,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					g_pingLock[client] = true;
 
-					#if debug true
+					#if debug == true
 					PrintToServer("ping 2");
 					#endif
 					//return Plugin_Continue;
@@ -7730,7 +8091,7 @@ public Action ProjectileBoostFix(int entity, int other)
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
-		#if debug true
+		#if debug == true
 		PrintToServer("delta: %f", delta);
 		#endif
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
@@ -8831,7 +9192,7 @@ public void SDKProjectile(int entity)
 			//}
 			//g_projectileSoundLoud[owner > 0 ? owner : 0] = entity;
 			g_projectileSoundLoud[owner > 0 ? owner : 0] = EntIndexToEntRef(entity);
-			#if debug true
+			#if debug == true
 			PrintToServer("SDKStopSpam: Collision group: %i", GetEntProp(entity, Prop_Data, "m_CollisionGroup"));
 			#endif
 			//return Plugin_Continue;
