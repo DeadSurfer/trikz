@@ -606,4 +606,88 @@
 		"#format"	"{1:s}"
 		"en"	"Don't spam with \"top10\". Wait {1} seconds."
 	}
+	"Cover_me"
+	{
+		"en"	"Cover Me!"
+	}
+	"You_take_the_point"
+	{
+		"en"	"You Take the Point."
+	}
+	"Hold_this_position"
+	{
+		"en"	"Hold This Position."
+	}
+	"Regroup_team"
+	{
+		"en"	"Regroup Team."
+	}
+	"Follow_me"
+	{
+		"en"	"Follow Me."
+	}
+	"Taking_fire"
+	{
+		"en"	"Taking Fire...Need Assistance!"
+	}
+	"Go_go_go"
+	{
+		"en"	"Go go go!"
+	}
+	"Team_fall_back"
+	{
+		"en"	"Team, fall back!"
+	}
+	"Stick_together_team"
+	{
+		"en"	"Stick together, team."
+	}
+	"Get_in_position_and_wait"
+	{
+		"en"	"Get in position and wait for my go."
+	}
+	"Storm_the_front"
+	{
+		"en"	"Storm the Front!"
+	}
+	"Report_in_team"
+	{
+		"en"	"Report in, team."
+	}
+	"Affirmative"
+	{
+		"en"	"Affirmative."
+	}
+	"Roger_that"
+	{
+		"en"	"Roger that."
+	}
+	"Enemy_spotted"
+	{
+		"en"	"Enemy spotted."
+	}
+	"Need_backup"
+	{
+		"en"	"Need backup."
+	}
+	"Sector_clear"
+	{
+		"en"	"Sector clear."
+	}
+	"In_position"
+	{
+		"en"	"I'm in position."
+	}
+	"Reporting_in"
+	{
+		"en"	"Reporting in."
+	}
+	"Get_out_of_there"
+	{
+		"en"	"Get out of there, it's gonna blow!"
+	}
+	"Negative"
+	{
+		"en"	"Negative."
+	}
 }
