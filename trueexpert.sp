@@ -735,12 +735,12 @@ stock Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int p
 		Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client]);
 	}
 
-	else if(g_points[client] > 999)
+	else if(g_points[client] >= 1000)
 	{
 		Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000);
 	}
 
-	else if(g_points[client] > 999999)
+	else if(g_points[client] >= 1000000)
 	{
 		Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
 	}
@@ -861,176 +861,7 @@ stock void frame_SayText2(DataPack dp)
 	}
 }
 
-/*public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
-{
-	//char text[256];
-	//msg.ReadString(text, sizeof(text));
-	//PrintToServer("%s", text);
-
-	//char text2[256];
-	//msg.ReadString(text2, sizeof(text2));
-	//PrintToServer("%s", text2);
-
-	//msg.ReadByte();
-
-	//int client = msg.ReadByte();
-
-	char dist[256];
-	msg.ReadString(dist, sizeof(dist));
-	PrintToServer(dist);
-
-	char name[256];
-	msg.ReadString(name, sizeof(name));
-	PrintToServer(name);
-
-	//int client = msg.ReadByte();
-	//PrintToServer("%i", client);
-
-	char text[256];
-	msg.ReadString(text, sizeof(text));
-	PrintToServer(text);
-
-	//char text4[256];
-	//msg.ReadString(text4, sizeof(text4));
-	//PrintToServer(text4);
-
-	//char text5[256];
-	//msg.ReadString(text5, sizeof(text5));
-	//PrintToServer(text5);
-
-	//int count = 0;
-	//char textx[128][256];
-	//char textx[256];
-
-	//while(msg.ReadString(textx, sizeof(textx)) > 0)
-	//{
-		//count++;
-
-		//if(count == 2)
-		//{
-	char sName[MAX_NAME_LENGTH];
-	int client = 0;
-
-	for(int i = 1; i <= MaxClients; i++)
-	{
-		if(IsClientInGame(i))
-		{
-			GetClientName(i, sName, sizeof(sName));
-
-			if(StrEqual(name, sName, true))
-			{
-				client = i;
-			}
-		}
-	}
-		//}
-
-		//PrintToServer("%i %s", count, textx);
-	//}
-
-	char points[32] = "";
-	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
-
-	char color[8] = "";
-
-	if(precentage >= 90.0)
-	{
-		Format(color, sizeof(color), "FF8000");
-	}
-
-	else if(90.0 > precentage >= 70.0)
-	{
-		Format(color, sizeof(color), "A335EE");
-	}
-
-	else if(70.0 > precentage >= 55.0)
-	{
-		Format(color, sizeof(color), "0070DD");
-	}
-
-	else if(55.0 > precentage >= 40.0)
-	{
-		Format(color, sizeof(color), "1EFF00");
-	}
-
-	else if(40.0 > precentage >= 15.0)
-	{
-		Format(color, sizeof(color), "FFFFFF");
-	}
-
-	else if(15.0 > precentage >= 0.0)
-	{
-		Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
-	}
-
-	if(g_points[client] < 1000)
-	{
-		Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client]);
-	}
-
-	else if(g_points[client] > 999)
-	{
-		Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000);
-	}
-
-	else if(g_points[client] > 999999)
-	{
-		Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
-	}
-
-	//PrintToChat(client, "[%s] %N (RADIO): %s", points, client, text);
-
-	DataPack dp = new DataPack();
-
-	dp.WriteCell(GetClientSerial(client));
-	dp.WriteString(text);
-
-	RequestFrame(frame_RadioText, dp);
-
-	return Plugin_Handled;
-}*/
-
-/*stock void frame_RadioText(DataPack dp)
-{
-	dp.Reset();
-	int client = GetClientFromSerial(dp.ReadCell());
-
-	//bool allchat = dp.ReadCell();
-
-	char text[256] = "";
-	dp.ReadString(text, sizeof(text));
-
-	if(IsClientInGame(client) == true)
-	{
-		int clients[MAXPLAYER];
-		int count = 0;
-		int team = GetClientTeam(client);
-
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i) == true && GetClientTeam(i) == team)
-			{
-				clients[count++] = i;
-			}
-		}
-
-		Handle RadioText = StartMessage("RadioText", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
-
-		BfWrite bfmsg = UserMessageToBfWrite(RadioText);
-
-		bfmsg.WriteByte(true);
-		bfmsg.WriteByte(client);
-		bfmsg.WriteString(text);
-
-		EndMessage();
-
-		//g_msg[client] = true;
-	}
-}*/
-
-//public Action RadioText(UserMsg msg_id, Handle bf, const players[], playersNum, bool:reliable, bool:init)
-
-public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) // New RadioText https://forums.alliedmods.net/showthread.php?t=183841
 {
     // Message is original ?
     if(!reliable)
@@ -1070,12 +901,10 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
     return Plugin_Continue;
 }
 
-// New RadioText https://forums.alliedmods.net/showthread.php?t=183841
 public Action timer_radiotxt(Handle timer, Handle pack)
 {
 	// Copy players list from datapack
 	int playersNum = ReadPackCell(pack);
-	//int players[playersNum];
 	int[] players = new int[playersNum];
 
 	for(int i = 0; i < playersNum; i++)
@@ -1084,6 +913,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 	}
 
 	int pos = view_as<int>(GetPackPosition(pack));
+
 	// Start create new RadioText
 	char buffer[256];
 	Handle hBf;
@@ -1114,8 +944,6 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 
 	//	Sencond character in message can be anything... \x03(\xrandom crap), don't know why...
 
-	
-
 		ReadPackString(pack, buffer, sizeof(buffer));
 		BfWriteString(hBf, buffer);
 
@@ -1143,12 +971,6 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 				}
 			}
 		}
-			//}
-
-			//PrintToServer("%i %s", count, textx);
-		//}
-
-		//PrintToServer("%N %i", client, client);
 
 		char points[32] = "";
 		float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
@@ -1190,23 +1012,22 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 			Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client]);
 		}
 
-		else if(g_points[client] > 999)
+		else if(g_points[client] >= 1000)
 		{
 			Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000);
 		}
 
-		else if(g_points[client] > 999999)
+		else if(g_points[client] >= 1000000)
 		{
 			Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
 		}
 
 		Format(buffer, sizeof(buffer), "[%s] %s", points, buffer);
 
-		//PrintToServer("%s", buffer);
-
 		BfWriteString(hBf, buffer);
 
 		ReadPackString(pack, buffer, sizeof(buffer));
+
 		// translation title and not "Fire_in_the_hole" message.
 		if(StrContains(buffer, "#Cstrike_TitlesTXT_") == 0 && StrContains(buffer, "Fire_in_the_hole") == -1)
 		{
@@ -1215,6 +1036,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 		}
 
 		BfWriteString(hBf, buffer);
+
 		EndMessage();
 	}
 
