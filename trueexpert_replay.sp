@@ -372,7 +372,7 @@ public void LoadRecord()
 	for(int i = 0; i <= 1; i++)
 	{
 		char filePath[PLATFORM_MAX_PATH] = "";
-		BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s%s.replay", g_map, type);
+		BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s%s.replay", g_map, type[i]);
 
 		if(FileExists(filePath) == true)
 		{
