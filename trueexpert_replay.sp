@@ -82,7 +82,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.21",
+	version = "0.22",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -367,83 +367,49 @@ public void SQLGetName(Database db, DBResultSet results, const char[] error, any
 
 public void LoadRecord()
 {
-	char filePath[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s.replay", g_map);
+	char type[][] = {"", "_partner"};
 
-	if(FileExists(filePath) == true)
+	for(int i = 0; i <= 1; i++)
 	{
-		File f = OpenFile(filePath, "rb");
-		int tickcount = 0;
-		int time = 0;
-		f.ReadInt32(tickcount);
-		f.ReadInt32(g_steamid3[0]);
-		f.ReadInt32(time);
+		char filePath[PLATFORM_MAX_PATH] = "";
+		BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s%s.replay", g_map, type);
 
-		g_replayTickcount[g_bot[0]] = tickcount;
-
-		any data[sizeof(eFrame)];
-		delete g_frameCache[g_bot[0]];
-
-		g_frameCache[g_bot[0]] = new ArrayList(sizeof(eFrame), tickcount);
-
-		for(int i = 0; i < tickcount; i++)
+		if(FileExists(filePath) == true)
 		{
-			if(f.Read(data, sizeof(eFrame), 4) >= 0)
+			File f = OpenFile(filePath, "rb");
+			int tickcount = 0;
+			int time = 0;
+			f.ReadInt32(tickcount);
+			f.ReadInt32(g_steamid3[i]);
+			f.ReadInt32(time);
+
+			g_replayTickcount[g_bot[i]] = tickcount;
+
+			any data[sizeof(eFrame)];
+			delete g_frameCache[g_bot[i]];
+
+			g_frameCache[g_bot[i]] = new ArrayList(sizeof(eFrame), tickcount);
+
+			for(int j = 0; j < tickcount; j++)
 			{
-				g_frameCache[g_bot[0]].SetArray(i, data, sizeof(eFrame));
+				if(f.Read(data, sizeof(eFrame), 4) >= 0)
+				{
+					g_frameCache[g_bot[i]].SetArray(j, data, sizeof(eFrame));
+				}
 			}
-		}
 
-		delete f;
+			delete f;
 
-		if(g_database != INVALID_HANDLE)
-		{
-			char query[512] = "";
-			Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i", g_steamid3[0]);
-			g_database.Query(SQLGetName, query, 0);
-		}
-
-		g_loaded[0] = true;
-		g_tick[g_bot[0]] = 0;
-	}
-
-	BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s_partner.replay", g_map);
-
-	if(FileExists(filePath) == true)
-	{
-		File f = OpenFile(filePath, "rb");
-		int tickcount = 0;
-		int time = 0;
-		f.ReadInt32(tickcount);
-		f.ReadInt32(g_steamid3[1]);
-		f.ReadInt32(time);
-
-		g_replayTickcount[g_bot[1]] = tickcount;
-
-		any data[sizeof(eFrame)];
-		delete g_frameCache[g_bot[1]];
-
-		g_frameCache[g_bot[1]] = new ArrayList(sizeof(eFrame), tickcount);
-
-		for(int i = 0; i < tickcount; i++)
-		{
-			if(f.Read(data, sizeof(eFrame), 4) >= 0)
+			if(g_database != INVALID_HANDLE)
 			{
-				g_frameCache[g_bot[1]].SetArray(i, data, sizeof(eFrame));
+				char query[512] = "";
+				Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i", g_steamid3[i]);
+				g_database.Query(SQLGetName, query, i);
 			}
+
+			g_loaded[i] = true;
+			g_tick[g_bot[i]] = 0;
 		}
-
-		delete f;
-
-		if(g_database != INVALID_HANDLE)
-		{
-			char query[512] = "";
-			Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i", g_steamid3[1]);
-			g_database.Query(SQLGetName, query, 1);
-		}
-
-		g_loaded[1] = true;
-		g_tick[g_bot[1]] = 0;
 	}
 }
 
