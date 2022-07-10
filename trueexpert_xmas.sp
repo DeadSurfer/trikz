@@ -87,7 +87,7 @@ public void OnPluginEnd()
 
 public void OnMapStart()
 {
-	char path[4][PLATFORM_MAX_PATH] = {"models/fakeexpert/xmas/", "models/fakeexpert/santahat/", "materials/fakeexpert/xmas/", "materials/fakeexpert/santahat/"};
+	char path[4][PLATFORM_MAX_PATH] = {"models/trueexpert/xmas/", "models/trueexpert/santahat/", "materials/trueexpert/xmas/", "materials/trueexpert/santahat/"};
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
@@ -163,14 +163,12 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 				char type[64] = "";
 
-				int skin = 0;
-
 				kv.GetVector("origin", origin);
 				kv.GetVector("angles", angles);
 
 				kv.GetString("type", type, sizeof(type));
 
-				skin = kv.GetNum("skin");
+				int skin = kv.GetNum("skin");
 
 				CreateItem(origin, angles, type, skin);
 			}
@@ -415,7 +413,7 @@ stock void Xmas(int client, char[] type = "")
 		float eyeAngles[3];
 		GetClientEyeAngles(client, eyeAngles);
 
-		int skin = 0;
+		int skin = -1;
 
 		if(StrEqual(type, "tree", false) == true || StrEqual(type, "tree_big", false) == true)
 		{
@@ -519,7 +517,7 @@ stock void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	else if(StrEqual(type, "gift9_big", false)) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_curly.mdl", model);
 	else if(StrEqual(type, "gift10_big", false)) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_special.mdl", model);
 
-	int entity = CreateEntityByName("prop_dynamic");
+	int entity = CreateEntityByName("prop_dynamic", -1);
 
 	DispatchKeyValue(entity, "model", model);
 	DispatchKeyValue(entity, "solid", "1");
