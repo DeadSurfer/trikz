@@ -2173,7 +2173,7 @@ public Action Block(int client) //thanks maru for optimization.
 {
 	g_block[client] = !g_block[client];
 
-	SetEntProp(client, Prop_Data, "m_CollisionGroup", g_block[client] ? 5 : 2);
+	SetEntityCollisionGroup(client, g_block[client] ? 5 : 2);
 
 	if(g_color[client][0] == true)
 	{
@@ -7473,12 +7473,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(g_block[client] == true && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
 			{
-				SetEntProp(client, Prop_Data, "m_CollisionGroup", 5);
+				SetEntityCollisionGroup(client, 5);
 			}
 
 			else if(g_block[client] == false && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
 			{
-				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2);
+				SetEntityCollisionGroup(client, 2);
 			}
 		}
 	}
@@ -7552,7 +7552,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 		{
-			SetEntProp(other, Prop_Data, "m_CollisionGroup", 2);
+			SetEntityCollisionGroup(other, 2);
 
 			if(g_color[other][0] == true)
 			{
@@ -7571,7 +7571,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 		{
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5);
+			SetEntityCollisionGroup(client, 5);
 
 			if(g_color[client][0] == true)
 			{
