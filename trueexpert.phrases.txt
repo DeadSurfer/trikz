@@ -690,4 +690,8 @@
 	{
 		"en"	"Negative."
 	}
+	"Enemy_down"
+	{
+		"en"	"Enemy down."
+	}
 }
