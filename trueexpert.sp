@@ -184,13 +184,16 @@ Handle g_teleport;
 //KeyValues g_kv;
 ConVar gCV_boostfix;
 float g_top10ac;
+int g_step = 1;
+int g_ZoneEditor;
+int g_ZoneEditorCP;
 
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.40",
+	version = "4.45",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -428,9 +431,9 @@ public void OnMapStart()
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
-		PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
+		//PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
 		DirectoryListing dir = OpenDirectory(path[i]);
-		PrintToServer("01: %s", path[i]);
+		//PrintToServer("01: %s", path[i]);
 
 		//char filename[12][PLATFORM_MAX_PATH];
 		//char filename[PLATFORM_MAX_PATH][12];
@@ -455,7 +458,7 @@ public void OnMapStart()
 
 				AddFileToDownloadsTable(pathFull[i]);
 
-				PrintToServer("%s", pathFull[i]);
+				//PrintToServer("%s", pathFull[i]);
 			}
 		}
 
@@ -1862,24 +1865,6 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 				#endif
 
-				//if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
-				//if(g_entityFlags[client] & FL_INWATER ? g_skyBoost[other] == 0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other] ))
-				//{
-				//	g_skyBoost[other] = 1;
-				//}
-				//else if(g_entityFlags & FL_INWATER ? g_skyBoost[other] == 0 GetGameTime() - g_skyAble[other] > 0.5)
-
-				/*if(g_entityFlags[client] & FL_INWATER && g_skyBoost[other] == 0 && FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04)
-				{
-					g_skyBoost[other] = 1;
-				}
-
-				else if(!(g_entityFlags[client] & FL_INWATER) && g_skyBoost[other] > 0 && GetGameTime() - g_skyAble[other] > 0.5) //airtime more than 0.5 secs
-				{
-					g_skyBoost[other] = 1;
-				}*/
-
-				//if(g_skyBoost[other] == 0 && (FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5))
 				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					g_skyBoost[other] = 1;
@@ -1921,7 +1906,10 @@ public void SDKBoostFix(int client)
 			#endif
 		}
 	}
+
 	//PrintToServer("2x");
+
+	return;
 }
 
 public Action cmd_trikz(int client, int args)
@@ -2171,10 +2159,12 @@ public Action cmd_block(int client, int args)
 {
 	bool convar = GetConVarBool(gCV_block);
 
-	if(convar == true)
+	if(convar == false)
 	{
-		Block(client);
+		return Plugin_Continue;
 	}
+
+	Block(client);
 
 	return Plugin_Handled;
 }
@@ -3632,7 +3622,7 @@ public Action cmd_test(int client, int args)
 			Restart(client);
 		}
 
-		for(int i = 1; i <= MaxClients; i++)
+		/*for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) == true)
 			{
@@ -3642,7 +3632,7 @@ public Action cmd_test(int client, int args)
 
 				PrintToServer("%i %N", g_partner[i], i);
 			}
-		}
+		}*/
 
 		PrintToServer("LibraryExists (trueexpert-entityfilter): %i", LibraryExists("trueexpert-entityfilter"));
 
@@ -3670,6 +3660,12 @@ public Action cmd_test(int client, int args)
 		//float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
 
 		//PrintToServer("%f %i %i %i", precentage, (315 / 545) * 100, g_points[client], g_pointsMaxs);
+
+		//float vec[3] = {0.0, 0.0, 0.0};
+		//GetClientEyeAngles(client, vec);
+		//PrintToServer("%f %f %f", vec[0], vec[1], vec[2]); //180 x/mins; 90 y/mins; 0 x/maxs; -90 y/maxs
+
+		//EyeAngleTestHud(client);
 
 		return Plugin_Handled;
 	}
@@ -4152,38 +4148,14 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			char item[16] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
-			Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
-
 			if(StrEqual(item, "start", false))
 			{
-				menu2.SetTitle("Zone editor - Start zone");
-
-				menu2.AddItem("starttp", "Teleport to start zone");
-				menu2.AddItem("start+xmins", "+x/mins");
-				menu2.AddItem("start-xmins", "-x/mins");
-				menu2.AddItem("start+ymins", "+y/mins");
-				menu2.AddItem("start-ymins", "-y/mins");
-				menu2.AddItem("start+xmaxs", "+x/maxs");
-				menu2.AddItem("start-xmaxs", "-x/maxs");
-				menu2.AddItem("start+ymaxs", "+y/maxs");
-				menu2.AddItem("start-ymaxs", "-y/maxs");
-				menu2.AddItem("startupdate", "Update start zone");
+				ZoneEditorStart(param1);
 			}
 
 			else if(StrEqual(item, "end", false))
 			{
-				menu2.SetTitle("Zone editor - End zone");
-
-				menu2.AddItem("endtp", "Teleport to end zone");
-				menu2.AddItem("end+xmins", "+x/mins");
-				menu2.AddItem("end-xmins", "-x/mins");
-				menu2.AddItem("end+ymins", "+y/mins");
-				menu2.AddItem("end-ymins", "-y/mins");
-				menu2.AddItem("end+xmaxs", "+x/maxs");
-				menu2.AddItem("end-xmaxs", "-x/maxs");
-				menu2.AddItem("end+ymaxs", "+y/maxs");
-				menu2.AddItem("end-ymaxs", "-y/maxs");
-				menu2.AddItem("endupdate", "Update start zone");
+				ZoneEditorEnd(param1);
 			}
 
 			for(int i = 1; i <= g_cpCount; i++)
@@ -4192,67 +4164,155 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				IntToString(i, cp, sizeof(cp));
 
-				//Format(cp, sizeof(cp), "%i", i);
-
 				if(StrEqual(item, cp, false))
 				{
-					menu2.SetTitle("Zone editor - CP nr. %i zone", i);
-
-					char sButton[32] = "";
-
-					Format(sButton, sizeof(sButton), "Teleport to CP nr. %i zone", i);
-
-					char itemCP[16] = "";
-
-					Format(itemCP, sizeof(itemCP), "%i;tp", i);
-
-					menu2.AddItem(itemCP, sButton);
-
-					Format(itemCP, sizeof(itemCP), "%i;1", i);
-
-					menu2.AddItem(itemCP, "+x/mins");
-
-					Format(itemCP, sizeof(itemCP), "%i;2", i);
-
-					menu2.AddItem(itemCP, "-x/mins");
-
-					Format(itemCP, sizeof(itemCP), "%i;3", i);
-
-					menu2.AddItem(itemCP, "+y/mins");
-
-					Format(itemCP, sizeof(itemCP), "%i;4", i);
-
-					menu2.AddItem(itemCP, "-y/mins");
-
-					Format(itemCP, sizeof(itemCP), "%i;5", i);
-
-					menu2.AddItem(itemCP, "+x/maxs");
-
-					Format(itemCP, sizeof(itemCP), "%i;6", i);
-
-					menu2.AddItem(itemCP, "-x/maxs");
-
-					Format(itemCP, sizeof(itemCP), "%i;7", i);
-
-					menu2.AddItem(itemCP, "+y/maxs");
-
-					Format(itemCP, sizeof(itemCP), "%i;8", i);
-
-					menu2.AddItem(itemCP, "-y/maxs");
-
-					Format(sButton, sizeof(sButton), "Update CP nr. %i zone", i);
-
-					menu2.AddItem("cpupdate", sButton);
+					ZoneEditorCP(param1, i);
 				}
 			}
-
-			menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
-
-			menu2.Display(param1, MENU_TIME_FOREVER);
 		}
 	}
 
 	return 0;
+}
+
+stock void ZoneEditorStart(int client)
+{
+	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+
+	char format[16] = "";
+
+	menu2.SetTitle("Zone editor - Start zone");
+
+	menu2.AddItem("starttp", "Teleport to start zone");
+	
+	Format(format, sizeof(format), "Step: %i", g_step);
+	menu2.AddItem("step", format);
+
+	menu2.AddItem("start+xmaxs", "+x/maxs");
+	menu2.AddItem("start-xmaxs", "-x/maxs");
+	menu2.AddItem("start+ymins", "+y/mins");
+	menu2.AddItem("start-ymins", "-y/mins");
+	menu2.AddItem("empty", "");
+	menu2.AddItem("start+xmins", "+x/mins");
+	menu2.AddItem("start-xmins", "-x/mins");
+	menu2.AddItem("start+ymaxs", "+y/maxs");
+	menu2.AddItem("start-ymaxs", "-y/maxs");
+	menu2.AddItem("startupdate", "Update start zone");
+
+	menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+
+	g_ZoneEditor = 0;
+
+	return;
+}
+
+stock void ZoneEditorEnd(int client)
+{
+	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+
+	char format[16] = "";
+
+	menu2.SetTitle("Zone editor - End zone");
+
+	menu2.AddItem("endtp", "Teleport to end zone");
+
+	Format(format, sizeof(format), "Step: %i", g_step);
+	menu2.AddItem("step", format);
+
+	menu2.AddItem("end+xmaxs", "+x/maxs");
+	menu2.AddItem("end-xmaxs", "-x/maxs");
+	menu2.AddItem("end+ymins", "+y/mins");
+	menu2.AddItem("end-ymins", "-y/mins");
+	menu2.AddItem("empty", "");
+	menu2.AddItem("end+xmins", "+x/mins");
+	menu2.AddItem("end-xmins", "-x/mins");
+	menu2.AddItem("end+ymaxs", "+y/maxs");
+	menu2.AddItem("end-ymaxs", "-y/maxs");
+	menu2.AddItem("endupdate", "Update start zone");
+
+	menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+
+	g_ZoneEditor = 1;
+
+	return;
+}
+
+stock void ZoneEditorCP(int client, int cpnum)
+{
+	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+
+	char format[16] = "";
+
+	menu2.SetTitle("Zone editor - CP nr. %i zone", cpnum);
+
+	char sButton[32] = "";
+
+	Format(sButton, sizeof(sButton), "Teleport to CP nr. %i zone", cpnum);
+
+	char itemCP[16] = "";
+
+	Format(itemCP, sizeof(itemCP), "tp;%i", cpnum);
+
+	menu2.AddItem(itemCP, sButton);
+
+	Format(format, sizeof(format), "Step: %i", g_step);
+	menu2.AddItem("step", format);
+
+	Format(itemCP, sizeof(itemCP), "5;%i", cpnum);
+
+	menu2.AddItem(itemCP, "+x/maxs");
+
+	Format(itemCP, sizeof(itemCP), "6;%i", cpnum);
+
+	menu2.AddItem(itemCP, "-x/maxs");
+
+	Format(itemCP, sizeof(itemCP), "3;%i", cpnum);
+
+	menu2.AddItem(itemCP, "+y/mins");
+
+	Format(itemCP, sizeof(itemCP), "4;%i", cpnum);
+
+	menu2.AddItem(itemCP, "-y/mins");
+
+	menu2.AddItem("empty", "");
+
+	Format(itemCP, sizeof(itemCP), "1;%i", cpnum);
+
+	menu2.AddItem(itemCP, "+x/mins");
+
+	Format(itemCP, sizeof(itemCP), "2;%i", cpnum);
+
+	menu2.AddItem(itemCP, "-x/mins");
+
+	Format(itemCP, sizeof(itemCP), "7;%i", cpnum);
+
+	menu2.AddItem(itemCP, "+y/maxs");
+
+	Format(itemCP, sizeof(itemCP), "8;%i", cpnum);
+
+	menu2.AddItem(itemCP, "-y/maxs");
+
+	char cpupdate[32] = "";
+
+	Format(cpupdate, sizeof(cpupdate), "cpupdate;%i", cpnum);
+
+	Format(sButton, sizeof(sButton), "Update CP nr. %i zone", cpnum);
+
+	menu2.AddItem(cpupdate, sButton);
+
+	menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+
+	g_ZoneEditor = 2;
+
+	g_ZoneEditorCP = cpnum;
+
+	return;
 }
 
 public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -4275,44 +4335,64 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				TeleportEntity(param1, g_center[0], NULL_VECTOR, NULL_VECTOR);
 			}
 
+			else if(StrEqual(item, "step", false))
+			{
+				ZoneEditorStep();
+
+				if(g_ZoneEditor == 0)
+				{
+					ZoneEditorStart(param1);
+				}
+
+				else if(g_ZoneEditor == 1)
+				{
+					ZoneEditorEnd(param1);
+				}
+
+				else if(g_ZoneEditor == 2)
+				{
+					ZoneEditorCP(param1, g_ZoneEditorCP);
+				}
+			}
+
 			else if(StrEqual(item, "start+xmins", false))
 			{
-				g_zoneStartOrigin[0][0] += 16.0;
+				g_zoneStartOrigin[0][0] += g_step;
 			}
 
 			else if(StrEqual(item, "start-xmins", false))
 			{
-				g_zoneStartOrigin[0][0] -= 16.0;
+				g_zoneStartOrigin[0][0] -= g_step;
 			}
 
 			else if(StrEqual(item, "start+ymins", false))
 			{
-				g_zoneStartOrigin[0][1] += 16.0;
+				g_zoneStartOrigin[0][1] += g_step;
 			}
 
 			else if(StrEqual(item, "start-ymins", false))
 			{
-				g_zoneStartOrigin[0][1] -= 16.0;
+				g_zoneStartOrigin[0][1] -= g_step;
 			}
 
 			else if(StrEqual(item, "start+xmaxs", false))
 			{
-				g_zoneStartOrigin[1][0] += 16.0;
+				g_zoneStartOrigin[1][0] += g_step;
 			}
 
 			else if(StrEqual(item, "start-xmaxs", false))
 			{
-				g_zoneStartOrigin[1][0] -= 16.0;
+				g_zoneStartOrigin[1][0] -= g_step;
 			}
 
 			else if(StrEqual(item, "start+ymaxs", false))
 			{
-				g_zoneStartOrigin[1][1] += 16.0;
+				g_zoneStartOrigin[1][1] += g_step;
 			}
 
 			else if(StrEqual(item, "start-ymaxs", false))
 			{
-				g_zoneStartOrigin[1][1] -= 16.0;
+				g_zoneStartOrigin[1][1] -= g_step;
 			}
 
 			else if(StrEqual(item, "endtp", false))
@@ -4322,117 +4402,121 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			else if(StrEqual(item, "end+xmins", false))
 			{
-				g_zoneEndOrigin[0][0] += 16.0;
+				g_zoneEndOrigin[0][0] += g_step;
 			}
 
 			else if(StrEqual(item, "end-xmins", false))
 			{
-				g_zoneEndOrigin[0][0] -= 16.0;
+				g_zoneEndOrigin[0][0] -= g_step;
 			}
 
 			else if(StrEqual(item, "end+ymins", false))
 			{
-				g_zoneEndOrigin[0][1] += 16.0;
+				g_zoneEndOrigin[0][1] += g_step;
 			}
 
 			else if(StrEqual(item, "end-ymins", false))
 			{
-				g_zoneEndOrigin[0][1] -= 16.0;
+				g_zoneEndOrigin[0][1] -= g_step;
 			}
 
 			else if(StrEqual(item, "end+xmaxs", false))
 			{
-				g_zoneEndOrigin[1][0] += 16.0;
+				g_zoneEndOrigin[1][0] += g_step;
 			}
 
 			else if(StrEqual(item, "end-xmaxs", false))
 			{
-				g_zoneEndOrigin[1][0] -= 16.0;
+				g_zoneEndOrigin[1][0] -= g_step;
 			}
 
 			else if(StrEqual(item, "end+ymaxs", false))
 			{
-				g_zoneEndOrigin[1][1] += 16.0;
+				g_zoneEndOrigin[1][1] += g_step;
 			}
 
 			else if(StrEqual(item, "end-ymaxs", false))
 			{
-				g_zoneEndOrigin[1][1] -= 16.0;
+				g_zoneEndOrigin[1][1] -= g_step;
 			}
 
 			//char exploded[1][16];
-			char exploded[16][1];
+			char exploded[16][16];
 
-			ExplodeString(item, ";", exploded, 1, sizeof(exploded));
+			ExplodeString(item, ";", exploded, 2, sizeof(exploded));
 
-			int cpnum = StringToInt(exploded[0]);
+			int cpnum = StringToInt(exploded[1]);
+
+			//PrintToServer("%i, %s | %s | %s", cpnum, item, exploded[0], exploded[1]);
 
 			char cpFormated[16] = "";
 
-			Format(cpFormated, sizeof(cpFormated), "%i;tp", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "tp;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
 				TeleportEntity(param1, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR);
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;1", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "1;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[0][cpnum][0] += 16.0;
+				g_cpPos[0][cpnum][0] += g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;2", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "2;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[0][cpnum][0] -= 16.0;
+				g_cpPos[0][cpnum][0] -= g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;3", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "3;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[0][cpnum][1] += 16.0;
+				g_cpPos[0][cpnum][1] += g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;4", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "4;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[0][cpnum][1] -= 16.0;
+				g_cpPos[0][cpnum][1] -= g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;5", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "5;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[1][cpnum][0] += 16.0;
+				g_cpPos[1][cpnum][0] += g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;6", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "6;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[1][cpnum][0] -= 16.0;
+				g_cpPos[1][cpnum][0] -= g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;7", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "7;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[1][cpnum][1] += 16.0;
+				g_cpPos[1][cpnum][1] += g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "%i;8", cpnum);
+			Format(cpFormated, sizeof(cpFormated), "8;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false))
 			{
-				g_cpPos[1][cpnum][1] -= 16.0;
+				g_cpPos[1][cpnum][1] -= g_step;
 			}
 
 			char query[512] = "";
+
+			Format(cpFormated, sizeof(cpFormated), "cpupdate;%i", cpnum);
 
 			if(StrEqual(item, "startupdate", false))
 			{
@@ -4448,14 +4532,21 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				g_mysql.Query(SQLUpdateZone, query, 1);
 			}
 
-			else if(StrEqual(item, "cpupdate", false))
+			else if(StrEqual(item, cpFormated, false))
 			{
+				//cpnum++;
+
 				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[0][cpnum][0]), RoundFloat(g_cpPos[0][cpnum][1]), RoundFloat(g_cpPos[0][cpnum][2]), RoundFloat(g_cpPos[1][cpnum][0]), RoundFloat(g_cpPos[1][cpnum][1]), RoundFloat(g_cpPos[1][cpnum][2]), cpnum, g_map);
 
 				g_mysql.Query(SQLUpdateZone, query, cpnum + 1);
+
+				//PrintToServer("%i", cpnum);
 			}
 
-			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
+			if(StrEqual(item, "step", false) == false)
+			{
+				menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
+			}
 		}
 
 		case MenuAction_Cancel: // trikz redux menuaction end
@@ -4524,6 +4615,18 @@ public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, 
 				PrintToServer("CP zone nr. %i failed to update", data - 1);
 			}
 		}
+	}
+
+	return;
+}
+
+stock void ZoneEditorStep()
+{
+	g_step *= 2;
+
+	if(g_step == 1024)
+	{
+		g_step = 1;
 	}
 
 	return;
@@ -7391,6 +7494,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(IsClientInGame(i) == true)
 				{
 					DrawZone(i, 0.1, 3.0, 10);
+
+					EyeAngleTestHud(client);
 				}
 			}
 		}
@@ -7411,7 +7516,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		g_hudTime[client] = GetEngineTime();
 
-		Hud(client);
+		if(g_zoneDraw[client] == false)
+		{
+			Hud(client);
+		}
 	}
 
 	if(GetEntityFlags(client) & FL_ONGROUND)
@@ -8391,6 +8499,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		{
 			Top10();
 		}
+
+		else if(StrEqual(sArgs, "zones", false))
+		{
+			cmd_zones(client, 0);
+		}
 	}
 
 	return Plugin_Continue;
@@ -8989,4 +9102,34 @@ public MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github
 	Call_Finish();
 	
 	return MRES_Ignored;
+}
+
+stock void EyeAngleTestHud(int client)
+{
+	float eye[3] = {0.0, 0.0, 0.0};
+	GetClientEyeAngles(client, eye);
+
+	//PrintToServer("%f", eye[1]);
+
+	if(-35.0 >= eye[1] >= -135.0)
+	{
+		PrintHintText(client, "x/mins");
+	}
+
+	else if(135.0 <= eye[1] >= -135.0)
+	{
+		PrintHintText(client, "y/mins");
+	}
+
+	else if(-45.0 <= eye[1] <= 45.0)
+	{
+		PrintHintText(client, "x/maxs");
+	}
+
+	else if(45.0 <= eye[1] <= 135.0)
+	{
+		PrintHintText(client, "y/maxs");
+	}
+
+	return;
 }
