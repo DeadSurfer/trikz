@@ -871,7 +871,7 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
         return Plugin_Continue;
     }
 
-    char buffer[256]= "";
+    char buffer[256] = "";
     buffer[0] = '\0';
 
     // At least one player get this message
