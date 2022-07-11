@@ -96,7 +96,7 @@ bool g_sourcetv;
 bool g_block[MAXPLAYER];
 int g_wModelThrown;
 int g_class[MAXPLAYER];
-bool g_color[MAXPLAYER][2];
+//bool g_color[MAXPLAYER][2];
 int g_wModelPlayer[5];
 int g_pingModel[MAXPLAYER];
 int g_pingModelOwner[2048 + 1];
@@ -144,7 +144,7 @@ Handle g_start;
 Handle g_record;
 int g_pointsMaxs = 1;
 int g_queryLast;
-Handle g_cookie[9];
+Handle g_cookie[12];
 float g_skyAble[MAXPLAYER];
 native bool Trikz_GetEntityFilter(int client, int entity);
 float g_restartInHold[MAXPLAYER];
@@ -179,7 +179,6 @@ float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
 ConVar gCV_pingtool;
 int g_top10Count;
-//float g_srPrevTime;
 Handle g_teleport;
 //KeyValues g_kv;
 ConVar gCV_boostfix;
@@ -187,6 +186,8 @@ float g_top10ac;
 int g_step = 1;
 int g_ZoneEditor;
 int g_ZoneEditorCP;
+int g_skinFlashbang[MAXPLAYER];
+int g_skinPlayer[MAXPLAYER];
 
 public Plugin myinfo =
 {
@@ -252,6 +253,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_top10", cmd_top10);
 	RegConsoleCmd("sm_help", cmd_control);
 	RegConsoleCmd("sm_control", cmd_control);
+	RegConsoleCmd("sm_skin", cmd_skin);
 
 	RegServerCmd("sm_createzones", cmd_createzones);
 	RegServerCmd("sm_createusers", cmd_createusers);
@@ -311,6 +313,9 @@ public void OnPluginStart()
 	g_cookie[6] = RegClientCookie("te_bhop", "bhop", CookieAccess_Protected);
 	g_cookie[7] = RegClientCookie("te_macro", "macro", CookieAccess_Protected);
 	g_cookie[8] = RegClientCookie("te_endmsg", "End message.", CookieAccess_Protected);
+	g_cookie[9] = RegClientCookie("te_flashbangskin", "Flashbang skin.", CookieAccess_Protected);
+	g_cookie[10] = RegClientCookie("te_flashbangcolor", "Flashbang color.", CookieAccess_Protected);
+	g_cookie[11] = RegClientCookie("te_playerskin", "Player skin.", CookieAccess_Protected);
 
 	//CreateTimer(60.0, timer_clearlag);
 
@@ -646,6 +651,7 @@ public void OnMapEnd()
 	if(sourcetv == true)
 	{
 		ServerCommand("tv_stoprecord");
+
 		char filenameOld[256] = "";
 		Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
 
@@ -653,7 +659,9 @@ public void OnMapEnd()
 		{
 			char filenameNew[256] = "";
 			Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
+
 			RenameFile(filenameNew, filenameOld);
+
 			g_ServerRecord = false;
 		}
 
@@ -1064,17 +1072,18 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		g_class[client] = 4;
 	}
 
-	if(g_color[client][0] == true)
-	{
-		SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-		DispatchKeyValue(client, "skin", "1");
-		SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
-	}
+	//if(g_color[client][0] == true)
+	//{
+	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
+	//DispatchKeyValue(client, "skin", "1");
+	SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client]);
+	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+	//}
 
-	else if(g_color[client][0] == false)
-	{
-		SetEntityRenderColor(client, 255, 255, 255, 255);
-	}
+	//else if(g_color[client][0] == false)
+	//{
+	//	SetEntityRenderColor(client, 255, 255, 255, 255);
+	//}
 
 	SetEntityRenderMode(client, RENDER_TRANSALPHA); //maru is genius person who fix this bug. thanks maru for idea.
 
@@ -1299,7 +1308,8 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	
 	if(convar == true)
 	{
-		ColorFlashbang(client, true, -1);
+		//ColorFlashbang(client, true, -1);
+		Skin(client);
 	}
 
 	return Plugin_Continue;
@@ -1440,8 +1450,6 @@ public void OnClientPutInServer(int client)
 	}
 
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
-	//SDKHook(client, SDKHook_PreThinkPost, SDKThink);
-	//SDKHook(client, SDKHook_SpawnPost, SDKClientSpawnPost);
 
 	if(IsClientInGame(client) == true && g_dbPassed == true)
 	{
@@ -1489,6 +1497,7 @@ public void OnClientPutInServer(int client)
 		g_bhop[client] = false;
 		g_macroDisabled[client] = true;
 		g_endMessage[client] = true;
+		g_skinFlashbang[client] = 0;
 	}
 
 	ResetFactory(client);
@@ -1504,6 +1513,14 @@ public void OnClientPutInServer(int client)
 	g_macroOpened[client] = false;
 
 	DHookEntity(g_teleport, true, client); //this should provides a crash if reload plugin.
+
+	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][2][0] == 0)
+	{
+		for(int i = 0; i <= 2; i++)
+		{
+			g_colorBuffer[client][i][0] = 255;
+		}
+	}
 }
 
 public void OnClientCookiesCached(int client)
@@ -1537,6 +1554,32 @@ public void OnClientCookiesCached(int client)
 	GetClientCookie(client, g_cookie[8], value, sizeof(value));
 	g_endMessage[client] = view_as<bool>(StringToInt(value));
 
+	GetClientCookie(client, g_cookie[9], value, sizeof(value));
+	g_skinFlashbang[client] = view_as<bool>(StringToInt(value));
+
+	GetClientCookie(client, g_cookie[10], value, sizeof(value));
+
+	char exploded[16][16];
+	ExplodeString(value, ";", exploded, 16, 16);
+
+	for(int i = 0; i <= 2; i++)
+	{
+		g_colorBuffer[client][i][1] = StringToInt(exploded[i]);
+	}
+
+	g_colorCount[client][1] = StringToInt(exploded[3]);
+
+	if(g_colorBuffer[client][0][1] == 0 && g_colorBuffer[client][1][1] == 0 && g_colorBuffer[client][2][1] == 0)
+	{
+		for(int i = 0; i <= 2; i++)
+		{
+			g_colorBuffer[client][i][1] = 255;
+		}
+	}
+
+	GetClientCookie(client, g_cookie[11], value, sizeof(value));
+	g_skinPlayer[client] = view_as<bool>(StringToInt(value));
+
 	if(IsClientInGame(client) && IsPlayerAlive(client))
 	{
 		GiveFlashbang(client);
@@ -1545,11 +1588,11 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
-	ColorTeam(client, false, -1);
-	ColorFlashbang(client, false, -1);
+	ColorTeam(client, false);
+	//ColorFlashbang(client, false, -1);
 
-	g_color[client][0] = false;
-	g_color[client][1] = false;
+	//g_color[client][0] = false;
+	//g_color[client][1] = false;
 	//g_seperate[client] = false;
 
 	int partner = g_partner[client];
@@ -1561,8 +1604,11 @@ public void OnClientDisconnect(int client)
 	}
 
 	g_partner[client] = 0;
+
 	if(0 < client <= MaxClients)
+	{
 		CancelClientMenu(client);
+	}
 
 	int entity = 0;
 
@@ -2175,15 +2221,15 @@ public Action Block(int client) //thanks maru for optimization.
 
 	SetEntityCollisionGroup(client, g_block[client] ? 5 : 2);
 
-	if(g_color[client][0] == true)
-	{
-		SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125);
-	}
+	//if(g_color[client][0] == true)
+	//{
+	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125);
+	//}
 
-	else if(g_color[client][0] == false)
-	{
-		SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125);
-	}
+	//else if(g_color[client][0] == false)
+	//{
+		//SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125);
+	//}
 
 	if(g_menuOpened[client] == true)
 	{
@@ -2424,8 +2470,8 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 			{
 				case 0:
 				{
-					ColorTeam(param1, false, -1);
-					ColorFlashbang(param1, false, -1);
+					ColorTeam(param1, false);
+					//ColorFlashbang(param1, false, -1);
 
 					g_partner[param1] = 0;
 					g_partner[partner] = 0;
@@ -2540,6 +2586,13 @@ public Action cmd_color(int client, int args)
 
 	g_menuOpened[client] = false;
 
+	ColorSelect(client);
+
+	return Plugin_Handled;
+}
+
+stock void ColorSelect(int client)
+{
 	//Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	//Menu menu = new Menu(handler_menuColor, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 	Menu menu = new Menu(handler_menuColor);
@@ -2549,14 +2602,18 @@ public Action cmd_color(int client, int args)
 	char format[256];
 	Format(format, sizeof(format), "%T", "ColorTeam", client);
 	menu.AddItem("team_color", format);
+	Format(format, sizeof(format), "%T", "PlayerSkin", client);
+	menu.AddItem("player_skin", format);
 	Format(format, sizeof(format), "%T", "ColorPingFL", client);
 	menu.AddItem("object_color", format);
+	Format(format, sizeof(format), "%T", "FlashbangSkin", client);
+	menu.AddItem("flashbang_skin", format);
 
 	menu.ExitBackButton = true;
 
 	menu.Display(client, 20);
 
-	return Plugin_Handled;
+	return;
 }
 
 public int handler_menuColor(Menu menu, MenuAction action, int param1, int param2)
@@ -2574,14 +2631,26 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 			{
 				case 0:
 				{
-					ColorTeam(param1, true, -1);
-					cmd_color(param1, 0);
+					ColorTeam(param1, true);
+					//cmd_color(param1, 0);
+					ColorSelect(param1);
 				}
 
 				case 1:
 				{
-					ColorFlashbang(param1, true, -1);
-					cmd_color(param1, 0);
+					PlayerSkin(param1);
+				}
+
+				case 2:
+				{
+					ColorFlashbang(param1);
+					//cmd_color(param1, 0);
+					ColorSelect(param1);
+				}
+
+				case 3:
+				{
+					FlashbangSkin(param1);
 				}
 			}
 		}
@@ -2623,7 +2692,7 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 	return Plugin_Handled;
 }*/
 
-public void ColorTeam(int client, bool customSkin, int color)
+stock void ColorTeam(int client, bool customSkin, int color = -1)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2656,16 +2725,17 @@ public void ColorTeam(int client, bool customSkin, int color)
 
 		if(customSkin == true)
 		{
-			g_color[client][0] = true;
-			g_color[g_partner[client]][0] = true;
+			//g_color[client][0] = true;
+			//g_color[g_partner[client]][0] = true;
 
-			SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-			SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]]);
+			//SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
+			//SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]]);
 
-			DispatchKeyValue(client, "skin", "1");
-			DispatchKeyValue(g_partner[client], "skin", "1");
+			//DispatchKeyValue(client, "skin", "1");
+			//DispatchKeyValue(g_partner[client], "skin", "1");
 
-			char colorTypeExploded[32][4];
+			g_colorCount[client][0]++;
+			g_colorCount[g_partner[client]][0]++;
 
 			if(g_colorCount[client][0] == 9)
 			{
@@ -2679,6 +2749,7 @@ public void ColorTeam(int client, bool customSkin, int color)
 				g_colorCount[g_partner[client]][0] = color;
 			}
 
+			char colorTypeExploded[32][4];
 			ExplodeString(g_colorType[g_colorCount[client][0]], ",", colorTypeExploded, 4, sizeof(colorTypeExploded));
 
 			for(int i = 0; i <= 2; i++)
@@ -2703,22 +2774,19 @@ public void ColorTeam(int client, bool customSkin, int color)
 
 			Call_Finish();
 
-			g_colorCount[client][0]++;
-			g_colorCount[g_partner[client]][0]++;
-
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 
 			//if(g_seperate[client] == true)
-			{
-				ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
-				//ShowHudText(client, 5, "%s (F2)", colorTypeExploded[3]);
+			//{
+			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
+			//ShowHudText(client, 5, "%s (F2)", colorTypeExploded[3]);
 
-				if(g_partner[client] > 0)
-				{
-					ShowHudText(g_partner[client], 5, "%s (TM)", colorTypeExploded[3]);
-					//ShowHudText(g_partner[client], 5, "%s (F2)", colorTypeExploded[3]);
-				}
+			if(g_partner[client] > 0)
+			{
+				ShowHudText(g_partner[client], 5, "%s (TM)", colorTypeExploded[3]);
+				//ShowHudText(g_partner[client], 5, "%s (F2)", colorTypeExploded[3]);
 			}
+		}
 
 			/*else if(g_seperate[client] == false)
 			{
@@ -2741,12 +2809,12 @@ public void ColorTeam(int client, bool customSkin, int color)
 					ShowHudText(g_partner[client], 5, "%s (F2+)", colorTypeExploded[3]);
 				}
 			}*/
-		}
+		//}
 
 		else
 		{
-			g_color[client][0] = false;
-			g_color[g_partner[client]][0] = false;
+			//g_color[client][0] = false;
+			//g_color[g_partner[client]][0] = false;
 
 			g_colorCount[client][0] = 0;
 			g_colorCount[g_partner[client]][0] = 0;
@@ -2759,7 +2827,7 @@ public void ColorTeam(int client, bool customSkin, int color)
 	return;
 }
 
-public void ColorFlashbang(int client, bool customSkin, int color)
+stock void ColorFlashbang(int client, int color = -1)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2770,63 +2838,69 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 			return;
 		}
 
-		if(customSkin == true)
+		//if(customSkin == true)
+		//{
+		//g_color[client][1] = true;
+		//g_color[g_partner[client]][1] = true;
+
+		//g_seperate[client] = true;
+		//g_seperate[g_partner[client]] = true;
+
+		g_colorCount[client][1]++;
+		g_colorCount[g_partner[client]][1]++;
+
+		if(g_colorCount[client][1] == 9)
 		{
-			g_color[client][1] = true;
-			g_color[g_partner[client]][1] = true;
-
-			//g_seperate[client] = true;
-			//g_seperate[g_partner[client]] = true;
-
-			//char colorTypeExploded[4][32];
-			char colorTypeExploded[32][4];
-
-			if(g_colorCount[client][1] == 9)
-			{
-				g_colorCount[client][1] = 0;
-				g_colorCount[g_partner[client]][1] = 0;
-			}
-
-			else if(0 <= color <= 8)
-			{
-				g_colorCount[client][1] = color;
-				g_colorCount[g_partner[client]][1] = color;
-			}
-
-			ExplodeString(g_colorType[g_colorCount[client][1]], ",", colorTypeExploded, 4, sizeof(colorTypeExploded));
-
-			for(int i = 0; i <= 2; i++)
-			{
-				g_colorBuffer[client][i][1] = StringToInt(colorTypeExploded[i]);
-				g_colorBuffer[g_partner[client]][i][1] = StringToInt(colorTypeExploded[i]);
-			}
-
-			static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-
-			//if(h)
-			hForward = new GlobalForward("Trikz_ColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_ColorFlashbang(int client, int red, int green, int blue)
-
-			Call_StartForward(hForward);
-			Call_PushCell(client);
-			Call_PushCell(g_colorBuffer[client][0][0]);
-			Call_PushCell(g_colorBuffer[client][1][0]);
-			Call_PushCell(g_colorBuffer[client][2][0]);
-			Call_Finish();
-
-			g_colorCount[client][1]++;
-			g_colorCount[g_partner[client]][1]++;
-
-			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
-
-			ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
-
-			if(g_partner[client] > 0)
-			{
-				ShowHudText(g_partner[client], 5, "%s (FL)", colorTypeExploded[3]);
-			}
+			g_colorCount[client][1] = 0;
+			//g_colorCount[g_partner[client]][1] = 0;
 		}
 
-		else if(customSkin == false)
+		else if(0 <= color <= 8)
+		{
+			g_colorCount[client][1] = color;
+			//g_colorCount[g_partner[client]][1] = color;
+		}
+
+		//char colorTypeExploded[4][32];
+		char colorTypeExploded[32][4];
+
+		ExplodeString(g_colorType[g_colorCount[client][1]], ",", colorTypeExploded, 4, sizeof(colorTypeExploded));
+
+		for(int i = 0; i <= 2; i++)
+		{
+			g_colorBuffer[client][i][1] = StringToInt(colorTypeExploded[i]);
+			//g_colorBuffer[g_partner[client]][i][1] = StringToInt(colorTypeExploded[i]);
+		}
+
+		char value[16] = "";
+
+		Format(value, sizeof(value), "%s;%s;%s;%i", colorTypeExploded[0], colorTypeExploded[1], colorTypeExploded[2], g_colorCount[client][1]);
+
+		SetClientCookie(client, g_cookie[10], value);
+
+		static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+
+		//if(h)
+		hForward = new GlobalForward("Trikz_ColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_ColorFlashbang(int client, int red, int green, int blue)
+
+		Call_StartForward(hForward);
+		Call_PushCell(client);
+		Call_PushCell(g_colorBuffer[client][0][0]);
+		Call_PushCell(g_colorBuffer[client][1][0]);
+		Call_PushCell(g_colorBuffer[client][2][0]);
+		Call_Finish();
+
+		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+
+		ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
+
+		if(g_partner[client] > 0)
+		{
+			ShowHudText(g_partner[client], 5, "%s (FL)", colorTypeExploded[3]);
+		}
+		//}
+
+		/*else if(customSkin == false)
 		{
 			g_color[client][1] = false;
 			g_color[g_partner[client]][1] = false;
@@ -2836,7 +2910,7 @@ public void ColorFlashbang(int client, bool customSkin, int color)
 
 			g_colorCount[client][1] = 0;
 			g_colorCount[g_partner[client]][1] = 0;
-		}
+		}*/
 	}
 
 	return;
@@ -3237,20 +3311,14 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 
 	while(results.FetchRow())
 	{
-		//int client[2];
-		//int playerid = results.FetchInt(0);
-		//int partnerid = results.FetchInt(1);
 		int playerid = results.FetchInt(0);
 		int partnerid = results.FetchInt(1);
 		float time = results.FetchFloat(2);
 
 		char query[512] = "";
 
-		//for(int i = 0; i <= 1; i++)
-		//{
 		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
 		g_mysql.Query(SQLTop10_2, query, time);
-		//}
 	}
 }
 
@@ -3270,32 +3338,13 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		int second = RoundToFloor(time) % 60;
 		char format[64] = "";
 		Format(format, sizeof(format), "%02.i:%02.i:%02.i", hour, minute, second);
-		//char format2[256] = "";
-		//Format(format2, sizeof(format2), "%T", "Top10", c);
-		//PrintToServer("%i. %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
 		//PrintToChatAll("%i, %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
 		int count = ++g_top10Count;
-		//g_top10Count = g_top10Count + 1;
-		//int count = g_top10Count;
-		#if debug == true
-		//PrintToServer("%i", count);
-		#endif
 		char format2[256] = "";
-		//g_srPrev = time;
-		#if debug == true
-		//float localPrevTime;
-		//localPrevTime = time - g_srPrevTime;
-		//PrintToServer("x: %f, y: %f", localPrevTime, time);
-		#endif
-		float serverRecord;
-		//localPrevTime = g_srPrevTime
-		#if debug == true
-		//PrintToServer("%f %f %f %N %N", localPrevTime, time, g_srPrevTime, client, i);
-		#endif
+		float serverRecord = 0.0;
 
 		if(count == 1)
 		{
-			//localPrevTime = 0.0;
 			serverRecord = time;
 		}
 
@@ -3307,25 +3356,14 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		char formatX[64] = "";
 		Format(formatX, sizeof(formatX), "%02.i:%02.i:%02.i", hour2, minute2, second2);
 
-		#if debug == true
-		PrintToServer("formatX: %s", formatX);
-		#endif
-
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				//PrintToChatAll("%T", "Top10", client);
-				//PrintToChat(i, "%s", format2);
 				Format(format2, sizeof(format2), "%T", "Top10", i, count, name1, name2, format, formatX);
-				SendMessage(format2,  i);
+				SendMessage(format2, i);
 			}
 		}
-		
-		//g_srPrevTime = time;
-		#if debug == true
-		//PrintToServer("%f", g_srPrevTime);
-		#endif
 	}
 }
 
@@ -3334,6 +3372,178 @@ public Action cmd_control(int client, int args)
 	Control(client);
 
 	return Plugin_Handled;
+}
+
+public Action cmd_skin(int client, int args)
+{
+	Skin(client);
+
+	return Plugin_Handled;
+}
+
+stock void Skin(int client)
+{
+	Menu menu = new Menu(skinmenu_hanlder);
+
+	menu.SetTitle("Skin");
+
+	menu.AddItem("player_skin", "Player Skin");
+	menu.AddItem("flashbang_skin", "Flashbang Skin");
+
+	menu.Display(client, 20);
+
+	return;
+}
+
+public int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					PlayerSkin(param1);
+				}
+
+				case 1:
+				{
+					FlashbangSkin(param1);
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+stock void PlayerSkin(int client)
+{
+	Menu menu = new Menu(menuskinchoose_handler);
+
+	char format[256];
+	Format(format, sizeof(format), "%T", "PlayerSkin", client);
+	menu.SetTitle(format);
+
+	Format(format, sizeof(format), "%T", "Default", client);
+	menu.AddItem("default_ps", format, g_skinPlayer[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(format, sizeof(format), "%T", "Shadow", client);
+	menu.AddItem("shadow_ps", format, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(format, sizeof(format), "%T", "Bright", client);
+	menu.AddItem("bright_ps", format, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+
+	menu.ExitBackButton = true;
+
+	menu.Display(client, 20);
+}
+
+stock void FlashbangSkin(int client)
+{
+	Menu menu = new Menu(menuskinchoose_handler);
+
+	char format[256];
+	Format(format, sizeof(format), "%T", "FlashbangSkin", client);
+	menu.SetTitle(format);
+
+	Format(format, sizeof(format), "%T", "Default", client);
+	menu.AddItem("default_fs", format, g_skinFlashbang[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(format, sizeof(format), "%T", "Shadow", client);
+	menu.AddItem("shadow_fs", format, g_skinFlashbang[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(format, sizeof(format), "%T", "Bright", client);
+	menu.AddItem("bright_fs", format, g_skinFlashbang[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(format, sizeof(format), "%T", "Wireframe", client);
+	menu.AddItem("wireframe_fs", format, g_skinFlashbang[client] == 3 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+
+	menu.ExitBackButton = true;
+
+	menu.Display(client, 20);
+}
+
+public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char item[16] = "";
+			menu.GetItem(param2, item, sizeof(item));
+
+			char value[8] = "";
+
+			if(StrContains(item, "ps", false) != -1)
+			{
+				if(StrEqual(item, "default_ps", false))
+				{
+					g_skinPlayer[param1] = 0;
+					SetEntProp(param1, Prop_Data, "m_nSkin", 0);
+				}
+
+				else if(StrEqual(item, "shadow_ps", false))
+				{
+					g_skinPlayer[param1] = 2;
+					SetEntProp(param1, Prop_Data, "m_nSkin", 2);
+				}
+
+				else if(StrEqual(item, "bright_ps", false))
+				{
+					g_skinPlayer[param1] = 1;
+					SetEntProp(param1, Prop_Data, "m_nSkin", 1);
+				}
+
+				IntToString(g_skinPlayer[param1], value, sizeof(value));
+
+				SetClientCookie(param1, g_cookie[11], value);
+
+				PlayerSkin(param1);
+			}
+
+			else if(StrContains(item, "fs", false) != -1)
+			{
+				if(StrEqual(item, "default_fs", false))
+				{
+					g_skinFlashbang[param1] = 0;
+				}
+
+				else if(StrEqual(item, "shadow_fs", false))
+				{
+					g_skinFlashbang[param1] = 2;
+				}
+
+				else if(StrEqual(item, "bright_fs", false))
+				{
+					g_skinFlashbang[param1] = 1;
+				}
+
+				else if(StrEqual(item, "wireframe_fs", false))
+				{
+					g_skinFlashbang[param1] = 3;
+				}
+
+				IntToString(g_skinFlashbang[param1], value, sizeof(value));
+
+				SetClientCookie(param1, g_cookie[9], value);
+
+				FlashbangSkin(param1);
+			}
+		}
+
+		case MenuAction_Cancel:
+		{
+			//g_menuOpened[param1] = false; //idea from expert zone.
+
+			switch(param2)
+			{
+				case MenuCancel_ExitBack:
+				{
+					ColorSelect(param1);
+				}
+			}
+		}
+	}
+
+	return 0;
 }
 
 public Action cmd_macro(int client, int args)
@@ -7382,31 +7592,31 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal);
 			}
 
-			if(g_color[client][1] == true)
-			{
-				SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
-			}
+			//if(g_color[client][1] == true)
+			//{
+			SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+			//}
 
 			TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR);
 
 			//https://forums.alliedmods.net/showthread.php?p=1080444
-			if(g_color[client][1] == true)
+			//if(g_color[client][1] == true)
+			//{
+			int color[4];
+
+			for(int i = 0; i <= 2; i++)
 			{
-				int color[4];
-
-				for(int i = 0; i <= 2; i++)
-				{
-					color[i] = g_colorBuffer[client][i][1];
-				}
-
-				color[3] = 255;
-
-				start[2] -= 8.0;
-
-				TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
+				color[i] = g_colorBuffer[client][i][1];
 			}
 
-			else if(g_color[client][1] == false)
+			color[3] = 255;
+
+			start[2] -= 8.0;
+
+			TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
+			//}
+
+			/*else if(g_color[client][1] == false)
 			{
 				int color[4];
 
@@ -7418,7 +7628,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				start[2] -= 8.0;
 
 				TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
-			}
+			}*/
 
 			if(LibraryExists("trueexpert-entityfilter") == true)
 			{
@@ -7554,16 +7764,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntityCollisionGroup(other, 2);
 
-			if(g_color[other][0] == true)
-			{
-				SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
+			//if(g_color[other][0] == true)
+			//{
+			SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
 				//SetEntityRenderColor(other, 255, 255, 255, 125);
-			}
+			//}
 
-			else if(g_color[other][0] == false)
-			{
-				SetEntityRenderColor(other, 255, 255, 255, 125);
-			}
+			//else if(g_color[other][0] == false)
+			//{
+			//	SetEntityRenderColor(other, 255, 255, 255, 125);
+			//}
 		}
 	}
 
@@ -7573,16 +7783,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntityCollisionGroup(client, 5);
 
-			if(g_color[client][0] == true)
-			{
-				SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+			//if(g_color[client][0] == true)
+			//{
+			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 				//SetEntityRenderColor(client, 255, 255, 255, 255);
-			}
+			//}
 
-			else if(g_color[client][0] == false)
-			{
-				SetEntityRenderColor(client, 255, 255, 255, 255);
-			}
+			//else if(g_color[client][0] == false)
+			//{
+			//	SetEntityRenderColor(client, 255, 255, 255, 255);
+			//}
 		}
 	}
 
@@ -8362,9 +8572,9 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			Partner(client);
 		}
 
-		else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
+		/*else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
 		{
-			ColorTeam(client, true, -1);
+			ColorTeam(client, true);
 
 			return Plugin_Continue;
 		}
@@ -8430,7 +8640,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			ColorTeam(client, true, 8);
 
 			return Plugin_Continue;
-		}
+		}*/
 
 		else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
 		{
@@ -8585,10 +8795,15 @@ public void SDKProjectile(int entity)
 
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE);
 
-		if(g_color[client][1] == true)
+		//if(g_color[client][1] == true)
 		{
 			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
-			SetEntProp(entity, Prop_Data, "m_nSkin", 1);
+			//SetEntProp(entity, Prop_Data, "m_nSkin", 1);
+
+			if(g_skinFlashbang[client] > 0)
+			{
+				SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client]);
+			}
 
 			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 		}
