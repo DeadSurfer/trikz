@@ -38,6 +38,7 @@
 #pragma newdecls required
 
 #define MAXPLAYER MAXPLAYERS + 1
+#define IsClientValid(%1) 0 < %1 <= MaxClients && IsClientInGame(%1)
 
 int g_partner[MAXPLAYER];
 float g_zoneStartOrigin[2][3]; //start zone mins and maxs
@@ -877,27 +878,27 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
     // At least one player get this message
     if(playersNum > 0)
     {
-        Handle pack;
+		Handle pack;
 
-        CreateDataTimer(0.0, timer_radiotxt, pack); // Start new message after this one
+		CreateDataTimer(0.0, timer_radiotxt, pack); // Start new message after this one
 
-        WritePackCell(pack, playersNum); // need first collect player amount in datapack
+		WritePackCell(pack, playersNum); // need first collect player amount in datapack
 
-        for(int i = 0; i < playersNum; i++) // List all players index in datapack
-        {
-            WritePackCell(pack, players[i]);
-        }
+		for(int i = 0; i < playersNum; i++) // List all players index in datapack
+		{
+			WritePackCell(pack, players[i]);
+		}
 
-        while(msg.ReadString(buffer, sizeof(buffer)) > 0) // Write all usermessage in datapack
-        {
-            WritePackString(pack, buffer);
-        }
+		while(msg.ReadString(buffer, sizeof(buffer)) > 0) // Write all usermessage in datapack
+		{
+			WritePackString(pack, buffer);
+		}
 
-        WritePackString(pack, NULL_STRING); // NULL. Just some reason I add this.
+		WritePackString(pack, NULL_STRING); // NULL. Just some reason I add this.
 
-        ResetPack(pack); // Set position top of datapack;
+		ResetPack(pack); // Set position top of datapack;
 
-        return Plugin_Handled; // Block this original msg
+		return Plugin_Handled; // Block this original msg
     }
 
     return Plugin_Continue;
@@ -931,6 +932,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 
 		SetPackPosition(pack, view_as<DataPackPos>(pos));
 
+		//hBf = StartMessageOne("RadioText", players[i], USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
 		hBf = StartMessageOne("RadioText", players[i]);
 	
 	//	"RadioText" examples how those look. Translations found players ...cstrike/resource/cstrike_*.txt
@@ -977,11 +979,14 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 		char points[32] = "";
 		float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
 
-		char color[8] = "";
+		//PrintToServer("%f %i %N", precentage, client, client);
+
+		char color[16] = "";
 
 		if(precentage >= 90.0)
 		{
 			Format(color, sizeof(color), "FF8000");
+			//PrintToServer("is latest rank color");
 		}
 
 		else if(90.0 > precentage >= 70.0)
@@ -1007,7 +1012,10 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 		else if(15.0 > precentage >= 0.0)
 		{
 			Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
+			//PrintToServer("Is lowest rank");
 		}
+
+		//PrintToServer("%s", color);
 
 		if(g_points[client] < 1000)
 		{
@@ -1024,7 +1032,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 			Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
 		}
 
-		Format(buffer, sizeof(buffer), "[%s] %s", points, buffer);
+		Format(buffer, sizeof(buffer), "\x01[%s] %s", points, buffer);
 
 		BfWriteString(hBf, buffer);
 
@@ -1098,7 +1106,7 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 
 public void OnButton(const char[] output, int caller, int activator, float delay)
 {
-	if(0 < activator <= MaxClients && IsClientInGame(activator) == true && GetClientButtons(activator) & IN_USE)
+	if(IsClientValid(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
 		bool convar = GetConVarBool(gCV_button);
 
@@ -1642,11 +1650,8 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 	else if(strlen(error) == 0)
 	{
 		int client = GetClientFromSerial(data);
-		//if(!client)
-		//{
-		//	return;
-		//}
-		if(client > 0 && IsClientInGame(client) == true)
+
+		if(IsClientValid(client) == true)
 		{
 			char query[512]; //https://forums.alliedmods.net/showthread.php?t=261378
 			int steamid = GetSteamAccountID(client);
@@ -1701,9 +1706,8 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 	else if(strlen(error) == 0)
 	{
 		int client = GetClientFromSerial(data);
-		//if(!client)
-		//	return
-		if(client > 0 && IsClientInGame(client) == true)
+
+		if(IsClientValid(client) == true)
 		{
 			char query[512] = "";
 			int steamid = GetSteamAccountID(client);
@@ -1740,9 +1744,8 @@ public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] 
 	else if(strlen(error) == 0)
 	{
 		int client = GetClientFromSerial(data);
-		//if(!client)
-		//	return
-		if(client > 0 && IsClientInGame(client) == true)
+
+		if(IsClientValid(client) == true)
 		{
 			if(results.HasResults == false)
 			{
@@ -1816,20 +1819,17 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 	{
 		int client = GetClientFromSerial(data);
 
-		if(client > 0 && IsClientInGame(client) == true)
+		if(IsClientValid(client) == true)
 		{
 			if(results.FetchRow() == true)
 			{
 				g_haveRecord[client] = results.FetchFloat(0);
 			}
 
-			//else if(strlen(error) == 0)
-			//{
 			else if(results.FetchRow() == false)
 			{
 				g_haveRecord[client] = 0.0;
 			}
-			//}
 		}
 	}
 
@@ -2593,8 +2593,6 @@ public Action cmd_color(int client, int args)
 
 stock void ColorSelect(int client)
 {
-	//Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
-	//Menu menu = new Menu(handler_menuColor, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 	Menu menu = new Menu(handler_menuColor);
 
 	menu.SetTitle("%T", "Color", client);
@@ -2620,11 +2618,6 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 {
 	switch(action)
 	{
-		//case MenuAction_Start: //expert-zone idea. thank to ed, maru.
-		//{
-		//	g_menuOpened[param1] = true;
-		//}
-
 		case MenuAction_Select:
 		{
 			switch(param2)
@@ -2632,7 +2625,6 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 				case 0:
 				{
 					ColorTeam(param1, true);
-					//cmd_color(param1, 0);
 					ColorSelect(param1);
 				}
 
@@ -2644,7 +2636,6 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 				case 2:
 				{
 					ColorFlashbang(param1);
-					//cmd_color(param1, 0);
 					ColorSelect(param1);
 				}
 
@@ -2657,8 +2648,6 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 
 		case MenuAction_Cancel:
 		{
-			//g_menuOpened[param1] = false; //idea from expert zone.
-
 			switch(param2)
 			{
 				case MenuCancel_ExitBack:
@@ -2667,15 +2656,9 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 				}
 			}
 		}
-
-		//case MenuAction_Display:
-		//{
-		//	g_menuOpened[param1] = true;
-		//}
 	}
 
 	return view_as<int>(action);
-	//Menu menu = new Menu(handler_menuTeamColor);
 }
 
 /*public Action cmd_colorflash(int client, int args)
@@ -2725,15 +2708,6 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 		if(customSkin == true)
 		{
-			//g_color[client][0] = true;
-			//g_color[g_partner[client]][0] = true;
-
-			//SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-			//SetEntProp(g_partner[client], Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[g_partner[client]]]);
-
-			//DispatchKeyValue(client, "skin", "1");
-			//DispatchKeyValue(g_partner[client], "skin", "1");
-
 			g_colorCount[client][0]++;
 			g_colorCount[g_partner[client]][0]++;
 
@@ -2776,46 +2750,16 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 
-			//if(g_seperate[client] == true)
-			//{
 			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
-			//ShowHudText(client, 5, "%s (F2)", colorTypeExploded[3]);
 
 			if(g_partner[client] > 0)
 			{
 				ShowHudText(g_partner[client], 5, "%s (TM)", colorTypeExploded[3]);
-				//ShowHudText(g_partner[client], 5, "%s (F2)", colorTypeExploded[3]);
 			}
 		}
 
-			/*else if(g_seperate[client] == false)
-			{
-				g_color[client][1] = true;
-				g_color[g_partner[client]][1] = true;
-
-				g_colorCount[client][1] = g_colorCount[client][0];
-				g_colorCount[g_partner[client]][1] = g_colorCount[g_partner[client]][0];
-
-				for(int i = 0; i <= 2; i++)
-				{
-					g_colorBuffer[client][i][1] = g_colorBuffer[client][i][0];
-					g_colorBuffer[g_partner[client]][i][1] = g_colorBuffer[client][i][0];
-				}
-
-				ShowHudText(client, 5, "%s (F2+)", colorTypeExploded[3]);
-
-				if(g_partner[client] > 0)
-				{
-					ShowHudText(g_partner[client], 5, "%s (F2+)", colorTypeExploded[3]);
-				}
-			}*/
-		//}
-
 		else
 		{
-			//g_color[client][0] = false;
-			//g_color[g_partner[client]][0] = false;
-
 			g_colorCount[client][0] = 0;
 			g_colorCount[g_partner[client]][0] = 0;
 
@@ -2838,30 +2782,19 @@ stock void ColorFlashbang(int client, int color = -1)
 			return;
 		}
 
-		//if(customSkin == true)
-		//{
-		//g_color[client][1] = true;
-		//g_color[g_partner[client]][1] = true;
-
-		//g_seperate[client] = true;
-		//g_seperate[g_partner[client]] = true;
-
 		g_colorCount[client][1]++;
 		g_colorCount[g_partner[client]][1]++;
 
 		if(g_colorCount[client][1] == 9)
 		{
 			g_colorCount[client][1] = 0;
-			//g_colorCount[g_partner[client]][1] = 0;
 		}
 
 		else if(0 <= color <= 8)
 		{
 			g_colorCount[client][1] = color;
-			//g_colorCount[g_partner[client]][1] = color;
 		}
 
-		//char colorTypeExploded[4][32];
 		char colorTypeExploded[32][4];
 
 		ExplodeString(g_colorType[g_colorCount[client][1]], ",", colorTypeExploded, 4, sizeof(colorTypeExploded));
@@ -2869,7 +2802,6 @@ stock void ColorFlashbang(int client, int color = -1)
 		for(int i = 0; i <= 2; i++)
 		{
 			g_colorBuffer[client][i][1] = StringToInt(colorTypeExploded[i]);
-			//g_colorBuffer[g_partner[client]][i][1] = StringToInt(colorTypeExploded[i]);
 		}
 
 		char value[16] = "";
@@ -2880,7 +2812,6 @@ stock void ColorFlashbang(int client, int color = -1)
 
 		static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
-		//if(h)
 		hForward = new GlobalForward("Trikz_ColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_ColorFlashbang(int client, int red, int green, int blue)
 
 		Call_StartForward(hForward);
@@ -2898,19 +2829,6 @@ stock void ColorFlashbang(int client, int color = -1)
 		{
 			ShowHudText(g_partner[client], 5, "%s (FL)", colorTypeExploded[3]);
 		}
-		//}
-
-		/*else if(customSkin == false)
-		{
-			g_color[client][1] = false;
-			g_color[g_partner[client]][1] = false;
-
-			//g_seperate[client] = false;
-			//g_seperate[client] = false;
-
-			g_colorCount[client][1] = 0;
-			g_colorCount[g_partner[client]][1] = 0;
-		}*/
 	}
 
 	return;
@@ -2926,18 +2844,20 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 	else if(strlen(error) == 0)
 	{
 		int client = GetClientFromSerial(data);
-		//if(!client)
-		//	return
-		if(client > 0 && IsClientInGame(client) == true && results.FetchRow() == true)
-		{
-			g_mateRecord[client] = results.FetchFloat(0);
-			g_mateRecord[g_partner[client]] = results.FetchFloat(0);
-		}
 
-		else if(client > 0 && IsClientInGame(client) == true && results.FetchRow() == false)
+		if(IsClientValid(client) == true)
 		{
-			g_mateRecord[client] = 0.0;
-			g_mateRecord[g_partner[client]] = 0.0;
+			if(results.FetchRow() == true)
+			{
+				g_mateRecord[client] = results.FetchFloat(0);
+				g_mateRecord[g_partner[client]] = results.FetchFloat(0);
+			}
+
+			else if(results.FetchRow() == false)
+			{
+				g_mateRecord[client] = 0.0;
+				g_mateRecord[g_partner[client]] = 0.0;
+			}
 		}
 	}
 }
@@ -2978,170 +2898,58 @@ stock void Restart(int client)
 		{
 			if(g_partner[client] > 0)
 			{
-				//if(IsPlayerAlive(client) == true && IsPlayerAlive(g_partner[client]) == true)
+				CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
+
+				Call_StartForward(g_start);
+				Call_PushCell(client);
+
+				Call_Finish();
+
+				int entity = 0;
+
+				bool ct = false;
+
+				int team = GetClientTeam(client);
+
+				while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
 				{
-					CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
-
-					Call_StartForward(g_start);
-					Call_PushCell(client);
-
-					Call_Finish();
-
-					int entity = 0;
-
-					bool ct = false;
-					//bool t = false;
-
-					int team = GetClientTeam(client);
-					//int teamPartner = GetClientTeam(g_partner[client]);
-
-					while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
+					if(ct == false)
 					{
 						ct = true;
+					}
 
-						if(team == CS_TEAM_T)
+					if(team == CS_TEAM_SPECTATOR)
+					{
+						CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
+					}
+
+					break;
+				}
+
+				while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
+				{
+					if(ct == false)
+					{
+						if(team == CS_TEAM_SPECTATOR)
 						{
 							CS_SwitchTeam(client, CS_TEAM_T);
 						}
-						else if (team == CS_TEAM_CT)
-						{
-							CS_SwitchTeam(client, CS_TEAM_CT);
-						}
-						else if(team == CS_TEAM_SPECTATOR)
-						{
-							CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
-						}
-
-						break;
 					}
 
-					while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
-					{
-						if(ct == false)
-						{
-							//t = true;
-
-							if(team == CS_TEAM_T)
-							{
-								CS_SwitchTeam(client, CS_TEAM_T);
-							}
-							else if (team == CS_TEAM_CT)
-							{
-								CS_SwitchTeam(client, CS_TEAM_CT);
-							}
-							else if(team == CS_TEAM_SPECTATOR)
-							{
-								CS_SwitchTeam(client, CS_TEAM_T);
-							}
-						}
-
-						break;
-					}
-
-					CS_RespawnPlayer(client);
-
-					float velNull[3] = {0.0, 0.0, 0.0};
-
-					TeleportEntity(client, g_originStart, NULL_VECTOR, velNull);
-
-					g_block[client] = true;
-
-					if(g_menuOpened[client] == true)
-					{
-						Trikz(client);
-					}
+					break;
 				}
 
-				//else if(IsPlayerAlive(client) == true)
+				CS_RespawnPlayer(client);
+
+				float velNull[3] = {0.0, 0.0, 0.0};
+
+				TeleportEntity(client, g_originStart, NULL_VECTOR, velNull);
+
+				g_block[client] = true;
+
+				if(g_menuOpened[client] == true)
 				{
-
-
-					//if(ct == true)
-					//{
-						//CS_SwitchTeam(client, CS_TEAM_CT); 
-
-						//CS_RespawnPlayer(client);
-
-						/*if(team == CS_TEAM_SPECTATOR)
-						{
-							CS_SwitchTeam(client, CS_TEAM_CT);
-						}
-
-						else if (team == CS_TEAM_CT)
-						{
-							CS_RespawnPlayer(client);
-						}
-
-						if(teamPartner == CS_TEAM_SPECTATOR)
-						{
-							CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
-						}
-
-						else if(teamPartner == CS_TEAM_CT)
-						{
-							CS_RespawnPlayer(g_partner[client]);
-						}
-
-						if(IsPlayerAlive(client) == false)
-						{
-							//CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
-							CS_RespawnPlayer(client);
-						}
-
-						if(IsPlayerAlive(g_partner[client]) == false)
-						{
-							//CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
-							CS_RespawnPlayer(g_partner[client]);
-						}*/
-						
-						/*if(team == CS_TEAM_SPECTATOR)
-						{
-							//PrintToServer("team: %i", team);
-							CS_SwitchTeam(client, CS_TEAM_CT);
-							CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
-
-							CS_RespawnPlayer(client);
-							CS_RespawnPlayer(g_partner[client]);
-						}*/
-
-						//CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
-						
-						//CS_SwitchTeam(g_partner[client], CS_TEAM_CT);
-
-						//CS_RespawnPlayer(client);
-						//CS_RespawnPlayer(g_partner[client]);
-
-						//Restart(client);
-						//Restart(g_partner[client]);
-					//}
-
-					//if(t == true)
-					//{
-						//CS_SwitchTeam(client, CS_TEAM_T);
-
-						//CS_RespawnPlayer(client);
-						//CS_RespawnPlayer(g_partner[client]);
-
-						//if(IsPlayerAlive(g_partner[client]) == false)
-						//{
-						//	CS_SwitchTeam(g_partner[client], CS_TEAM_T);
-						//	CS_RespawnPlayer(g_partner[client]);
-						//}
-
-						//if(team == CS_TEAM_SPECTATOR)
-						//{
-							//PrintToServer("team: %i", team);
-						//	CS_SwitchTeam(client, CS_TEAM_T);
-						//	CS_SwitchTeam(g_partner[client], CS_TEAM_T);
-
-
-						//	CS_RespawnPlayer(client);
-						//	CS_RespawnPlayer(g_partner[client]);
-						//}
-
-						//Restart(client);
-						//Restart(g_partner[client]);
-					//}
+					Trikz(client);
 				}
 			}
 
@@ -3171,9 +2979,9 @@ public Action cmd_autoflash(int client, int args)
 
 	g_autoflash[client] = !g_autoflash[client];
 
-	char sValue[16] = "";
-	IntToString(g_autoflash[client], sValue, sizeof(sValue));
-	SetClientCookie(client, g_cookie[4], sValue);
+	char value[8] = "";
+	IntToString(g_autoflash[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[4], value);
 
 	char format[256];
 	Format(format, sizeof(format), "%T", g_autoflash[client] ? "AutoflashON" : "AutoflashOFF", client);
@@ -3200,9 +3008,9 @@ public Action cmd_autoswitch(int client, int args)
 	
 	g_autoswitch[client] = !g_autoswitch[client];
 
-	char sValue[16] = "";
-	IntToString(g_autoswitch[client], sValue, sizeof(sValue));
-	SetClientCookie(client, g_cookie[5], sValue);
+	char value[8] = "";
+	IntToString(g_autoswitch[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[5], value);
 
 	char format[256];
 	Format(format, sizeof(format), "%T", g_autoswitch[client] ? "AutoswitchON" : "AutoswitchOFF", client);
@@ -3227,9 +3035,9 @@ public Action cmd_bhop(int client, int args)
 
 	g_bhop[client] = !g_bhop[client];
 	
-	char sValue[16] = "";
-	IntToString(g_bhop[client], sValue, sizeof(sValue));
-	SetClientCookie(client, g_cookie[6], sValue);
+	char value[8] = "";
+	IntToString(g_bhop[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[6], value);
 
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopON" : "BhopOFF", client);
@@ -3245,12 +3053,11 @@ public Action cmd_bhop(int client, int args)
 
 public Action cmd_endmsg(int client, int args)
 {
-	//bool convar = GetConVarBool(gCV_endmsg);
 	g_endMessage[client] = !g_endMessage[client];
 
-	char sValue[16];
-	IntToString(g_bhop[client], sValue, sizeof(sValue));
-	SetClientCookie(client, g_cookie[8], sValue);
+	char value[8];
+	IntToString(g_bhop[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[8], value);
 
 	char format[256];
 	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageON" : "EndMessageOFF", client);
@@ -3282,15 +3089,14 @@ public void Top10()
 	{
 		//PrintToServer("Don't spam with top10. Wait %.0f seconds.", g_top10ac - GetGameTime());
 
-		char time[8];
-		//FloatToString(g_top10ac - GetGameTime(), time, sizeof(time));
+		char time[8]= "";
 		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
 
-		char format[256];
+		char format[256] = "";
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i))
+			if(IsClientInGame(i) == true)
 			{
 				Format(format, sizeof(format), "%T", "Top10ac", i, time);
 				SendMessage(format, i);
@@ -3309,7 +3115,7 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 {
 	g_top10Count = 0;
 
-	while(results.FetchRow())
+	while(results.FetchRow() == true)
 	{
 		int playerid = results.FetchInt(0);
 		int partnerid = results.FetchInt(1);
@@ -3423,7 +3229,7 @@ stock void PlayerSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", "PlayerSkin", client);
 	menu.SetTitle(format);
 
@@ -3443,7 +3249,7 @@ stock void FlashbangSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", "FlashbangSkin", client);
 	menu.SetTitle(format);
 
@@ -3531,8 +3337,6 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 
 		case MenuAction_Cancel:
 		{
-			//g_menuOpened[param1] = false; //idea from expert zone.
-
 			switch(param2)
 			{
 				case MenuCancel_ExitBack:
@@ -3832,18 +3636,6 @@ public Action cmd_test(int client, int args)
 			Restart(client);
 		}
 
-		/*for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i) == true)
-			{
-				PrintToServer("(%i %N)", i, i);
-
-				PrintToServer("CollisionGroup: %i %N", GetEntProp(i, Prop_Data, "m_CollisionGroup"), i);
-
-				PrintToServer("%i %N", g_partner[i], i);
-			}
-		}*/
-
 		PrintToServer("LibraryExists (trueexpert-entityfilter): %i", LibraryExists("trueexpert-entityfilter"));
 
 		//https://forums.alliedmods.net/showthread.php?t=187746
@@ -3861,21 +3653,7 @@ public Action cmd_test(int client, int args)
 		char authid3[64] = "";
 		GetClientAuthId(client, AuthId_Steam3, authid3, sizeof(authid3));
 
-		//PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3)", auth64, steamid); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
-		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3 after 2nd semicolon)", auth64, authid3);
-
-		//SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-		//DispatchKeyValue(client, "skin", arg);
-
-		//float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
-
-		//PrintToServer("%f %i %i %i", precentage, (315 / 545) * 100, g_points[client], g_pointsMaxs);
-
-		//float vec[3] = {0.0, 0.0, 0.0};
-		//GetClientEyeAngles(client, vec);
-		//PrintToServer("%f %f %f", vec[0], vec[1], vec[2]); //180 x/mins; 90 y/mins; 0 x/maxs; -90 y/maxs
-
-		//EyeAngleTestHud(client);
+		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3 after 2nd semicolon)", auth64, authid3); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 
 		return Plugin_Handled;
 	}
@@ -3922,11 +3700,9 @@ stock void SendMessage(const char[] text, int client)
 	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
 	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
 
-	if(client > 0 && IsClientInGame(client) == true)
+	if(IsClientValid(client) == true)
 	{
-		//PrintToChat(client, "%s", textReplaced);
-
-		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
+		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
 
 		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
 		bf.WriteByte(client); // Message author
@@ -3935,10 +3711,6 @@ stock void SendMessage(const char[] text, int client)
 
 		EndMessage();
 	}
-
-	#if debug == true
-	//PrintToChat(client, "%i MessageDebug", client)
-	#endif
 
 	return;
 }
@@ -5178,7 +4950,7 @@ public Action SDKStartTouch(int entity, int other)
 							char format[256] = "";
 							for(int i = 1; i <= MaxClients; i++)
 							{
-								if(IsClientInGame(i))
+								if(IsClientInGame(i) == true)
 								{
 									Format(format, sizeof(format), "%T", "NewServerRecord", i);
 									SendMessage(format, i); //smth like shavit functions.
@@ -5199,7 +4971,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int i = 1; i <= MaxClients; i++)
 							{
-								if(IsClientInGame(i))
+								if(IsClientInGame(i) == true)
 								{
 									Format(text2, sizeof(text2), "%T", "NewServerRecordDetail", i, sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, i);
@@ -5257,7 +5029,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int i = 1; i <= MaxClients; i++)
 							{
-								if(IsClientInGame(i))
+								if(IsClientInGame(i) == true)
 								{
 									Format(text2, sizeof(text2), "%T", "PassedImproved", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, i);
@@ -5295,7 +5067,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int i = 1; i <= MaxClients; i++)
 							{
-								if(IsClientInGame(i))
+								if(IsClientInGame(i) == true)
 								{
 									Format(text2, sizeof(text2), "%T", "Passed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, i);
@@ -5344,7 +5116,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int i = 1; i <= MaxClients; i++)
 							{
-								if(IsClientInGame(i))
+								if(IsClientInGame(i) == true)
 								{
 									Format(format, sizeof(format), "%T", "NewServerRecord", i);
 									SendMessage(format, i); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
@@ -5368,7 +5140,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int i = 1; i <= MaxClients; i++)
 							{
-								if(IsClientInGame(i))
+								if(IsClientInGame(i) == true)
 								{
 									Format(text2, sizeof(text2), "%T", "NewServerRecordDetailNew", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, i);
@@ -5427,7 +5199,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int i = 1; i <= MaxClients; i++)
 							{
-								if(IsClientInGame(i))
+								if(IsClientInGame(i) == true)
 								{
 									Format(text2, sizeof(text2), "%T", "JustPassed", i, sName, sPartner, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
 									SendMessage(text2, i);
@@ -5479,7 +5251,7 @@ public Action SDKStartTouch(int entity, int other)
 
 								for(int j = 1; j <= MaxClients; j++)
 								{
-									if(IsClientInGame(j))
+									if(IsClientInGame(j) == true)
 									{
 										Format(textCP, sizeof(textCP), "%T", "CPImprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 										SendMessage(textCP, j);
@@ -5494,7 +5266,7 @@ public Action SDKStartTouch(int entity, int other)
 
 								for(int j = 1; j <= MaxClients; j++)
 								{
-									if(IsClientInGame(j))
+									if(IsClientInGame(j) == true)
 									{
 										Format(textCP, sizeof(textCP), "%T", "CPDeprove", j, i, sSRCPHour, sSRCPMinute, sSRCPSecond);
 										SendMessage(textCP, j);
@@ -5524,7 +5296,7 @@ public Action SDKStartTouch(int entity, int other)
 
 					for(int i = 1; i <= MaxClients; i++)
 					{
-						if(IsClientInGame(i))
+						if(IsClientInGame(i) == true)
 						{
 							Format(format, sizeof(format), "%T", "NewServerRecord", i);
 							SendMessage(format, i);
@@ -5548,7 +5320,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int j = 1; j <= MaxClients; j++)
 							{
-								if(IsClientInGame(j))
+								if(IsClientInGame(j) == true)
 								{
 									Format(textCP, sizeof(textCP), "%T", "CPNEW", j, i);
 									SendMessage(textCP, j);
@@ -7592,17 +7364,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal);
 			}
 
-			//if(g_color[client][1] == true)
-			//{
 			SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
-			//}
 
 			TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR);
 
 			//https://forums.alliedmods.net/showthread.php?p=1080444
-			//if(g_color[client][1] == true)
-			//{
-			int color[4];
+			int color[4] = {0, 0, 0, 0};
 
 			for(int i = 0; i <= 2; i++)
 			{
@@ -7614,21 +7381,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			start[2] -= 8.0;
 
 			TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
-			//}
-
-			/*else if(g_color[client][1] == false)
-			{
-				int color[4];
-
-				for(int i = 0; i < 4; i++)
-				{
-					color[i] = 255;
-				}
-
-				start[2] -= 8.0;
-
-				TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
-			}*/
 
 			if(LibraryExists("trueexpert-entityfilter") == true)
 			{
@@ -7764,16 +7516,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntityCollisionGroup(other, 2);
 
-			//if(g_color[other][0] == true)
-			//{
 			SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
-				//SetEntityRenderColor(other, 255, 255, 255, 125);
-			//}
-
-			//else if(g_color[other][0] == false)
-			//{
-			//	SetEntityRenderColor(other, 255, 255, 255, 125);
-			//}
 		}
 	}
 
@@ -7783,16 +7526,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntityCollisionGroup(client, 5);
 
-			//if(g_color[client][0] == true)
-			//{
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
-				//SetEntityRenderColor(client, 255, 255, 255, 255);
-			//}
-
-			//else if(g_color[client][0] == false)
-			//{
-			//	SetEntityRenderColor(client, 255, 255, 255, 255);
-			//}
 		}
 	}
 
@@ -7887,7 +7621,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public Action ProjectileBoostFix(int entity, int other)
 {
-	if(0 < other <= MaxClients && IsClientInGame(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
+	if(IsClientValid(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
 		float originOther[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(other, originOther);
@@ -7940,7 +7674,7 @@ public Action ProjectileBoostFix(int entity, int other)
 
 public Action cmd_devmap(int client, int args)
 {
-	char format[256];
+	char format[256]= "";
 
 	if(GetEngineTime() - g_devmapTime > 35.0 && GetEngineTime() - g_afkTime > 30.0)
 	{
@@ -7998,7 +7732,7 @@ public Action cmd_devmap(int client, int args)
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i))
+			if(IsClientInGame(i) == true)
 			{
 				Format(format, sizeof(format), "%T", "DevMapStart", i, name);
 				SendMessage(format, i);
@@ -8070,7 +7804,7 @@ stock void Devmap(bool force)
 				
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) == true && !IsFakeClient(i))
+					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(format, sizeof(format), "%T", "DevMapWillBeDisabled", i, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(format, i);
@@ -8085,7 +7819,7 @@ stock void Devmap(bool force)
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) == true && !IsFakeClient(i))
+					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(format, sizeof(format), "%T", "DevMapWillBeEnabled", i, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						//PrintToChat(client, format);
@@ -8105,7 +7839,7 @@ stock void Devmap(bool force)
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i))
+					if(IsClientInGame(i) == true)
 					{
 						//PrintToChat(i, "\x01%T", "DevMapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						Format(format, sizeof(format), "%T", "DevMapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
@@ -8122,7 +7856,7 @@ stock void Devmap(bool force)
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i))
+					if(IsClientInGame(i) == true)
 					{
 						//PrintToChat(i, "\x01%T", "DevMapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						Format(format, sizeof(format), "%T", "DevMapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
@@ -8231,7 +7965,7 @@ public Action cmd_afk(int client, int args)
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i))
+			if(IsClientInGame(i) == true)
 			{
 				//PrintToChat(i, "\x01%T", "AFKCHECK", i, name);
 				Format(format, sizeof(format), "%T", "AFKCHECK", i, name);
@@ -8398,7 +8132,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_Select:
 		{
-			char value[16] = "";
+			char value[8] = "";
 
 			char format[256] = "";
 
@@ -8492,7 +8226,7 @@ public Action cmd_mlstats(int client, int args)
 {
 	g_mlstats[client] = !g_mlstats[client];
 
-	char value[16] = "";
+	char value[8] = "";
 
 	IntToString(g_mlstats[client], value, sizeof(value));
 
@@ -8516,7 +8250,7 @@ public Action cmd_button(int client, int args)
 {
 	g_button[client] = !g_button[client];
 
-	char value[16] = "";
+	char value[8] = "";
 
 	IntToString(g_button[client], value, sizeof(value));
 
@@ -8535,7 +8269,7 @@ public Action cmd_pbutton(int client, int args)
 {
 	g_pbutton[client] = !g_pbutton[client]; //toggling
 
-	char value[16] = "";
+	char value[8] = "";
 
 	IntToString(g_pbutton[client], value, sizeof(value));
 
@@ -8740,7 +8474,7 @@ public Action cmd_time(int client, int args)
 
 		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
 
-		if(g_partner[client])
+		if(g_partner[client] > 0)
 		{
 			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second);
 		}
@@ -8761,6 +8495,7 @@ public Action cmd_time(int client, int args)
 			PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
 		}
 	}
+
 	return Plugin_Handled;
 }
 
@@ -8795,18 +8530,14 @@ public void SDKProjectile(int entity)
 
 		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE);
 
-		//if(g_color[client][1] == true)
+		if(g_skinFlashbang[client] > 0)
 		{
 			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
-			//SetEntProp(entity, Prop_Data, "m_nSkin", 1);
 
-			if(g_skinFlashbang[client] > 0)
-			{
-				SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client]);
-			}
-
-			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+			SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client]);
 		}
+
+		SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
 		bool convar2 = GetConVarBool(gCV_autoswitch);
 		
@@ -8841,10 +8572,11 @@ public Action timer_deleteProjectile(Handle timer, int entity)
 	{
 		FlashbangEffect(entity);
 
-		char log[256];
+		char log[256] = "";
+
 		GetEntityClassname(entity, log, sizeof(log));
 
-		if(!StrEqual(log, "flashbang_projectile", false))
+		if(StrEqual(log, "flashbang_projectile", false) == false)
 		{
 			LogMessage(log);
 		}
@@ -8945,7 +8677,8 @@ public Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon) == true)
 	{
-		char log[256];
+		char log[256] = "";
+
 		GetEntityClassname(weapon, log, sizeof(log));
 
 		if(!(StrContains(log, "weapon", false) != -1))
@@ -9003,10 +8736,10 @@ public Action timer_removePing(Handle timer, int client)
 {
 	if(g_pingModel[client] > 0)
 	{
-		char log[256];
+		char log[256] = "";
 		GetEntityClassname(g_pingModel[client], log, sizeof(log));
 
-		if(!StrEqual(log, "prop_dynamic", false))
+		if(StrEqual(log, "prop_dynamic", false) == false)
 		{
 			LogMessage(log);
 		}
@@ -9050,7 +8783,7 @@ public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLAT
 
 public Action timer_clantag(Handle timer, int client)
 {
-	if(0 < client <= MaxClients && IsClientInGame(client) == true)
+	if(IsClientValid(client) == true)
 	{
 		if(g_state[client] == true)
 		{
