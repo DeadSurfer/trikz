@@ -97,7 +97,6 @@ bool g_sourcetv;
 bool g_block[MAXPLAYER];
 int g_wModelThrown;
 int g_class[MAXPLAYER];
-//bool g_color[MAXPLAYER][2];
 int g_wModelPlayer[5];
 int g_pingModel[MAXPLAYER];
 int g_pingModelOwner[2048 + 1];
@@ -152,7 +151,6 @@ float g_restartInHold[MAXPLAYER];
 bool g_restartInHoldLock[MAXPLAYER];
 int g_smoke;
 bool g_clantagOnce[MAXPLAYER];
-//bool g_seperate[MAXPLAYER];
 ConVar gCV_trikz;
 ConVar gCV_block;
 ConVar gCV_partner;
@@ -511,6 +509,7 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 		{
 			char map[192] = "";
 			results.FetchString(0, map, sizeof(map));
+
 			char query[512] = "";
 			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' ORDER BY time", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 			g_mysql.Query(SQLRecalculatePoints, query);
@@ -872,7 +871,7 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
         return Plugin_Continue;
     }
 
-    char buffer[256];
+    char buffer[256]= "";
     buffer[0] = '\0';
 
     // At least one player get this message
@@ -918,14 +917,14 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 	int pos = view_as<int>(GetPackPosition(pack));
 
 	// Start create new RadioText
-	char buffer[256];
-	Handle hBf;
+	char buffer[256] = "";
+	Handle hBf = INVALID_HANDLE;
 
 	for(int i = 0; i < playersNum; i++)
 	{
 		hBf = INVALID_HANDLE; // This not maybe usefull...
 
-		if(!IsClientInGame(players[i]) || IsFakeClient(players[i])) // Don't send new message unconnected and bots
+		if(IsClientInGame(players[i]) == false || IsFakeClient(players[i]) == true) // Don't send new message unconnected and bots
 		{
 			continue;
 		}
@@ -952,7 +951,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 		BfWriteString(hBf, buffer);
 
 		// Do extra writing when radiotext have location included
-		if(StrEqual(buffer[2], "#Game_radio_location"))
+		if(StrEqual(buffer[2], "#Game_radio_location", false) == true)
 		{
 			ReadPackString(pack, buffer, sizeof(buffer));
 			BfWriteString(hBf, buffer);
@@ -960,12 +959,12 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 
 		ReadPackString(pack, buffer, sizeof(buffer));
 
-		char sName[MAX_NAME_LENGTH];
+		char sName[MAX_NAME_LENGTH] = "";
 		int client = 0;
 
 		for(int j = 1; j <= MaxClients; j++)
 		{
-			if(IsClientInGame(j))
+			if(IsClientInGame(j) == true)
 			{
 				GetClientName(j, sName, sizeof(sName));
 
@@ -981,7 +980,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 
 		//PrintToServer("%f %i %N", precentage, client, client);
 
-		char color[16] = "";
+		char color[8] = "";
 
 		if(precentage >= 90.0)
 		{
@@ -1039,7 +1038,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 		ReadPackString(pack, buffer, sizeof(buffer));
 
 		// translation title and not "Fire_in_the_hole" message.
-		if(StrContains(buffer, "#Cstrike_TitlesTXT_") == 0 && StrContains(buffer, "Fire_in_the_hole") == -1)
+		if(StrContains(buffer, "#Cstrike_TitlesTXT_", false) == 0 && StrContains(buffer, "Fire_in_the_hole", false) == -1)
 		{
 			// Re-write radiotxt message here
 			Format(buffer, sizeof(buffer), "%T", buffer[19], players[i]);
@@ -1060,38 +1059,30 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	char model[PLATFORM_MAX_PATH] = "";
 	GetClientModel(client, model, PLATFORM_MAX_PATH);
 
-	if(StrEqual(model, "models/player/ct_urban.mdl", false))
+	if(StrEqual(model, "models/player/ct_urban.mdl", false) == true)
 	{
 		g_class[client] = 1;
 	}
 
-	else if(StrEqual(model, "models/player/ct_gsg9.mdl", false))
+	else if(StrEqual(model, "models/player/ct_gsg9.mdl", false) == true)
 	{
 		g_class[client] = 2;
 	}
 
-	else if(StrEqual(model, "models/player/ct_sas.mdl", false))
+	else if(StrEqual(model, "models/player/ct_sas.mdl", false) == true)
 	{
 		g_class[client] = 3;
 	}
 
-	else if(StrEqual(model, "models/player/ct_gign.mdl", false))
+	else if(StrEqual(model, "models/player/ct_gign.mdl", false) == true)
 	{
 		g_class[client] = 4;
 	}
 
-	//if(g_color[client][0] == true)
-	//{
 	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-	//DispatchKeyValue(client, "skin", "1");
 	SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client]);
-	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
-	//}
 
-	//else if(g_color[client][0] == false)
-	//{
-	//	SetEntityRenderColor(client, 255, 255, 255, 255);
-	//}
+	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 
 	SetEntityRenderMode(client, RENDER_TRANSALPHA); //maru is genius person who fix this bug. thanks maru for idea.
 
@@ -1114,7 +1105,7 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 		{
 			//PrintToChat(activator, "You have pressed a button.");
 			//PrintToChat(activator, "\x01%T", "YouPressedButton", activator);
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "YouPressedButton", activator);
 			SendMessage(format, activator);
 		}
@@ -1125,7 +1116,7 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 		{
 			//PrintToChat(g_partner[activator], "Your partner have pressed a button.");
 			//PrintToChat(g_partner[activator], "\x01%T", "YourPartnerPressedButton", g_partner[activator]);
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "YourPartnerPressedButton", g_partner[activator]);
 			SendMessage(format, g_partner[activator]);
 		}
@@ -1149,7 +1140,8 @@ public Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 
-	char log[256];
+	char log[256] = "";
+
 	GetEntityClassname(ragdoll, log, sizeof(log));
 
 	if(!StrEqual(log, "cs_ragdoll", false))
@@ -1188,8 +1180,7 @@ public Action autobuy(int client, const char[] command, int argc)
 
 public Action rebuy(int client, const char[] command, int argc)
 {
-	//ColorTeam(client, true, -1);
-	cmd_color(client, 0);
+	ColorSelect(client);
 
 	return Plugin_Continue;
 }
@@ -1285,14 +1276,8 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 
 				case 8:
 				{
-					//ColorTeam(param1, true, -1);
-					cmd_color(param1, 0);
+					ColorSelect(param1);
 				}
-
-				//case 8:
-				//{
-				//	ColorFlashbang(param1, true, -1);
-				//}
 
 				case 9:
 				{
@@ -2150,9 +2135,8 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 5:
 				{
-					//ColorTeam(param1, true, -1);
-					//Trikz(param1);
-					cmd_color(param1, 0);
+					g_menuOpened[param1] = false;
+					ColorSelect(param1);
 				}
 
 				case 6:
@@ -2221,15 +2205,7 @@ public Action Block(int client) //thanks maru for optimization.
 
 	SetEntityCollisionGroup(client, g_block[client] ? 5 : 2);
 
-	//if(g_color[client][0] == true)
-	//{
 	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125);
-	//}
-
-	//else if(g_color[client][0] == false)
-	//{
-		//SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125);
-	//}
 
 	if(g_menuOpened[client] == true)
 	{
@@ -2584,7 +2560,7 @@ public Action cmd_color(int client, int args)
 		return Plugin_Handled;
 	}
 
-	g_menuOpened[client] = false;
+	//g_menuOpened[client] = false;
 
 	ColorSelect(client);
 
@@ -2989,7 +2965,7 @@ public Action cmd_autoflash(int client, int args)
 
 	GiveFlashbang(client);
 
-	if(g_menuOpened[client])
+	if(g_menuOpened[client] == true)
 	{
 		Trikz(client);
 	}
@@ -3016,7 +2992,7 @@ public Action cmd_autoswitch(int client, int args)
 	Format(format, sizeof(format), "%T", g_autoswitch[client] ? "AutoswitchON" : "AutoswitchOFF", client);
 	SendMessage(format, client);
 
-	if(g_menuOpened[client])
+	if(g_menuOpened[client] == true)
 	{
 		Trikz(client);
 	}
@@ -3043,7 +3019,7 @@ public Action cmd_bhop(int client, int args)
 	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopON" : "BhopOFF", client);
 	SendMessage(format,  client);
 
-	if(g_menuOpened[client])
+	if(g_menuOpened[client] == true)
 	{
 		Trikz(client);
 	}
@@ -3055,15 +3031,15 @@ public Action cmd_endmsg(int client, int args)
 {
 	g_endMessage[client] = !g_endMessage[client];
 
-	char value[8];
+	char value[8] = "";
 	IntToString(g_bhop[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[8], value);
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageON" : "EndMessageOFF", client);
 	SendMessage(format, client);
 
-	if(g_menuOpenedHud[client])
+	if(g_menuOpenedHud[client] == true)
 	{
 		HudMenu(client);
 	}
@@ -3089,7 +3065,7 @@ public void Top10()
 	{
 		//PrintToServer("Don't spam with top10. Wait %.0f seconds.", g_top10ac - GetGameTime());
 
-		char time[8]= "";
+		char time[8] = "";
 		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
 
 		char format[256] = "";
@@ -7674,7 +7650,7 @@ public Action ProjectileBoostFix(int entity, int other)
 
 public Action cmd_devmap(int client, int args)
 {
-	char format[256]= "";
+	char format[256] = "";
 
 	if(GetEngineTime() - g_devmapTime > 35.0 && GetEngineTime() - g_afkTime > 30.0)
 	{
