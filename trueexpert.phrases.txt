@@ -694,4 +694,28 @@
 	{
 		"en"	"Enemy down."
 	}
+	"PlayerSkin"
+	{
+		"en"	"Player skin"
+	}
+	"FlashbangSkin"
+	{
+		"en"	"Flashbang skin"
+	}
+	"Default"
+	{
+		"en"	"Default"
+	}
+	"Shadow"
+	{
+		"en"	"Shadow"
+	}
+	"Bright"
+	{
+		"en"	"Bright"
+	}
+	"Wireframe"
+	{
+		"en"	"Wireframe"
+	}
 }
