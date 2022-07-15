@@ -2798,11 +2798,11 @@ stock void ColorFlashbang(int client, int color = -1)
 		Call_PushCell(g_colorBuffer[client][2][0]);
 		Call_Finish();
 
-		/*SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
 		ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
 
-		if(g_partner[client] > 0)
+		/*if(g_partner[client] > 0)
 		{
 			ShowHudText(g_partner[client], 5, "%s (FL)", colorTypeExploded[3]);
 		}*/
