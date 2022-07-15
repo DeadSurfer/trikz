@@ -1518,7 +1518,7 @@ public void OnClientPutInServer(int client)
 
 public void OnClientCookiesCached(int client)
 {
-	char value[8] = "";
+	char value[16] = "";
 
 	GetClientCookie(client, g_cookie[0], value, sizeof(value));
 	g_hudVel[client] = view_as<bool>(StringToInt(value));
