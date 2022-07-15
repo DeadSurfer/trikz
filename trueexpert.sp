@@ -1552,8 +1552,8 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
 
-	char exploded[16][16];
-	ExplodeString(value, ";", exploded, 16, 16);
+	char exploded[8][16];
+	ExplodeString(value, ";", exploded, 8, 16);
 
 	for(int i = 0; i <= 2; i++)
 	{
@@ -1573,7 +1573,7 @@ public void OnClientCookiesCached(int client)
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
 	g_skinPlayer[client] = view_as<bool>(StringToInt(value));
 
-	if(IsClientInGame(client) && IsPlayerAlive(client))
+	if(IsClientInGame(client) == true && IsPlayerAlive(client) == true)
 	{
 		GiveFlashbang(client);
 	}
