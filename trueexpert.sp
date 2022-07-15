@@ -1518,7 +1518,7 @@ public void OnClientPutInServer(int client)
 
 public void OnClientCookiesCached(int client)
 {
-	char value[16] = "";
+	char value[8] = "";
 
 	GetClientCookie(client, g_cookie[0], value, sizeof(value));
 	g_hudVel[client] = view_as<bool>(StringToInt(value));
@@ -1962,8 +1962,8 @@ public void Trikz(int client)
 	//Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	
-	char format[128];
-	Format(format, sizeof(format), "%T", "Trikz", client);
+	//char format[128];
+	//Format(format, sizeof(format), "%T", "Trikz", client);
 	//menu.SetTitle("Trikz");
 	menu.SetTitle("%T", "Trikz", client);
 
@@ -1980,7 +1980,7 @@ public void Trikz(int client)
 //		menu.AddItem("block", format);
 //	}
 
-	//char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_block[client] ? "BlockON" : "BlockOFF", client);
 	menu.AddItem("block", format);
 
@@ -1999,30 +1999,31 @@ public void Trikz(int client)
 		//menu.AddItem("partner", g_partner[client] ? "Breakup" : "Partner", g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		Format(format, sizeof(format), "%T", "Breakup", client);
 
-		if(g_devmap == true)
-		{
-			menu.AddItem("breakup", format, ITEMDRAW_DISABLED);
-		}
+		//if( == true)
+		//{
+		menu.AddItem("breakup", format, g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		//}
 
-		else if(g_devmap == false)
-		{
-			menu.AddItem("breakup", format, ITEMDRAW_DEFAULT);
-		}
+		//else if(g_devmap == false)
+		//{
+		//	menu.AddItem("breakup", format, );
+		//}
 	}
 
 	//if(g_partner[client] == false)
 	if(g_partner[client] == 0)
 	{
 		Format(format, sizeof(format), "%T", "Partner", client);
-		if(g_devmap == true)
-		{
-			menu.AddItem("partner", format, ITEMDRAW_DISABLED);
-		}
+
+		//if(g_devmap == true)
+		//{
+		menu.AddItem("partner", format, g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		//}
 	
-		else if(g_devmap == false)
-		{
-			menu.AddItem("partner", format, ITEMDRAW_DEFAULT);
-		}
+		//else if(g_devmap == false)
+		//{
+		//	menu.AddItem("partner", format, ITEMDRAW_DEFAULT);
+		//}
 	}
 
 	Format(format, sizeof(format), "%T", "Color", client);
@@ -2057,16 +2058,16 @@ public void Trikz(int client)
 
 	//menu.AddItem("restart", "Restart", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED); //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
 	//if(g_partner[client] == true)
-	if(g_partner[client] > 0)
-	{
-		menu.AddItem("restart", format, ITEMDRAW_DEFAULT);
-	}
+	//if( > 0)
+	//{
+	menu.AddItem("restart", format, g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	//}
 	
 	//else if(g_partner[client] == false)
-	else if(g_partner[client] == 0)
-	{
-		menu.AddItem("restart", format, ITEMDRAW_DISABLED);
-	}
+	//else if(g_partner[client] == 0)
+	//{
+	//	menu.AddItem("restart", format, g_partner[client] ?ITEMDRAW_DISABLED);
+	//}
 
 	if(g_devmap == true)
 	{
@@ -2267,7 +2268,7 @@ public void Partner(int client)
 					{
 						GetClientName(i, name, sizeof(name));
 
-						char nameID[32] = "";
+						char nameID[8] = "";
 						IntToString(i, nameID, sizeof(nameID));
 						menu.AddItem(nameID, name);
 
@@ -2297,7 +2298,7 @@ public void Partner(int client)
 
 		else if(g_partner[client] > 0)
 		{
-			char partner[32] = "";
+			char partner[8] = "";
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
 			
 			Menu menu = new Menu(cancelpartner_handler);
@@ -2324,7 +2325,7 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			char item[32] = "";
+			char item[8] = "";
 			menu.GetItem(param2, item, sizeof(item));
 			
 			int partner = StringToInt(item);
@@ -2335,7 +2336,7 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 			GetClientName(param1, name, sizeof(name));
 			menu2.SetTitle("%T", "AgreePartner", partner, name);
 			
-			char buffer[32] = "";
+			char buffer[8] = "";
 			IntToString(param1, buffer, sizeof(buffer));
 
 			char format[256];
@@ -2357,7 +2358,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 	{
 		case MenuAction_Select:
 		{
-			char item[32] = "";
+			char item[8] = "";
 
 			menu.GetItem(param2, item, sizeof(item));
 
@@ -2436,7 +2437,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 	{
 		case MenuAction_Select:
 		{
-			char item[32] = "";
+			char item[8] = "";
 
 			menu.GetItem(param2, item, sizeof(item));
 
@@ -2797,14 +2798,14 @@ stock void ColorFlashbang(int client, int color = -1)
 		Call_PushCell(g_colorBuffer[client][2][0]);
 		Call_Finish();
 
-		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+		/*SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
 		ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
 
 		if(g_partner[client] > 0)
 		{
 			ShowHudText(g_partner[client], 5, "%s (FL)", colorTypeExploded[3]);
-		}
+		}*/
 	}
 
 	return;
@@ -3256,19 +3257,19 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 
 			if(StrContains(item, "ps", false) != -1)
 			{
-				if(StrEqual(item, "default_ps", false))
+				if(StrEqual(item, "default_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 0;
 					SetEntProp(param1, Prop_Data, "m_nSkin", 0);
 				}
 
-				else if(StrEqual(item, "shadow_ps", false))
+				else if(StrEqual(item, "shadow_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 2;
 					SetEntProp(param1, Prop_Data, "m_nSkin", 2);
 				}
 
-				else if(StrEqual(item, "bright_ps", false))
+				else if(StrEqual(item, "bright_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 1;
 					SetEntProp(param1, Prop_Data, "m_nSkin", 1);
@@ -3288,17 +3289,17 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 					g_skinFlashbang[param1] = 0;
 				}
 
-				else if(StrEqual(item, "shadow_fs", false))
+				else if(StrEqual(item, "shadow_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = 2;
 				}
 
-				else if(StrEqual(item, "bright_fs", false))
+				else if(StrEqual(item, "bright_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = 1;
 				}
 
-				else if(StrEqual(item, "wireframe_fs", false))
+				else if(StrEqual(item, "wireframe_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = 3;
 				}
@@ -3337,7 +3338,7 @@ public Action cmd_macro(int client, int args)
 
 	g_macroDisabled[client] = !g_macroDisabled[client];
 	
-	char value[16] = "";
+	char value[8] = "";
 	IntToString(g_macroDisabled[client], value, sizeof(value));
 
 	char format[256];
@@ -4868,13 +4869,13 @@ public Action SDKStartTouch(int entity, int other)
 
 		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger));
 
-		if(StrEqual(trigger, "trueexpert_startzone", false) && g_mapFinished[g_partner[other]] == true)
+		if(StrEqual(trigger, "trueexpert_startzone", false) == true && g_mapFinished[g_partner[other]] == true)
 		{
 			Restart(other); //expert zone idea.
 			Restart(g_partner[other]);
 		}
 
-		if(StrEqual(trigger, "trueexpert_endzone", false))
+		if(StrEqual(trigger, "trueexpert_endzone", false) == true)
 		{
 			g_mapFinished[other] = true;
 
@@ -5206,7 +5207,7 @@ public Action SDKStartTouch(int entity, int other)
 
 					for(int i = 1; i <= g_cpCount; i++)
 					{
-						if(g_cp[i][other])
+						if(g_cp[i][other] == true)
 						{
 							int srCPHour = (RoundToFloor(g_cpDiff[i][other]) / 3600) % 24;
 							int srCPMinute = (RoundToFloor(g_cpDiff[i][other]) / 60) % 60;
@@ -5263,7 +5264,7 @@ public Action SDKStartTouch(int entity, int other)
 					g_mateRecord[other] = g_timerTime[other];
 					g_mateRecord[g_partner[other]] = g_timerTime[other];
 
-					char format[256];
+					char format[256] = "";
 					char sName[MAX_NAME_LENGTH] = "";
 					GetClientName(other, sName, sizeof(sName));
 					char sPartner[MAX_NAME_LENGTH] = "";
@@ -5644,7 +5645,7 @@ public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, boo
 						char section[64] = "";
 						kv4.GetSectionName(section, sizeof(section));
 
-						if(StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true))
+						if(StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 						{
 							kv4.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
 
@@ -6798,7 +6799,7 @@ public Action timer_runsourcetv(Handle timer)
 
 public void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
 {
-	if(strlen(error))
+	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLCPSelect: %s", error);
 	}
@@ -6974,7 +6975,7 @@ public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error
 
 			CreateStart();
 
-			char query[512];
+			char query[512] = "";
 
 			Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
 
@@ -7123,7 +7124,7 @@ public void DrawZone(int client, float life, float size, int speed)
 				k = 0;
 			}
 
-			int color[4];
+			int color[4] = {0, 0, 0, 0};
 			
 			TE_SetupBeamPoints(corners[i][j], corners[i][k], g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToClient(client);
@@ -7152,7 +7153,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 
 	//Timer
-	if(!IsFakeClient(client) && g_state[client] == true && g_partner[client] > 0)
+	if(IsFakeClient(client) == false && g_state[client] == true && g_partner[client] > 0)
 	{
 		g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
 
@@ -7162,9 +7163,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int second = RoundToFloor(g_timerTime[client]) % 60;
 
 		if(hour > 0)
+		{
 			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
+		}
+
 		else if (hour == 0)
+		{
 			Format(g_clantag[client][1], 256, "%02.i:%02.i    ", minute, second);
+		}
 
 		if(IsPlayerAlive(client) == false)
 		{
@@ -7269,10 +7275,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(IsValidEntity(g_pingModel[client]))
 				{
-					char log[256];
+					char log[256] = "";
 					GetEntityClassname(g_pingModel[client], log, sizeof(log));
 
-					if(!StrEqual(log, "prop_dynamic", false))
+					if(StrEqual(log, "prop_dynamic", false) == false)
 					{
 						LogMessage(log);
 					}
@@ -7397,7 +7403,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				EmitSoundToAll("items/gift_drop.wav", client);
 			}
 
-			g_pingTimer[client] = CreateTimer(3.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
+			g_pingTimer[client] = CreateTimer(5.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 
@@ -8214,7 +8220,7 @@ public Action cmd_mlstats(int client, int args)
 	Format(format, sizeof(format), "%T", g_mlstats[client] ? "MLStatsON" : "MLStatsOFF", client);
 	SendMessage(format, client);
 
-	if(g_menuOpenedHud[client])
+	if(g_menuOpenedHud[client] == true)
 	{
 		HudMenu(client);
 	}
@@ -8260,9 +8266,9 @@ public Action cmd_pbutton(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
-{
-	if(IsChatTrigger() == false)
+//public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+//{
+	/*if(IsChatTrigger() == false)
 	{
 		if(StrEqual(sArgs, "t", false) || StrEqual(sArgs, "trikz", false))
 		{
@@ -8280,7 +8286,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		else if(StrEqual(sArgs, "p", false) || StrEqual(sArgs, "partner", false))
 		{
 			Partner(client);
-		}
+		}*/
 
 		/*else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
 		{
@@ -8352,7 +8358,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			return Plugin_Continue;
 		}*/
 
-		else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
+		/*else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
 		{
 			Restart(client);
 
@@ -8423,11 +8429,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		else if(StrEqual(sArgs, "zones", false))
 		{
 			cmd_zones(client, 0);
-		}
-	}
+		}*/
+	//}
 
-	return Plugin_Continue;
-}
+	//return Plugin_Continue;
+//}
 
 public Action ProjectileBoostFixEndTouch(int entity, int other)
 {
@@ -8747,7 +8753,7 @@ public Action SDKSetTransmitPing(int entity, int client)
 
 public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) && g_silentKnife == true)
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) == true && g_silentKnife == true)
 	{
 		g_silentKnife = false;
 
