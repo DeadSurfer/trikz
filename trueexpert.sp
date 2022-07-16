@@ -8648,7 +8648,7 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	if((g_autoflash[client] == true || IsFakeClient(client)) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if((g_autoflash[client] == true || IsFakeClient(client) == true) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 	{
 		GivePlayerItem(client, "weapon_flashbang");
 		GivePlayerItem(client, "weapon_flashbang");
@@ -8863,7 +8863,7 @@ public void MLStats(int client, bool ground)
 	}
 }
 
-public int Stuck(int client)
+stock int Stuck(int client)
 {
 	float mins[3] = {0.0, 0.0, 0.0};
 	float maxs[3] = {0.0, 0.0, 0.0};
@@ -8945,7 +8945,7 @@ public int Native_SetPartner(Handle plugin, int numParams)
 	return partner;
 }
 
-int Native_Restart(Handle plugin, int numParams)
+public int Native_Restart(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
@@ -9011,7 +9011,7 @@ public MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github
 {
 	bool bOriginNull = DHookIsNullParam(hParams, 1);
 	
-	if(bOriginNull)
+	if(bOriginNull == true)
 	{
 		return MRES_Ignored;
 	}
