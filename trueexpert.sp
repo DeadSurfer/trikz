@@ -2740,6 +2740,12 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			g_colorCount[client][0] = 0;
 			g_colorCount[g_partner[client]][0] = 0;
 
+			for(int i = 0; i <= 2; i++)
+			{
+				g_colorBuffer[client][i][0] = 255;
+				g_colorBuffer[g_partner[client]][i][0] = 255;
+			}
+
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125);
 			SetEntityRenderColor(g_partner[client], 255, 255, 255, g_block[g_partner[client]] ? 255 : 125);
 		}
