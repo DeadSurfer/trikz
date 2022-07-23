@@ -7170,7 +7170,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(hour > 0)
 		{
-			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i", hour, minute, second);
+			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i  ", hour, minute, second);
 		}
 
 		else if (hour == 0)
@@ -7536,7 +7536,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 
-	if(g_restartInHoldLock[client] == false && GetEngineTime() - g_restartInHold[client] > 0.7)
+	if(g_restartInHoldLock[client] == false && GetEngineTime() - g_restartInHold[client] >= 0.7)
 	{
 		g_restartInHoldLock[client] = true;
 
@@ -7565,7 +7565,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(StrEqual(classname, "weapon_flashbang", false) == true)
 			{
-				//if(g_macroOpened[client] == false && (g_macroTime[client] == 0.0 || GetEngineTime() - g_macroTime[client] >= 0.4))
 				if(g_macroOpened[client] == false && time >= 0.4)
 				{
 					g_macroTime[client] = GetEngineTime();
