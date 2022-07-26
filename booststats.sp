@@ -36,21 +36,15 @@
 #define newdecls required
 
 #define MAXPLAYER MAXPLAYERS + 1
+#define IsClientValid(%1) (0 < %1 <= MaxClients)
 
-//float g_boostTimeStart[MAXPLAYER];
-//float g_boostTimeEnd[MAXPLAYER];
 float g_throwTime[MAXPLAYER][2];
 float g_projectileVel[MAXPLAYER];
 float g_vel[MAXPLAYER];
-//bool g_duck[MAXPLAYER];
 bool g_boostStats[MAXPLAYER];
 float g_angles[MAXPLAYER][3];
-Handle g_cookie;
-//bool g_boostProcess[MAXPLAYER];
-//float g_boostPerf[MAXPLAYER][2];
-bool g_created[MAXPLAYER];
+Handle g_cookie = INVALID_HANDLE;
 native int Trikz_GetClientPartner(int client);
-float g_groundTime[MAXPLAYER];
 float g_duckTime[MAXPLAYER];
 
 public Plugin myinfo =
@@ -58,7 +52,7 @@ public Plugin myinfo =
 	name = "Boost stats",
 	author = "Smesh",
 	description = "Measures time between attack and jump.",
-	version = "0.35",
+	version = "0.36",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -77,6 +71,8 @@ public void OnPluginStart()
 	}
 
 	HookEvent("player_jump", OnJump, EventHookMode_PostNoCopy);
+
+	return;
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -94,6 +90,8 @@ public void OnClientPutInServer(int client)
 	}
 
 	SDKHook(client, SDKHook_StartTouch, SDKStartTouch);
+
+	return;
 }
 
 public void OnClientCookiesCached(int client)
@@ -101,6 +99,8 @@ public void OnClientCookiesCached(int client)
 	char value[8] = "";
 	GetClientCookie(client, g_cookie, value, sizeof(value));
 	g_boostStats[client] = view_as<bool>(StringToInt(value));
+
+	return;
 }
 
 public Action cmd_booststats(int client, int args)
@@ -116,72 +116,18 @@ public Action cmd_booststats(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
-{
-	if(IsChatTrigger() == false)
-	{
-		if(StrEqual(sArgs, "bs", false) == true)
-		{
-			cmd_booststats(client, 0);
-		}
-	}
-
-	return Plugin_Continue;
-}
-
-public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
-{
-	/*if(g_created[client] == false)
-	{
-		g_boostProcess[client] = true;
-		g_boostTimeStart[client] = GetEngineTime();
-
-		float velAbs[3];
-		GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs);
-		g_vel[client] = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0));
-
-		g_duck[client] = view_as<bool>(buttons & IN_DUCK);
-		
-		g_angles[client][0] = angles[0];
-		g_angles[client][1] = angles[1];
-	}*/
-
-	if(GetEntityFlags(client) & FL_ONGROUND)
-	{
-		if(g_groundTime[client] == 0.0)
-		{
-			g_groundTime[client] = GetEngineTime();
-		}
-	}
-
-	else if(!(GetEntityFlags(client) & FL_ONGROUND))
-	{
-		if(GetEngineTime() - g_groundTime[client] < 0.15)
-		{
-			g_groundTime[client] = 0.0;
-		}
-	}
-
-	return Plugin_Continue;
-}
-
 public void CalculationProcess(int client)
 {
-	//g_boostProcess[client] = true;
-	//g_boostTimeStart[client] = GetEngineTime();
 	g_throwTime[client][0] = GetEngineTime();
 
 	float vel[3] = {0.0, 0.0, 0.0};
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
 	g_vel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
 
-	//g_duck[client] = view_as<bool>(buttons & IN_DUCK);
-	//g_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking"));
-	//g_angles[client][0] = angles[0];
-	//g_angles[client][1] = angles[1];
 	GetClientEyeAngles(client, g_angles[client]);
-	//PrintToServer("%f", GetEntPropFloat(client, Prop_Data, "m_flDucktime"));
 	g_duckTime[client] = GetEntPropFloat(client, Prop_Data, "m_flDucktime");
+
+	return;
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
@@ -190,19 +136,19 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile);
 	}
+
+	return;
 }
 
 public void SDKSpawnProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 
-	//g_boostPerf[client][0] = GetEngineTime();
-
 	RequestFrame(frame_projectileVel, entity);
 
-	g_created[client] = true;
-
 	CalculationProcess(client);
+
+	return;
 }
 
 
@@ -212,7 +158,7 @@ public void frame_projectileVel(int entity)
 	{
 		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 		
-		if(0 < client <= MaxClients && g_projectileVel[client] == 0.0)
+		if(IsClientValid(client) == true && g_projectileVel[client] == 0.0)
 		{
 			float vel[3] = {0.0, 0.0, 0.0};
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
@@ -220,11 +166,13 @@ public void frame_projectileVel(int entity)
 			g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		}
 	}
+
+	return;
 }
 
 public Action SDKStartTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && g_projectileVel[other] == 0.0)
+	if(IsClientValid(other) == true && g_projectileVel[other] == 0.0)
 	{
 		char classname[32] = "";
 		GetEntityClassname(entity, classname, sizeof(classname));
@@ -245,35 +193,37 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
-	//if(g_boostProcess[client] == true)
-	{
-		//g_boostTimeEnd[client] = GetEngineTime();
-		g_throwTime[client][1] = GetEngineTime();
-		//g_boostPerf[client][1] = GetEngineTime();
+	g_throwTime[client][1] = GetEngineTime();
 
-		CreateTimer(0.1, timer_waitSpawn, client, TIMER_FLAG_NO_MAPCHANGE);
-	}
+	CreateTimer(0.1, timer_print, client, TIMER_FLAG_NO_MAPCHANGE);
+
+	return;
 }
 
-public Action timer_waitSpawn(Handle timer, int client)
+public Action timer_print(Handle timer, int client)
+{
+	DoPrint(client);
+
+	return Plugin_Continue;
+}
+
+stock void DoPrint(int client)
 {
 	if(IsClientInGame(client) == true)
 	{
-		//float time = g_boostTimeEnd[client] - g_boostTimeStart[client];
 		float time = g_throwTime[client][1] - g_throwTime[client][0];
+		int partner = Trikz_GetClientPartner(client);
 
-		if(time < 0.3 && g_created[client] == true && g_groundTime[client] > 0.15)
+		if(time < 0.3)
 		{
 			if(g_boostStats[client] == true)
 			{
-				//PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 				PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 			}
 
-			if(0 < Trikz_GetClientPartner(client) <= MaxClients && IsClientInGame(Trikz_GetClientPartner(client)) == true && g_boostStats[Trikz_GetClientPartner(client)] == true)
+			if(IsClientValid(partner) == true && IsClientInGame(partner) == true && g_boostStats[partner] == true)
 			{
-				//PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", g_boostPerf[client][0] < g_boostPerf[client][1] ? "\x07FF0000" : "\x077CFC00", g_boostTimeEnd[client] - g_boostTimeStart[client], g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
-				PrintToChat(Trikz_GetClientPartner(client), "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 			}
 
 			for(int i = 1; i <= MaxClients; i++)
@@ -288,19 +238,16 @@ public Action timer_waitSpawn(Handle timer, int client)
 						PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 					}
 
-					else if(0 < Trikz_GetClientPartner(client) <= MaxClients && observerMode < 7 && observerTarget == Trikz_GetClientPartner(client) && g_boostStats[i] == true)
+					else if(IsClientValid(partner) == true && observerMode < 7 && observerTarget == partner && g_boostStats[i] == true)
 					{
 						PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 					}
 				}
 			}
-
-			//g_boostProcess[client] = false;
-			g_created[client] = false;
-			g_groundTime[client] = 0.0;
-			g_projectileVel[client] = 0.0;
 		}
+
+		g_projectileVel[client] = 0.0;
 	}
 
-	return Plugin_Continue;
+	return;
 }
