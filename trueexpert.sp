@@ -7273,7 +7273,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		bool convar2 = GetConVarBool(gCV_pingtool);
 
-		if(convar2 == true && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] > 0.2)
+		if(convar2 == true && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] >= 0.2)
 		{
 			g_pingLock[client] = true;
 
