@@ -193,7 +193,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.45",
+	version = "4.46",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -8688,10 +8688,18 @@ public void GiveFlashbang(int client)
 {
 	bool convar = GetConVarBool(gCV_autoflashbang);
 	
-	if(convar == true && g_autoflash[client] == true && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+	if(convar == true && g_autoflash[client] == true)
 	{
-		GivePlayerItem(client, "weapon_flashbang");
-		GivePlayerItem(client, "weapon_flashbang");
+		if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+		{
+			GivePlayerItem(client, "weapon_flashbang");
+			GivePlayerItem(client, "weapon_flashbang");
+		}
+
+		if(GetPlayerWeaponSlot(client, CS_SLOT_KNIFE) == -1)
+		{
+			GivePlayerItem(client, "weapon_knife");
+		}
 	}
 }
 
