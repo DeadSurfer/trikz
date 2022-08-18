@@ -38,6 +38,7 @@
 #pragma newdecls required
 
 #define MAXPLAYER MAXPLAYERS + 1
+#define MAXENTITY 2048 + 1
 #define IsClientValid(%1) 0 < %1 <= MaxClients && IsClientInGame(%1)
 
 int g_partner[MAXPLAYER];
@@ -47,10 +48,10 @@ Database g_mysql;
 float g_timerTimeStart[MAXPLAYER];
 float g_timerTime[MAXPLAYER];
 bool g_state[MAXPLAYER];
-char g_map[192];
+char g_map[192] = "";
 bool g_mapFinished[MAXPLAYER];
-bool g_dbPassed;
-float g_originStart[3];
+bool g_dbPassed = false;
+float g_originStart[3] = {0.0, 0.0, 0.0};
 float g_boostTime[MAXPLAYER];
 float g_skyVel[MAXPLAYER][3];
 bool g_readyToStart[MAXPLAYER];
@@ -63,7 +64,7 @@ float g_cpDiff[11][MAXPLAYER];
 float g_cpTime[11];
 
 float g_haveRecord[MAXPLAYER];
-float g_ServerRecordTime;
+float g_ServerRecordTime = 0.0;
 
 ConVar g_urlTop;
 
@@ -72,13 +73,13 @@ bool g_menuOpenedHud[MAXPLAYER];
 
 int g_boost[MAXPLAYER];
 int g_skyBoost[MAXPLAYER];
-bool g_bouncedOff[2048 + 1];
+bool g_bouncedOff[MAXENTITY];
 bool g_groundBoost[MAXPLAYER];
 int g_flash[MAXPLAYER];
 int g_entityFlags[MAXPLAYER];
 int g_devmapCount[2];
-bool g_devmap;
-float g_devmapTime;
+bool g_devmap = false;
+float g_devmapTime = 0.0;
 
 float g_cpOrigin[MAXPLAYER][2][3];
 float g_cpAng[MAXPLAYER][2][3];
@@ -87,19 +88,19 @@ bool g_cpToggled[MAXPLAYER][2];
 
 bool g_zoneHave[3];
 
-bool g_ServerRecord;
-char g_date[64];
-char g_time[64];
+bool g_ServerRecord = false;
+char g_date[64] = "";
+char g_time[64] = "";
 
-bool g_silentKnife;
+bool g_silentKnife = false;
 float g_mateRecord[MAXPLAYER];
-bool g_sourcetv;
+bool g_sourcetv = false;
 bool g_block[MAXPLAYER];
-int g_wModelThrown;
+int g_wModelThrown = 0;
 int g_class[MAXPLAYER];
-int g_wModelPlayer[5];
+int g_wModelPlayer[5] = {0, 0, 0, 0, 0};
 int g_pingModel[MAXPLAYER];
-int g_pingModelOwner[2048 + 1];
+int g_pingModelOwner[MAXENTITY];
 Handle g_pingTimer[MAXPLAYER];
 
 bool g_zoneFirst[3];
@@ -108,23 +109,23 @@ char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", 
 int g_colorBuffer[MAXPLAYER][3][2];
 int g_colorCount[MAXPLAYER][2];
 
-int g_zoneModel[3];
-int g_laserBeam;
+int g_zoneModel[3] = {0, 0 ,0};
+int g_laserBeam = 0;
 bool g_sourcetvchangedFileName = true;
 float g_entityVel[MAXPLAYER][3];
 float g_clientVel[MAXPLAYER][3];
-int g_cpCount;
+int g_cpCount = 0;
 //ConVar g_turbophysics;
-float g_afkTime;
+float g_afkTime = 0.0;
 bool g_afk[MAXPLAYER];
 float g_center[12][3];
 bool g_zoneDraw[MAXPLAYER];
-float g_engineTime;
+float g_engineTime = 0.0;
 float g_pingTime[MAXPLAYER];
 bool g_pingLock[MAXPLAYER];
 bool g_msg[MAXPLAYER];
-int g_voters;
-int g_afkClient;
+int g_voters = 0;
+int g_afkClient = 0;
 bool g_hudVel[MAXPLAYER];
 float g_hudTime[MAXPLAYER];
 char g_clantag[MAXPLAYER][2][256];
@@ -140,16 +141,16 @@ float g_skyOrigin[MAXPLAYER];
 int g_entityButtons[MAXPLAYER];
 bool g_teleported[MAXPLAYER];
 int g_points[MAXPLAYER];
-Handle g_start;
-Handle g_record;
+Handle g_start = INVALID_HANDLE;
+Handle g_record = INVALID_HANDLE;
 int g_pointsMaxs = 1;
-int g_queryLast;
+int g_queryLast = 0;
 Handle g_cookie[12];
 float g_skyAble[MAXPLAYER];
 native bool Trikz_GetEntityFilter(int client, int entity);
 float g_restartInHold[MAXPLAYER];
 bool g_restartInHoldLock[MAXPLAYER];
-int g_smoke;
+int g_smoke = 0;
 bool g_clantagOnce[MAXPLAYER];
 ConVar gCV_trikz;
 ConVar gCV_block;
@@ -177,14 +178,14 @@ bool g_endMessage[MAXPLAYER];
 float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
 ConVar gCV_pingtool;
-int g_top10Count;
-Handle g_teleport;
+int g_top10Count = 0;
+Handle g_teleport = INVALID_HANDLE;
 //KeyValues g_kv;
 ConVar gCV_boostfix;
-float g_top10ac;
+float g_top10ac = 0.0;
 int g_step = 1;
-int g_ZoneEditor;
-int g_ZoneEditorCP;
+int g_ZoneEditor = 0;
+int g_ZoneEditorCP = 0;
 int g_skinFlashbang[MAXPLAYER];
 int g_skinPlayer[MAXPLAYER];
 
@@ -7133,7 +7134,7 @@ public void DrawZone(int client, float life, float size, int speed)
 			int color[4] = {0, 0, 0, 0};
 			
 			TE_SetupBeamPoints(corners[i][j], corners[i][k], g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
-			TE_SendToClient(client);
+			TE_SendToClient(client, 0.0);
 		}
 	}
 }
@@ -7395,18 +7396,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					}
 				}
 
-				TE_Send(clients, count);
+				TE_Send(clients, count, 0.0);
 
 				//EmitSound(clients, count, "trueexpert/pingtool/click.wav", client);
-				EmitSound(clients, count, "items/gift_drop.wav", client);
+				EmitSound(clients, count, "items/gift_drop.wav", client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
 			}
 
 			else if(LibraryExists("trueepxert-entityfilter") == false)
 			{
-				TE_SendToAll();
+				TE_SendToAll(0.0);
 
 				//EmitSoundToAll("trueexpert/pingtool/click.wav", client);
-				EmitSoundToAll("items/gift_drop.wav", client);
+				EmitSoundToAll("items/gift_drop.wav", client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
 			}
 
 			g_pingTimer[client] = CreateTimer(5.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -8615,7 +8616,7 @@ public void FlashbangEffect(int entity)
 
 	else if(filter == false)
 	{
-		TE_SendToAll();
+		TE_SendToAll(0.0);
 	}
 
 	float dir[3] = {0.0, 0.0, 0.0}; //https://forums.alliedmods.net/showthread.php?t=274452
@@ -8630,16 +8631,16 @@ public void FlashbangEffect(int entity)
 
 	if(filter == true)
 	{
-		TE_Send(clients, count);
+		TE_Send(clients, count, 0.0);
 
-		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL);
+		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
 	}
 
 	else if(filter == false)
 	{
-		TE_SendToAll(); //Idea from "Expert-Zone". So, we just made non empty event.
+		TE_SendToAll(0.0); //Idea from "Expert-Zone". So, we just made non empty event.
 
-		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 	}
 }
 
