@@ -320,12 +320,15 @@ public void OnPluginStart()
 	//CreateTimer(60.0, timer_clearlag);
 
 	Handle gamedata = LoadGameConfigFile("sdktools.games");
+
 	int offset = GameConfGetOffset(gamedata, "Teleport");
+
 	delete gamedata;
 	
 	if(offset == -1)
 	{
 		SetFailState("[DHooks] Offset for Teleport function is not found!");
+
 		return;
 	}
 	
@@ -334,12 +337,15 @@ public void OnPluginStart()
 	if(g_teleport == INVALID_HANDLE)
 	{
 		SetFailState("[DHooks] Could not create Teleport hook function!");
+
 		return;
 	}
 	
 	DHookAddParam(g_teleport, HookParamType_VectorPtr);
 	DHookAddParam(g_teleport, HookParamType_ObjectPtr);
 	DHookAddParam(g_teleport, HookParamType_VectorPtr);
+
+	return;
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -480,9 +486,11 @@ public void OnMapStart()
 
 	//g_kv = new KeyValues("TrueExpertHud");
 	//g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+	return;
 }
 
-public void RecalculatePoints()
+stock void RecalculatePoints()
 {
 	if(g_dbPassed == true)
 	{
@@ -495,6 +503,8 @@ public void RecalculatePoints()
 		//PrintToServer("%t", "dbPassed");
 		//PrintToServer("%T", "dbPressed");
 	}
+
+	return;
 }
 
 public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const char[] error, any data)
@@ -516,6 +526,8 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 			g_mysql.Query(SQLRecalculatePoints, query);
 		}
 	}
+
+	return;
 }
 
 public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
@@ -538,6 +550,8 @@ public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] 
 			g_mysql.Query(SQLRecalculatePoints2, query);
 		}
 	}
+
+	return;
 }
 
 public void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
@@ -554,6 +568,8 @@ public void SQLRecalculatePoints2(Database db, DBResultSet results, const char[]
 			g_mysql.Query(SQLRecalculatePoints3, "SELECT steamid FROM users");
 		}
 	}
+
+	return;
 }
 
 public void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
@@ -572,6 +588,8 @@ public void SQLRecalculatePoints3(Database db, DBResultSet results, const char[]
 			g_mysql.Query(SQLRecalculateUserPoints, query, results.FetchInt(0));
 		}
 	}
+
+	return;
 }
 
 public void SQLRecalculateUserPoints(Database db, DBResultSet results, const char[] error, any data)
@@ -595,6 +613,8 @@ public void SQLRecalculateUserPoints(Database db, DBResultSet results, const cha
 		g_queryLast++;
 		g_mysql.Query(SQLUpdateUserPoints, query);
 	}
+
+	return;
 }
 
 public void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, any data)
@@ -614,6 +634,8 @@ public void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] e
 			}
 		}
 	}
+
+	return;
 }
 
 public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any data)
@@ -642,6 +664,8 @@ public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] erro
 			}
 		}
 	}
+
+	return;
 }
 
 public void OnMapEnd()
@@ -671,9 +695,11 @@ public void OnMapEnd()
 			DeleteFile(filenameOld);
 		}
 	}
+
+	return;
 }
 
-stock Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	int client = msg.ReadByte();
 
@@ -825,7 +851,7 @@ stock Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int p
 	return Plugin_Handled;
 }
 
-stock void frame_SayText2(DataPack dp)
+public void frame_SayText2(DataPack dp)
 {
 	dp.Reset();
 
@@ -862,6 +888,8 @@ stock void frame_SayText2(DataPack dp)
 
 		g_msg[client] = true;
 	}
+
+	return;
 }
 
 public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) // New RadioText https://forums.alliedmods.net/showthread.php?t=183841
@@ -1145,7 +1173,7 @@ public Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 	GetEntityClassname(ragdoll, log, sizeof(log));
 
-	if(!StrEqual(log, "cs_ragdoll", false))
+	if(StrEqual(log, "cs_ragdoll", false) == false)
 	{
 		LogMessage(log);
 	}
@@ -1361,6 +1389,8 @@ public void Checkpoint(int client)
 		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 		SendMessage(format, client);
 	}
+
+	return;
 }
 
 public int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -1515,6 +1545,8 @@ public void OnClientPutInServer(int client)
 			g_colorBuffer[client][i][0] = 255;
 		}
 	}
+
+	return;
 }
 
 public void OnClientCookiesCached(int client)
@@ -1574,10 +1606,9 @@ public void OnClientCookiesCached(int client)
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
 	g_skinPlayer[client] = view_as<bool>(StringToInt(value));
 
-	if(IsClientInGame(client) == true && IsPlayerAlive(client) == true)
-	{
-		GiveFlashbang(client);
-	}
+	GiveFlashbang(client);
+
+	return;
 }
 
 public void OnClientDisconnect(int client)
@@ -1624,6 +1655,8 @@ public void OnClientDisconnect(int client)
 	{
 		g_flashbangDoor[client][i] = false;
 	}
+
+	return;
 }
 
 public void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
@@ -1663,6 +1696,8 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 			}
 		}
 	}
+
+	return;
 }
 
 public void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
@@ -1857,7 +1892,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 
-				if(velFlyer[2] >= -700.0) //700.0
+				if(velFlyer[2] >= -700.0 && velFlyer[2] < 0.0) //700.0
 				{
 					if(g_entityFlags[client] & FL_INWATER)
 					{
@@ -1880,7 +1915,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 					}
 				}
 
-				else if(!(velFlyer[2] >= -700.0)) //700.0
+				else if(!(velFlyer[2] >= -700.0) && velFlyer[2] < 0.0) //700.0
 				{
 					//if(velBooster[2] >= 810.0)
 					//PrintToServer("3 %f", velFlyer[2]);
@@ -1904,6 +1939,8 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 			}
 		}
 	}
+
+	return;
 }
 
 public void SDKBoostFix(int client)
@@ -2094,6 +2131,8 @@ public void Trikz(int client)
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
+
+	return;
 }
 
 public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -2235,7 +2274,7 @@ public Action cmd_partner(int client, int args)
 	return Plugin_Handled;
 }
 
-public void Partner(int client)
+stock void Partner(int client)
 {
 	if(g_devmap == true)
 	{
@@ -2318,6 +2357,8 @@ public void Partner(int client)
 			menu.Display(client, 20);
 		}
 	}
+
+	return;
 }
 
 public int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
@@ -2340,7 +2381,7 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 			char buffer[8] = "";
 			IntToString(param1, buffer, sizeof(buffer));
 
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "Yes", partner);
 			menu2.AddItem(buffer, format);
 			Format(format, sizeof(format), "%T", "No", partner);
@@ -2844,6 +2885,8 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 			}
 		}
 	}
+
+	return;
 }
 
 public Action cmd_restart(int client, int args)
@@ -3110,6 +3153,8 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
 		g_mysql.Query(SQLTop10_2, query, time);
 	}
+
+	return;
 }
 
 public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
@@ -3155,6 +3200,8 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 			}
 		}
 	}
+
+	return;
 }
 
 public Action cmd_control(int client, int args)
@@ -3227,6 +3274,8 @@ stock void PlayerSkin(int client)
 	menu.ExitBackButton = true;
 
 	menu.Display(client, 20);
+
+	return;
 }
 
 stock void FlashbangSkin(int client)
@@ -3249,6 +3298,8 @@ stock void FlashbangSkin(int client)
 	menu.ExitBackButton = true;
 
 	menu.Display(client, 20);
+
+	return;
 }
 
 public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -3348,7 +3399,7 @@ public Action cmd_macro(int client, int args)
 	char value[8] = "";
 	IntToString(g_macroDisabled[client], value, sizeof(value));
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_macroDisabled[client] ? "MacroON" : "MacroOFF", client);
 	SendMessage(format, client);
 
@@ -3365,7 +3416,7 @@ public Action timer_resetfactory(Handle timer, int client)
 	return Plugin_Continue;
 }
 
-public void CreateStart()
+stock void CreateStart()
 {
 	int entity = CreateEntityByName("trigger_multiple", -1);
 
@@ -3525,6 +3576,8 @@ public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] er
 
 		g_mysql.Query(SQLSetStartZones, query);
 	}
+
+	return;
 }
 
 public Action cmd_deleteallcp(int client, int args)
@@ -3585,7 +3638,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		char cmd[64] = ""; //https://forums.alliedmods.net/showthread.php?t=270684
 		kv.GetSectionName(cmd, sizeof(cmd));
 
-		if(StrEqual(cmd, "ClanTagChanged", false))
+		if(StrEqual(cmd, "ClanTagChanged", false) == true)
 		{
 			CS_GetClientClanTag(client, g_clantag[client][0], 256);
 		}
@@ -3741,6 +3794,8 @@ public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] erro
 
 		g_mysql.Query(SQLSetEndZones, query);
 	}
+
+	return;
 }
 
 public Action cmd_maptier(int client, int args)
@@ -3773,7 +3828,7 @@ public Action cmd_maptier(int client, int args)
 		{
 			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 			//PrintToChat(client, "Turn on devmap.");
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, client);
 		}
@@ -4065,7 +4120,7 @@ public void ZoneEditor(int client)
 	return;
 }
 
-public void ZoneEditor2(int client)
+stock void ZoneEditor2(int client)
 {
 	Menu menu = new Menu(zones_handler);
 
@@ -4103,6 +4158,8 @@ public void ZoneEditor2(int client)
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
+
+	return;
 }
 
 public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -4296,12 +4353,12 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			menu.GetItem(param2, item, sizeof(item));
 
-			if(StrEqual(item, "starttp", false))
+			if(StrEqual(item, "starttp", false) == true)
 			{
 				TeleportEntity(param1, g_center[0], NULL_VECTOR, NULL_VECTOR);
 			}
 
-			else if(StrEqual(item, "step", false))
+			else if(StrEqual(item, "step", false) == true)
 			{
 				ZoneEditorStep();
 
@@ -4321,87 +4378,87 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 
-			else if(StrEqual(item, "start+xmins", false))
+			else if(StrEqual(item, "start+xmins", false) == true)
 			{
 				g_zoneStartOrigin[0][0] += g_step;
 			}
 
-			else if(StrEqual(item, "start-xmins", false))
+			else if(StrEqual(item, "start-xmins", false) == true)
 			{
 				g_zoneStartOrigin[0][0] -= g_step;
 			}
 
-			else if(StrEqual(item, "start+ymins", false))
+			else if(StrEqual(item, "start+ymins", false) == true)
 			{
 				g_zoneStartOrigin[0][1] += g_step;
 			}
 
-			else if(StrEqual(item, "start-ymins", false))
+			else if(StrEqual(item, "start-ymins", false) == true)
 			{
 				g_zoneStartOrigin[0][1] -= g_step;
 			}
 
-			else if(StrEqual(item, "start+xmaxs", false))
+			else if(StrEqual(item, "start+xmaxs", false) == true)
 			{
 				g_zoneStartOrigin[1][0] += g_step;
 			}
 
-			else if(StrEqual(item, "start-xmaxs", false))
+			else if(StrEqual(item, "start-xmaxs", false) == true)
 			{
 				g_zoneStartOrigin[1][0] -= g_step;
 			}
 
-			else if(StrEqual(item, "start+ymaxs", false))
+			else if(StrEqual(item, "start+ymaxs", false) == true)
 			{
 				g_zoneStartOrigin[1][1] += g_step;
 			}
 
-			else if(StrEqual(item, "start-ymaxs", false))
+			else if(StrEqual(item, "start-ymaxs", false) == true)
 			{
 				g_zoneStartOrigin[1][1] -= g_step;
 			}
 
-			else if(StrEqual(item, "endtp", false))
+			else if(StrEqual(item, "endtp", false) == true)
 			{
 				TeleportEntity(param1, g_center[1], NULL_VECTOR, NULL_VECTOR);
 			}
 
-			else if(StrEqual(item, "end+xmins", false))
+			else if(StrEqual(item, "end+xmins", false) == true)
 			{
 				g_zoneEndOrigin[0][0] += g_step;
 			}
 
-			else if(StrEqual(item, "end-xmins", false))
+			else if(StrEqual(item, "end-xmins", false) == true)
 			{
 				g_zoneEndOrigin[0][0] -= g_step;
 			}
 
-			else if(StrEqual(item, "end+ymins", false))
+			else if(StrEqual(item, "end+ymins", false) == true)
 			{
 				g_zoneEndOrigin[0][1] += g_step;
 			}
 
-			else if(StrEqual(item, "end-ymins", false))
+			else if(StrEqual(item, "end-ymins", false) == true)
 			{
 				g_zoneEndOrigin[0][1] -= g_step;
 			}
 
-			else if(StrEqual(item, "end+xmaxs", false))
+			else if(StrEqual(item, "end+xmaxs", false) == true)
 			{
 				g_zoneEndOrigin[1][0] += g_step;
 			}
 
-			else if(StrEqual(item, "end-xmaxs", false))
+			else if(StrEqual(item, "end-xmaxs", false) == true)
 			{
 				g_zoneEndOrigin[1][0] -= g_step;
 			}
 
-			else if(StrEqual(item, "end+ymaxs", false))
+			else if(StrEqual(item, "end+ymaxs", false) == true)
 			{
 				g_zoneEndOrigin[1][1] += g_step;
 			}
 
-			else if(StrEqual(item, "end-ymaxs", false))
+			else if(StrEqual(item, "end-ymaxs", false) == true)
 			{
 				g_zoneEndOrigin[1][1] -= g_step;
 			}
@@ -4419,63 +4476,63 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			Format(cpFormated, sizeof(cpFormated), "tp;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				TeleportEntity(param1, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR);
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "1;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[0][cpnum][0] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "2;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[0][cpnum][0] -= g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "3;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[0][cpnum][1] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "4;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[0][cpnum][1] -= g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "5;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[1][cpnum][0] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "6;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[1][cpnum][0] -= g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "7;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[1][cpnum][1] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "8;%i", cpnum);
 
-			if(StrEqual(item, cpFormated, false))
+			if(StrEqual(item, cpFormated, false) == true)
 			{
 				g_cpPos[1][cpnum][1] -= g_step;
 			}
@@ -4484,21 +4541,21 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			Format(cpFormated, sizeof(cpFormated), "cpupdate;%i", cpnum);
 
-			if(StrEqual(item, "startupdate", false))
+			if(StrEqual(item, "startupdate", false) == true)
 			{
 				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
 
 				g_mysql.Query(SQLUpdateZone, query, 0);
 			}
 
-			else if(StrEqual(item, "endupdate", false))
+			else if(StrEqual(item, "endupdate", false) == true)
 			{
 				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
 
 				g_mysql.Query(SQLUpdateZone, query, 1);
 			}
 
-			else if(StrEqual(item, cpFormated, false))
+			else if(StrEqual(item, cpFormated, false) == true)
 			{
 				//cpnum++;
 
@@ -4644,7 +4701,7 @@ public void SQLCreateTierTable(Database db, DBResultSet results, const char[] er
 	return;
 }
 
-public void CPSetup(int client)
+stock void CPSetup(int client)
 {
 	g_cpCount = 0;
 
@@ -4663,6 +4720,8 @@ public void CPSetup(int client)
 
 		g_mysql.Query(SQLCPSetup, query, dp);
 	}
+
+	return;
 }
 
 public void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack dp)
@@ -5379,7 +5438,7 @@ public Action SDKStartTouch(int entity, int other)
 	return Plugin_Continue;
 }
 
-public void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, int personalSecond, int srHour, int srMinute, int srSecond)
+stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, int personalHour, int personalMinute, int personalSecond, int srHour, int srMinute, int srSecond)
 {
 	if(g_endMessage[client] == false)
 	{
@@ -6740,6 +6799,8 @@ public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error
 		PrintToServer("SQLUpdateRecord callback is finished.");
 		#endif
 	}
+
+	return;
 }
 
 public void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
@@ -6755,6 +6816,8 @@ public void SQLInsertRecord(Database db, DBResultSet results, const char[] error
 		PrintToServer("SQLInsertRecord callback finished.");
 		#endif
 	}
+
+	return;
 }
 
 public Action timer_sourcetv(Handle timer)
@@ -6842,6 +6905,8 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
 		}
 	}
+
+	return;
 }
 
 public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack data)
@@ -6899,6 +6964,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
 		}
 	}
+
+	return;
 }
 
 public void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
@@ -6914,6 +6981,8 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 		PrintToServer("SQLSetTries callback is finished.");
 		#endif
 	}
+
+	return;
 }
 
 public Action cmd_createzones(int args)
@@ -6950,15 +7019,19 @@ public void SQLConnect(Database db, const char[] error, any data)
 	{
 		PrintToServer("Failed to connect to database. (%s)", error);
 	}
+
+	return;
 }
 
-public void ForceZonesSetup()
+stock void ForceZonesSetup()
 {
 	char query[512] = "";
 
 	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 
 	g_mysql.Query(SQLSetZoneStart, query);
+
+	return;
 }
 
 public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any data)
@@ -6989,6 +7062,8 @@ public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error
 			g_mysql.Query(SQLSetZoneEnd, query);
 		}
 	}
+
+	return;
 }
 
 public void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any data)
@@ -7013,6 +7088,8 @@ public void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, 
 			CreateEnd();
 		}
 	}
+
+	return;
 }
 
 public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
@@ -7026,9 +7103,11 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 	{
 		PrintToServer("Zones table is successfuly created.");
 	}
+
+	return;
 }
 
-public void DrawZone(int client, float life, float size, int speed)
+stock void DrawZone(int client, float life, float size, int speed)
 {
 	float start[12][3];
 	float end[12][3];
@@ -7137,13 +7216,17 @@ public void DrawZone(int client, float life, float size, int speed)
 			TE_SendToClient(client, 0.0);
 		}
 	}
+
+	return;
 }
 
-public void ResetFactory(int client)
+stock void ResetFactory(int client)
 {
 	g_readyToStart[client] = true;
 	//g_timerTime[client] = 0.0;
 	g_state[client] = false;
+
+	return;
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -7767,6 +7850,7 @@ public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 	}
+
 	return param2;
 }
 
@@ -7901,7 +7985,7 @@ public Action timer_motd(Handle timer, int client)
 
 	else if(IsClientInGame(client) == false)
 	{
-		PrintToServer("Player %N (ID: %i) is not in-game.", client, client);
+		PrintToServer("MOTD | Player %N (ID: %i) is not in-game.", client, client);
 	}
 
 	return Plugin_Continue;
@@ -8041,7 +8125,7 @@ public Action cmd_noclip(int client, int args)
 	return Plugin_Handled;
 }
 
-public void Noclip(int client)
+stock void Noclip(int client)
 {
 	if(0 < client <= MaxClients)
 	{
@@ -8066,6 +8150,8 @@ public void Noclip(int client)
 			SendMessage(format, client);
 		}
 	}
+
+	return;
 }
 
 public Action cmd_spec(int client, int args)
@@ -8542,6 +8628,8 @@ public void SDKProjectile(int entity)
 			g_flashbangDoor[client][1] = true;
 		}
 	}
+
+	return;
 }
 
 public void frame_blockExplosion(int entity)
@@ -8575,7 +8663,7 @@ public Action timer_deleteProjectile(Handle timer, int entity)
 	return Plugin_Continue;
 }
 
-public void FlashbangEffect(int entity)
+stock void FlashbangEffect(int entity)
 {
 	bool filter = LibraryExists("trueexpert-entityfilter");
 
@@ -8642,6 +8730,8 @@ public void FlashbangEffect(int entity)
 
 		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 	}
+
+	return;
 }
 
 public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
@@ -8654,11 +8744,9 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	if((g_autoflash[client] == true || IsFakeClient(client) == true) && GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
-	{
-		GivePlayerItem(client, "weapon_flashbang");
-		GivePlayerItem(client, "weapon_flashbang");
-	}
+	GiveFlashbang(client);
+
+	return;
 }
 
 public Action SDKWeaponDrop(int client, int weapon)
@@ -8685,11 +8773,11 @@ public Action SDKWeaponDrop(int client, int weapon)
 	return Plugin_Continue;
 }
 
-public void GiveFlashbang(int client)
+stock void GiveFlashbang(int client)
 {
 	bool convar = GetConVarBool(gCV_autoflashbang);
 	
-	if(convar == true && g_autoflash[client] == true)
+	if(convar == true && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
 	{
 		if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 		{
@@ -8702,6 +8790,8 @@ public void GiveFlashbang(int client)
 			GivePlayerItem(client, "weapon_knife");
 		}
 	}
+
+	return;
 }
 
 public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
@@ -8799,7 +8889,7 @@ public Action timer_clantag(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-public void MLStats(int client, bool ground)
+stock void MLStats(int client, bool ground)
 {
 	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
 	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
@@ -8875,6 +8965,8 @@ public void MLStats(int client, bool ground)
 			}
 		}
 	}
+
+	return;
 }
 
 stock int Stuck(int client)
