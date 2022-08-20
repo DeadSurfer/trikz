@@ -63,11 +63,11 @@ float g_skyOrigin[MAXPLAYER];
 int g_entityButtons[MAXPLAYER];
 native int Trikz_GetClientButtons(int client);
 bool g_teleported[MAXPLAYER];
-Handle g_cookie;
+Handle g_cookie = INVALID_HANDLE;
 float g_skyAble[MAXPLAYER];
 float g_gain[MAXPLAYER];
 int g_entityFlags[MAXPLAYER];
-Handle g_teleport;
+Handle g_teleport = INVALID_HANDLE;
 
 public Plugin myinfo =
 {
@@ -437,7 +437,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				//velNew[1] = velFlyer[1];
 				velNew[2] = velBooster[2];
 
-				if(velFlyer[2] >= -700.0)
+				if(velFlyer[2] >= -700.0 && velFlyer[2] < 0.0)
 				{
 					if((g_entityFlags[client] & FL_INWATER))
 					{
@@ -451,7 +451,7 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					}
 				}
 
-				else if(!(velFlyer[2] >= -700.0))
+				else if(!(velFlyer[2] >= -700.0) && velFlyer[2] < 0.0)
 				{
 					//if(velBooster[2] >= 810.0)
 					if(velBooster[2] >= 750.0)
