@@ -45,7 +45,7 @@ bool g_boostStats[MAXPLAYER];
 float g_angles[MAXPLAYER][3];
 Handle g_cookie = INVALID_HANDLE;
 native int Trikz_GetClientPartner(int client);
-float g_duckTime[MAXPLAYER];
+bool g_duck[MAXPLAYER];
 
 public Plugin myinfo =
 {
@@ -125,7 +125,7 @@ public void CalculationProcess(int client)
 	g_vel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
 
 	GetClientEyeAngles(client, g_angles[client]);
-	g_duckTime[client] = GetEntPropFloat(client, Prop_Data, "m_flDucktime");
+	g_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucked"));
 
 	return;
 }
@@ -218,12 +218,12 @@ stock void DoPrint(int client)
 		{
 			if(g_boostStats[client] == true)
 			{
-				PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 			}
 
 			if(IsClientValid(partner) == true && IsClientInGame(partner) == true && g_boostStats[partner] == true)
 			{
-				PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 			}
 
 			for(int i = 1; i <= MaxClients; i++)
@@ -235,12 +235,12 @@ stock void DoPrint(int client)
 
 					if(observerMode < 7 && observerTarget == client && g_boostStats[i] == true)
 					{
-						PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+						PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 					}
 
 					else if(IsClientValid(partner) == true && observerMode < 7 && observerTarget == partner && g_boostStats[i] == true)
 					{
-						PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duckTime[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+						PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 					}
 				}
 			}
