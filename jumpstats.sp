@@ -497,6 +497,8 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 							}
 						}
 					}
+
+					passed = false;
 				}
 			}
 		}
