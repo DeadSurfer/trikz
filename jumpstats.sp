@@ -405,7 +405,7 @@ void TouchClient(int client, int other)
 	}
 }
 
-void SDKSkyJump(int client, int other) //client = booster; other = flyer
+public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("trueexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : g_entityButtons[other] & IN_JUMP) && GetEngineTime() - g_boostTime[client] > 0.15)
 	{
@@ -437,17 +437,25 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				//velNew[1] = velFlyer[1];
 				velNew[2] = velBooster[2];
 
+				bool passed = false;
+
 				if(velFlyer[2] >= -700.0 && velFlyer[2] < 0.0)
 				{
 					if((g_entityFlags[client] & FL_INWATER))
 					{
 						if(velBooster[2] >= 300.0)
+						{
 							velNew[2] = 500.0;
+							passed = true;
+						}
 					}
-					else
+					else if(!(g_entityFlags[client] & FL_INWATER))
 					{
 						if(velBooster[2] >= 750.0)
+						{
 							velNew[2] = 750.0;
+							passed = true;
+						}
 					}
 				}
 
@@ -457,32 +465,33 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					if(velBooster[2] >= 750.0)
 					{
 						velNew[2] = 820.0;
+						passed = true;
 					}
 				}
 
 				//if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
-				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(passed == true && FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar gravity = FindConVar("sv_gravity");
 
-					if(g_jumpstats[client])
+					if(g_jumpstats[client] == true)
 					{
 						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
 					} 
 
-					if(g_jumpstats[other])
+					if(g_jumpstats[other] == true)
 					{
 						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue))); //1.666666666666
 					}
 
 					for(int i = 1; i <= MaxClients; i++)
 					{
-						if(IsClientInGame(i) && IsClientObserver(i))
+						if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 						{
 							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
-							if(observerMode < 7 && observerTarget == client && g_jumpstats[i])
+							if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 							{
 								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue)));
 							}
@@ -492,6 +501,8 @@ void SDKSkyJump(int client, int other) //client = booster; other = flyer
 			}
 		}
 	}
+
+	return;
 }
 
 float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
