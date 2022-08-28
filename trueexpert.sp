@@ -1175,7 +1175,7 @@ public Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 	if(StrEqual(log, "cs_ragdoll", false) == false)
 	{
-		LogMessage(log);
+		LogMessage("OnDeath: %s", log);
 	}
 
 	RemoveEntity(ragdoll);
@@ -1371,11 +1371,11 @@ public void Checkpoint(int client)
 		Format(format, sizeof(format), "%T", "CP-save", client);
 		menu.AddItem("Save", format);
 		Format(format, sizeof(format), "%T", "CP-teleport", client);
-		menu.AddItem("Teleport", format, g_cpToggled[client][0] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		menu.AddItem("Teleport", format, g_cpToggled[client][0] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		Format(format, sizeof(format), "%T", "CP-saveSecond", client);
 		menu.AddItem("Save second", format);
 		Format(format, sizeof(format), "%T", "CP-teleportSecond", client);
-		menu.AddItem("Teleport second", format, g_cpToggled[client][1] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		menu.AddItem("Teleport second", format, g_cpToggled[client][1] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -2019,16 +2019,16 @@ public void Trikz(int client)
 //	}
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_block[client] ? "BlockON" : "BlockOFF", client);
+	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockON" : "BlockOFF", client);
 	menu.AddItem("block", format);
 
-	Format(format, sizeof(format), "%T", g_autoflash[client] ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
+	Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
 	menu.AddItem("autoflash", format);
 
-	Format(format, sizeof(format), "%T", g_autoswitch[client] ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
+	Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
 	menu.AddItem("autoswitch", format);
 
-	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopMenuON" : "BhopMenuOFF", client);
+	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
 	menu.AddItem("bhop", format);
 
 	//if(g_partner[client] == true)
@@ -2039,7 +2039,7 @@ public void Trikz(int client)
 
 		//if( == true)
 		//{
-		menu.AddItem("breakup", format, g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("breakup", format, g_devmap == true ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		//}
 
 		//else if(g_devmap == false)
@@ -2055,7 +2055,7 @@ public void Trikz(int client)
 
 		//if(g_devmap == true)
 		//{
-		menu.AddItem("partner", format, g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("partner", format, g_devmap == true ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		//}
 	
 		//else if(g_devmap == false)
@@ -2098,7 +2098,7 @@ public void Trikz(int client)
 	//if(g_partner[client] == true)
 	//if( > 0)
 	//{
-	menu.AddItem("restart", format, g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("restart", format, g_partner[client] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	//}
 	
 	//else if(g_partner[client] == false)
@@ -2244,9 +2244,9 @@ public Action Block(int client) //thanks maru for optimization.
 {
 	g_block[client] = !g_block[client];
 
-	SetEntityCollisionGroup(client, g_block[client] ? 5 : 2);
+	SetEntityCollisionGroup(client, g_block[client] == true ? 5 : 2);
 
-	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125);
+	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] == true ? 255 : 125);
 
 	if(g_menuOpened[client] == true)
 	{
@@ -2256,7 +2256,7 @@ public Action Block(int client) //thanks maru for optimization.
 	//PrintToChat(client, g_block[client] ? "Block enabled." : "Block disabled.");
 
 	char format[256];
-	Format(format, sizeof(format), "%T", g_block[client] ? "BlockChatON" : "BlockChatOFF", client);
+	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
 	SendMessage(format, client);
 
 	return Plugin_Handled;
@@ -2751,8 +2751,8 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 				g_colorBuffer[g_partner[client]][i][0] = StringToInt(colorTypeExploded[i]);
 			}
 
-			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] ? 255 : 125);
-			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] ? 255 : 125);
+			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] == true ? 255 : 125);
+			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] == true ? 255 : 125);
 
 			static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
@@ -2777,7 +2777,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			}
 		}
 
-		else
+		else if(customSkin == false)
 		{
 			g_colorCount[client][0] = 0;
 			g_colorCount[g_partner[client]][0] = 0;
@@ -2788,8 +2788,8 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 				g_colorBuffer[g_partner[client]][i][0] = 255;
 			}
 
-			SetEntityRenderColor(client, 255, 255, 255, g_block[client] ? 255 : 125);
-			SetEntityRenderColor(g_partner[client], 255, 255, 255, g_block[g_partner[client]] ? 255 : 125);
+			SetEntityRenderColor(client, 255, 255, 255, g_block[client] == true ? 255 : 125);
+			SetEntityRenderColor(g_partner[client], 255, 255, 255, g_block[g_partner[client]] == true ? 255 : 125);
 		}
 	}
 
@@ -3011,7 +3011,7 @@ public Action cmd_autoflash(int client, int args)
 	SetClientCookie(client, g_cookie[4], value);
 
 	char format[256];
-	Format(format, sizeof(format), "%T", g_autoflash[client] ? "AutoflashON" : "AutoflashOFF", client);
+	Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashON" : "AutoflashOFF", client);
 	SendMessage(format, client);
 
 	GiveFlashbang(client);
@@ -3040,7 +3040,7 @@ public Action cmd_autoswitch(int client, int args)
 	SetClientCookie(client, g_cookie[5], value);
 
 	char format[256];
-	Format(format, sizeof(format), "%T", g_autoswitch[client] ? "AutoswitchON" : "AutoswitchOFF", client);
+	Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchON" : "AutoswitchOFF", client);
 	SendMessage(format, client);
 
 	if(g_menuOpened[client] == true)
@@ -3067,7 +3067,7 @@ public Action cmd_bhop(int client, int args)
 	SetClientCookie(client, g_cookie[6], value);
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_bhop[client] ? "BhopON" : "BhopOFF", client);
+	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopON" : "BhopOFF", client);
 	SendMessage(format,  client);
 
 	if(g_menuOpened[client] == true)
@@ -3087,7 +3087,7 @@ public Action cmd_endmsg(int client, int args)
 	SetClientCookie(client, g_cookie[8], value);
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageON" : "EndMessageOFF", client);
+	Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageON" : "EndMessageOFF", client);
 	SendMessage(format, client);
 
 	if(g_menuOpenedHud[client] == true)
@@ -3400,7 +3400,7 @@ public Action cmd_macro(int client, int args)
 	IntToString(g_macroDisabled[client], value, sizeof(value));
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_macroDisabled[client] ? "MacroON" : "MacroOFF", client);
+	Format(format, sizeof(format), "%T", g_macroDisabled[client] == true ? "MacroON" : "MacroOFF", client);
 	SendMessage(format, client);
 
 	return Plugin_Handled;
@@ -4715,7 +4715,7 @@ stock void CPSetup(int client)
 
 		DataPack dp = new DataPack();
 
-		dp.WriteCell(client ? GetClientSerial(client) : 0);
+		dp.WriteCell(client > 0 ? GetClientSerial(client) : 0);
 		dp.WriteCell(i);
 
 		g_mysql.Query(SQLCPSetup, query, dp);
@@ -7112,27 +7112,27 @@ stock void DrawZone(int client, float life, float size, int speed)
 	float start[12][3];
 	float end[12][3];
 
-	start[0][0] = (g_zoneStartOrigin[0][0] < g_zoneStartOrigin[1][0]) ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0]; //zones calculation from tengu (tengulawl)
-	start[0][1] = (g_zoneStartOrigin[0][1] < g_zoneStartOrigin[1][1]) ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1];
-	start[0][2] = (g_zoneStartOrigin[0][2] < g_zoneStartOrigin[1][2]) ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2];
+	start[0][0] = g_zoneStartOrigin[0][0] < g_zoneStartOrigin[1][0] == true ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0]; //zones calculation from tengu (tengulawl)
+	start[0][1] = g_zoneStartOrigin[0][1] < g_zoneStartOrigin[1][1] == true ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1];
+	start[0][2] = g_zoneStartOrigin[0][2] < g_zoneStartOrigin[1][2] == true ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2];
 
 	start[0][2] += size;
 
-	end[0][0] = (g_zoneStartOrigin[0][0] > g_zoneStartOrigin[1][0]) ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0];
-	end[0][1] = (g_zoneStartOrigin[0][1] > g_zoneStartOrigin[1][1]) ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1];
-	end[0][2] = (g_zoneStartOrigin[0][2] > g_zoneStartOrigin[1][2]) ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2];
+	end[0][0] = g_zoneStartOrigin[0][0] > g_zoneStartOrigin[1][0] == true ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0];
+	end[0][1] = g_zoneStartOrigin[0][1] > g_zoneStartOrigin[1][1] == true ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1];
+	end[0][2] = g_zoneStartOrigin[0][2] > g_zoneStartOrigin[1][2] == true ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2];
 
 	end[0][2] += size;
 
-	start[1][0] = (g_zoneEndOrigin[0][0] < g_zoneEndOrigin[1][0]) ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0];
-	start[1][1] = (g_zoneEndOrigin[0][1] < g_zoneEndOrigin[1][1]) ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1];
-	start[1][2] = (g_zoneEndOrigin[0][2] < g_zoneEndOrigin[1][2]) ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2];
+	start[1][0] = g_zoneEndOrigin[0][0] < g_zoneEndOrigin[1][0] == true ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0];
+	start[1][1] = g_zoneEndOrigin[0][1] < g_zoneEndOrigin[1][1] == true ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1];
+	start[1][2] = g_zoneEndOrigin[0][2] < g_zoneEndOrigin[1][2] == true ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2];
 
 	start[1][2] += size;
 
-	end[1][0] = (g_zoneEndOrigin[0][0] > g_zoneEndOrigin[1][0]) ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0];
-	end[1][1] = (g_zoneEndOrigin[0][1] > g_zoneEndOrigin[1][1]) ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1];
-	end[1][2] = (g_zoneEndOrigin[0][2] > g_zoneEndOrigin[1][2]) ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2];
+	end[1][0] = (g_zoneEndOrigin[0][0] > g_zoneEndOrigin[1][0]) == true ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0];
+	end[1][1] = (g_zoneEndOrigin[0][1] > g_zoneEndOrigin[1][1]) == true ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1];
+	end[1][2] = (g_zoneEndOrigin[0][2] > g_zoneEndOrigin[1][2]) == true ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2];
 
 	end[1][2] += size;
 
@@ -7151,15 +7151,15 @@ stock void DrawZone(int client, float life, float size, int speed)
 			//int cpnum = i;
 			//PrintToServer("z %i", i)
 			
-			start[i][0] = (g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0]) ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
-			start[i][1] = (g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1]) ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
-			start[i][2] = (g_cpPos[0][cpnum][2] < g_cpPos[1][cpnum][2]) ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2];
+			start[i][0] = g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0] == true ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
+			start[i][1] = g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1] == true ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
+			start[i][2] = g_cpPos[0][cpnum][2] < g_cpPos[1][cpnum][2] == true ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2];
 
 			start[i][2] += size;
 
-			end[i][0] = (g_cpPos[0][cpnum][0] > g_cpPos[1][cpnum][0]) ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
-			end[i][1] = (g_cpPos[0][cpnum][1] > g_cpPos[1][cpnum][1]) ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
-			end[i][2] = (g_cpPos[0][cpnum][2] > g_cpPos[1][cpnum][2]) ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2];
+			end[i][0] = g_cpPos[0][cpnum][0] > g_cpPos[1][cpnum][0] == true ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
+			end[i][1] = g_cpPos[0][cpnum][1] > g_cpPos[1][cpnum][1] == true ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
+			end[i][2] = g_cpPos[0][cpnum][2] > g_cpPos[1][cpnum][2] == true ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2];
 
 			end[i][2] += size;
 		}
@@ -7369,7 +7369,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 					if(StrEqual(log, "prop_dynamic", false) == false)
 					{
-						LogMessage(log);
+						LogMessage("runcmd: %s", log);
 					}
 
 					RemoveEntity(g_pingModel[client]);
@@ -7899,7 +7899,7 @@ stock void Devmap(bool force)
 				}
 			}
 
-			CreateTimer(5.0, timer_changelevel, g_devmap ? false : true);
+			CreateTimer(5.0, timer_changelevel, g_devmap == true ? false : true);
 		}
 
 		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] <= g_devmapCount[0])
@@ -8180,13 +8180,13 @@ stock void HudMenu(int client)
 
 	menu.SetTitle("Hud");
 	char format[128] = "";
-	Format(format, sizeof(format), "%T", g_hudVel[client] ? "VelMenuON" : "VelMenuOFF", client);
+	Format(format, sizeof(format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
 	//menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
 	menu.AddItem("vel", format);
 	//menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
-	Format(format, sizeof(format), "%T", g_mlstats[client] ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
+	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
 	menu.AddItem("mls", format);
-	Format(format, sizeof(format), "%T", g_endMessage[client] ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
+	Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
 	menu.AddItem("endmsg", format);
 
 	menu.Display(client, 20);
@@ -8219,7 +8219,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					SetClientCookie(param1, g_cookie[0], value);
 
-					Format(format, sizeof(format), "%T", g_hudVel[param1] ? "VelON" : "VelOFF", param1);
+					Format(format, sizeof(format), "%T", g_hudVel[param1] == true ? "VelON" : "VelOFF", param1);
 					SendMessage(format, param1);
 				}
 
@@ -8231,7 +8231,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					SetClientCookie(param1, g_cookie[1], value);
 
-					Format(format, sizeof(format), "%T", g_mlstats[param1] ? "MLStatsON" : "MLStatsOFF", param1);
+					Format(format, sizeof(format), "%T", g_mlstats[param1] == true ? "MLStatsON" : "MLStatsOFF", param1);
 					SendMessage(format, param1);
 				}
 
@@ -8243,7 +8243,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					SetClientCookie(param1, g_cookie[8], value);
 
-					Format(format, sizeof(format), "%T", g_endMessage[param1] ? "EndMsgON" : "EndMsgOFF", param1);
+					Format(format, sizeof(format), "%T", g_endMessage[param1] == true ? "EndMsgON" : "EndMsgOFF", param1);
 					SendMessage(format, param1);
 				}
 			}
@@ -8308,7 +8308,7 @@ public Action cmd_mlstats(int client, int args)
 	//PrintToChat(client, g_mlstats[client] ? "ML stats is on." : "ML stats is off.");
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_mlstats[client] ? "MLStatsON" : "MLStatsOFF", client);
+	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsON" : "MLStatsOFF", client);
 	SendMessage(format, client);
 
 	if(g_menuOpenedHud[client] == true)
@@ -8332,7 +8332,7 @@ public Action cmd_button(int client, int args)
 	//PrintToChat(client, g_button[client] ? "Button announcer is on." : "Button announcer is off.");
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_button[client] ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
+	Format(format, sizeof(format), "%T", g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
 	SendMessage(format, client);
 
 	return Plugin_Handled;
@@ -8351,7 +8351,7 @@ public Action cmd_pbutton(int client, int args)
 	//PrintToChat(client, g_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.");
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_pbutton[client] ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
+	Format(format, sizeof(format), "%T", g_pbutton[client] == true ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
 	SendMessage(format, client);
 
 	return Plugin_Handled;
@@ -8601,7 +8601,7 @@ public void SDKProjectile(int entity)
 
 		RequestFrame(frame_blockExplosion, entity);
 
-		CreateTimer(1.5, timer_deleteProjectile, entity, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.5, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 
 		if(g_skinFlashbang[client] > 0)
 		{
@@ -8643,7 +8643,9 @@ public void frame_blockExplosion(int entity)
 
 public Action timer_deleteProjectile(Handle timer, int entity)
 {
-	if(IsValidEntity(entity) == true)
+	entity = EntRefToEntIndex(entity);
+
+	if(entity != INVALID_ENT_REFERENCE)
 	{
 		FlashbangEffect(entity);
 
@@ -8653,7 +8655,7 @@ public Action timer_deleteProjectile(Handle timer, int entity)
 
 		if(StrEqual(log, "flashbang_projectile", false) == false)
 		{
-			LogMessage(log);
+			LogMessage("timer_deleteProjectile: %s", log);
 		}
 		
 		RemoveEntity(entity);
@@ -8758,7 +8760,7 @@ public Action SDKWeaponDrop(int client, int weapon)
 
 		if(!(StrContains(log, "weapon", false) != -1))
 		{
-			LogMessage(log);
+			LogMessage("SDKWeaponDrop: %s", log);
 		}
 
 		RemoveEntity(weapon);
@@ -8826,7 +8828,7 @@ public Action timer_removePing(Handle timer, int client)
 
 		if(StrEqual(log, "prop_dynamic", false) == false)
 		{
-			LogMessage(log);
+			LogMessage("timer_removePing: %s", log);
 		}
 
 		RemoveEntity(g_pingModel[client]);
@@ -8912,7 +8914,7 @@ stock void MLStats(int client, bool ground)
 		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0];
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
 
-		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] == true ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
 
 		g_teleported[client] = false;
 	}
