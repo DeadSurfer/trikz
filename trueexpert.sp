@@ -7286,7 +7286,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(g_boost[client] > 0)
 	{
-		//float velocity[3];
 		float velocity[3] = {0.0, 0.0, 0.0};
 
 		if(g_boost[client] == 2)
