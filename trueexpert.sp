@@ -2709,7 +2709,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 		{
 			//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
 			//PrintToChat(client, "You must have a partner.");
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 			SendMessage(format, client);
 
@@ -2718,7 +2718,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 		if(g_devmap == true)
 		{
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevMapIsON", client);
 			SendMessage(format, client);
 
@@ -2728,7 +2728,11 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 		if(customSkin == true)
 		{
 			g_colorCount[client][0]++;
-			g_colorCount[g_partner[client]][0]++;
+
+			if(g_partner[client] > 0)
+			{
+				g_colorCount[g_partner[client]][0]++;
+			}
 
 			if(g_colorCount[client][0] == 9)
 			{
@@ -2780,12 +2784,20 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 		else if(customSkin == false)
 		{
 			g_colorCount[client][0] = 0;
-			g_colorCount[g_partner[client]][0] = 0;
+
+			if(g_partner[client] > 0)
+			{
+				g_colorCount[g_partner[client]][0] = 0;
+			}
 
 			for(int i = 0; i <= 2; i++)
 			{
 				g_colorBuffer[client][i][0] = 255;
-				g_colorBuffer[g_partner[client]][i][0] = 255;
+				
+				if(g_partner[client] > 0)
+				{
+					g_colorBuffer[g_partner[client]][i][0] = 255;
+				}
 			}
 
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] == true ? 255 : 125);
@@ -2808,7 +2820,11 @@ stock void ColorFlashbang(int client, int color = -1)
 		}
 
 		g_colorCount[client][1]++;
-		g_colorCount[g_partner[client]][1]++;
+
+		if(g_partner[client] > 0)
+		{
+			g_colorCount[g_partner[client]][1]++;
+		}
 
 		if(g_colorCount[client][1] == 9)
 		{
