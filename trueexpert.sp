@@ -2728,11 +2728,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 		if(customSkin == true)
 		{
 			g_colorCount[client][0]++;
-
-			if(g_partner[client] > 0)
-			{
-				g_colorCount[g_partner[client]][0]++;
-			}
+			g_colorCount[g_partner[client]][0]++;
 
 			if(g_colorCount[client][0] == 9)
 			{
@@ -2775,29 +2771,18 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
 
-			if(g_partner[client] > 0)
-			{
-				ShowHudText(g_partner[client], 5, "%s (TM)", colorTypeExploded[3]);
-			}
+			ShowHudText(g_partner[client], 5, "%s (TM)", colorTypeExploded[3]);
 		}
 
 		else if(customSkin == false)
 		{
 			g_colorCount[client][0] = 0;
-
-			if(g_partner[client] > 0)
-			{
-				g_colorCount[g_partner[client]][0] = 0;
-			}
-
+			g_colorCount[g_partner[client]][0] = 0;
+		
 			for(int i = 0; i <= 2; i++)
 			{
 				g_colorBuffer[client][i][0] = 255;
-				
-				if(g_partner[client] > 0)
-				{
-					g_colorBuffer[g_partner[client]][i][0] = 255;
-				}
+				g_colorBuffer[g_partner[client]][i][0] = 255;
 			}
 
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] == true ? 255 : 125);
@@ -2820,11 +2805,6 @@ stock void ColorFlashbang(int client, int color = -1)
 		}
 
 		g_colorCount[client][1]++;
-
-		if(g_partner[client] > 0)
-		{
-			g_colorCount[g_partner[client]][1]++;
-		}
 
 		if(g_colorCount[client][1] == 9)
 		{
@@ -2865,11 +2845,6 @@ stock void ColorFlashbang(int client, int color = -1)
 		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
 		ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
-
-		/*if(g_partner[client] > 0)
-		{
-			ShowHudText(g_partner[client], 5, "%s (FL)", colorTypeExploded[3]);
-		}*/
 	}
 
 	return;
