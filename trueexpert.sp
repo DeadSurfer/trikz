@@ -487,6 +487,11 @@ public void OnMapStart()
 	//g_kv = new KeyValues("TrueExpertHud");
 	//g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
+	for(int i = 1; i <= MAXPLAYERS; i++)
+	{
+		g_pingTimer[i] = INVALID_HANDLE;
+	}
+
 	return;
 }
 
@@ -8751,7 +8756,7 @@ public Action SDKWeaponDrop(int client, int weapon)
 
 		GetEntityClassname(weapon, log, sizeof(log));
 
-		if(!(StrContains(log, "weapon", false) != -1))
+		if(StrContains(log, "weapon", false) == -1)
 		{
 			LogMessage("SDKWeaponDrop: %s", log);
 		}
@@ -8816,7 +8821,7 @@ public Action timer_removePing(Handle timer, int client)
 {
 	int entity = EntRefToEntIndex(g_pingModel[client]);
 
-	if(entity != INVALID_ENT_REFERENCE)
+	if(entity > 0)
 	{
 		char log[256] = "";
 		GetEntityClassname(g_pingModel[client], log, sizeof(log));
@@ -8833,10 +8838,10 @@ public Action timer_removePing(Handle timer, int client)
 		g_pingTimer[client] = INVALID_HANDLE;
 	}
 
-	else if(g_pingModel[client] == 0)
-	{
-		PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
-	}
+	//else if(g_pingModel[client] == 0)
+	//{
+	//	PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
+	//}
 
 	return Plugin_Continue;
 }
