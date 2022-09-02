@@ -2976,7 +2976,7 @@ stock void Restart(int client)
 				//PrintToChat(client, "You must have a partner.");
 				//PrintToChat(client, "\x01%T", "YMHP");
 				//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
-				char format[256];
+				char format[256] = "";
 				Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 				SendMessage(format, client);
 			}
@@ -3001,7 +3001,7 @@ public Action cmd_autoflash(int client, int args)
 	IntToString(g_autoflash[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[4], value);
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashON" : "AutoflashOFF", client);
 	SendMessage(format, client);
 
@@ -3030,7 +3030,7 @@ public Action cmd_autoswitch(int client, int args)
 	IntToString(g_autoswitch[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[5], value);
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchON" : "AutoswitchOFF", client);
 	SendMessage(format, client);
 
@@ -3059,7 +3059,7 @@ public Action cmd_bhop(int client, int args)
 
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopON" : "BhopOFF", client);
-	SendMessage(format,  client);
+	SendMessage(format, client);
 
 	if(g_menuOpened[client] == true)
 	{
@@ -4085,8 +4085,6 @@ public Action cmd_zones(int client, int args)
 		if(g_devmap == true)
 		{
 			ZoneEditor(client);
-
-			return Plugin_Handled;
 		}
 
 		else if(g_devmap == false)
@@ -4096,9 +4094,9 @@ public Action cmd_zones(int client, int args)
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 			SendMessage(format, client);
-
-			return Plugin_Handled;
 		}
+
+		return Plugin_Handled;
 	}
 
 	return Plugin_Continue;
@@ -4127,7 +4125,7 @@ stock void ZoneEditor2(int client)
 		menu.AddItem("end", "End zone");
 	}
 
-	char format[32];
+	char format[32] = "";
 
 	if(g_cpCount > 0)
 	{
@@ -4696,13 +4694,11 @@ stock void CPSetup(int client)
 {
 	g_cpCount = 0;
 
-	//PrintToServer("must be 0, real number: %i", g_cpCount);
-
 	char query[512] = "";
 
 	for(int i = 1; i <= 10; i++)
 	{
-		Format(query, 512, "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
+		Format(query, sizeof(query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
 
 		DataPack dp = new DataPack();
 
@@ -4926,22 +4922,24 @@ public Action SDKStartTouch(int entity, int other)
 
 		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger));
 
-		if(StrEqual(trigger, "trueexpert_startzone", false) == true && g_mapFinished[g_partner[other]] == true)
+		int partner = g_partner[other];
+
+		if(StrEqual(trigger, "trueexpert_startzone", false) == true && g_mapFinished[partner] == true)
 		{
 			Restart(other); //expert zone idea.
-			Restart(g_partner[other]);
+			Restart(partner);
 		}
 
 		if(StrEqual(trigger, "trueexpert_endzone", false) == true)
 		{
 			g_mapFinished[other] = true;
 
-			if(g_mapFinished[g_partner[other]] == true && g_state[other] == true)
+			if(g_mapFinished[partner] == true && g_state[other] == true)
 			{
 				char query[512] = "";
 
 				int playerid = GetSteamAccountID(other);
-				int partnerid = GetSteamAccountID(g_partner[other]);
+				int partnerid = GetSteamAccountID(partner);
 
 				int personalHour = (RoundToFloor(g_timerTime[other]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
 				int personalMinute = (RoundToFloor(g_timerTime[other]) / 60) % 60;
@@ -4996,7 +4994,7 @@ public Action SDKStartTouch(int entity, int other)
 							GetClientName(other, sClient, sizeof(sClient));
 
 							char sOther[MAX_NAME_LENGTH] = "";
-							GetClientName(g_partner[other], sOther, sizeof(sOther));
+							GetClientName(partner, sOther, sizeof(sOther));
 
 							//FormatEx(sClient, sizeof(sClient), "%N", clie
 							//PrintToChatAll("\x01%T", "NewServerRecordDetail", sClient, sOther, sPersonalHour, sPersonalMinute, sPersonalSecond, sSRHour, sSRMinute, sSRSecond);
@@ -5013,17 +5011,17 @@ public Action SDKStartTouch(int entity, int other)
 							}
 
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							FinishMSG(g_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
+							FinishMSG(partner, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 
 							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 
 							g_mysql.Query(SQLUpdateRecord, query);
 
 							g_haveRecord[other] = g_timerTime[other];
-							g_haveRecord[g_partner[other]] = g_timerTime[other]; //logs help also expert zone ideas.
+							g_haveRecord[partner] = g_timerTime[other]; //logs help also expert zone ideas.
 
 							g_mateRecord[other] = g_timerTime[other];
-							g_mateRecord[g_partner[other]] = g_timerTime[other];
+							g_mateRecord[partner] = g_timerTime[other];
 
 							g_ServerRecord = true;
 							g_ServerRecordTime = g_timerTime[other];
@@ -5058,7 +5056,7 @@ public Action SDKStartTouch(int entity, int other)
 							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
 							char sPartner[MAX_NAME_LENGTH] = "";
-							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
+							GetClientName(partner, sPartner, sizeof(sPartner));
 							//char sPartner(g_partner[other], sPartner, sizeof(sPartner));
 
 							for(int i = 1; i <= MaxClients; i++)
@@ -5071,7 +5069,7 @@ public Action SDKStartTouch(int entity, int other)
 							}
 							
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
+							FinishMSG(partner, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 
 							Format(query, sizeof(query), "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
 
@@ -5097,7 +5095,7 @@ public Action SDKStartTouch(int entity, int other)
 							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
 							char sPartner[MAX_NAME_LENGTH] = "";
-							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
+							GetClientName(partner, sPartner, sizeof(sPartner));
 
 							for(int i = 1; i <= MaxClients; i++)
 							{
@@ -5111,7 +5109,7 @@ public Action SDKStartTouch(int entity, int other)
 							//PrintToChatAll("\x01%N and %N finished map in \x077CFC00%02.i:%02.i:%02.i \x01(SR \x07FF0000+%02.i:%02.i:%02.i\x01)", other, g_partner[other], personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
+							FinishMSG(partner, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 
 							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 
@@ -5122,15 +5120,15 @@ public Action SDKStartTouch(int entity, int other)
 								g_haveRecord[other] = g_timerTime[other];
 							}
 
-							if(g_haveRecord[g_partner[other]] > g_timerTime[other])
+							if(g_haveRecord[partner] > g_timerTime[other])
 							{
-								g_haveRecord[g_partner[other]] = g_timerTime[other];
+								g_haveRecord[partner] = g_timerTime[other];
 							}
 
 							if(g_mateRecord[other] > g_timerTime[other])
 							{
 								g_mateRecord[other] = g_timerTime[other];
-								g_mateRecord[g_partner[other]] = g_timerTime[other];
+								g_mateRecord[partner] = g_timerTime[other];
 							}					
 						}
 					}
@@ -5169,7 +5167,7 @@ public Action SDKStartTouch(int entity, int other)
 							char sName[MAX_NAME_LENGTH] = "";
 							GetClientName(other, sName, sizeof(sName));
 							char sPartner[MAX_NAME_LENGTH] = "";
-							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
+							GetClientName(partner, sPartner, sizeof(sPartner));
 							char text2[256] = "";
 
 							for(int i = 1; i <= MaxClients; i++)
@@ -5182,17 +5180,17 @@ public Action SDKStartTouch(int entity, int other)
 							}
 
 							FinishMSG(other, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							FinishMSG(g_partner[other], false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
+							FinishMSG(partner, false, true, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 
 							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime());
 
 							g_mysql.Query(SQLInsertRecord, query);
 
 							g_haveRecord[other] = g_timerTime[other];
-							g_haveRecord[g_partner[other]] = g_timerTime[other];
+							g_haveRecord[partner] = g_timerTime[other];
 
 							g_mateRecord[other] = g_timerTime[other];
-							g_mateRecord[g_partner[other]] = g_timerTime[other];
+							g_mateRecord[partner] = g_timerTime[other];
 
 							g_ServerRecord = true;
 
@@ -5228,7 +5226,7 @@ public Action SDKStartTouch(int entity, int other)
 							GetClientName(other, sName, sizeof(sName));
 							char sPartner[MAX_NAME_LENGTH] = "";
 							//Format(sPartner, sizeof(sPartner), ""
-							GetClientName(g_partner[other], sPartner, sizeof(sPartner));
+							GetClientName(partner, sPartner, sizeof(sPartner));
 							char text2[256] = ""; //i got george code from github but before it i got it from george friends.
 
 							for(int i = 1; i <= MaxClients; i++)
@@ -5241,7 +5239,7 @@ public Action SDKStartTouch(int entity, int other)
 							}
 
 							FinishMSG(other, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
-							FinishMSG(g_partner[other], false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
+							FinishMSG(partner, false, false, false, false, false, 0, personalHour, personalMinute, personalSecond, srHour, srMinute, srSecond);
 
 							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime());
 
@@ -5252,13 +5250,13 @@ public Action SDKStartTouch(int entity, int other)
 								g_haveRecord[other] = g_timerTime[other];
 							}
 
-							if(g_haveRecord[g_partner[other]] == 0.0)
+							if(g_haveRecord[partner] == 0.0)
 							{
-								g_haveRecord[g_partner[other]] = g_timerTime[other];
+								g_haveRecord[partner] = g_timerTime[other];
 							}
 
 							g_mateRecord[other] = g_timerTime[other];
-							g_mateRecord[g_partner[other]] = g_timerTime[other];
+							g_mateRecord[partner] = g_timerTime[other];
 						}
 					}
 
@@ -5316,16 +5314,16 @@ public Action SDKStartTouch(int entity, int other)
 					g_ServerRecordTime = g_timerTime[other];
 
 					g_haveRecord[other] = g_timerTime[other];
-					g_haveRecord[g_partner[other]] = g_timerTime[other];
+					g_haveRecord[partner] = g_timerTime[other];
 
 					g_mateRecord[other] = g_timerTime[other];
-					g_mateRecord[g_partner[other]] = g_timerTime[other];
+					g_mateRecord[partner] = g_timerTime[other];
 
 					char format[256] = "";
 					char sName[MAX_NAME_LENGTH] = "";
 					GetClientName(other, sName, sizeof(sName));
 					char sPartner[MAX_NAME_LENGTH] = "";
-					GetClientName(g_partner[other], sPartner, sizeof(sPartner));
+					GetClientName(partner, sPartner, sizeof(sPartner));
 					char text2[256] = "";
 
 					for(int i = 1; i <= MaxClients; i++)
@@ -5343,7 +5341,7 @@ public Action SDKStartTouch(int entity, int other)
 					}
 
 					FinishMSG(other, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
-					FinishMSG(g_partner[other], true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
+					FinishMSG(partner, true, false, false, false, false, 0, personalHour, personalMinute, personalSecond, 0, 0, 0);
 
 					for(int i = 1; i <= g_cpCount; i++)
 					{
@@ -5380,7 +5378,7 @@ public Action SDKStartTouch(int entity, int other)
 				}
 
 				g_state[other] = false;
-				g_state[g_partner[other]] = false;
+				g_state[partner] = false;
 			}
 		}
 
@@ -5394,12 +5392,12 @@ public Action SDKStartTouch(int entity, int other)
 			{
 				g_cp[i][other] = true;
 
-				if(g_cp[i][other] == true && g_cp[i][g_partner[other]] == true && g_cpLock[i][other] == false)
+				if(g_cp[i][other] == true && g_cp[i][partner] == true && g_cpLock[i][other] == false)
 				{
 					char query[512] = ""; //https://stackoverflow.com/questions/9617453 https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
 
 					int playerid = GetSteamAccountID(other);
-					int partnerid = GetSteamAccountID(g_partner[other]);
+					int partnerid = GetSteamAccountID(partner);
 
 					if(g_cpLock[1][other] == false && g_mateRecord[other] > 0.0)
 					{
@@ -5408,10 +5406,10 @@ public Action SDKStartTouch(int entity, int other)
 					}
 
 					g_cpLock[i][other] = true;
-					g_cpLock[i][g_partner[other]] = true;
+					g_cpLock[i][partner] = true;
 
 					g_cpTimeClient[i][other] = g_timerTime[other];
-					g_cpTimeClient[i][g_partner[other]] = g_timerTime[other];
+					g_cpTimeClient[i][partner] = g_timerTime[other];
 
 					Format(query, sizeof(query), "SELECT cp%i FROM records LIMIT 1", i);
 
@@ -7351,22 +7349,24 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			g_pingLock[client] = true;
 
-			if(g_pingModel[client] > 0)
+			int entityIndex = EntRefToEntIndex(g_pingModel[client]);
+
+			if(entityIndex > 0)
 			{
-				if(IsValidEntity(g_pingModel[client]))
+				//if(IsValidEntity(entity))
 				{
 					char log[256] = "";
-					GetEntityClassname(g_pingModel[client], log, sizeof(log));
+					GetEntityClassname(entityIndex, log, sizeof(log));
 
 					if(StrEqual(log, "prop_dynamic", false) == false)
 					{
 						LogMessage("runcmd: %s", log);
 					}
 
-					RemoveEntity(g_pingModel[client]);
+					RemoveEntity(entityIndex);
 				}
 
-				if(g_pingModel[client] > 0)
+				//if(g_pingModel[client] > 0)
 				{
 					g_pingModel[client] = 0;
 				}
@@ -7377,13 +7377,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 
-			g_pingModel[client] = CreateEntityByName("prop_dynamic_override"); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+			int entity = CreateEntityByName("prop_dynamic_override"); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 
 			//SetEntityModel(g_pingModel[client], "models/trueexpert/pingtool/pingtool.mdl");
-			SetEntityModel(g_pingModel[client], "models/effects/combineball.mdl");
-			DispatchSpawn(g_pingModel[client]);
+			SetEntityModel(entity, "models/effects/combineball.mdl");
+			DispatchSpawn(entity);
 
-			SetEntProp(g_pingModel[client], Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
+			SetEntProp(entity, Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
 
 			float start[3] = {0.0, 0.0, 0.0};
 			float angle[3] = {0.0, 0.0, 0.0};
@@ -7423,12 +7423,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//normal[0] -= 270.0;
 				normal[0] -= 360.0;
 
-				SetEntPropVector(g_pingModel[client], Prop_Data, "m_angRotation", normal);
+				SetEntPropVector(entity, Prop_Data, "m_angRotation", normal);
 			}
 
-			SetEntityRenderColor(g_pingModel[client], g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
-			TeleportEntity(g_pingModel[client], end, NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(entity, end, NULL_VECTOR, NULL_VECTOR);
 
 			//https://forums.alliedmods.net/showthread.php?p=1080444
 			int color[4] = {0, 0, 0, 0};
@@ -7446,9 +7446,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(LibraryExists("trueexpert-entityfilter") == true)
 			{
-				SDKHook(g_pingModel[client], SDKHook_SetTransmit, SDKSetTransmitPing);
+				SDKHook(entity, SDKHook_SetTransmit, SDKSetTransmitPing);
 
-				g_pingModelOwner[g_pingModel[client]] = client;
+				g_pingModelOwner[entity] = client;
 
 				int clients[MAXPLAYER]; // 64 + 1
 				int count = 0;
@@ -7484,6 +7484,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 
 			g_pingTimer[client] = CreateTimer(5.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
+
+			g_pingModel[client] = EntIndexToEntRef(entity);
 		}
 	}
 
@@ -8812,7 +8814,9 @@ public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 
 public Action timer_removePing(Handle timer, int client)
 {
-	if(g_pingModel[client] > 0)
+	int entity = EntRefToEntIndex(g_pingModel[client]);
+
+	if(entity != INVALID_ENT_REFERENCE)
 	{
 		char log[256] = "";
 		GetEntityClassname(g_pingModel[client], log, sizeof(log));
@@ -8822,7 +8826,7 @@ public Action timer_removePing(Handle timer, int client)
 			LogMessage("timer_removePing: %s", log);
 		}
 
-		RemoveEntity(g_pingModel[client]);
+		RemoveEntity(entity);
 
 		g_pingModel[client] = 0;
 
