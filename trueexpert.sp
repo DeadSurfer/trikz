@@ -869,7 +869,7 @@ public void frame_SayText2(DataPack dp)
 	char text[256] = "";
 	dp.ReadString(text, sizeof(text));
 
-	if(IsClientInGame(client) == true)
+	if(client > 0 && IsClientInGame(client) == true)
 	{
 		int clients[MAXPLAYER];
 		int count = 0;
