@@ -561,14 +561,12 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				float velFlyer[3] = {0.0, 0.0, 0.0};
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
-				velBooster[2] *= 3.2;
+				velBooster[2] *= 3.15;
 
 				float velNew[3] = {0.0, 0.0, 0.0};
 				//velNew[0] = velFlyer[0];
 				//velNew[1] = velFlyer[1];
 				velNew[2] = velBooster[2];
-
-				bool passed = false;
 
 				if(velFlyer[2] >= -700.0 && velFlyer[2] < 0.0)
 				{
@@ -577,8 +575,6 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 						if(velBooster[2] >= 300.0)
 						{
 							velNew[2] = 500.0;
-
-							passed = true;
 						}
 					}
 					
@@ -587,8 +583,6 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 						if(velBooster[2] >= 750.0)
 						{
 							velNew[2] = 750.0;
-
-							passed = true;
 						}
 					}
 				}
@@ -598,25 +592,23 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					//if(velBooster[2] >= 810.0)
 					if(velBooster[2] >= 750.0)
 					{
-						velNew[2] = 820.0;
-
-						passed = true;
+						velNew[2] = 800.0;
 					}
 				}
 
 				//if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
-				if(passed == true && FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					ConVar gravity = FindConVar("sv_gravity");
 
 					if(g_jumpstats[client] == true)
 					{
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
+						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
 					} 
 
 					if(g_jumpstats[other] == true)
 					{
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue))); //1.666666666666
+						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
 					}
 
 					for(int i = 1; i <= MaxClients; i++)
@@ -628,12 +620,10 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 							if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 							{
-								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.75 * float(gravity.IntValue)));
+								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
 							}
 						}
 					}
-
-					passed = false;
 				}
 			}
 		}
