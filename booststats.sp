@@ -212,7 +212,7 @@ stock void DoPrint(int client)
 	if(IsClientInGame(client) == true)
 	{
 		float time = g_throwTime[client][1] - g_throwTime[client][0];
-		int partner = Trikz_GetClientPartner(client);
+		int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
 
 		if(time < 0.3)
 		{
