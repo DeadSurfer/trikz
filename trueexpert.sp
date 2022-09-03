@@ -8641,8 +8641,6 @@ public void frame_blockExplosion(int entity)
 
 public Action timer_deleteProjectile(Handle timer, int entity)
 {
-	entity = EntRefToEntIndex(entity);
-
 	if(entity != INVALID_ENT_REFERENCE)
 	{
 		FlashbangEffect(entity);
