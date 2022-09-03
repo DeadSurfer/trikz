@@ -9136,7 +9136,7 @@ public MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github
 
 	//PrintToServer("%f %f %f", vel[0], vel[1], vel[2]);
 
-	PrintToServer("%N", client);
+	//PrintToServer("%N", client);
 
 	if(g_mlsCount[client] > 0)
 	{
