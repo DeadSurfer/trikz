@@ -1893,7 +1893,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 				g_skyVel[other][0] = velFlyer[0];
 				g_skyVel[other][1] = velFlyer[1];
 			
-				velBooster[2] *= 3.2; //3.0
+				velBooster[2] *= 3.15; //3.0
 
 				g_skyVel[other][2] = velBooster[2];
 
@@ -1929,7 +1929,7 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 					if(velBooster[2] >= 750.0) //750.0
 					{
-						g_skyVel[other][2] = 820.0;
+						g_skyVel[other][2] = 800.0;
 
 						//PrintToServer("4 %f", velFlyer[2]);
 					}
