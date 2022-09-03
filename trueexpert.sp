@@ -232,8 +232,10 @@ public void OnPluginStart()
 	//RegConsoleCmd("sm_fl", cmd_colorflash);
 	RegConsoleCmd("sm_r", cmd_restart);
 	RegConsoleCmd("sm_restart", cmd_restart);
-	RegConsoleCmd("sm_autoflash", cmd_autoflash);	
+	RegConsoleCmd("sm_autoflash", cmd_autoflash);
+	RegConsoleCmd("sm_flash", cmd_autoflash);
 	RegConsoleCmd("sm_autoswitch", cmd_autoswitch);
+	RegConsoleCmd("sm_switch", cmd_autoswitch);
 	//RegConsoleCmd("sm_time", cmd_time);
 	RegConsoleCmd("sm_cp", cmd_checkpoint);
 	RegConsoleCmd("sm_devmap", cmd_devmap);
