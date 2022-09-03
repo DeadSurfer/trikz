@@ -77,7 +77,7 @@ bool g_bouncedOff[MAXENTITY];
 bool g_groundBoost[MAXPLAYER];
 int g_flash[MAXPLAYER];
 int g_entityFlags[MAXPLAYER];
-int g_devmapCount[2];
+int g_devmapCount[2] = {0, 0};
 bool g_devmap = false;
 float g_devmapTime = 0.0;
 
@@ -86,7 +86,7 @@ float g_cpAng[MAXPLAYER][2][3];
 float g_cpVel[MAXPLAYER][2][3];
 bool g_cpToggled[MAXPLAYER][2];
 
-bool g_zoneHave[3];
+bool g_zoneHave[3] = {false, false, false};
 
 bool g_ServerRecord = false;
 char g_date[64] = "";
@@ -103,13 +103,13 @@ int g_pingModel[MAXPLAYER];
 int g_pingModelOwner[MAXENTITY];
 Handle g_pingTimer[MAXPLAYER];
 
-bool g_zoneFirst[3];
+bool g_zoneFirst[3] = {false, false, false};
 
 char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
 int g_colorBuffer[MAXPLAYER][3][2];
 int g_colorCount[MAXPLAYER][2];
 
-int g_zoneModel[3] = {0, 0 ,0};
+int g_zoneModel[3] = {0, 0, 0};
 int g_laserBeam = 0;
 bool g_sourcetvchangedFileName = true;
 float g_entityVel[MAXPLAYER][3];
@@ -194,7 +194,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.47",
+	version = "4.48",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -1543,7 +1543,10 @@ public void OnClientPutInServer(int client)
 	//g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
 
-	DHookEntity(g_teleport, true, client); //this should provides a crash if reload plugin.
+	if(IsClientSourceTV(client) == false) //this should provides a crash if reload plugin.
+	{
+		DHookEntity(g_teleport, true, client);
+	}
 
 	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][2][0] == 0)
 	{
@@ -1614,6 +1617,11 @@ public void OnClientCookiesCached(int client)
 	g_skinPlayer[client] = view_as<bool>(StringToInt(value));
 
 	GiveFlashbang(client);
+
+	if(g_menuOpened[client] == true)
+	{
+		Trikz(client);
+	}
 
 	return;
 }
@@ -2039,7 +2047,7 @@ public void Trikz(int client)
 	menu.AddItem("bhop", format);
 
 	//if(g_partner[client] == true)
-	if(g_partner[client] > 0)
+	if(g_devmap == false && g_partner[client] > 0)
 	{
 		//menu.AddItem("partner", g_partner[client] ? "Breakup" : "Partner", g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		Format(format, sizeof(format), "%T", "Breakup", client);
@@ -2056,7 +2064,7 @@ public void Trikz(int client)
 	}
 
 	//if(g_partner[client] == false)
-	if(g_partner[client] == 0)
+	if(g_devmap == false && g_partner[client] == 0)
 	{
 		Format(format, sizeof(format), "%T", "Partner", client);
 
@@ -2099,15 +2107,17 @@ public void Trikz(int client)
 		//menu.AddItem("color2", "Color");
 	//}
 
-	Format(format, sizeof(format), "%T", "Restart", client);
+	if(g_devmap == false)
+	{
+		Format(format, sizeof(format), "%T", "Restart", client);
 
-	//menu.AddItem("restart", "Restart", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED); //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
-	//if(g_partner[client] == true)
-	//if( > 0)
-	//{
-	menu.AddItem("restart", format, g_partner[client] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	//}
-	
+		//menu.AddItem("restart", "Restart", g_partner[client] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED); //shavit trikz githgub alliedmods net https://forums.alliedmods.net/showthread.php?p=2051806
+		//if(g_partner[client] == true)
+		//if( > 0)
+		//{
+		menu.AddItem("restart", format, g_partner[client] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		//}
+	}
 	//else if(g_partner[client] == false)
 	//else if(g_partner[client] == 0)
 	//{
@@ -2116,25 +2126,14 @@ public void Trikz(int client)
 
 	if(g_devmap == true)
 	{
-		//menu.AddItem("checkpoint", "Checkpoint");
-		Format(format, sizeof(format), "%T", "Checkpoint", client);
-		menu.AddItem("checkpoint", format);
-	//	if(GetEntityMoveType(client) & MOVETYPE_NOCLIP)
-	//	{
-	//		Format(format, sizeof(format), "%T", "NoclipMenuON", client);
-	//		menu.AddItem("noclip", format);
-	//	}
-		
-	//	else if(!(GetEntityMoveType(client) & MOVETYPE_NOCLIP))
-	//	{
-	//		Format(format, sizeof(format), "%T", "NoclipMenuOFF", client);
-	//		menu.AddItem("noclip", format);
-	//	}
-
 		//char format[256] = "";
 		Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
 		menu.AddItem("noclip", format);
 		//menu.AddItem("noclip", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]");
+
+		//menu.AddItem("checkpoint", "Checkpoint");
+		Format(format, sizeof(format), "%T", "Checkpoint", client);
+		menu.AddItem("checkpoint", format);
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -2153,58 +2152,56 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_Select:
 		{
-			switch(param2)
+			char item[64] = "";
+			menu.GetItem(param2, item, sizeof(item));
+
+			if(StrEqual(item, "block", true) == true)
 			{
-				case 0:
-				{
-					Block(param1);
-				}
+				Block(param1);
+			}
 
-				case 1:
-				{
-					cmd_autoflash(param1, 0);
-				}
+			else if(StrEqual(item, "autoflash", true) == true)
+			{
+				cmd_autoflash(param1, 0);
+			}
 
-				case 2:
-				{
-					cmd_autoswitch(param1, 0);
-				}
+			else if(StrEqual(item, "autoswitch", true) == true)
+			{
+				cmd_autoswitch(param1, 0);
+			}
 
-				case 3:
-				{
-					cmd_bhop(param1, 0);
-				}
+			else if(StrEqual(item, "bhop", true) == true)
+			{
+				cmd_bhop(param1, 0);
+			}
 
-				case 4:
-				{
-					g_menuOpened[param1] = false;
-					Partner(param1);
-				}
+			else if(StrEqual(item, "breakup", true) == true || StrEqual(item, "partner", true) == true)
+			{
+				g_menuOpened[param1] = false;
+				Partner(param1);
+			}
 
-				case 5:
-				{
-					g_menuOpened[param1] = false;
-					ColorSelect(param1);
-				}
+			else if(StrEqual(item, "color", true) == true)
+			{
+				g_menuOpened[param1] = false;
+				ColorSelect(param1);
+			}
 
-				case 6:
-				{
-					Restart(param1);
-					Restart(g_partner[param1]);
-				}
+			else if(StrEqual(item, "restart", true) == true)
+			{
+				Restart(param1);
+				Restart(g_partner[param1]);
+			}
 
-				case 7:
-				{
-					g_menuOpened[param1] = false;
-					Checkpoint(param1);
-				}
+			else if(StrEqual(item, "noclip", true) == true)
+			{
+				Noclip(param1);
+			}
 
-				case 8:
-				{
-					Noclip(param1);
-					Trikz(param1);
-					//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER);
-				}
+			else if(StrEqual(item, "checkpoint", true) == true)
+			{
+				g_menuOpened[param1] = false;
+				Checkpoint(param1);
 			}
 		}
 
@@ -2262,7 +2259,7 @@ public Action Block(int client) //thanks maru for optimization.
 
 	//PrintToChat(client, g_block[client] ? "Block enabled." : "Block disabled.");
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
 	SendMessage(format, client);
 
@@ -2287,7 +2284,7 @@ stock void Partner(int client)
 	{
 		//PrintToChat(client, "Turn off devmap.");
 		//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
-		char format[256];
+		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
 		SendMessage(format, client);
 	}
@@ -2330,7 +2327,7 @@ stock void Partner(int client)
 				{
 					//PrintToChat(client, "No free player.");
 					//PrintToChat(client, "\x01%T", "NoFreePlayer", client);
-					char format[256];
+					char format[256] = "";
 					Format(format, sizeof(format), "%T", "NoFreePlayer", client);
 					SendMessage(format, client);
 				}
@@ -2355,7 +2352,7 @@ stock void Partner(int client)
 			GetClientName(g_partner[client], name, sizeof(name));
 			menu.SetTitle("%T", "CancelPartnership", client, name);
 			
-			char format[256];
+			char format[256] = "";
 			Format(format, sizeof(format), "%T", "Yes", partner);
 			menu.AddItem(partner, format);
 			Format(format, sizeof(format), "%T", "No", partner);
@@ -2426,7 +2423,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
 
-						char format[256];
+						char format[256] = "";
 						Format(format, sizeof(format), "%T", "GroupAgreed", param1, name);
 						SendMessage(format, param1);
 
@@ -2457,7 +2454,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 					{
 						//PrintToChat(param1, "A player already have a partner.");
 						//PrintToChat(param1, "\x01%T", "AlreadyHavePartner", param1);
-						char format[256];
+						char format[256] = "";
 						Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
 						SendMessage(format, param1);
 					}
@@ -2469,7 +2466,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 					GetClientName(param1, name, sizeof(name));
 					//PrintToChat(param1, "Partnersheep declined with %N.", partner);
 					//PrintToChat(param1, "\x01%T", "PartnerDeclined", param1, name);
-					char format[256];
+					char format[256] = "";
 					Format(format, sizeof(format), "%T", "PartnerDeclined", param1, name);
 					SendMessage(format, param1);
 				}
@@ -2623,7 +2620,7 @@ stock void ColorSelect(int client)
 
 	menu.SetTitle("%T", "Color", client);
 
-	char format[256];
+	char format[256] = "";
 	Format(format, sizeof(format), "%T", "ColorTeam", client);
 	menu.AddItem("team_color", format);
 	Format(format, sizeof(format), "%T", "PlayerSkin", client);
@@ -5301,7 +5298,7 @@ public Action SDKStartTouch(int entity, int other)
 							else if(g_cpTimeClient[i][other] > g_cpTime[i])
 							{
 								//PrintToChatAll("\x01%i. Checkpoint: \x07FF0000+%02.i:%02.i:%02.i", i, srCPHour, srCPMinute, srCPSecond);
-								char textCP[256];
+								char textCP[256] = "";
 
 								for(int j = 1; j <= MaxClients; j++)
 								{
@@ -7928,7 +7925,7 @@ stock void Devmap(bool force)
 
 			else if(g_devmap == false)
 			{
-				//char format[256];
+				//char format[256] = "";
 				//Format(format, sizeof(format), "\x01%T", "DevMapWillNotBe", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 				//PrintToChatAll(format);
 
@@ -8133,28 +8130,30 @@ public Action cmd_noclip(int client, int args)
 
 stock void Noclip(int client)
 {
-	if(0 < client <= MaxClients)
+	char format[256] = "";
+
+	if(g_devmap == true)
 	{
-		char format[256] = "";
+		SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
 
-		if(g_devmap == true)
-		{
-			SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
+		//PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.");
 
-			//PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.");
+		Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipON" : "NoclipOFF", client);
+		SendMessage(format, client);
+	}
 
-			Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipON" : "NoclipOFF", client);
-			SendMessage(format, client);
-		}
+	else if(g_devmap == false)
+	{
+		//PrintToChat(client, "Turn on devmap.");
+		//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
 
-		else if(g_devmap == false)
-		{
-			//PrintToChat(client, "Turn on devmap.");
-			//PrintToChat(client, "\x01%T", "DevMapIsOFF", client);
+		Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
+		SendMessage(format, client);
+	}
 
-			Format(format, sizeof(format), "%T", "DevMapIsOFF", client);
-			SendMessage(format, client);
-		}
+	if(g_menuOpened[client] == true)
+	{
+		Trikz(client);
 	}
 
 	return;
