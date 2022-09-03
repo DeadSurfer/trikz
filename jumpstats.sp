@@ -74,7 +74,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh",
 	description = "Measures distance difference between two vectors",
-	version = "0.21",
+	version = "0.22",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -288,6 +288,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(GetEntityFlags(client) & FL_ONGROUND && g_jumped[client] == true)
 	{
+		char print[256] = "";
+
 		float origin[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(client, origin);
 
@@ -295,12 +297,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(GetGroundPos(client) - g_origin[client][2] > 0.04)
 		{
-			Format(flat, 32, "[Rise|%.1f] ", GetGroundPos(client) - g_origin[client][2]);
+			Format(flat, 32, "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
 		if(GetGroundPos(client) - g_origin[client][2] < -0.04)
 		{
-			Format(flat, 32, "[Fall|%.1f] ", GetGroundPos(client) - g_origin[client][2]);
+			Format(flat, 32, "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
 		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0; //http://mathonline.wikidot.com/the-distance-between-two-vectors
@@ -323,12 +325,36 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(g_jumpstats[client] == true)
 			{
-				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+
+				Handle KeyHintText = StartMessageOne("KeyHintText", client);
+
+				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+				bfmsg.WriteByte(true);
+
+				bfmsg.WriteString(print);
+
+				EndMessage();
+
+				PrintToConsole(client, "%s%s%s%sJump: %.0f units, Strafes: %i, Pre: %.0f u/s, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
 			}
 
 			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true)
 			{
-				PrintToChat(g_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+
+				Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
+
+				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+				bfmsg.WriteByte(true);
+
+				bfmsg.WriteString(print);
+
+				EndMessage();
+
+				PrintToConsole(g_rbBooster[client], "%s%s%s%sJump: %.0f units, Strafes: %i, Pre: %.0f u/s, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
 			}
 		}
 
@@ -343,7 +369,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
 					{
-						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%%, Gain: %.1f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+						Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+
+						Handle KeyHintText = StartMessageOne("KeyHintText", i);
+
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+						bfmsg.WriteByte(true);
+
+						bfmsg.WriteString(print);
+
+						EndMessage();
+
+						PrintToConsole(i, "%s%s%s%sJump: %.0f units, Strafes: %i, Pre: %.0f u/s, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
 					}
 				}
 			}
@@ -388,6 +426,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(GetEntityFlags(client) & FL_ONGROUND && g_ladder[client])
 	{
+		char print[256] = "";
+
 		float origin[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(client, origin);
 
@@ -415,7 +455,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(190.0 > distance >= 22.0)
 					{
-						PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f, Gain: %.1f%%", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+						Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f％", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+
+						Handle KeyHintText = StartMessageOne("KeyHintText", client);
+
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+						bfmsg.WriteByte(true);
+
+						bfmsg.WriteString(print);
+
+						EndMessage();
+
+						PrintToConsole(client, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f%%", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
 					}
 				}
 
@@ -430,7 +482,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						{
 							if(190.0 > distance >= 22.0)
 							{
-								PrintToChat(i, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f, Gain: %.1f%%", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+								Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f％", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+
+								Handle KeyHintText = StartMessageOne("KeyHintText", i);
+
+								BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+								bfmsg.WriteByte(true);
+
+								bfmsg.WriteString(print);
+
+								EndMessage();
+
+								PrintToConsole(i, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f%%", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
 							}
 						}
 					}
@@ -446,7 +510,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrContains(classname, "projectile") != -1)
+	if(StrContains(classname, "projectile", true) != -1)
 	{
 		SDKHook(entity, SDKHook_StartTouch, StartTouchProjectile);
 	}
@@ -599,16 +663,42 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 				//if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
+					char print[256] = "";
+
 					ConVar gravity = FindConVar("sv_gravity");
 
 					if(g_jumpstats[client] == true)
 					{
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
+						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+
+						Handle KeyHintText = StartMessageOne("KeyHintText", client);
+
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+						bfmsg.WriteByte(true);
+
+						bfmsg.WriteString(print);
+
+						EndMessage();
+
+						PrintToConsole(client, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
 					} 
 
 					if(g_jumpstats[other] == true)
 					{
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+
+						Handle KeyHintText = StartMessageOne("KeyHintText", other);
+
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+						bfmsg.WriteByte(true);
+
+						bfmsg.WriteString(print);
+
+						EndMessage();
+
+						PrintToConsole(other, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
 					}
 
 					for(int i = 1; i <= MaxClients; i++)
@@ -620,7 +710,19 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 							if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 							{
-								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+								Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+
+								Handle KeyHintText = StartMessageOne("KeyHintText", other);
+
+								BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+								bfmsg.WriteByte(true);
+
+								bfmsg.WriteString(print);
+
+								EndMessage();
+								
+								PrintToChat(i, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
 							}
 						}
 					}
