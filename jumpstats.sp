@@ -382,6 +382,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && g_ladder[client])
 	{
 		Sync(client, buttons, mouse);
+		
 		Gain(client, vel, angles);
 	}
 
