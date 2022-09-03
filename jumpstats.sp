@@ -371,7 +371,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float origin[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(client, origin);
 
-		for(int i = 0; i <= MaxClients; i++)
+		for(int i = 0; i <= 2; i++)
 		{
 			g_origin[client][i] = origin[i];
 		}
