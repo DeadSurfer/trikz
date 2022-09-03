@@ -251,6 +251,11 @@ public Action timer_bot(Handle timer)
 						LoadRecord();
 					}
 				}
+
+				if(g_bot[0] != 0 && g_bot[1] != 0 && Trikz_GetClientPartner(i) == 0)
+				{
+					ServerCommand("bot_kick %N", i);
+				}
 			}
 		}
 	}
