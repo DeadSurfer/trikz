@@ -148,8 +148,8 @@ int g_queryLast = 0;
 Handle g_cookie[12];
 float g_skyAble[MAXPLAYER];
 native bool Trikz_GetEntityFilter(int client, int entity);
-float g_restartInHold[MAXPLAYER];
-bool g_restartInHoldLock[MAXPLAYER];
+float g_restartHoldTime[MAXPLAYER];
+bool g_restartLock[MAXPLAYER][2];
 int g_smoke = 0;
 bool g_clantagOnce[MAXPLAYER];
 ConVar gCV_trikz;
@@ -194,7 +194,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.46",
+	version = "4.47",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -7382,7 +7382,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 
-			int entity = CreateEntityByName("prop_dynamic_override"); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+			int entity = CreateEntityByName("prop_dynamic_override", -1); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 
 			//SetEntityModel(g_pingModel[client], "models/trueexpert/pingtool/pingtool.mdl");
 			SetEntityModel(entity, "models/effects/combineball.mdl");
@@ -7408,7 +7408,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client);
 
-			if(TR_DidHit(null) == true)
+			if(TR_DidHit(INVALID_HANDLE) == true)
 			{
 				TR_GetEndPosition(end);
 
@@ -7603,31 +7603,38 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
 		{
-			g_restartInHold[client] = GetEngineTime();
+			if(g_restartLock[client][0] == false)
+			{
+				g_restartHoldTime[client] = GetEngineTime();
 
-			g_restartInHoldLock[client] = false;
+				g_restartLock[client][0] = true;
+				g_restartLock[client][1] = false;
+			}
 		}
 	}
 
 	else if(!(buttons & IN_RELOAD))
 	{
-		if(g_restartInHoldLock[client] == false)
+		if(g_restartLock[client][0] == true)
 		{
-			g_restartInHoldLock[client] = true;
+			g_restartLock[client][0] = false;
+			g_restartLock[client][1] = false;
 		}
 	}
 
-	if(g_restartInHoldLock[client] == false && GetEngineTime() - g_restartInHold[client] >= 0.7)
+	if(g_restartLock[client][0] == true && g_restartLock[client][1] == false && GetEngineTime() - g_restartHoldTime[client] >= 0.7)
 	{
-		g_restartInHoldLock[client] = true;
+		g_restartLock[client][1] = true;
+		
+		int partner = g_partner[client];
 
-		if(g_partner[client] > 0)
+		if(partner > 0)
 		{
 			Restart(client);
-			Restart(g_partner[client]);
+			Restart(partner);
 		}
 
-		else if(g_partner[client] == 0)
+		else if(partner == 0)
 		{
 			Partner(client);
 		}
@@ -7863,7 +7870,7 @@ stock void Devmap(bool force)
 {
 	if(force == true || g_voters == 0)
 	{
-		char format[256];
+		char format[256] = "";
 
 		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] >= g_devmapCount[0])
 		{
@@ -9123,8 +9130,18 @@ public MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github
 	
 	//float origin[3];
 	//DHookGetParamVector(hParams, 1, origin);
-	
-	g_teleported[client] = true;
+
+	//float vel[3] = {0.0, 0.0, 0.0};
+	//DHookGetParamVector(hParams, 3, vel);
+
+	//PrintToServer("%f %f %f", vel[0], vel[1], vel[2]);
+
+	PrintToServer("%N", client);
+
+	if(g_mlsCount[client] > 0)
+	{
+		g_teleported[client] = true;
+	}
 
 	static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
