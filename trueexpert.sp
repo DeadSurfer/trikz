@@ -434,7 +434,7 @@ public void OnMapStart()
 
 		ForceChangeLevel(g_map, "Turning on SourceTV");
 
-		//this should provides a crash if reload plugin.
+		//this should provides a crash if reload plugin (DHookEntity). https://issuehint.com/issue/alliedmodders/sourcemod/1688
 		ServerCommand("tv_delay 0");
 		ServerCommand("tv_transmitall 1");
 	}
