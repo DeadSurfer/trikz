@@ -188,6 +188,15 @@ int g_ZoneEditor = 0;
 int g_ZoneEditorCP = 0;
 int g_skinFlashbang[MAXPLAYER];
 int g_skinPlayer[MAXPLAYER];
+ConVar gCV_devmap = null;
+ConVar gCV_hud = null;
+ConVar gCV_endmsg = null;
+ConVar gCV_top10 = null;
+ConVar gCV_control = null;
+ConVar gCV_skin = null;
+ConVar gCV_top = null;
+ConVar gCV_mlstats = null;
+ConVar gCV_vel = null;
 
 public Plugin myinfo =
 {
@@ -201,23 +210,32 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Trikz menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_block = CreateConVar("sm_te_block", "0.0", "Toggling block state.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Toggling partner menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Allow to use trikz menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_block = CreateConVar("sm_te_block", "0.0", "Allow to toggling block state.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Allow to use partner system.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_color = CreateConVar("sm_te_color", "0.0", "Toggling color menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_restart = CreateConVar("sm_te_restart", "0.0", "Allow player to restart timer.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow use checkpoint in dev mode.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_afk = CreateConVar("sm_te_afk", "0.0", "Allow to use !afk command for players.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in dev mode.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow use checkpoint in devmap.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_afk = CreateConVar("sm_te_afk", "0.0", "Allow to use !afk command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in devmap.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_spec = CreateConVar("sm_te_spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_button = CreateConVar("sm_te_button", "0.0", "Allow to use text message for button announcments.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_pbutton = CreateConVar("sm_te_pbutton", "0.0", "Allow to use text message for partner button announcments.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_bhop = CreateConVar("sm_te_bhop", "0.0", "Autobhop.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_bhop = CreateConVar("sm_te_bhop", "0.0", "Allow to use autobhop.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_boostfix = CreateConVar("sm_te_boostfix", "0.0", "Artifacial boost for nade and stack boost", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_boostfix = CreateConVar("sm_te_boostfix", "0.0", "Artifacial boost for nade and stack boost.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_devmap = CreateConVar("sm_te_devmap", "0.0", "Allow to use devmap.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_hud = CreateConVar("sm_te_hud", "0.0", "Allow to use !hud command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_endmsg = CreateConVar("sm_te_endmsg", "0.0", "Allow to use !endmsg command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_top10 = CreateConVar("sm_te_top10", "0.0", "Allow to use !top10 command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_control = CreateConVar("sm_te_control", "0.0", "Allow to use control menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_skin = CreateConVar("sm_te_skin", "0.0", "Allow to use skin menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_top = CreateConVar("sm_te_top", "0.0", "Allow to use !top command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_mlstats = CreateConVar("sm_te_mlstats", "0.0", "Allow to use !mlstats command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_vel = CreateConVar("sm_te_vel", "0.0", "Allow to use velocity in hud.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	
 	AutoExecConfig(true, "plugin.trueexpert", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -1246,18 +1264,18 @@ public void Control(int client)
 
 	menu.SetTitle("Control");
 
-	menu.AddItem("top", "!top");
-	menu.AddItem("top10", "!top10");
-	menu.AddItem("js", "!js");
-	menu.AddItem("bs", "!bs");
-	menu.AddItem("hud", "!hud");
-	menu.AddItem("button", "!button");
-	menu.AddItem("pbutton", "!pbutton");
-	menu.AddItem("spec", "!spec");
-	menu.AddItem("color", "!color");
-	menu.AddItem("afk", "!afk");
+	menu.AddItem("top", "!top", gCV_top.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("top10", "!top10", gCV_top10.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("js", "!js", LibraryExists("trueexpert-jumpstats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("bs", "!bs", LibraryExists("trueexpert-booststats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("hud", "!hud", gCV_hud.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("button", "!button", gCV_button.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("pbutton", "!pbutton", gCV_pbutton.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("spec", "!spec", gCV_spec.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("color", "!color", gCV_color.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("afk", "!afk", gCV_afk.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	//menu.AddItem("colorflash", "!colorflash");
-	menu.AddItem("trikz", "!trikz");
+	menu.AddItem("trikz", "!trikz", gCV_trikz.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
 
@@ -1356,12 +1374,14 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 
 public Action cmd_checkpoint(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_checkpoint);
+	bool checkpoint = gCV_checkpoint.BoolValue;
 
-	if(convar == true)
+	if(checkpoint == false)
 	{
-		Checkpoint(client);
+		return Plugin_Continue;
 	}
+
+	Checkpoint(client);
 
 	return Plugin_Handled;
 }
@@ -2003,9 +2023,14 @@ public void SDKBoostFix(int client)
 
 public Action cmd_trikz(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_trikz);
+	bool trikz = gCV_trikz.BoolValue;
 
-	if(convar == true && g_menuOpened[client] == false)
+	if(trikz == false)
+	{
+		return Plugin_Continue;
+	}
+
+	if(g_menuOpened[client] == false)
 	{
 		Trikz(client);
 	}
@@ -2237,9 +2262,9 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public Action cmd_block(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_block);
+	bool block = gCV_block.BoolValue;
 
-	if(convar == false)
+	if(block == false)
 	{
 		return Plugin_Continue;
 	}
@@ -2273,12 +2298,14 @@ public Action Block(int client) //thanks maru for optimization.
 
 public Action cmd_partner(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_partner);
+	bool partner = gCV_partner.BoolValue;
 
-	if(convar == true)
+	if(partner == false)
 	{
-		Partner(client);
+		return Plugin_Continue;
 	}
+
+	Partner(client);
 
 	return Plugin_Handled;
 }
@@ -2605,9 +2632,9 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 public Action cmd_color(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_color);
+	bool color = gCV_color.BoolValue;
 
-	if(convar == false)
+	if(color == false)
 	{
 		return Plugin_Handled;
 	}
@@ -2891,11 +2918,11 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 
 public Action cmd_restart(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_restart);
+	bool restart = gCV_restart.BoolValue;
 
-	if(convar == false)
+	if(restart == false)
 	{
-		return Plugin_Handled;
+		return Plugin_Continue;
 	}
 
 	Restart(client);
@@ -2997,9 +3024,9 @@ stock void Restart(int client)
 
 public Action cmd_autoflash(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_autoflashbang);
+	bool autoflashbang = gCV_autoflashbang.BoolValue;
 	
-	if(convar == false)
+	if(autoflashbang == false)
 	{
 		return Plugin_Continue;
 	}
@@ -3026,9 +3053,9 @@ public Action cmd_autoflash(int client, int args)
 
 public Action cmd_autoswitch(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_autoswitch);
+	bool autoswitch = gCV_autoswitch.BoolValue;
 	
-	if(convar == false)
+	if(autoswitch == false)
 	{
 		return Plugin_Continue;
 	}
@@ -3053,9 +3080,9 @@ public Action cmd_autoswitch(int client, int args)
 
 public Action cmd_bhop(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_bhop);
+	bool bhop = gCV_bhop.BoolValue;
 	
-	if(convar == false)
+	if(bhop == false)
 	{
 		return Plugin_Continue;
 	}
@@ -3080,6 +3107,13 @@ public Action cmd_bhop(int client, int args)
 
 public Action cmd_endmsg(int client, int args)
 {
+	bool endmsg = gCV_endmsg.BoolValue;
+
+	if(endmsg == false)
+	{
+		return Plugin_Continue;
+	}
+
 	g_endMessage[client] = !g_endMessage[client];
 
 	char value[8] = "";
@@ -3100,6 +3134,13 @@ public Action cmd_endmsg(int client, int args)
 
 public Action cmd_top10(int client, int args)
 {
+	bool top10 = gCV_top10.BoolValue;
+
+	if(top10 == false)
+	{
+		return Plugin_Continue;
+	}
+
 	Top10();
 
 	return Plugin_Handled;
@@ -3238,6 +3279,13 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 
 public Action cmd_control(int client, int args)
 {
+	bool control = gCV_control.BoolValue;
+
+	if(control == false)
+	{
+		return Plugin_Continue;
+	}
+
 	Control(client);
 
 	return Plugin_Handled;
@@ -3245,6 +3293,13 @@ public Action cmd_control(int client, int args)
 
 public Action cmd_skin(int client, int args)
 {
+	bool skin = gCV_skin.BoolValue;
+
+	if(skin == false)
+	{
+		return Plugin_Continue;
+	}
+
 	Skin(client);
 
 	return Plugin_Handled;
@@ -3419,9 +3474,9 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 
 public Action cmd_macro(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_macro);
+	bool macro = gCV_macro.BoolValue;
 	
-	if(convar == false)
+	if(macro == false)
 	{
 		return Plugin_Continue;
 	}
@@ -7785,6 +7840,13 @@ public Action ProjectileBoostFix(int entity, int other)
 
 public Action cmd_devmap(int client, int args)
 {
+	bool devmap = gCV_devmap.BoolValue;
+
+	if(devmap == false)
+	{
+		return Plugin_Continue;
+	}
+
 	char format[256] = "";
 
 	if(GetEngineTime() - g_devmapTime > 35.0 && GetEngineTime() - g_afkTime > 30.0)
@@ -7999,6 +8061,13 @@ public Action timer_changelevel(Handle timer, bool value)
 
 public Action cmd_top(int client, int args)
 {
+	bool top = gCV_top.BoolValue;
+
+	if(top == false)
+	{
+		return Plugin_Continue;
+	}
+
 	CreateTimer(0.1, timer_motd, client, TIMER_FLAG_NO_MAPCHANGE); //OnMapStart() is not work from first try.
 
 	return Plugin_Handled;
@@ -8033,11 +8102,16 @@ public Action timer_motd(Handle timer, int client)
 
 public Action cmd_afk(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_afk);
+	bool afk = gCV_afk.BoolValue;
+
+	if(afk == false)
+	{
+		return Plugin_Continue;
+	}
 
 	char format[256] = "";
 
-	if(convar == true && (GetEngineTime() - g_afkTime > 30.0 && GetEngineTime() - g_devmapTime > 35.0))
+	if(GetEngineTime() - g_afkTime > 30.0 && GetEngineTime() - g_devmapTime > 35.0)
 	{
 		g_voters = 0;
 
@@ -8155,12 +8229,14 @@ stock void AFK(int client, bool force)
 
 public Action cmd_noclip(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_noclip);
+	bool noclip = gCV_noclip.BoolValue;
 
-	if(convar == true)
+	if(noclip == false)
 	{
-		Noclip(client);
+		return Plugin_Continue;
 	}
+
+	Noclip(client);
 
 	return Plugin_Handled;
 }
@@ -8198,18 +8274,27 @@ stock void Noclip(int client)
 
 public Action cmd_spec(int client, int args)
 {
-	bool convar = GetConVarBool(gCV_spec);
+	bool spec = gCV_spec.BoolValue;
 
-	if(convar == true)
+	if(spec == false)
 	{
-		ChangeClientTeam(client, CS_TEAM_SPECTATOR);
+		return Plugin_Continue;
 	}
+
+	ChangeClientTeam(client, CS_TEAM_SPECTATOR);
 
 	return Plugin_Handled;
 }
 
 public Action cmd_hud(int client, int args)
 {
+	bool hud = gCV_hud.BoolValue;
+
+	if(hud == false)
+	{
+		return Plugin_Continue;
+	}
+
 	HudMenu(client);
 
 	return Plugin_Handled;
@@ -8225,12 +8310,12 @@ stock void HudMenu(int client)
 	char format[128] = "";
 	Format(format, sizeof(format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
 	//menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
-	menu.AddItem("vel", format);
+	menu.AddItem("vel", format, gCV_vel.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	//menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
 	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
-	menu.AddItem("mls", format);
+	menu.AddItem("mls", format, gCV_mlstats.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
-	menu.AddItem("endmsg", format);
+	menu.AddItem("endmsg", format, gCV_endmsg.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
 
@@ -8340,6 +8425,13 @@ stock void Hud(int client)
 
 public Action cmd_mlstats(int client, int args)
 {
+	bool mlstats = gCV_mlstats.BoolValue;
+
+	if(mlstats == false)
+	{
+		return Plugin_Continue;
+	}
+
 	g_mlstats[client] = !g_mlstats[client];
 
 	char value[8] = "";
@@ -8364,6 +8456,13 @@ public Action cmd_mlstats(int client, int args)
 
 public Action cmd_button(int client, int args)
 {
+	bool button = gCV_button.BoolValue;
+
+	if(button == false)
+	{
+		return Plugin_Continue;
+	}
+
 	g_button[client] = !g_button[client];
 
 	char value[8] = "";
@@ -8383,6 +8482,13 @@ public Action cmd_button(int client, int args)
 
 public Action cmd_pbutton(int client, int args)
 {
+	bool pbutton = gCV_pbutton.BoolValue;
+
+	if(pbutton == false)
+	{
+		return Plugin_Continue;
+	}
+
 	g_pbutton[client] = !g_pbutton[client]; //toggling
 
 	char value[8] = "";
