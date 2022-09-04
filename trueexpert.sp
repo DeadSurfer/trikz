@@ -494,6 +494,8 @@ public void OnMapStart()
 		g_pingTimer[i] = INVALID_HANDLE;
 	}
 
+	g_top10ac = 0.0;
+
 	return;
 }
 
