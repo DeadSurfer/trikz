@@ -200,7 +200,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0, false, 0.0, true, 1.0);
+	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Trikz menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_block = CreateConVar("sm_te_block", "0.0", "Toggling block state.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Toggling partner menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
