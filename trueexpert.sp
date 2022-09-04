@@ -1582,9 +1582,12 @@ public void OnClientPutInServer(int client)
 	//g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
 
-	if(g_teleport != null)
+	if(IsClientSourceTV(client) == false) //this should provides a crash if reload plugin (DHookEntity). https://issuehint.com/issue/alliedmodders/sourcemod/1688
 	{
-		DHookEntity(g_teleport, true, client);
+		if(g_teleport != null)
+		{
+			DHookEntity(g_teleport, true, client);
+		}
 	}
 
 	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][2][0] == 0)
