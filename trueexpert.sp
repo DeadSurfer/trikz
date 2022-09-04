@@ -219,7 +219,7 @@ public void OnPluginStart()
 	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_boostfix = CreateConVar("sm_te_boostfix", "0.0", "Artifacial boost for nade and stack boost", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	
-	AutoExecConfig(true, "plugin.trueexpert.sp", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
+	AutoExecConfig(true, "plugin.trueexpert", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
 	RegConsoleCmd("sm_t", cmd_trikz);
 	RegConsoleCmd("sm_trikz", cmd_trikz);
