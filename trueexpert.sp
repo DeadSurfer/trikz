@@ -7750,9 +7750,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	bool macro = gCV_macro.BoolValue;
 
 	if(macro == true)
-	{
-		float time = GetEngineTime() - g_macroTime[client];
-		
+	{		
 		if(buttons & IN_ATTACK2)
 		{
 			char classname[32] = "";
@@ -7760,23 +7758,26 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
-				if(g_macroOpened[client] == false && time >= 0.4)
+				if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= 0.36)
 				{
 					g_macroTime[client] = GetEngineTime();
+
 					g_macroOpened[client] = true;
 				}
 
-				if(g_macroOpened[client] == true && time <= 0.02)
+				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.02)
 				{
 					buttons |= IN_ATTACK;
 				}
 			}
 		}
 		
-		if(g_macroOpened[client] == true && time >= 0.1)
+		if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.11)
 		{
 			buttons |= IN_JUMP;
+
 			g_macroTime[client] = GetEngineTime();
+
 			g_macroOpened[client] = false;
 		}
 	}
