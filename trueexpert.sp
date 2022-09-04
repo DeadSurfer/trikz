@@ -203,7 +203,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.48",
+	version = "4.49",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -361,7 +361,7 @@ public void OnPluginStart()
 		return;
 	}
 	
-	g_teleport.AddParam( HookParamType_VectorPtr);
+	g_teleport.AddParam(HookParamType_VectorPtr);
 	g_teleport.AddParam(HookParamType_ObjectPtr);
 	g_teleport.AddParam(HookParamType_VectorPtr);
 
@@ -431,6 +431,10 @@ public void OnMapStart()
 		g_sourcetv = true;
 
 		ForceChangeLevel(g_map, "Turning on SourceTV");
+
+		//this should provides a crash if reload plugin.
+		ServerCommand("tv_delay 0");
+		ServerCommand("tv_transmitall 1");
 	}
 
 	g_wModelThrown = PrecacheModel("models/trueexpert/flashbang/flashbang.mdl", true);
@@ -1155,9 +1159,9 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 {
 	if(IsClientValid(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
-		bool convar = GetConVarBool(gCV_button);
+		bool button = gCV_button.BoolValue;
 
-		if(g_button[activator] == true && convar == true)
+		if(g_button[activator] == true && button == true)
 		{
 			//PrintToChat(activator, "You have pressed a button.");
 			//PrintToChat(activator, "\x01%T", "YouPressedButton", activator);
@@ -1166,9 +1170,9 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 			SendMessage(format, activator);
 		}
 
-		bool convar2 = GetConVarBool(gCV_pbutton);
+		bool pbutton = gCV_pbutton.BoolValue;
 
-		if(g_pbutton[g_partner[activator]] == true && convar2 == true)
+		if(g_pbutton[g_partner[activator]] == true && pbutton == true)
 		{
 			//PrintToChat(g_partner[activator], "Your partner have pressed a button.");
 			//PrintToChat(g_partner[activator], "\x01%T", "YourPartnerPressedButton", g_partner[activator]);
@@ -1353,9 +1357,9 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 
 public Action headtrack_reset_home_pos(int client, const char[] command, int argc)
 {
-	bool convar = GetConVarBool(gCV_color);
+	bool color = gCV_color.BoolValue;
 	
-	if(convar == true)
+	if(color == true)
 	{
 		//ColorFlashbang(client, true, -1);
 		Skin(client);
@@ -1487,17 +1491,17 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage);
 
-	bool convar = GetConVarBool(gCV_boostfix);
+	bool boostfix = gCV_boostfix.BoolValue;
 
-	if(convar == true)
+	if(boostfix == true)
 	{
 		SDKHook(client, SDKHook_StartTouch, SDKSkyFix);
 		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	}
 
-	bool convar2 = GetConVarBool(gCV_autoflashbang);
+	bool autoflashbang = gCV_autoflashbang.BoolValue;
 
-	if(convar2 == true)
+	if(autoflashbang == true)
 	{
 		SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
 	}
@@ -1565,12 +1569,9 @@ public void OnClientPutInServer(int client)
 	//g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
 
-	if(IsClientSourceTV(client) == false) //this should provides a crash if reload plugin.
+	if(g_teleport != null)
 	{
-		if(g_teleport != null)
-		{
-			DHookEntity(g_teleport, true, client);
-		}
+		DHookEntity(g_teleport, true, client);
 	}
 
 	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][2][0] == 0)
@@ -2734,9 +2735,9 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		bool convar = GetConVarBool(gCV_color);
+		bool colorCV = gCV_color.BoolValue;
 
-		if(convar == false)
+		if(colorCV == false)
 		{
 			return;
 		}
@@ -2833,9 +2834,9 @@ stock void ColorFlashbang(int client, int color = -1)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		bool convar = GetConVarBool(gCV_color);
+		bool colorCV = gCV_color.BoolValue;
 
-		if(convar == false)
+		if(colorCV == false)
 		{
 			return;
 		}
@@ -7316,9 +7317,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	g_entityButtons[client] = buttons;
 
-	bool convar = GetConVarBool(gCV_bhop);
+	bool bhop = gCV_bhop.BoolValue;
 
-	if(convar == true && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
+	if(bhop == true && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 	{
 		buttons &= ~IN_JUMP; //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	}
@@ -7338,7 +7339,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i  ", hour, minute, second);
 		}
 
-		else if (hour == 0)
+		else if(hour == 0)
 		{
 			Format(g_clantag[client][1], 256, "%02.i:%02.i    ", minute, second);
 		}
@@ -7391,7 +7392,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				velocity[2] += g_entityVel[client][2];
 			}
 
-			else if (g_groundBoost[client] == false)
+			else if(g_groundBoost[client] == false)
 			{
 				velocity[0] += g_entityVel[client][0] * 0.135;
 				velocity[1] += g_entityVel[client][1] * 0.135;
@@ -7435,9 +7436,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		bool convar2 = GetConVarBool(gCV_pingtool);
+		bool pingtool = gCV_pingtool.BoolValue;
 
-		if(convar2 == true && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] >= 0.2)
+		if(pingtool == true && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] >= 0.2)
 		{
 			g_pingLock[client] = true;
 
@@ -8744,9 +8745,9 @@ public void SDKProjectile(int entity)
 
 	if(IsValidEntity(entity) == true && IsValidEntity(client) == true)
 	{
-		bool convar = GetConVarBool(gCV_autoflashbang);
+		bool autoflashbang = gCV_autoflashbang.BoolValue;
 
-		if(convar == true && (g_autoflash[client] == true || IsFakeClient(client) == true))
+		if(autoflashbang == true && (g_autoflash[client] == true || IsFakeClient(client) == true))
 		{
 			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		}
@@ -8764,9 +8765,9 @@ public void SDKProjectile(int entity)
 
 		SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
-		bool convar2 = GetConVarBool(gCV_autoswitch);
+		bool autoswitch = gCV_autoswitch.BoolValue;
 		
-		if(convar2 == true && (g_autoswitch[client] == true || IsFakeClient(client) == true))
+		if(autoswitch == true && (g_autoswitch[client] == true || IsFakeClient(client) == true))
 		{
 			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
@@ -8775,6 +8776,7 @@ public void SDKProjectile(int entity)
 			FakeClientCommandEx(client, "use weapon_knife");
 			
 			g_flashbangTime[client] = GetEngineTime();
+
 			g_flashbangDoor[client][0] = true;
 			g_flashbangDoor[client][1] = true;
 		}
@@ -8926,9 +8928,9 @@ public Action SDKWeaponDrop(int client, int weapon)
 
 stock void GiveFlashbang(int client)
 {
-	bool convar = GetConVarBool(gCV_autoflashbang);
+	bool autoflashbang = gCV_autoflashbang.BoolValue;
 	
-	if(convar == true && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
+	if(autoflashbang == true && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
 	{
 		if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
 		{
