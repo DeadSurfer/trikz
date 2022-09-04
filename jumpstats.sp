@@ -67,7 +67,7 @@ Handle g_cookie = INVALID_HANDLE;
 float g_skyAble[MAXPLAYER];
 float g_gain[MAXPLAYER];
 int g_entityFlags[MAXPLAYER];
-Handle g_teleport = INVALID_HANDLE;
+DynamicHook g_teleport = null;
 
 public Plugin myinfo =
 {
@@ -126,9 +126,9 @@ public void OnPluginStart()
 			return;
 		}
 		
-		DHookAddParam(g_teleport, HookParamType_VectorPtr);
-		DHookAddParam(g_teleport, HookParamType_ObjectPtr);
-		DHookAddParam(g_teleport, HookParamType_VectorPtr);
+		g_teleport.AddParam(HookParamType_VectorPtr);
+		g_teleport.AddParam(HookParamType_ObjectPtr);
+		g_teleport.AddParam(HookParamType_VectorPtr);
 	}
 
 	return;
@@ -864,7 +864,7 @@ stock void Sync(int client, int buttons, int mouse[2])
 		}
 	}
 
-	else if(!(g_dot[client] < -0.9) || !(g_dot[client] >-0.9))//sideways
+	else if(!(g_dot[client] < -0.9) && !(g_dot[client] >-0.9))//sideways
 	{
 		if(g_jumped[client] == true || g_ladder[client] == true)
 		{
