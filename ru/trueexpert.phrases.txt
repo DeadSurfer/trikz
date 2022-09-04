@@ -40,7 +40,6 @@
 	}
 	"DevMapIsOFF"
 	{
-		//"#format"	""
 		"ru"	"Включите devmap."
 	}
 	"DevMapIsON"
@@ -148,14 +147,14 @@
 	{
 		"ru"	"Нет"
 	}
-	"BlockON"
+	/*"BlockON"
 	{
 		"ru"	"Блокирование теперь включено."
 	}
 	"BlockOFF"
 	{
 		"ru"	"Блокирование теперь выключено."
-	}
+	}*/
 	"GroupAgreed"
 	{
 		"#format"	"{1:s}"
@@ -318,11 +317,11 @@
 	{
 		"ru"	"Трикз"
 	}
-	"BlockON"
+	"BlockMenuON"
 	{
 		"ru"	"Блок [v]"
 	}
-	"BlockOFF"
+	"BlockMenuOFF"
 	{
 		"ru"	"Блок [x]"
 	}
@@ -534,12 +533,26 @@
 	{
 		"ru"	"Конечное оповещение [x]"
 	}
-	"Top10"
+	/*"Top10"
 	{
 		//"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
 		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
 		//"ru"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}}{default})"
 		"ru"	"{1}. {2} и {3} завершили карту за ;#7CFC00{4} {default}(SR ;#FF0000+{5}{default})"
+	}*/
+	"Top10details"
+	{
+		"ru"	"Место:\tВремя:\t\tРазница:\t\t\tКоманда:"
+	}
+	"Top10source1-9"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"ru"	"#{1}\t\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t\t{4} & {5}"
+	}
+	"Top10source10"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"ru"	"#{1}\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t\t{4} & {5}"
 	}
 	/*"Cstrike_Chat_AllSpec"
 	{
