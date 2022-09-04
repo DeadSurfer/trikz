@@ -179,7 +179,7 @@ float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
 ConVar gCV_pingtool;
 int g_top10Count = 0;
-Handle g_teleport = INVALID_HANDLE;
+DynamicHook g_teleport = null;
 //KeyValues g_kv;
 ConVar gCV_boostfix;
 float g_top10ac = 0.0;
@@ -336,7 +336,7 @@ public void OnPluginStart()
 	
 	g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooks_OnTeleport);
 
-	if(g_teleport == INVALID_HANDLE)
+	if(g_teleport == null)
 	{
 		SetFailState("[DHooks] Could not create Teleport hook function!");
 
@@ -1545,7 +1545,10 @@ public void OnClientPutInServer(int client)
 
 	if(IsClientSourceTV(client) == false) //this should provides a crash if reload plugin.
 	{
-		DHookEntity(g_teleport, true, client);
+		if(g_teleport != null)
+		{
+			DHookEntity(g_teleport, true, client);
+		}
 	}
 
 	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][2][0] == 0)
@@ -2034,7 +2037,7 @@ public void Trikz(int client)
 //	}
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockON" : "BlockOFF", client);
+	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockMenuON" : "BlockMenuOFF", client);
 	menu.AddItem("block", format);
 
 	Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
@@ -3141,6 +3144,7 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 	{
 		int playerid = results.FetchInt(0);
 		int partnerid = results.FetchInt(1);
+
 		float time = results.FetchFloat(2);
 
 		char query[512] = "";
@@ -3160,17 +3164,22 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 	{
 		char name1[MAX_NAME_LENGTH] = "";
 		char name2[MAX_NAME_LENGTH] = "";
+
 		results.FetchString(0, name1, sizeof(name1));
 		results.FetchString(1, name2, sizeof(name2));
+
 		//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
 		int hour = (RoundToFloor(time) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
 		int minute = (RoundToFloor(time) / 60) % 60;
 		int second = RoundToFloor(time) % 60;
-		char format[64] = "";
-		Format(format, sizeof(format), "%02.i:%02.i:%02.i", hour, minute, second);
+
+		char formatTime[64] = "";
+		Format(formatTime, sizeof(formatTime), "%02.i:%02.i:%02.i", hour, minute, second);
+
 		//PrintToChatAll("%i, %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
+
 		int count = ++g_top10Count;
-		char format2[256] = "";
+
 		float serverRecord = 0.0;
 
 		if(count == 1)
@@ -3179,19 +3188,45 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		}
 
 		float timeDiffer = time - serverRecord;
-		int hour2 = (RoundToFloor(timeDiffer) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-		int minute2 = (RoundToFloor(timeDiffer) / 60) % 60;
-		int second2 = RoundToFloor(timeDiffer) % 60;
 
-		char formatX[64] = "";
-		Format(formatX, sizeof(formatX), "%02.i:%02.i:%02.i", hour2, minute2, second2);
+		int hourDiffer = (RoundToFloor(timeDiffer) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+		int minuteDiffer = (RoundToFloor(timeDiffer) / 60) % 60;
+		int secondDiffer = RoundToFloor(timeDiffer) % 60;
+
+		char formatTimeDiffer[64] = "";
+		Format(formatTimeDiffer, sizeof(formatTimeDiffer), "%02.i:%02.i:%02.i", hourDiffer, minuteDiffer, secondDiffer);
+
+		char format[256] = "";
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				Format(format2, sizeof(format2), "%T", "Top10", i, count, name1, name2, format, formatX);
-				SendMessage(format2, i);
+				//Format(format, sizeof(format), "%T", "Top10", i, count, name1, name2, formatTime, formatTimeDiffer);
+				//SendMessage(format, i);
+
+				//Format()
+
+				if(count == 1)
+				{
+					Format(format, sizeof(format), "\x01%T", "Top10details", i);
+					SendMessage(format, i);
+					//PrintToChat(i, "Place:\tTime:\t\tDifferent:\t\t\tTeam:");
+				}
+				
+				if(count < 10)
+				{
+					Format(format, sizeof(format), "\x01%T", "Top10source1-9", i, count, formatTime, formatTimeDiffer, name1, name2);
+					SendMessage(format, i);
+					//PrintToChat(i, "\x01#%i\t\t\x077CFC00%s\t\t\x07FF0000+%s\x01\t\t%s & %s", count, format, formatX, name1, name2);
+				}
+
+				else if(count == 10)
+				{
+					Format(format, sizeof(format), "\x01%T", "Top10source10", i, count, formatTime, formatTimeDiffer, name1, name2);
+					SendMessage(format, i);
+					//PrintToChat(i, "\x01#%i\t\x077CFC00%s\t\t\x07FF0000+%s\x01\t\t%s & %s", count, format, formatX, name1, name2);
+				}
 			}
 		}
 	}
