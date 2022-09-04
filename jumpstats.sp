@@ -319,6 +319,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 
 		sync /= float(g_tickAir[client]);
+		
 		sync *= 100.0;
 
 		if(1000.0 > distance >= 230.0 && pre < 280.0)
@@ -431,9 +432,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float origin[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(client, origin);
 
-		if(-3.0 < GetGroundPos(client) - g_origin[client][2] < 3.0)
+		if(-3.0 <= GetGroundPos(client) - g_origin[client][2] <= 3.0)
 		{
 			float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0));
+
 			float sync = -1.0;
 
 			if(g_syncTick[client] > 0)
@@ -721,7 +723,7 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 								EndMessage();
 								
-								PrintToChat(i, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+								PrintToConsole(i, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
 							}
 						}
 					}
