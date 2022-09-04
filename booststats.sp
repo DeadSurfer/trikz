@@ -72,6 +72,8 @@ public void OnPluginStart()
 
 	HookEvent("player_jump", OnJump, EventHookMode_PostNoCopy);
 
+	RegPluginLibrary("trueexpert-booststats");
+
 	return;
 }
 
