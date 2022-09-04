@@ -542,17 +542,17 @@
 	}*/
 	"Top10details"
 	{
-		"ru"	"Место:\tВремя:\t\tРазница:\t\t\tКоманда:"
+		"ru"	"Место:\tВремя:\t\tРазница:\tКоманда:"
 	}
 	"Top10source1-9"
 	{
 		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
-		"ru"	"#{1}\t\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t\t{4} & {5}"
+		"ru"	"#{1}\t\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t{4} & {5}"
 	}
 	"Top10source10"
 	{
 		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
-		"ru"	"#{1}\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t\t{4} & {5}"
+		"ru"	"#{1}\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t{4} & {5}"
 	}
 	/*"Cstrike_Chat_AllSpec"
 	{
