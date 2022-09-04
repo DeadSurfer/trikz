@@ -8919,8 +8919,12 @@ stock void MLStats(int client, bool ground)
 	{
 		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0];
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
+		float distance = SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0;
 
-		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0, g_teleported[client] == true ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, distance, g_teleported[client] == true ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+
+		PrintToConsole(g_mlsFlyer[client], "%s", print);
+		PrintToConsole(client, "%s", print);
 
 		g_teleported[client] = false;
 	}
@@ -8969,6 +8973,11 @@ stock void MLStats(int client, bool ground)
 				bfmsg.WriteString(print);
 
 				EndMessage();
+
+				if(ground == true)
+				{
+					PrintToConsole(i, "%s", print);
+				}
 			}
 		}
 	}
