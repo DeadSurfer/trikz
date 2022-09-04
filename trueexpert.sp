@@ -66,7 +66,7 @@ float g_cpTime[11];
 float g_haveRecord[MAXPLAYER];
 float g_ServerRecordTime = 0.0;
 
-ConVar g_urlTop;
+ConVar gCV_urlTop = null;
 
 bool g_menuOpened[MAXPLAYER];
 bool g_menuOpenedHud[MAXPLAYER];
@@ -152,24 +152,24 @@ float g_restartHoldTime[MAXPLAYER];
 bool g_restartLock[MAXPLAYER][2];
 int g_smoke = 0;
 bool g_clantagOnce[MAXPLAYER];
-ConVar gCV_trikz;
-ConVar gCV_block;
-ConVar gCV_partner;
-ConVar gCV_color;
-ConVar gCV_restart;
-ConVar gCV_checkpoint;
-ConVar gCV_afk;
-ConVar gCV_noclip;
-ConVar gCV_spec;
-ConVar gCV_button;
-ConVar gCV_pbutton;
-ConVar gCV_bhop;
-ConVar gCV_autoswitch;
-ConVar gCV_autoflashbang;
+ConVar gCV_trikz = null;
+ConVar gCV_block = null;
+ConVar gCV_partner = null;
+ConVar gCV_color = null;
+ConVar gCV_restart = null;
+ConVar gCV_checkpoint = null;
+ConVar gCV_afk = null;
+ConVar gCV_noclip = null;
+ConVar gCV_spec = null;
+ConVar gCV_button = null;
+ConVar gCV_pbutton = null;
+ConVar gCV_bhop = null;
+ConVar gCV_autoswitch = null;
+ConVar gCV_autoflashbang = null;
 bool g_autoflash[MAXPLAYER];
 bool g_autoswitch[MAXPLAYER];
 bool g_bhop[MAXPLAYER];
-ConVar gCV_macro;
+ConVar gCV_macro = null;
 bool g_macroDisabled[MAXPLAYER];
 float g_macroTime[MAXPLAYER];
 bool g_macroOpened[MAXPLAYER];
@@ -177,11 +177,11 @@ bool g_macroOpened[MAXPLAYER];
 bool g_endMessage[MAXPLAYER];
 float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
-ConVar gCV_pingtool;
+ConVar gCV_pingtool = null;
 int g_top10Count = 0;
 DynamicHook g_teleport = null;
 //KeyValues g_kv;
-ConVar gCV_boostfix;
+ConVar gCV_boostfix = null;
 float g_top10ac = 0.0;
 int g_step = 1;
 int g_ZoneEditor = 0;
@@ -200,26 +200,26 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	g_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0, false, 0.0, true, 1.0);
-	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Trikz menu.", 0, false, 0.0, true, 1.0);
-	gCV_block = CreateConVar("sm_te_block", "0.0", "Toggling block state.", 0, false, 0.0, true, 1.0);
-	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Toggling partner menu.", 0, false, 0.0, true, 1.0);
-	gCV_color = CreateConVar("sm_te_color", "0.0", "Toggling color menu.", 0, false, 0.0, true, 1.0);
-	gCV_restart = CreateConVar("sm_te_restart", "0.0", "Allow player to restart timer.", 0, false, 0.0, true, 1.0);
-	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow use checkpoint in dev mode.", 0, false, 0.0, true, 1.0);
-	gCV_afk = CreateConVar("sm_te_afk", "0.0", "Allow to use !afk command for players.", 0, false, 0.0, true, 1.0);
-	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in dev mode.", 0, false, 0.0, true, 1.0);
-	gCV_spec = CreateConVar("sm_te_spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", 0, false, 0.0, true, 1.0);
-	gCV_button = CreateConVar("sm_te_button", "0.0", "Allow to use text message for button announcments.", 0, false, 0.0, true, 1.0);
-	gCV_pbutton = CreateConVar("sm_te_pbutton", "0.0", "Allow to use text message for partner button announcments.", 0, false, 0.0, true, 1.0);
-	gCV_bhop = CreateConVar("sm_te_bhop", "0.0", "Autobhop.", 0, false, 0.0, true, 1.0);
-	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", 0, false, 0.0, true, 1.0);
-	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", 0, false, 0.0, true, 1.0);
-	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", 0, false, 0.0, true, 1.0);
-	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use", 0, false, 0.0, true, 1.0);
-	gCV_boostfix = CreateConVar("sm_te_boostfix", "0.0", "Artifacial boost for nade and stack boost", 0, false, 0.0, true, 1.0);
+	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", 0, false, 0.0, true, 1.0);
+	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Trikz menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_block = CreateConVar("sm_te_block", "0.0", "Toggling block state.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Toggling partner menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_color = CreateConVar("sm_te_color", "0.0", "Toggling color menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_restart = CreateConVar("sm_te_restart", "0.0", "Allow player to restart timer.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow use checkpoint in dev mode.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_afk = CreateConVar("sm_te_afk", "0.0", "Allow to use !afk command for players.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in dev mode.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_spec = CreateConVar("sm_te_spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_button = CreateConVar("sm_te_button", "0.0", "Allow to use text message for button announcments.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_pbutton = CreateConVar("sm_te_pbutton", "0.0", "Allow to use text message for partner button announcments.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_bhop = CreateConVar("sm_te_bhop", "0.0", "Autobhop.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_boostfix = CreateConVar("sm_te_boostfix", "0.0", "Artifacial boost for nade and stack boost", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	
-	AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
+	AutoExecConfig(true, "plugin.trueexpert.sp", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
 	RegConsoleCmd("sm_t", cmd_trikz);
 	RegConsoleCmd("sm_trikz", cmd_trikz);
@@ -343,9 +343,9 @@ public void OnPluginStart()
 		return;
 	}
 	
-	DHookAddParam(g_teleport, HookParamType_VectorPtr);
-	DHookAddParam(g_teleport, HookParamType_ObjectPtr);
-	DHookAddParam(g_teleport, HookParamType_VectorPtr);
+	g_teleport.AddParam( HookParamType_VectorPtr);
+	g_teleport.AddParam(HookParamType_ObjectPtr);
+	g_teleport.AddParam(HookParamType_VectorPtr);
 
 	return;
 }
@@ -8016,7 +8016,7 @@ public Action timer_motd(Handle timer, int client)
 
 		char url[192] = "";
 
-		g_urlTop.GetString(url, sizeof(url));
+		gCV_urlTop.GetString(url, sizeof(url));
 
 		Format(url, sizeof(url), "%s%s", url, g_map);
 
@@ -8596,7 +8596,7 @@ public Action cmd_time(int client, int args)
 		}
 	}
 
-	else if (IsPlayerAlive(client) == false)
+	else if(IsPlayerAlive(client) == false)
 	{
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
@@ -8617,12 +8617,16 @@ public Action cmd_time(int client, int args)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "flashbang_projectile", false))
+	if(StrContains(classname, "projectile", true) != -1)
 	{
 		g_bouncedOff[entity] = false; //"Tengulawl" "boost-fix.sp".
 
 		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix);
 		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch);
+	}
+
+	if(StrEqual(classname, "flashbang_projectile", true) == true)
+	{
 		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile);
 	}
 
