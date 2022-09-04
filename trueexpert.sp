@@ -2926,11 +2926,7 @@ public Action cmd_restart(int client, int args)
 	}
 
 	Restart(client);
-
-	if(g_partner[client] > 0)
-	{
-		Restart(g_partner[client]);
-	}
+	Restart(g_partner[client]);
 
 	return Plugin_Handled;
 }
@@ -7716,24 +7712,27 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if(g_restartLock[client][0] == true && g_restartLock[client][1] == false && GetEngineTime() - g_restartHoldTime[client] >= 0.7)
 	{
 		g_restartLock[client][1] = true;
+
+		bool restartCV = gCV_restart.BoolValue;
+		bool partnerCV = gCV_partner.BoolValue;
 		
 		int partner = g_partner[client];
 
-		if(partner > 0)
+		if(partner > 0 && restartCV == true)
 		{
 			Restart(client);
 			Restart(partner);
 		}
 
-		else if(partner == 0)
+		else if(partner == 0 && partnerCV)
 		{
 			Partner(client);
 		}
 	}
 
-	bool convarMacro = GetConVarBool(gCV_macro);
+	bool macro = gCV_macro.BoolValue;
 
-	if(convarMacro == true)
+	if(macro == true)
 	{
 		float time = GetEngineTime() - g_macroTime[client];
 		
@@ -7742,7 +7741,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			char classname[32] = "";
 			GetClientWeapon(client, classname, sizeof(classname));
 
-			if(StrEqual(classname, "weapon_flashbang", false) == true)
+			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
 				if(g_macroOpened[client] == false && time >= 0.4)
 				{
