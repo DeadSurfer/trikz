@@ -235,7 +235,7 @@ public void OnPluginStart()
 	gCV_skin = CreateConVar("sm_te_skin", "0.0", "Allow to use skin menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_top = CreateConVar("sm_te_top", "0.0", "Allow to use !top command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_mlstats = CreateConVar("sm_te_mlstats", "0.0", "Allow to use !mlstats command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_vel = CreateConVar("sm_te_vel", "0.0", "Allow to use velocity in hud.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_vel = CreateConVar("sm_te_vel", "0.0", "Allow to use velocity in hint.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	
 	AutoExecConfig(true, "plugin.trueexpert", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -385,6 +385,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnMapStart()
 {
 	GetCurrentMap(g_map, sizeof(g_map));
+
 	Database.Connect(SQLConnect, "trueexpert");
 
 	for(int i = 0; i <= 2; i++)
@@ -398,6 +399,7 @@ public void OnMapStart()
 	}
 
 	ConVar CV_sourcetv = FindConVar("tv_enable");
+
 	bool sourcetv = CV_sourcetv.BoolValue; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 
 	if(sourcetv == true)
@@ -571,6 +573,7 @@ public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] 
 	else if(strlen(error) == 0)
 	{
 		int place = 0;
+
 		char query[512] = "";
 
 		while(results.FetchRow() == true)
@@ -702,6 +705,7 @@ public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] erro
 public void OnMapEnd()
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable");
+
 	bool sourcetv = CV_sourcetv.BoolValue;
 
 	if(sourcetv == true)
@@ -1437,7 +1441,9 @@ public int checkpoint_handler(Menu menu, MenuAction action, int param1, int para
 				case 0:
 				{
 					GetClientAbsOrigin(param1, g_cpOrigin[param1][0]);
+
 					GetClientEyeAngles(param1, g_cpAng[param1][0]); //https://github.com/Smesh292/trikz/blob/main/checkpoint.sp#L101
+
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][0]);
 
 					if(g_cpToggled[param1][0] == false)
@@ -1454,7 +1460,9 @@ public int checkpoint_handler(Menu menu, MenuAction action, int param1, int para
 				case 2:
 				{
 					GetClientAbsOrigin(param1, g_cpOrigin[param1][1]);
+
 					GetClientEyeAngles(param1, g_cpAng[param1][1]);
+
 					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][1]);
 
 					if(g_cpToggled[param1][1] == false)
@@ -1496,6 +1504,7 @@ public void OnClientPutInServer(int client)
 	if(boostfix == true)
 	{
 		SDKHook(client, SDKHook_StartTouch, SDKSkyFix);
+
 		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
 	}
 
@@ -1513,7 +1522,9 @@ public void OnClientPutInServer(int client)
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
 
 		char query[512] = "";
+
 		int steamid = GetSteamAccountID(client);
+
 		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, g_map);
 		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client));
 	}
@@ -1528,7 +1539,9 @@ public void OnClientPutInServer(int client)
 		for(int j = 0; j <= 2; j++)
 		{
 			g_cpOrigin[client][i][j] = 0.0;
+
 			g_cpAng[client][i][j] = 0.0;
+
 			g_cpVel[client][i][j] = 0.0;
 		}
 	}
@@ -1787,13 +1800,13 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 			g_mysql.Query(SQLUpdateUserSuccess, query, GetClientSerial(client), DBPrio_High);
 
 			#if debug == true
-//			PrintToServer("SQLUpdateUser: Successfuly updated user");
+			//PrintToServer("SQLUpdateUser: Successfuly updated user");
 			PrintToServer("SQLUpdateUser: User (%N) updating...", client);
 			#endif
 		}
 	}
 
-	return; // void return nothing
+	return; //void return nothing
 }
 
 public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] error, any data)
