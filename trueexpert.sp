@@ -1356,7 +1356,7 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 public Action headtrack_reset_home_pos(int client, const char[] command, int argc)
@@ -1492,7 +1492,7 @@ public int checkpoint_handler(Menu menu, MenuAction action, int param1, int para
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 public void OnClientPutInServer(int client)
@@ -2274,7 +2274,7 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		}*/
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 public Action cmd_block(int client, int args)
@@ -2444,7 +2444,7 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 public int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
@@ -2523,7 +2523,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -2571,7 +2571,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 /*public Action cmd_color(int client, int args)
@@ -3353,7 +3353,7 @@ public int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 stock void PlayerSkin(int client)
@@ -3482,7 +3482,7 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 public Action cmd_macro(int client, int args)
@@ -4269,12 +4269,12 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			char item[16] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
-			if(StrEqual(item, "start", false))
+			if(StrEqual(item, "start", false) == true)
 			{
 				ZoneEditorStart(param1);
 			}
 
-			else if(StrEqual(item, "end", false))
+			else if(StrEqual(item, "end", false) == true)
 			{
 				ZoneEditorEnd(param1);
 			}
@@ -4285,7 +4285,7 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				IntToString(i, cp, sizeof(cp));
 
-				if(StrEqual(item, cp, false))
+				if(StrEqual(item, cp, false) == true)
 				{
 					ZoneEditorCP(param1, i);
 				}
@@ -4293,7 +4293,7 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 stock void ZoneEditorStart(int client)
@@ -4689,7 +4689,7 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 
 public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any data)
@@ -7970,7 +7970,7 @@ public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 
-	return param2;
+	return view_as<int>(action);
 }
 
 public Action timer_devmap(Handle timer)
@@ -8216,7 +8216,7 @@ public int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 
-	return param2;
+	return view_as<int>(action);
 }
 
 public Action timer_afk(Handle timer, int client)
@@ -8407,7 +8407,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 
-	return param2;
+	return view_as<int>(action);
 }
 
 stock void Hud(int client)
