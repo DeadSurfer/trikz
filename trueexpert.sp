@@ -3500,7 +3500,7 @@ public Action cmd_macro(int client, int args)
 	IntToString(g_macroDisabled[client], value, sizeof(value));
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_macroDisabled[client] == true ? "MacroON" : "MacroOFF", client);
+	Format(format, sizeof(format), "%T", g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
 	SendMessage(format, client);
 
 	return Plugin_Handled;
@@ -7749,7 +7749,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	bool macro = gCV_macro.BoolValue;
 
-	if(macro == true)
+	if(macro == true && g_macroDisabled[client] == false)
 	{		
 		if(buttons & IN_ATTACK2)
 		{
