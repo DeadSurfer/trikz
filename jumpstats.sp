@@ -300,7 +300,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			Format(flat, 32, "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
-		if(GetGroundPos(client) - g_origin[client][2] < -0.04)
+		else if(GetGroundPos(client) - g_origin[client][2] < -0.04)
 		{
 			Format(flat, 32, "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
@@ -325,7 +325,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(g_jumpstats[client] == true)
 			{
-				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", client);
 
@@ -431,7 +431,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float origin[3] = {0.0, 0.0, 0.0};
 		GetClientAbsOrigin(client, origin);
 
-		//if(GetGroundPos(client) - g_origin[client][2] == 0.0)
 		if(-3.0 < GetGroundPos(client) - g_origin[client][2] < 3.0)
 		{
 			float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0));
@@ -449,7 +448,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				sync /= float(g_tickAir[client]);
 				sync *= 100.0;
 
-				PrintToServer("yes %f", GetGroundPos(client) - g_origin[client][2]);
+				//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
 
 				if(g_jumpstats[client] == true)
 				{
@@ -863,7 +862,7 @@ stock void Sync(int client, int buttons, int mouse[2])
 		}
 	}
 
-	else //sideways
+	else if(!(g_dot[client] < -0.9) || !(g_dot[client] >-0.9))//sideways
 	{
 		if(g_jumped[client] == true || g_ladder[client] == true)
 		{
