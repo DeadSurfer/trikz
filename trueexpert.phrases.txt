@@ -148,14 +148,14 @@
 	{
 		"en"	"No"
 	}
-	"BlockON"
+	/*"BlockON"
 	{
 		"en"	"Block enabled."
 	}
 	"BlockOFF"
 	{
 		"en"	"Block disabled."
-	}
+	}*/
 	"GroupAgreed"
 	{
 		"#format"	"{1:s}"
@@ -318,11 +318,11 @@
 	{
 		"en"	"Trikz"
 	}
-	"BlockON"
+	"BlockMenuON"
 	{
 		"en"	"Block [v]"
 	}
-	"BlockOFF"
+	"BlockMenuOFF"
 	{
 		"en"	"Block [x]"
 	}
@@ -534,12 +534,26 @@
 	{
 		"en"	"End message [x]"
 	}
-	"Top10"
+	/*"Top10"
 	{
 		//"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
 		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
 		//"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}}{default})"
 		"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}{default})"
+	}*/
+	"Top10details"
+	{
+		"en"	"Place:\tTime:\t\tDifferent:\t\t\tTeam:"
+	}
+	"Top10source1-9"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"#{1}\t\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t\t{4} & {5}"
+	}
+	"Top10source10"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"#{1}\t;#7CFC00{2}\t\t;#FF0000+{3}{default}\t\t{4} & {5}"
 	}
 	/*"Cstrike_Chat_AllSpec"
 	{
