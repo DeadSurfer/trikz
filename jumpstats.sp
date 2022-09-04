@@ -131,6 +131,8 @@ public void OnPluginStart()
 		g_teleport.AddParam(HookParamType_VectorPtr);
 	}
 
+	RegPluginLibrary("trueexpert-jumpstats");
+
 	return;
 }
 
