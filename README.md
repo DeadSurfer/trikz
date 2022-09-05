@@ -64,3 +64,8 @@ public void Trikz_Record(int client, float time) //On new server record<br>
 {
 <br>
 }
+
+public void Trikz_Restart(int client) //On try to restart timer<br>
+{
+<br>
+}
