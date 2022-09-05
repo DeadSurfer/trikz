@@ -663,9 +663,7 @@ public Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
 
 	if(IsFakeClient(client) == true)
 	{
-		SetEventBroadcast(event, true);
-
-		return Plugin_Handled;
+		event.BroadcastDisabled = true;
 	}
 
 	return Plugin_Continue;
