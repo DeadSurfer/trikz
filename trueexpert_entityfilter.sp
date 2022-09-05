@@ -419,7 +419,7 @@ void Reset(int client)
 		g_mathValue[client][i] = g_mathValueDefault[i]
 }
 
-public void Trikz_Start(int client, int partner)
+public void Trikz_Restart(int client, int partner)
 {
 	Reset(client)
 	Reset(partner)
