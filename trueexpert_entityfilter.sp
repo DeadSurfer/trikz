@@ -419,9 +419,10 @@ void Reset(int client)
 		g_mathValue[client][i] = g_mathValueDefault[i]
 }
 
-public void Trikz_Start(int client)
+public void Trikz_Start(int client, int partner)
 {
 	Reset(client)
+	Reset(partner)
 }
 
 MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
