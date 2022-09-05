@@ -9415,6 +9415,11 @@ public int Native_GetTimerState(Handle plugin, int numParams)
 		{
 			return true;
 		}
+
+		else if(g_state[client] == false)
+		{
+			return false;
+		}
 	}
 
 	/*else if(IsFakeClient(client) == true)
