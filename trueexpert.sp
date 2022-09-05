@@ -2463,7 +2463,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 						static GlobalForward hForward = null;
 
-						hForward = new GlobalForward("Trikz_Partner", ET_Hook, Param_Cell, Param_Cell);
+						hForward = new GlobalForward("Trikz_OnPartner", ET_Hook, Param_Cell, Param_Cell);
 
 						Call_StartForward(hForward);
 
@@ -2554,7 +2554,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 					static GlobalForward hForward = null;
 
-					hForward = new GlobalForward("Trikz_Breakup", ET_Hook, Param_Cell, Param_Cell);
+					hForward = new GlobalForward("Trikz_OnBreakup", ET_Hook, Param_Cell, Param_Cell);
 
 					Call_StartForward(hForward);
 
@@ -2827,7 +2827,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 			static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
-			hForward = new GlobalForward("Trikz_ColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
+			hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
 
 			Call_StartForward(hForward);
 			
@@ -2905,7 +2905,7 @@ stock void ColorFlashbang(int client, int color = -1)
 
 		static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
-		hForward = new GlobalForward("Trikz_ColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_ColorFlashbang(int client, int red, int green, int blue)
+		hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
 
 		Call_StartForward(hForward);
 		Call_PushCell(client);
@@ -2990,7 +2990,7 @@ stock void Restart(int client)
 
 				static GlobalForward hForward = null;
 
-				hForward = new GlobalForward("Trikz_Restart", ET_Hook, Param_Cell, Param_Cell);
+				hForward = new GlobalForward("Trikz_OnRestart", ET_Hook, Param_Cell, Param_Cell);
 
 				Call_StartForward(hForward);
 
@@ -5049,7 +5049,7 @@ public Action SDKEndTouch(int entity, int other)
 
 		static GlobalForward hForward = null;
 
-		hForward = new GlobalForward("Trikz_Start", ET_Hook, Param_Cell, Param_Cell);
+		hForward = new GlobalForward("Trikz_OnTimerStart", ET_Hook, Param_Cell, Param_Cell);
 
 		Call_StartForward(hForward);
 
@@ -5244,7 +5244,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							hForward = new GlobalForward("Trikz_OnFinish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -5403,7 +5403,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -7134,7 +7134,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 			static GlobalForward hForward = null;
 
-			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+			hForward = new GlobalForward("Trikz_OnCheckpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 			Call_StartForward(hForward);
 
@@ -9537,7 +9537,7 @@ public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.
 
 	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
-	hForward = new GlobalForward("Trikz_Teleport", ET_Ignore, Param_Cell);
+	hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell);
 
 	Call_StartForward(hForward);
 	
