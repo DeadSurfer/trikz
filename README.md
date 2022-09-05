@@ -55,7 +55,7 @@ public void Trikz_OnColorFlashbang(int client, int red, int green, int blue) //O
 <br>
 }
 
-public void Trikz_OnStart(int client, int partner) //On timer start<br>
+public void Trikz_OnTimerStart(int client, int partner) //On timer start<br>
 {
 <br>
 }
