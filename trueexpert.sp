@@ -40,11 +40,12 @@
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
 #define IsClientValid(%1) 0 < %1 <= MaxClients && IsClientInGame(%1)
+#define debug false
 
 int g_partner[MAXPLAYER];
 float g_zoneStartOrigin[2][3]; //start zone mins and maxs
 float g_zoneEndOrigin[2][3]; //end zone mins and maxs
-Database g_mysql;
+Database g_mysql = null;
 float g_timerTimeStart[MAXPLAYER];
 float g_timerTime[MAXPLAYER];
 bool g_state[MAXPLAYER];
@@ -67,6 +68,32 @@ float g_haveRecord[MAXPLAYER];
 float g_ServerRecordTime = 0.0;
 
 ConVar gCV_urlTop = null;
+ConVar gCV_trikz = null;
+ConVar gCV_block = null;
+ConVar gCV_partner = null;
+ConVar gCV_color = null;
+ConVar gCV_restart = null;
+ConVar gCV_checkpoint = null;
+ConVar gCV_afk = null;
+ConVar gCV_noclip = null;
+ConVar gCV_spec = null;
+ConVar gCV_button = null;
+ConVar gCV_pbutton = null;
+ConVar gCV_bhop = null;
+ConVar gCV_autoswitch = null;
+ConVar gCV_autoflashbang = null;
+ConVar gCV_macro = null;
+ConVar gCV_pingtool = null;
+ConVar gCV_boostfix = null;
+ConVar gCV_devmap = null;
+ConVar gCV_hud = null;
+ConVar gCV_endmsg = null;
+ConVar gCV_top10 = null;
+ConVar gCV_control = null;
+ConVar gCV_skin = null;
+ConVar gCV_top = null;
+ConVar gCV_mlstats = null;
+ConVar gCV_vel = null;
 
 bool g_menuOpened[MAXPLAYER];
 bool g_menuOpenedHud[MAXPLAYER];
@@ -102,6 +129,7 @@ int g_wModelPlayer[5] = {0, 0, 0, 0, 0};
 int g_pingModel[MAXPLAYER];
 int g_pingModelOwner[MAXENTITY];
 Handle g_pingTimer[MAXPLAYER];
+Handle g_cookie[12];
 
 bool g_zoneFirst[3] = {false, false, false};
 
@@ -141,62 +169,33 @@ float g_skyOrigin[MAXPLAYER];
 int g_entityButtons[MAXPLAYER];
 bool g_teleported[MAXPLAYER];
 int g_points[MAXPLAYER];
-Handle g_start = INVALID_HANDLE;
-Handle g_record = INVALID_HANDLE;
 int g_pointsMaxs = 1;
 int g_queryLast = 0;
-Handle g_cookie[12];
 float g_skyAble[MAXPLAYER];
 native bool Trikz_GetEntityFilter(int client, int entity);
 float g_restartHoldTime[MAXPLAYER];
 bool g_restartLock[MAXPLAYER][2];
 int g_smoke = 0;
 bool g_clantagOnce[MAXPLAYER];
-ConVar gCV_trikz = null;
-ConVar gCV_block = null;
-ConVar gCV_partner = null;
-ConVar gCV_color = null;
-ConVar gCV_restart = null;
-ConVar gCV_checkpoint = null;
-ConVar gCV_afk = null;
-ConVar gCV_noclip = null;
-ConVar gCV_spec = null;
-ConVar gCV_button = null;
-ConVar gCV_pbutton = null;
-ConVar gCV_bhop = null;
-ConVar gCV_autoswitch = null;
-ConVar gCV_autoflashbang = null;
 bool g_autoflash[MAXPLAYER];
 bool g_autoswitch[MAXPLAYER];
 bool g_bhop[MAXPLAYER];
-ConVar gCV_macro = null;
 bool g_macroDisabled[MAXPLAYER];
 float g_macroTime[MAXPLAYER];
 bool g_macroOpened[MAXPLAYER];
-#define debug false
 bool g_endMessage[MAXPLAYER];
 float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
-ConVar gCV_pingtool = null;
 int g_top10Count = 0;
 DynamicHook g_teleport = null;
 //KeyValues g_kv;
-ConVar gCV_boostfix = null;
 float g_top10ac = 0.0;
 int g_step = 1;
 int g_ZoneEditor = 0;
 int g_ZoneEditorCP = 0;
 int g_skinFlashbang[MAXPLAYER];
 int g_skinPlayer[MAXPLAYER];
-ConVar gCV_devmap = null;
-ConVar gCV_hud = null;
-ConVar gCV_endmsg = null;
-ConVar gCV_top10 = null;
-ConVar gCV_control = null;
-ConVar gCV_skin = null;
-ConVar gCV_top = null;
-ConVar gCV_mlstats = null;
-ConVar gCV_vel = null;
+
 
 public Plugin myinfo =
 {
@@ -247,7 +246,6 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_partner", cmd_partner);
 	RegConsoleCmd("sm_c", cmd_color);
 	RegConsoleCmd("sm_color", cmd_color);
-	//RegConsoleCmd("sm_fl", cmd_colorflash);
 	RegConsoleCmd("sm_r", cmd_restart);
 	RegConsoleCmd("sm_restart", cmd_restart);
 	RegConsoleCmd("sm_autoflash", cmd_autoflash);
@@ -297,10 +295,10 @@ public void OnPluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), OnSayMessage, true); //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookUserMessage(GetUserMessageId("RadioText"), OnRadioMessage, true);
 
-	HookEvent("player_spawn", OnSpawn);
+	HookEvent("player_spawn", OnSpawn, EventHookMode_Post);
 	HookEntityOutput("func_button", "OnPressed", OnButton);
-	HookEvent("player_jump", OnJump);
-	HookEvent("player_death", OnDeath);
+	HookEvent("player_jump", OnJump, EventHookMode_Post);
+	HookEvent("player_death", OnDeath, EventHookMode_Post);
 
 	AddCommandListener(joinclass, "joinclass");
 	AddCommandListener(autobuy, "autobuy");
@@ -318,9 +316,6 @@ public void OnPluginStart()
 	//}
 
 	LoadTranslations("trueexpert.phrases"); //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
-
-	g_start = CreateGlobalForward("Trikz_Start", ET_Hook, Param_Cell);
-	g_record = CreateGlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
 
 	RegPluginLibrary("trueexpert");
 
@@ -352,7 +347,7 @@ public void OnPluginStart()
 		return;
 	}
 	
-	g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooks_OnTeleport);
+	g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooksOnTeleport);
 
 	if(g_teleport == null)
 	{
@@ -930,7 +925,7 @@ public void frame_SayText2(DataPack dp)
 public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) // New RadioText https://forums.alliedmods.net/showthread.php?t=183841
 {
     // Message is original ?
-    if(!reliable)
+    if(reliable == false)
     {
         return Plugin_Continue;
     }
@@ -943,7 +938,7 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
     {
 		Handle pack;
 
-		CreateDataTimer(0.0, timer_radiotxt, pack); // Start new message after this one
+		CreateDataTimer(0.1, timer_radiotxt, pack, TIMER_FLAG_NO_MAPCHANGE); // Start new message after this one
 
 		WritePackCell(pack, playersNum); // need first collect player amount in datapack
 
@@ -1113,10 +1108,10 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 		EndMessage();
 	}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
-public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
+public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -1156,7 +1151,7 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		g_clantagOnce[client] = true;
 	}
 
-	return Plugin_Continue;
+	return;
 }
 
 public void OnButton(const char[] output, int caller, int activator, float delay)
@@ -1189,17 +1184,17 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 	return;
 }
 
-public Action OnJump(Event event, const char[] name, bool dontBroadcast)
+public void OnJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	g_skyOrigin[client] = GetGroundPos(client);
 	g_skyAble[client] = GetGameTime();
 
-	return Plugin_Continue;
+	return;
 }
 
-public Action OnDeath(Event event, const char[] name, bool dontBroadcast)
+public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -1215,7 +1210,7 @@ public Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 	RemoveEntity(ragdoll);
 
-	return Plugin_Continue;
+	return;
 }
 
 public Action joinclass(int client, const char[] command, int argc)
@@ -1232,7 +1227,7 @@ public Action timer_respawn(Handle timer, int client)
 		CS_RespawnPlayer(client);
 	}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public Action autobuy(int client, const char[] command, int argc)
@@ -1282,7 +1277,6 @@ public void Control(int client)
 	menu.AddItem("spec", "!spec", gCV_spec.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("color", "!color", gCV_color.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("afk", "!afk", gCV_afk.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	//menu.AddItem("colorflash", "!colorflash");
 	menu.AddItem("trikz", "!trikz", gCV_trikz.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
@@ -2807,7 +2801,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] == true ? 255 : 125);
 			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] == true ? 255 : 125);
 
-			static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+			static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
 			hForward = new GlobalForward("Trikz_ColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
 
@@ -2884,7 +2878,7 @@ stock void ColorFlashbang(int client, int color = -1)
 
 		SetClientCookie(client, g_cookie[10], value);
 
-		static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+		static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
 		hForward = new GlobalForward("Trikz_ColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_ColorFlashbang(int client, int red, int green, int blue)
 
@@ -2967,7 +2961,12 @@ stock void Restart(int client)
 			{
 				CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
 
-				Call_StartForward(g_start);
+				static GlobalForward hForward = null;
+
+				hForward = new GlobalForward("Trikz_Restart", ET_Hook, Param_Cell);
+
+				Call_StartForward(hForward);
+
 				Call_PushCell(client);
 
 				Call_Finish();
@@ -3020,7 +3019,7 @@ stock void Restart(int client)
 				}
 			}
 
-			else
+			else if(g_partner[client] == 0)
 			{
 				//PrintToChat(client, "You must have a partner.");
 				//PrintToChat(client, "\x01%T", "YMHP");
@@ -3513,7 +3512,7 @@ public Action timer_resetfactory(Handle timer, int client)
 		ResetFactory(client);
 	}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 stock void CreateStart()
@@ -3763,12 +3762,6 @@ public Action cmd_test(int client, int args)
 		{
 			g_partner[client] = partner;
 			g_partner[partner] = client;
-
-			Call_StartForward(g_start);
-
-			Call_PushCell(client);
-
-			Call_Finish();
 
 			Restart(client);
 		}
@@ -5008,6 +5001,16 @@ public Action SDKEndTouch(int entity, int other)
 			g_cpLock[i][other] = false;
 			g_cpLock[i][g_partner[other]] = false;
 		}
+
+		static GlobalForward hForward = null;
+
+		hForward = new GlobalForward("Trikz_Start", ET_Hook, Param_Cell);
+
+		Call_StartForward(hForward);
+
+		Call_PushCell(other);
+
+		Call_Finish();
 	}
 
 	return Plugin_Continue;
@@ -5137,7 +5140,11 @@ public Action SDKStartTouch(int entity, int other)
 
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 
-							Call_StartForward(g_record);
+							static GlobalForward hForward = null;
+
+							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
+
+							Call_StartForward(hForward);
 
 							Call_PushCell(other);
 							Call_PushFloat(g_timerTime[other]);
@@ -5183,6 +5190,16 @@ public Action SDKStartTouch(int entity, int other)
 							Format(query, sizeof(query), "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
 
 							g_mysql.Query(SQLUpdateRecord, query);
+
+							static GlobalForward hForward = null;
+
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell);
+
+							Call_StartForward(hForward);
+
+							Call_PushCell(other);
+
+							Call_Finish();
 						}
 
 						else if(g_ServerRecordTime < g_timerTime[other] < g_mateRecord[other])
@@ -5238,7 +5255,17 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								g_mateRecord[other] = g_timerTime[other];
 								g_mateRecord[partner] = g_timerTime[other];
-							}					
+							}
+
+							static GlobalForward hForward = null;
+
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell);
+
+							Call_StartForward(hForward);
+
+							Call_PushCell(other);
+
+							Call_Finish();
 						}
 					}
 
@@ -5307,7 +5334,11 @@ public Action SDKStartTouch(int entity, int other)
 
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 
-							Call_StartForward(g_record);
+							static GlobalForward hForward = null;
+
+							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
+
+							Call_StartForward(hForward);
 
 							Call_PushCell(other);
 							Call_PushFloat(g_timerTime[other]);
@@ -5366,6 +5397,16 @@ public Action SDKStartTouch(int entity, int other)
 
 							g_mateRecord[other] = g_timerTime[other];
 							g_mateRecord[partner] = g_timerTime[other];
+
+							static GlobalForward hForward = null;
+
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell);
+
+							Call_StartForward(hForward);
+
+							Call_PushCell(other);
+
+							Call_Finish();
 						}
 					}
 
@@ -5478,7 +5519,11 @@ public Action SDKStartTouch(int entity, int other)
 
 					g_mysql.Query(SQLInsertRecord, query);
 
-					Call_StartForward(g_record);
+					static GlobalForward hForward = null;
+
+					hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
+
+					Call_StartForward(hForward);
 
 					Call_PushCell(other);
 					Call_PushFloat(g_timerTime[other]);
@@ -5497,7 +5542,7 @@ public Action SDKStartTouch(int entity, int other)
 
 			Format(triggerCP, sizeof(triggerCP), "trueexpert_cp%i", i);
 
-			if(StrEqual(trigger, triggerCP, false))
+			if(StrEqual(trigger, triggerCP, false) == true)
 			{
 				g_cp[i][other] = true;
 
@@ -6934,7 +6979,7 @@ public Action timer_sourcetv(Handle timer)
 		g_ServerRecord = false;
 	}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public Action timer_runsourcetv(Handle timer)
@@ -6995,12 +7040,30 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 		else if(results.FetchRow() == false)
 		{
-			int personalHour = (RoundToFloor(g_timerTime[other]) / 3600) % 24;
-			int personalMinute = (RoundToFloor(g_timerTime[other]) / 60) % 60;
-			int personalSecond = RoundToFloor(g_timerTime[other]) % 60;
+			float time = g_timerTime[other];
+
+			int personalHour = (RoundToFloor(time) / 3600) % 24;
+			int personalMinute = (RoundToFloor(time) / 60) % 60;
+			int personalSecond = RoundToFloor(time) % 60;
 
 			FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
 			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+
+			static GlobalForward hForward = null;
+
+			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+
+			Call_StartForward(hForward);
+
+			Call_PushCell(other);
+
+			Call_PushFloat(time);
+
+			Call_PushFloat(0.0);
+
+			Call_PushCell(0);
+
+			Call_Finish();
 		}
 	}
 
@@ -7021,9 +7084,11 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 		int other = GetClientFromSerial(data.ReadCell());
 		int cpnum = data.ReadCell();
 
-		int personalHour = (RoundToFloor(g_timerTime[other]) / 3600) % 24;
-		int personalMinute = (RoundToFloor(g_timerTime[other]) / 60) % 60;
-		int personalSecond = RoundToFloor(g_timerTime[other]) % 60;
+		float time = g_timerTime[other];
+
+		int personalHour = (RoundToFloor(time) / 3600) % 24;
+		int personalMinute = (RoundToFloor(time) / 60) % 60;
+		int personalSecond = RoundToFloor(time) % 60;
 
 		if(results.FetchRow() == true)
 		{
@@ -7034,25 +7099,61 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				g_cpDiff[cpnum][other] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
 				g_cpDiff[cpnum][g_partner[other]] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
 
-				int srCPHour = (RoundToFloor(g_cpDiff[cpnum][other]) / 3600) % 24;
-				int srCPMinute = (RoundToFloor(g_cpDiff[cpnum][other]) / 60) % 60;
-				int srCPSecond = RoundToFloor(g_cpDiff[cpnum][other]) % 60;
+				float differ = g_cpDiff[cpnum][other];
+
+				int srCPHour = (RoundToFloor(differ) / 3600) % 24;
+				int srCPMinute = (RoundToFloor(differ) / 60) % 60;
+				int srCPSecond = RoundToFloor(differ) % 60;
 
 				FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
 				FinishMSG(g_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+
+				static GlobalForward hForward = null;
+
+				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+
+				Call_StartForward(hForward);
+
+				Call_PushCell(other);
+
+				Call_PushFloat(time);
+
+				Call_PushFloat(differ);
+
+				Call_PushCell(1);
+
+				Call_Finish();
 			}
 
-			else
+			else if(!(g_cpTimeClient[cpnum][other] < g_cpTime[cpnum]))
 			{
 				g_cpDiff[cpnum][other] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
 				g_cpDiff[cpnum][g_partner[other]] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
 
-				int srCPHour = (RoundToFloor(g_cpDiff[cpnum][other]) / 3600) % 24;
-				int srCPMinute = (RoundToFloor(g_cpDiff[cpnum][other]) / 60) % 60;
-				int srCPSecond = RoundToFloor(g_cpDiff[cpnum][other]) % 60;
+				float differ = g_cpDiff[cpnum][other];
+
+				int srCPHour = (RoundToFloor(differ) / 3600) % 24;
+				int srCPMinute = (RoundToFloor(differ) / 60) % 60;
+				int srCPSecond = RoundToFloor(differ) % 60;
 
 				FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
 				FinishMSG(g_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+
+				static GlobalForward hForward = null;
+
+				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+
+				Call_StartForward(hForward);
+
+				Call_PushCell(other);
+
+				Call_PushFloat(time);
+
+				Call_PushFloat(differ);
+
+				Call_PushCell(2);
+
+				Call_Finish();
 			}
 		}
 
@@ -7060,6 +7161,22 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 		{
 			FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
 			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+
+			static GlobalForward hForward = null;
+
+			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+
+			Call_StartForward(hForward);
+
+			Call_PushCell(other);
+
+			Call_PushFloat(time);
+
+			Call_PushFloat(0.0);
+
+			Call_PushCell(0);
+
+			Call_Finish();
 		}
 	}
 
@@ -7978,7 +8095,7 @@ public Action timer_devmap(Handle timer)
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	Devmap(true);
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 stock void Devmap(bool force)
@@ -8073,7 +8190,7 @@ public Action timer_changelevel(Handle timer, bool value)
 
 	ForceChangeLevel(g_map, "Reason: Devmap");
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public Action cmd_top(int client, int args)
@@ -8114,7 +8231,7 @@ public Action timer_motd(Handle timer, int client)
 		PrintToServer("MOTD | Player %N (ID: %i) is not in-game.", client, client);
 	}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public Action cmd_afk(int client, int args)
@@ -8224,7 +8341,7 @@ public Action timer_afk(Handle timer, int client)
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	AFK(client, true);
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 stock void AFK(int client, bool force)
@@ -8830,7 +8947,7 @@ public Action timer_deleteProjectile(Handle timer, int entity)
 		RemoveEntity(entity);
 	}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 stock void FlashbangEffect(int entity)
@@ -9014,7 +9131,7 @@ public Action timer_removePing(Handle timer, int client)
 	//	PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
 	//}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public Action SDKSetTransmitPing(int entity, int client)
@@ -9066,19 +9183,23 @@ stock void MLStats(int client, bool ground)
 	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
 	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
 
-	Format(g_mlsPrint[client][g_mlsCount[client]], 256, "%i. %.0f - %.0f\n", g_mlsCount[client], velPre, velPost);
+	int count = g_mlsCount[client];
+
+	Format(g_mlsPrint[client][count], 256, "%i. %.0f - %.0f\n", count, velPre, velPost);
 
 	char print[256] = "";
 
-	for(int i = 1; i <= g_mlsCount[client] <= 10; i++)
+	for(int i = 1; i <= count <= 10; i++)
 	{
 		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i]);
 	}
 
-	if(g_mlsCount[client] > 10)
+	if(count > 10)
 	{
-		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][g_mlsCount[client]]);
+		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][count]);
 	}
+
+	int flyer = g_mlsFlyer[client];
 
 	if(ground == true)
 	{
@@ -9088,15 +9209,15 @@ stock void MLStats(int client, bool ground)
 
 		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, distance, g_teleported[client] == true ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
 
-		PrintToConsole(g_mlsFlyer[client], "%s", print);
+		PrintToConsole(flyer, "%s", print);
 		PrintToConsole(client, "%s", print);
 
 		g_teleported[client] = false;
 	}
 
-	if(g_mlstats[g_mlsFlyer[client]] == true)
+	if(g_mlstats[flyer] == true)
 	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", g_mlsFlyer[client]);
+		Handle KeyHintText = StartMessageOne("KeyHintText", flyer);
 
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
@@ -9127,7 +9248,7 @@ stock void MLStats(int client, bool ground)
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
-			if(observerMode < 7 && (observerTarget == client || observerTarget == g_mlsFlyer[client]) && g_mlstats[i] == true)
+			if(observerMode < 7 && (observerTarget == client || observerTarget == flyer) && g_mlstats[i] == true)
 			{
 				Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
@@ -9213,12 +9334,12 @@ public int Native_GetTimerState(Handle plugin, int numParams)
 		}
 	}
 
-	else if(IsFakeClient(client) == true)
+	/*else if(IsFakeClient(client) == true)
 	{
 		return 0;
-	}
+	}*/
 
-	return 0;
+	return numParams;
 }
 
 public int Native_SetPartner(Handle plugin, int numParams)
@@ -9229,7 +9350,7 @@ public int Native_SetPartner(Handle plugin, int numParams)
 	g_partner[client] = partner;
 	g_partner[partner] = client;
 
-	return partner;
+	return numParams;
 }
 
 public int Native_Restart(Handle plugin, int numParams)
@@ -9239,7 +9360,7 @@ public int Native_Restart(Handle plugin, int numParams)
 	Restart(client);
 	Restart(g_partner[client]);
 
-	return g_partner[client];
+	return numParams;
 }
 
 public int Native_GetDevmap(Handle plugin, int numParams)
@@ -9294,7 +9415,7 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 	return color;
 }*/
 
-public MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
 {
 	bool bOriginNull = DHookIsNullParam(hParams, 1);
 	
@@ -9318,7 +9439,7 @@ public MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github
 		g_teleported[client] = true;
 	}
 
-	static GlobalForward hForward; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
 	hForward = new GlobalForward("Trikz_Teleport", ET_Ignore, Param_Cell);
 
