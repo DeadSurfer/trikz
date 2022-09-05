@@ -89,3 +89,7 @@ public void Trikz_Breakup(int client, int partner) //On breakup<br>
 {
 <br>
 }
+
+public void Trikz_Teleport(int client) //On teleport<br>
+{
+}
