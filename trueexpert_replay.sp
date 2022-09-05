@@ -624,7 +624,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 	g_database = db;
 }
 
-public void Trikz_Start(int client)
+public void Trikz_OnTimerStart(int client)
 {
 	if(IsFakeClient(client) == false)
 	{
@@ -634,7 +634,7 @@ public void Trikz_Start(int client)
 	}
 }
 
-public void Trikz_Record(int client, int partner, float time)
+public void Trikz_OnRecord(int client, int partner, float time)
 {
 	SetupSave(client, partner, time);
 
