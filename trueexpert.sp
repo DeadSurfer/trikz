@@ -5190,7 +5190,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
+							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -5198,6 +5198,7 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushCell(partner);
 							Call_PushFloat(time);
 							Call_PushFloat(timeDiff);
+							Call_PushString("ServerRecord1");
 
 							Call_Finish();
 						}
@@ -5243,7 +5244,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -5254,6 +5255,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushFloat(time);
 
 							Call_PushFloat(timeDiff);
+
+							Call_PushString("Finish1");
 
 							Call_Finish();
 						}
@@ -5315,7 +5318,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -5326,6 +5329,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushFloat(time);
 
 							Call_PushFloat(timeDiff);
+
+							Call_PushString("Finish2");
 
 							Call_Finish();
 						}
@@ -5398,7 +5403,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
+							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -5406,6 +5411,7 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushCell(partner);
 							Call_PushFloat(time);
 							Call_PushFloat(timeDiff);
+							Call_PushString("ServerRecord2");
 
 							Call_Finish();
 						}
@@ -5464,7 +5470,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -5475,6 +5481,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushFloat(time);
 
 							Call_PushFloat(timeDiff);
+
+							Call_PushString("Finish3");
 
 							Call_Finish();
 						}
@@ -5591,7 +5599,7 @@ public Action SDKStartTouch(int entity, int other)
 
 					static GlobalForward hForward = null;
 
-					hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
+					hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 					Call_StartForward(hForward);
 
@@ -5599,6 +5607,7 @@ public Action SDKStartTouch(int entity, int other)
 					Call_PushCell(partner);
 					Call_PushFloat(time);
 					Call_PushFloat(0.0);
+					Call_PushString("FirstServerRecord");
 
 					Call_Finish();
 				}
@@ -7125,7 +7134,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 			static GlobalForward hForward = null;
 
-			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
+			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 			Call_StartForward(hForward);
 
@@ -7137,7 +7146,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 			Call_PushFloat(0.0);
 
-			Call_PushCell(0);
+			Call_PushString("FirstCPRecord1");
 
 			Call_Finish();
 		}
@@ -7188,7 +7197,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 				static GlobalForward hForward = null;
 
-				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
+				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 				Call_StartForward(hForward);
 
@@ -7200,7 +7209,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 				Call_PushFloat(differ);
 
-				Call_PushCell(1);
+				Call_PushString("CPDeprove");
 
 				Call_Finish();
 			}
@@ -7221,7 +7230,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 				static GlobalForward hForward = null;
 
-				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
+				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 				Call_StartForward(hForward);
 
@@ -7233,7 +7242,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 				Call_PushFloat(differ);
 
-				Call_PushCell(2);
+				Call_PushString("CPImprove");
 
 				Call_Finish();
 			}
@@ -7246,7 +7255,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 			static GlobalForward hForward = null;
 
-			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
+			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 			Call_StartForward(hForward);
 
@@ -7258,7 +7267,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 			Call_PushFloat(0.0);
 
-			Call_PushCell(0);
+			Call_PushString("FirstCPRecord2");
 
 			Call_Finish();
 		}
