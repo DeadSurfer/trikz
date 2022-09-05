@@ -263,7 +263,7 @@ public Action timer_bot(Handle timer)
 	return Plugin_Continue;
 }
 
-public void SetupSave(int client, float time)
+public void SetupSave(int client, int partner, float time)
 {
 	char dir[PLATFORM_MAX_PATH] = "";
 	BuildPath(Path_SM, dir, sizeof(dir), "data/trueexpert");
@@ -286,7 +286,7 @@ public void SetupSave(int client, float time)
 	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s.replay", g_map);
 	SaveRecord(client, record, time, false);
 
-	int partner = Trikz_GetClientPartner(client);
+	//int partner = Trikz_GetClientPartner(client);
 	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s_partner.replay", g_map);
 	SaveRecord(partner, record, time, false);
 
@@ -634,9 +634,9 @@ public void Trikz_Start(int client)
 	}
 }
 
-public void Trikz_Record(int client, float time)
+public void Trikz_Record(int client, int partner, float time)
 {
-	SetupSave(client, time);
+	SetupSave(client, partner, time);
 
 	return;
 }
