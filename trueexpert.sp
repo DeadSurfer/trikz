@@ -2231,7 +2231,6 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 			else if(StrEqual(item, "restart", true) == true)
 			{
 				Restart(param1);
-				Restart(g_partner[param1]);
 			}
 
 			else if(StrEqual(item, "noclip", true) == true)
@@ -2462,6 +2461,18 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						g_partner[param1] = partner;
 						g_partner[partner] = param1;
 
+						static GlobalForward hForward = null;
+
+						hForward = new GlobalForward("Trikz_Partner", ET_Hook, Param_Cell, Param_Cell);
+
+						Call_StartForward(hForward);
+
+						Call_PushCell(param1);
+
+						Call_PushCell(partner);
+
+						Call_Finish();
+
 						//PrintToChat(param1, "Partnersheep agreed with %N.", partner); //reciever
 						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
@@ -2478,8 +2489,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 						//PrintToChat(partner, "\x01%T", "GetAgreed", partner, name);
 
-						Restart(param1);
-						Restart(partner); //Expert-Zone idea.
+						Restart(param1); //Expert-Zone idea.
 
 						if(g_menuOpened[partner] == true)
 						{
@@ -2541,6 +2551,18 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 					g_partner[param1] = 0;
 					g_partner[partner] = 0;
+
+					static GlobalForward hForward = null;
+
+					hForward = new GlobalForward("Trikz_Breakup", ET_Hook, Param_Cell, Param_Cell);
+
+					Call_StartForward(hForward);
+
+					Call_PushCell(param1);
+
+					Call_PushCell(partner);
+
+					Call_Finish();
 
 					ResetFactory(param1);
 					ResetFactory(partner);
@@ -2772,21 +2794,23 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			return;
 		}
 
+		int partner = g_partner[client];
+
 		if(customSkin == true)
 		{
 			g_colorCount[client][0]++;
-			g_colorCount[g_partner[client]][0]++;
+			g_colorCount[partner][0]++;
 
 			if(g_colorCount[client][0] == 9)
 			{
 				g_colorCount[client][0] = 0;
-				g_colorCount[g_partner[client]][0] = 0;
+				g_colorCount[partner][0] = 0;
 			}
 
 			else if(0 <= color <= 8)
 			{
 				g_colorCount[client][0] = color;
-				g_colorCount[g_partner[client]][0] = color;
+				g_colorCount[partner][0] = color;
 			}
 
 			char colorTypeExploded[32][4];
@@ -2795,11 +2819,11 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			for(int i = 0; i <= 2; i++)
 			{
 				g_colorBuffer[client][i][0] = StringToInt(colorTypeExploded[i]);
-				g_colorBuffer[g_partner[client]][i][0] = StringToInt(colorTypeExploded[i]);
+				g_colorBuffer[partner][i][0] = StringToInt(colorTypeExploded[i]);
 			}
 
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] == true ? 255 : 125);
-			SetEntityRenderColor(g_partner[client], g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[g_partner[client]] == true ? 255 : 125);
+			SetEntityRenderColor(partner, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[partner] == true ? 255 : 125);
 
 			static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
@@ -2808,6 +2832,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			Call_StartForward(hForward);
 			
 			Call_PushCell(client);
+			Call_PushCell(partner);
 			Call_PushCell(g_colorBuffer[client][0][0]);
 			Call_PushCell(g_colorBuffer[client][1][0]);
 			Call_PushCell(g_colorBuffer[client][2][0]);
@@ -2818,22 +2843,22 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
 
-			ShowHudText(g_partner[client], 5, "%s (TM)", colorTypeExploded[3]);
+			ShowHudText(partner, 5, "%s (TM)", colorTypeExploded[3]);
 		}
 
 		else if(customSkin == false)
 		{
 			g_colorCount[client][0] = 0;
-			g_colorCount[g_partner[client]][0] = 0;
+			g_colorCount[partner][0] = 0;
 		
 			for(int i = 0; i <= 2; i++)
 			{
 				g_colorBuffer[client][i][0] = 255;
-				g_colorBuffer[g_partner[client]][i][0] = 255;
+				g_colorBuffer[partner][i][0] = 255;
 			}
 
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] == true ? 255 : 125);
-			SetEntityRenderColor(g_partner[client], 255, 255, 255, g_block[g_partner[client]] == true ? 255 : 125);
+			SetEntityRenderColor(partner, 255, 255, 255, g_block[partner] == true ? 255 : 125);
 		}
 	}
 
@@ -2937,7 +2962,6 @@ public Action cmd_restart(int client, int args)
 	}
 
 	Restart(client);
-	Restart(g_partner[client]);
 
 	return Plugin_Handled;
 }
@@ -2957,17 +2981,22 @@ stock void Restart(int client)
 	{
 		if(g_zoneHave[0] == true && g_zoneHave[1] == true)
 		{
-			if(g_partner[client] > 0)
+			int partner = g_partner[client];
+
+			if(partner > 0)
 			{
 				CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
 
 				static GlobalForward hForward = null;
 
-				hForward = new GlobalForward("Trikz_Restart", ET_Hook, Param_Cell);
+				hForward = new GlobalForward("Trikz_Restart", ET_Hook, Param_Cell, Param_Cell);
 
 				Call_StartForward(hForward);
 
 				Call_PushCell(client);
+
+				Call_PushCell(partner);
 
 				Call_Finish();
 
@@ -2976,6 +3005,7 @@ stock void Restart(int client)
 				bool ct = false;
 
 				int team = GetClientTeam(client);
+				int teamPartner = GetClientTeam(partner);
 
 				while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
 				{
@@ -2987,6 +3017,11 @@ stock void Restart(int client)
 					if(team == CS_TEAM_SPECTATOR)
 					{
 						CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
+					}
+
+					if(teamPartner == CS_TEAM_SPECTATOR)
+					{
+						CS_SwitchTeam(partner, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
 					}
 
 					break;
@@ -3006,16 +3041,24 @@ stock void Restart(int client)
 				}
 
 				CS_RespawnPlayer(client);
+				CS_RespawnPlayer(partner);
 
 				float velNull[3] = {0.0, 0.0, 0.0};
 
 				TeleportEntity(client, g_originStart, NULL_VECTOR, velNull);
+				TeleportEntity(partner, g_originStart, NULL_VECTOR, velNull);
 
 				g_block[client] = true;
+				g_block[partner] = true;
 
 				if(g_menuOpened[client] == true)
 				{
 					Trikz(client);
+				}
+
+				if(g_menuOpened[partner] == true)
+				{
+					Trikz(partner);
 				}
 			}
 
@@ -4978,37 +5021,41 @@ public Action SDKEndTouch(int entity, int other)
 {
 	if(0 < other <= MaxClients && g_readyToStart[other] == true && g_partner[other] > 0 && IsFakeClient(other) == false)
 	{
+		int partner = g_partner[other];
+
 		g_state[other] = true;
-		g_state[g_partner[other]] = true;
+		g_state[partner] = true;
 
 		g_mapFinished[other] = false;
-		g_mapFinished[g_partner[other]] = false; //expert zone idea
+		g_mapFinished[partner] = false; //expert zone idea
 
 		g_timerTimeStart[other] = GetEngineTime();
-		g_timerTimeStart[g_partner[other]] = GetEngineTime();
+		g_timerTimeStart[partner] = GetEngineTime();
 
 		g_readyToStart[other] = false;
-		g_readyToStart[g_partner[other]] = false;
+		g_readyToStart[partner] = false;
 
 		CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.1, timer_clantag, g_partner[other], TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.1, timer_clantag, partner, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
 		for(int i = 1; i <= g_cpCount; i++)
 		{
 			g_cp[i][other] = false;
-			g_cp[i][g_partner[other]] = false;
+			g_cp[i][partner] = false;
 
 			g_cpLock[i][other] = false;
-			g_cpLock[i][g_partner[other]] = false;
+			g_cpLock[i][partner] = false;
 		}
 
 		static GlobalForward hForward = null;
 
-		hForward = new GlobalForward("Trikz_Start", ET_Hook, Param_Cell);
+		hForward = new GlobalForward("Trikz_Start", ET_Hook, Param_Cell, Param_Cell);
 
 		Call_StartForward(hForward);
 
 		Call_PushCell(other);
+
+		Call_PushCell(partner);
 
 		Call_Finish();
 	}
@@ -5039,7 +5086,6 @@ public Action SDKStartTouch(int entity, int other)
 		if(StrEqual(trigger, "trueexpert_startzone", false) == true && g_mapFinished[partner] == true)
 		{
 			Restart(other); //expert zone idea.
-			Restart(partner);
 		}
 
 		if(StrEqual(trigger, "trueexpert_endzone", false) == true)
@@ -5053,9 +5099,11 @@ public Action SDKStartTouch(int entity, int other)
 				int playerid = GetSteamAccountID(other);
 				int partnerid = GetSteamAccountID(partner);
 
-				int personalHour = (RoundToFloor(g_timerTime[other]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-				int personalMinute = (RoundToFloor(g_timerTime[other]) / 60) % 60;
-				int personalSecond = RoundToFloor(g_timerTime[other]) % 60;
+				float time = g_timerTime[other];
+
+				int personalHour = (RoundToFloor(time) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+				int personalMinute = (RoundToFloor(time) / 60) % 60;
+				int personalSecond = RoundToFloor(time) % 60;
 
 				char sPersonalHour[8] = "";
 				Format(sPersonalHour, sizeof(sPersonalHour), "%02.i", personalHour);
@@ -5072,9 +5120,9 @@ public Action SDKStartTouch(int entity, int other)
 				{
 					if(g_mateRecord[other] > 0.0)
 					{
-						if(g_ServerRecordTime > g_timerTime[other])
+						if(g_ServerRecordTime > time)
 						{
-							float timeDiff = g_ServerRecordTime - g_timerTime[other];
+							float timeDiff = g_ServerRecordTime - time;
 
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24;
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
@@ -5129,32 +5177,34 @@ public Action SDKStartTouch(int entity, int other)
 
 							g_mysql.Query(SQLUpdateRecord, query);
 
-							g_haveRecord[other] = g_timerTime[other];
-							g_haveRecord[partner] = g_timerTime[other]; //logs help also expert zone ideas.
+							g_haveRecord[other] = time;
+							g_haveRecord[partner] = time; //logs help also expert zone ideas.
 
-							g_mateRecord[other] = g_timerTime[other];
-							g_mateRecord[partner] = g_timerTime[other];
+							g_mateRecord[other] = time;
+							g_mateRecord[partner] = time;
 
 							g_ServerRecord = true;
-							g_ServerRecordTime = g_timerTime[other];
+							g_ServerRecordTime = time;
 
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
+							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
 
 							Call_StartForward(hForward);
 
 							Call_PushCell(other);
-							Call_PushFloat(g_timerTime[other]);
+							Call_PushCell(partner);
+							Call_PushFloat(time);
+							Call_PushFloat(timeDiff);
 
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime < g_timerTime[other] > g_mateRecord[other])
+						else if(g_ServerRecordTime < time > g_mateRecord[other])
 						{
-							float timeDiff = g_timerTime[other] - g_ServerRecordTime;
+							float timeDiff = time - g_ServerRecordTime;
 
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24;
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
@@ -5193,18 +5243,24 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell);
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
 
 							Call_StartForward(hForward);
 
 							Call_PushCell(other);
 
+							Call_PushCell(partner);
+
+							Call_PushFloat(time);
+
+							Call_PushFloat(timeDiff);
+
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime < g_timerTime[other] < g_mateRecord[other])
+						else if(g_ServerRecordTime < time < g_mateRecord[other])
 						{
-							float timeDiff = g_timerTime[other] - g_ServerRecordTime;
+							float timeDiff = time - g_ServerRecordTime;
 
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24;
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
@@ -5241,29 +5297,35 @@ public Action SDKStartTouch(int entity, int other)
 
 							g_mysql.Query(SQLUpdateRecord, query);
 
-							if(g_haveRecord[other] > g_timerTime[other])
+							if(g_haveRecord[other] > time)
 							{
-								g_haveRecord[other] = g_timerTime[other];
+								g_haveRecord[other] = time;
 							}
 
-							if(g_haveRecord[partner] > g_timerTime[other])
+							if(g_haveRecord[partner] > time)
 							{
-								g_haveRecord[partner] = g_timerTime[other];
+								g_haveRecord[partner] = time;
 							}
 
-							if(g_mateRecord[other] > g_timerTime[other])
+							if(g_mateRecord[other] > time)
 							{
-								g_mateRecord[other] = g_timerTime[other];
-								g_mateRecord[partner] = g_timerTime[other];
+								g_mateRecord[other] = time;
+								g_mateRecord[partner] = time;
 							}
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell);
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
 
 							Call_StartForward(hForward);
 
 							Call_PushCell(other);
+
+							Call_PushCell(partner);
+
+							Call_PushFloat(time);
+
+							Call_PushFloat(timeDiff);
 
 							Call_Finish();
 						}
@@ -5271,9 +5333,9 @@ public Action SDKStartTouch(int entity, int other)
 
 					else if(g_mateRecord[other] == 0.0)
 					{
-						if(g_ServerRecordTime > g_timerTime[other])
+						if(g_ServerRecordTime > time)
 						{
-							float timeDiff = g_ServerRecordTime - g_timerTime[other];
+							float timeDiff = g_ServerRecordTime - time;
 
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24;
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
@@ -5322,33 +5384,35 @@ public Action SDKStartTouch(int entity, int other)
 
 							g_mysql.Query(SQLInsertRecord, query);
 
-							g_haveRecord[other] = g_timerTime[other];
-							g_haveRecord[partner] = g_timerTime[other];
+							g_haveRecord[other] = time;
+							g_haveRecord[partner] = time;
 
-							g_mateRecord[other] = g_timerTime[other];
-							g_mateRecord[partner] = g_timerTime[other];
+							g_mateRecord[other] = time;
+							g_mateRecord[partner] = time;
 
 							g_ServerRecord = true;
 
-							g_ServerRecordTime = g_timerTime[other];
+							g_ServerRecordTime = time;
 
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
+							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
 
 							Call_StartForward(hForward);
 
 							Call_PushCell(other);
-							Call_PushFloat(g_timerTime[other]);
+							Call_PushCell(partner);
+							Call_PushFloat(time);
+							Call_PushFloat(timeDiff);
 
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime < g_timerTime[other])
+						else if(g_ServerRecordTime < time)
 						{
-							float timeDiff = g_timerTime[other] - g_ServerRecordTime;
+							float timeDiff = time - g_ServerRecordTime;
 
 							int srHour = (RoundToFloor(timeDiff) / 3600) % 24;
 							int srMinute = (RoundToFloor(timeDiff) / 60) % 60;
@@ -5387,24 +5451,30 @@ public Action SDKStartTouch(int entity, int other)
 
 							if(g_haveRecord[other] == 0.0)
 							{
-								g_haveRecord[other] = g_timerTime[other];
+								g_haveRecord[other] = time;
 							}
 
 							if(g_haveRecord[partner] == 0.0)
 							{
-								g_haveRecord[partner] = g_timerTime[other];
+								g_haveRecord[partner] = time;
 							}
 
-							g_mateRecord[other] = g_timerTime[other];
-							g_mateRecord[partner] = g_timerTime[other];
+							g_mateRecord[other] = time;
+							g_mateRecord[partner] = time;
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell);
+							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
 
 							Call_StartForward(hForward);
 
 							Call_PushCell(other);
+
+							Call_PushCell(partner);
+
+							Call_PushFloat(time);
+
+							Call_PushFloat(timeDiff);
 
 							Call_Finish();
 						}
@@ -5461,13 +5531,13 @@ public Action SDKStartTouch(int entity, int other)
 
 				else if(g_ServerRecordTime == 0.0)
 				{
-					g_ServerRecordTime = g_timerTime[other];
+					g_ServerRecordTime = time;
 
-					g_haveRecord[other] = g_timerTime[other];
-					g_haveRecord[partner] = g_timerTime[other];
+					g_haveRecord[other] = time;
+					g_haveRecord[partner] = time;
 
-					g_mateRecord[other] = g_timerTime[other];
-					g_mateRecord[partner] = g_timerTime[other];
+					g_mateRecord[other] = time;
+					g_mateRecord[partner] = time;
 
 					char format[256] = "";
 					char sName[MAX_NAME_LENGTH] = "";
@@ -5521,12 +5591,14 @@ public Action SDKStartTouch(int entity, int other)
 
 					static GlobalForward hForward = null;
 
-					hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Float);
+					hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float);
 
 					Call_StartForward(hForward);
 
 					Call_PushCell(other);
-					Call_PushFloat(g_timerTime[other]);
+					Call_PushCell(partner);
+					Call_PushFloat(time);
+					Call_PushFloat(0.0);
 
 					Call_Finish();
 				}
@@ -7042,20 +7114,24 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 		{
 			float time = g_timerTime[other];
 
+			int partner = g_partner[other];
+
 			int personalHour = (RoundToFloor(time) / 3600) % 24;
 			int personalMinute = (RoundToFloor(time) / 60) % 60;
 			int personalSecond = RoundToFloor(time) % 60;
 
 			FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
-			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+			FinishMSG(partner, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
 
 			static GlobalForward hForward = null;
 
-			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
 
 			Call_StartForward(hForward);
 
 			Call_PushCell(other);
+
+			Call_PushCell(partner);
 
 			Call_PushFloat(time);
 
@@ -7086,6 +7162,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 		float time = g_timerTime[other];
 
+		int partner = g_partner[other];
+
 		int personalHour = (RoundToFloor(time) / 3600) % 24;
 		int personalMinute = (RoundToFloor(time) / 60) % 60;
 		int personalSecond = RoundToFloor(time) % 60;
@@ -7097,7 +7175,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 			if(g_cpTimeClient[cpnum][other] < g_cpTime[cpnum])
 			{
 				g_cpDiff[cpnum][other] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
-				g_cpDiff[cpnum][g_partner[other]] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
+				g_cpDiff[cpnum][partner] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
 
 				float differ = g_cpDiff[cpnum][other];
 
@@ -7106,15 +7184,17 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				int srCPSecond = RoundToFloor(differ) % 60;
 
 				FinishMSG(other, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
-				FinishMSG(g_partner[other], false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+				FinishMSG(partner, false, false, true, false, true, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
 
 				static GlobalForward hForward = null;
 
-				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
 
 				Call_StartForward(hForward);
 
 				Call_PushCell(other);
+
+				Call_PushCell(partner);
 
 				Call_PushFloat(time);
 
@@ -7128,7 +7208,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 			else if(!(g_cpTimeClient[cpnum][other] < g_cpTime[cpnum]))
 			{
 				g_cpDiff[cpnum][other] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
-				g_cpDiff[cpnum][g_partner[other]] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
+				g_cpDiff[cpnum][partner] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
 
 				float differ = g_cpDiff[cpnum][other];
 
@@ -7137,15 +7217,17 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				int srCPSecond = RoundToFloor(differ) % 60;
 
 				FinishMSG(other, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
-				FinishMSG(g_partner[other], false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
+				FinishMSG(partner, false, false, true, false, false, cpnum, personalHour, personalMinute, personalSecond, srCPHour, srCPMinute, srCPSecond);
 
 				static GlobalForward hForward = null;
 
-				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
 
 				Call_StartForward(hForward);
 
 				Call_PushCell(other);
+
+				Call_PushCell(partner);
 
 				Call_PushFloat(time);
 
@@ -7160,15 +7242,17 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 		else if(results.FetchRow() == false)
 		{
 			FinishMSG(other, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
-			FinishMSG(g_partner[other], false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
+			FinishMSG(partner, false, false, true, true, false, cpnum, personalHour, personalMinute, personalSecond, 0, 0, 0);
 
 			static GlobalForward hForward = null;
 
-			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell);
+			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_Cell);
 
 			Call_StartForward(hForward);
 
 			Call_PushCell(other);
+
+			Call_PushCell(partner);
 
 			Call_PushFloat(time);
 
@@ -7855,7 +7939,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(partner > 0 && restartCV == true)
 		{
 			Restart(client);
-			Restart(partner);
 		}
 
 		else if(partner == 0 && partnerCV)
@@ -9358,7 +9441,6 @@ public int Native_Restart(Handle plugin, int numParams)
 	int client = GetNativeCell(1);
 
 	Restart(client);
-	Restart(g_partner[client]);
 
 	return numParams;
 }
