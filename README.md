@@ -69,3 +69,8 @@ public void Trikz_Restart(int client) //On try to restart timer<br>
 {
 <br>
 }
+
+public void Trikz_Checkpoint(int client, float time, float differ, int type) //On checkpoint finish (type: 0 - first checkpoint record, 1 - deprove, 2 - improve)<br>
+{
+<br>
+}
