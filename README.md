@@ -45,52 +45,52 @@ native bool Trikz_GetTimerState(int client); //Is timer runing (true/false)<br>
 native int Trikz_GetDevmap(); //Is devmap now (true/false)<br>
 
 Forwards:<br>
-public void Trikz_ColorTeam(int client, int partner, int red, int green, int blue) //On do color for skin<br>
+public void Trikz_OnColorTeam(int client, int partner, int red, int green, int blue) //On do color for skin<br>
 {
 <br>
 }
 
-public void Trikz_ColorFlashbang(int client, int red, int green, int blue) //On do color for flashbang<br>
+public void Trikz_OnColorFlashbang(int client, int red, int green, int blue) //On do color for flashbang<br>
 {
 <br>
 }
 
-public void Trikz_Start(int client, int partner) //On timer start<br>
+public void Trikz_OnStart(int client, int partner) //On timer start<br>
 {
 <br>
 }
 
-public void Trikz_Record(int client, int partner, float time, float differ, const char[] type) //On new server record<br>
+public void Trikz_OnRecord(int client, int partner, float time, float differ, const char[] type) //On new server record<br>
 {
 <br>
 }
 
-public void Trikz_Finish(int client, int partner, float time, float differ, const char[] type) //On finish map<br>
+public void Trikz_OnFinish(int client, int partner, float time, float differ, const char[] type) //On finish map<br>
 {
 <br>
 }
 
-public void Trikz_Restart(int client, int partner) //On try to restart timer<br>
+public void Trikz_OnRestart(int client, int partner) //On try to restart timer<br>
 {
 <br>
 }
 
-public void Trikz_Checkpoint(int client, int partner, float time, float differ, const char[] type) //On checkpoint finish<br>
+public void Trikz_OnCheckpoint(int client, int partner, float time, float differ, const char[] type) //On checkpoint finish<br>
 {
 <br>
 }
 
-public void Trikz_Partner(int client, int partner) //On get partner<br>
+public void Trikz_OnPartner(int client, int partner) //On get partner<br>
 {
 <br>
 }
 
-public void Trikz_Breakup(int client, int partner) //On breakup<br>
+public void Trikz_OnBreakup(int client, int partner) //On breakup<br>
 {
 <br>
 }
 
-public void Trikz_Teleport(int client) //On teleport<br>
+public void Trikz_OnTeleport(int client) //On teleport<br>
 {
 <br>
 }
