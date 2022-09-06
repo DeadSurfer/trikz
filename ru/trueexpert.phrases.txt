@@ -20,29 +20,29 @@
 	}
 	"NewServerRecordDetail"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#7CFC00{4}}{default})"
 	}
 	"NewServerRecordDetailNew"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
 	}
-	"NewServerRecordNew"
+	/*"NewServerRecordNew"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}:{4}:{5}"
-	}
-	"DevMapStart"
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}"
+	}*/
+	"DevmapStart"
 	{
 		"#format"	"{1:s}"
 		"ru"	"Devmap голосование начал {1}"
 	}
-	"DevMapIsOFF"
+	"DevmapIsOFF"
 	{
 		"ru"	"Включите devmap."
 	}
-	"DevMapIsON"
+	"DevmapIsON"
 	{
 		"ru"	"Выключите devmap."
 	}
@@ -184,7 +184,7 @@
 		"#format"	"{1:s}"
 		"ru"	"Партнерсво разорвал {1}"
 	}
-	"DevMapNotAllowed"
+	"DevmapNotAllowed"
 	{
 		"ru"	"Devmap голосование недоступно в данный момент."
 	}
@@ -196,22 +196,22 @@
 	{
 		"ru"	"Нет свободных игроков."
 	}
-	"DevMapWillBeDisabled"
+	"DevmapWillBeDisabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"ru"	"Devmap будет выключен. \"Да\" выбрали {1}%%% или {2} из {3} игроков."
 	}
-	"DevMapWillBeEnabled"
+	"DevmapWillBeEnabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"ru"	"Devmap будет включен. \"Да\" выбрали {1}%%% или {2} из {3} игроков."
 	}
-	"DevMapContinue"
+	"DevmapContinue"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"ru"	"Devmap будет продолжен. \"Нет\" выбрали {1}%%% или {2} из {3} игроков."
 	}
-	"DevMapWillNotBe"
+	"DevmapWillNotBe"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"ru"	"Devmap не будет включен. \"Нет\" выбрали {1}%%% или {2} из {3} игроков."
@@ -232,13 +232,13 @@
 	}
 	"PassedImproved"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Passed"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Spectator"
 	{
@@ -262,28 +262,28 @@
 	}
 	"JustPassed"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPImprove"
 	{
-		"#format"	"{1:i},{2:s},{3:s},{4:s}"
-		"ru"	"{1}. Чекпоинт: ;#7CFC00-{2}:{3}:{4}"
+		"#format"	"{1:i},{2:s}"
+		"ru"	"{1}. Чекпоинт: ;#7CFC00{2}"
 	}
 	"CPDeprove"
 	{
-		"#format"	"{1:i},{2:s},{3:s},{4:s}"
-		"ru"	"{1}. Чекпоинт: ;#FF0000+{2}:{3}:{4}"
+		"#format"	"{1:i},{2:s}"
+		"ru"	"{1}. Чекпоинт: ;#FF0000{2}"
 	}
 	"NewServerRecordFirst"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+00:00:00{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}}{default})"
 	}
 	"CPNEW"
 	{
-		"#format"	"{1:i}"
-		"ru"	"{1}. Чекпоинт: ;#FF0000+00:00:00"
+		"#format"	"{1:i},{2:s}"
+		"ru"	"{1}. Чекпоинт: ;#FF0000{2}}"
 	}
 	"YouPressedButton"
 	{
@@ -400,12 +400,13 @@
 	}
 	"CP-recordDetailHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"ЧЕКПОИНТ: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"ЧЕКПОИНТ: {1}"
 	}
 	"CP-DetailZeroHud"
 	{
-		"ru"	"+00:00:00"
+		"#format"	"{1:s}"
+		"ru"	"{1}"
 	}
 	"CP-recordNotFirstHud"
 	{
@@ -414,23 +415,23 @@
 	}
 	"CP-recordDetailNotFirstHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"ЧЕКПОИНТ: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"ЧЕКПОИНТ: {1}"
 	}
 	"CP-recordImproveNotFirstHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"-{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"{1}"
 	}
 	"CP-recordNonHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"ЧЕКПОИНТ: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"ЧЕКПОИНТ: {1}"
 	}
 	"CP-recordDeproveHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"+{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"{1}"
 	}
 	"MapFinishedFirstRecordHud"
 	{
@@ -442,12 +443,13 @@
 	}
 	"FirstRecordHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"ВРЕМЯ: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"ВРЕМЯ: {1}"
 	}
 	"FirstRecordZeroHud"
 	{
-		"ru"	"+00:00:00"
+		"#format"	"{1:s}"
+		"ru"	"{1}"
 	}
 	"NewServerRecordMapFinishedNotFirstHud"
 	{
@@ -468,8 +470,8 @@
 	}
 	"NewServerRecordImproveNotFirstHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"-{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"{1}"
 	}
 	"MapFinishedDeproveHud"
 	{
@@ -477,13 +479,13 @@
 	}
 	"MapFinishedTimeDeproveHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"ВРЕМЯ: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"ВРЕМЯ: {1}"
 	}
 	"MapFinishedTimeDeproveOwnHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"+{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"ru"	"{1}"
 	}
 	"AutoflashON"
 	{
