@@ -60,12 +60,12 @@ public void Trikz_OnTimerStart(int client, int partner) //On timer start<br>
 <br>
 }
 
-public void Trikz_OnRecord(int client, int partner, float time, float differ, const char[] type) //On new server record<br>
+public void Trikz_OnRecord(int client, int partner, float time, float diff, const char[] type) //On new server record<br>
 {
 <br>
 }
 
-public void Trikz_OnFinish(int client, int partner, float time, float differ, const char[] type) //On finish map<br>
+public void Trikz_OnFinish(int client, int partner, float time, float diff, const char[] type) //On finish map<br>
 {
 <br>
 }
@@ -75,7 +75,7 @@ public void Trikz_OnRestart(int client, int partner) //On try to restart timer<b
 <br>
 }
 
-public void Trikz_OnCheckpoint(int client, int partner, float time, float differ, const char[] type) //On checkpoint finish<br>
+public void Trikz_OnCheckpoint(int client, int partner, float time, float diff, const char[] type) //On checkpoint finish<br>
 {
 <br>
 }
