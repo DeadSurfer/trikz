@@ -188,7 +188,6 @@ float g_flashbangTime[MAXPLAYER];
 bool g_flashbangDoor[MAXPLAYER][2];
 int g_top10Count = 0;
 DynamicHook g_teleport = null;
-//KeyValues g_kv;
 float g_top10ac = 0.0;
 int g_step = 1;
 int g_ZoneEditor = 0;
@@ -202,7 +201,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.49",
+	version = "4.50",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -331,8 +330,6 @@ public void OnPluginStart()
 	g_cookie[9] = RegClientCookie("te_flashbangskin", "Flashbang skin.", CookieAccess_Protected);
 	g_cookie[10] = RegClientCookie("te_flashbangcolor", "Flashbang color.", CookieAccess_Protected);
 	g_cookie[11] = RegClientCookie("te_playerskin", "Player skin.", CookieAccess_Protected);
-
-	//CreateTimer(60.0, timer_clearlag);
 
 	Handle gamedata = LoadGameConfigFile("sdktools.games");
 
@@ -2752,7 +2749,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 			static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
-			hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
+			hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
 
 			Call_StartForward(hForward);
 			
@@ -2833,10 +2830,12 @@ stock void ColorFlashbang(int client, int color = -1)
 		hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
 
 		Call_StartForward(hForward);
+
 		Call_PushCell(client);
 		Call_PushCell(g_colorBuffer[client][0][1]);
 		Call_PushCell(g_colorBuffer[client][1][1]);
 		Call_PushCell(g_colorBuffer[client][2][1]);
+
 		Call_Finish();
 
 		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
@@ -2920,7 +2919,6 @@ stock void Restart(int client)
 				Call_StartForward(hForward);
 
 				Call_PushCell(client);
-
 				Call_PushCell(partner);
 
 				Call_Finish();
@@ -3171,7 +3169,6 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 		float time = results.FetchFloat(2);
 
 		char query[512] = "";
-
 		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
 		g_mysql.Query(SQLTop10_2, query, time);
 	}
@@ -3191,18 +3188,10 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		results.FetchString(0, name1, sizeof(name1));
 		results.FetchString(1, name2, sizeof(name2));
 
-		//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
-		//int hour = (RoundToFloor(time) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-		//int minute = (RoundToFloor(time) / 60) % 60;
-		//int second = RoundToFloor(time) % 60;
-
 		char format[256] = "";
 
 		char formatTime[64] = "";
-		//Format(formatTime, sizeof(formatTime), "%02.i:%02.i:%02.i", hour, minute, second);
 		FormatSeconds(time, formatTime);
-
-		//PrintToChatAll("%i, %s and %s finished map in %s", ++g_top10Count, name1, name2, format);
 
 		int count = ++g_top10Count;
 
@@ -3215,42 +3204,29 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 
 		float timeDiff = time - serverRecord;
 
-		//int hourDiff = (RoundToFloor(timeDiff) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-		//int minuteDiff = (RoundToFloor(timeDiff) / 60) % 60;
-		//int secondDiff = RoundToFloor(timeDiff) % 60;
-
 		char formatTimeDiff[64] = "";
-		//Format(formatTimeDiff, sizeof(formatTimeDiff), "%02.i:%02.i:%02.i", hourDiff, minuteDiff, secondDiff);
 		FormatSeconds(timeDiff, formatTimeDiff);
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				//Format(format, sizeof(format), "%T", "Top10", i, count, name1, name2, formatTime, formatTimeDiffer);
-				//SendMessage(i, format);
-
-				//Format()
-
 				if(count == 1)
 				{
 					Format(format, sizeof(format), "\x01%T", "Top10details", i);
 					SendMessage(i, format);
-					//PrintToChat(i, "Place:\tTime:\t\tDifferent:\t\t\tTeam:");
 				}
 				
 				if(count < 10)
 				{
 					Format(format, sizeof(format), "\x01%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
 					SendMessage(i, format);
-					//PrintToChat(i, "\x01#%i\t\t\x077CFC00%s\t\t\x07FF0000+%s\x01\t\t%s & %s", count, format, formatX, name1, name2);
 				}
 
 				else if(count == 10)
 				{
 					Format(format, sizeof(format), "\x01%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
 					SendMessage(i, format);
-					//PrintToChat(i, "\x01#%i\t\x077CFC00%s\t\t\x07FF0000+%s\x01\t\t%s & %s", count, format, formatX, name1, name2);
 				}
 			}
 		}
@@ -3612,13 +3588,12 @@ public Action cmd_startmins(int client, int args)
 		if(g_devmap == true)
 		{
 			GetClientAbsOrigin(client, g_zoneStartOrigin[0]);
+
 			g_zoneFirst[0] = true;
 		}
 
 		else if(g_devmap == false)
 		{
-			//PrintToChat(client, "Turn on devmap.");
-			//PrintToChat(client, "DevmapIsOFF", client);
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 			SendMessage(client, format);
@@ -3666,8 +3641,6 @@ public Action cmd_deleteallcp(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			//PrintToChat(client, "Turn on devmap.");
-			//PrintToChat(client, "DevmapIsOFF", client);
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 			SendMessage(client, format);
@@ -3745,7 +3718,7 @@ public Action cmd_test(int client, int args)
 		color |= (255 & 255) << 8; // 255 blue
 		color |= (50 & 255) << 0; // 50 alpha
 
-		PrintToChat(client, "\x08%08XCOLOR", color);
+		PrintToChat(client, "\x08%08XCOLOR (%i)", color, color);
 
 		char auth64[64] = "";
 		GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64));
@@ -3792,7 +3765,6 @@ stock void SendMessage(int client, const char[] text)
 		}
 	}
 
-	//Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName);
 	char textReplaced[256] = "";
 	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
 
@@ -3824,13 +3796,12 @@ public Action cmd_endmins(int client, int args)
 		if(g_devmap == true)
 		{
 			GetClientAbsOrigin(client, g_zoneEndOrigin[0]);
+
 			g_zoneFirst[1] = true;
 		}
 
 		else if(g_devmap == false)
 		{
-			//PrintToChat(client, "Turn on devmap.");
-			//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 			SendMessage(client, format);
@@ -3852,9 +3823,7 @@ public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] erro
 	else if(strlen(error) == 0)
 	{
 		char query[512] = "";
-
 		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
-
 		g_mysql.Query(SQLSetEndZones, query);
 	}
 
@@ -3870,7 +3839,6 @@ public Action cmd_maptier(int client, int args)
 		if(g_devmap == true)
 		{
 			char arg[512] = "";
-
 			GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
 			int tier = StringToInt(arg);
@@ -3880,17 +3848,13 @@ public Action cmd_maptier(int client, int args)
 				PrintToServer("[Args] Tier: %i", tier);
 
 				char query[512] = "";
-
 				Format(query, sizeof(query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
-
 				g_mysql.Query(SQLTierRemove, query, tier);
 			}
 		}
 
 		else if(g_devmap == false)
 		{
-			//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
-			//PrintToChat(client, "Turn on devmap.");
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 			SendMessage(client, format);
@@ -3912,9 +3876,7 @@ public void SQLTierRemove(Database db, DBResultSet results, const char[] error, 
 	else if(strlen(error) == 0)
 	{
 		char query[512] = "";
-
 		Format(query, sizeof(query), "INSERT INTO tier (tier, map) VALUES (%i, '%s')", data, g_map);
-
 		g_mysql.Query(SQLTierInsert, query, data);
 	}
 
@@ -3995,7 +3957,6 @@ public Action cmd_startmaxs(int client, int args)
 
 		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
-
 		g_mysql.Query(SQLDeleteStartZone, query);
 
 		g_zoneFirst[0] = false;
@@ -4016,7 +3977,6 @@ public Action cmd_endmaxs(int client, int args)
 
 		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
-
 		g_mysql.Query(SQLDeleteEndZone, query);
 
 		g_zoneFirst[1] = false;
@@ -4036,7 +3996,6 @@ public Action cmd_cpmins(int client, int args)
 		if(g_devmap == true)
 		{
 			char cmd[512] = "";
-
 			GetCmdArg(args, cmd, sizeof(cmd));
 
 			int cpnum = StringToInt(cmd);
@@ -4053,8 +4012,6 @@ public Action cmd_cpmins(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			//PrintToChat(client, "Turn on devmap.");
-			//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 			SendMessage(client, format);
@@ -4086,9 +4043,7 @@ public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, a
 		}
 
 		char query[512] = "";
-
 		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[0][data][0]), RoundFloat(g_cpPos[0][data][1]), RoundFloat(g_cpPos[0][data][2]), RoundFloat(g_cpPos[1][data][0]), RoundFloat(g_cpPos[1][data][1]), RoundFloat(g_cpPos[1][data][2]), g_map);
-
 		g_mysql.Query(SQLCPInserted, query, data);
 	}
 
@@ -4102,7 +4057,6 @@ public Action cmd_cpmaxs(int client, int args)
 	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[2] == true)
 	{
 		char cmd[512] = "";
-
 		GetCmdArg(args, cmd, sizeof(cmd));
 
 		int cpnum = StringToInt(cmd);
@@ -4113,7 +4067,6 @@ public Action cmd_cpmaxs(int client, int args)
 
 			char query[512] = "";
 			Format(query, sizeof(query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
-
 			g_mysql.Query(SQLCPRemoved, query, cpnum);
 
 			g_zoneFirst[2] = false;
@@ -4161,8 +4114,6 @@ public Action cmd_zones(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			//PrintToChat(client, "Turn on devmap.");
-			//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 			SendMessage(client, format);
@@ -4197,18 +4148,15 @@ stock void ZoneEditor2(int client)
 		menu.AddItem("end", "End zone");
 	}
 
-	char format[32] = "";
-
 	if(g_cpCount > 0)
 	{
+		char cp[16] = "";
+		char format[32] = "";
+
 		for(int i = 1; i <= g_cpCount; i++)
 		{
-			Format(format, sizeof(format), "CP nr. %i zone", i);
-
-			char cp[16] = "";
-
 			Format(cp, sizeof(cp), "%i", i);
-
+			Format(format, sizeof(format), "CP nr. %i zone", i);
 			menu.AddItem(cp, format);
 		}
 	}
@@ -4245,7 +4193,6 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			for(int i = 1; i <= g_cpCount; i++)
 			{
 				char cp[16] = "";
-
 				IntToString(i, cp, sizeof(cp));
 
 				if(StrEqual(item, cp, false) == true)
@@ -4263,12 +4210,13 @@ stock void ZoneEditorStart(int client)
 {
 	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 
-	char format[16] = "";
+	
 
 	menu2.SetTitle("Zone editor - Start zone");
 
 	menu2.AddItem("starttp", "Teleport to start zone");
 	
+	char format[16] = "";
 	Format(format, sizeof(format), "Step: %i", g_step);
 	menu2.AddItem("step", format);
 
@@ -4296,12 +4244,11 @@ stock void ZoneEditorEnd(int client)
 {
 	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 
-	char format[16] = "";
-
 	menu2.SetTitle("Zone editor - End zone");
 
 	menu2.AddItem("endtp", "Teleport to end zone");
 
+	char format[16] = "";
 	Format(format, sizeof(format), "Step: %i", g_step);
 	menu2.AddItem("step", format);
 
@@ -4329,64 +4276,51 @@ stock void ZoneEditorCP(int client, int cpnum)
 {
 	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 
-	char format[16] = "";
-
 	menu2.SetTitle("Zone editor - CP nr. %i zone", cpnum);
 
-	char sButton[32] = "";
-
-	Format(sButton, sizeof(sButton), "Teleport to CP nr. %i zone", cpnum);
+	char button[32] = "";
+	Format(button, sizeof(button), "Teleport to CP nr. %i zone", cpnum);
 
 	char itemCP[16] = "";
 
 	Format(itemCP, sizeof(itemCP), "tp;%i", cpnum);
 
-	menu2.AddItem(itemCP, sButton);
+	menu2.AddItem(itemCP, button);
 
-	Format(format, sizeof(format), "Step: %i", g_step);
-	menu2.AddItem("step", format);
+	char step[16] = "";
+	Format(step, sizeof(step), "Step: %i", g_step);
+	menu2.AddItem("step", step);
 
 	Format(itemCP, sizeof(itemCP), "5;%i", cpnum);
 
 	menu2.AddItem(itemCP, "+x/maxs");
-
 	Format(itemCP, sizeof(itemCP), "6;%i", cpnum);
 
 	menu2.AddItem(itemCP, "-x/maxs");
-
 	Format(itemCP, sizeof(itemCP), "3;%i", cpnum);
 
 	menu2.AddItem(itemCP, "+y/mins");
-
 	Format(itemCP, sizeof(itemCP), "4;%i", cpnum);
 
 	menu2.AddItem(itemCP, "-y/mins");
-
 	menu2.AddItem("empty", "");
 
 	Format(itemCP, sizeof(itemCP), "1;%i", cpnum);
-
 	menu2.AddItem(itemCP, "+x/mins");
 
 	Format(itemCP, sizeof(itemCP), "2;%i", cpnum);
-
 	menu2.AddItem(itemCP, "-x/mins");
 
 	Format(itemCP, sizeof(itemCP), "7;%i", cpnum);
-
 	menu2.AddItem(itemCP, "+y/maxs");
 
 	Format(itemCP, sizeof(itemCP), "8;%i", cpnum);
-
 	menu2.AddItem(itemCP, "-y/maxs");
 
 	char cpupdate[32] = "";
-
 	Format(cpupdate, sizeof(cpupdate), "cpupdate;%i", cpnum);
-
-	Format(sButton, sizeof(sButton), "Update CP nr. %i zone", cpnum);
-
-	menu2.AddItem(cpupdate, sButton);
+	Format(button, sizeof(button), "Update CP nr. %i zone", cpnum);
+	menu2.AddItem(cpupdate, button);
 
 	menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 
@@ -4411,7 +4345,6 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Select:
 		{
 			char item[16] = "";
-
 			menu.GetItem(param2, item, sizeof(item));
 
 			if(StrEqual(item, "starttp", false) == true)
@@ -4605,26 +4538,19 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			if(StrEqual(item, "startupdate", false) == true)
 			{
 				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
-
 				g_mysql.Query(SQLUpdateZone, query, 0);
 			}
 
 			else if(StrEqual(item, "endupdate", false) == true)
 			{
 				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
-
 				g_mysql.Query(SQLUpdateZone, query, 1);
 			}
 
 			else if(StrEqual(item, cpFormated, false) == true)
 			{
-				//cpnum++;
-
 				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[0][cpnum][0]), RoundFloat(g_cpPos[0][cpnum][1]), RoundFloat(g_cpPos[0][cpnum][2]), RoundFloat(g_cpPos[1][cpnum][0]), RoundFloat(g_cpPos[1][cpnum][1]), RoundFloat(g_cpPos[1][cpnum][2]), cpnum, g_map);
-
 				g_mysql.Query(SQLUpdateZone, query, cpnum + 1);
-
-				//PrintToServer("%i", cpnum);
 			}
 
 			if(StrEqual(item, "step", false) == false)
@@ -4981,7 +4907,6 @@ public Action SDKEndTouch(int entity, int other)
 		Call_StartForward(hForward);
 
 		Call_PushCell(other);
-
 		Call_PushCell(partner);
 
 		Call_Finish();
@@ -5037,7 +4962,6 @@ public Action SDKStartTouch(int entity, int other)
 				FormatSeconds(timeDiff, timeSR);
 
 				char format[256] = "";
-
 				char query[512] = "";
 
 				int playerid = GetSteamAccountID(other);
@@ -6660,13 +6584,9 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 			Call_StartForward(hForward);
 
 			Call_PushCell(other);
-
 			Call_PushCell(partner);
-
 			Call_PushFloat(time);
-
 			Call_PushFloat(0.0);
-
 			Call_PushString("FirstCPRecord1");
 
 			Call_Finish();
@@ -6819,9 +6739,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 		g_dbPassed = true; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 
 		char query[512] = "";
-
 		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", g_map);
-
 		g_mysql.Query(SQLGetServerRecord, query);
 
 		RecalculatePoints();
@@ -6838,9 +6756,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 stock void ForceZonesSetup()
 {
 	char query[512] = "";
-
 	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
-
 	g_mysql.Query(SQLSetZoneStart, query);
 
 	return;
@@ -6868,9 +6784,7 @@ public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error
 			CreateStart();
 
 			char query[512] = "";
-
 			Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
-
 			g_mysql.Query(SQLSetZoneEnd, query);
 		}
 	}
@@ -6948,20 +6862,15 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 	end[1][2] += size;
 
-	//int zones = 1;
 	int zones = 1;
-	//PrintToServer("zones: %i", zones);
 
 	if(g_cpCount > 0)
 	{
 		zones += g_cpCount;
-		//PrintToServer("a g_cpCount: %i", zones)
 
 		for(int i = 2; i <= zones; i++)
 		{
 			int cpnum = i - 1; // start count cp from 1.
-			//int cpnum = i;
-			//PrintToServer("z %i", i)
 			
 			start[i][0] = g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0] == true ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
 			start[i][1] = g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1] == true ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
@@ -7176,23 +7085,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(entityIndex > 0)
 			{
-				//if(IsValidEntity(entity))
+				char log[256] = "";
+				GetEntityClassname(entityIndex, log, sizeof(log));
+
+				if(StrEqual(log, "prop_dynamic", false) == false)
 				{
-					char log[256] = "";
-					GetEntityClassname(entityIndex, log, sizeof(log));
-
-					if(StrEqual(log, "prop_dynamic", false) == false)
-					{
-						LogMessage("runcmd: %s", log);
-					}
-
-					RemoveEntity(entityIndex);
+					LogMessage("runcmd: %s", log);
 				}
 
-				//if(g_pingModel[client] > 0)
-				{
-					g_pingModel[client] = 0;
-				}
+				RemoveEntity(entityIndex);
+
+				g_pingModel[client] = 0;
 
 				if(g_pingTimer[client] != INVALID_HANDLE)
 				{
@@ -7593,12 +7496,10 @@ public Action cmd_devmap(int client, int args)
 				{
 					Menu menu = new Menu(devmap_handler);
 
-					//menu.SetTitle("Turn off dev map?");
 					menu.SetTitle("%T", "TurnOFFDevMap", client);
 					
 					Format(format, sizeof(format), "%T", "Yes", client);
 					menu.AddItem("yes", format);
-					//menu.AddItem("yes", "Yes");
 
 					Format(format, sizeof(format), "%T", "No", client);
 					menu.AddItem("no", format);
@@ -7610,7 +7511,6 @@ public Action cmd_devmap(int client, int args)
 				{
 					Menu menu = new Menu(devmap_handler);
 
-					//menu.SetTitle("Turn on dev map?");
 					menu.SetTitle("%T", "TurnONDevMap", client);
 
 					Format(format, sizeof(format), "%T", "Yes", client);
@@ -7627,11 +7527,8 @@ public Action cmd_devmap(int client, int args)
 
 		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE);
 
-		//PrintToChatAll("Devmap vote started by %N", client);
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
-
-		//PrintToChatAll("\x01%T", "DevmapStart", client, name);
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -7645,8 +7542,6 @@ public Action cmd_devmap(int client, int args)
 
 	else if(GetEngineTime() - g_devmapTime <= 35.0 || GetEngineTime() - g_afkTime <= 30.0)
 	{
-		//PrintToChat(client, "Devmap vote is not allowed yet.");
-		//PrintToChat(client, "\x01%T", "DevmapNotAllowed", client);
 		Format(format, sizeof(format), "%T", "DevmapNotAllowed", client);
 		SendMessage(client, format);
 	}
@@ -7704,8 +7599,6 @@ stock void Devmap(bool force)
 		{
 			if(g_devmap == true)
 			{
-				//PrintToChatAll("Devmap will be disabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-				
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
@@ -7718,15 +7611,11 @@ stock void Devmap(bool force)
 
 			else if(g_devmap == false)
 			{
-				//PrintToChatAll("Devmap will be enabled. \"Yes\" %i%%% or %i of %i players.", (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-				//Format(format, sizeof(format), "%T", "DevmapWillBeEnabled");
-
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(format, sizeof(format), "%T", "DevmapWillBeEnabled", i, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-						//PrintToChat(client, format);
 						SendMessage(i, format);
 					}
 				}
@@ -7739,13 +7628,10 @@ stock void Devmap(bool force)
 		{
 			if(g_devmap == true)
 			{
-				//PrintToChatAll("Devmap will be continue. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]); //google translate russian to english.
-
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						//PrintToChat(i, "\x01%T", "DevmapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						Format(format, sizeof(format), "%T", "DevmapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
@@ -7754,20 +7640,14 @@ stock void Devmap(bool force)
 
 			else if(g_devmap == false)
 			{
-				//char format[256] = "";
-				//Format(format, sizeof(format), "\x01%T", "DevmapWillNotBe", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
-				//PrintToChatAll(format);
-
 				for(int i = 1; i <= MaxClients; i++)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						//PrintToChat(i, "\x01%T", "DevmapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						Format(format, sizeof(format), "%T", "DevmapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
-				//PrintToChatAll("Devmap will not be enabled. \"No\" chose %i%%% or %i of %i players.", (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 			}
 		}
 
@@ -7857,10 +7737,7 @@ public Action cmd_afk(int client, int args)
 
 				Menu menu = new Menu(afk_handler);
 
-				//menu.SetTitle("Are you here?");
 				menu.SetTitle("%T", "AreYouHere?", client);
-
-				//menu.AddItem("yes", "Yes");
 				
 				Format(format, sizeof(format), "%T", "Yes", client);
 				menu.AddItem("yes", format);
@@ -7875,7 +7752,6 @@ public Action cmd_afk(int client, int args)
 
 		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE);
 
-		//PrintToChatAll("Afk check - vote started by %N", client);
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
 
@@ -7883,7 +7759,6 @@ public Action cmd_afk(int client, int args)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				//PrintToChat(i, "\x01%T", "AFKCHECK", i, name);
 				Format(format, sizeof(format), "%T", "AFKCHECK", i, name);
 				SendMessage(i, format);
 			}
@@ -7892,9 +7767,6 @@ public Action cmd_afk(int client, int args)
 
 	else if(GetEngineTime() - g_afkTime <= 30.0 || GetEngineTime() - g_devmapTime <= 35.0)
 	{
-		//PrintToChat(client, "Afk vote is not allowed yet.");
-		//PrintToChatAll("\x01%T");
-		//PrintToChat(client, "\x01%T", "AFKCHECK2", client);
 		Format(format, sizeof(format), "%T", "AFKCHECK2", client);
 		SendMessage(client, format);
 	}
@@ -7948,7 +7820,6 @@ stock void AFK(int client, bool force)
 		{
 			if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false && g_afk[i] == false && client != i)
 			{
-				//KickClient(i, "Away from keyboard");
 				KickClient(i, "%T", "AwayFromKeyboard", i);
 			}
 		}
@@ -7979,17 +7850,12 @@ stock void Noclip(int client)
 	{
 		SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
 
-		//PrintToChat(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip enabled." : "Noclip disabled.");
-
 		Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipON" : "NoclipOFF", client);
 		SendMessage(client, format);
 	}
 
 	else if(g_devmap == false)
 	{
-		//PrintToChat(client, "Turn on devmap.");
-		//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
-
 		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 		SendMessage(client, format);
 	}
@@ -8040,10 +7906,8 @@ stock void HudMenu(int client)
 
 	char format[128] = "";
 	Format(format, sizeof(format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
-	//menu.AddItem("vel", g_hudVel[client] ? "Velocity [v]" : "Velocity [x]");
 	menu.AddItem("vel", format, gCV_vel.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-	//menu.AddItem("mls", g_mlstats[client] ? "ML stats [v]" : "ML stats [x]");
 	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
 	menu.AddItem("mls", format, gCV_mlstats.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
@@ -8067,7 +7931,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Select:
 		{
 			char value[8] = "";
-
 			char format[256] = "";
 
 			switch(param2)
@@ -8077,7 +7940,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 					g_hudVel[param1] = !g_hudVel[param1];
 
 					IntToString(g_hudVel[param1], value, sizeof(value));
-
 					SetClientCookie(param1, g_cookie[0], value);
 
 					Format(format, sizeof(format), "%T", g_hudVel[param1] == true ? "VelON" : "VelOFF", param1);
@@ -8089,7 +7951,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 					g_mlstats[param1] = !g_mlstats[param1];
 
 					IntToString(g_mlstats[param1], value, sizeof(value));
-
 					SetClientCookie(param1, g_cookie[1], value);
 
 					Format(format, sizeof(format), "%T", g_mlstats[param1] == true ? "MLStatsON" : "MLStatsOFF", param1);
@@ -8101,7 +7962,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 					g_endMessage[param1] = !g_endMessage[param1];
 
 					IntToString(g_endMessage[param1], value, sizeof(value));
-
 					SetClientCookie(param1, g_cookie[8], value);
 
 					Format(format, sizeof(format), "%T", g_endMessage[param1] == true ? "EndMsgON" : "EndMsgOFF", param1);
@@ -8173,8 +8033,6 @@ public Action cmd_mlstats(int client, int args)
 
 	SetClientCookie(client, g_cookie[1], value);
 
-	//PrintToChat(client, g_mlstats[client] ? "ML stats is on." : "ML stats is off.");
-
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsON" : "MLStatsOFF", client);
 	SendMessage(client, format);
@@ -8204,8 +8062,6 @@ public Action cmd_button(int client, int args)
 
 	SetClientCookie(client, g_cookie[2], value);
 
-	//PrintToChat(client, g_button[client] ? "Button announcer is on." : "Button announcer is off.");
-
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
 	SendMessage(client, format);
@@ -8230,183 +8086,12 @@ public Action cmd_pbutton(int client, int args)
 
 	SetClientCookie(client, g_cookie[3], value);
 
-	//PrintToChat(client, g_pbutton[client] ? "Partner button announcer is on." : "Partner button announcer is off.");
-
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_pbutton[client] == true ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
 	SendMessage(client, format);
 
 	return Plugin_Handled;
 }
-
-//public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
-//{
-	/*if(IsChatTrigger() == false)
-	{
-		if(StrEqual(sArgs, "t", false) || StrEqual(sArgs, "trikz", false))
-		{
-			if(g_menuOpened[client] == false)
-			{
-				Trikz(client);
-			}
-		}
-
-		else if(StrEqual(sArgs, "bl", false) || StrEqual(sArgs, "block", false))
-		{
-			Block(client);
-		}
-
-		else if(StrEqual(sArgs, "p", false) || StrEqual(sArgs, "partner", false))
-		{
-			Partner(client);
-		}*/
-
-		/*else if(StrEqual(sArgs, "c", false) || StrEqual(sArgs, "color", false)) //white, red, orange, yellow, lime, aqua, deep sky blue, blue, magenta
-		{
-			ColorTeam(client, true);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 0", false) || StrEqual(sArgs, "c white", false) || StrEqual(sArgs, "color 0", false) || StrEqual(sArgs, "color white", false))
-		{
-			ColorTeam(client, true, 0);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 1", false) || StrEqual(sArgs, "c red", false) || StrEqual(sArgs, "color 1", false) || StrEqual(sArgs, "color red", false))
-		{
-			ColorTeam(client, true, 1);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 2", false) || StrEqual(sArgs, "c orange", false) || StrEqual(sArgs, "color 2", false) || StrEqual(sArgs, "color orange", false))
-		{
-			ColorTeam(client, true, 2);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 3", false) || StrEqual(sArgs, "c yellow", false) || StrEqual(sArgs, "color 3", false) || StrEqual(sArgs, "color yellow", false))
-		{
-			ColorTeam(client, true, 3);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 4", false) || StrEqual(sArgs, "c lime", false) || StrEqual(sArgs, "color 4", false) || StrEqual(sArgs, "color lime", false))
-		{
-			ColorTeam(client, true, 4);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 5", false) || StrEqual(sArgs, "c aqua", false) || StrEqual(sArgs, "color 5", false) || StrEqual(sArgs, "color aqua", false))
-		{
-			ColorTeam(client, true, 5);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 6", false) || StrEqual(sArgs, "c deep sky blue", false) || StrEqual(sArgs, "color 6", false) || StrEqual(sArgs, "color deep sky blue", false))
-		{
-			ColorTeam(client, true, 6);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 7", false) || StrEqual(sArgs, "c blue", false) || StrEqual(sArgs, "color 7", false) || StrEqual(sArgs, "color blue", false))
-		{
-			ColorTeam(client, true, 7);
-
-			return Plugin_Continue;
-		}
-
-		else if(StrEqual(sArgs, "c 8", false) || StrEqual(sArgs, "c magenta", false) || StrEqual(sArgs, "color 8", false) || StrEqual(sArgs, "color magenta", false))
-		{
-			ColorTeam(client, true, 8);
-
-			return Plugin_Continue;
-		}*/
-
-		/*else if(StrEqual(sArgs, "r", false) || StrEqual(sArgs, "restart", false))
-		{
-			Restart(client);
-
-			if(g_partner[client] == 0)
-			{
-				Restart(g_partner[client]);
-			}
-		}
-
-		//else if(StrEqual(sArgs, "time"))
-		//	cmd_time(client, 0)
-
-		else if(StrEqual(sArgs, "Devmap", false))
-		{
-			cmd_devmap(client, 0);
-		}
-
-		else if(StrEqual(sArgs, "top", false))
-		{
-			cmd_top(client, 0);
-		}
-
-		else if(StrEqual(sArgs, "cp", false))
-		{
-			Checkpoint(client);
-		}
-
-		//else if(StrEqual(sArgs, "afk", false))
-		//{
-		//	cmd_afk(client, 0);
-		//}
-
-		else if(StrEqual(sArgs, "nc", false) || StrEqual(sArgs, "noclip", false))
-		{
-			Noclip(client);
-		}
-
-		else if(StrEqual(sArgs, "sp", false) || StrEqual(sArgs, "spec", false))
-		{
-			cmd_spec(client, 0);
-		}
-
-		else if(StrEqual(sArgs, "hud", false))
-		{
-			cmd_hud(client, 0);
-		}
-
-		else if(StrEqual(sArgs, "mls", false))
-		{
-			cmd_mlstats(client, 0);
-		}
-
-		else if(StrEqual(sArgs, "button", false))
-		{
-			cmd_button(client, 0);
-		}
-
-		else if(StrEqual(sArgs, "pbutton", false))
-		{
-			cmd_pbutton(client, 0);
-		}
-
-		else if(StrEqual(sArgs, "top10", false))
-		{
-			Top10();
-		}
-
-		else if(StrEqual(sArgs, "zones", false))
-		{
-			cmd_zones(client, 0);
-		}*/
-	//}
-
-	//return Plugin_Continue;
-//}
 
 public Action ProjectileBoostFixEndTouch(int entity, int other)
 {
@@ -8492,7 +8177,6 @@ public void SDKProjectile(int entity)
 		if(g_skinFlashbang[client] > 0)
 		{
 			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
-
 			SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client]);
 		}
 
@@ -8535,7 +8219,6 @@ public Action timer_deleteProjectile(Handle timer, int entity)
 		FlashbangEffect(entity);
 
 		char log[256] = "";
-
 		GetEntityClassname(entity, log, sizeof(log));
 
 		if(StrEqual(log, "flashbang_projectile", false) == false)
@@ -8640,7 +8323,6 @@ public Action SDKWeaponDrop(int client, int weapon)
 	if(IsValidEntity(weapon) == true)
 	{
 		char log[256] = "";
-
 		GetEntityClassname(weapon, log, sizeof(log));
 
 		if(StrContains(log, "weapon", false) == -1)
@@ -8650,11 +8332,6 @@ public Action SDKWeaponDrop(int client, int weapon)
 
 		RemoveEntity(weapon);
 	}
-
-	/*else if(IsValidEntity(weapon) == false)
-	{
-		PrintToServer("Weapon %i is not valid.", weapon);
-	}*/
 
 	return Plugin_Continue;
 }
@@ -8724,11 +8401,6 @@ public Action timer_removePing(Handle timer, int client)
 
 		g_pingTimer[client] = INVALID_HANDLE;
 	}
-
-	//else if(g_pingModel[client] == 0)
-	//{
-	//	PrintToServer("Ping model for removing is not valid (%i) for player %N.", g_pingModel[client], client);
-	//}
 
 	return Plugin_Stop;
 }
@@ -8852,7 +8524,6 @@ stock void MLStats(int client, bool ground)
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 				bfmsg.WriteByte(true);
-
 				bfmsg.WriteString(print);
 
 				EndMessage();
@@ -8875,6 +8546,7 @@ stock int Stuck(int client)
 	float origin[3] = {0.0, 0.0, 0.0};
 
 	GetClientMins(client, mins);
+
 	GetClientMaxs(client, maxs);
 
 	GetClientAbsOrigin(client, origin);
@@ -8923,25 +8595,15 @@ public int Native_GetTimerState(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
-	if(IsFakeClient(client) == false)
+	if(g_state[client] == true)
 	{
-		if(g_state[client] == true)
-		{
-			return true;
-		}
-
-		else if(g_state[client] == false)
-		{
-			return false;
-		}
+		return true;
 	}
 
-	/*else if(IsFakeClient(client) == true)
+	else //at else if(g_state[client] == false) waring with return value
 	{
-		return 0;
-	}*/
-
-	return numParams;
+		return false;
+	}
 }
 
 public int Native_SetPartner(Handle plugin, int numParams)
@@ -8958,7 +8620,7 @@ public int Native_SetPartner(Handle plugin, int numParams)
 public int Native_Restart(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
-
+	
 	Restart(client);
 
 	return numParams;
@@ -8968,13 +8630,6 @@ public int Native_GetDevmap(Handle plugin, int numParams)
 {
 	return g_devmap;
 }
-
-/*public Action timer_clearlag(Handle timer)
-{
-	ServerCommand("mat_texture_list_txlod_sync reset");
-
-	return Plugin_Continue;
-}*/
 
 stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
@@ -9018,22 +8673,25 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 
 public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
 {
-	bool bOriginNull = DHookIsNullParam(hParams, 1);
+	bool originNull = DHookIsNullParam(hParams, 1);
 	
-	if(bOriginNull == true)
+	if(originNull == true)
 	{
 		return MRES_Ignored;
 	}
 	
-	//float origin[3];
-	//DHookGetParamVector(hParams, 1, origin);
+	float origin[3] = {0.0, 0.0, 0.0};
+	DHookGetParamVector(hParams, 1, origin);
 
-	//float vel[3] = {0.0, 0.0, 0.0};
-	//DHookGetParamVector(hParams, 3, vel);
+	bool velNull = DHookIsNullParam(hParams, 3);
 
-	//PrintToServer("%f %f %f", vel[0], vel[1], vel[2]);
+	if(velNull == true)
+	{
+		return MRES_Ignored;
+	}
 
-	//PrintToServer("%N", client);
+	float vel[3] = {0.0, 0.0, 0.0};
+	DHookGetParamVector(hParams, 3, vel);
 
 	if(g_mlsCount[client] > 0)
 	{
@@ -9042,11 +8700,13 @@ public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.
 
 	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
-	hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell);
+	hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell, Param_Array, Param_Array);
 
 	Call_StartForward(hForward);
 	
 	Call_PushCell(client);
+	Call_PushArray(origin, 3);
+	Call_PushArray(vel, 3);
 
 	Call_Finish();
 	
