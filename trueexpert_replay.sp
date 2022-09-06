@@ -93,7 +93,9 @@ public void OnPluginStart()
 	Database.Connect(SQLConnect, "trueexpert");
 
 	HookEvent("player_spawn", OnSpawn, EventHookMode_Post);
-	HookEvent("player_changename", OnChangeName, EventHookMode_Pre);
+	//HookEvent("player_changename", OnChangeName, EventHookMode_Pre);
+	
+	HookUserMessage(GetUserMessageId("SayText2"), Hook_SayText2, true);
 
 	GameData gamedata = new GameData("trueexpert.games");
 
@@ -657,7 +659,7 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
+/*public Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -667,7 +669,7 @@ public Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
 	}
 
 	return Plugin_Continue;
-}
+}*/
 
 public void ApplyFlags(int &flags1, int flags2, int flag)
 {
@@ -742,4 +744,20 @@ public MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 	SetEntityFlags(pThis, GetEntityFlags(pThis) | FL_ATCONTROLS);
 
 	return MRES_Ignored;
+}
+
+public Action Hook_SayText2(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp#L2830
+{
+	BfRead bfmsg = msg;
+	int client = bfmsg.ReadByte();
+	bfmsg.ReadByte();
+	char message[24] = "";
+	bfmsg.ReadString(message, 24);
+
+	if(IsFakeClient(client) == true && StrEqual(message, "#Cstrike_Name_Change", true) == true)
+	{
+		return Plugin_Handled;
+	}
+
+	return Plugin_Continue;
 }
