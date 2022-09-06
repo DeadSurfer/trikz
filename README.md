@@ -90,7 +90,7 @@ public void Trikz_OnBreakup(int client, int partner) //On breakup<br>
 <br>
 }
 
-public void Trikz_OnTeleport(int client) //On teleport<br>
+public void Trikz_OnTeleport(int client, float origin[3], float vel[3]) //On teleport<br>
 {
 <br>
 }
