@@ -20,30 +20,30 @@
 	}
 	"NewServerRecordDetail"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
 	}
 	"NewServerRecordDetailNew"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
 	}
-	"NewServerRecordNew"
+	/*"NewServerRecordNew"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5}"
-	}
-	"DevMapStart"
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}"
+	}*/
+	"DevmapStart"
 	{
 		"#format"	"{1:s}"
 		"en"	"Devmap vote started by {1}"
 	}
-	"DevMapIsOFF"
+	"DevmapIsOFF"
 	{
 		//"#format"	""
 		"en"	"Turn on devmap."
 	}
-	"DevMapIsON"
+	"DevmapIsON"
 	{
 		"en"	"Turn off devmap."
 	}
@@ -185,7 +185,7 @@
 		"#format"	"{1:s}"
 		"en"	"Partnership is canceled by {1}."
 	}
-	"DevMapNotAllowed"
+	"DevmapNotAllowed"
 	{
 		"en"	"Devmap vote is not allowed yet."
 	}
@@ -197,22 +197,22 @@
 	{
 		"en"	"No free player."
 	}
-	"DevMapWillBeDisabled"
+	"DevmapWillBeDisabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"en"	"Devmap will be disabled. \"Yes\" chose {1}%%% or {2} of {3} players."
 	}
-	"DevMapWillBeEnabled"
+	"DevmapWillBeEnabled"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"en"	"Devmap will be enabled. \"Yes\" chose {1}%%% or {2} of {3} players."
 	}
-	"DevMapContinue"
+	"DevmapContinue"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"en"	"Devmap will be be continue. \"No\" chose {1}%%% or {2} of {3} players."
 	}
-	"DevMapWillNotBe"
+	"DevmapWillNotBe"
 	{
 		"#format"	"{1:i},{2:i},{3:i}"
 		"en"	"Devmap will not be enabled. \"No\" chose {1}%%% or {2} of {3} players."
@@ -233,13 +233,13 @@
 	}
 	"PassedImproved"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Passed"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Spectator"
 	{
@@ -263,28 +263,28 @@
 	}
 	"JustPassed"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPImprove"
 	{
-		"#format"	"{1:i},{2:s},{3:s},{4:s}"
-		"en"	"{1}. Checkpoint: ;#7CFC00-{2}:{3}:{4}"
+		"#format"	"{1:i},{2:s}"
+		"en"	"{1}. Checkpoint: ;#7CFC00-{2}"
 	}
 	"CPDeprove"
 	{
-		"#format"	"{1:i},{2:s},{3:s},{4:s}"
-		"en"	"{1}. Checkpoint: ;#FF0000+{2}:{3}:{4}"
+		"#format"	"{1:i},{2:s}"
+		"en"	"{1}. Checkpoint: ;#FF0000+{2}"
 	}
 	"NewServerRecordFirst"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+00:00:00{default})"
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#FF0000{4}}{default})"
 	}
 	"CPNEW"
 	{
-		"#format"	"{1:i}"
-		"en"	"{1}. Checkpoint: ;#FF0000+00:00:00"
+		"#format"	"{1:i},{2:s}"
+		"en"	"{1}. Checkpoint: ;#FF0000{2}}"
 	}
 	"YouPressedButton"
 	{
@@ -401,12 +401,13 @@
 	}
 	"CP-recordDetailHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"CHECKPOINT: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"CHECKPOINT: {1}"
 	}
 	"CP-DetailZeroHud"
 	{
-		"en"	"+00:00:00"
+		"#format"	"{1:s}"
+		"en"	"{1}}"
 	}
 	"CP-recordNotFirstHud"
 	{
@@ -415,23 +416,23 @@
 	}
 	"CP-recordDetailNotFirstHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"CHECKPOINT: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"CHECKPOINT: {1}"
 	}
 	"CP-recordImproveNotFirstHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"-{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"{1}"
 	}
 	"CP-recordNonHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"CHECKPOINT: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"CHECKPOINT: {1}"
 	}
 	"CP-recordDeproveHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"+{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"{1}"
 	}
 	"MapFinishedFirstRecordHud"
 	{
@@ -443,12 +444,13 @@
 	}
 	"FirstRecordHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"TIME: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"TIME: {1}"
 	}
 	"FirstRecordZeroHud"
 	{
-		"en"	"+00:00:00"
+		"#format"	"{1:s}"
+		"en"	"{1}"
 	}
 	"NewServerRecordMapFinishedNotFirstHud"
 	{
@@ -464,13 +466,13 @@
 	//}
 	"NewServerRecordDetailNotFirstHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"TIME: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"TIME: {1}"
 	}
 	"NewServerRecordImproveNotFirstHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"-{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"{1}"
 	}
 	"MapFinishedDeproveHud"
 	{
@@ -478,13 +480,13 @@
 	}
 	"MapFinishedTimeDeproveHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"TIME: {1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"TIME: {1}"
 	}
 	"MapFinishedTimeDeproveOwnHud"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"+{1}:{2}:{3}"
+		"#format"	"{1:s}"
+		"en"	"{1}"
 	}
 	"AutoflashON"
 	{
