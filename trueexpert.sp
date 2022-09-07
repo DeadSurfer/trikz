@@ -3198,6 +3198,7 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 
 		char formatTimeDiff[24] = "";
 		FormatSeconds(timeDiff, formatTimeDiff);
+		Format(formatTimeDiff, sizeof(formatTimeDiff), "+%s", formatTimeDiff);
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
