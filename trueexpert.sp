@@ -39,7 +39,7 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
-#define IsClientValid(%1) 0 < %1 <= MaxClients && IsClientInGame(%1)
+#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 #define debug false
 
 int g_partner[MAXPLAYER];
@@ -2894,8 +2894,6 @@ stock void Restart(int client)
 {
 	if(g_devmap == true)
 	{
-		//PrintToChat(client, "Turn off devmap.");
-		//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
 		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 		SendMessage(client, format);
@@ -2966,10 +2964,10 @@ stock void Restart(int client)
 				CS_RespawnPlayer(client);
 				CS_RespawnPlayer(partner);
 
-				float velNull[3] = {0.0, 0.0, 0.0};
+				float vel[3] = {0.0, 0.0, 0.0};
 
-				TeleportEntity(client, g_originStart, NULL_VECTOR, velNull);
-				TeleportEntity(partner, g_originStart, NULL_VECTOR, velNull);
+				TeleportEntity(client, g_originStart, NULL_VECTOR, vel);
+				TeleportEntity(partner, g_originStart, NULL_VECTOR, vel);
 
 				g_block[client] = true;
 				g_block[partner] = true;
@@ -2987,9 +2985,6 @@ stock void Restart(int client)
 
 			else if(g_partner[client] == 0)
 			{
-				//PrintToChat(client, "You must have a partner.");
-				//PrintToChat(client, "\x01%T", "YMHP");
-				//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
 				char format[256] = "";
 				Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 				SendMessage(client, format);
@@ -3133,8 +3128,6 @@ public void Top10()
 
 	else if(g_top10ac > GetGameTime())
 	{
-		//PrintToServer("Don't spam with top10. Wait %.0f seconds.", g_top10ac - GetGameTime());
-
 		char time[8] = "";
 		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
 
@@ -3777,9 +3770,9 @@ stock void SendMessage(int client, const char[] text)
 		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
 
 		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
-		bf.WriteByte(client); // Message author
-		bf.WriteByte(true); // Chat message
-		bf.WriteString(textReplaced); // Message text
+		bf.WriteByte(client); //Message author
+		bf.WriteByte(true); //Chat message
+		bf.WriteString(textReplaced); //Message text
 
 		EndMessage();
 	}
@@ -4210,8 +4203,6 @@ stock void ZoneEditorStart(int client)
 {
 	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
 
-	
-
 	menu2.SetTitle("Zone editor - Start zone");
 
 	menu2.AddItem("starttp", "Teleport to start zone");
@@ -4559,7 +4550,7 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			}
 		}
 
-		case MenuAction_Cancel: // trikz redux menuaction end
+		case MenuAction_Cancel: //trikz redux menuaction end
 		{
 			g_zoneDraw[param1] = false; //idea from expert zone.
 
@@ -6870,7 +6861,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 		for(int i = 2; i <= zones; i++)
 		{
-			int cpnum = i - 1; // start count cp from 1.
+			int cpnum = i - 1; //start count cp from 1.
 			
 			start[i][0] = g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0] == true ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
 			start[i][1] = g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1] == true ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
@@ -7176,7 +7167,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				g_pingModelOwner[entity] = client;
 
-				int clients[MAXPLAYER]; // 64 + 1
+				int clients[MAXPLAYER]; //64 + 1
 				int count = 0;
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -7844,6 +7835,11 @@ public Action cmd_noclip(int client, int args)
 
 stock void Noclip(int client)
 {
+	if(IsClientValid(client) == false)
+	{
+		return;
+	}
+
 	char format[256] = "";
 
 	if(g_devmap == true)
@@ -8127,7 +8123,7 @@ public Action cmd_time(int client, int args)
 
 		if(observerMode < 7)
 		{
-			//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
+			//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
 			int hour = (RoundToFloor(g_timerTime[observerTarget]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
 			int minute = (RoundToFloor(g_timerTime[observerTarget]) / 60) % 60;
 			int second = RoundToFloor(g_timerTime[observerTarget]) % 60;
@@ -8659,7 +8655,7 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 	return pos[2];
 }
 
-/*public int GetColour(const int r, const int g, const int b, const int a)
+/*public int GetColor(const int r, const int g, const int b, const int a)
 {
 	int color = 0;
 
