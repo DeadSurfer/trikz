@@ -194,6 +194,7 @@ int g_ZoneEditor = 0;
 int g_ZoneEditorCP = 0;
 int g_skinFlashbang[MAXPLAYER];
 int g_skinPlayer[MAXPLAYER];
+float g_top10SR = 0.0;
 
 
 public Plugin myinfo =
@@ -3175,29 +3176,27 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 
 	if(results.FetchRow() == true)
 	{
+		char format[256] = "";
+
 		char name1[MAX_NAME_LENGTH] = "";
 		char name2[MAX_NAME_LENGTH] = "";
 
 		results.FetchString(0, name1, sizeof(name1));
 		results.FetchString(1, name2, sizeof(name2));
-
-		char format[256] = "";
-
-		char formatTime[64] = "";
+		
+		char formatTime[24] = "";
 		FormatSeconds(time, formatTime);
 
 		int count = ++g_top10Count;
 
-		float serverRecord = 0.0;
-
 		if(count == 1)
 		{
-			serverRecord = time;
+			g_top10SR = time;
 		}
 
-		float timeDiff = time - serverRecord;
+		float timeDiff = time - g_top10SR;
 
-		char formatTimeDiff[64] = "";
+		char formatTimeDiff[24] = "";
 		FormatSeconds(timeDiff, formatTimeDiff);
 
 		for(int i = 1; i <= MaxClients; i++)
@@ -4949,6 +4948,11 @@ public Action SDKStartTouch(int entity, int other)
 
 				float timeDiff = g_ServerRecordTime - time;
 
+				if(timeDiff < 0.0)
+				{
+					timeDiff *= -1.0;
+				}
+
 				char timeSR[24] = "";
 				FormatSeconds(timeDiff, timeSR);
 
@@ -5200,13 +5204,16 @@ public Action SDKStartTouch(int entity, int other)
 					{
 						if(g_cp[i][other] == true)
 						{
+							char timeCP[24] = "";
+							FormatSeconds(g_cpDiff[i][other], timeCP);
+
 							if(g_cpTimeClient[i][other] < g_cpTime[i])
 							{
 								for(int j = 1; j <= MaxClients; j++)
 								{
 									if(IsClientInGame(j) == true)
 									{
-										Format(format, sizeof(format), "%T", "CPImprove", j, i, timeSR);
+										Format(format, sizeof(format), "%T", "CPImprove", j, i, timeCP);
 										SendMessage(j, format);
 									}
 								}
@@ -5218,7 +5225,7 @@ public Action SDKStartTouch(int entity, int other)
 								{
 									if(IsClientInGame(j) == true)
 									{
-										Format(format, sizeof(format), "%T", "CPDeprove", j, i, timeSR);
+										Format(format, sizeof(format), "%T", "CPDeprove", j, i, timeCP);
 										SendMessage(j, format);
 									}
 								}
@@ -5347,20 +5354,20 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 	char posColor[64] = "";
 
-	float x, y, z;
-	int r, g, b, a;
+	float x = 0.0, y = 0.0, z = 0.0;
+	int r = 0, g = 0, b = 0, a = 0;
 
-	float x1, y1, z1;
-	int r1, g1, b1, a1;
+	float x1 = 0.0, y1 = 0.0, z1= 0.0;
+	int r1 = 0, g1 = 0, b1 = 0, a1 = 0;
 
-	float x2, y2, z2;
-	int r2, g2, b2, a2;
+	float x2 = 0.0, y2 = 0.0, z2 = 0.0;
+	int r2 = 0, g2 = 0, b2 = 0, a2 = 0;
 
-	float x3, y3, z3;
-	int r3, g3, b3, a3;
+	float x3 = 0.0, y3 = 0.0, z3 = 0.0;
+	int r3 = 0, g3 = 0, b3 = 0, a3 = 0;
 
-	float x4, y4, z4;
-	int r4, g4, b4, a4;
+	float x4 = 0.0, y4 = 0.0, z4 = 0.0;
+	int r4 = 0, g4 = 0, b4 = 0, a4 = 0;
 
 	char section[64] = "";
 
