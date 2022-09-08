@@ -4958,7 +4958,7 @@ public Action SDKStartTouch(int entity, int other)
 					record = true;
 				}
 
-				else if(g_ServerRecordTime < time)
+				else if(g_ServerRecordTime <= time)
 				{
 					timeDiff = time - g_ServerRecordTime;
 				}
