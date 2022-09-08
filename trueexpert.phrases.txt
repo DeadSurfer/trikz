@@ -279,7 +279,7 @@
 	"NewServerRecordFirst"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#FF0000{4}}{default})"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPNEW"
 	{
