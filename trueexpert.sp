@@ -4947,15 +4947,34 @@ public Action SDKStartTouch(int entity, int other)
 				char timeOwn[24] = "";
 				FormatSeconds(time, timeOwn);
 
-				float timeDiff = g_ServerRecordTime - time;
+				float timeDiff = 0.0;
+				
+				bool record = false;
 
-				if(timeDiff < 0.0)
+				if(g_ServerRecordTime > time)
 				{
-					timeDiff *= -1.0;
+					timeDiff = g_ServerRecordTime - time;
+
+					record = true;
+				}
+
+				else if(g_ServerRecordTime < time)
+				{
+					timeDiff = time - g_ServerRecordTime;
 				}
 
 				char timeSR[24] = "";
 				FormatSeconds(timeDiff, timeSR);
+
+				if(record == true)
+				{
+					Format(timeSR, sizeof(timeSR), "-%s", timeSR);
+				}
+
+				else if(record == false)
+				{
+					Format(timeSR, sizeof(timeSR), "+%s", timeSR);
+				}
 
 				char format[256] = "";
 				char query[512] = "";
