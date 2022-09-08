@@ -5038,7 +5038,7 @@ public Action SDKStartTouch(int entity, int other)
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime < time > g_mateRecord[other])
+						else if(g_ServerRecordTime <= time > g_mateRecord[other])
 						{
 							for(int i = 1; i <= MaxClients; i++)
 							{
@@ -5070,7 +5070,7 @@ public Action SDKStartTouch(int entity, int other)
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime < time < g_mateRecord[other])
+						else if(g_ServerRecordTime <= time <= g_mateRecord[other])
 						{
 							for(int i = 1; i <= MaxClients; i++)
 							{
@@ -5174,7 +5174,7 @@ public Action SDKStartTouch(int entity, int other)
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime < time)
+						else if(g_ServerRecordTime <= time)
 						{
 							for(int i = 1; i <= MaxClients; i++)
 							{
@@ -5239,7 +5239,7 @@ public Action SDKStartTouch(int entity, int other)
 								}
 							}
 
-							else if(g_cpTimeClient[i][other] > g_cpTime[i])
+							else if(g_cpTimeClient[i][other] >= g_cpTime[i])
 							{
 								for(int j = 1; j <= MaxClients; j++)
 								{
@@ -5281,7 +5281,7 @@ public Action SDKStartTouch(int entity, int other)
 
 					for(int i = 1; i <= g_cpCount; i++)
 					{
-						if(g_cp[i][other])
+						if(g_cp[i][other] == true)
 						{
 							for(int j = 1; j <= MaxClients; j++)
 							{
