@@ -5038,13 +5038,13 @@ public Action SDKStartTouch(int entity, int other)
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime <= time > g_mateRecord[other])
+						else if(g_ServerRecordTime <= time >= g_mateRecord[other])
 						{
 							for(int i = 1; i <= MaxClients; i++)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "PassedImproved", i, name, namePartner, timeOwn, timeSR);
+									Format(format, sizeof(format), "%T", "Passed", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, format);
 								}
 							}
@@ -5070,13 +5070,13 @@ public Action SDKStartTouch(int entity, int other)
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime <= time <= g_mateRecord[other])
+						else if(g_ServerRecordTime <= time < g_mateRecord[other])
 						{
 							for(int i = 1; i <= MaxClients; i++)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "Passed", i, name, namePartner, timeOwn, timeSR);
+									Format(format, sizeof(format), "%T", "PassedImproved", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, format);
 								}
 							}
