@@ -284,7 +284,7 @@
 	"CPNEW"
 	{
 		"#format"	"{1:i},{2:s}"
-		"en"	"{1}. Checkpoint: ;#FF0000{2}}"
+		"en"	"{1}. Checkpoint: ;#FF0000{2}"
 	}
 	"YouPressedButton"
 	{
@@ -407,7 +407,7 @@
 	"CP-DetailZeroHud"
 	{
 		"#format"	"{1:s}"
-		"en"	"{1}}"
+		"en"	"{1}"
 	}
 	"CP-recordNotFirstHud"
 	{
@@ -540,7 +540,7 @@
 	{
 		//"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
 		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
-		//"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}}{default})"
+		//"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}{default})"
 		"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}{default})"
 	}*/
 	"Top10details"
@@ -565,17 +565,17 @@
 	"Cstrike_Chat_Spec"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"*DEAD*(Terrorist) [{1}] ;#CCCCCC{2}} {default}:  {3}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#CCCCCC{2} {default}:  {3}"
 	}
 	"Cstrike_Chat_All"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"[{1}}] ;#FF4040{2} {default}:  {3}"
+		"en"	"[{1}] ;#FF4040{2} {default}:  {3}"
 	}
 	"Cstrike_Chat_All2"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"[{1}}] ;#99CCFF{2} {default}:  {3}"
+		"en"	"[{1}] ;#99CCFF{2} {default}:  {3}"
 	}
 	"Cstrike_Chat_AllDead"
 	{
