@@ -23,16 +23,15 @@
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
 		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
 	}
-	"NewServerRecordDetailNew"
+	"NewServerRecordNewDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
 		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
 	}
-	/*"NewServerRecordNew"
+	"NewServerRecordNew"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3}"
-	}*/
+		"ru"	";#7CFC00Новый серверный рекорд!"
+	}
 	"DevmapStart"
 	{
 		"#format"	"{1:s}"
@@ -276,6 +275,10 @@
 		"ru"	"{1}. Чекпоинт: ;#FF0000{2}"
 	}
 	"NewServerRecordFirst"
+	{
+		"ru"	";#7CFC00Новый серверный рекорд!"
+	}
+	"NewServerRecordFirstDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
 		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
