@@ -23,16 +23,15 @@
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
 		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
 	}
-	"NewServerRecordDetailNew"
+	"NewServerRecordNewDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
 		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
 	}
-	/*"NewServerRecordNew"
+	"NewServerRecordNew"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"	"{1} and {2} finished map in ;#7CFC00{3}"
-	}*/
+		"en"	";#7CFC00New Server Record!"
+	}
 	"DevmapStart"
 	{
 		"#format"	"{1:s}"
@@ -269,17 +268,21 @@
 	"CPImprove"
 	{
 		"#format"	"{1:i},{2:s}"
-		"en"	"{1}. Checkpoint: ;#7CFC00-{2}"
+		"en"	"{1}. Checkpoint: ;#7CFC00{2}"
 	}
 	"CPDeprove"
 	{
 		"#format"	"{1:i},{2:s}"
-		"en"	"{1}. Checkpoint: ;#FF0000+{2}"
+		"en"	"{1}. Checkpoint: ;#FF0000{2}"
 	}
-	"NewServerRecordFirst"
+	"NewServerRecordFirstDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
 		"en"	"{1} and {2} finished map in ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"NewServerRecordFirst"
+	{
+		"en"	";#7CFC00New Server Record!"
 	}
 	"CPNEW"
 	{
