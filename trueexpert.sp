@@ -5133,7 +5133,7 @@ public Action SDKStartTouch(int entity, int other)
 									Format(format, sizeof(format), "%T", "NewServerRecordNew", i);
 									SendMessage(i, format); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
 
-									Format(format, sizeof(format), "%T", "NewServerRecordDetailNew", i, name, namePartner, timeOwn, timeSR);
+									Format(format, sizeof(format), "%T", "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, format);
 								}
 							}
