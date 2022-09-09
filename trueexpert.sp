@@ -195,7 +195,7 @@ int g_ZoneEditorCP = 0;
 int g_skinFlashbang[MAXPLAYER];
 int g_skinPlayer[MAXPLAYER];
 float g_top10SR = 0.0;
-
+bool g_silentF1F2 = false;
 
 public Plugin myinfo =
 {
@@ -1227,12 +1227,21 @@ public Action autobuy(int client, const char[] command, int argc)
 {
 	Block(client);
 
+	g_silentF1F2 = true;
+
 	return Plugin_Continue;
 }
 
 public Action rebuy(int client, const char[] command, int argc)
 {
-	ColorSelect(client);
+	//ColorSelect(client);
+	
+	if(g_menuOpened[client] == false)
+	{
+		Trikz(client);
+	}
+
+	g_silentF1F2 = true;
 
 	return Plugin_Continue;
 }
@@ -1353,7 +1362,7 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	if(color == true)
 	{
 		//ColorFlashbang(client, true, -1);
-		Skin(client);
+		Partner(client);
 	}
 
 	return Plugin_Continue;
@@ -1899,7 +1908,7 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 	return;
 }
 
-public void SDKSkyFix(int client, int other) //client = booster; other = flyer
+public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
 	{
@@ -1925,64 +1934,64 @@ public void SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
-				g_skyVel[other][0] = velFlyer[0];
-				g_skyVel[other][1] = velFlyer[1];
-			
-				velBooster[2] *= 3.15; //3.0
-
-				g_skyVel[other][2] = velBooster[2];
-
-				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-
-				if(velFlyer[2] >= -700.0 && velFlyer[2] < 0.0) //700.0
+				//if(velFlyer[2] < 0.0)
 				{
-					if(g_entityFlags[client] & FL_INWATER)
+					g_skyVel[other][0] = velFlyer[0];
+					g_skyVel[other][1] = velFlyer[1];
+					g_skyVel[other][2] = velBooster[2] *= 3.1; //3.0
+
+					//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+
+					if(velFlyer[2] >= -700.0) //700.0
 					{
-						if(velBooster[2] >= 300.0)
+						if(g_entityFlags[client] & FL_INWATER)
 						{
-							g_skyVel[other][2] = 500.0;
+							if(velBooster[2] >= 300.0)
+							{
+								g_skyVel[other][2] = 500.0;
+							}
+						}
+
+						else if(!(g_entityFlags[client] & FL_INWATER))
+						{
+							//PrintToServer("1 %f", velFlyer[2]);
+
+							if(velBooster[2] >= 750.0) //750.0
+							{
+								g_skyVel[other][2] = 750.0;
+
+								//PrintToServer("2 %f", velFlyer[2]);
+							}
 						}
 					}
 
-					else if(!(g_entityFlags[client] & FL_INWATER))
+					else if(!(velFlyer[2] >= -700.0)) //700.0
 					{
-						//PrintToServer("1 %f", velFlyer[2]);
+						//if(velBooster[2] >= 810.0)
+						//PrintToServer("3 %f", velFlyer[2]);
 
 						if(velBooster[2] >= 750.0) //750.0
 						{
-							g_skyVel[other][2] = 750.0;
+							g_skyVel[other][2] = 800.0;
 
-							//PrintToServer("2 %f", velFlyer[2]);
+							//PrintToServer("4 %f", velFlyer[2]);
 						}
 					}
-				}
 
-				else if(!(velFlyer[2] >= -700.0) && velFlyer[2] < 0.0) //700.0
-				{
-					//if(velBooster[2] >= 810.0)
-					//PrintToServer("3 %f", velFlyer[2]);
+					#if debug == true
+					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+					#endif
 
-					if(velBooster[2] >= 750.0) //750.0
+					if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 					{
-						g_skyVel[other][2] = 800.0;
-
-						//PrintToServer("4 %f", velFlyer[2]);
+						g_skyBoost[other] = 1;
 					}
-				}
-
-				#if debug == true
-				PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-				#endif
-
-				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
-				{
-					g_skyBoost[other] = 1;
 				}
 			}
 		}
 	}
 
-	return;
+	return Plugin_Continue;
 }
 
 public void SDKBoostFix(int client)
@@ -2317,9 +2326,9 @@ stock void Partner(int client)
 			menu.SetTitle("%T", "CancelPartnership", client, name);
 			
 			char format[256] = "";
-			Format(format, sizeof(format), "%T", "Yes", partner);
+			Format(format, sizeof(format), "%T", "Yes", client);
 			menu.AddItem(partner, format);
-			Format(format, sizeof(format), "%T", "No", partner);
+			Format(format, sizeof(format), "%T", "No", client);
 			menu.AddItem("", format);
 
 			menu.Display(client, 20);
@@ -5401,7 +5410,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 			kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
-			kv.GotoFirstSubKey();
+			kv.GotoFirstSubKey(true);
 
 			do
 			{
@@ -5446,7 +5455,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 			kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
-			kv2.GotoFirstSubKey();
+			kv2.GotoFirstSubKey(true);
 
 			do
 			{
@@ -5491,7 +5500,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 			kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
-			kv3.GotoFirstSubKey();
+			kv3.GotoFirstSubKey(true);
 
 			do
 			{
@@ -5572,7 +5581,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 				kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
-				kv.GotoFirstSubKey();
+				kv.GotoFirstSubKey(true);
 
 				do
 				{
@@ -5617,7 +5626,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 				kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
-				kv2.GotoFirstSubKey();
+				kv2.GotoFirstSubKey(true);
 
 				do
 				{
@@ -5660,7 +5669,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				KeyValues kv3 = new KeyValues("TrueExpertHud");
 
 				kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-				kv3.GotoFirstSubKey();
+				kv3.GotoFirstSubKey(true);
 
 				do
 				{
@@ -5713,7 +5722,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						{
 							//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 							SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
-							Format(format, sizeof(format), "%T", "CP-recordNotFistHud", i, cpnum);
+							Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", i, cpnum);
 							//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
 							ShowHudText(i, 1, format);
 
@@ -8443,6 +8452,13 @@ public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLAT
 	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) == true && g_silentKnife == true)
 	{
 		g_silentKnife = false;
+
+		return Plugin_Handled;
+	}
+
+	else if(StrEqual(sample, "weapons/ClipEmpty_Rifle.wav", false) == true && g_silentF1F2 == true)
+	{
+		g_silentF1F2 = false;
 
 		return Plugin_Handled;
 	}
