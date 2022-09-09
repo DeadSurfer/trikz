@@ -217,7 +217,7 @@ public Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcas
 
 		g_origin[client][0] = origin[0];
 		g_origin[client][1] = origin[1];
-		g_origin[client][2] = g_runboost[client] ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client);
+		g_origin[client][2] = g_runboost[client]  == true ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client);
 
 		float vel[3] = {0.0, 0.0, 0.0};
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
@@ -328,36 +328,34 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(g_jumpstats[client] == true)
 			{
-				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
+				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", client);
 
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 				bfmsg.WriteByte(true);
-
 				bfmsg.WriteString(print);
 
 				EndMessage();
 
-				PrintToConsole(client, "%s%s%s%sJump: %.0f units, Strafes: %i, Pre: %.0f u/s, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+				PrintToConsole(client, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 			}
 
 			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true)
 			{
-				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
 
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 				bfmsg.WriteByte(true);
-
 				bfmsg.WriteString(print);
 
 				EndMessage();
 
-				PrintToConsole(g_rbBooster[client], "%s%s%s%sJump: %.0f units, Strafes: %i, Pre: %.0f u/s, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+				PrintToConsole(g_rbBooster[client], "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 			}
 		}
 
@@ -372,19 +370,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
 					{
-						Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nStrafes: %i\nPre: %.0f u/s\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+						Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 						bfmsg.WriteByte(true);
-
 						bfmsg.WriteString(print);
 
 						EndMessage();
 
-						PrintToConsole(i, "%s%s%s%sJump: %.0f units, Strafes: %i, Pre: %.0f u/s, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] ? "[RB] " : "", g_teleported[client] ? "[TP] " : "", flat, g_countjump[client] ? "[CJ] " : "", distance, g_strafeCount[client], pre, sync, g_gain[client], g_style[client]);
+						PrintToConsole(i, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 					}
 				}
 			}
@@ -458,19 +455,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(190.0 > distance >= 22.0)
 					{
-						Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f％", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+						Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f％", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", client);
 
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 						bfmsg.WriteByte(true);
-
 						bfmsg.WriteString(print);
 
 						EndMessage();
 
-						PrintToConsole(client, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f%%", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+						PrintToConsole(client, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f%%", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
 					}
 				}
 
@@ -485,19 +481,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						{
 							if(190.0 > distance >= 22.0)
 							{
-								Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f％", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+								Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f％", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
 
 								Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
 								BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 								bfmsg.WriteByte(true);
-
 								bfmsg.WriteString(print);
 
 								EndMessage();
 
-								PrintToConsole(i, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f%%", g_teleported[client] ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+								PrintToConsole(i, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f%%", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
 							}
 						}
 					}
@@ -603,7 +598,7 @@ public void TouchClient(int client, int other)
 	return;
 }
 
-public void SDKSkyJump(int client, int other) //client = booster; other = flyer
+public Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("trueexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : g_entityButtons[other] & IN_JUMP) && GetEngineTime() - g_boostTime[client] > 0.15)
 	{
@@ -627,17 +622,17 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 			{
 				float velFlyer[3] = {0.0, 0.0, 0.0};
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
-
-				velBooster[2] *= 3.15;
+				
+				velBooster[2] *= 3.1;
 
 				float velNew[3] = {0.0, 0.0, 0.0};
 				//velNew[0] = velFlyer[0];
 				//velNew[1] = velFlyer[1];
 				velNew[2] = velBooster[2];
 
-				if(velFlyer[2] >= -700.0 && velFlyer[2] < 0.0)
+				if(velFlyer[2] >= -700.0)
 				{
-					if((g_entityFlags[client] & FL_INWATER))
+					if(g_entityFlags[client] & FL_INWATER)
 					{
 						if(velBooster[2] >= 300.0)
 						{
@@ -654,7 +649,7 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 					}
 				}
 
-				else if(!(velFlyer[2] >= -700.0) && velFlyer[2] < 0.0)
+				else if(!(velFlyer[2] >= -700.0))
 				{
 					//if(velBooster[2] >= 810.0)
 					if(velBooster[2] >= 750.0)
@@ -672,36 +667,34 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 					if(g_jumpstats[client] == true)
 					{
-						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.587 * float(gravity.IntValue)));
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", client);
 
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 						bfmsg.WriteByte(true);
-
 						bfmsg.WriteString(print);
 
 						EndMessage();
 
-						PrintToConsole(client, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue))); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
+						PrintToConsole(client, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2])); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
 					} 
 
 					if(g_jumpstats[other] == true)
 					{
-						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", other);
 
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 						bfmsg.WriteByte(true);
-
 						bfmsg.WriteString(print);
 
 						EndMessage();
 
-						PrintToConsole(other, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+						PrintToConsole(other, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 					}
 
 					for(int i = 1; i <= MaxClients; i++)
@@ -713,19 +706,18 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 							if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 							{
-								Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+								Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 
-								Handle KeyHintText = StartMessageOne("KeyHintText", other);
+								Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
 								BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 								bfmsg.WriteByte(true);
-
 								bfmsg.WriteString(print);
 
 								EndMessage();
 								
-								PrintToConsole(i, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(gravity.IntValue)));
+								PrintToConsole(i, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 							}
 						}
 					}
@@ -734,7 +726,7 @@ public void SDKSkyJump(int client, int other) //client = booster; other = flyer
 		}
 	}
 
-	return;
+	return Plugin_Continue;
 }
 
 stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
