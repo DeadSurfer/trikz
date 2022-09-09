@@ -5003,13 +5003,7 @@ public Action SDKStartTouch(int entity, int other)
 								{
 									Format(format, sizeof(format), "%T", "NewServerRecord", i);
 									SendMessage(i, format); //smth like shavit functions.
-								}
-							}
 
-							for(int i = 1; i <= MaxClients; i++)
-							{
-								if(IsClientInGame(i) == true)
-								{
 									Format(format, sizeof(format), "%T", "NewServerRecordDetail", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, format);
 								}
@@ -5136,15 +5130,9 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "NewServerRecord", i);
+									Format(format, sizeof(format), "%T", "NewServerRecordNew", i);
 									SendMessage(i, format); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
-								}
-							}
 
-							for(int i = 1; i <= MaxClients; i++)
-							{
-								if(IsClientInGame(i) == true)
-								{
 									Format(format, sizeof(format), "%T", "NewServerRecordDetailNew", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, format);
 								}
@@ -5236,27 +5224,12 @@ public Action SDKStartTouch(int entity, int other)
 							char timeCP[24] = "";
 							FormatSeconds(g_cpDiff[i][other], timeCP);
 
-							if(g_cpTimeClient[i][other] < g_cpTime[i])
+							for(int j = 1; j <= MaxClients; j++)
 							{
-								for(int j = 1; j <= MaxClients; j++)
+								if(IsClientInGame(j) == true)
 								{
-									if(IsClientInGame(j) == true)
-									{
-										Format(format, sizeof(format), "%T", "CPImprove", j, i, timeCP);
-										SendMessage(j, format);
-									}
-								}
-							}
-
-							else if(g_cpTimeClient[i][other] >= g_cpTime[i])
-							{
-								for(int j = 1; j <= MaxClients; j++)
-								{
-									if(IsClientInGame(j) == true)
-									{
-										Format(format, sizeof(format), "%T", "CPDeprove", j, i, timeCP);
-										SendMessage(j, format);
-									}
+									Format(format, sizeof(format), "%T", g_cpTimeClient[i][other] < g_cpTime[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									SendMessage(j, format);
 								}
 							}
 						}
@@ -5277,31 +5250,25 @@ public Action SDKStartTouch(int entity, int other)
 					{
 						if(IsClientInGame(i) == true)
 						{
-							Format(format, sizeof(format), "%T", "NewServerRecord", i);
+							Format(format, sizeof(format), "%T", "NewServerRecordFirst", i);
 							SendMessage(i, format);
 
-							Format(format, sizeof(format), "%T", "NewServerRecordFirst", i, name, namePartner, timeOwn, "+00:00:00");
+							Format(format, sizeof(format), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, "+00:00:00");
 							SendMessage(i, format);
+
+							for(int j = 1; j <= g_cpCount; j++)
+							{
+								if(g_cp[j][other] == true)
+								{
+									Format(format, sizeof(format), "%T", "CPNEW", i, j, "+00:00:00");
+									SendMessage(i, format);
+								}
+							}
 						}
 					}
 
 					FinishMSG(other, true, false, false, false, false, 0, timeOwn, "");
 					FinishMSG(partner, true, false, false, false, false, 0, timeOwn, "");
-
-					for(int i = 1; i <= g_cpCount; i++)
-					{
-						if(g_cp[i][other] == true)
-						{
-							for(int j = 1; j <= MaxClients; j++)
-							{
-								if(IsClientInGame(j) == true)
-								{
-									Format(format, sizeof(format), "%T", "CPNEW", j, i, "+00:00:00");
-									SendMessage(j, format);
-								}
-							}
-						}
-					}
 
 					g_ServerRecord = true;
 
