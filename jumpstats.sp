@@ -622,7 +622,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 			{
 				float velFlyer[3] = {0.0, 0.0, 0.0};
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
-				
+
 				velBooster[2] *= 3.1;
 
 				float velNew[3] = {0.0, 0.0, 0.0};
@@ -667,7 +667,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 
 					if(g_jumpstats[client] == true)
 					{
-						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.587 * float(gravity.IntValue)));
+						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", client);
 
