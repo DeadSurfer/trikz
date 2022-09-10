@@ -196,6 +196,7 @@ int g_skinFlashbang[MAXPLAYER];
 int g_skinPlayer[MAXPLAYER];
 float g_top10SR = 0.0;
 bool g_silentF1F2 = false;
+KeyValues g_kv = null;
 
 public Plugin myinfo =
 {
@@ -358,6 +359,10 @@ public void OnPluginStart()
 	g_teleport.AddParam(HookParamType_ObjectPtr);
 	g_teleport.AddParam(HookParamType_VectorPtr);
 
+	delete g_kv;
+	g_kv = new KeyValues("TrueExpertHud");
+	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
 	return;
 }
 
@@ -508,6 +513,10 @@ public void OnMapStart()
 
 	g_top10ac = 0.0;
 
+	delete g_kv;
+	g_kv = new KeyValues("TrueExpertHud");
+	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
 	return;
 }
 
@@ -566,7 +575,7 @@ public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] 
 
 		while(results.FetchRow() == true)
 		{
-			int points = results.FetchInt(1) * results.FetchInt(0) / ++place; //thanks to DeadSurfer //https://1drv.ms/u/s!Aq4KvqCyYZmHgpM9uKBA-74lYr2L3Q
+			int points = results.FetchInt(1) * results.FetchInt(0) / ++place; //thanks to DeadSurfer //https://1drv.ms/u/s!Aq4KvqCyYZmHgpM9uKBA-74lYrL3Q
 			Format(query, sizeof(query), "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2));
 			g_queryLast++;
 			g_mysql.Query(SQLRecalculatePoints2, query);
@@ -759,7 +768,7 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 
 	else if(90.0 > precentage >= 70.0)
 	{
-		Format(color, sizeof(color), "A335EE");
+		Format(color, sizeof(color), "a35EE");
 	}
 
 	else if(70.0 > precentage >= 55.0)
@@ -1042,7 +1051,7 @@ public Action timer_radiotxt(Handle timer, Handle pack)
 
 		else if(90.0 > precentage >= 70.0)
 		{
-			Format(color, sizeof(color), "A335EE");
+			Format(color, sizeof(color), "a35EE");
 		}
 
 		else if(70.0 > precentage >= 55.0)
@@ -1689,7 +1698,7 @@ public void OnClientDisconnect(int client)
 
 	int entity = 0;
 
-	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
+	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa53ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 	{
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 		{
@@ -3618,7 +3627,7 @@ public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] er
 	{
 		char query[512] = "";
 
-		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
+		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x, possition_y, possition_z) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
 
 		g_mysql.Query(SQLSetStartZones, query);
 	}
@@ -3825,7 +3834,7 @@ public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] erro
 	else if(strlen(error) == 0)
 	{
 		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
+		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x, possition_y, possition_z) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
 		g_mysql.Query(SQLSetEndZones, query);
 	}
 
@@ -4045,7 +4054,7 @@ public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, a
 		}
 
 		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[0][data][0]), RoundFloat(g_cpPos[0][data][1]), RoundFloat(g_cpPos[0][data][2]), RoundFloat(g_cpPos[1][data][0]), RoundFloat(g_cpPos[1][data][1]), RoundFloat(g_cpPos[1][data][2]), g_map);
+		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx, cpy, cpz, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[0][data][0]), RoundFloat(g_cpPos[0][data][1]), RoundFloat(g_cpPos[0][data][2]), RoundFloat(g_cpPos[1][data][0]), RoundFloat(g_cpPos[1][data][1]), RoundFloat(g_cpPos[1][data][2]), g_map);
 		g_mysql.Query(SQLCPInserted, query, data);
 	}
 
@@ -4537,19 +4546,19 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			if(StrEqual(item, "startupdate", false) == true)
 			{
-				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
+				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x = %i, possition_y = %i, possition_z = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
 				g_mysql.Query(SQLUpdateZone, query, 0);
 			}
 
 			else if(StrEqual(item, "endupdate", false) == true)
 			{
-				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
+				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x = %i, possition_y = %i, possition_z = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
 				g_mysql.Query(SQLUpdateZone, query, 1);
 			}
 
 			else if(StrEqual(item, cpFormated, false) == true)
 			{
-				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[0][cpnum][0]), RoundFloat(g_cpPos[0][cpnum][1]), RoundFloat(g_cpPos[0][cpnum][2]), RoundFloat(g_cpPos[1][cpnum][0]), RoundFloat(g_cpPos[1][cpnum][1]), RoundFloat(g_cpPos[1][cpnum][2]), cpnum, g_map);
+				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx = %i, cpy = %i, cpz = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[0][cpnum][0]), RoundFloat(g_cpPos[0][cpnum][1]), RoundFloat(g_cpPos[0][cpnum][2]), RoundFloat(g_cpPos[1][cpnum][0]), RoundFloat(g_cpPos[1][cpnum][1]), RoundFloat(g_cpPos[1][cpnum][2]), cpnum, g_map);
 				g_mysql.Query(SQLUpdateZone, query, cpnum + 1);
 			}
 
@@ -4646,7 +4655,7 @@ stock void ZoneEditorStep()
 
 public Action cmd_createcp(int args)
 {
-	g_mysql.Query(SQLCreateCPTable, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx INT, cpy INT, cpz INT, cpx2 INT, cpy2 INT, cpz2 INT, map VARCHAR(192), PRIMARY KEY(id))");
+	g_mysql.Query(SQLCreateCPTable, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx INT, cpy INT, cpz INT, cpx INT, cpy INT, cpz INT, map VARCHAR(192), PRIMARY KEY(id))");
 
 	return Plugin_Continue;
 }
@@ -4696,7 +4705,7 @@ stock void CPSetup(int client)
 
 	for(int i = 1; i <= 10; i++)
 	{
-		Format(query, sizeof(query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
+		Format(query, sizeof(query), "SELECT cpx, cpy, cpz, cpx, cpy, cpz FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
 
 		DataPack dp = new DataPack();
 
@@ -5348,24 +5357,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 		return;
 	}
 
+	char section[64] = "";
 	char posColor[64] = "";
 
-	float x = 0.0, y = 0.0, z = 0.0;
-	int r = 0, g = 0, b = 0, a = 0;
-
-	float x1 = 0.0, y1 = 0.0, z1= 0.0;
-	int r1 = 0, g1 = 0, b1 = 0, a1 = 0;
-
-	float x2 = 0.0, y2 = 0.0, z2 = 0.0;
-	int r2 = 0, g2 = 0, b2 = 0, a2 = 0;
-
-	float x3 = 0.0, y3 = 0.0, z3 = 0.0;
-	int r3 = 0, g3 = 0, b3 = 0, a3 = 0;
-
-	float x4 = 0.0, y4 = 0.0, z4 = 0.0;
-	int r4 = 0, g4 = 0, b4 = 0, a4 = 0;
-
-	char section[64] = "";
+	float x[4] = {0.0, 0.0, 0.0, 0.0}, y[4] = {0.0, 0.0, 0.0, 0.0}, z[4] = {0.0, 0.0, 0.0, 0.0};
+	int r[4] = {0, 0, 0, 0}, g[4] = {0, 0, 0, 0}, b[4] = {0, 0, 0, 0}, a[4] = {0, 0, 0, 0};
 
 	char format[256] = "";
 
@@ -5373,137 +5369,92 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 	{
 		if(firstCPRecord == true)
 		{
-			KeyValues kv = new KeyValues("TrueExpertHud");
-
-			kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-			kv.GotoFirstSubKey(true);
+			g_kv.Rewind();
 
 			do
 			{
-				if(kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
+				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 				{
-					kv.GetString("CP-RecordHud", posColor, sizeof(posColor));
+					g_kv.GetString("CP-RecordHud", posColor, sizeof(posColor));
 
 					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x = StringToFloat(exploded[0]);
-					y = StringToFloat(exploded[1]);
-					z = StringToFloat(exploded[2]);
+					x[0] = StringToFloat(exploded[0]);
+					y[0] = StringToFloat(exploded[1]);
+					z[0] = StringToFloat(exploded[2]);
 					
-					r = StringToInt(exploded[3]);
-					g = StringToInt(exploded[4]);
-					b = StringToInt(exploded[5]);
-					a = StringToInt(exploded[6]);
-
-					x1 = x;
-					y1 = y;
-					z1 = z;
-
-					r1 = r;
-					g1 = g;
-					b1 = b;
-					a1 = a;
+					r[0] = StringToInt(exploded[3]);
+					g[0] = StringToInt(exploded[4]);
+					b[0] = StringToInt(exploded[5]);
+					a[0] = StringToInt(exploded[6]);
 				}
 			}
 
-			while(kv.GotoNextKey(true) == true);
-
-			delete kv;
+			while(g_kv.GotoNextKey(true) == true);
 
 			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-			SetHudTextParams(x, y, z, r, g, b, a);
+			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 			Format(format, sizeof(format), "%T", "CP-recordHud", client, cpnum);
 			ShowHudText(client, 1, format);
 
-			KeyValues kv2 = new KeyValues("TrueExpertHud");
-
-			kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-			kv2.GotoFirstSubKey(true);
+			g_kv.Rewind();
 
 			do
 			{
-				if(kv2.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
+				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 				{
-					kv2.GetString("CP-RecordDetailHud", posColor, sizeof(posColor));
+					g_kv.GetString("CP-RecordDetailHud", posColor, sizeof(posColor));
 
 					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x = StringToFloat(exploded[0]);
-					y = StringToFloat(exploded[1]);
-					z = StringToFloat(exploded[2]);
+					x[1] = StringToFloat(exploded[0]);
+					y[1] = StringToFloat(exploded[1]);
+					z[1] = StringToFloat(exploded[2]);
 					
-					r = StringToInt(exploded[3]);
-					g = StringToInt(exploded[4]);
-					b = StringToInt(exploded[5]);
-					a = StringToInt(exploded[6]);
-
-					x2 = x;
-					y2 = y;
-					z2 = z;
-
-					r2 = r;
-					g2 = g;
-					b2 = b;
-					a2 = a;
+					r[1] = StringToInt(exploded[3]);
+					g[1] = StringToInt(exploded[4]);
+					b[1] = StringToInt(exploded[5]);
+					a[1] = StringToInt(exploded[6]);
 				}
 			}
 
-			while(kv2.GotoNextKey(true) == true);
-
-			delete kv2;
+			while(g_kv.GotoNextKey(true) == true);
 
 			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-			SetHudTextParams(x, y, z, r, g, b, a);
+			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 			//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 			Format(format, sizeof(format), "%T", "CP-recordDetailHud", client, time);
 			ShowHudText(client, 2, format);
 
-			KeyValues kv3 = new KeyValues("TrueExpertHud");
-
-			kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-			kv3.GotoFirstSubKey(true);
+			g_kv.Rewind();
 
 			do
 			{
-				if(kv3.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
+				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 				{
-					kv3.GetString("CP-DetailZeroHud", posColor, sizeof(posColor));
+					g_kv.GetString("CP-DetailZeroHud", posColor, sizeof(posColor));
 
 					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x = StringToFloat(exploded[0]);
-					y = StringToFloat(exploded[1]);
-					z = StringToFloat(exploded[2]);
+					x[2] = StringToFloat(exploded[0]);
+					y[2] = StringToFloat(exploded[1]);
+					z[2] = StringToFloat(exploded[2]);
 					
-					r = StringToInt(exploded[3]);
-					g = StringToInt(exploded[4]);
-					b = StringToInt(exploded[5]);
-					a = StringToInt(exploded[6]);
-
-					x3 = x;
-					y3 = y;
-					z3 = z;
-
-					r3 = r;
-					g3 = g;
-					b3 = b;
-					a3 = a;
+					r[2] = StringToInt(exploded[3]);
+					g[2] = StringToInt(exploded[4]);
+					b[2] = StringToInt(exploded[5]);
+					a[2] = StringToInt(exploded[6]);
 				}
 			}
 
-			while(kv3.GotoNextKey(true) == true);
-
-			delete kv3;
+			while(g_kv.GotoNextKey(true) == true);
 			
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-			SetHudTextParams(x, y, z, r, g, b, a);
+			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 			//ShowHudText(client, 3, "+00:00:00");
 			//Format(format, sizeof(format), "+00:00:00");
 			Format(format, sizeof(format), "%T", "CP-DetailZeroHud", client, "+00:00:00");
@@ -5519,19 +5470,19 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					if(observerMode < 7 && observerTarget == client)
 					{
 						//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-						SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
+						SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 						//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
 						Format(format, sizeof(format), "%T", "CP-recordHud", i, cpnum);
 						ShowHudText(i, 1, format);
 
 						//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-						SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
+						SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 						//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 						Format(format, sizeof(format), "%T", "CP-recordDetailHud", i, time);
 						ShowHudText(i, 2, format);
 
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-						SetHudTextParams(x3, y3, z3, r3, g3, b3, a3);
+						SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 						Format(format, sizeof(format), "%T", "CP-DetailZeroHud", i);
 						ShowHudText(i, 3, format);
 						//ShowHudText(i, 3, "+00:00:00");
@@ -5544,135 +5495,92 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 		{
 			if(cpRecord == true)
 			{
-				KeyValues kv = new KeyValues("TrueExpertHud");
-
-				kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 					{
-						kv.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
+						g_kv.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[0] = StringToFloat(exploded[0]);
+						y[0] = StringToFloat(exploded[1]);
+						z[0] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x1 = x;
-						y1 = y;
-						z1 = z;
-
-						r1 = r;
-						g1 = g;
-						b1 = b;
-						a1 = a;
+						r[0] = StringToInt(exploded[3]);
+						g[0] = StringToInt(exploded[4]);
+						b[0] = StringToInt(exploded[5]);
+						a[0] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv.GotoNextKey(true) == true);
-
-				delete kv;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
-				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157B3F4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
+				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 				Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", client, cpnum);
 				ShowHudText(client, 1, format);
 
-				KeyValues kv2 = new KeyValues("TrueExpertHud");
-
-				kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv2.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv2.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 					{
-						kv2.GetString("CP-recordDetailNotFirstHud", posColor, sizeof(posColor));
+						g_kv.GetString("CP-recordDetailNotFirstHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[1] = StringToFloat(exploded[0]);
+						y[1] = StringToFloat(exploded[1]);
+						z[1] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x2 = x;
-						y2 = y;
-						z2 = z;
-
-						r2 = r;
-						g2 = g;
-						b2 = b;
-						a2 = a;
+						r[1] = StringToInt(exploded[3]);
+						g[1] = StringToInt(exploded[4]);
+						b[1] = StringToInt(exploded[5]);
+						a[1] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv2.GotoNextKey(true) == true);
+				while(g_kv.GotoNextKey(true) == true);
 
-				delete kv2;
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", client, time);
 				ShowHudText(client, 2, format);
 
-				KeyValues kv3 = new KeyValues("TrueExpertHud");
-
-				kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-				kv3.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv3.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 					{
-						kv3.GetString("CP-recordImproveNotFirstHud", posColor, sizeof(posColor));
+						g_kv.GetString("CP-recordImproveNotFirstHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[2] = StringToFloat(exploded[0]);
+						y[2] = StringToFloat(exploded[1]);
+						z[2] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x3 = x;
-						y3 = y;
-						z3 = z;
-
-						r3 = r;
-						g3 = g;
-						b3 = b;
-						a3 = a;
+						r[2] = StringToInt(exploded[3]);
+						g[2] = StringToInt(exploded[4]);
+						b[2] = StringToInt(exploded[5]);
+						a[2] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv3.GotoNextKey(true) == true);
-
-				delete kv3;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 				Format(format, sizeof(format), "-%s", timeSR);
 				Format(format, sizeof(format), "%T", "CP-recordImproveNotFirstHud", client, format);
 				ShowHudText(client, 3, format);
@@ -5688,19 +5596,19 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						if(observerMode < 7 && observerTarget == client)
 						{
 							//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
+							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 							Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", i, cpnum);
 							//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
 							ShowHudText(i, 1, format);
 
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
+							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 							Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", i, time);
 							ShowHudText(i, 2, format);
 
 							//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x3, y3, z3, r3, g3, b3, a3);
+							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 							Format(format, sizeof(format), "%T", "CP-recordImproveNotFirstHud", i, timeSR);
 							ShowHudText(i, 3, format);
 							//ShowHudText(i, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
@@ -5711,92 +5619,62 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 			else if(cpRecord == false)
 			{
-				KeyValues kv = new KeyValues("TrueExpertHud");
-
-				kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
 					{
-						kv.GetString("CP-RecordNonHud", posColor, sizeof(posColor));
+						g_kv.GetString("CP-RecordNonHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[0] = StringToFloat(exploded[0]);
+						y[0] = StringToFloat(exploded[1]);
+						z[0] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x1 = x;
-						y1 = y;
-						z1 = z;
-
-						r1 = r;
-						g1 = g;
-						b1 = b;
-						a1 = a;
+						r[0] = StringToInt(exploded[3]);
+						g[0] = StringToInt(exploded[4]);
+						b[0] = StringToInt(exploded[5]);
+						a[0] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv.GotoNextKey(true) == true);
-
-				delete kv;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 				//Format(format, sizeof(format), "%T", "CP-recordDeprove"
 				Format(format, sizeof(format), "%T", "CP-recordNonHud", client, time);
 				ShowHudText(client, 1, format);
 				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 
-				KeyValues kv2 = new KeyValues("TrueExpertHud");
-
-				kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv2.GotoFirstSubKey(true);
+				g_kv.Rewind();
 				
 				do
 				{
-					if(kv2.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
 					{
-						kv2.GetString("CP-RecordDeproveHud", posColor, sizeof(posColor));
+						g_kv.GetString("CP-RecordDeproveHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[1] = StringToFloat(exploded[0]);
+						y[1] = StringToFloat(exploded[1]);
+						z[1] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x2 = x;
-						y2 = y;
-						z2 = z;
-
-						r2 = r;
-						g2 = g;
-						b2 = b;
-						a2 = a;
+						r[1] = StringToInt(exploded[3]);
+						g[1] = StringToInt(exploded[4]);
+						b[1] = StringToInt(exploded[5]);
+						a[1] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv2.GotoNextKey(true) == true);
-
-				delete kv2;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 				Format(format, sizeof(format), "+%s", timeSR);
 				Format(format, sizeof(format), "%T", "CP-recordDeproveHud", client, format);
@@ -5812,13 +5690,13 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						if(observerMode < 7 && observerTarget == client)
 						{
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
+							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 							//ShowHudText(i, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 							Format(format, sizeof(format), "%T", "CP-recordNonHud", i, time);
 							ShowHudText(i, 1, format);
 
 							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-							SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
+							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 							Format(format, sizeof(format), "%T", "CP-recordDeproveHud", i, timeSR);
 							ShowHudText(i, 2, format);
@@ -5833,182 +5711,122 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 	{
 		if(firstServerRecord == true)
 		{
-			KeyValues kv = new KeyValues("TrueExpertHud");
-
-			kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-			kv.GotoFirstSubKey(true);
+			g_kv.Rewind();
 
 			do
 			{
-				if(kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
+				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
-					kv.GetString("MapFinishedFirstRecordHud", posColor, sizeof(posColor));
+					g_kv.GetString("MapFinishedFirstRecordHud", posColor, sizeof(posColor));
 
 					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x = StringToFloat(exploded[0]);
-					y = StringToFloat(exploded[1]);
-					z = StringToFloat(exploded[2]);
+					x[0] = StringToFloat(exploded[0]);
+					y[0] = StringToFloat(exploded[1]);
+					z[0] = StringToFloat(exploded[2]);
 					
-					r = StringToInt(exploded[3]);
-					g = StringToInt(exploded[4]);
-					b = StringToInt(exploded[5]);
-					a = StringToInt(exploded[6]);
-
-					x1 = x;
-					y1 = y;
-					z1 = z;
-
-					r1 = r;
-					g1 = g;
-					b1 = b;
-					a1 = a;
+					r[0] = StringToInt(exploded[3]);
+					g[0] = StringToInt(exploded[4]);
+					b[0] = StringToInt(exploded[5]);
+					a[0] = StringToInt(exploded[6]);
 				}
 			}
 
-			while(kv.GotoNextKey(true) == true);
-
-			delete kv;
+			while(g_kv.GotoNextKey(true) == true);
 
 			//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-			SetHudTextParams(x, y, z, r, g, b, a);
+			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 			//ShowHudText(client, 1, "MAP FINISHED!"); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 			Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", client);
 			ShowHudText(client, 1, format);
 
-			KeyValues kv2 = new KeyValues("TrueExpertHud");
-
-			kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-			kv2.GotoFirstSubKey(true);
+			g_kv.Rewind();
 
 			do
 			{
-				if(kv2.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
+				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
-					kv2.GetString("NewServerRecordHud", posColor, sizeof(posColor));
+					g_kv.GetString("NewServerRecordHud", posColor, sizeof(posColor));
 
 					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x = StringToFloat(exploded[0]);
-					y = StringToFloat(exploded[1]);
-					z = StringToFloat(exploded[2]);
+					x[1] = StringToFloat(exploded[0]);
+					y[1] = StringToFloat(exploded[1]);
+					z[1] = StringToFloat(exploded[2]);
 					
-					r = StringToInt(exploded[3]);
-					g = StringToInt(exploded[4]);
-					b = StringToInt(exploded[5]);
-					a = StringToInt(exploded[6]);
-
-					x2 = x;
-					y2 = y;
-					z2 = z;
-
-					r2 = r;
-					g2 = g;
-					b2 = b;
-					a2 = a;
+					r[1] = StringToInt(exploded[3]);
+					g[1] = StringToInt(exploded[4]);
+					b[1] = StringToInt(exploded[5]);
+					a[1] = StringToInt(exploded[6]);
 				}
 			}
 
-			while(kv2.GotoNextKey(true) == true);
-
-			delete kv2;
+			while(g_kv.GotoNextKey(true) == true);
 
 			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-			SetHudTextParams(x, y, z, r, g, b, a);
+			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 			//ShowHudText(client, 2, "NEW SERVER RECORD!");
 			Format(format, sizeof(format), "%T", "NewServerRecordHud", client);
 			ShowHudText(client, 2, format);
 
-			KeyValues kv3 = new KeyValues("TrueExpertHud");
-
-			kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-			kv3.GotoFirstSubKey(true);
+			g_kv.Rewind();
 
 			do
 			{
-				if(kv3.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
+				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
-					kv3.GetString("FirstRecordHud", posColor, sizeof(posColor));
+					g_kv.GetString("FirstRecordHud", posColor, sizeof(posColor));
 
 					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x = StringToFloat(exploded[0]);
-					y = StringToFloat(exploded[1]);
-					z = StringToFloat(exploded[2]);
+					x[2] = StringToFloat(exploded[0]);
+					y[2] = StringToFloat(exploded[1]);
+					z[2] = StringToFloat(exploded[2]);
 					
-					r = StringToInt(exploded[3]);
-					g = StringToInt(exploded[4]);
-					b = StringToInt(exploded[5]);
-					a = StringToInt(exploded[6]);
-
-					x3 = x;
-					y3 = y;
-					z3 = z;
-
-					r3 = r;
-					g3 = g;
-					b3 = b;
-					a3 = a;
+					r[2] = StringToInt(exploded[3]);
+					g[2] = StringToInt(exploded[4]);
+					b[2] = StringToInt(exploded[5]);
+					a[2] = StringToInt(exploded[6]);
 				}
 			}
 
-			while(kv3.GotoNextKey(true) == true);
-
-			delete kv3;
+			while(g_kv.GotoNextKey(true) == true);
 
 			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-			SetHudTextParams(x, y, z, r, g, b, a);
+			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 			//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 			Format(format, sizeof(format), "%T", "FirstRecordHud", client, time);
 			ShowHudText(client, 3, format);
 
-			KeyValues kv4 = new KeyValues("TrueExpertHud");
-
-			kv4.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-			kv4.GotoFirstSubKey(true);
+			g_kv.Rewind();
 
 			do
 			{
-				if(kv4.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
+				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
-					kv4.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
+					g_kv.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
 
 					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x = StringToFloat(exploded[0]);
-					y = StringToFloat(exploded[1]);
-					z = StringToFloat(exploded[2]);
+					x[3] = StringToFloat(exploded[0]);
+					y[3] = StringToFloat(exploded[1]);
+					z[3] = StringToFloat(exploded[2]);
 					
-					r = StringToInt(exploded[3]);
-					g = StringToInt(exploded[4]);
-					b = StringToInt(exploded[5]);
-					a = StringToInt(exploded[6]);
-
-					x4 = x;
-					y4 = y;
-					z4 = z;
-
-					r4 = r;
-					g4 = g;
-					b4 = b;
-					a4 = a;
+					r[3] = StringToInt(exploded[3]);
+					g[3] = StringToInt(exploded[4]);
+					b[3] = StringToInt(exploded[5]);
+					a[3] = StringToInt(exploded[6]);
 				}
 			}
 
-			while(kv4.GotoNextKey(true) == true);
-
-			delete kv4;
+			while(g_kv.GotoNextKey(true) == true);
 
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-			SetHudTextParams(x, y, z, r, g, b, a);
+			SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 			//ShowHudText(client, 4, "+00:00:00");
 			Format(format, sizeof(format), "%T", "FirstRecordZeroHud", client, "+00:00:00");
 			ShowHudText(client, 4, format);
@@ -6023,27 +5841,27 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 					{
 						//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-						SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
+						SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 						//ShowHudText(i, 1, "MAP FINISHED!");
 						//Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
 						Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", i);
 						ShowHudText(i, 1, format);
 
 						//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-						SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
+						SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 						//ShowHudText(i, 2, "NEW SERVER RECORD!");
 						//ShowHudText(i, 2, "%T", ""
 						Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
 						ShowHudText(i, 2, format);
 
 						//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-						SetHudTextParams(x3, y3, z3, r3, g3, b3, a3);
+						SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 						//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 						Format(format, sizeof(format), "%T", "FirstRecordHud", i, time);
 						ShowHudText(i, 3, format);
 
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-						SetHudTextParams(x4, y4, z4, r4, g4, b4, a4);
+						SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 						//ShowHudText(i, 4, "+00:00:00");
 						Format(format, sizeof(format), "FirstRecordZeroHud", i);
 						ShowHudText(i, 4, format);
@@ -6056,184 +5874,124 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 		{
 			if(serverRecord == true)
 			{
-				KeyValues kv = new KeyValues("TrueExpertHud");
-
-				kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
-						kv.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
+						g_kv.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[0] = StringToFloat(exploded[0]);
+						y[0] = StringToFloat(exploded[1]);
+						z[0] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x1 = x;
-						y1 = y;
-						z1 = z;
-
-						r1 = r;
-						g1 = g;
-						b1 = b;
-						a1 = a;
+						r[0] = StringToInt(exploded[3]);
+						g[0] = StringToInt(exploded[4]);
+						b[0] = StringToInt(exploded[5]);
+						a[0] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv.GotoNextKey(true) == true);
-
-				delete kv;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
 				//ShowHudText(client, 1, "MAP FINISHED!");
 				
 				//Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
 				ShowHudText(client, 1, format);
 
-				KeyValues kv2 = new KeyValues("TrueExpertHud");
-
-				kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv2.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv2.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
-						kv2.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
+						g_kv.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[1] = StringToFloat(exploded[0]);
+						y[1] = StringToFloat(exploded[1]);
+						z[1] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x2 = x;
-						y2 = y;
-						z2 = z;
-
-						r2 = r;
-						g2 = g;
-						b2 = b;
-						a2 = a;
+						r[1] = StringToInt(exploded[3]);
+						g[1] = StringToInt(exploded[4]);
+						b[1] = StringToInt(exploded[5]);
+						a[1] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv2.GotoNextKey(true) == true);
-
-				delete kv2;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "NEW SERVER RECORD!");
 				Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", client);
 				ShowHudText(client, 2, format);
 
-				KeyValues kv3 = new KeyValues("TrueExpertHud");
-
-				kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv3.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv3.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
-						kv3.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
+						g_kv.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[2] = StringToFloat(exploded[0]);
+						y[2] = StringToFloat(exploded[1]);
+						z[2] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x3 = x;
-						y3 = y;
-						z3 = z;
-
-						r3 = r;
-						g3 = g;
-						b3 = b;
-						a3 = a;
+						r[2] = StringToInt(exploded[3]);
+						g[2] = StringToInt(exploded[4]);
+						b[2] = StringToInt(exploded[5]);
+						a[2] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv3.GotoNextKey(true) == true);
-
-				delete kv3;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 				//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", client, time);
 				ShowHudText(client, 3, format);
 
-				KeyValues kv4 = new KeyValues("TrueExpertHud");
-
-				kv4.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv4.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv4.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
-						kv4.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
+						g_kv.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[3] = StringToFloat(exploded[0]);
+						y[3] = StringToFloat(exploded[1]);
+						z[3] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x4 = x;
-						y4 = y;
-						z4 = z;
-
-						r4 = r;
-						g4 = g;
-						b4 = b;
-						a4 = a;
+						r[3] = StringToInt(exploded[3]);
+						g[3] = StringToInt(exploded[4]);
+						b[3] = StringToInt(exploded[5]);
+						a[3] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv4.GotoNextKey(true) == true);
-
-				delete kv4;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 				//ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond); //https://youtu.be/j4L3YvHowv8?t=45
 				Format(format, sizeof(format), "-%s", timeSR);
 				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", client, format);
@@ -6249,25 +6007,25 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 						{
 							//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-							SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
+							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 							//ShowHudText(i, 1, "MAP FINISHED!");
 							Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", i);
 							ShowHudText(i, 1, format);
 							
 							//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
+							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "NEW SERVER RECORD!");
 							Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", i);
 							ShowHudText(i, 2, format);
 
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x3, y3, z3, r3, g3, b3, a3);
+							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 							//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 							Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", i, time);
 							ShowHudText(i, 3, format);
 
 							//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x4, y4, z4, r4, g4, b4, a4);
+							SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 							//ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 							Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", i, timeSR);
 							ShowHudText(i, 4, format);
@@ -6278,137 +6036,92 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 			else if(serverRecord == false)
 			{
-				KeyValues kv = new KeyValues("TrueExpertHud");
-
-				kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
 					{
-						kv.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
+						g_kv.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[0] = StringToFloat(exploded[0]);
+						y[0] = StringToFloat(exploded[1]);
+						z[0] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x1 = x;
-						y1 = y;
-						z1 = z;
-
-						r1 = r;
-						g1 = g;
-						b1 = b;
-						a1 = a;
+						r[0] = StringToInt(exploded[3]);
+						g[0] = StringToInt(exploded[4]);
+						b[0] = StringToInt(exploded[5]);
+						a[0] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv.GotoNextKey(true) == true);
-
-				delete kv;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 				//ShowHudText(client, 1, "MAP FINISHED!");
 				Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", client);
 				ShowHudText(client, 1, format);
 
-				KeyValues kv2 = new KeyValues("TrueExpertHud");
-
-				kv2.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-				kv2.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv2.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
 					{
-						kv2.GetString("MapFinishedTimeDeproveHud", posColor, sizeof(posColor));
+						g_kv.GetString("MapFinishedTimeDeproveHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[1] = StringToFloat(exploded[0]);
+						y[1] = StringToFloat(exploded[1]);
+						z[1] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x2 = x;
-						y2 = y;
-						z2 = z;
-
-						r2 = r;
-						g2 = g;
-						b2 = b;
-						a2 = a;
+						r[1] = StringToInt(exploded[3]);
+						g[1] = StringToInt(exploded[4]);
+						b[1] = StringToInt(exploded[5]);
+						a[1] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv2.GotoNextKey(true) == true);
-
-				delete kv2;
+				while(g_kv.GotoNextKey(true) == true);
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", client, time);
 				ShowHudText(client, 2, format);
 
-				KeyValues kv3 = new KeyValues("TrueExpertHud");
-
-				kv3.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-				
-				kv3.GotoFirstSubKey(true);
+				g_kv.Rewind();
 
 				do
 				{
-					if(kv3.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
+					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
 					{
-						kv3.GetString("MapFinishedTimeDeproveOwnHud", posColor, sizeof(posColor));
+						g_kv.GetString("MapFinishedTimeDeproveOwnHud", posColor, sizeof(posColor));
 
 						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x = StringToFloat(exploded[0]);
-						y = StringToFloat(exploded[1]);
-						z = StringToFloat(exploded[2]);
+						x[2] = StringToFloat(exploded[0]);
+						y[2] = StringToFloat(exploded[1]);
+						z[2] = StringToFloat(exploded[2]);
 						
-						r = StringToInt(exploded[3]);
-						g = StringToInt(exploded[4]);
-						b = StringToInt(exploded[5]);
-						a = StringToInt(exploded[6]);
-
-						x3 = x;
-						y3 = y;
-						z3 = z;
-
-						r3 = r;
-						g3 = g;
-						b3 = b;
-						a3 = a;
+						r[2] = StringToInt(exploded[3]);
+						g[2] = StringToInt(exploded[4]);
+						b[2] = StringToInt(exploded[5]);
+						a[2] = StringToInt(exploded[6]);
 					}
 				}
 
-				while(kv3.GotoNextKey(true) == true);
-
-				delete kv3;
+				while(g_kv.GotoNextKey(true) == true);
 				
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-				SetHudTextParams(x, y, z, r, g, b, a);
+				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 				//ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 				Format(format, sizeof(format), "+%s", timeSR);
 				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", client, format);
@@ -6424,19 +6137,19 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						if(observerMode < 7 && observerTarget == client)
 						{
 							//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-							SetHudTextParams(x1, y1, z1, r1, g1, b1, a1);
+							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 							Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", i);
 							//ShowHudText(i, 1, "MAP FINISHED!");
 							ShowHudText(i, 1, format);
 
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x2, y2, z2, r2, g2, b2, a2);
+							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
 							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", i, time);
 							ShowHudText(i, 2, format);
 							
 							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-							SetHudTextParams(x3, y3, z3, r3, g3, b3, a3);
+							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 							//ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", i, timeSR);
 							ShowHudText(i, 3, format);
@@ -6713,7 +6426,7 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 
 public Action cmd_createzones(int args)
 {
-	g_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x2 INT, possition_y2 INT, possition_z2 INT, PRIMARY KEY (id))"); //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	g_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x INT, possition_y INT, possition_z INT, PRIMARY KEY (id))"); //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
 
 	return Plugin_Continue;
 }
@@ -6750,7 +6463,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 stock void ForceZonesSetup()
 {
 	char query[512] = "";
-	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
+	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x, possition_y, possition_z FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 	g_mysql.Query(SQLSetZoneStart, query);
 
 	return;
@@ -6778,7 +6491,7 @@ public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error
 			CreateStart();
 
 			char query[512] = "";
-			Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
+			Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x, possition_y, possition_z FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
 			g_mysql.Query(SQLSetZoneEnd, query);
 		}
 	}
@@ -7097,7 +6810,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 
-			int entity = CreateEntityByName("prop_dynamic_override", -1); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+			int entity = CreateEntityByName("prop_dynamic_override", -1); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0ac6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTa&PC=U531
 
 			//SetEntityModel(g_pingModel[client], "models/trueexpert/pingtool/pingtool.mdl");
 			SetEntityModel(entity, "models/effects/combineball.mdl");
@@ -7129,7 +6842,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				float normal[3] = {0.0, 0.0, 0.0};
 
-				TR_GetPlaneNormal(null, normal); //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
+				TR_GetPlaneNormal(null, normal); //https://github.com/alliedmodders/sourcemod/commit/1328984e0bcbca0ee85eaf9326ab97df910483
 
 				GetVectorAngles(normal, normal);
 
@@ -8296,7 +8009,7 @@ stock void FlashbangEffect(int entity)
 	{
 		TE_SendToAll(0.0); //Idea from "Expert-Zone". So, we just made non empty event.
 
-		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnamS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 	}
 
 	return;
@@ -8416,7 +8129,7 @@ public Action SDKSetTransmitPing(int entity, int client)
 
 public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) == true && g_silentKnife == true)
+	if(StrEqual(sample, "weapons/knife/knife_deploy.wav", false) == true && g_silentKnife == true)
 	{
 		g_silentKnife = false;
 
@@ -8484,7 +8197,7 @@ stock void MLStats(int client, bool ground)
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
 		float distance = SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0;
 
-		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, distance, g_teleported[client] == true ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, distance, g_teleported[client] == true ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g03 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
 
 		PrintToConsole(flyer, "%s", print);
 		PrintToConsole(client, "%s", print);
@@ -8677,7 +8390,7 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 	return color;
 }*/
 
-public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28beb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
 {
 	bool originNull = DHookIsNullParam(hParams, 1);
 	
