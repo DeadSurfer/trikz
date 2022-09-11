@@ -5366,6 +5366,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 	g_kv.Rewind();
 
+	g_kv.GotoFirstSubKey(true);
+
 	char section[64] = "";
 	char posColor[64] = "";
 	char exploded[7][8];
@@ -5385,48 +5387,51 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					g_kv.GetString("CP-RecordHud", posColor, sizeof(posColor));
 
-					ExplodeString(posColor, ",", exploded, 7, 8, false);
+					//if(strlen(posColor) > 0)
+					{
+						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x[0] = StringToFloat(exploded[0]);
-					y[0] = StringToFloat(exploded[1]);
-					z[0] = StringToFloat(exploded[2]);
-					
-					r[0] = StringToInt(exploded[3]);
-					g[0] = StringToInt(exploded[4]);
-					b[0] = StringToInt(exploded[5]);
-					a[0] = StringToInt(exploded[6]);
-				}
+						x[0] = StringToFloat(exploded[0]);
+						y[0] = StringToFloat(exploded[1]);
+						z[0] = StringToFloat(exploded[2]);
+						
+						r[0] = StringToInt(exploded[3]);
+						g[0] = StringToInt(exploded[4]);
+						b[0] = StringToInt(exploded[5]);
+						a[0] = StringToInt(exploded[6]);
+					}
 
-				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
-				{
 					g_kv.GetString("CP-RecordDetailHud", posColor, sizeof(posColor));
 
-					ExplodeString(posColor, ",", exploded, 7, 8, false);
+					//if(strlen(posColor) > 0)
+					{
+						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x[1] = StringToFloat(exploded[0]);
-					y[1] = StringToFloat(exploded[1]);
-					z[1] = StringToFloat(exploded[2]);
-					
-					r[1] = StringToInt(exploded[3]);
-					g[1] = StringToInt(exploded[4]);
-					b[1] = StringToInt(exploded[5]);
-					a[1] = StringToInt(exploded[6]);
-				}
+						x[1] = StringToFloat(exploded[0]);
+						y[1] = StringToFloat(exploded[1]);
+						z[1] = StringToFloat(exploded[2]);
+						
+						r[1] = StringToInt(exploded[3]);
+						g[1] = StringToInt(exploded[4]);
+						b[1] = StringToInt(exploded[5]);
+						a[1] = StringToInt(exploded[6]);
+					}
 
-				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
-				{
 					g_kv.GetString("CP-DetailZeroHud", posColor, sizeof(posColor));
 
-					ExplodeString(posColor, ",", exploded, 7, 8, false);
+					//if(strlen(posColor) > 0)
+					{
+						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x[2] = StringToFloat(exploded[0]);
-					y[2] = StringToFloat(exploded[1]);
-					z[2] = StringToFloat(exploded[2]);
-					
-					r[2] = StringToInt(exploded[3]);
-					g[2] = StringToInt(exploded[4]);
-					b[2] = StringToInt(exploded[5]);
-					a[2] = StringToInt(exploded[6]);
+						x[2] = StringToFloat(exploded[0]);
+						y[2] = StringToFloat(exploded[1]);
+						z[2] = StringToFloat(exploded[2]);
+						
+						r[2] = StringToInt(exploded[3]);
+						g[2] = StringToInt(exploded[4]);
+						b[2] = StringToInt(exploded[5]);
+						a[2] = StringToInt(exploded[6]);
+					}
 				}
 			}
 
@@ -5492,48 +5497,51 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					{
 						g_kv.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[0] = StringToFloat(exploded[0]);
-						y[0] = StringToFloat(exploded[1]);
-						z[0] = StringToFloat(exploded[2]);
-						
-						r[0] = StringToInt(exploded[3]);
-						g[0] = StringToInt(exploded[4]);
-						b[0] = StringToInt(exploded[5]);
-						a[0] = StringToInt(exploded[6]);
-					}
+							x[0] = StringToFloat(exploded[0]);
+							y[0] = StringToFloat(exploded[1]);
+							z[0] = StringToFloat(exploded[2]);
+							
+							r[0] = StringToInt(exploded[3]);
+							g[0] = StringToInt(exploded[4]);
+							b[0] = StringToInt(exploded[5]);
+							a[0] = StringToInt(exploded[6]);
+						}
 
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
-					{
 						g_kv.GetString("CP-recordDetailNotFirstHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[1] = StringToFloat(exploded[0]);
-						y[1] = StringToFloat(exploded[1]);
-						z[1] = StringToFloat(exploded[2]);
-						
-						r[1] = StringToInt(exploded[3]);
-						g[1] = StringToInt(exploded[4]);
-						b[1] = StringToInt(exploded[5]);
-						a[1] = StringToInt(exploded[6]);
-					}
+							x[1] = StringToFloat(exploded[0]);
+							y[1] = StringToFloat(exploded[1]);
+							z[1] = StringToFloat(exploded[2]);
+							
+							r[1] = StringToInt(exploded[3]);
+							g[1] = StringToInt(exploded[4]);
+							b[1] = StringToInt(exploded[5]);
+							a[1] = StringToInt(exploded[6]);
+						}
 
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
-					{
 						g_kv.GetString("CP-recordImproveNotFirstHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-						
-						x[2] = StringToFloat(exploded[0]);
-						y[2] = StringToFloat(exploded[1]);
-						z[2] = StringToFloat(exploded[2]);
-						
-						r[2] = StringToInt(exploded[3]);
-						g[2] = StringToInt(exploded[4]);
-						b[2] = StringToInt(exploded[5]);
-						a[2] = StringToInt(exploded[6]);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
+							
+							x[2] = StringToFloat(exploded[0]);
+							y[2] = StringToFloat(exploded[1]);
+							z[2] = StringToFloat(exploded[2]);
+							
+							r[2] = StringToInt(exploded[3]);
+							g[2] = StringToInt(exploded[4]);
+							b[2] = StringToInt(exploded[5]);
+							a[2] = StringToInt(exploded[6]);
+						}
 					}
 				}
 
@@ -5597,31 +5605,34 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					{
 						g_kv.GetString("CP-RecordNonHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[0] = StringToFloat(exploded[0]);
-						y[0] = StringToFloat(exploded[1]);
-						z[0] = StringToFloat(exploded[2]);
-						
-						r[0] = StringToInt(exploded[3]);
-						g[0] = StringToInt(exploded[4]);
-						b[0] = StringToInt(exploded[5]);
-						a[0] = StringToInt(exploded[6]);
-					}
+							x[0] = StringToFloat(exploded[0]);
+							y[0] = StringToFloat(exploded[1]);
+							z[0] = StringToFloat(exploded[2]);
+							
+							r[0] = StringToInt(exploded[3]);
+							g[0] = StringToInt(exploded[4]);
+							b[0] = StringToInt(exploded[5]);
+							a[0] = StringToInt(exploded[6]);
+						}
 
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
-					{
 						g_kv.GetString("CP-RecordDeproveHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-						x[1] = StringToFloat(exploded[0]);
-						y[1] = StringToFloat(exploded[1]);
-						z[1] = StringToFloat(exploded[2]);
-						
-						r[1] = StringToInt(exploded[3]);
-						g[1] = StringToInt(exploded[4]);
-						b[1] = StringToInt(exploded[5]);
-						a[1] = StringToInt(exploded[6]);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
+							x[1] = StringToFloat(exploded[0]);
+							y[1] = StringToFloat(exploded[1]);
+							z[1] = StringToFloat(exploded[2]);
+							
+							r[1] = StringToInt(exploded[3]);
+							g[1] = StringToInt(exploded[4]);
+							b[1] = StringToInt(exploded[5]);
+							a[1] = StringToInt(exploded[6]);
+						}
 					}
 				}
 
@@ -5678,64 +5689,67 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					g_kv.GetString("MapFinishedFirstRecordHud", posColor, sizeof(posColor));
 
-					ExplodeString(posColor, ",", exploded, 7, 8, false);
+					//if(strlen(posColor) > 0)
+					{
+						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x[0] = StringToFloat(exploded[0]);
-					y[0] = StringToFloat(exploded[1]);
-					z[0] = StringToFloat(exploded[2]);
-					
-					r[0] = StringToInt(exploded[3]);
-					g[0] = StringToInt(exploded[4]);
-					b[0] = StringToInt(exploded[5]);
-					a[0] = StringToInt(exploded[6]);
-				}
+						x[0] = StringToFloat(exploded[0]);
+						y[0] = StringToFloat(exploded[1]);
+						z[0] = StringToFloat(exploded[2]);
+						
+						r[0] = StringToInt(exploded[3]);
+						g[0] = StringToInt(exploded[4]);
+						b[0] = StringToInt(exploded[5]);
+						a[0] = StringToInt(exploded[6]);
+					}
 
-				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
-				{
 					g_kv.GetString("NewServerRecordHud", posColor, sizeof(posColor));
 
-					ExplodeString(posColor, ",", exploded, 7, 8, false);
+					//if(strlen(posColor) > 0)
+					{
+						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x[1] = StringToFloat(exploded[0]);
-					y[1] = StringToFloat(exploded[1]);
-					z[1] = StringToFloat(exploded[2]);
-					
-					r[1] = StringToInt(exploded[3]);
-					g[1] = StringToInt(exploded[4]);
-					b[1] = StringToInt(exploded[5]);
-					a[1] = StringToInt(exploded[6]);
-				}
+						x[1] = StringToFloat(exploded[0]);
+						y[1] = StringToFloat(exploded[1]);
+						z[1] = StringToFloat(exploded[2]);
+						
+						r[1] = StringToInt(exploded[3]);
+						g[1] = StringToInt(exploded[4]);
+						b[1] = StringToInt(exploded[5]);
+						a[1] = StringToInt(exploded[6]);
+					}
 
-				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
-				{
 					g_kv.GetString("FirstRecordHud", posColor, sizeof(posColor));
 
-					ExplodeString(posColor, ",", exploded, 7, 8, false);
+					//if(strlen(posColor) > 0)
+					{
+						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x[2] = StringToFloat(exploded[0]);
-					y[2] = StringToFloat(exploded[1]);
-					z[2] = StringToFloat(exploded[2]);
-					
-					r[2] = StringToInt(exploded[3]);
-					g[2] = StringToInt(exploded[4]);
-					b[2] = StringToInt(exploded[5]);
-					a[2] = StringToInt(exploded[6]);
-				}
+						x[2] = StringToFloat(exploded[0]);
+						y[2] = StringToFloat(exploded[1]);
+						z[2] = StringToFloat(exploded[2]);
+						
+						r[2] = StringToInt(exploded[3]);
+						g[2] = StringToInt(exploded[4]);
+						b[2] = StringToInt(exploded[5]);
+						a[2] = StringToInt(exploded[6]);
+					}
 
-				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
-				{
 					g_kv.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
 
-					ExplodeString(posColor, ",", exploded, 7, 8, false);
+					//if(strlen(posColor) > 0)
+					{
+						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-					x[3] = StringToFloat(exploded[0]);
-					y[3] = StringToFloat(exploded[1]);
-					z[3] = StringToFloat(exploded[2]);
-					
-					r[3] = StringToInt(exploded[3]);
-					g[3] = StringToInt(exploded[4]);
-					b[3] = StringToInt(exploded[5]);
-					a[3] = StringToInt(exploded[6]);
+						x[3] = StringToFloat(exploded[0]);
+						y[3] = StringToFloat(exploded[1]);
+						z[3] = StringToFloat(exploded[2]);
+						
+						r[3] = StringToInt(exploded[3]);
+						g[3] = StringToInt(exploded[4]);
+						b[3] = StringToInt(exploded[5]);
+						a[3] = StringToInt(exploded[6]);
+					}
 				}
 			}
 
@@ -5814,64 +5828,67 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					{
 						g_kv.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[0] = StringToFloat(exploded[0]);
-						y[0] = StringToFloat(exploded[1]);
-						z[0] = StringToFloat(exploded[2]);
-						
-						r[0] = StringToInt(exploded[3]);
-						g[0] = StringToInt(exploded[4]);
-						b[0] = StringToInt(exploded[5]);
-						a[0] = StringToInt(exploded[6]);
-					}
+							x[0] = StringToFloat(exploded[0]);
+							y[0] = StringToFloat(exploded[1]);
+							z[0] = StringToFloat(exploded[2]);
+							
+							r[0] = StringToInt(exploded[3]);
+							g[0] = StringToInt(exploded[4]);
+							b[0] = StringToInt(exploded[5]);
+							a[0] = StringToInt(exploded[6]);
+						}
 
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
-					{
 						g_kv.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[1] = StringToFloat(exploded[0]);
-						y[1] = StringToFloat(exploded[1]);
-						z[1] = StringToFloat(exploded[2]);
+							x[1] = StringToFloat(exploded[0]);
+							y[1] = StringToFloat(exploded[1]);
+							z[1] = StringToFloat(exploded[2]);
+							
+							r[1] = StringToInt(exploded[3]);
+							g[1] = StringToInt(exploded[4]);
+							b[1] = StringToInt(exploded[5]);
+							a[1] = StringToInt(exploded[6]);
+						}
 						
-						r[1] = StringToInt(exploded[3]);
-						g[1] = StringToInt(exploded[4]);
-						b[1] = StringToInt(exploded[5]);
-						a[1] = StringToInt(exploded[6]);
-					}
-
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
-					{
 						g_kv.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[2] = StringToFloat(exploded[0]);
-						y[2] = StringToFloat(exploded[1]);
-						z[2] = StringToFloat(exploded[2]);
-						
-						r[2] = StringToInt(exploded[3]);
-						g[2] = StringToInt(exploded[4]);
-						b[2] = StringToInt(exploded[5]);
-						a[2] = StringToInt(exploded[6]);
-					}
+							x[2] = StringToFloat(exploded[0]);
+							y[2] = StringToFloat(exploded[1]);
+							z[2] = StringToFloat(exploded[2]);
+							
+							r[2] = StringToInt(exploded[3]);
+							g[2] = StringToInt(exploded[4]);
+							b[2] = StringToInt(exploded[5]);
+							a[2] = StringToInt(exploded[6]);
+						}
 
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
-					{
 						g_kv.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[3] = StringToFloat(exploded[0]);
-						y[3] = StringToFloat(exploded[1]);
-						z[3] = StringToFloat(exploded[2]);
-						
-						r[3] = StringToInt(exploded[3]);
-						g[3] = StringToInt(exploded[4]);
-						b[3] = StringToInt(exploded[5]);
-						a[3] = StringToInt(exploded[6]);
+							x[3] = StringToFloat(exploded[0]);
+							y[3] = StringToFloat(exploded[1]);
+							z[3] = StringToFloat(exploded[2]);
+							
+							r[3] = StringToInt(exploded[3]);
+							g[3] = StringToInt(exploded[4]);
+							b[3] = StringToInt(exploded[5]);
+							a[3] = StringToInt(exploded[6]);
+						}
 					}
 				}
 
@@ -5950,46 +5967,49 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[0] = StringToFloat(exploded[0]);
-						y[0] = StringToFloat(exploded[1]);
-						z[0] = StringToFloat(exploded[2]);
-						
-						r[0] = StringToInt(exploded[3]);
-						g[0] = StringToInt(exploded[4]);
-						b[0] = StringToInt(exploded[5]);
-						a[0] = StringToInt(exploded[6]);
-					}
+						//if(strlen(posColor) > 0)
+						{
+							x[0] = StringToFloat(exploded[0]);
+							y[0] = StringToFloat(exploded[1]);
+							z[0] = StringToFloat(exploded[2]);
+							
+							r[0] = StringToInt(exploded[3]);
+							g[0] = StringToInt(exploded[4]);
+							b[0] = StringToInt(exploded[5]);
+							a[0] = StringToInt(exploded[6]);
+						}
 
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
-					{
 						g_kv.GetString("MapFinishedTimeDeproveHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[1] = StringToFloat(exploded[0]);
-						y[1] = StringToFloat(exploded[1]);
-						z[1] = StringToFloat(exploded[2]);
-						
-						r[1] = StringToInt(exploded[3]);
-						g[1] = StringToInt(exploded[4]);
-						b[1] = StringToInt(exploded[5]);
-						a[1] = StringToInt(exploded[6]);
-					}
+							x[1] = StringToFloat(exploded[0]);
+							y[1] = StringToFloat(exploded[1]);
+							z[1] = StringToFloat(exploded[2]);
+							
+							r[1] = StringToInt(exploded[3]);
+							g[1] = StringToInt(exploded[4]);
+							b[1] = StringToInt(exploded[5]);
+							a[1] = StringToInt(exploded[6]);
+						}
 
-					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
-					{
 						g_kv.GetString("MapFinishedTimeDeproveOwnHud", posColor, sizeof(posColor));
 
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
+						//if(strlen(posColor) > 0)
+						{
+							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[2] = StringToFloat(exploded[0]);
-						y[2] = StringToFloat(exploded[1]);
-						z[2] = StringToFloat(exploded[2]);
-						
-						r[2] = StringToInt(exploded[3]);
-						g[2] = StringToInt(exploded[4]);
-						b[2] = StringToInt(exploded[5]);
-						a[2] = StringToInt(exploded[6]);
+							x[2] = StringToFloat(exploded[0]);
+							y[2] = StringToFloat(exploded[1]);
+							z[2] = StringToFloat(exploded[2]);
+							
+							r[2] = StringToInt(exploded[3]);
+							g[2] = StringToInt(exploded[4]);
+							b[2] = StringToInt(exploded[5]);
+							a[2] = StringToInt(exploded[6]);
+						}
 					}
 				}
 
