@@ -48,14 +48,14 @@ float g_zoneEndOrigin[2][3]; //end zone mins and maxs
 Database g_mysql = null;
 float g_timerTimeStart[MAXPLAYER];
 float g_timerTime[MAXPLAYER];
-bool g_state[MAXPLAYER];
+bool g_timerState[MAXPLAYER];
 char g_map[192] = "";
 bool g_mapFinished[MAXPLAYER];
 bool g_dbPassed = false;
-float g_originStart[3] = {0.0, 0.0, 0.0};
+float g_timerStartPos[3] = {0.0, 0.0, 0.0};
 float g_boostTime[MAXPLAYER];
 float g_skyVel[MAXPLAYER][3];
-bool g_readyToStart[MAXPLAYER];
+bool g_timerReadyToStart[MAXPLAYER];
 
 float g_cpPos[2][12][3];
 bool g_cp[11][MAXPLAYER];
@@ -120,7 +120,7 @@ char g_date[64] = "";
 char g_time[64] = "";
 
 bool g_silentKnife = false;
-float g_mateRecord[MAXPLAYER];
+float g_teamRecord[MAXPLAYER];
 bool g_sourcetv = false;
 bool g_block[MAXPLAYER];
 int g_wModelThrown = 0;
@@ -209,7 +209,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.fakeexpert.rf.gd/?start=0&map=). To open page, type in game chat !top", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.trueexpert.rf.gd/?start=0&map=). To open page, type to in-game chat !top", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Allow to use trikz menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_block = CreateConVar("sm_te_block", "0.0", "Allow to toggling block state.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Allow to use partner system.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
@@ -359,7 +359,11 @@ public void OnPluginStart()
 	g_teleport.AddParam(HookParamType_ObjectPtr);
 	g_teleport.AddParam(HookParamType_VectorPtr);
 
-	delete g_kv;
+	if(g_kv != null)
+	{
+		delete g_kv;
+	}
+
 	g_kv = new KeyValues("TrueExpertHud");
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
@@ -513,7 +517,11 @@ public void OnMapStart()
 
 	g_top10ac = 0.0;
 
-	delete g_kv;
+	if(g_kv != null)
+	{
+		delete g_kv;
+	}
+
 	g_kv = new KeyValues("TrueExpertHud");
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
@@ -2280,6 +2288,7 @@ stock void Partner(int client)
 			//char format[128]
 			//Format(format, sizeof(format), "%T", "ChoosePartner");
 			menu.SetTitle("%T", "ChoosePartner", client);
+			
 			char name[MAX_NAME_LENGTH] = "";
 			bool player = false;
 
@@ -2880,14 +2889,14 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 		{
 			if(results.FetchRow() == true)
 			{
-				g_mateRecord[client] = results.FetchFloat(0);
-				g_mateRecord[g_partner[client]] = results.FetchFloat(0);
+				g_teamRecord[client] = results.FetchFloat(0);
+				g_teamRecord[g_partner[client]] = results.FetchFloat(0);
 			}
 
 			else if(results.FetchRow() == false)
 			{
-				g_mateRecord[client] = 0.0;
-				g_mateRecord[g_partner[client]] = 0.0;
+				g_teamRecord[client] = 0.0;
+				g_teamRecord[g_partner[client]] = 0.0;
 			}
 		}
 	}
@@ -2985,8 +2994,8 @@ stock void Restart(int client)
 
 				float vel[3] = {0.0, 0.0, 0.0};
 
-				TeleportEntity(client, g_originStart, NULL_VECTOR, vel);
-				TeleportEntity(partner, g_originStart, NULL_VECTOR, vel);
+				TeleportEntity(client, g_timerStartPos, NULL_VECTOR, vel);
+				TeleportEntity(partner, g_timerStartPos, NULL_VECTOR, vel);
 
 				g_block[client] = true;
 				g_block[partner] = true;
@@ -3390,7 +3399,6 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 				}
 
 				IntToString(g_skinPlayer[param1], value, sizeof(value));
-
 				SetClientCookie(param1, g_cookie[11], value);
 
 				PlayerSkin(param1);
@@ -3419,7 +3427,6 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 				}
 
 				IntToString(g_skinFlashbang[param1], value, sizeof(value));
-
 				SetClientCookie(param1, g_cookie[9], value);
 
 				FlashbangSkin(param1);
@@ -3491,9 +3498,9 @@ stock void CreateStart()
 
 	TeleportEntity(entity, g_center[0], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
-	g_originStart[0] = g_center[0][0];
-	g_originStart[1] = g_center[0][1];
-	g_originStart[2] = g_center[0][2] + 1.0;
+	g_timerStartPos[0] = g_center[0][0];
+	g_timerStartPos[1] = g_center[0][1];
+	g_timerStartPos[2] = g_center[0][2] + 1.0;
 
 	float mins[3] = {0.0, 0.0, 0.0};
 	float maxs[3] = {0.0, 0.0, 0.0};
@@ -3729,7 +3736,7 @@ public Action cmd_test(int client, int args)
 		color |= (255 & 255) << 8; // 255 blue
 		color |= (50 & 255) << 0; // 50 alpha
 
-		PrintToChat(client, "\x08%08XCOLOR (%i)", color, color);
+		PrintToChat(client, "\x08%08XRGBA \x0805C8FF30HEX", color, color); //https://rgbacolorpicker.com/rgba-to-hex https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4?permalink_comment_id=3769893#gistcomment-3769893
 
 		char auth64[64] = "";
 		GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64));
@@ -4881,12 +4888,12 @@ public void SQLRecordsTable(Database db, DBResultSet results, const char[] error
 
 public Action SDKEndTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && g_readyToStart[other] == true && g_partner[other] > 0 && IsFakeClient(other) == false)
+	if(0 < other <= MaxClients && g_timerReadyToStart[other] == true && g_partner[other] > 0 && IsFakeClient(other) == false)
 	{
 		int partner = g_partner[other];
 
-		g_state[other] = true;
-		g_state[partner] = true;
+		g_timerState[other] = true;
+		g_timerState[partner] = true;
 
 		g_mapFinished[other] = false;
 		g_mapFinished[partner] = false; //expert zone idea
@@ -4894,8 +4901,8 @@ public Action SDKEndTouch(int entity, int other)
 		g_timerTimeStart[other] = GetEngineTime();
 		g_timerTimeStart[partner] = GetEngineTime();
 
-		g_readyToStart[other] = false;
-		g_readyToStart[partner] = false;
+		g_timerReadyToStart[other] = false;
+		g_timerReadyToStart[partner] = false;
 
 		CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.1, timer_clantag, partner, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -4952,7 +4959,7 @@ public Action SDKStartTouch(int entity, int other)
 		{
 			g_mapFinished[other] = true;
 
-			if(g_mapFinished[partner] == true && g_state[other] == true)
+			if(g_mapFinished[partner] == true && g_timerState[other] == true)
 			{
 				char name[MAX_NAME_LENGTH] = "";
 				GetClientName(other, name, sizeof(name));
@@ -5002,7 +5009,7 @@ public Action SDKStartTouch(int entity, int other)
 
 				if(g_ServerRecordTime > 0.0)
 				{
-					if(g_mateRecord[other] > 0.0)
+					if(g_teamRecord[other] > 0.0)
 					{
 						if(g_ServerRecordTime > time)
 						{
@@ -5027,8 +5034,8 @@ public Action SDKStartTouch(int entity, int other)
 							g_haveRecord[other] = time;
 							g_haveRecord[partner] = time; //logs help also expert zone ideas.
 
-							g_mateRecord[other] = time;
-							g_mateRecord[partner] = time;
+							g_teamRecord[other] = time;
+							g_teamRecord[partner] = time;
 
 							g_ServerRecord = true;
 							g_ServerRecordTime = time;
@@ -5050,7 +5057,7 @@ public Action SDKStartTouch(int entity, int other)
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime <= time >= g_mateRecord[other])
+						else if(g_ServerRecordTime <= time >= g_teamRecord[other])
 						{
 							for(int i = 1; i <= MaxClients; i++)
 							{
@@ -5082,7 +5089,7 @@ public Action SDKStartTouch(int entity, int other)
 							Call_Finish();
 						}
 
-						else if(g_ServerRecordTime <= time < g_mateRecord[other])
+						else if(g_ServerRecordTime <= time < g_teamRecord[other])
 						{
 							for(int i = 1; i <= MaxClients; i++)
 							{
@@ -5109,10 +5116,10 @@ public Action SDKStartTouch(int entity, int other)
 								g_haveRecord[partner] = time;
 							}
 
-							if(g_mateRecord[other] > time)
+							if(g_teamRecord[other] > time)
 							{
-								g_mateRecord[other] = time;
-								g_mateRecord[partner] = time;
+								g_teamRecord[other] = time;
+								g_teamRecord[partner] = time;
 							}
 
 							static GlobalForward hForward = null;
@@ -5131,7 +5138,7 @@ public Action SDKStartTouch(int entity, int other)
 						}
 					}
 
-					else if(g_mateRecord[other] == 0.0)
+					else if(g_teamRecord[other] == 0.0)
 					{
 						if(g_ServerRecordTime > time)
 						{
@@ -5156,8 +5163,8 @@ public Action SDKStartTouch(int entity, int other)
 							g_haveRecord[other] = time;
 							g_haveRecord[partner] = time;
 
-							g_mateRecord[other] = time;
-							g_mateRecord[partner] = time;
+							g_teamRecord[other] = time;
+							g_teamRecord[partner] = time;
 
 							g_ServerRecord = true;
 
@@ -5207,8 +5214,8 @@ public Action SDKStartTouch(int entity, int other)
 								g_haveRecord[partner] = time;
 							}
 
-							g_mateRecord[other] = time;
-							g_mateRecord[partner] = time;
+							g_teamRecord[other] = time;
+							g_teamRecord[partner] = time;
 
 							static GlobalForward hForward = null;
 
@@ -5252,8 +5259,8 @@ public Action SDKStartTouch(int entity, int other)
 					g_haveRecord[other] = time;
 					g_haveRecord[partner] = time;
 
-					g_mateRecord[other] = time;
-					g_mateRecord[partner] = time;
+					g_teamRecord[other] = time;
+					g_teamRecord[partner] = time;
 
 					for(int i = 1; i <= MaxClients; i++)
 					{
@@ -5301,8 +5308,8 @@ public Action SDKStartTouch(int entity, int other)
 					Call_Finish();
 				}
 
-				g_state[other] = false;
-				g_state[partner] = false;
+				g_timerState[other] = false;
+				g_timerState[partner] = false;
 			}
 		}
 
@@ -5322,7 +5329,7 @@ public Action SDKStartTouch(int entity, int other)
 					int playerid = GetSteamAccountID(other);
 					int partnerid = GetSteamAccountID(partner);
 
-					if(g_cpLock[1][other] == false && g_mateRecord[other] > 0.0)
+					if(g_cpLock[1][other] == false && g_teamRecord[other] > 0.0)
 					{
 						Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
 						g_mysql.Query(SQLSetTries, query);
@@ -5365,19 +5372,20 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 	char format[256] = "";
 
+	g_kv.Rewind();
+
+	char exploded[7][8];
+
 	if(onlyCP == true)
 	{
 		if(firstCPRecord == true)
 		{
-			g_kv.Rewind();
-
 			do
 			{
 				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 				{
 					g_kv.GetString("CP-RecordHud", posColor, sizeof(posColor));
 
-					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 					x[0] = StringToFloat(exploded[0]);
@@ -5389,25 +5397,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					b[0] = StringToInt(exploded[5]);
 					a[0] = StringToInt(exploded[6]);
 				}
-			}
 
-			while(g_kv.GotoNextKey(true) == true);
-
-			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(format, sizeof(format), "%T", "CP-recordHud", client, cpnum);
-			ShowHudText(client, 1, format);
-
-			g_kv.Rewind();
-
-			do
-			{
-				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
+				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 				{
 					g_kv.GetString("CP-RecordDetailHud", posColor, sizeof(posColor));
 
-					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 					x[1] = StringToFloat(exploded[0]);
@@ -5419,25 +5413,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					b[1] = StringToInt(exploded[5]);
 					a[1] = StringToInt(exploded[6]);
 				}
-			}
 
-			while(g_kv.GotoNextKey(true) == true);
-
-			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-			//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-			Format(format, sizeof(format), "%T", "CP-recordDetailHud", client, time);
-			ShowHudText(client, 2, format);
-
-			g_kv.Rewind();
-
-			do
-			{
-				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
+				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 				{
 					g_kv.GetString("CP-DetailZeroHud", posColor, sizeof(posColor));
 
-					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 					x[2] = StringToFloat(exploded[0]);
@@ -5452,6 +5432,18 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			}
 
 			while(g_kv.GotoNextKey(true) == true);
+
+			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
+			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+			Format(format, sizeof(format), "%T", "CP-recordHud", client, cpnum);
+			ShowHudText(client, 1, format);
+
+			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
+			//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+			Format(format, sizeof(format), "%T", "CP-recordDetailHud", client, time);
+			ShowHudText(client, 2, format);
 			
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
@@ -5495,15 +5487,12 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 		{
 			if(cpRecord == true)
 			{
-				g_kv.Rewind();
-
 				do
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 					{
 						g_kv.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[0] = StringToFloat(exploded[0]);
@@ -5515,25 +5504,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[0] = StringToInt(exploded[5]);
 						a[0] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-				Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", client, cpnum);
-				ShowHudText(client, 1, format);
-
-				g_kv.Rewind();
-
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 					{
 						g_kv.GetString("CP-recordDetailNotFirstHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[1] = StringToFloat(exploded[0]);
@@ -5545,25 +5520,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[1] = StringToInt(exploded[5]);
 						a[1] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", client, time);
-				ShowHudText(client, 2, format);
-
-				g_kv.Rewind();
-
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 					{
 						g_kv.GetString("CP-recordImproveNotFirstHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						
 						x[2] = StringToFloat(exploded[0]);
@@ -5578,6 +5539,18 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
+
+				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
+				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+				Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", client, cpnum);
+				ShowHudText(client, 1, format);
+
+				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
+				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", client, time);
+				ShowHudText(client, 2, format);
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
@@ -5619,15 +5592,12 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 			else if(cpRecord == false)
 			{
-				g_kv.Rewind();
-
 				do
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
 					{
 						g_kv.GetString("CP-RecordNonHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[0] = StringToFloat(exploded[0]);
@@ -5639,26 +5609,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[0] = StringToInt(exploded[5]);
 						a[0] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				//Format(format, sizeof(format), "%T", "CP-recordDeprove"
-				Format(format, sizeof(format), "%T", "CP-recordNonHud", client, time);
-				ShowHudText(client, 1, format);
-				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-
-				g_kv.Rewind();
-				
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
 					{
 						g_kv.GetString("CP-RecordDeproveHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 						x[1] = StringToFloat(exploded[0]);
 						y[1] = StringToFloat(exploded[1]);
@@ -5672,6 +5627,13 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
+
+				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
+				//Format(format, sizeof(format), "%T", "CP-recordDeprove"
+				Format(format, sizeof(format), "%T", "CP-recordNonHud", client, time);
+				ShowHudText(client, 1, format);
+				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
@@ -5711,15 +5673,12 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 	{
 		if(firstServerRecord == true)
 		{
-			g_kv.Rewind();
-
 			do
 			{
 				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
 					g_kv.GetString("MapFinishedFirstRecordHud", posColor, sizeof(posColor));
 
-					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 					x[0] = StringToFloat(exploded[0]);
@@ -5731,25 +5690,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					b[0] = StringToInt(exploded[5]);
 					a[0] = StringToInt(exploded[6]);
 				}
-			}
 
-			while(g_kv.GotoNextKey(true) == true);
-
-			//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-			//ShowHudText(client, 1, "MAP FINISHED!"); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", client);
-			ShowHudText(client, 1, format);
-
-			g_kv.Rewind();
-
-			do
-			{
-				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
+				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
 					g_kv.GetString("NewServerRecordHud", posColor, sizeof(posColor));
 
-					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 					x[1] = StringToFloat(exploded[0]);
@@ -5761,25 +5706,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					b[1] = StringToInt(exploded[5]);
 					a[1] = StringToInt(exploded[6]);
 				}
-			}
 
-			while(g_kv.GotoNextKey(true) == true);
-
-			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-			//ShowHudText(client, 2, "NEW SERVER RECORD!");
-			Format(format, sizeof(format), "%T", "NewServerRecordHud", client);
-			ShowHudText(client, 2, format);
-
-			g_kv.Rewind();
-
-			do
-			{
-				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
+				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
 					g_kv.GetString("FirstRecordHud", posColor, sizeof(posColor));
 
-					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 					x[2] = StringToFloat(exploded[0]);
@@ -5791,25 +5722,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 					b[2] = StringToInt(exploded[5]);
 					a[2] = StringToInt(exploded[6]);
 				}
-			}
 
-			while(g_kv.GotoNextKey(true) == true);
-
-			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-			//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-			Format(format, sizeof(format), "%T", "FirstRecordHud", client, time);
-			ShowHudText(client, 3, format);
-
-			g_kv.Rewind();
-
-			do
-			{
-				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
+				else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
 					g_kv.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
 
-					char exploded[7][8];
 					ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 					x[3] = StringToFloat(exploded[0]);
@@ -5824,6 +5741,24 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			}
 
 			while(g_kv.GotoNextKey(true) == true);
+
+			//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
+			//ShowHudText(client, 1, "MAP FINISHED!"); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+			Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", client);
+			ShowHudText(client, 1, format);
+
+			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
+			//ShowHudText(client, 2, "NEW SERVER RECORD!");
+			Format(format, sizeof(format), "%T", "NewServerRecordHud", client);
+			ShowHudText(client, 2, format);
+
+			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
+			//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+			Format(format, sizeof(format), "%T", "FirstRecordHud", client, time);
+			ShowHudText(client, 3, format);
 
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
@@ -5874,15 +5809,12 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 		{
 			if(serverRecord == true)
 			{
-				g_kv.Rewind();
-
 				do
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
 						g_kv.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[0] = StringToFloat(exploded[0]);
@@ -5894,27 +5826,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[0] = StringToInt(exploded[5]);
 						a[0] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
-				//ShowHudText(client, 1, "MAP FINISHED!");
-				
-				//Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
-				ShowHudText(client, 1, format);
-
-				g_kv.Rewind();
-
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
 						g_kv.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[1] = StringToFloat(exploded[0]);
@@ -5926,25 +5842,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[1] = StringToInt(exploded[5]);
 						a[1] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-				//ShowHudText(client, 2, "NEW SERVER RECORD!");
-				Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", client);
-				ShowHudText(client, 2, format);
-
-				g_kv.Rewind();
-
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
 						g_kv.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[2] = StringToFloat(exploded[0]);
@@ -5956,25 +5858,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[2] = StringToInt(exploded[5]);
 						a[2] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-				//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", client, time);
-				ShowHudText(client, 3, format);
-
-				g_kv.Rewind();
-
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
 						g_kv.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[3] = StringToFloat(exploded[0]);
@@ -5989,6 +5877,25 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
+
+				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
+				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
+				//ShowHudText(client, 1, "MAP FINISHED!");
+				//Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
+				ShowHudText(client, 1, format);
+
+				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
+				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
+				//ShowHudText(client, 2, "NEW SERVER RECORD!");
+				Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", client);
+				ShowHudText(client, 2, format);
+
+				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
+				//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", client, time);
+				ShowHudText(client, 3, format);
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
@@ -6036,15 +5943,12 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 			else if(serverRecord == false)
 			{
-				g_kv.Rewind();
-
 				do
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
 					{
 						g_kv.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[0] = StringToFloat(exploded[0]);
@@ -6056,25 +5960,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[0] = StringToInt(exploded[5]);
 						a[0] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				//ShowHudText(client, 1, "MAP FINISHED!");
-				Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", client);
-				ShowHudText(client, 1, format);
-
-				g_kv.Rewind();
-
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
 					{
 						g_kv.GetString("MapFinishedTimeDeproveHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[1] = StringToFloat(exploded[0]);
@@ -6086,25 +5976,11 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						b[1] = StringToInt(exploded[5]);
 						a[1] = StringToInt(exploded[6]);
 					}
-				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-				//ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", client, time);
-				ShowHudText(client, 2, format);
-
-				g_kv.Rewind();
-
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
+					else if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
 					{
 						g_kv.GetString("MapFinishedTimeDeproveOwnHud", posColor, sizeof(posColor));
 
-						char exploded[7][8];
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
 						x[2] = StringToFloat(exploded[0]);
@@ -6119,6 +5995,18 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
+
+				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
+				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
+				//ShowHudText(client, 1, "MAP FINISHED!");
+				Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", client);
+				ShowHudText(client, 1, format);
+
+				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
+				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
+				//ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
+				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", client, time);
+				ShowHudText(client, 2, format);
 				
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
@@ -6650,9 +6538,9 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 stock void ResetFactory(int client)
 {
-	g_readyToStart[client] = true;
+	g_timerReadyToStart[client] = true;
 	//g_timerTime[client] = 0.0;
-	g_state[client] = false;
+	g_timerState[client] = false;
 
 	return;
 }
@@ -6671,7 +6559,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 
 	//Timer
-	if(IsFakeClient(client) == false && g_state[client] == true && g_partner[client] > 0)
+	if(IsFakeClient(client) == false && g_timerState[client] == true && g_partner[client] > 0)
 	{
 		g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
 
@@ -7740,9 +7628,7 @@ public Action cmd_mlstats(int client, int args)
 	g_mlstats[client] = !g_mlstats[client];
 
 	char value[8] = "";
-
 	IntToString(g_mlstats[client], value, sizeof(value));
-
 	SetClientCookie(client, g_cookie[1], value);
 
 	char format[256] = "";
@@ -7769,9 +7655,7 @@ public Action cmd_button(int client, int args)
 	g_button[client] = !g_button[client];
 
 	char value[8] = "";
-
 	IntToString(g_button[client], value, sizeof(value));
-
 	SetClientCookie(client, g_cookie[2], value);
 
 	char format[256] = "";
@@ -7793,9 +7677,7 @@ public Action cmd_pbutton(int client, int args)
 	g_pbutton[client] = !g_pbutton[client]; //toggling
 
 	char value[8] = "";
-
 	IntToString(g_pbutton[client], value, sizeof(value));
-
 	SetClientCookie(client, g_cookie[3], value);
 
 	char format[256] = "";
@@ -8150,14 +8032,14 @@ public Action timer_clantag(Handle timer, int client)
 {
 	if(IsClientValid(client) == true)
 	{
-		if(g_state[client] == true)
+		if(g_timerState[client] == true)
 		{
 			CS_SetClientClanTag(client, g_clantag[client][1]);
 
 			return Plugin_Continue;
 		}
 
-		else if(g_state[client] == false)
+		else if(g_timerState[client] == false)
 		{
 			CS_SetClientClanTag(client, g_clantag[client][0]);
 
@@ -8314,12 +8196,12 @@ public int Native_GetTimerState(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
-	if(g_state[client] == true)
+	if(g_timerState[client] == true)
 	{
 		return true;
 	}
 
-	else //at else if(g_state[client] == false) waring with return value
+	else //at else if(g_timerState[client] == false) waring with return value
 	{
 		return false;
 	}
