@@ -2288,7 +2288,7 @@ stock void Partner(int client)
 			//char format[128]
 			//Format(format, sizeof(format), "%T", "ChoosePartner");
 			menu.SetTitle("%T", "ChoosePartner", client);
-			
+
 			char name[MAX_NAME_LENGTH] = "";
 			bool player = false;
 
@@ -5364,17 +5364,16 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 		return;
 	}
 
+	g_kv.Rewind();
+
 	char section[64] = "";
 	char posColor[64] = "";
+	char exploded[7][8];
 
 	float x[4] = {0.0, 0.0, 0.0, 0.0}, y[4] = {0.0, 0.0, 0.0, 0.0}, z[4] = {0.0, 0.0, 0.0, 0.0};
 	int r[4] = {0, 0, 0, 0}, g[4] = {0, 0, 0, 0}, b[4] = {0, 0, 0, 0}, a[4] = {0, 0, 0, 0};
 
 	char format[256] = "";
-
-	g_kv.Rewind();
-
-	char exploded[7][8];
 
 	if(onlyCP == true)
 	{
