@@ -2399,7 +2399,6 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 		case MenuAction_Select:
 		{
 			char item[8] = "";
-
 			menu.GetItem(param2, item, sizeof(item));
 
 			int partner = StringToInt(item);
@@ -2448,9 +2447,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						}
 
 						char query[512] = "";
-						
 						Format(query, sizeof(query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
-						
 						g_mysql.Query(SQLGetPartnerRecord, query, GetClientSerial(param1));
 					}
 
@@ -2488,7 +2485,6 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 		case MenuAction_Select:
 		{
 			char item[8] = "";
-
 			menu.GetItem(param2, item, sizeof(item));
 
 			int partner = StringToInt(item);
@@ -2723,21 +2719,22 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 		{
 			return;
 		}
+
+		char format[256] = "";
 		
 		if(g_devmap == false && g_partner[client] == 0)
 		{
 			//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
 			//PrintToChat(client, "You must have a partner.");
-			char format[256] = "";
 			Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 			SendMessage(client, format);
 
 			return;
 		}
 
-		if(g_devmap == true)
+		else if(g_devmap == true)
 		{
-			char format[256] = "";
+			//char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsON", client);
 			SendMessage(client, format);
 
@@ -3633,9 +3630,7 @@ public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] er
 	else if(strlen(error) == 0)
 	{
 		char query[512] = "";
-
 		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
-
 		g_mysql.Query(SQLSetStartZones, query);
 	}
 
@@ -3651,9 +3646,7 @@ public Action cmd_deleteallcp(int client, int args)
 		if(g_devmap == true)
 		{
 			char query[512] = "";
-
 			Format(query, sizeof(query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
-
 			g_mysql.Query(SQLDeleteAllCP, query);
 		}
 
@@ -5269,14 +5262,14 @@ public Action SDKStartTouch(int entity, int other)
 							Format(format, sizeof(format), "%T", "NewServerRecordFirst", i);
 							SendMessage(i, format);
 
-							Format(format, sizeof(format), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, "+00:00:00");
+							Format(format, sizeof(format), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
 							SendMessage(i, format);
 
 							for(int j = 1; j <= g_cpCount; j++)
 							{
 								if(g_cp[j][other] == true)
 								{
-									Format(format, sizeof(format), "%T", "CPNEW", i, j, "+00:00:00");
+									Format(format, sizeof(format), "%T", "CPNEW", i, j, timeSR);
 									SendMessage(i, format);
 								}
 							}
@@ -5453,7 +5446,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 			//ShowHudText(client, 3, "+00:00:00");
 			//Format(format, sizeof(format), "+00:00:00");
-			Format(format, sizeof(format), "%T", "CP-DetailZeroHud", client, "+00:00:00");
+			Format(format, sizeof(format), "%T", "CP-DetailZeroHud", client, timeSR);
 			ShowHudText(client, 3, format);
 
 			for(int i = 1; i <= MaxClients; i++)
@@ -5479,7 +5472,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 						SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-						Format(format, sizeof(format), "%T", "CP-DetailZeroHud", i);
+						Format(format, sizeof(format), "%T", "CP-DetailZeroHud", i, timeSR);
 						ShowHudText(i, 3, format);
 						//ShowHudText(i, 3, "+00:00:00");
 					}
@@ -5648,8 +5641,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				Format(format, sizeof(format), "+%s", timeSR);
-				Format(format, sizeof(format), "%T", "CP-recordDeproveHud", client, format);
+				//Format(format, sizeof(format), "+%s", timeSR);
+				Format(format, sizeof(format), "%T", "CP-recordDeproveHud", client, timeSR);
 				ShowHudText(client, 2, format);
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -5670,6 +5663,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+							//Format(format, sizeof(format), "+%s", timeSR);
 							Format(format, sizeof(format), "%T", "CP-recordDeproveHud", i, timeSR);
 							ShowHudText(i, 2, format);
 						}
@@ -5776,7 +5770,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 			//ShowHudText(client, 4, "+00:00:00");
-			Format(format, sizeof(format), "%T", "FirstRecordZeroHud", client, "+00:00:00");
+			Format(format, sizeof(format), "%T", "FirstRecordZeroHud", client, timeSR);
 			ShowHudText(client, 4, format);
 
 			for(int i = 1; i <= MaxClients; i++)
@@ -5811,7 +5805,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 						SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 						//ShowHudText(i, 4, "+00:00:00");
-						Format(format, sizeof(format), "FirstRecordZeroHud", i);
+						Format(format, sizeof(format), "FirstRecordZeroHud", i, timeSR);
 						ShowHudText(i, 4, format);
 					}
 				}
@@ -6030,8 +6024,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 				//ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				Format(format, sizeof(format), "+%s", timeSR);
-				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", client, format);
+				//Format(format, sizeof(format), "+%s", timeSR);
+				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", client, timeSR);
 				ShowHudText(client, 3, format);
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -6058,6 +6052,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 							//ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+							//Format(format, sizeof(format), "+%s", timeSR);
 							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", i, timeSR);
 							ShowHudText(i, 3, format);
 						}
@@ -6906,8 +6901,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetClientAbsOrigin(client, g_mlsDistance[client][1]);
 
 				MLStats(client, true);
-
-				g_mlsCount[client] = 0;
 			}
 		}
 	}
@@ -6971,7 +6964,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			Restart(client);
 		}
 
-		else if(partner == 0 && partnerCV)
+		else if(partner == 0 && partnerCV == true)
 		{
 			Partner(client);
 		}
@@ -8102,6 +8095,8 @@ stock void MLStats(int client, bool ground)
 
 		PrintToConsole(flyer, "%s", print);
 		PrintToConsole(client, "%s", print);
+
+		g_mlsCount[client] = 0;
 
 		g_teleported[client] = false;
 	}
