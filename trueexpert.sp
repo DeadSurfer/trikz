@@ -42,29 +42,29 @@
 #define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 #define debug false
 
-int g_partner[MAXPLAYER];
+int g_partner[MAXPLAYER] = {0, ...};
 float g_zoneStartOrigin[2][3]; //start zone mins and maxs
 float g_zoneEndOrigin[2][3]; //end zone mins and maxs
 Database g_mysql = null;
-float g_timerTimeStart[MAXPLAYER];
-float g_timerTime[MAXPLAYER];
-bool g_timerState[MAXPLAYER];
+float g_timerTimeStart[MAXPLAYER] = {0.0, ...};
+float g_timerTime[MAXPLAYER] = {0.0, ...};
+bool g_timerState[MAXPLAYER] = {false, ...};
 char g_map[192] = "";
-bool g_mapFinished[MAXPLAYER];
+bool g_mapFinished[MAXPLAYER] = {false, ...};
 bool g_dbPassed = false;
-float g_timerStartPos[3] = {0.0, 0.0, 0.0};
-float g_boostTime[MAXPLAYER];
+float g_timerStartPos[3] = {0.0, ...};
+float g_boostTime[MAXPLAYER] = {0.0, ...};
 float g_skyVel[MAXPLAYER][3];
-bool g_timerReadyToStart[MAXPLAYER];
+bool g_timerReadyToStart[MAXPLAYER] = {false, ...};
 
 float g_cpPos[2][12][3];
 bool g_cp[11][MAXPLAYER];
 bool g_cpLock[11][MAXPLAYER];
 float g_cpTimeClient[11][MAXPLAYER];
 float g_cpDiff[11][MAXPLAYER];
-float g_cpTime[11];
+float g_cpTime[11] = {0.0, ...};
 
-float g_haveRecord[MAXPLAYER];
+float g_haveRecord[MAXPLAYER] = {0.0, ...};
 float g_ServerRecordTime = 0.0;
 
 ConVar gCV_urlTop = null;
@@ -95,16 +95,16 @@ ConVar gCV_top = null;
 ConVar gCV_mlstats = null;
 ConVar gCV_vel = null;
 
-bool g_menuOpened[MAXPLAYER];
-bool g_menuOpenedHud[MAXPLAYER];
+bool g_menuOpened[MAXPLAYER] = {false, ...};
+bool g_menuOpenedHud[MAXPLAYER] = {false, ...};
 
-int g_boost[MAXPLAYER];
-int g_skyBoost[MAXPLAYER];
-bool g_bouncedOff[MAXENTITY];
-bool g_groundBoost[MAXPLAYER];
-int g_flash[MAXPLAYER];
-int g_entityFlags[MAXPLAYER];
-int g_devmapCount[2] = {0, 0};
+int g_boost[MAXPLAYER] = {0, ...};
+int g_skyBoost[MAXPLAYER] = {0, ...};
+bool g_bouncedOff[MAXENTITY] = {false, ...};
+bool g_groundBoost[MAXPLAYER] = {false, ...};
+int g_flash[MAXPLAYER] = {0, ...};
+int g_entityFlags[MAXPLAYER] = {0, ...};
+int g_devmapCount[2] = {0, ...};
 bool g_devmap = false;
 float g_devmapTime = 0.0;
 
@@ -113,31 +113,31 @@ float g_cpAng[MAXPLAYER][2][3];
 float g_cpVel[MAXPLAYER][2][3];
 bool g_cpToggled[MAXPLAYER][2];
 
-bool g_zoneHave[3] = {false, false, false};
+bool g_zoneHave[3] = {false, ...};
 
 bool g_ServerRecord = false;
 char g_date[64] = "";
 char g_time[64] = "";
 
 bool g_silentKnife = false;
-float g_teamRecord[MAXPLAYER];
+float g_teamRecord[MAXPLAYER] = {0.0, ...};
 bool g_sourcetv = false;
-bool g_block[MAXPLAYER];
+bool g_block[MAXPLAYER] = {false, ...};
 int g_wModelThrown = 0;
-int g_class[MAXPLAYER];
-int g_wModelPlayer[5] = {0, 0, 0, 0, 0};
-int g_pingModel[MAXPLAYER];
-int g_pingModelOwner[MAXENTITY];
-Handle g_pingTimer[MAXPLAYER];
-Handle g_cookie[12];
+int g_class[MAXPLAYER] = {0, ...};
+int g_wModelPlayer[5] = {0, ...};
+int g_pingModel[MAXPLAYER] = {0, ...};
+int g_pingModelOwner[MAXENTITY] = {0, ...};
+Handle g_pingTimer[MAXPLAYER] = {INVALID_HANDLE, ...};
+Handle g_cookie[12] = {INVALID_HANDLE, ...};
 
-bool g_zoneFirst[3] = {false, false, false};
+bool g_zoneFirst[3] = {false, ...};
 
 char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
 int g_colorBuffer[MAXPLAYER][3][2];
 int g_colorCount[MAXPLAYER][2];
 
-int g_zoneModel[3] = {0, 0, 0};
+int g_zoneModel[3] = {0, ...};
 int g_laserBeam = 0;
 bool g_sourcetvchangedFileName = true;
 float g_entityVel[MAXPLAYER][3];
@@ -145,46 +145,46 @@ float g_clientVel[MAXPLAYER][3];
 int g_cpCount = 0;
 //ConVar g_turbophysics;
 float g_afkTime = 0.0;
-bool g_afk[MAXPLAYER];
+bool g_afk[MAXPLAYER] = {false, ...};
 float g_center[12][3];
-bool g_zoneDraw[MAXPLAYER];
+bool g_zoneDraw[MAXPLAYER] = {false, ...};
 float g_engineTime = 0.0;
-float g_pingTime[MAXPLAYER];
-bool g_pingLock[MAXPLAYER];
-bool g_msg[MAXPLAYER];
+float g_pingTime[MAXPLAYER] = {0.0, ...};
+bool g_pingLock[MAXPLAYER] = {false, ...};
+bool g_msg[MAXPLAYER] = {false, ...};
 int g_voters = 0;
 int g_afkClient = 0;
-bool g_hudVel[MAXPLAYER];
-float g_hudTime[MAXPLAYER];
+bool g_hudVel[MAXPLAYER] = {false, ...};
+float g_hudTime[MAXPLAYER] = {0.0, ...};
 char g_clantag[MAXPLAYER][2][256];
 float g_mlsVel[MAXPLAYER][2][2];
-int g_mlsCount[MAXPLAYER];
+int g_mlsCount[MAXPLAYER] = {0, ...};
 char g_mlsPrint[MAXPLAYER][100][256];
-int g_mlsFlyer[MAXPLAYER];
-bool g_mlstats[MAXPLAYER];
+int g_mlsFlyer[MAXPLAYER] = {0, ...};
+bool g_mlstats[MAXPLAYER] = {false, ...};
 float g_mlsDistance[MAXPLAYER][2][3];
-bool g_button[MAXPLAYER];
-bool g_pbutton[MAXPLAYER];
-float g_skyOrigin[MAXPLAYER];
-int g_entityButtons[MAXPLAYER];
-bool g_teleported[MAXPLAYER];
-int g_points[MAXPLAYER];
+bool g_button[MAXPLAYER] = {false, ...};
+bool g_pbutton[MAXPLAYER] = {false, ...};
+float g_skyOrigin[MAXPLAYER] = {0.0, ...};
+int g_entityButtons[MAXPLAYER] = {0, ...};
+bool g_teleported[MAXPLAYER] = {false, ...};
+int g_points[MAXPLAYER] = {0, ...};
 int g_pointsMaxs = 1;
 int g_queryLast = 0;
-float g_skyAble[MAXPLAYER];
+float g_skyAble[MAXPLAYER] = {0.0, ...};
 native bool Trikz_GetEntityFilter(int client, int entity);
-float g_restartHoldTime[MAXPLAYER];
+float g_restartHoldTime[MAXPLAYER] = {0.0, ...};
 bool g_restartLock[MAXPLAYER][2];
 int g_smoke = 0;
-bool g_clantagOnce[MAXPLAYER];
-bool g_autoflash[MAXPLAYER];
-bool g_autoswitch[MAXPLAYER];
-bool g_bhop[MAXPLAYER];
-bool g_macroDisabled[MAXPLAYER];
-float g_macroTime[MAXPLAYER];
-bool g_macroOpened[MAXPLAYER];
-bool g_endMessage[MAXPLAYER];
-float g_flashbangTime[MAXPLAYER];
+bool g_clantagOnce[MAXPLAYER] = {false, ...};
+bool g_autoflash[MAXPLAYER] = {false, ...};
+bool g_autoswitch[MAXPLAYER] = {false, ...};
+bool g_bhop[MAXPLAYER] = {false, ...};
+bool g_macroDisabled[MAXPLAYER] = {false, ...};
+float g_macroTime[MAXPLAYER] = {0.0, ...};
+bool g_macroOpened[MAXPLAYER] = {false, ...};
+bool g_endMessage[MAXPLAYER] = {false, ...};
+float g_flashbangTime[MAXPLAYER] = {0.0, ...};
 bool g_flashbangDoor[MAXPLAYER][2];
 int g_top10Count = 0;
 DynamicHook g_teleport = null;
@@ -192,8 +192,8 @@ float g_top10ac = 0.0;
 int g_step = 1;
 int g_ZoneEditor = 0;
 int g_ZoneEditorCP = 0;
-int g_skinFlashbang[MAXPLAYER];
-int g_skinPlayer[MAXPLAYER];
+int g_skinFlashbang[MAXPLAYER] = {0, ...};
+int g_skinPlayer[MAXPLAYER] = {0, ...};
 float g_top10SR = 0.0;
 bool g_silentF1F2 = false;
 KeyValues g_kv = null;
@@ -479,7 +479,7 @@ public void OnMapStart()
 		//char filename[12][PLATFORM_MAX_PATH];
 		char filename[8][PLATFORM_MAX_PATH];
 
-		FileType type;
+		FileType type = FileType_Unknown;
 		//char pathFull[12][PLATFORM_MAX_PATH];
 		char pathFull[8][PLATFORM_MAX_PATH];
 		//char pathFull[PLATFORM_MAX_PATH][2];
@@ -1929,25 +1929,25 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
 	{
-		float originBooster[3] = {0.0, 0.0, 0.0};
+		float originBooster[3] = {0.0, ...};
 		GetClientAbsOrigin(client, originBooster);
 
-		float originFlyer[3] = {0.0, 0.0, 0.0};
+		float originFlyer[3] = {0.0, ...};
 		GetClientAbsOrigin(other, originFlyer);
 
-		float maxsBooster[3] = {0.0, 0.0, 0.0};
+		float maxsBooster[3] = {0.0, ...};
 		GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 
 		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
 
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			float velBooster[3] = {0.0, 0.0, 0.0};
+			float velBooster[3] = {0.0, ...};
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
 
 			if(velBooster[2] > 0.0)
 			{
-				float velFlyer[3] = {0.0, 0.0, 0.0};
+				float velFlyer[3] = {0.0, ...};
 
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
@@ -2023,7 +2023,7 @@ public void SDKBoostFix(int client)
 
 		if(entity != INVALID_ENT_REFERENCE)
 		{
-			float velEntity[3] = {0.0, 0.0, 0.0};
+			float velEntity[3] = {0.0, ...};
 
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity);
 
@@ -2989,7 +2989,7 @@ stock void Restart(int client)
 				CS_RespawnPlayer(client);
 				CS_RespawnPlayer(partner);
 
-				float vel[3] = {0.0, 0.0, 0.0};
+				float vel[3] = {0.0, ...};
 
 				TeleportEntity(client, g_timerStartPos, NULL_VECTOR, vel);
 				TeleportEntity(partner, g_timerStartPos, NULL_VECTOR, vel);
@@ -3499,8 +3499,8 @@ stock void CreateStart()
 	g_timerStartPos[1] = g_center[0][1];
 	g_timerStartPos[2] = g_center[0][2] + 1.0;
 
-	float mins[3] = {0.0, 0.0, 0.0};
-	float maxs[3] = {0.0, 0.0, 0.0};
+	float mins[3] = {0.0, ...};
+	float maxs[3] = {0.0, ...};
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -3556,8 +3556,8 @@ public void CreateEnd()
 
 	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
-	float mins[3] = {0.0, 0.0, 0.0};
-	float maxs[3] = {0.0, 0.0, 0.0};
+	float mins[3] = {0.0, ...};
+	float maxs[3] = {0.0, ...};
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -4801,8 +4801,8 @@ stock void CreateCP(int cpnum)
 
 	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
-	float mins[3] = {0.0, 0.0, 0.0};
-	float maxs[3] = {0.0, 0.0, 0.0};
+	float mins[3] = {0.0, ...};
+	float maxs[3] = {0.0, ...};
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -5276,8 +5276,8 @@ public Action SDKStartTouch(int entity, int other)
 						}
 					}
 
-					FinishMSG(other, true, false, false, false, false, 0, timeOwn, "");
-					FinishMSG(partner, true, false, false, false, false, 0, timeOwn, "");
+					FinishMSG(other, true, false, false, false, false, 0, timeOwn, timeSR);
+					FinishMSG(partner, true, false, false, false, false, 0, timeOwn, timeSR);
 
 					g_ServerRecord = true;
 
@@ -5365,8 +5365,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 	char posColor[64] = "";
 	char exploded[7][8];
 
-	float x[4] = {0.0, 0.0, 0.0, 0.0}, y[4] = {0.0, 0.0, 0.0, 0.0}, z[4] = {0.0, 0.0, 0.0, 0.0};
-	int r[4] = {0, 0, 0, 0}, g[4] = {0, 0, 0, 0}, b[4] = {0, 0, 0, 0}, a[4] = {0, 0, 0, 0};
+	float x[4] = {0.0, ...}, y[4] = {0.0, ...}, z[4] = {0.0, ...};
+	int r[4] = {0, ...}, g[4] = {0, ...}, b[4] = {0, ...}, a[4] = {0, ...};
 
 	char format[256] = "";
 
@@ -6183,8 +6183,8 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 			int partner = g_partner[other];
 
-			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, "");
-			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, "");
+			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
+			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
 
 			static GlobalForward hForward = null;
 
@@ -6253,7 +6253,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				Call_PushCell(partner);
 				Call_PushFloat(time);
 				Call_PushFloat(diff);
-				Call_PushString("CPDeprove");
+				Call_PushString("CPImprove");
 
 				Call_Finish();
 			}
@@ -6279,7 +6279,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				Call_PushCell(partner);
 				Call_PushFloat(time);
 				Call_PushFloat(diff);
-				Call_PushString("CPImprove");
+				Call_PushString("CPDeprove");
 
 				Call_Finish();
 			}
@@ -6287,8 +6287,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 		else if(results.FetchRow() == false)
 		{
-			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, "");
-			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, "");
+			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
+			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
 
 			static GlobalForward hForward = null;
 
@@ -6540,7 +6540,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 				k = 0;
 			}
 
-			int color[4] = {0, 0, 0, 0};
+			int color[4] = {0, ...};
 			
 			TE_SetupBeamPoints(corners[i][j], corners[i][k], g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToClient(client, 0.0);
@@ -6616,7 +6616,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(g_boost[client] > 0)
 	{
-		float velocity[3] = {0.0, 0.0, 0.0};
+		float velocity[3] = {0.0, ...};
 
 		if(g_boost[client] == 2)
 		{
@@ -6709,6 +6709,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				if(g_pingTimer[client] != INVALID_HANDLE)
 				{
 					KillTimer(g_pingTimer[client]);
+
+					g_pingTimer[client] = INVALID_HANDLE;
 				}
 			}
 
@@ -6720,9 +6722,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			SetEntProp(entity, Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
 
-			float start[3] = {0.0, 0.0, 0.0};
-			float angle[3] = {0.0, 0.0, 0.0};
-			float end[3] = {0.0, 0.0, 0.0};
+			float start[3] = {0.0, ...};
+			float angle[3] = {0.0, ...};
+			float end[3] = {0.0, ...};
 
 			GetClientEyePosition(client, start);
 
@@ -6742,7 +6744,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				TR_GetEndPosition(end);
 
-				float normal[3] = {0.0, 0.0, 0.0};
+				float normal[3] = {0.0, ...};
 
 				TR_GetPlaneNormal(null, normal); //https://github.com/alliedmodders/sourcemod/commit/1328984e0b4cb2ca0ee85eaf9326ab97df910483
 
@@ -6766,7 +6768,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(entity, end, NULL_VECTOR, NULL_VECTOR);
 
 			//https://forums.alliedmods.net/showthread.php?p=1080444
-			int color[4] = {0, 0, 0, 0};
+			int color[4] = {0, ...};
 
 			for(int i = 0; i <= 2; i++)
 			{
@@ -6785,7 +6787,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				g_pingModelOwner[entity] = client;
 
-				int clients[MAXPLAYER]; //64 + 1
+				int clients[MAXPLAYER] = {0, ...}; //64 + 1
 				int count = 0;
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -7029,13 +7031,13 @@ public Action ProjectileBoostFix(int entity, int other)
 {
 	if(IsClientValid(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
-		float originOther[3] = {0.0, 0.0, 0.0};
+		float originOther[3] = {0.0, ...};
 		GetClientAbsOrigin(other, originOther);
 
-		float originEntity[3] = {0.0, 0.0, 0.0};
+		float originEntity[3] = {0.0, ...};
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
 
-		float maxsEntity[3] = {0.0, 0.0, 0.0};
+		float maxsEntity[3] = {0.0, ...};
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
 
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
@@ -7058,7 +7060,7 @@ public Action ProjectileBoostFix(int entity, int other)
 			g_flash[other] = EntIndexToEntRef(entity);
 			g_boost[other] = 1;
 
-			float vel[3] = {0.0, 0.0, 0.0};
+			float vel[3] = {0.0, ...};
 			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel);
 
 			g_mlsVel[other][0][0] = vel[0];
@@ -7600,7 +7602,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 stock void Hud(int client)
 {
-	float vel[3] = {0.0, 0.0, 0.0};
+	float vel[3] = {0.0, ...};
 
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
 
@@ -7842,7 +7844,7 @@ stock void FlashbangEffect(int entity)
 {
 	bool filter = LibraryExists("trueexpert-entityfilter");
 
-	float origin[3] = {0.0, 0.0, 0.0};
+	float origin[3] = {0.0, ...};
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
 
 	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
@@ -7882,7 +7884,7 @@ stock void FlashbangEffect(int entity)
 		TE_SendToAll(0.0);
 	}
 
-	float dir[3] = {0.0, 0.0, 0.0}; //https://forums.alliedmods.net/showthread.php?t=274452
+	float dir[3] = {0.0, ...}; //https://forums.alliedmods.net/showthread.php?t=274452
 
 	dir[0] = GetRandomFloat(-1.0, 1.0);
 	dir[1] = GetRandomFloat(-1.0, 1.0);
@@ -8156,9 +8158,9 @@ stock void MLStats(int client, bool ground)
 
 stock int Stuck(int client)
 {
-	float mins[3] = {0.0, 0.0, 0.0};
-	float maxs[3] = {0.0, 0.0, 0.0};
-	float origin[3] = {0.0, 0.0, 0.0};
+	float mins[3] = {0.0, ...};
+	float maxs[3] = {0.0, ...};
+	float origin[3] = {0.0, ...};
 
 	GetClientMins(client, mins);
 
@@ -8248,21 +8250,21 @@ public int Native_GetDevmap(Handle plugin, int numParams)
 
 stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
-	float origin[3] = {0.0, 0.0, 0.0};
+	float origin[3] = {0.0, ...};
 	GetClientAbsOrigin(client, origin);
 
-	float originDir[3] = {0.0, 0.0, 0.0};
+	float originDir[3] = {0.0, ...};
 	GetClientAbsOrigin(client, originDir);
 
 	originDir[2] -= 90.0;
 
-	float mins[3] = {0.0, 0.0, 0.0};
+	float mins[3] = {0.0, ...};
 	GetClientMins(client, mins);
 
-	float maxs[3] = {0.0, 0.0, 0.0};
+	float maxs[3] = {0.0, ...};
 	GetClientMaxs(client, maxs);
 
-	float pos[3] = {0.0, 0.0, 0.0};
+	float pos[3] = {0.0, ...};
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
 	TR_GetEndPosition(pos);
 
@@ -8295,7 +8297,7 @@ public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.
 		return MRES_Ignored;
 	}
 	
-	float origin[3] = {0.0, 0.0, 0.0};
+	float origin[3] = {0.0, ...};
 	DHookGetParamVector(hParams, 1, origin);
 
 	bool velNull = DHookIsNullParam(hParams, 3);
@@ -8305,7 +8307,7 @@ public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.
 		return MRES_Ignored;
 	}
 
-	float vel[3] = {0.0, 0.0, 0.0};
+	float vel[3] = {0.0, ...};
 	DHookGetParamVector(hParams, 3, vel);
 
 	if(g_mlsCount[client] > 0)
@@ -8330,7 +8332,7 @@ public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.
 
 stock void EyeAngleTestHud(int client)
 {
-	float eye[3] = {0.0, 0.0, 0.0};
+	float eye[3] = {0.0, ...};
 	GetClientEyeAngles(client, eye);
 
 	//PrintToServer("%f", eye[1]);
