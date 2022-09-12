@@ -6181,10 +6181,12 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 			char timeOwn[24] = "";
 			FormatSeconds(time, timeOwn);
 
+			char timeSR[24] = "+00:00:00";
+
 			int partner = g_partner[other];
 
-			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
-			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
+			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
+			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
 
 			static GlobalForward hForward = null;
 
@@ -6224,7 +6226,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 		char timeOwn[24] = "";
 		FormatSeconds(time, timeOwn);
 
-		char timeSR[24] = "";
+		char timeSR[24] = "+00:00:00";
 
 		int partner = g_partner[other];
 
@@ -6287,8 +6289,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 		else if(results.FetchRow() == false)
 		{
-			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
-			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, "+00:00:00");
+			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
+			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
 
 			static GlobalForward hForward = null;
 
