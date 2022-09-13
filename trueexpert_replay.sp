@@ -66,7 +66,7 @@ DynamicHook g_UpdateStepSound;
 bool g_Linux;
 native int Trikz_GetClientPartner(int client);
 native int Trikz_SetPartner(int client, int partner);
-native int Trikz_Restart(int client);
+native int Trikz_Restart(int client, bool instant);
 int g_bot[2];
 bool g_loaded[2];
 float g_tickrate;
@@ -93,7 +93,9 @@ public void OnPluginStart()
 	Database.Connect(SQLConnect, "trueexpert");
 
 	HookEvent("player_spawn", OnSpawn, EventHookMode_Post);
-	//HookEvent("player_changename", OnChangeName, EventHookMode_Pre);
+	HookEvent("player_changename", BotSilent, EventHookMode_Pre);
+	HookEvent("player_team", BotSilent, EventHookMode_Pre);
+	HookEvent("player_activate", BotSilent, EventHookMode_Pre);
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_SayText2, true);
 
@@ -506,7 +508,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(IsClientInGame(client) == true && g_tick[client] == 0)
 		{
-			Trikz_Restart(client);
+			Trikz_Restart(client, false);
 
 			//int flags = GetEntityFlags(client);
 
@@ -659,17 +661,19 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-/*public Action OnChangeName(Event event, const char[] name, bool dontBroadcast)
+public Action BotSilent(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	if(IsFakeClient(client) == true)
 	{
 		event.BroadcastDisabled = true;
+
+		return Plugin_Handled;
 	}
 
 	return Plugin_Continue;
-}*/
+}
 
 public void ApplyFlags(int &flags1, int flags2, int flag)
 {
@@ -746,13 +750,12 @@ public MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 	return MRES_Ignored;
 }
 
-public Action Hook_SayText2(UserMsg msg_id, any msg, const int[] players, int playersNum, bool reliable, bool init) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp#L2830
+public Action Hook_SayText2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp#L2830
 {
-	BfRead bfmsg = msg;
-	int client = bfmsg.ReadByte();
-	bfmsg.ReadByte();
+	int client = msg.ReadByte();
+	msg.ReadByte();
 	char message[24] = "";
-	bfmsg.ReadString(message, 24);
+	msg.ReadString(message, 24);
 
 	if(IsFakeClient(client) == true && StrEqual(message, "#Cstrike_Name_Change", true) == true)
 	{
