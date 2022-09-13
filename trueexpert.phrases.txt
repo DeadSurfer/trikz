@@ -158,12 +158,12 @@
 	"GroupAgreed"
 	{
 		"#format"	"{1:s}"
-		"en"	"You agreed {1}"
+		"en"	"You agreed with {1} as partner."
 	}
 	"GetAgreed"
 	{
 		"#format"	"{1:s}"
-		"en"	"You have {1} as partner."
+		"en"	"You have {1} as partner now."
 	}
 	"AlreadyHavePartner"
 	{
@@ -311,11 +311,11 @@
 	}
 	"CP-saveSecond"
 	{
-		"en"	"Save second"
+		"en"	"Save secondary"
 	}
 	"CP-teleportSecond"
 	{
-		"en"	"Teleport second"
+		"en"	"Teleport secondary"
 	}
 	"Trikz"
 	{
@@ -493,27 +493,27 @@
 	}
 	"AutoflashON"
 	{
-		"en"	"Auto flashbang is turned on now."
+		"en"	"Autoflashbang is turned on now."
 	}
 	"AutoflashOFF"
 	{
-		"en"	"Auto flashbang is turned off now."
+		"en"	"Autoflashbang is turned off now."
 	}
 	"AutoswitchON"
 	{
-		"en"	"Auto switch is truned on now."
+		"en"	"Autoswitch is truned on now."
 	}
 	"AutoswitchOFF"
 	{
-		"en"	"Auto switch is turned off now."
+		"en"	"Autoswitch is turned off now."
 	}
 	"BhopON"
 	{
-		"en"	"Bunnyhop is turned on now."
+		"en"	"Auto-bunnyhopping is turned on now."
 	}
 	"BhopOFF"
 	{
-		"en"	"Bunnyhop is turned off now."
+		"en"	"Auto-bunnyhoping is turned off now."
 	}
 	"MacroOFF"
 	{
