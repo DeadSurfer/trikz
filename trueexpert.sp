@@ -3035,7 +3035,7 @@ stock void DoRestart(int client)
 		g_block[client] = true;
 		g_block[partner] = true;
 
-		if(g_menuOpened[client] == true)
+		/*if(g_menuOpened[client] == true)
 		{
 			Trikz(client);
 		}
@@ -3043,7 +3043,7 @@ stock void DoRestart(int client)
 		if(g_menuOpened[partner] == true)
 		{
 			Trikz(partner);
-		}
+		}*/
 	}
 }
 
