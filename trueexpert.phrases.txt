@@ -509,11 +509,11 @@
 	}
 	"BhopON"
 	{
-		"en"	"Auto-bunnyhopping is turned on now."
+		"en"	"Autobunnyhopping is turned on now."
 	}
 	"BhopOFF"
 	{
-		"en"	"Auto-bunnyhoping is turned off now."
+		"en"	"Autobunnyhoping is turned off now."
 	}
 	"MacroOFF"
 	{
