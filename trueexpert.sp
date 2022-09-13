@@ -2176,7 +2176,7 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			else if(StrEqual(item, "restart", true) == true)
 			{
-				Restart(param1);
+				Restart(param1, true);
 			}
 
 			else if(StrEqual(item, "noclip", true) == true)
@@ -2439,7 +2439,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 						//PrintToChat(partner, "\x01%T", "GetAgreed", partner, name);
 
-						Restart(param1); //Expert-Zone idea.
+						Restart(param1, false); //Expert-Zone idea.
 
 						if(g_menuOpened[partner] == true)
 						{
@@ -2910,16 +2910,17 @@ public Action cmd_restart(int client, int args)
 		return Plugin_Continue;
 	}
 
-	Restart(client);
+	Restart(client, true);
 
 	return Plugin_Handled;
 }
 
-stock void Restart(int client)
+stock void Restart(int client, bool ask)
 {
+	char format[256] = "";
+
 	if(g_devmap == true)
 	{
-		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 		SendMessage(client, format);
 	}
@@ -2932,85 +2933,28 @@ stock void Restart(int client)
 
 			if(partner > 0)
 			{
-				CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
-
-				static GlobalForward hForward = null;
-
-				hForward = new GlobalForward("Trikz_OnRestart", ET_Hook, Param_Cell, Param_Cell);
-
-				Call_StartForward(hForward);
-
-				Call_PushCell(client);
-				Call_PushCell(partner);
-
-				Call_Finish();
-
-				int entity = 0;
-
-				bool ct = false;
-
-				int team = GetClientTeam(client);
-				int teamPartner = GetClientTeam(partner);
-
-				while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
+				if(ask == false)
 				{
-					if(ct == false)
-					{
-						ct = true;
-					}
-
-					if(team == CS_TEAM_SPECTATOR)
-					{
-						CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
-					}
-
-					if(teamPartner == CS_TEAM_SPECTATOR)
-					{
-						CS_SwitchTeam(partner, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
-					}
-
-					break;
+					DoRestart(client);
 				}
 
-				while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
+				else if(ask == true)
 				{
-					if(ct == false)
-					{
-						if(team == CS_TEAM_SPECTATOR)
-						{
-							CS_SwitchTeam(client, CS_TEAM_T);
-						}
-					}
+					Menu menu = new Menu(handler_askforrestart);
 
-					break;
-				}
+					menu.SetTitle("%T", "AskForRestart", client);
 
-				CS_RespawnPlayer(client);
-				CS_RespawnPlayer(partner);
+					Format(format, sizeof(format), "%T", "Yes", client);
+					menu.AddItem("yes", format);
+					Format(format, sizeof(format), "%T", "No", client);
+					menu.AddItem("no", format);
 
-				float vel[3] = {0.0, ...};
-
-				TeleportEntity(client, g_timerStartPos, NULL_VECTOR, vel);
-				TeleportEntity(partner, g_timerStartPos, NULL_VECTOR, vel);
-
-				g_block[client] = true;
-				g_block[partner] = true;
-
-				if(g_menuOpened[client] == true)
-				{
-					Trikz(client);
-				}
-
-				if(g_menuOpened[partner] == true)
-				{
-					Trikz(partner);
+					menu.Display(client, 20);
 				}
 			}
 
 			else if(g_partner[client] == 0)
 			{
-				char format[256] = "";
 				Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 				SendMessage(client, format);
 			}
@@ -3018,6 +2962,108 @@ stock void Restart(int client)
 	}
 
 	return;
+}
+
+stock void DoRestart(int client)
+{
+	int partner = g_partner[client];
+
+	if(partner > 0)
+	{
+		CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
+
+		static GlobalForward hForward = null;
+
+		hForward = new GlobalForward("Trikz_OnRestart", ET_Hook, Param_Cell, Param_Cell);
+
+		Call_StartForward(hForward);
+
+		Call_PushCell(client);
+		Call_PushCell(partner);
+
+		Call_Finish();
+
+		int entity = 0;
+
+		bool ct = false;
+
+		int team = GetClientTeam(client);
+		int teamPartner = GetClientTeam(partner);
+
+		while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
+		{
+			if(ct == false)
+			{
+				ct = true;
+			}
+
+			if(team == CS_TEAM_SPECTATOR)
+			{
+				CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
+			}
+
+			if(teamPartner == CS_TEAM_SPECTATOR)
+			{
+				CS_SwitchTeam(partner, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
+			}
+
+			break;
+		}
+
+		while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
+		{
+			if(ct == false)
+			{
+				if(team == CS_TEAM_SPECTATOR)
+				{
+					CS_SwitchTeam(client, CS_TEAM_T);
+				}
+			}
+
+			break;
+		}
+
+		CS_RespawnPlayer(client);
+		CS_RespawnPlayer(partner);
+
+		float vel[3] = {0.0, ...};
+
+		TeleportEntity(client, g_timerStartPos, NULL_VECTOR, vel);
+		TeleportEntity(partner, g_timerStartPos, NULL_VECTOR, vel);
+
+		g_block[client] = true;
+		g_block[partner] = true;
+
+		if(g_menuOpened[client] == true)
+		{
+			Trikz(client);
+		}
+
+		if(g_menuOpened[partner] == true)
+		{
+			Trikz(partner);
+		}
+	}
+}
+
+public int handler_askforrestart(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					DoRestart(param1);
+				}
+			}
+		}
+	}
+
+	return view_as<int>(action);
 }
 
 public Action cmd_autoflash(int client, int args)
@@ -3717,7 +3763,7 @@ public Action cmd_test(int client, int args)
 			g_partner[client] = partner;
 			g_partner[partner] = client;
 
-			Restart(client);
+			Restart(client, false);
 		}
 
 		PrintToServer("LibraryExists (trueexpert-entityfilter): %i", LibraryExists("trueexpert-entityfilter"));
@@ -4945,7 +4991,7 @@ public Action SDKStartTouch(int entity, int other)
 
 		if(StrEqual(trigger, "trueexpert_startzone", false) == true && g_mapFinished[partner] == true)
 		{
-			Restart(other); //expert zone idea.
+			Restart(other, false); //expert zone idea.
 		}
 
 		else if(StrEqual(trigger, "trueexpert_endzone", false) == true)
@@ -6904,7 +6950,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				GetClientAbsOrigin(client, g_mlsDistance[client][1]);
 
-				MLStats(client, true);
+				RequestFrame(rf_MLStats, client);
 			}
 		}
 	}
@@ -6965,7 +7011,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(partner > 0 && restartCV == true)
 		{
-			Restart(client);
+			Restart(client, true);
 		}
 
 		else if(partner == 0 && partnerCV == true)
@@ -7027,6 +7073,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 
 	return Plugin_Continue;
+}
+
+public void rf_MLStats(int client)
+{
+	MLStats(client, true);
+
+	return;
 }
 
 public Action ProjectileBoostFix(int entity, int other)
@@ -7923,7 +7976,7 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	GiveFlashbang(client);
+	RequestFrame(rf_giveflashbang, client); //replays drops knife
 
 	return;
 }
@@ -8239,8 +8292,9 @@ public int Native_SetPartner(Handle plugin, int numParams)
 public int Native_Restart(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
+	bool ask = GetNativeCell(2);
 	
-	Restart(client);
+	Restart(client, ask);
 
 	return numParams;
 }
@@ -8370,6 +8424,13 @@ stock void FormatSeconds(float time, char[] format)
 	int second = RoundToFloor(time) % 60;
 
 	Format(format, 24, "%02.i:%02.i:%02.i", hour, minute, second);
+
+	return;
+}
+
+public void rf_giveflashbang(int client)
+{
+	GiveFlashbang(client);
 
 	return;
 }
