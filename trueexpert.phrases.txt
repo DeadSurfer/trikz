@@ -172,12 +172,12 @@
 	"PartnerDeclined"
 	{
 		"#format"	"{1:s}"
-		"en"	"Partnersheep declined with {1}."
+		"en"	"You declined partnership with {1}."
 	}
 	"PartnerCanceled"
 	{
 		"#format"	"{1:s}"
-		"en"	"Partnership is canceled with {1}."
+		"en"	"You breakup with {1}."
 	}
 	"PartnerCanceledBy"
 	{
