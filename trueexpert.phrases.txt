@@ -737,4 +737,8 @@
 	{
 		"en"	"Wireframe"
 	}
+	"AskForRestart"
+	{
+		"en"	"Do you really want to restart?"
+	}
 }
