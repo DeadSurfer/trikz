@@ -40,7 +40,7 @@ GNU OPENSOURCE LICENSE. PUBLIC. Used tengulawl or tengu zones for trueexpert so 
 Natives:<br>
 native int Trikz_GetClientPartner(int client); //Get partner<br>
 native int Trikz_SetPartner(int client, int partner); //Set partner<br>
-native int Trikz_Restart(int client); //Do restart<br>
+native int Trikz_Restart(int client, int ask); //Do restart<br>
 native bool Trikz_GetTimerState(int client); //Is timer runing (true/false)<br>
 native int Trikz_GetDevmap(); //Is devmap now (true/false)<br>
 
