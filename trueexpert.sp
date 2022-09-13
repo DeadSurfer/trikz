@@ -2395,10 +2395,10 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
 
-						Format(format, sizeof(format), "%T", "GroupAgreed", param1, name); //reciever
+						Format(format, sizeof(format), "%T", "TeamConfirming", param1, name); //reciever
 						SendMessage(param1, format);
 						GetClientName(param1, name, sizeof(name));
-						Format(format, sizeof(format), "%T", "GetAgreed", partner, name); //sender
+						Format(format, sizeof(format), "%T", "GetConfirmed", partner, name); //sender
 						SendMessage(partner, format);
 
 						Restart(param1, false); //Expert-Zone idea.
