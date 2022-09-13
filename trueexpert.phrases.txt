@@ -155,15 +155,15 @@
 	{
 		"en"	"Block disabled."
 	}*/
-	"GroupAgreed"
+	"TeamConfirming"
 	{
 		"#format"	"{1:s}"
-		"en"	"You agreed with {1} as partner."
+		"en"	"You have confirmed partnership with {1}."
 	}
-	"GetAgreed"
+	"GetConfirmed"
 	{
 		"#format"	"{1:s}"
-		"en"	"You have {1} as partner now."
+		"en"	"Your partner is {1} now."
 	}
 	"AlreadyHavePartner"
 	{
