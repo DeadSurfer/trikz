@@ -904,7 +904,7 @@ public void frame_SayText2(DataPack dp)
 
 	if(client > 0 && IsClientInGame(client) == true)
 	{
-		int clients[MAXPLAYER];
+		int clients[MAXPLAYER] = {0, ...};
 		int count = 0;
 		int team = GetClientTeam(client);
 
@@ -2068,12 +2068,8 @@ public void Trikz(int client)
 {
 	g_menuOpened[client] = true;
 
-	//Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	
-	//char format[128];
-	//Format(format, sizeof(format), "%T", "Trikz", client);
-	//menu.SetTitle("Trikz");
 	menu.SetTitle("%T", "Trikz", client);
 
 	char format[256] = "";
@@ -2091,7 +2087,6 @@ public void Trikz(int client)
 
 	if(g_devmap == false && g_partner[client] > 0)
 	{
-		//menu.AddItem("partner", g_partner[client] ? "Breakup" : "Partner", g_devmap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		Format(format, sizeof(format), "%T", "Breakup", client);
 		menu.AddItem("breakup", format, g_devmap == true ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
@@ -2113,12 +2108,9 @@ public void Trikz(int client)
 
 	if(g_devmap == true)
 	{
-		//char format[256] = "";
 		Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
 		menu.AddItem("noclip", format);
-		//menu.AddItem("noclip", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "Noclip [v]" : "Noclip [x]");
 
-		//menu.AddItem("checkpoint", "Checkpoint");
 		Format(format, sizeof(format), "%T", "Checkpoint", client);
 		menu.AddItem("checkpoint", format);
 	}
@@ -2201,17 +2193,6 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			g_menuOpened[param1] = true;
 		}
-
-		/*case MenuAction_End:
-		{
-			if(0 < param1 <= MaxClients)
-			{
-				g_menuOpened[param1] = false;
-				PrintToServer("yes");
-				delete menu;
-			}
-			//
-		}*/
 	}
 
 	return view_as<int>(action);
@@ -2244,8 +2225,6 @@ public Action Block(int client) //thanks maru for optimization.
 		Trikz(client);
 	}
 
-	//PrintToChat(client, g_block[client] ? "Block enabled." : "Block disabled.");
-
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
 	SendMessage(client, format);
@@ -2271,8 +2250,6 @@ stock void Partner(int client)
 {
 	if(g_devmap == true)
 	{
-		//PrintToChat(client, "Turn off devmap.");
-		//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
 		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 		SendMessage(client, format);
@@ -2280,14 +2257,10 @@ stock void Partner(int client)
 
 	else if(g_devmap == false)
 	{
-		//if(g_partner[client] == false)
 		if(g_partner[client] == 0)
 		{
 			Menu menu = new Menu(partner_handler);
 
-			//menu.SetTitle("Choose partner");
-			//char format[128]
-			//Format(format, sizeof(format), "%T", "ChoosePartner");
 			menu.SetTitle("%T", "ChoosePartner", client);
 
 			char name[MAX_NAME_LENGTH] = "";
@@ -2297,7 +2270,6 @@ stock void Partner(int client)
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635 i copy it from denwo and save in github sorry denwo i lost password.
 				{
-					//if(client != i && g_partner[i] == false)
 					if(client != i && g_partner[i] == 0)
 					{
 						GetClientName(i, name, sizeof(name));
@@ -2315,8 +2287,6 @@ stock void Partner(int client)
 			{
 				case false:
 				{
-					//PrintToChat(client, "No free player.");
-					//PrintToChat(client, "\x01%T", "NoFreePlayer", client);
 					char format[256] = "";
 					Format(format, sizeof(format), "%T", "NoFreePlayer", client);
 					SendMessage(client, format);
@@ -2336,8 +2306,6 @@ stock void Partner(int client)
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
 			
 			Menu menu = new Menu(cancelpartner_handler);
-
-			//menu.SetTitle("Cancel partnership with %N", g_partner[client]);
 
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(g_partner[client], name, sizeof(name));
@@ -2369,8 +2337,6 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 			int partner = StringToInt(item);
 			
 			Menu menu2 = new Menu(askpartner_handle);
-
-			//menu2.SetTitle("Agree partner with %N?", param1);
 
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(param1, name, sizeof(name));
@@ -2404,6 +2370,8 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 			int partner = StringToInt(item);
 
+			char format[256] = "";
+
 			switch(param2)
 			{
 				case 0:
@@ -2424,28 +2392,16 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 						Call_Finish();
 
-						//PrintToChat(param1, "Partnersheep agreed with %N.", partner); //reciever
 						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
 
-						char format[256] = "";
-						Format(format, sizeof(format), "%T", "GroupAgreed", param1, name);
+						Format(format, sizeof(format), "%T", "GroupAgreed", param1, name); //reciever
 						SendMessage(param1, format);
-
-						//PrintToChat(param1, "\x01%T", "GroupAgreed", param1, name);
-						//PrintToChat(partner, "You have %N as partner.", param1); //sender
 						GetClientName(param1, name, sizeof(name));
-						Format(format, sizeof(format), "%T", "GetAgreed", partner, name);
+						Format(format, sizeof(format), "%T", "GetAgreed", partner, name); //sender
 						SendMessage(partner, format);
 
-						//PrintToChat(partner, "\x01%T", "GetAgreed", partner, name);
-
 						Restart(param1, false); //Expert-Zone idea.
-
-						if(g_menuOpened[partner] == true)
-						{
-							Trikz(partner);
-						}
 
 						char query[512] = "";
 						Format(query, sizeof(query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
@@ -2454,9 +2410,6 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 					else if(g_partner[partner] > 0)
 					{
-						//PrintToChat(param1, "A player already have a partner.");
-						//PrintToChat(param1, "\x01%T", "AlreadyHavePartner", param1);
-						char format[256] = "";
 						Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
 						SendMessage(param1, format);
 					}
@@ -2466,9 +2419,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 				{
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(param1, name, sizeof(name));
-					//PrintToChat(param1, "Partnersheep declined with %N.", partner);
-					//PrintToChat(param1, "\x01%T", "PartnerDeclined", param1, name);
-					char format[256] = "";
+
 					Format(format, sizeof(format), "%T", "PartnerDeclined", param1, name);
 					SendMessage(param1, format);
 				}
@@ -2495,7 +2446,6 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 				case 0:
 				{
 					ColorTeam(param1, false);
-					//ColorFlashbang(param1, false, -1);
 
 					g_partner[param1] = 0;
 					g_partner[partner] = 0;
@@ -2513,20 +2463,15 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 					ResetFactory(param1);
 					ResetFactory(partner);
-					
-					//PrintToChat(param1, "Partnership is canceled with %N", partner);
+
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(partner, name, sizeof(name));
 
 					char format[256] = "";
 					Format(format, sizeof(format), "%T", "PartnerCanceled", param1, name);
 					SendMessage(param1, format);
-					//Format(format, sizeof(format), "%T", "PartnerCa");
-					//PrintToChat(param1, "\x01%T", "PartnerCanceled", param1, name);
-					//PrintToChat(partner, "Partnership is canceled by %N", param1);
 
 					GetClientName(param1, name, sizeof(name));
-					//PrintToChat(partner, "\x01%T", "PartnerCanceledBy", partner, name);
 					Format(format, sizeof(format), "%T", "PartnerCanceledBy", partner, name);
 					SendMessage(partner, format);
 				}
@@ -2537,79 +2482,6 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 	return view_as<int>(action);
 }
 
-/*public Action cmd_color(int client, int args)
-{
-	bool convar = GetConVarBool(gCV_color);
-
-	if(convar == false)
-	{
-		return Plugin_Handled;
-	}
-
-	char arg[512];
-
-	GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
-
-	int color = StringToInt(arg);
-
-	if(StrEqual(arg, "white", false))
-	{
-		color = 0;
-	}
-
-	else if(StrEqual(arg, "red", false))
-	{
-		color = 1;
-	}
-
-	else if(StrEqual(arg, "orange", false))
-	{
-		color = 2;
-	}
-
-	else if(StrEqual(arg, "yellow", false))
-	{
-		color = 3;
-	}
-
-	else if(StrEqual(arg, "lime", false))
-	{
-		color = 4;
-	}
-
-	else if(StrEqual(arg, "aqua", false))
-	{
-		color = 5;
-	}
-
-	else if(StrEqual(arg, "deep sky blue", false))
-	{
-		color = 6;
-	}
-
-	else if(StrEqual(arg, "blue", false))
-	{
-		color = 7;
-	}
-
-	else if(StrEqual(arg, "magenta", false))
-	{
-		color = 8;
-	}
-
-	if(strlen(arg) && 0 <= color <= 8)
-	{
-		ColorTeam(client, true, color);
-	}
-
-	else if(!color)
-	{
-		ColorTeam(client, true, -1);
-	}
-
-	return Plugin_Handled;
-}*/
-
 public Action cmd_color(int client, int args)
 {
 	bool color = gCV_color.BoolValue;
@@ -2618,8 +2490,6 @@ public Action cmd_color(int client, int args)
 	{
 		return Plugin_Handled;
 	}
-
-	//g_menuOpened[client] = false;
 
 	ColorSelect(client);
 
@@ -2696,20 +2566,6 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 	return view_as<int>(action);
 }
 
-/*public Action cmd_colorflash(int client, int args)
-{
-	bool convar = GetConVarBool(gCV_color);
-
-	if(convar == false)
-	{
-		return Plugin_Handled;
-	}
-
-	ColorFlashbang(client, true, -1);
-
-	return Plugin_Handled;
-}*/
-
 stock void ColorTeam(int client, bool customSkin, int color = -1)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
@@ -2725,8 +2581,6 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 		
 		if(g_devmap == false && g_partner[client] == 0)
 		{
-			//PrintToChat(client, "\x01%T", "YouMustHaveAPartner", client);
-			//PrintToChat(client, "You must have a partner.");
 			Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
 			SendMessage(client, format);
 
@@ -2735,7 +2589,6 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 		else if(g_devmap == true)
 		{
-			//char format[256] = "";
 			Format(format, sizeof(format), "%T", "DevmapIsON", client);
 			SendMessage(client, format);
 
@@ -3035,16 +2888,6 @@ stock void DoRestart(int client)
 
 		g_block[client] = true;
 		g_block[partner] = true;
-
-		/*if(g_menuOpened[client] == true)
-		{
-			Trikz(client);
-		}
-
-		if(g_menuOpened[partner] == true)
-		{
-			Trikz(partner);
-		}*/
 	}
 }
 
@@ -7905,7 +7748,7 @@ stock void FlashbangEffect(int entity)
 
 	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
 
-	int clients[MAXPLAYER];
+	int clients[MAXPLAYER] = {0, ...};
 	int count = 0;
 
 	if(filter == true)
