@@ -2176,6 +2176,7 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			else if(StrEqual(item, "restart", true) == true)
 			{
+				g_menuOpened[param1] = false;
 				Restart(param1, true);
 			}
 
