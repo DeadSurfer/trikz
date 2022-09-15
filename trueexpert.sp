@@ -5717,7 +5717,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 						SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 						//ShowHudText(i, 4, "+00:00:00");
-						Format(format, sizeof(format), "%t", "FirstRecordZeroHud", i, timeSR);
+						Format(format, sizeof(format), "%T", "FirstRecordZeroHud", i, timeSR);
 						ShowHudText(i, 4, format);
 					}
 				}
