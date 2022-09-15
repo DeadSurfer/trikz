@@ -1174,8 +1174,6 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 
 		if(g_button[activator] == true && button == true)
 		{
-			//PrintToChat(activator, "You have pressed a button.");
-			//PrintToChat(activator, "\x01%T", "YouPressedButton", activator);
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "YouPressedButton", activator);
 			SendMessage(activator, format);
@@ -1185,8 +1183,6 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 
 		if(g_pbutton[g_partner[activator]] == true && pbutton == true)
 		{
-			//PrintToChat(g_partner[activator], "Your partner have pressed a button.");
-			//PrintToChat(g_partner[activator], "\x01%T", "YourPartnerPressedButton", g_partner[activator]);
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "YourPartnerPressedButton", g_partner[activator]);
 			SendMessage(g_partner[activator], format);
@@ -2268,6 +2264,15 @@ stock void Partner(int client)
 
 	else if(g_devmap == false)
 	{
+		if(IsPlayerAlive(client) == false)
+		{
+			char format[256] = "";
+			Format(format, sizeof(format), "%T", "YouAreDead", client);
+			SendMessage(client, format);
+
+			return;
+		}
+
 		if(g_partner[client] == 0)
 		{
 			Menu menu = new Menu(partner_handler);
@@ -3143,19 +3148,19 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 			{
 				if(count == 1)
 				{
-					Format(format, sizeof(format), "\x01%T", "Top10details", i);
+					Format(format, sizeof(format), "%T", "Top10details", i);
 					SendMessage(i, format);
 				}
 				
 				if(count < 10)
 				{
-					Format(format, sizeof(format), "\x01%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
+					Format(format, sizeof(format), "%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
 					SendMessage(i, format);
 				}
 
 				else if(count == 10)
 				{
-					Format(format, sizeof(format), "\x01%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
+					Format(format, sizeof(format), "%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
 					SendMessage(i, format);
 				}
 			}
