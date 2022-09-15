@@ -45,69 +45,53 @@
 	{
 		"ru"	"Выключите devmap."
 	}
-	"TurnOFFDevMap"
+	"TurnOFFDevmap"
 	{
 		"ru"	"Выключить devmap?"
 	}
-	"TurnONDevMap"
+	"TurnONDevmap"
 	{
 		"ru"	"Включить devmap?"
 	}
-	//"NoclipEnabled"
-	//{
-	//	"ru"	"Noclip enabled."
-	//}
-	//"NoclipDisabled"
-	//{
-	//	"ru"	"Noclip disabled."
-	//}
 	"NoclipMenuON"
 	{
-		"ru"	"Полёт [v]"
+		"ru"	"✓ Полёт"
 	}
 	"NoclipMenuOFF"
 	{
-		"ru"	"Полёт [x]"
+		"ru"	"☓ Полёт"
 	}
-	"MLStatsOFF"
+	"MLStatsChatOFF"
 	{
 		"ru"	"ML статистика теперь выключена."
 	}
-	"MLStatsON"
+	"MLStatsChatON"
 	{
 		"ru"	"ML статистика теперь включена."
 	}
-	"VelOFF"
+	"VelChatOFF"
 	{
 		"ru"	"Скорость теперь не будет отоброжатся."
 	}
-	"VelON"
+	"VelChatON"
 	{
 		"ru"	"Скорость теперь будет отоброжатся."
 	}
-	"EndMsgOFF"
-	{
-		"ru"	"Конечное оповещение теперь не будет отображатся."
-	}
-	"EndMsgON"
-	{
-		"ru"	"Конечное оповещение теперь будет отображатся."
-	}
 	"MLStatsMenuON"
 	{
-		"ru"	"ML Статистика [v]"
+		"ru"	"✓ ML Статистика"
 	}
 	"MLStatsMenuOFF"
 	{
-		"ru"	"ML Статистика [x]"
+		"ru"	"☓ ML Статистика"
 	}
 	"VelMenuON"
 	{
-		"ru"	"Скорость [v]"
+		"ru"	"✓ Скорость"
 	}
 	"VelMenuOFF"
 	{
-		"ru"	"Скорость [x]"
+		"ru"	"☓ Скорость"
 	}
 	"ButtonAnnouncerON"
 	{
@@ -322,35 +306,35 @@
 	}
 	"BlockMenuON"
 	{
-		"ru"	"Блок [v]"
+		"ru"	"✓ Блок" //U+2713 https://www.compart.com/en/unicode/U+2713
 	}
 	"BlockMenuOFF"
 	{
-		"ru"	"Блок [x]"
+		"ru"	"☓ Блок" //U+2613 https://www.compart.com/en/unicode/U+2613
 	}
 	"AutoflashMenuON"
 	{
-		"ru"	"Автофлеш [v]"
+		"ru"	"✓ Автофлеш"
 	}
 	"AutoflashMenuOFF"
 	{
-		"ru"	"Автофлеш [x]"
+		"ru"	"☓ Автофлеш"
 	}
 	"AutoswitchMenuON"
 	{
-		"ru"	"Автосвитч [v]"
+		"ru"	"✓ Автосвитч"
 	}
 	"AutoswitchMenuOFF"
 	{
-		"ru"	"Автосвитч [x]"
+		"ru"	"☓ Автосвитч"
 	}
 	"BhopMenuON"
 	{
-		"ru"	"Бхоп [v]"
+		"ru"	"✓ Бхоп"
 	}
 	"BhopMenuOFF"
 	{
-		"ru"	"Бхоп [x]"
+		"ru"	"☓ Бхоп "
 	}
 	"BlockChatON"
 	{
@@ -384,11 +368,11 @@
 	{
 		"ru"	"Начать заново"
 	}
-	"NoclipON"
+	"NoclipChatON"
 	{
 		"ru"	"Полёт теперь включен."
 	}
-	"NoclipOFF"
+	"NoclipChatOFF"
 	{
 		"ru"	"Полёт теперь выключен."
 	}
@@ -462,10 +446,6 @@
 	{
 		"ru"	"НОВЫЙ СЕРВЕРНЫЙ РЕКОРД!"
 	}
-	//"NewServerRecordDetailNotFirstHud"
-	//{
-	//	"ru"	"NEW SERVER RECORD!"
-	//}
 	"NewServerRecordDetailNotFirstHud"
 	{
 		"#format"	"{1:s}"
@@ -490,27 +470,27 @@
 		"#format"	"{1:s}"
 		"ru"	"{1}"
 	}
-	"AutoflashON"
+	"AutoflashChatON"
 	{
 		"ru"	"Автофлеш теперь включен."
 	}
-	"AutoflashOFF"
+	"AutoflashChatOFF"
 	{
 		"ru"	"Автофлеш теперь выключен."
 	}
-	"AutoswitchON"
+	"AutoswitchChatON"
 	{
 		"ru"	"Автосвитч теперь включен."
 	}
-	"AutoswitchOFF"
+	"AutoswitchChatOFF"
 	{
 		"ru"	"Автосвитч теперь выключен."
 	}
-	"BhopON"
+	"BhopChatON"
 	{
 		"ru"	"Автораспрыжка теперь включена."
 	}
-	"BhopOFF"
+	"BhopChatOFF"
 	{
 		"ru"	"Автораспрыжка теперь выключена."
 	}
@@ -522,29 +502,22 @@
 	{
 		"ru"	"Макрос теперь включен."
 	}
-	"EndMessageON"
+	"EndMessageChatON"
 	{
 		"ru"	"Конечное оповещение теперь включено."
 	}
-	"EndMessageOFF"
+	"EndMessageChatOFF"
 	{
 		"ru"	"Конечное оповещение теперь выключено."
 	}
 	"EndMessageMenuON"
 	{
-		"ru"	"Конечное оповещение [v]"
+		"ru"	"✓ Конечное оповещение"
 	}
 	"EndMessageMenuOFF"
 	{
-		"ru"	"Конечное оповещение [x]"
+		"ru"	"☓ Конечное оповещение"
 	}
-	/*"Top10"
-	{
-		//"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
-		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
-		//"ru"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}{default})"
-		"ru"	"{1}. {2} и {3} завершили карту за ;#7CFC00{4} {default}(SR ;#FF0000+{5}{default})"
-	}*/
 	"Top10details"
 	{
 		"ru"	"Место:\tВремя:\t\tРазница:\t\tКоманда:"
@@ -739,5 +712,9 @@
 	"AskForRestart"
 	{
 		"en"	"Вы действительно хотите начать заново?"
+	}
+	"YouAreDead"
+	{
+		"ru"	"Вы мертвы."
 	}
 }
