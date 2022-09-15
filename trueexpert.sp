@@ -60,9 +60,9 @@ bool g_timerReadyToStart[MAXPLAYER] = {false, ...};
 float g_cpPos[2][12][3];
 bool g_cp[11][MAXPLAYER];
 bool g_cpLock[11][MAXPLAYER];
-float g_cpTimeClient[11][MAXPLAYER];
-float g_cpDiff[11][MAXPLAYER];
-float g_cpTime[11] = {0.0, ...};
+float g_cpTime[11][MAXPLAYER];
+float g_cpDiffSR[11][MAXPLAYER];
+float g_cpTimeSR[11] = {0.0, ...};
 
 float g_haveRecord[MAXPLAYER] = {0.0, ...};
 float g_ServerRecordTime = 0.0;
@@ -203,19 +203,19 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.50",
+	version = "4.51",
 	url = "http://www.sourcemod.net/"
 }
 
 public void OnPluginStart()
 {
-	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top for ex (http://www.trueexpert.rf.gd/?start=0&map=). To open page, type to in-game chat !top", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top, for ex (http://www.trueexpert.rf.gd/?start=0&map=). To open web page, type to in-game chat !top", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Allow to use trikz menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_block = CreateConVar("sm_te_block", "0.0", "Allow to toggling block state.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Allow to use partner system.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_color = CreateConVar("sm_te_color", "0.0", "Toggling color menu.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_restart = CreateConVar("sm_te_restart", "0.0", "Allow player to restart timer.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow use checkpoint in devmap.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow to use checkpoint in devmap.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_afk = CreateConVar("sm_te_afk", "0.0", "Allow to use !afk command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in devmap.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_spec = CreateConVar("sm_te_spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
@@ -225,7 +225,7 @@ public void OnPluginStart()
 	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E buuton or +use.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E button or +use.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_boostfix = CreateConVar("sm_te_boostfix", "0.0", "Artifacial boost for nade and stack boost.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_devmap = CreateConVar("sm_te_devmap", "0.0", "Allow to use devmap.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_hud = CreateConVar("sm_te_hud", "0.0", "Allow to use !hud command.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
@@ -273,6 +273,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_help", cmd_control);
 	RegConsoleCmd("sm_control", cmd_control);
 	RegConsoleCmd("sm_skin", cmd_skin);
+	RegConsoleCmd("sm_vel", cmd_vel);
 
 	RegServerCmd("sm_createzones", cmd_createzones);
 	RegServerCmd("sm_createusers", cmd_createusers);
@@ -300,6 +301,7 @@ public void OnPluginStart()
 	HookEntityOutput("func_button", "OnPressed", OnButton);
 	HookEvent("player_jump", OnJump, EventHookMode_Post);
 	HookEvent("player_death", OnDeath, EventHookMode_Post);
+	HookEvent("player_team", OnTeam, EventHookMode_Post);
 
 	AddCommandListener(joinclass, "joinclass");
 	AddCommandListener(autobuy, "autobuy");
@@ -1223,6 +1225,36 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
+public void OnTeam(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+
+	int team = event.GetInt("team");
+
+	if(team == 1 && g_partner[client] > 0)
+	{
+		int partner = g_partner[client];
+
+		g_partner[partner] = 0;
+		g_partner[client] = 0;
+
+		if(g_menuOpened[client] == true)
+		{
+			Trikz(client);
+		}
+
+		if(g_menuOpened[partner] == true)
+		{
+			Trikz(partner);
+		}
+
+		ResetFactory(client);
+		ResetFactory(partner);
+	}
+
+	return;
+}
+
 public Action joinclass(int client, const char[] command, int argc)
 {
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -1413,10 +1445,8 @@ public void Checkpoint(int client)
 	{
 		Menu menu = new Menu(checkpoint_handler);
 
-		//menu.SetTitle("Checkpoint");
 		menu.SetTitle("%T", "Checkpoint", client);
 
-		//menu.AddItem("Save", "Save");
 		char format[256] = "";
 		Format(format, sizeof(format), "%T", "CP-save", client);
 		menu.AddItem("Save", format);
@@ -1433,8 +1463,6 @@ public void Checkpoint(int client)
 
 	else if(g_devmap == false)
 	{
-		//PrintToChat(client, "Turn on devmap.");
-		//PrintToChat(client, "\x01%T", "DevmapIsOFF", client);
 		char format[256] = "";
 		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
 		SendMessage(client, format);
@@ -1683,14 +1711,9 @@ public void OnClientCookiesCached(int client)
 public void OnClientDisconnect(int client)
 {
 	ColorTeam(client, false);
-	//ColorFlashbang(client, false, -1);
-
-	//g_color[client][0] = false;
-	//g_color[client][1] = false;
-	//g_seperate[client] = false;
 
 	int partner = g_partner[client];
-	g_partner[g_partner[client]] = 0;
+	g_partner[partner] = 0;
 
 	if(partner > 0 && g_menuOpened[partner] == true)
 	{
@@ -1741,7 +1764,7 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 
 		if(IsClientValid(client) == true)
 		{
-			char query[512]; //https://forums.alliedmods.net/showthread.php?t=261378
+			char query[512] = ""; //https://forums.alliedmods.net/showthread.php?t=261378
 			int steamid = GetSteamAccountID(client);
 
 			if(results.FetchRow() == true)
@@ -1951,58 +1974,43 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
-				//if(velFlyer[2] < 0.0)
+				g_skyVel[other][0] = velFlyer[0];
+				g_skyVel[other][1] = velFlyer[1];
+				g_skyVel[other][2] = velBooster[2] * 3.15;
+
+				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+
+				if(g_entityFlags[client] & FL_INWATER)
 				{
-					g_skyVel[other][0] = velFlyer[0];
-					g_skyVel[other][1] = velFlyer[1];
-					g_skyVel[other][2] = velBooster[2] *= 3.1; //3.0
-
-					//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-
-					if(velFlyer[2] >= -700.0) //700.0
+					g_skyVel[other][2] = velBooster[2] * 5.0;
+				}
+				
+				else if(!(g_entityFlags[client] & FL_INWATER))
+				{
+					if(velFlyer[2] > -770.0)
 					{
-						if(g_entityFlags[client] & FL_INWATER)
+						if(g_skyVel[other][2] >= 770.0)
 						{
-							if(velBooster[2] >= 300.0)
-							{
-								g_skyVel[other][2] = 500.0;
-							}
-						}
-
-						else if(!(g_entityFlags[client] & FL_INWATER))
-						{
-							//PrintToServer("1 %f", velFlyer[2]);
-
-							if(velBooster[2] >= 750.0) //750.0
-							{
-								g_skyVel[other][2] = 750.0;
-
-								//PrintToServer("2 %f", velFlyer[2]);
-							}
+							g_skyVel[other][2] = 770.0;
 						}
 					}
 
-					else if(!(velFlyer[2] >= -700.0)) //700.0
+					else if(velFlyer[2] <= -770.0)
 					{
-						//if(velBooster[2] >= 810.0)
-						//PrintToServer("3 %f", velFlyer[2]);
-
-						if(velBooster[2] >= 750.0) //750.0
+						if(g_skyVel[other][2] >= 800.0)
 						{
 							g_skyVel[other][2] = 800.0;
-
-							//PrintToServer("4 %f", velFlyer[2]);
 						}
 					}
+				}
 
-					#if debug == true
-					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-					#endif
+				#if debug == true
+				PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+				#endif
 
-					if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
-					{
-						g_skyBoost[other] = 1;
-					}
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+				{
+					g_skyBoost[other] = 1;
 				}
 			}
 		}
@@ -2225,9 +2233,12 @@ public Action Block(int client) //thanks maru for optimization.
 		Trikz(client);
 	}
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
-	SendMessage(client, format);
+	else if(g_menuOpened[client] == false)
+	{
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
+		SendMessage(client, format);
+	}
 
 	return Plugin_Handled;
 }
@@ -2268,7 +2279,7 @@ stock void Partner(int client)
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i) == true && IsFakeClient(i) == false) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635 i copy it from denwo and save in github sorry denwo i lost password.
+				if(IsClientInGame(i) == true && IsFakeClient(i) == false && IsPlayerAlive(i) == true) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635 i copy it from denwo and save in github sorry denwo i lost password.
 				{
 					if(client != i && g_partner[i] == 0)
 					{
@@ -2838,7 +2849,7 @@ stock void DoRestart(int client)
 
 		Call_Finish();
 
-		int entity = 0;
+		/*int entity = 0;
 
 		bool ct = false;
 
@@ -2876,7 +2887,7 @@ stock void DoRestart(int client)
 			}
 
 			break;
-		}
+		}*/
 
 		CS_RespawnPlayer(client);
 		CS_RespawnPlayer(partner);
@@ -2921,17 +2932,20 @@ public Action cmd_autoflash(int client, int args)
 
 	g_autoflash[client] = !g_autoflash[client];
 
+	GiveFlashbang(client);
+
 	char value[8] = "";
 	IntToString(g_autoflash[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[4], value);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashON" : "AutoflashOFF", client);
-	SendMessage(client, format);
+	if(g_menuOpened[client] == false)
+	{
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashChatON" : "AutoflashChatOFF", client);
+		SendMessage(client, format);
+	}
 
-	GiveFlashbang(client);
-
-	if(g_menuOpened[client] == true)
+	else if(g_menuOpened[client] == true)
 	{
 		Trikz(client);
 	}
@@ -2954,11 +2968,14 @@ public Action cmd_autoswitch(int client, int args)
 	IntToString(g_autoswitch[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[5], value);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchON" : "AutoswitchOFF", client);
-	SendMessage(client, format);
+	if(g_menuOpened[client] == false)
+	{
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchChatON" : "AutoswitchChatOFF", client);
+		SendMessage(client, format);
+	}
 
-	if(g_menuOpened[client] == true)
+	else if(g_menuOpened[client] == true)
 	{
 		Trikz(client);
 	}
@@ -2981,11 +2998,14 @@ public Action cmd_bhop(int client, int args)
 	IntToString(g_bhop[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[6], value);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopON" : "BhopOFF", client);
-	SendMessage(client, format);
+	if(g_menuOpened[client] == false)
+	{
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopChatON" : "BhopChatOFF", client);
+		SendMessage(client, format);
+	}
 
-	if(g_menuOpened[client] == true)
+	else if(g_menuOpened[client] == true)
 	{
 		Trikz(client);
 	}
@@ -3008,11 +3028,14 @@ public Action cmd_endmsg(int client, int args)
 	IntToString(g_bhop[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[8], value);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageON" : "EndMessageOFF", client);
-	SendMessage(client, format);
+	if(g_menuOpenedHud[client] == false)
+	{
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageChatON" : "EndMessageChatOFF", client);
+		SendMessage(client, format);
+	}
 
-	if(g_menuOpenedHud[client] == true)
+	else if(g_menuOpenedHud[client] == true)
 	{
 		HudMenu(client);
 	}
@@ -4911,7 +4934,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, true, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, true, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLUpdateRecord, query);
 
 							g_haveRecord[other] = time;
@@ -4986,7 +5009,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, false, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, false, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLUpdateRecord, query);
 
 							if(g_haveRecord[other] > time)
@@ -5040,7 +5063,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, true, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, true, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime());
+							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], g_map, GetTime());
 							g_mysql.Query(SQLInsertRecord, query);
 
 							g_haveRecord[other] = time;
@@ -5084,7 +5107,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, false, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, false, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime());
+							Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], g_map, GetTime());
 							g_mysql.Query(SQLInsertRecord, query);
 
 							if(g_haveRecord[other] == 0.0)
@@ -5121,13 +5144,13 @@ public Action SDKStartTouch(int entity, int other)
 						if(g_cp[i][other] == true)
 						{
 							char timeCP[24] = "";
-							FormatSeconds(g_cpDiff[i][other], timeCP);
+							FormatSeconds(g_cpDiffSR[i][other], timeCP);
 
 							for(int j = 1; j <= MaxClients; j++)
 							{
 								if(IsClientInGame(j) == true)
 								{
-									Format(format, sizeof(format), "%T", g_cpTimeClient[i][other] < g_cpTime[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									Format(format, sizeof(format), "%T", g_cpTime[i][other] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
 									SendMessage(j, format);
 								}
 							}
@@ -5173,7 +5196,7 @@ public Action SDKStartTouch(int entity, int other)
 
 					CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
 
-					Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTimeClient[1][other], g_cpTimeClient[2][other], g_cpTimeClient[3][other], g_cpTimeClient[4][other], g_cpTimeClient[5][other], g_cpTimeClient[6][other], g_cpTimeClient[7][other], g_cpTimeClient[8][other], g_cpTimeClient[9][other], g_cpTimeClient[10][other], g_map, GetTime());
+					Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, time, finishes, tries, cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, map, date) VALUES (%i, %i, %f, 1, 1, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, '%s', %i)", playerid, partnerid, g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], g_map, GetTime());
 					g_mysql.Query(SQLInsertRecord, query);
 
 					static GlobalForward hForward = null;
@@ -5221,8 +5244,8 @@ public Action SDKStartTouch(int entity, int other)
 					g_cpLock[i][other] = true;
 					g_cpLock[i][partner] = true;
 
-					g_cpTimeClient[i][other] = g_timerTime[other];
-					g_cpTimeClient[i][partner] = g_timerTime[other];
+					g_cpTime[i][other] = g_timerTime[other];
+					g_cpTime[i][partner] = g_timerTime[other];
 
 					Format(query, sizeof(query), "SELECT cp%i FROM records LIMIT 1", i);
 
@@ -6122,14 +6145,14 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 
 		if(results.FetchRow() == true)
 		{
-			g_cpTime[cpnum] = results.FetchFloat(0);
+			g_cpTimeSR[cpnum] = results.FetchFloat(0);
 
-			if(g_cpTimeClient[cpnum][other] < g_cpTime[cpnum])
+			if(g_cpTime[cpnum][other] < g_cpTimeSR[cpnum])
 			{
-				g_cpDiff[cpnum][other] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
-				g_cpDiff[cpnum][partner] = g_cpTime[cpnum] - g_cpTimeClient[cpnum][other];
+				g_cpDiffSR[cpnum][other] = g_cpTimeSR[cpnum] - g_cpTime[cpnum][other];
+				g_cpDiffSR[cpnum][partner] = g_cpTimeSR[cpnum] - g_cpTime[cpnum][other];
 
-				float diff = g_cpDiff[cpnum][other];
+				float diff = g_cpDiffSR[cpnum][other];
 				FormatSeconds(diff, timeSR);
 
 				FinishMSG(other, false, false, true, false, true, cpnum, timeOwn, timeSR);
@@ -6150,12 +6173,12 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				Call_Finish();
 			}
 
-			else if(!(g_cpTimeClient[cpnum][other] < g_cpTime[cpnum]))
+			else if(!(g_cpTime[cpnum][other] < g_cpTimeSR[cpnum]))
 			{
-				g_cpDiff[cpnum][other] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
-				g_cpDiff[cpnum][partner] = g_cpTimeClient[cpnum][other] - g_cpTime[cpnum];
+				g_cpDiffSR[cpnum][other] = g_cpTime[cpnum][other] - g_cpTimeSR[cpnum];
+				g_cpDiffSR[cpnum][partner] = g_cpTime[cpnum][other] - g_cpTimeSR[cpnum];
 
-				float diff = g_cpDiff[cpnum][other];
+				float diff = g_cpDiffSR[cpnum][other];
 				FormatSeconds(diff, timeSR);
 
 				FinishMSG(other, false, false, true, false, false, cpnum, timeOwn, timeSR);
@@ -6773,7 +6796,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(g_zoneDraw[client] == false)
 		{
-			Hud(client);
+			VelHud(client);
 		}
 	}
 
@@ -7004,7 +7027,7 @@ public Action cmd_devmap(int client, int args)
 				{
 					Menu menu = new Menu(devmap_handler);
 
-					menu.SetTitle("%T", "TurnOFFDevMap", client);
+					menu.SetTitle("%T", "TurnOFFDevmap", client);
 					
 					Format(format, sizeof(format), "%T", "Yes", client);
 					menu.AddItem("yes", format);
@@ -7019,7 +7042,7 @@ public Action cmd_devmap(int client, int args)
 				{
 					Menu menu = new Menu(devmap_handler);
 
-					menu.SetTitle("%T", "TurnONDevMap", client);
+					menu.SetTitle("%T", "TurnONDevmap", client);
 
 					Format(format, sizeof(format), "%T", "Yes", client);
 					menu.AddItem("yes", format);
@@ -7363,8 +7386,11 @@ stock void Noclip(int client)
 	{
 		SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
 
-		Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipON" : "NoclipOFF", client);
-		SendMessage(client, format);
+		if(g_menuOpened[client] == false)
+		{
+			Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
+			SendMessage(client, format);
+		}
 	}
 
 	else if(g_devmap == false)
@@ -7444,7 +7470,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Select:
 		{
 			char value[8] = "";
-			char format[256] = "";
 
 			switch(param2)
 			{
@@ -7454,9 +7479,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					IntToString(g_hudVel[param1], value, sizeof(value));
 					SetClientCookie(param1, g_cookie[0], value);
-
-					Format(format, sizeof(format), "%T", g_hudVel[param1] == true ? "VelON" : "VelOFF", param1);
-					SendMessage(param1, format);
 				}
 
 				case 1:
@@ -7465,9 +7487,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					IntToString(g_mlstats[param1], value, sizeof(value));
 					SetClientCookie(param1, g_cookie[1], value);
-
-					Format(format, sizeof(format), "%T", g_mlstats[param1] == true ? "MLStatsON" : "MLStatsOFF", param1);
-					SendMessage(param1, format);
 				}
 
 				case 2:
@@ -7476,9 +7495,6 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 					IntToString(g_endMessage[param1], value, sizeof(value));
 					SetClientCookie(param1, g_cookie[8], value);
-
-					Format(format, sizeof(format), "%T", g_endMessage[param1] == true ? "EndMsgON" : "EndMsgOFF", param1);
-					SendMessage(param1, format);
 				}
 			}
 
@@ -7499,7 +7515,37 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-stock void Hud(int client)
+public Action cmd_vel(int client, int args)
+{
+	bool vel = gCV_vel.BoolValue;
+
+	if(vel == false)
+	{
+		return Plugin_Continue;
+	}
+
+	g_hudVel[client] = !g_hudVel[client];
+
+	char value[8] = "";
+	IntToString(g_hudVel[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[1], value);
+
+	if(g_menuOpenedHud[client] == false)
+	{
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", g_hudVel[client] == true ? "VelChatON" : "VelChatOFF", client);
+		SendMessage(client, format);
+	}
+
+	else if(g_menuOpenedHud[client] == true)
+	{
+		HudMenu(client);
+	}
+
+	return Plugin_Handled;
+}
+
+stock void VelHud(int client)
 {
 	float vel[3] = {0.0, ...};
 
@@ -7544,11 +7590,14 @@ public Action cmd_mlstats(int client, int args)
 	IntToString(g_mlstats[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[1], value);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsON" : "MLStatsOFF", client);
-	SendMessage(client, format);
+	if(g_menuOpenedHud[client] == false)
+	{
+		char format[256] = "";
+		Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsChatON" : "MLStatsChatOFF", client);
+		SendMessage(client, format);
+	}
 
-	if(g_menuOpenedHud[client] == true)
+	else if(g_menuOpenedHud[client] == true)
 	{
 		HudMenu(client);
 	}
