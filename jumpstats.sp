@@ -38,35 +38,35 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 
-bool g_jumped[MAXPLAYER];
+bool g_jumped[MAXPLAYER] = {false, ...};
 float g_origin[MAXPLAYER][3];
-int g_strafeCount[MAXPLAYER];
-bool g_ladder[MAXPLAYER];
+int g_strafeCount[MAXPLAYER] = {0, ...};
+bool g_ladder[MAXPLAYER] = {false, ...};
 float g_preVel[MAXPLAYER][3];
-bool g_jumpstats[MAXPLAYER];
-bool g_strafeFirst[MAXPLAYER];
-int g_tick[MAXPLAYER];
-int g_syncTick[MAXPLAYER];
-int g_tickAir[MAXPLAYER];
-bool g_countjump[MAXPLAYER];
-float g_dot[MAXPLAYER];
-bool g_strafeBlockD[MAXPLAYER];
-bool g_strafeBlockA[MAXPLAYER];
-bool g_strafeBlockS[MAXPLAYER];
-bool g_strafeBlockW[MAXPLAYER];
+bool g_jumpstats[MAXPLAYER] = {false, ...};
+bool g_strafeFirst[MAXPLAYER] = {false, ...};
+int g_tick[MAXPLAYER] = {0, ...};
+int g_syncTick[MAXPLAYER] = {0, ...};
+int g_tickAir[MAXPLAYER] = {0, ...};
+bool g_countjump[MAXPLAYER] = {false, ...};
+float g_dot[MAXPLAYER] = {0.0, ...};
+bool g_strafeBlockD[MAXPLAYER] = {false, ...};
+bool g_strafeBlockA[MAXPLAYER] = {false, ...};
+bool g_strafeBlockS[MAXPLAYER] = {false, ...};
+bool g_strafeBlockW[MAXPLAYER] = {false, ...};
 char g_style[MAXPLAYER][32];
-float g_dotTime[MAXPLAYER];
-bool g_runboost[MAXPLAYER];
-int g_rbBooster[MAXPLAYER];
-float g_boostTime[MAXPLAYER];
-float g_skyOrigin[MAXPLAYER];
-int g_entityButtons[MAXPLAYER];
+float g_dotTime[MAXPLAYER] = {0.0, ...};
+bool g_runboost[MAXPLAYER] = {false, ...};
+int g_rbBooster[MAXPLAYER] = {0, ...};
+float g_boostTime[MAXPLAYER] = {0.0, ...};
+float g_skyOrigin[MAXPLAYER] = {0.0, ...};
+int g_entityButtons[MAXPLAYER] = {0, ...};
 native int Trikz_GetClientButtons(int client);
-bool g_teleported[MAXPLAYER];
+bool g_teleported[MAXPLAYER] = {false, ...};
 Handle g_cookie = INVALID_HANDLE;
-float g_skyAble[MAXPLAYER];
-float g_gain[MAXPLAYER];
-int g_entityFlags[MAXPLAYER];
+float g_skyAble[MAXPLAYER] = {0.0, ...};
+float g_gain[MAXPLAYER] = {0.0, ...};
+int g_entityFlags[MAXPLAYER] = {0, ...};
 DynamicHook g_teleport = null;
 
 public Plugin myinfo =
@@ -74,7 +74,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh",
 	description = "Measures distance difference between two vectors",
-	version = "0.22",
+	version = "0.23",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -203,7 +203,7 @@ public Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcas
 
 		g_teleported[client] = false;
 
-		float origin[3] = {0.0, 0.0, 0.0};
+		float origin[3] = {0.0, ...};
 
 		if(g_runboost[client] == true)
 		{
@@ -219,7 +219,7 @@ public Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcas
 		g_origin[client][1] = origin[1];
 		g_origin[client][2] = g_runboost[client]  == true ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client);
 
-		float vel[3] = {0.0, 0.0, 0.0};
+		float vel[3] = {0.0, ...};
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 
 		g_preVel[client][0] = vel[0];
@@ -257,7 +257,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(GetEngineTime() - g_dotTime[client] < 0.4)
 			{
-				float eye[3] = {0.0, 0.0, 0.0};
+				float eye[3] = {0.0, ...};
 
 				GetClientEyeAngles(client, eye);
 
@@ -265,7 +265,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				eye[1] = Sine(DegToRad(eye[1]));
 				eye[2] = 0.0;
 
-				float velAbs[3] = {0.0, 0.0, 0.0};
+				float velAbs[3] = {0.0, ...};
 				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs);
 
 				float length = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0));
@@ -292,7 +292,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		char print[256] = "";
 
-		float origin[3] = {0.0, 0.0, 0.0};
+		float origin[3] = {0.0, ...};
 		GetClientAbsOrigin(client, origin);
 
 		char flat[32] = "";
@@ -406,7 +406,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		g_ladder[client] = true;
 
-		float origin[3] = {0.0, 0.0, 0.0};
+		float origin[3] = {0.0, ...};
 		GetClientAbsOrigin(client, origin);
 
 		for(int i = 0; i <= 2; i++)
@@ -428,7 +428,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		char print[256] = "";
 
-		float origin[3] = {0.0, 0.0, 0.0};
+		float origin[3] = {0.0, ...};
 		GetClientAbsOrigin(client, origin);
 
 		if(-3.0 <= GetGroundPos(client) - g_origin[client][2] <= 3.0)
@@ -540,13 +540,13 @@ public Action StartTouchProjectile(int entity, int other)
 	if(0 < other <= MaxClients && (g_jumped[other] == true || g_ladder[other] == true))
 	{
 		//https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L220-L231
-		float entityOrigin[3] = {0.0, 0.0, 0.0};
+		float entityOrigin[3] = {0.0, ...};
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityOrigin);
 
-		float otherOrigin[3] = {0.0, 0.0, 0.0};
+		float otherOrigin[3] = {0.0, ...};
 		GetClientAbsOrigin(other, otherOrigin);
 
-		float entityMaxs[3] = {0.0, 0.0, 0.0};
+		float entityMaxs[3] = {0.0, ...};
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", entityMaxs);
 
 		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2];
@@ -566,13 +566,13 @@ public void TouchClient(int client, int other)
 {
 	if(0 < other <= MaxClients && g_tick[client] == 30)
 	{
-		float clientOrigin[3] = {0.0, 0.0, 0.0};
+		float clientOrigin[3] = {0.0, ...};
 		GetClientAbsOrigin(client, clientOrigin);
 
-		float otherOrigin[3] = {0.0, 0.0, 0.0};
+		float otherOrigin[3] = {0.0, ...};
 		GetClientAbsOrigin(other, otherOrigin);
 
-		float clientMaxs[3] = {0.0, 0.0, 0.0};
+		float clientMaxs[3] = {0.0, ...};
 		GetClientMaxs(client, clientMaxs);
 
 		float delta = clientOrigin[2] - otherOrigin[2] - clientMaxs[2];
@@ -602,59 +602,55 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("trueexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : g_entityButtons[other] & IN_JUMP) && GetEngineTime() - g_boostTime[client] > 0.15)
 	{
-		float originBooster[3] = {0.0, 0.0, 0.0};
+		float originBooster[3] = {0.0, ...};
 		GetClientAbsOrigin(client, originBooster);
 
-		float originFlyer[3] = {0.0, 0.0, 0.0};
+		float originFlyer[3] = {0.0, ...};
 		GetClientAbsOrigin(other, originFlyer);
 
-		float maxsBooster[3] = {0.0, 0.0, 0.0};
+		float maxsBooster[3] = {0.0, ...};
 		GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 
 		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
 
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			float velBooster[3] = {0.0, 0.0, 0.0};
+			float velBooster[3] = {0.0, ...};
 			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
 
 			if(velBooster[2] > 0.0)
 			{
-				float velFlyer[3] = {0.0, 0.0, 0.0};
+				float velFlyer[3] = {0.0, ...};
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
-				velBooster[2] *= 3.1;
-
-				float velNew[3] = {0.0, 0.0, 0.0};
+				float velNew[3] = {0.0, ...};
 				//velNew[0] = velFlyer[0];
 				//velNew[1] = velFlyer[1];
-				velNew[2] = velBooster[2];
+				velNew[2] = velBooster[2] * 3.15;
 
-				if(velFlyer[2] >= -700.0)
+				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+
+				if(g_entityFlags[client] & FL_INWATER)
 				{
-					if(g_entityFlags[client] & FL_INWATER)
-					{
-						if(velBooster[2] >= 300.0)
-						{
-							velNew[2] = 500.0;
-						}
-					}
-					
-					else if(!(g_entityFlags[client] & FL_INWATER))
-					{
-						if(velBooster[2] >= 750.0)
-						{
-							velNew[2] = 750.0;
-						}
-					}
+					velNew[2] = velBooster[2] * 5.0;
 				}
-
-				else if(!(velFlyer[2] >= -700.0))
+				
+				else if(!(g_entityFlags[client] & FL_INWATER))
 				{
-					//if(velBooster[2] >= 810.0)
-					if(velBooster[2] >= 750.0)
+					if(velFlyer[2] > -770.0)
 					{
-						velNew[2] = 800.0;
+						if(velNew[2] >= 770.0)
+						{
+							velNew[2] = 770.0;
+						}
+					}
+
+					else if(velFlyer[2] <= -770.0)
+					{
+						if(velNew[2] >= 800.0)
+						{
+							velNew[2] = 800.0;
+						}
 					}
 				}
 
@@ -731,22 +727,22 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 
 stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
-	float origin[3] = {0.0, 0.0, 0.0};
+	float origin[3] = {0.0, ...};
 	GetClientAbsOrigin(client, origin);
 
-	float originDir[3] = {0.0, 0.0, 0.0};
+	float originDir[3] = {0.0, ...};
 	GetClientAbsOrigin(client, originDir);
 	originDir[2] -= 90.0;
 
-	float mins[3] = {0.0, 0.0, 0.0};
+	float mins[3] = {0.0, ...};
 	GetClientMins(client, mins);
 
-	float maxs[3] = {0.0, 0.0, 0.0};
+	float maxs[3] = {0.0, ...};
 	GetClientMaxs(client, maxs);
 
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
 
-	float pos[3] = {0.0, 0.0, 0.0};
+	float pos[3] = {0.0, ...};
 
 	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
@@ -909,12 +905,12 @@ stock void Sync(int client, int buttons, int mouse[2])
 stock void Gain(int client, float vel[3], float angles[3])
 {
 	//https://forums.alliedmods.net/showthread.php?t=287039 gain calculations
-	float velocity[3] = {0.0, 0.0, 0.0};
+	float velocity[3] = {0.0, ...};
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity);
 	velocity[2] = 0.0;
 
 	float gaincoeff = 0.0;
-	float fore[3] = {0.0, 0.0, 0.0}, side[3] = {0.0, 0.0, 0.0}, wishvel[3] = {0.0, 0.0, 0.0}, wishdir[3] = {0.0, 0.0, 0.0};
+	float fore[3] = {0.0, ...}, side[3] = {0.0, ...}, wishvel[3] = {0.0, ...}, wishdir[3] = {0.0, ...};
 	float wishspeed = 0.0, wishspd = 0.0, currentgain = 0.0;
 
 	GetAngleVectors(angles, fore, side, NULL_VECTOR);
