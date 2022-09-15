@@ -3677,19 +3677,19 @@ stock void SendMessage(int client, const char[] text)
 	{
 		case 1:
 		{
-			Format(teamName, sizeof(teamName), "\x01%T", "Spectator", client);
+			Format(teamName, sizeof(teamName), "%T", "Spectator", client);
 			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
 		}
 
 		case 2:
 		{
-			Format(teamName, sizeof(teamName), "\x01%T", "Terrorist", client);
+			Format(teamName, sizeof(teamName), "%T", "Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x07FF4040");
 		}
 
 		case 3:
 		{
-			Format(teamName, sizeof(teamName), "\x01%T", "Counter-Terrorist", client);
+			Format(teamName, sizeof(teamName), "%T", "Counter-Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
 		}
 	}
