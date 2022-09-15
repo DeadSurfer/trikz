@@ -315,25 +315,25 @@ body
 				$thisp = $start + $limit;
 				$back = $start - $limit;
 				$next = $start + $limit;
-				$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]'";
-				$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT 1";
-				$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
+				$query0 = "SELECT COUNT(*) FROM records WHERE map = '$_SESSION[map]' AND time != 0";
+				$getSR = "SELECT time FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY time LIMIT 1";
+				$queryRank = "SELECT @rownum := @rownum + 1 as rank, p.id FROM (SELECT @rownum := 0) v, (SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 GROUP BY id ORDER BY time) p"; //https://stackoverflow.com/questions/10286418/mysql-ranking-by-count-and-group-by
 				if($sort == 1)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time DESC LIMIT $start, $limit";
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY time DESC LIMIT $start, $limit";
 				else if(!$sort)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY time LIMIT $start, $limit";
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY time LIMIT $start, $limit";
 				else if($sort == 3)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes DESC LIMIT $start, $limit";
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY finishes DESC LIMIT $start, $limit";
 				else if($sort == 2)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY finishes LIMIT $start, $limit";
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY finishes LIMIT $start, $limit";
 				else if($sort == 5)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries DESC LIMIT $start, $limit";
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY tries DESC LIMIT $start, $limit";
 				else if($sort == 4)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY tries LIMIT $start, $limit";
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY tries LIMIT $start, $limit";
 				else if($sort == 7)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date DESC LIMIT $start, $limit";
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY date DESC LIMIT $start, $limit";
 				else if($sort == 6)
-					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' ORDER BY date LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
+					$query = "SELECT * FROM records WHERE map = '$_SESSION[map]' AND time != 0 ORDER BY date LIMIT $start, $limit"; ///https://meeraacademy.com/select-query-in-php-mysql-with-example/
 				mysqli_query($db, $queryRank) or die('Error querying database. [1rank]');
 				mysqli_query($db, $query);
 				if(!$query)
