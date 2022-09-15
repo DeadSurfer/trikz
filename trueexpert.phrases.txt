@@ -10,10 +10,6 @@
 	{
 		"en"	"Database is not passed througt gate. Please check your database configuration."
 	}
-	//"YMHP"
-	//{
-	//	"en"	"You must have a partner."
-	//}
 	"NewServerRecord"
 	{
 		"en"	";#7CFC00New Server Record!"
@@ -39,76 +35,59 @@
 	}
 	"DevmapIsOFF"
 	{
-		//"#format"	""
 		"en"	"Turn on devmap."
 	}
 	"DevmapIsON"
 	{
 		"en"	"Turn off devmap."
 	}
-	"TurnOFFDevMap"
+	"TurnOFFDevmap"
 	{
 		"en"	"Turn off dev map?"
 	}
-	"TurnONDevMap"
+	"TurnONDevmap"
 	{
 		"en"	"Turn on dev map?"
 	}
-	//"NoclipEnabled"
-	//{
-	//	"en"	"Noclip enabled."
-	//}
-	//"NoclipDisabled"
-	//{
-	//	"en"	"Noclip disabled."
-	//}
 	"NoclipMenuON"
 	{
-		"en"	"Noclip [v]"
+		"en"	"✓ Noclip"
 	}
 	"NoclipMenuOFF"
 	{
-		"en"	"Noclip [x]"
+		"en"	"☓ Noclip"
 	}
-	"MLStatsOFF"
+	"MLStatsChatOFF"
 	{
 		"en"	"ML stats is off now"
 	}
-	"MLStatsON"
+	"MLStatsChatON"
 	{
 		"en"	"ML stats is on now"
 	}
-	"VelOFF"
+	"VelChatOFF"
 	{
 		"en"	"Hide velocity now"
 	}
-	"VelON"
+	"VelChatON"
 	{
 		"en"	"Show Velocity now"
 	}
-	"EndMsgOFF"
-	{
-		"en"	"End message is off now"
-	}
-	"EndMsgON"
-	{
-		"en"	"End message is on now"
-	}
 	"MLStatsMenuON"
 	{
-		"en"	"ML Stats [v]"
+		"en"	"✓ ML Stats"
 	}
 	"MLStatsMenuOFF"
 	{
-		"en"	"ML Stats [x]"
+		"en"	"☓ ML Stats"
 	}
 	"VelMenuON"
 	{
-		"en"	"Velocity [v]"
+		"en"	"✓ Velocity"
 	}
 	"VelMenuOFF"
 	{
-		"en"	"Velocity [x]"
+		"en"	"☓ Velocity"
 	}
 	"ButtonAnnouncerON"
 	{
@@ -147,14 +126,6 @@
 	{
 		"en"	"No"
 	}
-	/*"BlockON"
-	{
-		"en"	"Block enabled."
-	}
-	"BlockOFF"
-	{
-		"en"	"Block disabled."
-	}*/
 	"TeamConfirming"
 	{
 		"#format"	"{1:s}"
@@ -323,35 +294,35 @@
 	}
 	"BlockMenuON"
 	{
-		"en"	"Block [v]"
+		"en"	"✓ Block"
 	}
 	"BlockMenuOFF"
 	{
-		"en"	"Block [x]"
+		"en"	"☓ Block"
 	}
 	"AutoflashMenuON"
 	{
-		"en"	"Autoflash [v]"
+		"en"	"✓ Autoflash"
 	}
 	"AutoflashMenuOFF"
 	{
-		"en"	"Autoflash [x]"
+		"en"	"☓ Autoflash"
 	}
 	"AutoswitchMenuON"
 	{
-		"en"	"Autoswitch [v]"
+		"en"	"✓ Autoswitch"
 	}
 	"AutoswitchMenuOFF"
 	{
-		"en"	"Autoswitch [x]"
+		"en"	"☓ Autoswitch"
 	}
 	"BhopMenuON"
 	{
-		"en"	"Bhop [v]"
+		"en"	"✓ Bhop"
 	}
 	"BhopMenuOFF"
 	{
-		"en"	"Bhop [x]"
+		"en"	"☓ Bhop"
 	}
 	"BlockChatON"
 	{
@@ -385,11 +356,11 @@
 	{
 		"en"	"Restart"
 	}
-	"NoclipON"
+	"NoclipChatON"
 	{
 		"en"	"Noclip is turned on now."
 	}
-	"NoclipOFF"
+	"NoclipChatOFF"
 	{
 		"en"	"Noclip is turned off now."
 	}
@@ -463,10 +434,6 @@
 	{
 		"en"	"NEW SERVER RECORD!"
 	}
-	//"NewServerRecordDetailNotFirstHud"
-	//{
-	//	"en"	"NEW SERVER RECORD!"
-	//}
 	"NewServerRecordDetailNotFirstHud"
 	{
 		"#format"	"{1:s}"
@@ -491,27 +458,27 @@
 		"#format"	"{1:s}"
 		"en"	"{1}"
 	}
-	"AutoflashON"
+	"AutoflashChatON"
 	{
 		"en"	"Autoflashbang is turned on now."
 	}
-	"AutoflashOFF"
+	"AutoflashChatOFF"
 	{
 		"en"	"Autoflashbang is turned off now."
 	}
-	"AutoswitchON"
+	"AutoswitchChatON"
 	{
 		"en"	"Autoswitch is truned on now."
 	}
-	"AutoswitchOFF"
+	"AutoswitchChatOFF"
 	{
 		"en"	"Autoswitch is turned off now."
 	}
-	"BhopON"
+	"BhopChatON"
 	{
 		"en"	"Autobunnyhopping is turned on now."
 	}
-	"BhopOFF"
+	"BhopChatOFF"
 	{
 		"en"	"Autobunnyhoping is turned off now."
 	}
@@ -523,29 +490,22 @@
 	{
 		"en"	"Macro is enabled."
 	}
-	"EndMessageON"
+	"EndMessageChatON"
 	{
 		"en"	"End message is turned on now."
 	}
-	"EndMessageOFF"
+	"EndMessageChatOFF"
 	{
 		"en"	"End message is turned off now."
 	}
 	"EndMessageMenuON"
 	{
-		"en"	"End message [v]"
+		"en"	"✓ End message"
 	}
 	"EndMessageMenuOFF"
 	{
-		"en"	"End message [x]"
+		"en"	"☓ End message"
 	}
-	/*"Top10"
-	{
-		//"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
-		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
-		//"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}:{6}:{7}{default})"
-		"en"	"{1}. {2} and {3} finished map in ;#7CFC00{4} {default}(SR ;#FF0000+{5}{default})"
-	}*/
 	"Top10details"
 	{
 		"en"	"Place:\tTime:\t\tDifferent:\t\tTeam:"
@@ -740,5 +700,9 @@
 	"AskForRestart"
 	{
 		"en"	"Do you really want to restart?"
+	}
+	"YouAreDead"
+	{
+		"en"	"You are dead."
 	}
 }
