@@ -705,4 +705,8 @@
 	{
 		"en"	"You are dead."
 	}
+	"Game_radio"
+	{
+		"en"	"(RADIO)"
+	}
 }
