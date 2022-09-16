@@ -767,54 +767,7 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	Format(msgFormated, sizeof(msgFormated), "%s", msgBuffer);
 
 	char points[32] = "";
-	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
-
-	char color[8] = "";
-
-	if(precentage >= 90.0)
-	{
-		Format(color, sizeof(color), "FF8000");
-	}
-
-	else if(90.0 > precentage >= 70.0)
-	{
-		Format(color, sizeof(color), "A335EE");
-	}
-
-	else if(70.0 > precentage >= 55.0)
-	{
-		Format(color, sizeof(color), "0070DD");
-	}
-
-	else if(55.0 > precentage >= 40.0)
-	{
-		Format(color, sizeof(color), "1EFF00");
-	}
-
-	else if(40.0 > precentage >= 15.0)
-	{
-		Format(color, sizeof(color), "FFFFFF");
-	}
-
-	else if(15.0 > precentage >= 0.0)
-	{
-		Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
-	}
-
-	if(g_points[client] < 1000)
-	{
-		Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client]);
-	}
-
-	else if(g_points[client] >= 1000)
-	{
-		Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000);
-	}
-
-	else if(g_points[client] >= 1000000)
-	{
-		Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
-	}
+	GetPoints(client, points);
 
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec", false))
 	{
@@ -934,193 +887,101 @@ public void frame_SayText2(DataPack dp)
 	return;
 }
 
-public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) // New RadioText https://forums.alliedmods.net/showthread.php?t=183841
+public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //RadioText https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/server/cstrike/cs_player.cpp#L3944
 {
-    // Message is original ?
-    if(reliable == false)
-    {
-        return Plugin_Continue;
-    }
+	int dest = msg.ReadByte();
 
-    char buffer[256] = "";
-    buffer[0] = '\0';
+	int client = msg.ReadByte();
 
-    // At least one player get this message
-    if(playersNum > 0)
-    {
-		Handle pack;
+	char message[256] = "";
+	msg.ReadString(message, sizeof(message), false);
 
-		CreateDataTimer(0.1, timer_radiotxt, pack, TIMER_FLAG_NO_MAPCHANGE); // Start new message after this one
+	char param1[256] = "";
+	msg.ReadString(param1, sizeof(param1), false);
 
-		WritePackCell(pack, playersNum); // need first collect player amount in datapack
+	char param2[256] = "";
+	msg.ReadString(param2, sizeof(param2), false);
 
-		for(int i = 0; i < playersNum; i++) // List all players index in datapack
-		{
-			WritePackCell(pack, players[i]);
-		}
+	char param3[256] = "";
+	msg.ReadString(param3, sizeof(param3), false);
 
-		while(msg.ReadString(buffer, sizeof(buffer)) > 0) // Write all usermessage in datapack
-		{
-			WritePackString(pack, buffer);
-		}
+	char param4[256] = "";
+	msg.ReadString(param4, sizeof(param4), false);
 
-		WritePackString(pack, NULL_STRING); // NULL. Just some reason I add this.
+	DataPack dp = new DataPack();
 
-		ResetPack(pack); // Set position top of datapack;
+	dp.WriteCell(dest);
+	dp.WriteCell(client);
+	dp.WriteString(message);
+	dp.WriteString(param1);
+	dp.WriteString(param2);
+	dp.WriteString(param3);
+	dp.WriteString(param4);
 
-		return Plugin_Handled; // Block this original msg
-    }
+	RequestFrame(rf_radiotxt, dp);
 
-    return Plugin_Continue;
+	return Plugin_Handled;
 }
 
-public Action timer_radiotxt(Handle timer, Handle pack)
+public void rf_radiotxt(DataPack dp)
 {
-	// Copy players list from datapack
-	int playersNum = ReadPackCell(pack);
-	int[] players = new int[playersNum];
+	dp.Reset();
 
-	for(int i = 0; i < playersNum; i++)
+	int dest = dp.ReadCell();
+	int client = dp.ReadCell();
+
+	char message[256] = "";
+	dp.ReadString(message, sizeof(message));
+
+	char param1[256] = "";
+	dp.ReadString(param1, sizeof(param1));
+
+	char param2[256] = "";
+	dp.ReadString(param2, sizeof(param2));
+
+	char param3[256] = "";
+	dp.ReadString(param3, sizeof(param3));
+
+	char param4[256] = "";
+	dp.ReadString(param4, sizeof(param4));
+
+	char points[32] = "";
+	GetPoints(client, points);
+
+	ReplaceString(message, sizeof(message), "#", "", true);
+	ReplaceString(param2, sizeof(param2), "#Cstrike_TitlesTXT_", "", true);
+
+	Format(message, sizeof(message), "\x01[%s] \x03%s\x01 %T: %T", points, param1, message, client, param2, client);
+
+	if(client > 0 && IsClientInGame(client) == true)
 	{
-		players[i] = ReadPackCell(pack);
-	}
+		int clients[MAXPLAYER] = {0, ...};
+		int count = 0;
 
-	int pos = view_as<int>(GetPackPosition(pack));
-
-	// Start create new RadioText
-	char buffer[256] = "";
-	Handle hBf = INVALID_HANDLE;
-
-	for(int i = 0; i < playersNum; i++)
-	{
-		hBf = INVALID_HANDLE; // This not maybe usefull...
-
-		if(IsClientInGame(players[i]) == false || IsFakeClient(players[i]) == true) // Don't send new message unconnected and bots
+		for(int i = 1; i <= MaxClients; i++)
 		{
-			continue;
-		}
-
-		SetPackPosition(pack, view_as<DataPackPos>(pos));
-
-		//hBf = StartMessageOne("RadioText", players[i], USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
-		hBf = StartMessageOne("RadioText", players[i]);
-	
-	//	"RadioText" examples how those look. Translations found players ...cstrike/resource/cstrike_*.txt
-
-	//	\x03\x01#Game_radio_location
-	//	PlayerName
-	//	LocationName
-	//	#Cstrike_TitlesTXT_Go_go_go
-
-	//	\x03\x01#Game_radio
-	//	PlayerName
-	//	#Cstrike_TitlesTXT_Go_go_go
-
-	//	Sencond character in message can be anything... \x03(\xrandom crap), don't know why...
-
-		ReadPackString(pack, buffer, sizeof(buffer));
-		BfWriteString(hBf, buffer);
-
-		// Do extra writing when radiotext have location included
-		if(StrEqual(buffer[2], "#Game_radio_location", false) == true)
-		{
-			ReadPackString(pack, buffer, sizeof(buffer));
-			BfWriteString(hBf, buffer);
-		}
-
-		ReadPackString(pack, buffer, sizeof(buffer));
-
-		char sName[MAX_NAME_LENGTH] = "";
-		int client = 0;
-
-		for(int j = 1; j <= MaxClients; j++)
-		{
-			if(IsClientInGame(j) == true)
+			if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 			{
-				GetClientName(j, sName, sizeof(sName));
-
-				if(StrEqual(buffer, sName, true))
-				{
-					client = j;
-				}
+				clients[count++] = i;
 			}
 		}
 
-		char points[32] = "";
-		float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
+		Handle RadioText = StartMessage("RadioText", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
 
-		//PrintToServer("%f %i %N", precentage, client, client);
+		BfWrite bfmsg = UserMessageToBfWrite(RadioText);
 
-		char color[8] = "";
-
-		if(precentage >= 90.0)
-		{
-			Format(color, sizeof(color), "FF8000");
-			//PrintToServer("is latest rank color");
-		}
-
-		else if(90.0 > precentage >= 70.0)
-		{
-			Format(color, sizeof(color), "A335EE");
-		}
-
-		else if(70.0 > precentage >= 55.0)
-		{
-			Format(color, sizeof(color), "0070DD");
-		}
-
-		else if(55.0 > precentage >= 40.0)
-		{
-			Format(color, sizeof(color), "1EFF00");
-		}
-
-		else if(40.0 > precentage >= 15.0)
-		{
-			Format(color, sizeof(color), "FFFFFF");
-		}
-
-		else if(15.0 > precentage >= 0.0)
-		{
-			Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
-			//PrintToServer("Is lowest rank");
-		}
-
-		//PrintToServer("%s", color);
-
-		if(g_points[client] < 1000)
-		{
-			Format(points, sizeof(points), "\x07%s%i\x01", color, g_points[client]);
-		}
-
-		else if(g_points[client] >= 1000)
-		{
-			Format(points, sizeof(points), "\x07%s%iK\x01", color, g_points[client] / 1000);
-		}
-
-		else if(g_points[client] >= 1000000)
-		{
-			Format(points, sizeof(points), "\x07%s%iM\x01", color, g_points[client] / 1000000);
-		}
-
-		Format(buffer, sizeof(buffer), "\x01[%s] %s", points, buffer);
-
-		BfWriteString(hBf, buffer);
-
-		ReadPackString(pack, buffer, sizeof(buffer));
-
-		// translation title and not "Fire_in_the_hole" message.
-		if(StrContains(buffer, "#Cstrike_TitlesTXT_", false) == 0 && StrContains(buffer, "Fire_in_the_hole", false) == -1)
-		{
-			// Re-write radiotxt message here
-			Format(buffer, sizeof(buffer), "%T", buffer[19], players[i]);
-		}
-
-		BfWriteString(hBf, buffer);
+		bfmsg.WriteByte(dest);
+		bfmsg.WriteByte(client);
+		bfmsg.WriteString(message);
+		bfmsg.WriteString(param1);
+		bfmsg.WriteString(param2);
+		bfmsg.WriteString(param3);
+		bfmsg.WriteString(param4);
 
 		EndMessage();
 	}
 
-	return Plugin_Stop;
+	return;
 }
 
 public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -8399,6 +8260,60 @@ stock void FormatSeconds(float time, char[] format)
 public void rf_giveflashbang(int client)
 {
 	GiveFlashbang(client);
+
+	return;
+}
+
+stock void GetPoints(int client, char[] points)
+{
+	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
+
+	char color[8] = "";
+
+	if(precentage >= 90.0)
+	{
+		Format(color, sizeof(color), "FF8000");
+	}
+
+	else if(90.0 > precentage >= 70.0)
+	{
+		Format(color, sizeof(color), "A335EE");
+	}
+
+	else if(70.0 > precentage >= 55.0)
+	{
+		Format(color, sizeof(color), "0070DD");
+	}
+
+	else if(55.0 > precentage >= 40.0)
+	{
+		Format(color, sizeof(color), "1EFF00");
+	}
+
+	else if(40.0 > precentage >= 15.0)
+	{
+		Format(color, sizeof(color), "FFFFFF");
+	}
+
+	else if(15.0 > precentage >= 0.0)
+	{
+		Format(color, sizeof(color), "9D9D9D"); //https://wowpedia.fandom.com/wiki/Quality
+	}
+
+	if(g_points[client] < 1000)
+	{
+		Format(points, 32, "\x07%s%i\x01", color, g_points[client]);
+	}
+
+	else if(g_points[client] >= 1000)
+	{
+		Format(points, 32, "\x07%s%iK\x01", color, g_points[client] / 1000);
+	}
+
+	else if(g_points[client] >= 1000000)
+	{
+		Format(points, 32, "\x07%s%iM\x01", color, g_points[client] / 1000000);
+	}
 
 	return;
 }
