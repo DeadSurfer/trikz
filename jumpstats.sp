@@ -853,7 +853,7 @@ stock void Sync(int client, int buttons, int mouse[2])
 		}
 	}
 
-	else if(!(g_dot[client] < -0.9) && !(g_dot[client] >-0.9)) //sideways
+	else if(!(g_dot[client] < -0.9) && !(g_dot[client] > 0.9)) //sideways
 	{
 		if(g_jumped[client] == true || g_ladder[client] == true)
 		{
