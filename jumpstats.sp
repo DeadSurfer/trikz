@@ -71,6 +71,7 @@ DynamicHook g_teleport = null;
 float g_oldVel[MAXPLAYER][3];
 float g_loss[MAXPLAYER] = {0.0, ...};
 float g_maxVel[MAXPLAYER] = {0.0, ...};
+bool g_dotNormal[MAXPLAYER] = {false, ...};
 
 public Plugin myinfo =
 {
@@ -239,6 +240,8 @@ public Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcas
 
 		g_oldVel[client][0] = flatVel[0];
 		g_oldVel[client][1] = flatVel[1];
+
+		g_dotNormal[client] = true;
 	}
 
 	g_skyOrigin[client] = GetGroundPos(client);
@@ -266,7 +269,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && (g_jumped[client] == true || g_ladder[client] == true))
 		{
-			if(GetEngineTime() - g_dotTime[client] < 0.4)
+			if(GetEngineTime() - g_dotTime[client] <= 0.3 || g_dotNormal[client] == false)
 			{
 				float eye[3] = {0.0, ...};
 
@@ -428,6 +431,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 
 		g_strafeFirst[client] = true;
+
+		g_dotNormal[client] = false;
 	}
 
 	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && g_ladder[client])
@@ -446,69 +451,80 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		float origin[3] = {0.0, ...};
 		GetClientAbsOrigin(client, origin);
 
-		if(-3.0 <= GetGroundPos(client) - g_origin[client][2] <= 3.0)
+		//PrintToServer("%f", GetGroundPos(client) - g_origin[client][2]);
+
+		char flat[32] = "";
+
+		if(GetGroundPos(client) - g_origin[client][2] > 1.0)
+		{
+			Format(flat, 32, "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+		}
+
+		else if(GetGroundPos(client) - g_origin[client][2] < -4.0)
+		{
+			Format(flat, 32, "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+		}
+
+		//if(-4.0 <= GetGroundPos(client) - g_origin[client][2] <= 1.0)
 		{
 			float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0));
 
 			float sync = -1.0;
 
-			if(g_syncTick[client] > 0)
+			sync += float(g_syncTick[client]);
+
+			if(sync == -1.0)
 			{
-				sync += float(g_syncTick[client]);
+				sync = 0.0;
+			}
 
-				if(sync == -1.0)
+			sync /= float(g_tickAir[client]);
+			sync *= 100.0;
+
+			//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
+
+			if(g_jumpstats[client] == true)
+			{
+				if(1000.0 > distance >= 22.0) //190.0
 				{
-					sync = 0.0;
+					Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+
+					Handle KeyHintText = StartMessageOne("KeyHintText", client);
+
+					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+					bfmsg.WriteByte(true);
+					bfmsg.WriteString(print);
+
+					EndMessage();
+
+					PrintToConsole(client, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 				}
+			}
 
-				sync /= float(g_tickAir[client]);
-				sync *= 100.0;
-
-				//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
-
-				if(g_jumpstats[client] == true)
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
-					if(190.0 > distance >= 22.0)
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+					if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 					{
-						Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-
-						Handle KeyHintText = StartMessageOne("KeyHintText", client);
-
-						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
-						bfmsg.WriteByte(true);
-						bfmsg.WriteString(print);
-
-						EndMessage();
-
-						PrintToConsole(client, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-					}
-				}
-
-				for(int i = 1; i <= MaxClients; i++)
-				{
-					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
-
-						if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
+						if(190.0 > distance >= 22.0)
 						{
-							if(190.0 > distance >= 22.0)
-							{
-								Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+							Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 
-								Handle KeyHintText = StartMessageOne("KeyHintText", i);
+							Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
-								BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+							BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
-								bfmsg.WriteByte(true);
-								bfmsg.WriteString(print);
+							bfmsg.WriteByte(true);
+							bfmsg.WriteString(print);
 
-								EndMessage();
+							EndMessage();
 
-								PrintToConsole(i, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-							}
+							PrintToConsole(i, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 						}
 					}
 				}
