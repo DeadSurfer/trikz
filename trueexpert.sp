@@ -8173,7 +8173,7 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 	return color;
 }*/
 
-public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+stock MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
 {
 	bool originNull = DHookIsNullParam(hParams, 1);
 	
@@ -8185,16 +8185,6 @@ public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.
 	float origin[3] = {0.0, ...};
 	DHookGetParamVector(hParams, 1, origin);
 
-	bool velNull = DHookIsNullParam(hParams, 3);
-
-	if(velNull == true)
-	{
-		return MRES_Ignored;
-	}
-
-	float vel[3] = {0.0, ...};
-	DHookGetParamVector(hParams, 3, vel);
-
 	if(g_mlsCount[client] > 0)
 	{
 		g_teleported[client] = true;
@@ -8202,13 +8192,12 @@ public MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.
 
 	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 
-	hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell, Param_Array, Param_Array);
+	hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell, Param_Array);
 
 	Call_StartForward(hForward);
 	
 	Call_PushCell(client);
 	Call_PushArray(origin, 3);
-	Call_PushArray(vel, 3);
 
 	Call_Finish();
 	
