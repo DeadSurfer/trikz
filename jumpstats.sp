@@ -217,7 +217,7 @@ public Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcas
 
 		g_origin[client][0] = origin[0];
 		g_origin[client][1] = origin[1];
-		g_origin[client][2] = g_runboost[client]  == true ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client);
+		g_origin[client][2] = g_runboost[client] == true ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client);
 
 		float vel[3] = {0.0, ...};
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
@@ -328,7 +328,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(g_jumpstats[client] == true)
 			{
-				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
+				PrintToServer("%i", g_teleported[client]);
+				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", client);
 
@@ -339,12 +340,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				EndMessage();
 
-				PrintToConsole(client, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
+				PrintToConsole(client, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 			}
 
 			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true)
 			{
-				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
+				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
 
@@ -355,7 +356,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				EndMessage();
 
-				PrintToConsole(g_rbBooster[client], "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
+				PrintToConsole(g_rbBooster[client], "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 			}
 		}
 
@@ -370,7 +371,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
 					{
-						Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
+						Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
@@ -381,7 +382,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 						EndMessage();
 
-						PrintToConsole(i, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client]  == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
+						PrintToConsole(i, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f%%, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]);
 					}
 				}
 			}
@@ -654,7 +655,6 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 					}
 				}
 
-				//if(g_entityFlags[client] & FL_INWATER ? velNew[2] != 0.0 : FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					char print[256] = "";
@@ -854,7 +854,7 @@ stock void Sync(int client, int buttons, int mouse[2])
 		}
 	}
 
-	else if(!(g_dot[client] < -0.9) && !(g_dot[client] >-0.9))//sideways
+	else if(!(g_dot[client] < -0.9) && !(g_dot[client] >-0.9)) //sideways
 	{
 		if(g_jumped[client] == true || g_ladder[client] == true)
 		{
@@ -948,26 +948,33 @@ stock void Gain(int client, float vel[3], float angles[3])
 	return;
 }
 
-public MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+stock MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
 {
-	bool bOriginNull = DHookIsNullParam(hParams, 1);
+	bool originNull = DHookIsNullParam(hParams, 1);
 	
-	if(bOriginNull)
+	if(originNull == true)
 	{
 		return MRES_Ignored;
 	}
 	
-	//Float origin[3];
-	//DHookGetParamVector(hParams, 1, origin);
+	float origin[3] = {0.0, ...};
+	DHookGetParamVector(hParams, 1, origin);
+
+	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+
+	hForward = new GlobalForward("JS_OnTeleport", ET_Ignore, Param_Cell, Param_Array);
+
+	Call_StartForward(hForward);
 	
-	//CheckStuck(client, origin);
-	g_teleported[client] = true;
-	//PrintToServer("Teleported.");
+	Call_PushCell(client);
+	Call_PushArray(origin, 3);
+
+	Call_Finish();
 	
 	return MRES_Ignored;
 }
 
-public void Trikz_Teleport(int client)
+public void Trikz_OnTeleport(int client, float origin[3], float vel[3])
 {
 	g_teleported[client] = true;
 
