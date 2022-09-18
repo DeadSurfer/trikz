@@ -328,7 +328,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(g_jumpstats[client] == true)
 			{
-				PrintToServer("%i", g_teleported[client]);
 				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f％\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", client);
