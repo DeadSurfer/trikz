@@ -470,7 +470,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(190.0 > distance >= 22.0)
 					{
-						Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f u/s\n, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+						Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", client);
 
@@ -481,7 +481,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 						EndMessage();
 
-						PrintToConsole(client, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+						PrintToConsole(client, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 					}
 				}
 
@@ -496,7 +496,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						{
 							if(190.0 > distance >= 22.0)
 							{
-								Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f\nGain: %.0f u/s\n, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+								Format(print, sizeof(print), "%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 
 								Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
@@ -507,7 +507,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 								EndMessage();
 
-								PrintToConsole(i, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client]);
+								PrintToConsole(i, "%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 							}
 						}
 					}
