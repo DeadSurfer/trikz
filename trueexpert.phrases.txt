@@ -169,22 +169,22 @@
 	}
 	"DevmapWillBeDisabled"
 	{
-		"#format"	"{1:i},{2:i},{3:i}"
+		"#format"	"{1:f},{2:i},{3:i}"
 		"en"	"Devmap will be disabled. \"Yes\" chose {1}%%% or {2} of {3} players."
 	}
 	"DevmapWillBeEnabled"
 	{
-		"#format"	"{1:i},{2:i},{3:i}"
+		"#format"	"{1:f},{2:i},{3:i}"
 		"en"	"Devmap will be enabled. \"Yes\" chose {1}%%% or {2} of {3} players."
 	}
 	"DevmapContinue"
 	{
-		"#format"	"{1:i},{2:i},{3:i}"
+		"#format"	"{1:f},{2:i},{3:i}"
 		"en"	"Devmap will be be continue. \"No\" chose {1}%%% or {2} of {3} players."
 	}
 	"DevmapWillNotBe"
 	{
-		"#format"	"{1:i},{2:i},{3:i}"
+		"#format"	"{1:f},{2:i},{3:i}"
 		"en"	"Devmap will not be enabled. \"No\" chose {1}%%% or {2} of {3} players."
 	}
 	"AwayFromKeyboard"
