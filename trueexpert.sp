@@ -39,7 +39,7 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
-#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
+#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1) == true)
 #define debug false
 
 int g_partner[MAXPLAYER] = {0, ...};
@@ -157,7 +157,7 @@ int g_afkClient = 0;
 bool g_hudVel[MAXPLAYER] = {false, ...};
 float g_hudTime[MAXPLAYER] = {0.0, ...};
 char g_clantag[MAXPLAYER][2][256];
-float g_mlsVel[MAXPLAYER][2][2];
+float g_mlsVel[MAXPLAYER][2][3];
 int g_mlsCount[MAXPLAYER] = {0, ...};
 char g_mlsPrint[MAXPLAYER][100][256];
 int g_mlsFlyer[MAXPLAYER] = {0, ...};
@@ -203,7 +203,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.52",
+	version = "4.53",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -6753,7 +6753,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				GetClientAbsOrigin(client, g_mlsDistance[client][1]);
 
-				RequestFrame(rf_MLStats, client);
+				MLStats(client, true);
 			}
 		}
 	}
@@ -6865,24 +6865,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(g_flashbangDoor[client][0] == true)
 		{
 			FakeClientCommandEx(client, "use weapon_flashbang");
+
 			g_flashbangDoor[client][0] = false;
 		}
 
 		if(fix >= 0.15 && g_flashbangDoor[client][1] == true)
 		{
 			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
+
 			g_flashbangDoor[client][1] = false;
 		}
 	}
 
 	return Plugin_Continue;
-}
-
-public void rf_MLStats(int client)
-{
-	MLStats(client, true);
-
-	return;
 }
 
 public Action ProjectileBoostFix(int entity, int other)
@@ -7070,7 +7065,7 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
-						Format(format, sizeof(format), "%T", "DevmapWillBeDisabled", i, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(format, sizeof(format), "%T", "DevmapWillBeDisabled", i, (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
@@ -7082,7 +7077,7 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
-						Format(format, sizeof(format), "%T", "DevmapWillBeEnabled", i, (g_devmapCount[1] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(format, sizeof(format), "%T", "DevmapWillBeEnabled", i, (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
@@ -7099,7 +7094,7 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						Format(format, sizeof(format), "%T", "DevmapContinue", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(format, sizeof(format), "%T", "DevmapContinue", i, (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
@@ -7111,7 +7106,7 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						Format(format, sizeof(format), "%T", "DevmapWillNotBe", i, (g_devmapCount[0] / (g_devmapCount[0] + g_devmapCount[1])) * 100, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(format, sizeof(format), "%T", "DevmapWillNotBe", i, (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
@@ -7484,14 +7479,16 @@ public Action cmd_vel(int client, int args)
 stock void VelHud(int client)
 {
 	float vel[3] = {0.0, ...};
-
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
+	vel[2] = 0.0;
 
-	float velXY = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
+	//float velXY = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
+
+	float velFlat = GetVectorLength(vel);
 
 	if(g_hudVel[client] == true)
 	{
-		PrintHintText(client, "%.0f", velXY);
+		PrintHintText(client, "%.0f", velFlat);
 	}
 
 	for(int i = 1; i <= MaxClients; i++)
@@ -7503,7 +7500,7 @@ stock void VelHud(int client)
 
 			if(observerMode < 7 && observerTarget == client && g_hudVel[i] == true)
 			{
-				PrintHintText(i, "%.0f", velXY);
+				PrintHintText(i, "%.0f", velFlat);
 			}
 		}
 	}
@@ -7950,8 +7947,8 @@ public Action timer_clantag(Handle timer, int client)
 
 stock void MLStats(int client, bool ground)
 {
-	float velPre = SquareRoot(Pow(g_mlsVel[client][0][0], 2.0) + Pow(g_mlsVel[client][0][1], 2.0));
-	float velPost = SquareRoot(Pow(g_mlsVel[client][1][0], 2.0) + Pow(g_mlsVel[client][1][1], 2.0));
+	float velPre = GetVectorLength(g_mlsVel[client][0]);
+	float velPost = GetVectorLength(g_mlsVel[client][1]);
 
 	int count = g_mlsCount[client];
 
