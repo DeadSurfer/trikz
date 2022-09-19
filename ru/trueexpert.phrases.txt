@@ -177,22 +177,22 @@
 	}
 	"DevmapWillBeDisabled"
 	{
-		"#format"	"{1:f},{2:i},{3:i}"
+		"#format"	"{1:s},{2:i},{3:i}"
 		"ru"	"Devmap будет выключен. \"Да\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"DevmapWillBeEnabled"
 	{
-		"#format"	"{1:f},{2:i},{3:i}"
+		"#format"	"{1:s},{2:i},{3:i}"
 		"ru"	"Devmap будет включен. \"Да\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"DevmapContinue"
 	{
-		"#format"	"{1:f},{2:i},{3:i}"
+		"#format"	"{1:s},{2:i},{3:i}"
 		"ru"	"Devmap будет продолжен. \"Нет\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"DevmapWillNotBe"
 	{
-		"#format"	"{1:f},{2:i},{3:i}"
+		"#format"	"{1:s},{2:i},{3:i}"
 		"ru"	"Devmap не будет включен. \"Нет\" выбрали {1}%%% или {2} из {3} игроков."
 	}
 	"AwayFromKeyboard"
