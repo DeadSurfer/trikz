@@ -7056,6 +7056,7 @@ stock void Devmap(bool force)
 	if(force == true || g_voters == 0)
 	{
 		char format[256] = "";
+		char float_[8] = "";
 
 		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] >= g_devmapCount[0])
 		{
@@ -7065,7 +7066,8 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
-						Format(format, sizeof(format), "%T", "DevmapWillBeDisabled", i, (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
+						Format(format, sizeof(format), "%T", "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
@@ -7077,7 +7079,8 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
-						Format(format, sizeof(format), "%T", "DevmapWillBeEnabled", i, (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
+						Format(format, sizeof(format), "%T", "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
@@ -7094,7 +7097,8 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						Format(format, sizeof(format), "%T", "DevmapContinue", i, (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
+						Format(format, sizeof(format), "%T", "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
@@ -7106,7 +7110,8 @@ stock void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						Format(format, sizeof(format), "%T", "DevmapWillNotBe", i, (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
+						Format(format, sizeof(format), "%T", "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, format);
 					}
 				}
