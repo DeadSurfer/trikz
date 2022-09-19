@@ -21,16 +21,17 @@
 	any other work released this way by its authors. You can apply it to
 	your programs, too.
 */
+#include <sdktools>
+#include <sdkhooks>
+#include <cstrike>
+
 #define semicolon 1
 #define newdecls required
 #define MAXPLAYER MAXPLAYERS + 1
 
-#include <sdktools>
-#include <sdkhooks>
+char g_file[PLATFORM_MAX_PATH] = "";
 
-char g_file[PLATFORM_MAX_PATH];
-
-int g_hat[MAXPLAYERS];
+int g_hat[MAXPLAYERS] = {0, ...};
 
 native int Trikz_GetClientPartner(int client);
 
@@ -39,14 +40,12 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.1",
+	version = "1.2",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
-	//AutoExecConfig(true); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
-
 	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
 	HookEvent("player_spawn", OnSpawn, EventHookMode_PostNoCopy);
 	HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
@@ -95,7 +94,7 @@ public void OnMapStart()
 
 		char filename[4][PLATFORM_MAX_PATH];
 
-		FileType type;
+		FileType type = FileType_Unknown;
 
 		char pathFull[4][PLATFORM_MAX_PATH];
 
@@ -117,17 +116,17 @@ public void OnMapStart()
 		delete dir;
 	}
 
-	char map[192];
+	char map[192] = "";
 	GetCurrentMap(map, sizeof(map));
 
-	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/fakeexpert/");
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/trueexpert/");
 
 	if(DirExists(path[0]) == false)
 	{
 		CreateDirectory(path[0], 511);
 	}
 
-	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/fakeexpert/xmas/");
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/trueexpert/xmas/");
 
 	if(DirExists(path[0]) == false)
 	{
@@ -152,14 +151,14 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 	if(kv.ImportFromFile(g_file) == true && kv.GotoFirstSubKey() == true)
 	{
-		char nameKey[32];
+		char nameKey[32] = "";
 
 		do
 		{
 			if(kv.GetSectionName(nameKey, sizeof(nameKey)) == true)
 			{
-				float origin[3] = {0.0, 0.0, 0.0};
-				float angles[3] = {0.0, 0.0, 0.0};
+				float origin[3] = {0.0, ...};
+				float angles[3] = {0.0, ...};
 
 				char type[64] = "";
 
@@ -174,7 +173,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 			}
 		}
 
-		while(kv.GotoNextKey());
+		while(kv.GotoNextKey(true) == true);
 	}
 
 	delete kv;
@@ -249,22 +248,24 @@ stock void RemoveHat(int client)
 
 		g_hat[client] = 0;
 	}
+
+	return;
 }
 
 stock void CreateHat(int client)
 {
-	if(0 < client <= MaxClients && IsPlayerAlive(client) == true && (GetClientTeam(client) == 2 || GetClientTeam(client) == 3) && g_hat[client] == 0)
+	if(0 < client <= MaxClients && IsPlayerAlive(client) == true && (GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT) && g_hat[client] == 0)
 	{
-		float origin[3] = {0.0, 0.0, 0.0};
-		float angles[3] = {0.0, 0.0, 0.0};
-		float forward_[3] = {0.0, 0.0, 0.0};
-		float right[3] = {0.0, 0.0, 0.0};
-		float up[3] = {0.0, 0.0, 0.0};
+		float origin[3] = {0.0, ...};
+		float angles[3] = {0.0, ...};
+		float forward_[3] = {0.0, ...};
+		float right[3] = {0.0, ...};
+		float up[3] = {0.0, ...};
 
 		GetClientAbsOrigin(client, origin);
 		GetClientAbsAngles(client, angles);
 
-		float offset[3] = {0.0, 0.0, 0.0};
+		float offset[3] = {0.0, ...};
 
 		offset[1] = -2.0;
 		offset[2] = 6.0;
@@ -295,6 +296,8 @@ stock void CreateHat(int client)
 		SetVariantString("forward");
 		AcceptEntityInput(g_hat[client], "SetParentAttachmentMaintainOffset", g_hat[client], g_hat[client]);
 	}
+
+	return;
 }
 
 public Action SDKTransmit(int entity, int client)
@@ -378,30 +381,17 @@ public Action cmd_xmas(int client, int args)
 	return Plugin_Continue;
 }
 
-public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+stock void Xmas(int client, char[] type)
 {
-	if(IsChatTrigger() == false)
-	{
-		if(StrEqual(sArgs, "xmas", false) == true)
-		{
-			cmd_xmas(client, 0);
-		}
-	}
-
-	return Plugin_Continue;
-}
-
-stock void Xmas(int client, char[] type = "")
-{
-	float origin[3] = {0.0, 0.0, 0.0};
-	float angles[3] = {0.0, 0.0, 0.0};
+	float origin[3] = {0.0, ...};
+	float angles[3] = {0.0, ...};
 
 	GetClientEyePosition(client, origin);
 	GetClientEyeAngles(client, angles);
 
 	TR_TraceRayFilter(origin, angles, MASK_SOLID, RayType_Infinite, Trace_FilterPlayers, client);
 
-	if(TR_DidHit() == true)
+	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
 		TR_GetEndPosition(origin);
 		TR_GetPlaneNormal(null, angles);
@@ -490,7 +480,7 @@ bool Trace_FilterPlayers(int entity, int contentsMask, any data)
 
 stock void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 {
-	char model[PLATFORM_MAX_PATH] = "models/fakeexpert/xmas/";
+	char model[PLATFORM_MAX_PATH] = "models/trueexpert/xmas/";
 
 	if(StrEqual(type, "tree", false)) Format(model, PLATFORM_MAX_PATH, "%sxmastree_mini.mdl", model);
 	else if(StrEqual(type, "tree_big", false)) Format(model, PLATFORM_MAX_PATH, "%sxmastree.mdl", model);
@@ -538,7 +528,7 @@ stock void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	return;
 }
 
-int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
+public int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -553,7 +543,7 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 
 				if(IsValidEntity(entity) == true)
 				{
-					float origin[3] = {0.0, 0.0, 0.0};
+					float origin[3] = {0.0, ...};
 
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", origin);
 
@@ -583,7 +573,7 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 							}
 						}
 
-						while(kv.GotoNextKey());
+						while(kv.GotoNextKey(true) == true);
 					}
 
 					delete kv;
@@ -599,7 +589,7 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 
-	return 0;
+	return view_as<int>(action);
 }
 //https://forums.alliedmods.net/showthread.php?t=303402 xmas item origin code
 //https://forums.alliedmods.net/showthread.php?t=174714 xmas player hat origin code
