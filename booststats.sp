@@ -36,23 +36,23 @@
 #define newdecls required
 
 #define MAXPLAYER MAXPLAYERS + 1
-#define IsClientValid(%1) (0 < %1 <= MaxClients)
+#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1) == true)
 
 float g_throwTime[MAXPLAYER][2];
-float g_projectileVel[MAXPLAYER];
-float g_vel[MAXPLAYER];
-bool g_boostStats[MAXPLAYER];
+float g_projectileVel[MAXPLAYER] = {0.0, ...};
+float g_vel[MAXPLAYER] = {0.0, ...};
+bool g_boostStats[MAXPLAYER] = {false, ...};
 float g_angles[MAXPLAYER][3];
 Handle g_cookie = INVALID_HANDLE;
 native int Trikz_GetClientPartner(int client);
-bool g_duck[MAXPLAYER];
+bool g_duck[MAXPLAYER] = {false, ...};
 
 public Plugin myinfo =
 {
 	name = "Boost stats",
 	author = "Smesh",
 	description = "Measures time between attack and jump.",
-	version = "0.36",
+	version = "0.37",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -134,7 +134,7 @@ public void CalculationProcess(int client)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "flashbang_projectile", false) == true)
+	if(StrContains(classname, "projectile", false) != -1)
 	{
 		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile);
 	}
@@ -179,7 +179,7 @@ public Action SDKStartTouch(int entity, int other)
 		char classname[32] = "";
 		GetEntityClassname(entity, classname, sizeof(classname));
 
-		if(StrEqual(classname, "flashbang_projectile", false) == true)
+		if(StrContains(classname, "projectile", false) != -1)
 		{
 			float vel[3] = {0.0, 0.0, 0.0};
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
@@ -214,6 +214,7 @@ stock void DoPrint(int client)
 	if(IsClientInGame(client) == true)
 	{
 		float time = g_throwTime[client][1] - g_throwTime[client][0];
+		
 		int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
 
 		if(time < 0.3)
