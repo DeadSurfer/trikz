@@ -659,7 +659,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 				float velNew[3] = {0.0, ...};
 				//velNew[0] = velFlyer[0];
 				//velNew[1] = velFlyer[1];
-				velNew[2] = velBooster[2] * 3.15;
+				velNew[2] = velBooster[2] * 3.572;
 
 				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 
@@ -670,7 +670,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 				
 				else if(!(g_entityFlags[client] & FL_INWATER))
 				{
-					if(velFlyer[2] > -770.0)
+					if(velFlyer[2] > -470.0)
 					{
 						if(velNew[2] >= 770.0)
 						{
@@ -678,7 +678,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 						}
 					}
 
-					else if(velFlyer[2] <= -770.0)
+					else if(velFlyer[2] <= -470.0)
 					{
 						if(velNew[2] >= 800.0)
 						{
@@ -732,7 +732,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
-							if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
+							if(observerMode < 7 && (observerTarget == client || observerTarget == other) && g_jumpstats[i] == true)
 							{
 								Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 
