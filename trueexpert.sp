@@ -562,7 +562,7 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 			results.FetchString(0, map, sizeof(map));
 
 			char query[512] = "";
-			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s' AND time != 0), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' AND time != 0 ORDER BY time", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s' AND time != 0), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 			g_mysql.Query(SQLRecalculatePoints, query, _, DBPrio_Normal);
 		}
 	}
@@ -1422,7 +1422,7 @@ public void OnClientPutInServer(int client)
 
 		int steamid = GetSteamAccountID(client);
 
-		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time LIMIT 1", steamid, steamid, g_map);
+		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
 		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client), DBPrio_Normal);
 	}
 
@@ -1624,6 +1624,20 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 			char query[512] = ""; //https://forums.alliedmods.net/showthread.php?t=261378
 			int steamid = GetSteamAccountID(client);
 
+			if(results.FetchRow() == false)
+			{
+				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
+				g_mysql.Query(SQLUserAdded, query, _, DBPrio_Normal);
+
+				#if debug == true
+				PrintToServer("SQLAddUser: User (%N) trying to add to database...", client);
+				#endif
+
+				return;
+			}
+
+			results.Rewind();
+
 			if(results.FetchRow() == true)
 			{
 				Format(query, sizeof(query), "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid);
@@ -1631,16 +1645,6 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 
 				#if debug == true
 				PrintToServer("SQLAddUser: User (%N) selecting...", client);
-				#endif
-			}
-
-			else if(results.FetchRow() == false)
-			{
-				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
-				g_mysql.Query(SQLUserAdded, query, _, DBPrio_Normal);
-
-				#if debug == true
-				PrintToServer("SQLAddUser: User (%N) trying to add to database...", client);
 				#endif
 			}
 		}
@@ -1682,14 +1686,16 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 			char query[512] = "";
 			int steamid = GetSteamAccountID(client);
 
+			if(results.FetchRow() == false)
+			{
+				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
+			}
+
+			results.Rewind();
+
 			if(results.FetchRow() == true)
 			{
 				Format(query, sizeof(query), "UPDATE users SET username = \"%N\", lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid);
-			}
-
-			else if(results.FetchRow() == false)
-			{
-				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
 			}
 
 			g_mysql.Query(SQLUpdateUserSuccess, query, GetClientSerial(client), DBPrio_High);
@@ -1763,14 +1769,18 @@ public void SQLGetServerRecord(Database db, DBResultSet results, const char[] er
 
 	else if(strlen(error) == 0)
 	{
+		if(results.FetchRow() == false)
+		{
+			g_ServerRecordTime = 0.0;
+
+			return;
+		}
+
+		results.Rewind();
+
 		if(results.FetchRow() == true)
 		{
 			g_ServerRecordTime = results.FetchFloat(0);
-		}
-
-		else if(results.FetchRow() == false)
-		{
-			g_ServerRecordTime = 0.0;
 		}
 	}
 
@@ -1790,14 +1800,18 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 
 		if(IsClientValid(client) == true)
 		{
+			if(results.FetchRow() == false)
+			{
+				g_haveRecord[client] = 0.0;
+
+				return;
+			}
+
+			results.Rewind();
+
 			if(results.FetchRow() == true)
 			{
 				g_haveRecord[client] = results.FetchFloat(0);
-			}
-
-			else if(results.FetchRow() == false)
-			{
-				g_haveRecord[client] = 0.0;
 			}
 		}
 	}
@@ -2615,16 +2629,20 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 
 		if(IsClientValid(client) == true)
 		{
+			if(results.FetchRow() == false)
+			{
+				g_teamRecord[client] = 0.0;
+				g_teamRecord[g_partner[client]] = 0.0;
+
+				return;
+			}
+
+			results.Rewind();
+
 			if(results.FetchRow() == true)
 			{
 				g_teamRecord[client] = results.FetchFloat(0);
 				g_teamRecord[g_partner[client]] = results.FetchFloat(0);
-			}
-
-			else if(results.FetchRow() == false)
-			{
-				g_teamRecord[client] = 0.0;
-				g_teamRecord[g_partner[client]] = 0.0;
 			}
 		}
 	}
@@ -2925,7 +2943,7 @@ public Action cmd_top10(int client, int args)
 
 public void Top10()
 {
-	if(g_top10ac < GetGameTime())
+	if(g_top10ac <= GetGameTime())
 	{
 		g_top10ac = GetGameTime() + 10.0;
 
@@ -2963,7 +2981,9 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 
 	else if(strlen(error) == 0)
 	{
-		if(results.FetchRow() == false)
+		bool bResults = results.FetchRow();
+
+		if(bResults == false)
 		{
 			char format[256] = "";
 
@@ -2980,10 +3000,10 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 			}
 		}
 
-		else if(results.FetchRow() == true)
+		else if(bResults == true)
 		{
 			char query[512] = "";
-			Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time LIMIT 10", g_map);
+			Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 10", g_map);
 			g_mysql.Query(SQLTop10_2, query, _, DBPrio_Normal);
 		}
 	}
@@ -3020,6 +3040,8 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 		}
 
 		g_top10Count = 0;
+
+		results.Rewind();
 
 		while(results.FetchRow() == true)
 		{
@@ -4876,7 +4898,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, true, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, true, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time ASC LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLUpdateRecord, query, _, DBPrio_Normal);
 
 							g_haveRecord[other] = time;
@@ -6007,19 +6029,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 		char query[512] = "";
 
-		if(results.FetchRow() == true)
-		{
-			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
-
-			DataPack dp = new DataPack();
-
-			dp.WriteCell(GetClientSerial(other));
-			dp.WriteCell(cpnum);
-
-			g_mysql.Query(SQLCPSelect2, query, dp, DBPrio_Normal);
-		}
-
-		else if(results.FetchRow() == false)
+		if(results.FetchRow() == false)
 		{
 			float time = g_timerTime[other];
 
@@ -6046,6 +6056,22 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 			Call_PushString("FirstCPRecord1");
 
 			Call_Finish();
+
+			return;
+		}
+
+		results.Rewind();
+
+		if(results.FetchRow() == true)
+		{
+			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
+
+			DataPack dp = new DataPack();
+
+			dp.WriteCell(GetClientSerial(other));
+			dp.WriteCell(cpnum);
+
+			g_mysql.Query(SQLCPSelect2, query, dp, DBPrio_Normal);
 		}
 	}
 
@@ -6074,6 +6100,30 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 		char timeSR[24] = "+00:00:00";
 
 		int partner = g_partner[other];
+
+		if(results.FetchRow() == false)
+		{
+			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
+			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
+
+			static GlobalForward hForward = null;
+
+			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+
+			Call_StartForward(hForward);
+
+			Call_PushCell(other);
+			Call_PushCell(partner);
+			Call_PushFloat(time);
+			Call_PushFloat(0.0);
+			Call_PushString("FirstCPRecord2");
+
+			Call_Finish();
+
+			return;
+		}
+
+		results.Rewind();
 
 		if(results.FetchRow() == true)
 		{
@@ -6131,26 +6181,6 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				Call_Finish();
 			}
 		}
-
-		else if(results.FetchRow() == false)
-		{
-			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
-			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
-
-			static GlobalForward hForward = null;
-
-			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
-			Call_StartForward(hForward);
-
-			Call_PushCell(other);
-			Call_PushCell(partner);
-			Call_PushFloat(time);
-			Call_PushFloat(0.0);
-			Call_PushString("FirstCPRecord2");
-
-			Call_Finish();
-		}
 	}
 
 	return;
@@ -6181,9 +6211,13 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 		{
 			Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
 			g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_Normal);
+
+			return;
 		}
 
-		else if(results.FetchRow() == true)
+		results.Rewind();
+
+		if(results.FetchRow() == true)
 		{
 			Format(query, sizeof(query), "SELECT tries FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
 			g_mysql.Query(SQLSetTries2, query, GetClientSerial(client), DBPrio_Normal);
@@ -6271,7 +6305,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 		g_dbPassed = true; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 
 		char query[512] = "";
-		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' AND time != 0 ORDER BY time LIMIT 1", g_map);
+		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", g_map);
 		g_mysql.Query(SQLGetServerRecord, query, _, DBPrio_Normal);
 
 		RecalculatePoints();
