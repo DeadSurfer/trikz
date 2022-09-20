@@ -562,7 +562,7 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 			results.FetchString(0, map, sizeof(map));
 
 			char query[512] = "";
-			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s'), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' ORDER BY time", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s' AND time != 0), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' AND time != 0 ORDER BY time", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 			g_mysql.Query(SQLRecalculatePoints, query, _, DBPrio_Normal);
 		}
 	}
@@ -2928,6 +2928,10 @@ public void Top10()
 	if(g_top10ac < GetGameTime())
 	{
 		g_top10ac = GetGameTime() + 10.0;
+
+		char query[512] = "";
+		Format(query, sizeof(query), "SELECT * FROM records LIMIT 1");
+		g_mysql.Query(SQLTop10, query, _, DBPrio_Normal);
 	}
 
 	else if(g_top10ac > GetGameTime())
@@ -2947,27 +2951,41 @@ public void Top10()
 		}
 	}
 
-	char query[512] = "";
-	Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' ORDER BY time LIMIT 10", g_map);
-	g_mysql.Query(SQLTop10, query, _, DBPrio_Normal);
-
 	return;
 }
 
 public void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 {
-	g_top10Count = 0;
-
-	while(results.FetchRow() == true)
+	if(strlen(error) > 0)
 	{
-		int playerid = results.FetchInt(0);
-		int partnerid = results.FetchInt(1);
+		PrintToServer("SQLTop10: %s", error);
+	}
 
-		float time = results.FetchFloat(2);
+	else if(strlen(error) == 0)
+	{
+		if(results.FetchRow() == false)
+		{
+			char format[256] = "";
 
-		char query[512] = "";
-		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
-		g_mysql.Query(SQLTop10_2, query, time, DBPrio_Normal);
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) == true)
+				{
+					Format(format, sizeof(format), "%T", "Top10details", i);
+					SendMessage(i, format);
+
+					Format(format, sizeof(format), "%T", "NoRecords", i);
+					SendMessage(i, format);
+				}
+			}
+		}
+
+		else if(results.FetchRow() == true)
+		{
+			char query[512] = "";
+			Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time LIMIT 10", g_map);
+			g_mysql.Query(SQLTop10_2, query, _, DBPrio_Normal);
+		}
 	}
 
 	return;
@@ -2975,54 +2993,108 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 
 public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
 {
-	float time = data;
-
-	if(results.FetchRow() == true)
+	if(strlen(error) > 0)
 	{
-		char format[256] = "";
+		PrintToServer("SQLTop10_2: %s", error);
+	}
 
-		char name1[MAX_NAME_LENGTH] = "";
-		char name2[MAX_NAME_LENGTH] = "";
-
-		results.FetchString(0, name1, sizeof(name1));
-		results.FetchString(1, name2, sizeof(name2));
-		
-		char formatTime[24] = "";
-		FormatSeconds(time, formatTime);
-
-		int count = ++g_top10Count;
-
-		if(count == 1)
+	else if(strlen(error) == 0)
+	{
+		if(results.FetchRow() == false)
 		{
-			g_top10SR = time;
-		}
+			char format[256] = "";
 
-		float timeDiff = time - g_top10SR;
-
-		char formatTimeDiff[24] = "";
-		FormatSeconds(timeDiff, formatTimeDiff);
-		Format(formatTimeDiff, sizeof(formatTimeDiff), "+%s", formatTimeDiff);
-
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i) == true)
+			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(count == 1)
+				if(IsClientInGame(i) == true)
 				{
 					Format(format, sizeof(format), "%T", "Top10details", i);
 					SendMessage(i, format);
-				}
-				
-				if(count < 10)
-				{
-					Format(format, sizeof(format), "%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
-					SendMessage(i, format);
-				}
 
-				else if(count == 10)
-				{
-					Format(format, sizeof(format), "%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
+					Format(format, sizeof(format), "%T", "NoRecords", i);
 					SendMessage(i, format);
+				}
+			}
+
+			return;
+		}
+
+		g_top10Count = 0;
+
+		while(results.FetchRow() == true)
+		{
+			int playerid = results.FetchInt(0);
+			int partnerid = results.FetchInt(1);
+
+			float time = results.FetchFloat(2);
+
+			char query[512] = "";
+			Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
+			g_mysql.Query(SQLTop10_3, query, time, DBPrio_Normal);
+		}
+	}
+
+	return;
+}
+
+public void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLTop10_3: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		float time = data;
+
+		if(results.FetchRow() == true)
+		{
+			char format[256] = "";
+
+			char name1[MAX_NAME_LENGTH] = "";
+			char name2[MAX_NAME_LENGTH] = "";
+
+			results.FetchString(0, name1, sizeof(name1));
+			results.FetchString(1, name2, sizeof(name2));
+			
+			char formatTime[24] = "";
+			FormatSeconds(time, formatTime);
+
+			int count = ++g_top10Count;
+
+			if(count == 1)
+			{
+				g_top10SR = time;
+			}
+
+			float timeDiff = time - g_top10SR;
+
+			char formatTimeDiff[24] = "";
+			FormatSeconds(timeDiff, formatTimeDiff);
+			Format(formatTimeDiff, sizeof(formatTimeDiff), "+%s", formatTimeDiff);
+
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) == true)
+				{
+					if(count == 1)
+					{
+						Format(format, sizeof(format), "%T", "Top10details", i);
+						SendMessage(i, format);
+					}
+					
+					if(count < 10)
+					{
+						Format(format, sizeof(format), "%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
+						SendMessage(i, format);
+					}
+
+					else if(count == 10)
+					{
+						Format(format, sizeof(format), "%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
+						SendMessage(i, format);
+					}
 				}
 			}
 		}
@@ -5937,7 +6009,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 		if(results.FetchRow() == true)
 		{
-			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' ORDER BY time LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
+			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
 
 			DataPack dp = new DataPack();
 
@@ -6199,7 +6271,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 		g_dbPassed = true; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 
 		char query[512] = "";
-		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' ORDER BY time LIMIT 1", g_map);
+		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' AND time != 0 ORDER BY time LIMIT 1", g_map);
 		g_mysql.Query(SQLGetServerRecord, query, _, DBPrio_Normal);
 
 		RecalculatePoints();
