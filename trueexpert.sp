@@ -2084,7 +2084,7 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_End:
 		{
-			delete menu;
+			delete menu; //https://forums.alliedmods.net/showpost.php?p=2293089&postcount=8
 		}
 	}
 
