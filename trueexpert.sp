@@ -857,6 +857,8 @@ public void frame_SayText2(DataPack dp)
 	char text[256] = "";
 	dp.ReadString(text, sizeof(text));
 
+	delete dp;
+
 	if(client > 0 && IsClientInGame(client) == true)
 	{
 		int clients[MAXPLAYER] = {0, ...};
@@ -944,6 +946,8 @@ public void rf_radiotxt(DataPack dp)
 
 	char param4[256] = "";
 	dp.ReadString(param4, sizeof(param4));
+
+	delete dp;
 
 	char points[32] = "";
 	GetPoints(client, points);
@@ -1255,6 +1259,11 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 					Trikz(param1);
 				}
 			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
 		}
 	}
 
@@ -1947,7 +1956,7 @@ public void Trikz(int client)
 {
 	g_menuOpened[client] = true;
 
-	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
+	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	
 	menu.SetTitle("%T", "Trikz", client);
 
@@ -2071,6 +2080,11 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Display:
 		{
 			g_menuOpened[param1] = true;
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
 		}
 	}
 
@@ -2245,6 +2259,11 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			menu2.Display(partner, 20);
 		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 
 	return view_as<int>(action);
@@ -2283,6 +2302,8 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 						Call_Finish();
 
+						delete hForward;
+
 						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
 
@@ -2315,6 +2336,11 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 					SendMessage(param1, format);
 				}
 			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
 		}
 	}
 
@@ -2352,6 +2378,8 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 					Call_Finish();
 
+					delete hForward;
+
 					ResetFactory(param1);
 					ResetFactory(partner);
 
@@ -2367,6 +2395,11 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					SendMessage(partner, format);
 				}
 			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
 		}
 	}
 
@@ -2452,6 +2485,11 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 				}
 			}
 		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 
 	return view_as<int>(action);
@@ -2531,6 +2569,8 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 			Call_Finish();
 
+			delete hForward;
+
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 
 			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
@@ -2607,6 +2647,8 @@ stock void ColorFlashbang(int client, int color = -1)
 		Call_PushCell(g_colorBuffer[client][2][1]);
 
 		Call_Finish();
+
+		delete hForward;
 
 		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
 
@@ -2733,6 +2775,8 @@ stock void DoRestart(int client)
 
 		Call_Finish();
 
+		delete hForward;
+
 		/*int entity = 0;
 
 		bool ct = false;
@@ -2799,6 +2843,11 @@ public int handler_askforrestart(Menu menu, MenuAction action, int param1, int p
 					DoRestart(param1);
 				}
 			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
 		}
 	}
 
@@ -3186,6 +3235,11 @@ public int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2
 				}
 			}
 		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 
 	return view_as<int>(action);
@@ -3312,6 +3366,11 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 					ColorSelect(param1);
 				}
 			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
 		}
 	}
 
@@ -4085,6 +4144,11 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 
 	return view_as<int>(action);
@@ -4092,7 +4156,7 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 
 stock void ZoneEditorStart(int client)
 {
-	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 
 	menu2.SetTitle("Zone editor - Start zone");
 
@@ -4124,7 +4188,7 @@ stock void ZoneEditorStart(int client)
 
 stock void ZoneEditorEnd(int client)
 {
-	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 
 	menu2.SetTitle("Zone editor - End zone");
 
@@ -4156,7 +4220,7 @@ stock void ZoneEditorEnd(int client)
 
 stock void ZoneEditorCP(int client, int cpnum)
 {
-	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 
 	menu2.SetTitle("Zone editor - CP nr. %i zone", cpnum);
 
@@ -4458,6 +4522,11 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			g_zoneDraw[param1] = true;
 		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 
 	return view_as<int>(action);
@@ -4604,6 +4673,8 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, Dat
 
 		int client = GetClientFromSerial(dp.ReadCell());
 		int cp = dp.ReadCell();
+
+		delete dp;
 
 		if(results.FetchRow() == true)
 		{
@@ -4793,6 +4864,8 @@ public Action SDKEndTouch(int entity, int other)
 
 		Call_Finish();
 
+		delete hForward;
+
 		char query[512] = "";
 		Format(query, sizeof(query), "SELECT * FROM records LIMIT 1");
 		g_mysql.Query(SQLSetTries, query, GetClientSerial(other), DBPrio_Normal);
@@ -4925,6 +4998,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushString("ServerRecord1");
 
 							Call_Finish();
+
+							delete hForward;
 						}
 
 						else if(g_ServerRecordTime <= time >= g_teamRecord[other])
@@ -4957,6 +5032,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushString("Finish1");
 
 							Call_Finish();
+
+							delete hForward;
 						}
 
 						else if(g_ServerRecordTime <= time < g_teamRecord[other])
@@ -5005,6 +5082,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushString("Finish2");
 
 							Call_Finish();
+
+							delete hForward;
 						}
 					}
 
@@ -5055,6 +5134,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushString("ServerRecord2");
 
 							Call_Finish();
+
+							delete hForward;
 						}
 
 						else if(g_ServerRecordTime <= time)
@@ -5100,6 +5181,8 @@ public Action SDKStartTouch(int entity, int other)
 							Call_PushString("Finish3");
 
 							Call_Finish();
+
+							delete hForward;
 						}
 					}
 
@@ -5176,6 +5259,8 @@ public Action SDKStartTouch(int entity, int other)
 					Call_PushString("FirstServerRecord");
 
 					Call_Finish();
+
+					delete hForward;
 				}
 
 				g_timerState[other] = false;
@@ -6027,6 +6112,8 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 		int other = GetClientFromSerial(data.ReadCell());
 		int cpnum = data.ReadCell();
 
+		delete data;
+
 		char query[512] = "";
 
 		if(results.FetchRow() == false)
@@ -6056,6 +6143,8 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 			Call_PushString("FirstCPRecord1");
 
 			Call_Finish();
+
+			delete hForward;
 
 			return;
 		}
@@ -6092,6 +6181,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 		int other = GetClientFromSerial(data.ReadCell());
 		int cpnum = data.ReadCell();
 
+		delete data;
+
 		float time = g_timerTime[other];
 
 		char timeOwn[24] = "";
@@ -6119,6 +6210,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 			Call_PushString("FirstCPRecord2");
 
 			Call_Finish();
+
+			delete hForward;
 
 			return;
 		}
@@ -6153,6 +6246,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				Call_PushString("CPImprove");
 
 				Call_Finish();
+
+				delete hForward;
 			}
 
 			else if(!(g_cpTime[cpnum][other] < g_cpTimeSR[cpnum]))
@@ -6179,6 +6274,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				Call_PushString("CPDeprove");
 
 				Call_Finish();
+
+				delete hForward;
 			}
 		}
 	}
@@ -7144,6 +7241,11 @@ public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 
 	return view_as<int>(action);
@@ -7372,6 +7474,11 @@ public int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 
 	return view_as<int>(action);
@@ -7481,7 +7588,7 @@ stock void HudMenu(int client)
 {
 	g_menuOpenedHud[client] = true;
 
-	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel);
+	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 
 	menu.SetTitle("Hud");
 
@@ -7551,6 +7658,11 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 		case MenuAction_Display:
 		{
 			g_menuOpenedHud[param1] = true;
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
 		}
 	}
 
@@ -8308,6 +8420,8 @@ stock MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.c
 	Call_PushArray(origin, 3);
 
 	Call_Finish();
+
+	delete hForward;
 	
 	return MRES_Ignored;
 }
