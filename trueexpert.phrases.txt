@@ -709,4 +709,8 @@
 	{
 		"en"	"(RADIO)"
 	}
+	"NoRecords"
+	{
+		"en"	"\t\t\t\tNo records."
+	}
 }
