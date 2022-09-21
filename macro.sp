@@ -83,7 +83,7 @@ public Action cmd_macro(int client, int args)
 
 	g_macroDisabled[client] = !g_macroDisabled[client];
 
-	PrintToServer("Macro is %s", g_macroDisabled[client] == true ? "Macro is disabled now." : "Macro is enabled now.");
+	PrintToServer("Macro is %s now.", g_macroDisabled[client] == true ? "disabled" : "enabled");
 
 	return Plugin_Handled;
 }
