@@ -1,11 +1,11 @@
 "Phrases"
 {
-    "BSChatON"
+    "BSON"
     {
         "ru"    "Boost статистика теперь включена."
     }
 
-    "BSChatOFF"
+    "BSOFF"
     {
         "ru"    "Boost статистика теперь выключена."
     }
