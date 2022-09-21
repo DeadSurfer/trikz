@@ -1,11 +1,11 @@
 "Phrases"
 {
-    "BSChatON"
+    "BSON"
     {
         "en"    "Boost stats is on now."
     }
 
-    "BSChatOFF"
+    "BSOFF"
     {
         "en"    "Boost stats is off now."
     }
