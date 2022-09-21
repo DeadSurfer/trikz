@@ -52,7 +52,7 @@ public Plugin myinfo =
 	name = "Boost stats",
 	author = "Smesh",
 	description = "Measures time between attack and jump.",
-	version = "0.37",
+	version = "0.38",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -73,6 +73,8 @@ public void OnPluginStart()
 	HookEvent("player_jump", OnJump, EventHookMode_PostNoCopy);
 
 	RegPluginLibrary("trueexpert-booststats");
+
+	LoadTranslations("booststats.phrases");
 
 	return;
 }
@@ -113,7 +115,8 @@ public Action cmd_booststats(int client, int args)
 	IntToString(g_boostStats[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie, value);
 
-	PrintToChat(client, g_boostStats[client] ? "Boost stats is on now." : "Boost stats is off now.");
+	char format[256] = "";
+	Format(format, sizeof(format), "%T", client, g_boostStats[client] ? "BSChatON" : "BSChatOFF");
 
 	return Plugin_Handled;
 }
@@ -214,19 +217,40 @@ stock void DoPrint(int client)
 	if(IsClientInGame(client) == true)
 	{
 		float time = g_throwTime[client][1] - g_throwTime[client][0];
-		
-		int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
 
 		if(time < 0.3)
 		{
+			char format[256] = "";
+
+			char timeColor[256] = "";
+			char duck[256] = "";
+			char timeFormat[8] = "";
+			char projectileVel[16] = "";
+			char vel[16] = "";
+			char angles[2][8];
+
+			int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
+
+			Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", client);
+			Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", client);
+			Format(timeFormat, sizeof(timeFormat), "%.3f", time);
+			Format(projectileVel, sizeof(projectileVel), "%.0f", g_projectileVel[client]);
+			Format(vel, sizeof(vel), "%.0f", g_vel[client]);
+			Format(angles[0], 8, "%.0f", g_angles[client][0]);
+			Format(angles[1], 8, "%.0f", g_angles[client][1]);
+
 			if(g_boostStats[client] == true)
 			{
-				PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				//PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				Format(format, sizeof(format), "%T", "Message", client, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+				SendMessage(client, format);
 			}
 
 			if(IsClientValid(partner) == true && IsClientInGame(partner) == true && g_boostStats[partner] == true)
 			{
-				PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				//PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				Format(format, sizeof(format), "%T", "MessagePartner", partner, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+				SendMessage(partner, format);
 			}
 
 			for(int i = 1; i <= MaxClients; i++)
@@ -238,18 +262,71 @@ stock void DoPrint(int client)
 
 					if(observerMode < 7 && observerTarget == client && g_boostStats[i] == true)
 					{
-						PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+						//PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+						Format(format, sizeof(format), "%T", "Message", i, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+						SendMessage(i, format);
 					}
 
 					else if(IsClientValid(partner) == true && observerMode < 7 && observerTarget == partner && g_boostStats[i] == true)
 					{
-						PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+						//PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+						Format(format, sizeof(format), "%T", "MessagePartner", i, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+						SendMessage(i, format);
 					}
 				}
 			}
 		}
 
 		g_projectileVel[client] = 0.0;
+	}
+
+	return;
+}
+
+stock void SendMessage(int client, const char[] text)
+{
+	char name[MAX_NAME_LENGTH] = "";
+	GetClientName(client, name, sizeof(name));
+
+	int team = GetClientTeam(client);
+
+	char teamColor[32] = "";
+
+	switch(team)
+	{
+		case 1:
+		{
+			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
+		}
+
+		case 2:
+		{
+			Format(teamColor, sizeof(teamColor), "\x07FF4040");
+		}
+
+		case 3:
+		{
+			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
+		}
+	}
+
+	char textReplaced[256] = "";
+	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
+
+	ReplaceString(textReplaced, sizeof(textReplaced), ";#", "\x07");
+	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
+	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
+
+	if(IsClientValid(client) == true)
+	{
+		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
+
+		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
+		bf.WriteByte(client); //Message author
+		bf.WriteByte(true); //Chat message
+		bf.WriteString(textReplaced); //Message text
+
+		EndMessage();
 	}
 
 	return;
