@@ -3684,26 +3684,22 @@ stock void SendMessage(int client, const char[] text)
 
 	int team = GetClientTeam(client);
 
-	char teamName[32] = "";
 	char teamColor[32] = "";
 
 	switch(team)
 	{
 		case 1:
 		{
-			Format(teamName, sizeof(teamName), "%T", "Spectator", client);
 			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
 		}
 
 		case 2:
 		{
-			Format(teamName, sizeof(teamName), "%T", "Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x07FF4040");
 		}
 
 		case 3:
 		{
-			Format(teamName, sizeof(teamName), "%T", "Counter-Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
 		}
 	}
