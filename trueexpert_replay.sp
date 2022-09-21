@@ -33,14 +33,14 @@
 #include <dhooks>
 #include <cstrike>
 
-#define MAXPLAYER MAXPLAYERS+1
-
 #pragma semicolon 1
 #pragma newdecls required
 
-char g_map[192];
-ArrayList g_frame[MAXPLAYER];
-ArrayList g_frameCache[MAXPLAYER];
+#define MAXPLAYER MAXPLAYERS + 1
+
+char g_map[192] = "";
+ArrayList g_frame[MAXPLAYER] = {null, ...};
+ArrayList g_frameCache[MAXPLAYER] = {null, ...};
 
 enum struct eFrame
 {
@@ -52,37 +52,37 @@ enum struct eFrame
 	int weapon;
 }
 
-int g_tick[MAXPLAYER];
-int g_steamid3[2];
-Database g_database;
+int g_tick[MAXPLAYER] = {0, ...};
+int g_steamid3[2] = {0, ...};
+Database g_database = null;
 native bool Trikz_GetTimerState(int client);
-int g_flagsLast[MAXPLAYER];
-Handle g_DoAnimationEvent;
-DynamicDetour g_MaintainBotQuota;
-float g_timeToRestart[MAXPLAYER];
-int g_weapon[MAXPLAYER];
-bool g_switchPrevent[MAXPLAYER];
-DynamicHook g_UpdateStepSound;
-bool g_Linux;
+int g_flagsLast[MAXPLAYER] = {0, ...};
+Handle g_DoAnimationEvent = INVALID_HANDLE;
+DynamicDetour g_MaintainBotQuota = null;
+float g_timeToRestart[MAXPLAYER] = {0.0, ...};
+int g_weapon[MAXPLAYER] = {0, ...};
+bool g_switchPrevent[MAXPLAYER] = {false, ...};
+DynamicHook g_UpdateStepSound = null;
+bool g_Linux = false;
 native int Trikz_GetClientPartner(int client);
 native int Trikz_SetPartner(int client, int partner);
 native int Trikz_Restart(int client, bool instant);
-int g_bot[2];
-bool g_loaded[2];
-float g_tickrate;
-int g_replayTickcount[MAXPLAYER];
+int g_bot[2] = {0, ...};
+bool g_loaded[2] = {false, ...};
+float g_tickrate = 0.0;
+int g_replayTickcount[MAXPLAYER] = {0, ...};
 char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smokegrenade", "p228", "deagle", "elite", "fiveseven", 
 						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
 						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
 						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"};
-native int Trikz_GetDevmap();
+native bool Trikz_GetDevmap();
 
 public Plugin myinfo =
 {
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.22",
+	version = "0.23",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -134,26 +134,32 @@ public void OnPluginStart()
 	delete gamedata;
 
 	g_tickrate = 1.0 / GetTickInterval();
+
+	return;
 }
 
 public void OnPluginEnd()
 {
 	SetConVarFlags(FindConVar("bot_quota"), GetConVarFlags(FindConVar("bot_quota")) | FCVAR_NOTIFY);
 	ServerCommand("bot_kick");
+
+	return;
 }
 
 public void OnMapStart()
 {
-	if(Trikz_GetDevmap() == 0)
+	if(Trikz_GetDevmap() == false)
 	{
 		GetCurrentMap(g_map, sizeof(g_map));
 		CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 
-	else if(Trikz_GetDevmap() == 1)
+	else if(Trikz_GetDevmap() == true)
 	{
 		OnPluginEnd();
 	}
+
+	return;
 }
 
 public void OnClientDisconnect(int client)
@@ -166,6 +172,8 @@ public void OnClientDisconnect(int client)
 			g_loaded[i] = false;
 		}
 	}
+
+	return;
 }
 
 public Action timer_bot(Handle timer)
@@ -304,6 +312,8 @@ public void SetupSave(int client, int partner, float time)
 
 	BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s_partner.replay", g_map, timeFormat);
 	SaveRecord(partner, recordBackup, time, true);
+
+	return;
 }
 
 public void SaveRecord(int client, const char[] path, float time, bool load)
@@ -342,6 +352,8 @@ public void SaveRecord(int client, const char[] path, float time, bool load)
 	{
 		LoadRecord();
 	}
+
+	return;
 }
 
 public void SQLGetName(Database db, DBResultSet results, const char[] error, any data)
@@ -372,6 +384,8 @@ public void SQLGetName(Database db, DBResultSet results, const char[] error, any
 			}
 		}
 	}
+
+	return;
 }
 
 public void LoadRecord()
@@ -386,8 +400,10 @@ public void LoadRecord()
 		if(FileExists(filePath) == true)
 		{
 			File f = OpenFile(filePath, "rb");
+
 			int tickcount = 0;
 			int time = 0;
+			
 			f.ReadInt32(tickcount);
 			f.ReadInt32(g_steamid3[i]);
 			f.ReadInt32(time);
@@ -420,6 +436,8 @@ public void LoadRecord()
 			g_tick[g_bot[i]] = 0;
 		}
 	}
+
+	return;
 }
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
@@ -429,7 +447,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		eFrame frame;
 		GetClientAbsOrigin(client, frame.pos);
 
-		float ang[3] = {0.0, 0.0, 0.0};
+		float ang[3] = {0.0, ...};
 		GetClientEyeAngles(client, ang);
 
 		frame.ang[0] = ang[0];
@@ -464,7 +482,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 						char format[32] = "";
 						Format(format, sizeof(format), "weapon_%s", g_weaponName[i]);
 
-						if(StrEqual(weaponName, g_weaponName[i], true))
+						if(StrEqual(weaponName, g_weaponName[i], true) == true)
 						{
 							frame.weapon = i + 1;
 							
@@ -500,6 +518,8 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 		}
 	}
+
+	return;
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -525,14 +545,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		eFrame frame;
 		g_frameCache[client].GetArray(g_tick[client]++, frame, sizeof(eFrame));
 
-		float posPrev[3] = {0.0, 0.0, 0.0};
+		float posPrev[3] = {0.0, ...};
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
 
-		float velPos[3] = {0.0, 0.0, 0.0};
+		float velPos[3] = {0.0, ...};
 		MakeVectorFromPoints(posPrev, frame.pos, velPos);
 		ScaleVector(velPos, g_tickrate);
 
-		float ang[3] = {0.0, 0.0, 0.0};
+		float ang[3] = {0.0, ...};
 		ang[0] = frame.ang[0];
 		ang[1] = frame.ang[1];
 
@@ -560,27 +580,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(frame.weapon > 0)
 		{
-			//char classname[32]
-			//char weaponName[32]
 			for(int i = 0; i < sizeof(g_weaponName); i++)
 			{
 				if(frame.weapon == i + 1)
 				{
-					/*for(int j = 0; j <= 4; j++)
-					{
-						for(int k = 0; k <= 3; k++)
-						{
-							if(IsValidEntity(GetPlayerWeaponSlot(client, j)))
-							{
-								GetEntityClassname(GetPlayerWeaponSlot(client, j), classname, 32)
-								Format(weaponName, 32, "weapon_%s", g_weaponName[i])
-								if(StrEqual(classname, weaponName))
-									SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", GetPlayerWeaponSlot(client, j))
-							}
-						}
-					}*/
-
 					FakeClientCommandEx(client, "use weapon_%s", g_weaponName[i]);
+
 					break;
 				}
 			}
@@ -626,6 +631,8 @@ public void SQLConnect(Database db, const char[] error, any data)
 	PrintToServer("Successfuly connected to database."); //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 
 	g_database = db;
+
+	return;
 }
 
 public void Trikz_OnTimerStart(int client)
@@ -636,6 +643,8 @@ public void Trikz_OnTimerStart(int client)
 		g_frame[client] = new ArrayList((sizeof(eFrame)));
 		g_tick[client] = 0;
 	}
+
+	return;
 }
 
 public void Trikz_OnRecord(int client, int partner, float time)
@@ -659,6 +668,8 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 			g_UpdateStepSound.HookEntity(Hook_Post, client, Hook_UpdateStepSound_Post);
 		}
 	}
+
+	return;
 }
 
 public Action BotSilent(Event event, const char[] name, bool dontBroadcast)
@@ -686,6 +697,8 @@ public void ApplyFlags(int &flags1, int flags2, int flag)
 	{
 		flags1 &= ~flag;
 	}
+
+	return;
 }
 
 public void SDKWeaponSwitch(int client, int weapon)
@@ -697,7 +710,7 @@ public void SDKWeaponSwitch(int client, int weapon)
 			g_switchPrevent[client] = false;
 		}
 
-		else if (g_switchPrevent[client] == false)
+		else if(g_switchPrevent[client] == false)
 		{
 			char classname[32] = "";
 			GetEntityClassname(weapon, classname, sizeof(classname));
@@ -711,11 +724,14 @@ public void SDKWeaponSwitch(int client, int weapon)
 				if(StrEqual(classname, weaponName, true))
 				{
 					g_weapon[client] = i + 1;
+
 					break;
 				}
 			}
 		}
 	}
+
+	return;
 }
 
 // Stops bot_quota from doing anything.
