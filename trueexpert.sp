@@ -4983,7 +4983,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							static GlobalForward hForward = null;
 
-							hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 							Call_StartForward(hForward);
 
@@ -5244,7 +5244,7 @@ public Action SDKStartTouch(int entity, int other)
 
 					static GlobalForward hForward = null;
 
-					hForward = new GlobalForward("Trikz_Record", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+					hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 
 					Call_StartForward(hForward);
 
