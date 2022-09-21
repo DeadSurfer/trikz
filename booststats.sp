@@ -116,7 +116,8 @@ public Action cmd_booststats(int client, int args)
 	SetClientCookie(client, g_cookie, value);
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", client, g_boostStats[client] ? "BSChatON" : "BSChatOFF");
+	Format(format, sizeof(format), "%T", client, g_boostStats[client] ? "BSON" : "BSOFF");
+	SendMessage(client, format);
 
 	return Plugin_Handled;
 }
@@ -125,9 +126,10 @@ public void CalculationProcess(int client)
 {
 	g_throwTime[client][0] = GetEngineTime();
 
-	float vel[3] = {0.0, 0.0, 0.0};
-	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
-	g_vel[client] = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
+	float vel[3] = {0.0, ...};
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+	vel[2] = 0.0;
+	g_vel[client] = GetVectorLength(vel);
 
 	GetClientEyeAngles(client, g_angles[client]);
 	g_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucked"));
@@ -165,7 +167,7 @@ public void frame_projectileVel(int entity)
 		
 		if(IsClientValid(client) == true && g_projectileVel[client] == 0.0)
 		{
-			float vel[3] = {0.0, 0.0, 0.0};
+			float vel[3] = {0.0, ...};
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
 
 			g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
@@ -184,7 +186,7 @@ public Action SDKStartTouch(int entity, int other)
 
 		if(StrContains(classname, "projectile", false) != -1)
 		{
-			float vel[3] = {0.0, 0.0, 0.0};
+			float vel[3] = {0.0, ...};
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
 
 			g_projectileVel[other] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
