@@ -33,9 +33,9 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 
-float g_macroTime[MAXPLAYER];
-bool g_macroOpened[MAXPLAYER];
-bool g_macroDisabled[MAXPLAYER];
+float g_macroTime[MAXPLAYER] = {0.0, ...};
+bool g_macroOpened[MAXPLAYER] = {false, ...};
+bool g_macroDisabled[MAXPLAYER] = {false, ...};
 ConVar gCV_mainDelay = null;
 ConVar gCV_repeatDelay = null;
 ConVar gCV_enableMacro = null;
@@ -47,7 +47,7 @@ public Plugin myinfo =
 	name = "Macro",
 	author = "Nick Jurevich",
 	description = "Make trikz game more comfortable.",
-	version = "0.95",
+	version = "0.96",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -55,9 +55,9 @@ public void OnPluginStart()
 {
 	RegConsoleCmd("sm_macro", cmd_macro);
 
-	gCV_enableMacro = CreateConVar("sm_enable_macro", "0.0", "Do enable plugin here.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_mainDelay = CreateConVar("sm_main_delay", "0.11", "Make main delay for attack2", FCVAR_NOTIFY, false, 0.0, true, 0.11);
-	gCV_repeatDelay = CreateConVar("sm_repeat_delay", "0.36", "Make repeat delay if hold attack2", FCVAR_NOTIFY, true, 3.6, true, 0.4);
+	gCV_enableMacro = CreateConVar("sm_macro_enable", "0.0", "Do enable plugin here.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_mainDelay = CreateConVar("sm_macro_main_delay", "0.11", "Make main delay for attack2", FCVAR_NOTIFY, false, 0.0, true, 0.11);
+	gCV_repeatDelay = CreateConVar("sm_macro_repeat_delay", "0.36", "Make repeat delay if hold attack2", FCVAR_NOTIFY, true, 3.6, true, 0.4);
 
 	AutoExecConfig(true);
 
@@ -83,7 +83,7 @@ public Action cmd_macro(int client, int args)
 
 	g_macroDisabled[client] = !g_macroDisabled[client];
 
-	PrintToServer("Macro is %s", g_macroDisabled[client] ? "Macro is disabled." : "Macro is enabled.");
+	PrintToServer("Macro is %s", g_macroDisabled[client] == true ? "Macro is disabled now." : "Macro is enabled now.");
 
 	return Plugin_Handled;
 }
@@ -110,39 +110,37 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	bool macro = gCV_enableMacro.BoolValue;
 	
-	if(macro == false)
+	if(macro == true && g_macroDisabled[client] == false)
 	{
-		return Plugin_Continue;
-	}
-
-	if(buttons & IN_ATTACK2)
-	{
-		char classname[32] = "";
-		GetClientWeapon(client, classname, sizeof(classname))
-
-		if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
+		if(buttons & IN_ATTACK2)
 		{
-			if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= g_macroRepeatDelay)
-			{
-				g_macroTime[client] = GetEngineTime();
+			char classname[32] = "";
+			GetClientWeapon(client, classname, sizeof(classname))
 
-				g_macroOpened[client] = true;
-			}
-
-			if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.02)
+			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
-				buttons |= IN_ATTACK;
+				if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= g_macroRepeatDelay)
+				{
+					g_macroTime[client] = GetEngineTime();
+
+					g_macroOpened[client] = true;
+				}
+
+				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.02)
+				{
+					buttons |= IN_ATTACK;
+				}
 			}
 		}
-	}
 
-	if(g_macroOpened[client] == true && GetEngineTime () - g_macroTime[client] >= g_macroMainDelay)
-	{
-		buttons |= IN_JUMP;
+		if(g_macroOpened[client] == true && GetEngineTime () - g_macroTime[client] >= g_macroMainDelay)
+		{
+			buttons |= IN_JUMP;
 
-		g_macroTime[client] = GetEngineTime();
+			g_macroTime[client] = GetEngineTime();
 
-		g_macroOpened[client] = false;
+			g_macroOpened[client] = false;
+		}
 	}
 
 	return Plugin_Continue;
