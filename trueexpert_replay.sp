@@ -571,6 +571,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		g_flagsLast[client] = frame.flags;
 
 		MoveType movetype = MOVETYPE_NOCLIP;
+		
 		if(frame.movetype == MOVETYPE_LADDER)
 		{
 			movetype = frame.movetype;
