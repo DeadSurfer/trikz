@@ -141,6 +141,7 @@ public void OnPluginStart()
 public void OnPluginEnd()
 {
 	SetConVarFlags(FindConVar("bot_quota"), GetConVarFlags(FindConVar("bot_quota")) | FCVAR_NOTIFY);
+
 	ServerCommand("bot_kick");
 
 	return;
@@ -151,6 +152,7 @@ public void OnMapStart()
 	if(Trikz_GetDevmap() == false)
 	{
 		GetCurrentMap(g_map, sizeof(g_map));
+
 		CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 
@@ -411,8 +413,8 @@ public void LoadRecord()
 			g_replayTickcount[g_bot[i]] = tickcount;
 
 			any data[sizeof(eFrame)];
-			delete g_frameCache[g_bot[i]];
 
+			delete g_frameCache[g_bot[i]];
 			g_frameCache[g_bot[i]] = new ArrayList(sizeof(eFrame), tickcount);
 
 			for(int j = 0; j < tickcount; j++)
@@ -775,6 +777,35 @@ public Action Hook_SayText2(UserMsg msg_id, BfRead msg, const int[] players, int
 	msg.ReadString(message, 24);
 
 	if(IsFakeClient(client) == true && StrEqual(message, "#Cstrike_Name_Change", true) == true)
+	{
+		return Plugin_Handled;
+	}
+
+	return Plugin_Continue;
+}
+
+//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp#L2130-L2151
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	if(LibraryExists("trueexpert-entityfilter") == true)
+	{
+		return;
+	}
+	
+	// trigger_once | trigger_multiple.. etc
+	// func_door | func_door_rotating
+	if (StrContains(classname, "trigger_") != -1 || StrContains(classname, "_door") != -1 || StrContains(classname, "player_speedmod") != -1)
+	{
+		SDKHook(entity, SDKHook_StartTouch, HookTriggers);
+		SDKHook(entity, SDKHook_EndTouch, HookTriggers);
+		SDKHook(entity, SDKHook_Touch, HookTriggers);
+		SDKHook(entity, SDKHook_Use, HookTriggers);
+	}
+}
+
+public Action HookTriggers(int entity, int other)
+{
+	if(1 <= other <= MaxClients && IsFakeClient(other))
 	{
 		return Plugin_Handled;
 	}
