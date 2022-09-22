@@ -7025,7 +7025,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	bool macro = gCV_macro.BoolValue;
 
 	if(macro == true && g_macroDisabled[client] == false)
-	{		
+	{	
 		if(buttons & IN_ATTACK2)
 		{
 			char classname[32] = "";
@@ -7040,7 +7040,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					g_macroOpened[client] = true;
 				}
 
-				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.02)
+				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.03)
 				{
 					buttons |= IN_ATTACK;
 				}
@@ -7081,7 +7081,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public Action ProjectileBoostFix(int entity, int other)
 {
-	if(IsClientValid(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
+	if(IsClientValid(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND) && IsFakeClient(other) == false)
 	{
 		float originOther[3] = {0.0, ...};
 		GetClientAbsOrigin(other, originOther);
@@ -8166,6 +8166,11 @@ public Action timer_clantag(Handle timer, int client)
 
 stock void MLStats(int client, bool ground)
 {
+	if(IsFakeClient(client) == true)
+	{
+		return;
+	}
+	
 	float velPre = GetVectorLength(g_mlsVel[client][0]);
 	float velPost = GetVectorLength(g_mlsVel[client][1]);
 
@@ -8173,30 +8178,32 @@ stock void MLStats(int client, bool ground)
 
 	Format(g_mlsPrint[client][count], 256, "%i. %.0f - %.0f\n", count, velPre, velPost);
 
-	char print[256] = "";
+	char print[4][256];
 
 	for(int i = 1; i <= count <= 10; i++)
 	{
-		Format(print, sizeof(print), "%s%s", print, g_mlsPrint[client][i]);
+		Format(print[0], 256, "%s%s", print, g_mlsPrint[client][i]);
 	}
 
 	if(count > 10)
 	{
-		Format(print, sizeof(print), "%s...\n%s", print, g_mlsPrint[client][count]);
+		Format(print[0], 256, "%s...\n%s", print, g_mlsPrint[client][count]);
 	}
 
 	int flyer = g_mlsFlyer[client];
+	float distance = 0.0;
 
 	if(ground == true)
 	{
 		float x = g_mlsDistance[client][1][0] - g_mlsDistance[client][0][0];
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
-		float distance = SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0;
+		distance = SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0;
 
-		Format(print, sizeof(print), "%s\nDistance: %.0f units%s", print, distance, g_teleported[client] == true ? " [TP]" : ""); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		Format(print[1], 256, "%s\n%T: %.0f %T%T", print[0], "MLSDistance", flyer, distance, "MLSUnits", flyer, g_teleported[client] == true ? "MLSTP" : "", flyer); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		PrintToConsole(flyer, "%s", print[1]);
 
-		PrintToConsole(flyer, "%s", print);
-		PrintToConsole(client, "%s", print);
+		Format(print[2], 256, "%s\n%T: %.0f %T%T", print[0], "MLSDistance", client, distance, "MLSUnits", client, g_teleported[client] == true ? "MLSTP" : "", client); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		PrintToConsole(client, "%s", print[2]);
 
 		g_mlsCount[client] = 0;
 
@@ -8210,7 +8217,7 @@ stock void MLStats(int client, bool ground)
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 		bfmsg.WriteByte(true);
-		bfmsg.WriteString(print);
+		bfmsg.WriteString(print[1]);
 
 		EndMessage();
 	}
@@ -8222,7 +8229,7 @@ stock void MLStats(int client, bool ground)
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 		bfmsg.WriteByte(true);
-		bfmsg.WriteString(print);
+		bfmsg.WriteString(print[2]);
 
 		EndMessage();
 	}
@@ -8236,18 +8243,20 @@ stock void MLStats(int client, bool ground)
 
 			if(observerMode < 7 && (observerTarget == client || observerTarget == flyer) && g_mlstats[i] == true)
 			{
+				Format(print[3], 256, "%s\n%T: %.0f %T%T", print[0], "MLSDistance", i, distance, "MLSUnits", i, g_teleported[client] == true ? "MLSTP" : "", i);
+
 				Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 				bfmsg.WriteByte(true);
-				bfmsg.WriteString(print);
+				bfmsg.WriteString(ground == true ? print[3] : print[0]);
 
 				EndMessage();
 
 				if(ground == true)
 				{
-					PrintToConsole(i, "%s", print);
+					PrintToConsole(i, "%s", print[3]);
 				}
 			}
 		}
