@@ -791,10 +791,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		return;
 	}
-	
+
 	// trigger_once | trigger_multiple.. etc
 	// func_door | func_door_rotating
-	if (StrContains(classname, "trigger_") != -1 || StrContains(classname, "_door") != -1 || StrContains(classname, "player_speedmod") != -1)
+	if(StrContains(classname, "trigger_") != -1 || StrContains(classname, "_door") != -1 || StrContains(classname, "player_speedmod") != -1)
 	{
 		SDKHook(entity, SDKHook_StartTouch, HookTriggers);
 		SDKHook(entity, SDKHook_EndTouch, HookTriggers);
@@ -805,7 +805,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public Action HookTriggers(int entity, int other)
 {
-	if(1 <= other <= MaxClients && IsFakeClient(other))
+	if(0 < other <= MaxClients && IsFakeClient(other))
 	{
 		return Plugin_Handled;
 	}
