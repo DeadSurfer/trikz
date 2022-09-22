@@ -387,7 +387,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
-				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true && IsFakeClient(observerTarget) == false)
+				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 				{
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
 					{
