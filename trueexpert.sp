@@ -2510,7 +2510,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 		
 		if(g_devmap == false && g_partner[client] == 0)
 		{
-			Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
+			Format(format, sizeof(format), "%T", "DontHavePartner", client);
 			SendMessage(client, format);
 
 			return;
@@ -2746,7 +2746,7 @@ stock void Restart(int client, bool ask)
 
 			else if(g_partner[client] == 0)
 			{
-				Format(format, sizeof(format), "%T", "YouMustHavePartner", client);
+				Format(format, sizeof(format), "%T", "DontHavePartner", client);
 				SendMessage(client, format);
 			}
 		}
