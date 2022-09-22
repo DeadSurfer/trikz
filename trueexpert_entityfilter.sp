@@ -460,11 +460,11 @@ stock void OutputInput(int entity, char[] output, char[] target = "")
 
 				break;
 			}
+		}
 
-			if(bReturn == true)
-			{
-				return;
-			}
+		if(bReturn == true)
+		{
+			return;
 		}
 
 		g_mathID[++g_mathTotalCount] = entity;
