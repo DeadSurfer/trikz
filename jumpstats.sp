@@ -253,6 +253,11 @@ public Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcas
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
+	if(IsPlayerAlive(client) == false || IsFakeClient(client) == true)
+	{
+		return Plugin_Continue;
+	}
+
 	g_entityButtons[client] = buttons;
 
 	g_entityFlags[client] = GetEntityFlags(client);
@@ -382,7 +387,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
-				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
+				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true && IsFakeClient(observerTarget) == false)
 				{
 					if(1000.0 > distance >= 230.0 && pre < 280.0)
 					{
