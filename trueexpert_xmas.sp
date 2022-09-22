@@ -468,7 +468,7 @@ stock void Xmas(int client, char[] type)
 	return;
 }
 
-bool Trace_FilterPlayers(int entity, int contentsMask, any data)
+public bool Trace_FilterPlayers(int entity, int contentsMask, any data)
 {
 	if(entity != data && entity > MaxClients) 
 	{
