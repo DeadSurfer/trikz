@@ -39,7 +39,8 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
-#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1) == true)
+#define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1) == true)
+#define IsValidPartner(%1) 0 < g_partner[%1] <= MaxClients
 #define debug false
 
 int g_partner[MAXPLAYER] = {0, ...};
@@ -203,7 +204,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.53",
+	version = "4.54",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -1033,7 +1034,7 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 
 public void OnButton(const char[] output, int caller, int activator, float delay)
 {
-	if(IsClientValid(activator) == true && GetClientButtons(activator) & IN_USE)
+	if(IsValidClient(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
 		bool button = gCV_button.BoolValue;
 
@@ -1083,6 +1084,27 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 	RemoveEntity(ragdoll);
 
+	if(IsValidPartner(client) == true)
+	{
+		int partner = g_partner[client];
+
+		g_partner[partner] = 0;
+		g_partner[client] = 0;
+
+		if(g_menuOpened[client] == true)
+		{
+			Trikz(client);
+		}
+
+		if(g_menuOpened[partner] == true)
+		{
+			Trikz(partner);
+		}
+
+		ResetFactory(client);
+		ResetFactory(partner);
+	}
+
 	return;
 }
 
@@ -1092,7 +1114,7 @@ public void OnTeam(Event event, const char[] name, bool dontBroadcast)
 
 	int team = event.GetInt("team");
 
-	if(team == 1 && g_partner[client] > 0)
+	if(team == 1 && IsValidPartner(client) == true)
 	{
 		int partner = g_partner[client];
 
@@ -1158,7 +1180,7 @@ public Action rebuy(int client, const char[] command, int argc)
 
 public Action cheer(int client, const char[] command, int argc)
 {
-	if(g_partner[client] > 0)
+	if(IsValidPartner(client) == true)
 	{
 		Partner(client);
 	}
@@ -1588,7 +1610,7 @@ public void OnClientDisconnect(int client)
 
 	g_partner[client] = 0;
 
-	if(0 < client <= MaxClients)
+	if(IsValidClient(client) == true)
 	{
 		CancelClientMenu(client);
 	}
@@ -1628,7 +1650,7 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 	{
 		int client = GetClientFromSerial(data);
 
-		if(IsClientValid(client) == true)
+		if(IsValidClient(client) == true)
 		{
 			char query[512] = ""; //https://forums.alliedmods.net/showthread.php?t=261378
 			int steamid = GetSteamAccountID(client);
@@ -1690,7 +1712,7 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 	{
 		int client = GetClientFromSerial(data);
 
-		if(IsClientValid(client) == true)
+		if(IsValidClient(client) == true)
 		{
 			char query[512] = "";
 			int steamid = GetSteamAccountID(client);
@@ -1730,7 +1752,7 @@ public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] 
 	{
 		int client = GetClientFromSerial(data);
 
-		if(IsClientValid(client) == true)
+		if(IsValidClient(client) == true)
 		{
 			if(results.HasResults == false)
 			{
@@ -1807,7 +1829,7 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 	{
 		int client = GetClientFromSerial(data);
 
-		if(IsClientValid(client) == true)
+		if(IsValidClient(client) == true)
 		{
 			if(results.FetchRow() == false)
 			{
@@ -1830,7 +1852,7 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 
 public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
+	if(IsValidClient(client) == true && IsValidClient(other) == true && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
 	{
 		float originBooster[3] = {0.0, ...};
 		GetClientAbsOrigin(client, originBooster);
@@ -1973,13 +1995,13 @@ public void Trikz(int client)
 	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
 	menu.AddItem("bhop", format);
 
-	if(g_devmap == false && g_partner[client] > 0)
+	if(g_devmap == false && IsValidPartner(client) == true)
 	{
 		Format(format, sizeof(format), "%T", "Breakup", client);
 		menu.AddItem("breakup", format, g_devmap == true ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 
-	if(g_devmap == false && g_partner[client] == 0)
+	if(g_devmap == false && IsValidPartner(client) == false)
 	{
 		Format(format, sizeof(format), "%T", "Partner", client);
 		menu.AddItem("partner", format, g_devmap == true ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -1991,7 +2013,7 @@ public void Trikz(int client)
 	if(g_devmap == false)
 	{
 		Format(format, sizeof(format), "%T", "Restart", client);
-		menu.AddItem("restart", format, g_partner[client] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		menu.AddItem("restart", format, IsValidPartner(client) == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 
 	if(g_devmap == true)
@@ -2162,7 +2184,7 @@ stock void Partner(int client)
 			return;
 		}
 
-		if(g_partner[client] == 0)
+		if(IsValidPartner(client) == false)
 		{
 			Menu menu = new Menu(partner_handler);
 
@@ -2205,7 +2227,7 @@ stock void Partner(int client)
 			
 		}
 
-		else if(g_partner[client] > 0)
+		else if(IsValidPartner(client) == true)
 		{
 			char partner[8] = "";
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
@@ -2286,7 +2308,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 			{
 				case 0:
 				{
-					if(g_partner[partner] == 0)
+					if(IsValidPartner(partner) == false)
 					{
 						g_partner[param1] = partner;
 						g_partner[partner] = param1;
@@ -2306,9 +2328,9 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 						char name[MAX_NAME_LENGTH] = "";
 						GetClientName(partner, name, sizeof(name));
-
 						Format(format, sizeof(format), "%T", "TeamConfirming", param1, name); //reciever
-						SendMessage(param1, format);
+						PrintToConsole(param1, "%s", format);
+
 						GetClientName(param1, name, sizeof(name));
 						Format(format, sizeof(format), "%T", "GetConfirmed", partner, name); //sender
 						SendMessage(partner, format);
@@ -2320,7 +2342,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 						g_mysql.Query(SQLGetPartnerRecord, query, GetClientSerial(param1), DBPrio_Normal);
 					}
 
-					else if(g_partner[partner] > 0)
+					else if(IsValidPartner(partner) == true)
 					{
 						Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
 						SendMessage(param1, format);
@@ -2331,9 +2353,8 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 				{
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(param1, name, sizeof(name));
-
 					Format(format, sizeof(format), "%T", "PartnerDeclined", param1, name);
-					SendMessage(param1, format);
+					PrintToConsole(param1, "%s", format);
 				}
 			}
 		}
@@ -2388,7 +2409,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 
 					char format[256] = "";
 					Format(format, sizeof(format), "%T", "PartnerCanceled", param1, name);
-					SendMessage(param1, format);
+					PrintToConsole(param1, "%s", format);
 
 					GetClientName(param1, name, sizeof(name));
 					Format(format, sizeof(format), "%T", "PartnerCanceledBy", partner, name);
@@ -2508,7 +2529,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 		char format[256] = "";
 		
-		if(g_devmap == false && g_partner[client] == 0)
+		if(g_devmap == false && IsValidPartner(client) == false)
 		{
 			Format(format, sizeof(format), "%T", "DontHavePartner", client);
 			SendMessage(client, format);
@@ -2669,7 +2690,7 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 	{
 		int client = GetClientFromSerial(data);
 
-		if(IsClientValid(client) == true)
+		if(IsValidClient(client) == true)
 		{
 			if(results.FetchRow() == false)
 			{
@@ -2744,7 +2765,7 @@ stock void Restart(int client, bool ask)
 				}
 			}
 
-			else if(g_partner[client] == 0)
+			else if(IsValidPartner(client) == false)
 			{
 				Format(format, sizeof(format), "%T", "DontHavePartner", client);
 				SendMessage(client, format);
@@ -3644,7 +3665,7 @@ public Action cmd_test(int client, int args)
 
 		int partner = StringToInt(arg);
 
-		if(partner <= MaxClients && g_partner[client] == 0)
+		if(IsValidClient(partner) == true && IsValidPartner(client) == false)
 		{
 			g_partner[client] = partner;
 			g_partner[partner] = client;
@@ -3652,7 +3673,7 @@ public Action cmd_test(int client, int args)
 			Restart(client, false);
 		}
 
-		PrintToServer("LibraryExists (trueexpert-entityfilter): %i", LibraryExists("trueexpert-entityfilter"));
+		PrintToServer("LibraryExists (trueexpert-entityfilter): %s", LibraryExists("trueexpert-entityfilter") == true ? "true" : "false");
 
 		//https://forums.alliedmods.net/showthread.php?t=187746
 		int color = 0;
@@ -3711,7 +3732,7 @@ stock void SendMessage(int client, const char[] text)
 	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
 	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
 
-	if(IsClientValid(client) == true)
+	if(IsValidClient(client) == true)
 	{
 		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
 
@@ -4821,7 +4842,7 @@ public void SQLRecordsTable(Database db, DBResultSet results, const char[] error
 
 public Action SDKEndTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && g_timerReadyToStart[other] == true && g_partner[other] > 0 && IsFakeClient(other) == false)
+	if(IsValidClient(other) == true && g_timerReadyToStart[other] == true && IsValidPartner(other) == true && IsFakeClient(other) == false)
 	{
 		int partner = g_partner[other];
 
@@ -4882,7 +4903,7 @@ public Action SDKTouch(int entity, int other)
 
 public Action SDKStartTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && g_devmap == false && IsFakeClient(other) == false)
+	if(IsValidClient(other) == true && g_devmap == false && IsFakeClient(other) == false)
 	{
 		char trigger[32] = "";
 		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger));
@@ -6356,8 +6377,21 @@ public void SQLSetTries2(Database db, DBResultSet results, const char[] error, a
 		int partner = g_partner[client];
 		int partnerid = GetSteamAccountID(partner);
 
-		Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
-		g_mysql.Query(SQLSetTriesUpdated, query, _, DBPrio_Normal);
+		if(results.FetchRow() == false)
+		{
+			Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
+			g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_Normal);
+
+			return;
+		}
+
+		results.Rewind();
+
+		if(results.FetchRow() == true)
+		{
+			Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
+			g_mysql.Query(SQLSetTriesUpdated, query, _, DBPrio_Normal);
+		}
 	}
 }
 
@@ -6623,7 +6657,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 
 	//Timer
-	if(IsFakeClient(client) == false && g_timerState[client] == true && g_partner[client] > 0)
+	if(IsFakeClient(client) == false && g_timerState[client] == true && IsValidPartner(client) == true)
 	{
 		g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
 
@@ -6919,7 +6953,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
 		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
 
-		if(0 < observerTarget <= MaxClients && g_partner[observerTarget] > 0 && IsPlayerAlive(g_partner[observerTarget]) == true && observerMode < 7)
+		if(IsValidClient(observerTarget) == true && IsValidPartner(observerTarget) == true && IsPlayerAlive(g_partner[observerTarget]) == true && observerMode < 7)
 		{
 			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget]);
 		}
@@ -6959,7 +6993,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	int other = Stuck(client);
 
-	if(0 < other <= MaxClients && IsFakeClient(client) == false && IsPlayerAlive(client) == true && g_block[other] == true)
+	if(IsValidClient(other) == true && IsFakeClient(client) == false && IsPlayerAlive(client) == true && g_block[other] == true)
 	{
 		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 		{
@@ -7081,7 +7115,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public Action ProjectileBoostFix(int entity, int other)
 {
-	if(IsClientValid(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND) && IsFakeClient(other) == false)
+	if(IsValidClient(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND) && IsFakeClient(other) == false)
 	{
 		float originOther[3] = {0.0, ...};
 		GetClientAbsOrigin(other, originOther);
@@ -7520,7 +7554,7 @@ public Action cmd_noclip(int client, int args)
 
 stock void Noclip(int client)
 {
-	if(IsClientValid(client) == false)
+	if(IsValidClient(client) == false)
 	{
 		return;
 	}
@@ -7822,7 +7856,7 @@ public Action cmd_time(int client, int args)
 
 		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
 
-		if(g_partner[client] > 0)
+		if(IsValidPartner(client) == true)
 		{
 			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second);
 		}
@@ -8144,7 +8178,7 @@ public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLAT
 
 public Action timer_clantag(Handle timer, int client)
 {
-	if(IsClientValid(client) == true)
+	if(IsValidClient(client) == true)
 	{
 		if(g_timerState[client] == true)
 		{
@@ -8286,7 +8320,7 @@ public bool TR_donthitself(int entity, int mask, int client)
 {
 	if(LibraryExists("trueexpert-entityfilter") == true)
 	{
-		if(entity != client && 0 < entity <= MaxClients && g_partner[entity] == g_partner[g_partner[client]])
+		if(entity != client && IsValidClient(entity) == true && g_partner[entity] == g_partner[g_partner[client]])
 		{
 			return true;
 		}
@@ -8294,7 +8328,7 @@ public bool TR_donthitself(int entity, int mask, int client)
 
 	else if(LibraryExists("trueexpert-entityfilter") == false)
 	{
-		if(entity != client && 0 < entity <= MaxClients)
+		if(entity != client && IsValidClient(entity) == true)
 		{
 			return true;
 		}
