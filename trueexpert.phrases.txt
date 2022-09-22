@@ -108,11 +108,11 @@
 	"AFKCHECK"
 	{
 		"#format"	"{1:s}"
-		"en"	"Afk check - vote started by {1}"
+		"en"	"AFK check - vote started by {1}"
 	}
 	"AFKCHECK2"
 	{
-		"en"	"Afk vote is not allowed yet."
+		"en"	"AFK check - vote is not allowed yet."
 	}
 	"AreYouHere?"
 	{
@@ -143,7 +143,7 @@
 	"PartnerDeclined"
 	{
 		"#format"	"{1:s}"
-		"en"	"You declined partnership with {1}."
+		"en"	"You declined partnership from {1}."
 	}
 	"PartnerCanceled"
 	{
@@ -159,9 +159,9 @@
 	{
 		"en"	"Devmap vote is not allowed yet."
 	}
-	"YouMustHavePartner"
+	"DontHavePartner"
 	{
-		"en"	"You must have a partner."
+		"en"	"You don't have a partner."
 	}
 	"NoFreePlayer"
 	{
