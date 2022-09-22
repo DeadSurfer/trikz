@@ -713,4 +713,16 @@
 	{
 		"en"	"\t\t\t\tNo records."
 	}
+	"MLSDistance"
+	{
+		"en"	"Distance"
+	}
+	"MLSUnits"
+	{
+		"en"	"units"
+	}
+	"MLSTP"
+	{
+		"en"	" [TP]"
+	}
 }
