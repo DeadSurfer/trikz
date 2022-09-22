@@ -281,13 +281,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				float velAbs[3] = {0.0, ...};
 				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs);
+				velAbs[2] = 0.0;
 
-				float length = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0));
+				float length = GetVectorLength(velAbs);
 
 				velAbs[0] /= length;
 				velAbs[1] /= length;
-				velAbs[2] = 0.0;
-
+				
 				g_dot[client] = GetVectorDotProduct(eye, velAbs); //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
 			}
 
@@ -315,17 +315,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(GetGroundPos(client) - g_origin[client][2] > 0.04)
 		{
-			Format(flat, 32, "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+			Format(flat, sizeof(flat), "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
 		else if(GetGroundPos(client) - g_origin[client][2] < -0.04)
 		{
-			Format(flat, 32, "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+			Format(flat, sizeof(flat), "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
 		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0; //http://mathonline.wikidot.com/the-distance-between-two-vectors
 
-		float pre = SquareRoot(Pow(g_preVel[client][0], 2.0) + Pow(g_preVel[client][1], 2.0)); //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
+		float pre = GetVectorLength(g_preVel[client]); //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
 
 		float sync = -1.0;
 
@@ -457,75 +457,72 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(GetGroundPos(client) - g_origin[client][2] > 1.0)
 		{
-			Format(flat, 32, "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+			Format(flat, sizeof(flat), "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
 		else if(GetGroundPos(client) - g_origin[client][2] < -4.0)
 		{
-			Format(flat, 32, "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+			Format(flat, sizeof(flat), "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
-		//if(-4.0 <= GetGroundPos(client) - g_origin[client][2] <= 1.0)
+		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0));
+
+		float sync = -1.0;
+
+		sync += float(g_syncTick[client]);
+
+		if(sync == -1.0)
 		{
-			float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0));
+			sync = 0.0;
+		}
 
-			float sync = -1.0;
+		sync /= float(g_tickAir[client]);
+		sync *= 100.0;
 
-			sync += float(g_syncTick[client]);
+		//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
 
-			if(sync == -1.0)
+		if(g_jumpstats[client] == true)
+		{
+			if(1000.0 > distance >= 22.0) //190.0
 			{
-				sync = 0.0;
+				Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+
+				Handle KeyHintText = StartMessageOne("KeyHintText", client);
+
+				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+
+				bfmsg.WriteByte(true);
+				bfmsg.WriteString(print);
+
+				EndMessage();
+
+				PrintToConsole(client, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 			}
+		}
 
-			sync /= float(g_tickAir[client]);
-			sync *= 100.0;
-
-			//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
-
-			if(g_jumpstats[client] == true)
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 			{
-				if(1000.0 > distance >= 22.0) //190.0
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 				{
-					Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-
-					Handle KeyHintText = StartMessageOne("KeyHintText", client);
-
-					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
-					bfmsg.WriteByte(true);
-					bfmsg.WriteString(print);
-
-					EndMessage();
-
-					PrintToConsole(client, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-				}
-			}
-
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
-
-					if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
+					if(190.0 > distance >= 22.0)
 					{
-						if(190.0 > distance >= 22.0)
-						{
-							Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+						Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 
-							Handle KeyHintText = StartMessageOne("KeyHintText", i);
+						Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
-							BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
-							bfmsg.WriteByte(true);
-							bfmsg.WriteString(print);
+						bfmsg.WriteByte(true);
+						bfmsg.WriteString(print);
 
-							EndMessage();
+						EndMessage();
 
-							PrintToConsole(i, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-						}
+						PrintToConsole(i, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 					}
 				}
 			}
@@ -965,8 +962,9 @@ stock void SaveMaxVel(int client)
 {
 	float vel[3] = {0.0, ...};
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+	vel[2] = 0.0;
 
-	float flatVel = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
+	float flatVel = GetVectorLength(vel);
 
 	if(g_maxVel[client] < flatVel)
 	{
