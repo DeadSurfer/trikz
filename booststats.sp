@@ -233,8 +233,6 @@ stock void DoPrint(int client)
 
 			int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
 
-			Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", client);
-			Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", client);
 			Format(timeFormat, sizeof(timeFormat), "%.3f", time);
 			Format(projectileVel, sizeof(projectileVel), "%.0f", g_projectileVel[client]);
 			Format(vel, sizeof(vel), "%.0f", g_vel[client]);
@@ -244,6 +242,8 @@ stock void DoPrint(int client)
 			if(g_boostStats[client] == true)
 			{
 				//PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", client);
+				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", client);
 				Format(format, sizeof(format), "%T", "Message", client, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
 				SendMessage(client, format);
 			}
@@ -251,6 +251,8 @@ stock void DoPrint(int client)
 			if(IsClientValid(partner) == true && IsClientInGame(partner) == true && g_boostStats[partner] == true)
 			{
 				//PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
+				Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", partner);
+				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", partner);
 				Format(format, sizeof(format), "%T", "MessagePartner", partner, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
 				SendMessage(partner, format);
 			}
