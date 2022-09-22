@@ -27,7 +27,7 @@
 
     "DuckYes"
     {
-        "ru"    "Есть"
+        "ru"    "Да"
     }
 
     "Message"
