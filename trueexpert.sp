@@ -8215,12 +8215,12 @@ stock void MLStats(int client, bool ground)
 
 	for(int i = 1; i <= count <= 10; i++)
 	{
-		Format(print[0], 256, "%s%s", print, g_mlsPrint[client][i]);
+		Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
 	}
 
 	if(count > 10)
 	{
-		Format(print[0], 256, "%s...\n%s", print, g_mlsPrint[client][count]);
+		Format(print[0], 256, "%s...\n%s", print[0], g_mlsPrint[client][count]);
 	}
 
 	int flyer = g_mlsFlyer[client];
