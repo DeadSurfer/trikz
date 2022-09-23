@@ -511,7 +511,7 @@ public void OnMapStart()
 
 	//g_turbophysics = FindConVar("sv_turbophysics"); //thnaks to maru.
 
-	RecalculatePoints();
+	//RecalculatePoints();
 
 	for(int i = 1; i <= MAXPLAYERS; i++)
 	{
@@ -527,23 +527,6 @@ public void OnMapStart()
 
 	g_kv = new KeyValues("TrueExpertHud");
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
-
-	return;
-}
-
-stock void RecalculatePoints()
-{
-	if(g_dbPassed == true)
-	{
-		g_mysql.Query(SQLRecalculatePoints_GetMap, "SELECT map FROM tier", _, DBPrio_Normal);
-	}
-
-	else if(g_dbPassed == false)
-	{
-		//PrintToServer("%T", "dbPassed", 0);
-		//PrintToServer("%t", "dbPassed");
-		//PrintToServer("%T", "dbPressed");
-	}
 
 	return;
 }
@@ -1233,7 +1216,7 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 
 				case 1:
 				{
-					Top10();
+					Top10(param1);
 				}
 
 				case 2:
@@ -1444,18 +1427,6 @@ public void OnClientPutInServer(int client)
 	}
 
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
-
-	if(IsClientInGame(client) == true && g_dbPassed == true)
-	{
-		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
-
-		char query[512] = "";
-
-		int steamid = GetSteamAccountID(client);
-
-		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
-		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client), DBPrio_Normal);
-	}
 
 	g_menuOpened[client] = false;
 	g_menuOpenedHud[client] = false;
@@ -2182,6 +2153,13 @@ stock void Partner(int client)
 			SendMessage(client, format);
 
 			return;
+		}
+
+		if(g_dbPassed == false)
+		{
+			char format[256] = "";
+			Format(format, sizeof(format), "Wait for database loading...");
+			SendMessage(client, format);
 		}
 
 		if(IsValidPartner(client) == false)
@@ -3006,15 +2984,24 @@ public Action cmd_top10(int client, int args)
 		return Plugin_Continue;
 	}
 
-	Top10();
+	Top10(client);
 
 	return Plugin_Handled;
 }
 
-public void Top10()
+public void Top10(int client)
 {
 	if(g_top10ac <= GetGameTime())
 	{
+		if(g_dbPassed == false)
+		{
+			char format[256] = "";
+			Format(format, sizeof(format), "Wait for database loading...");
+			SendMessage(client, format);
+
+			return;
+		}
+
 		g_top10ac = GetGameTime() + 10.0;
 
 		char query[512] = "";
@@ -6435,7 +6422,19 @@ public void SQLConnect(Database db, const char[] error, any data)
 		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", g_map);
 		g_mysql.Query(SQLGetServerRecord, query, _, DBPrio_Normal);
 
-		RecalculatePoints();
+		g_mysql.Query(SQLRecalculatePoints_GetMap, "SELECT map FROM tier", _, DBPrio_Normal);
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true)
+			{
+				g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(i), DBPrio_High);
+
+				int steamid = GetSteamAccountID(i);
+				Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
+				g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(i), DBPrio_Normal);
+			}
+		}
 	}
 
 	else if(db == INVALID_HANDLE)
@@ -7067,7 +7066,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
-				if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= 0.36)
+				if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= 0.34)
 				{
 					g_macroTime[client] = GetEngineTime();
 
@@ -7081,7 +7080,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 		
-		if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.11)
+		if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.12)
 		{
 			buttons |= IN_JUMP;
 
@@ -8226,6 +8225,7 @@ stock void MLStats(int client, bool ground)
 
 	int flyer = g_mlsFlyer[client];
 	float distance = 0.0;
+	char tp[256] = "";
 
 	if(ground == true)
 	{
@@ -8233,10 +8233,20 @@ stock void MLStats(int client, bool ground)
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
 		distance = SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0;
 
-		Format(print[1], 256, "%s\n%T: %.0f %T%T", print[0], "MLSDistance", flyer, distance, "MLSUnits", flyer, g_teleported[client] == true ? "MLSTP" : "", flyer); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		if(g_teleported[client] == true)
+		{
+			Format(tp, sizeof(tp), "%T", "MLSTP", flyer);
+		}
+
+		Format(print[1], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", flyer, distance, "MLSUnits", flyer, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
 		PrintToConsole(flyer, "%s", print[1]);
 
-		Format(print[2], 256, "%s\n%T: %.0f %T%T", print[0], "MLSDistance", client, distance, "MLSUnits", client, g_teleported[client] == true ? "MLSTP" : "", client); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		if(g_teleported[client] == true)
+		{
+			Format(tp, sizeof(tp), "%T", "MLSTP", client);
+		}
+
+		Format(print[2], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", client, distance, "MLSUnits", client, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
 		PrintToConsole(client, "%s", print[2]);
 
 		g_mlsCount[client] = 0;
@@ -8251,7 +8261,7 @@ stock void MLStats(int client, bool ground)
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 		bfmsg.WriteByte(true);
-		bfmsg.WriteString(print[1]);
+		bfmsg.WriteString(ground == true ? print[1] : print[0]);
 
 		EndMessage();
 	}
@@ -8263,7 +8273,7 @@ stock void MLStats(int client, bool ground)
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 
 		bfmsg.WriteByte(true);
-		bfmsg.WriteString(print[2]);
+		bfmsg.WriteString(ground == true ? print[2] : print[0]);
 
 		EndMessage();
 	}
@@ -8277,7 +8287,12 @@ stock void MLStats(int client, bool ground)
 
 			if(observerMode < 7 && (observerTarget == client || observerTarget == flyer) && g_mlstats[i] == true)
 			{
-				Format(print[3], 256, "%s\n%T: %.0f %T%T", print[0], "MLSDistance", i, distance, "MLSUnits", i, g_teleported[client] == true ? "MLSTP" : "", i);
+				if(g_teleported[client] == true)
+				{
+					Format(tp, sizeof(tp), "%T", "MLSTP", i);
+				}
+
+				Format(print[3], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", i, distance, "MLSUnits", i, tp);
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
