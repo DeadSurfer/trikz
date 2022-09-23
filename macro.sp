@@ -56,8 +56,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_macro", cmd_macro);
 
 	gCV_enableMacro = CreateConVar("sm_macro_enable", "0.0", "Do enable plugin here.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_mainDelay = CreateConVar("sm_macro_main_delay", "0.11", "Make main delay for attack2", FCVAR_NOTIFY, false, 0.0, true, 0.11);
-	gCV_repeatDelay = CreateConVar("sm_macro_repeat_delay", "0.36", "Make repeat delay if hold attack2", FCVAR_NOTIFY, true, 3.6, true, 0.4);
+	gCV_mainDelay = CreateConVar("sm_macro_main_delay", "0.12", "Make main delay for attack2", FCVAR_NOTIFY, false, 0.0, true, 0.12);
+	gCV_repeatDelay = CreateConVar("sm_macro_repeat_delay", "0.34", "Make repeat delay if hold attack2", FCVAR_NOTIFY, true, 3.4, true, 0.4);
 
 	AutoExecConfig(true);
 
@@ -126,7 +126,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					g_macroOpened[client] = true;
 				}
 
-				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.02)
+				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.03)
 				{
 					buttons |= IN_ATTACK;
 				}
