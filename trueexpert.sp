@@ -204,7 +204,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.54",
+	version = "4.55",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -1427,6 +1427,18 @@ public void OnClientPutInServer(int client)
 	}
 
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
+
+	if(IsClientInGame(client) == true)
+	{
+		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
+
+		char query[512] = "";
+
+		int steamid = GetSteamAccountID(client);
+
+		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
+		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client), DBPrio_Normal);
+	}
 
 	g_menuOpened[client] = false;
 	g_menuOpenedHud[client] = false;
