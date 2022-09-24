@@ -1428,7 +1428,7 @@ public void OnClientPutInServer(int client)
 
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
 
-	if(IsClientInGame(client) == true)
+	if(IsClientInGame(client) == true && g_dbPassed == true)
 	{
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
 
