@@ -713,13 +713,10 @@
 	{
 		"en"	"\t\t\t\tNo records."
 	}
-	"MLSDistance"
+	"MLSFinishMsg"
 	{
-		"en"	"Distance"
-	}
-	"MLSUnits"
-	{
-		"en"	"units"
+		"#format"	"{1:.0f},{2:s}"
+		"en"	"Distance: {1} units{2}"
 	}
 	"MLSTP"
 	{
