@@ -41,6 +41,7 @@
 char g_map[192] = "";
 ArrayList g_frame[MAXPLAYER] = {null, ...};
 ArrayList g_frameCache[MAXPLAYER] = {null, ...};
+Handle g_PassServerEntityFilter = INVALID_HANDLE;
 
 enum struct eFrame
 {
@@ -82,7 +83,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.23",
+	version = "0.24",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -131,9 +132,36 @@ public void OnPluginStart()
 		g_UpdateStepSound.AddParam(HookParamType_VectorPtr);
 	}
 
-	delete gamedata;
+	//delete gamedata;
 
 	g_tickrate = 1.0 / GetTickInterval();
+	
+	/*if(gamedata == INVALID_HANDLE)
+	{
+		SetFailState("Failed to load \"trueexpert.games\" gamedata.");
+
+		delete gamedata;
+		delete g_PassServerEntityFilter;
+	}*/
+
+	if(LibraryExists("trueexpert-entityfilter") == false)
+	{
+		g_PassServerEntityFilter = DHookCreateFromConf(gamedata, "PassServerEntityFilter");
+
+		if(g_PassServerEntityFilter == INVALID_HANDLE)
+		{
+			SetFailState("Failed to setup detour PassServerEntityFilter.");
+		}
+
+		if(DHookEnableDetour(g_PassServerEntityFilter, false, PassServerEntityFilter) == false)
+		{
+			SetFailState("Failed to load detour PassServerEntityFilter.");
+		}
+		
+		delete g_PassServerEntityFilter;
+	}
+
+	delete gamedata;
 
 	return;
 }
@@ -159,6 +187,21 @@ public void OnMapStart()
 	else if(Trikz_GetDevmap() == true)
 	{
 		OnPluginEnd();
+	}
+
+	return;
+}
+
+public void OnClientPutInServer(int client)
+{
+	if(LibraryExists("trueexpert-entityfilter") == true)
+	{
+		return;
+	}
+
+	if(Trikz_GetDevmap() == false)
+	{
+		SDKHook(client, SDKHook_SetTransmit, TransmitPlayer);
 	}
 
 	return;
@@ -532,6 +575,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			Trikz_Restart(client, false);
 
+			SetEntityCollisionGroup(client, 2);
+
 			//int flags = GetEntityFlags(client);
 
 			//if((flags & FL_ATCONTROLS) == 0)
@@ -610,6 +655,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 
 		buttons = frame.buttons;
+
 		g_timeToRestart[client] = GetGameTime();
 	}
 
@@ -669,6 +715,8 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		{
 			g_UpdateStepSound.HookEntity(Hook_Pre, client, Hook_UpdateStepSound_Pre);
 			g_UpdateStepSound.HookEntity(Hook_Post, client, Hook_UpdateStepSound_Post);
+
+			SetEntityCollisionGroup(client, 2);
 		}
 	}
 
@@ -794,21 +842,104 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 	// trigger_once | trigger_multiple.. etc
 	// func_door | func_door_rotating
-	if(StrContains(classname, "trigger_") != -1 || StrContains(classname, "_door") != -1 || StrContains(classname, "player_speedmod") != -1)
+	if(StrContains(classname, "trigger_") != -1 || StrContains(classname, "_door") != -1 || StrContains(classname, "_button") != -1)
 	{
 		SDKHook(entity, SDKHook_StartTouch, HookTriggers);
 		SDKHook(entity, SDKHook_EndTouch, HookTriggers);
 		SDKHook(entity, SDKHook_Touch, HookTriggers);
 		SDKHook(entity, SDKHook_Use, HookTriggers);
 	}
+
+	if(StrContains(classname, "projectile", false) != -1)
+	{
+		SDKHook(entity, SDKHook_SetTransmit, TransmitNade);
+	}
 }
 
 public Action HookTriggers(int entity, int other)
 {
-	if(0 < other <= MaxClients && IsFakeClient(other))
+	if(0 < other <= MaxClients && IsFakeClient(other) == true)
+	{
+		return Plugin_Handled;
+	}
+
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	
+	if(0 < owner <= MaxClients && IsFakeClient(owner) == true)
 	{
 		return Plugin_Handled;
 	}
 
 	return Plugin_Continue;
+}
+
+public Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
+{
+	//hide replay
+	if(client != entity && 0 < entity <= MaxClients && IsPlayerAlive(client) == true)
+	{
+		if(IsFakeClient(entity) == true)
+		{
+			return Plugin_Handled;
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
+{
+	//hide replay nades
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+	if(owner < 0)
+	{
+		owner = 0;
+	}
+
+	if(IsPlayerAlive(client) == true && entity > 0 && owner != client && IsFakeClient(owner) == true)
+	{
+		return Plugin_Handled;
+	}
+
+	return Plugin_Continue;
+}
+
+stock MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
+{
+	if(DHookIsNullParam(hParams, 1) == true || DHookIsNullParam(hParams, 2) == true || Trikz_GetDevmap() == true)
+	{
+		return MRES_Ignored;
+	}
+
+	int ent1 = DHookGetParam(hParams, 1); //touch reciever
+	int ent2 = DHookGetParam(hParams, 2); //touch sender
+
+	char classname[32] = "";
+	GetEntityClassname(ent2, classname, sizeof(classname));
+
+	if(StrContains(classname, "projectile", false) != -1)
+	{
+		if(0 < ent1 <= MaxClients)
+		{
+			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity");
+
+			if(owner < 0)
+			{
+				owner = 0;
+			}
+
+			//if(Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
+			if((IsFakeClient(ent1) == true && IsFakeClient(owner) == true) || (IsFakeClient(ent1) == false && IsFakeClient(owner) == false))
+			{
+				return MRES_Ignored;
+			}
+
+			DHookSetReturn(hReturn, false);
+
+			return MRES_Supercede;
+		}
+	}
+
+	return MRES_Ignored;
 }
