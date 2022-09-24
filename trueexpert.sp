@@ -2160,6 +2160,8 @@ stock void Partner(int client)
 			char format[256] = "";
 			Format(format, sizeof(format), "Wait for database loading...");
 			SendMessage(client, format);
+
+			return;
 		}
 
 		if(IsValidPartner(client) == false)
@@ -8009,12 +8011,37 @@ stock void FlashbangEffect(int entity)
 			}
 		}
 
-		TE_Send(clients, count);
+		TE_Send(clients, count, 0.0);
 	}
 
 	else if(filter == false)
 	{
-		TE_SendToAll(0.0);
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+		if(owner == -1)
+		{
+			owner = 0;
+		}
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true)
+			{
+				//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
+				//int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+
+				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
+				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || (observerTarget == owner && observerMode < 7))
+				if(IsFakeClient(owner) == false || i == owner || IsClientObserver(i) == true)
+				{
+					clients[count++] = i;
+				}
+			}
+		}
+
+		TE_Send(clients, count, 0.0);
+
+		//TE_SendToAll(0.0);
 	}
 
 	float dir[3] = {0.0, ...}; //https://forums.alliedmods.net/showthread.php?t=274452
@@ -8036,9 +8063,13 @@ stock void FlashbangEffect(int entity)
 
 	else if(filter == false)
 	{
-		TE_SendToAll(0.0); //Idea from "Expert-Zone". So, we just made non empty event.
+		TE_Send(clients, count, 0.0);
 
-		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
+
+		//TE_SendToAll(0.0); //Idea from "Expert-Zone". So, we just made non empty event.
+
+		//EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 	}
 
 	return;
@@ -8238,7 +8269,8 @@ stock void MLStats(int client, bool ground)
 			Format(tp, sizeof(tp), "%T", "MLSTP", flyer);
 		}
 
-		Format(print[1], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", flyer, distance, "MLSUnits", flyer, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		//Format(print[1], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", flyer, distance, "MLSUnits", flyer, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		Format(print[1], 256, "%s\n%T", print[0], "MLSFinishMsg", flyer, distance, tp);
 		PrintToConsole(flyer, "%s", print[1]);
 
 		if(g_teleported[client] == true)
@@ -8246,7 +8278,8 @@ stock void MLStats(int client, bool ground)
 			Format(tp, sizeof(tp), "%T", "MLSTP", client);
 		}
 
-		Format(print[2], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", client, distance, "MLSUnits", client, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		//Format(print[2], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", client, distance, "MLSUnits", client, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+		Format(print[2], 256, "%s\n%T", print[0], "MLSFinishMsg", client, distance, tp);
 		PrintToConsole(client, "%s", print[2]);
 
 		g_mlsCount[client] = 0;
@@ -8292,7 +8325,8 @@ stock void MLStats(int client, bool ground)
 					Format(tp, sizeof(tp), "%T", "MLSTP", i);
 				}
 
-				Format(print[3], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", i, distance, "MLSUnits", i, tp);
+				//Format(print[3], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", i, distance, "MLSUnits", i, tp);
+				Format(print[3], 256, "%s\n%T", print[0], "MLSFinishMsg", i, distance, tp);
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", i);
 
