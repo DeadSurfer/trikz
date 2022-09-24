@@ -226,25 +226,25 @@ stock void DoPrint(int client)
 
 			char timeColor[256] = "";
 			char duck[256] = "";
-			char timeFormat[8] = "";
-			char projectileVel[16] = "";
-			char vel[16] = "";
-			char angles[2][8];
+			//char timeFormat[8] = "";
+			//char projectileVel[16] = "";
+			//char vel[16] = "";
+			//char angles[2][8];
 
 			int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
 
-			Format(timeFormat, sizeof(timeFormat), "%.3f", time);
-			Format(projectileVel, sizeof(projectileVel), "%.0f", g_projectileVel[client]);
-			Format(vel, sizeof(vel), "%.0f", g_vel[client]);
-			Format(angles[0], 8, "%.0f", g_angles[client][0]);
-			Format(angles[1], 8, "%.0f", g_angles[client][1]);
+			//Format(timeFormat, sizeof(timeFormat), "%.3f", time);
+			//Format(projectileVel, sizeof(projectileVel), "%.0f", g_projectileVel[client]);
+			//Format(vel, sizeof(vel), "%.0f", g_vel[client]);
+			//Format(angles[0], 8, "%.0f", );
+			//Format(angles[1], 8, "%.0f", g_angles[client][1]);
 
 			if(g_boostStats[client] == true)
 			{
 				//PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 				Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", client);
 				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", client);
-				Format(format, sizeof(format), "%T", "Message", client, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+				Format(format, sizeof(format), "%T", "Message", client, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 				SendMessage(client, format);
 			}
 
@@ -253,7 +253,8 @@ stock void DoPrint(int client)
 				//PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 				Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", partner);
 				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", partner);
-				Format(format, sizeof(format), "%T", "MessagePartner", partner, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+				//Format(format, sizeof(format), "%T", "MessagePartner", partner, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+				Format(format, sizeof(format), "%T", "MessagePartner", partner, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 				SendMessage(partner, format);
 			}
 
@@ -267,14 +268,20 @@ stock void DoPrint(int client)
 					if(observerMode < 7 && observerTarget == client && g_boostStats[i] == true)
 					{
 						//PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
-						Format(format, sizeof(format), "%T", "Message", i, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+						//Format(format, sizeof(format), "%T", "Message", i, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+						Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", i);
+						Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", i);
+						Format(format, sizeof(format), "%T", "Message", i, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 						SendMessage(i, format);
 					}
 
 					else if(IsClientValid(partner) == true && observerMode < 7 && observerTarget == partner && g_boostStats[i] == true)
 					{
 						//PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
-						Format(format, sizeof(format), "%T", "MessagePartner", i, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+						//Format(format, sizeof(format), "%T", "MessagePartner", i, timeColor, timeFormat, projectileVel, vel, duck, angles[0], angles[1]);
+						Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", i);
+						Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", i);
+						Format(format, sizeof(format), "%T", "MessagePartner", i, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 						SendMessage(i, format);
 					}
 				}
