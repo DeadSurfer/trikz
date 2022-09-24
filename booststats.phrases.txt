@@ -32,13 +32,13 @@
 
     "Message"
     {
-        "#format" "{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
+        "#format" "{1:s},{2:.3f},{3:.0f},{4:.0f},{5:s},{6:.0f},{7:.0f}"
         "en"    "Time: {1}{2}{default}, Speed: {3}, Run: {4}, Duck: {5}, Angles: {6}/{7}"
     }
 
     "MessagePartner"
     {
-        "#format" "{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s}"
+        "#format" "{1:s},{2:.3f},{3:.0f},{4:.0f},{5:s},{6:.0f},{7:.0f}"
         "en"    ";#DCDCDCTime: {1}{2}{default}, Speed: {3}, Run: {4}, Duck: {5}, Angles: {6}/{7}"
     }
 }
