@@ -713,13 +713,10 @@
 	{
 		"ru"	"\t\t\t\tНет записей."
 	}
-	"MLSDistance"
+	"MLSFinishMsg"
 	{
-		"ru"	"Расстояние"
-	}
-	"MLSUnits"
-	{
-		"ru"	"юнитов"
+		"#format"	"{1:.0f},{2:s}"
+		"ru"	"Расстояние: {1} юнитов{2}"
 	}
 	"MLSTP"
 	{
