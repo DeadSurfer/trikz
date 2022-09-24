@@ -6895,7 +6895,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
 						//if(g_partner[client] == g_partner[g_partner[i]] || i == client)
-						if(g_partner[client] == g_partner[g_partner[i]] || i == client || (observerTarget == client && observerMode < 7))
+						if(g_partner[client] == g_partner[g_partner[i]] || i == client || ((observerTarget == client || observerTarget == g_partner[client]) && observerMode < 7))
 						{
 							clients[count++] = i;
 							//PrintToServer("%N", i);
@@ -8016,7 +8016,7 @@ stock void FlashbangEffect(int entity)
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
 				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
-				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || (observerTarget == owner && observerMode < 7))
+				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || ((observerTarget == owner || g_partner[owner]) && observerMode < 7))
 				{
 					clients[count++] = i;
 				}
