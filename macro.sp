@@ -33,21 +33,23 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 
-float g_macroTime[MAXPLAYER] = {0.0, ...};
+int g_macroTick[MAXPLAYER] = {0, ...};
 bool g_macroOpened[MAXPLAYER] = {false, ...};
 bool g_macroDisabled[MAXPLAYER] = {false, ...};
-ConVar gCV_mainDelay = null;
-ConVar gCV_repeatDelay = null;
-ConVar gCV_enableMacro = null;
-float g_macroMainDelay = 0.0;
-float g_macroRepeatDelay = 0.0;
+ConVar gCV_macroEnable = null;
+ConVar gCV_tickMain = null;
+ConVar gCV_tickRepeat = null;
+ConVar gCV_tickJump = null;
+int g_macroTickMain = 0;
+int g_macroTickRepeat = 0;
+int g_macroTickJump = 0;
 
 public Plugin myinfo =
 {
 	name = "Macro",
 	author = "Nick Jurevich",
 	description = "Make trikz game more comfortable.",
-	version = "0.96",
+	version = "0.97",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -55,11 +57,12 @@ public void OnPluginStart()
 {
 	RegConsoleCmd("sm_macro", cmd_macro);
 
-	gCV_enableMacro = CreateConVar("sm_macro_enable", "0.0", "Do enable plugin here.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
-	gCV_mainDelay = CreateConVar("sm_macro_main_delay", "0.12", "Make main delay for attack2", FCVAR_NOTIFY, false, 0.0, true, 0.12);
-	gCV_repeatDelay = CreateConVar("sm_macro_repeat_delay", "0.34", "Make repeat delay if hold attack2", FCVAR_NOTIFY, true, 3.4, true, 0.4);
+	gCV_macroEnable = CreateConVar("sm_macro_enable", "0.0", "Do enable or disable plugin.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_tickMain = CreateConVar("sm_macro_main", "13.0", "Make main delay for attack2.", FCVAR_NOTIFY, false, 0.0, true);
+	gCV_tickRepeat = CreateConVar("sm_macro_repeat", "33.0", "Make repeat delay if hold attack2.", FCVAR_NOTIFY, false, 0.0, true);
+	gCV_tickJump = CreateConVar("sm_macro_jump", "2.0", "Do jump in tick if press or hold attack2.", FCVAR_NOTIFY, false, 0.0, true);
 
-	AutoExecConfig(true);
+	AutoExecConfig(true, "macro", "sourcemod");
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -74,7 +77,7 @@ public void OnPluginStart()
 
 public Action cmd_macro(int client, int args)
 {
-	float convar = GetConVarFloat(gCV_enableMacro);
+	float convar = GetConVarFloat(gCV_macroEnable);
 
 	if(convar == 0.0)
 	{
@@ -90,7 +93,7 @@ public Action cmd_macro(int client, int args)
 
 public void OnClientPutInServer(int client)
 {
-	bool macro = gCV_enableMacro.BoolValue;
+	bool macro = gCV_macroEnable.BoolValue;
 	
 	if(macro == false)
 	{
@@ -98,17 +101,17 @@ public void OnClientPutInServer(int client)
 	}
 
 	g_macroDisabled[client] = false;
-	g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
-	g_macroMainDelay = gCV_mainDelay.FloatValue;
-	g_macroRepeatDelay = gCV_repeatDelay.FloatValue;
+	g_macroTickMain = RoundToFloor(gCV_tickMain.FloatValue);
+	g_macroTickRepeat = RoundToFloor(gCV_tickRepeat.FloatValue);
+	g_macroTickJump = RoundToFloor(gCV_tickJump.FloatValue);
 
 	return;
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	bool macro = gCV_enableMacro.BoolValue;
+	bool macro = gCV_macroEnable.BoolValue;
 	
 	if(macro == true && g_macroDisabled[client] == false)
 	{
@@ -119,27 +122,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
-				if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= g_macroRepeatDelay)
+				if(g_macroOpened[client] == false && g_macroTick[client] >= g_macroTickRepeat)
 				{
-					g_macroTime[client] = GetEngineTime();
-
 					g_macroOpened[client] = true;
+
+					g_macroTick[client] = 1;
 				}
 
-				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.03)
+				if(g_macroTick[client] <= g_macroTickJump)
 				{
 					buttons |= IN_ATTACK;
 				}
 			}
 		}
 
-		if(g_macroOpened[client] == true && GetEngineTime () - g_macroTime[client] >= g_macroMainDelay)
+		if(g_macroOpened[client] == true && g_macroTick[client] == g_macroTickMain)
 		{
 			buttons |= IN_JUMP;
 
-			g_macroTime[client] = GetEngineTime();
-
 			g_macroOpened[client] = false;
+		}
+
+		if(g_macroTick[client] < g_macroTickRepeat)
+		{
+			g_macroTick[client]++;
 		}
 	}
 
