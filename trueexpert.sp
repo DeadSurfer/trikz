@@ -7131,7 +7131,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public Action ProjectileBoostFix(int entity, int other)
 {
-	if(IsValidClient(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND) && IsFakeClient(other) == false)
+	if(IsValidClient(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
 		float originOther[3] = {0.0, ...};
 		GetClientAbsOrigin(other, originOther);
@@ -7162,20 +7162,23 @@ public Action ProjectileBoostFix(int entity, int other)
 			g_flash[other] = EntIndexToEntRef(entity);
 			g_boost[other] = 1;
 
-			float vel[3] = {0.0, ...};
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel);
-
-			g_mlsVel[other][0][0] = vel[0];
-			g_mlsVel[other][0][1] = vel[1];
-
-			g_mlsCount[other]++;
-
-			if(g_mlsCount[other] == 1)
+			if(IsFakeClient(other) == false)
 			{
-				GetClientAbsOrigin(other, g_mlsDistance[other][0]);
-			}
+				float vel[3] = {0.0, ...};
+				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel);
 
-			g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+				g_mlsVel[other][0][0] = vel[0];
+				g_mlsVel[other][0][1] = vel[1];
+
+				g_mlsCount[other]++;
+
+				if(g_mlsCount[other] == 1)
+				{
+					GetClientAbsOrigin(other, g_mlsDistance[other][0]);
+				}
+
+				g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+			}
 		}
 	}
 
