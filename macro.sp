@@ -113,7 +113,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	bool macro = gCV_macroEnable.BoolValue;
 	
-	if(macro == true && g_macroDisabled[client] == false)
+	if(macro == true && g_macroDisabled[client] == false && IsPlayerAlive(client) == true)
 	{
 		if(buttons & IN_ATTACK2)
 		{
