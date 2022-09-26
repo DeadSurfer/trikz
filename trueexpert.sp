@@ -182,7 +182,7 @@ bool g_autoflash[MAXPLAYER] = {false, ...};
 bool g_autoswitch[MAXPLAYER] = {false, ...};
 bool g_bhop[MAXPLAYER] = {false, ...};
 bool g_macroDisabled[MAXPLAYER] = {false, ...};
-float g_macroTime[MAXPLAYER] = {0.0, ...};
+int g_macroTick[MAXPLAYER] = {0, ...};
 bool g_macroOpened[MAXPLAYER] = {false, ...};
 bool g_endMessage[MAXPLAYER] = {false, ...};
 float g_flashbangTime[MAXPLAYER] = {0.0, ...};
@@ -7080,27 +7080,30 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
-				if(g_macroOpened[client] == false && GetEngineTime() - g_macroTime[client] >= 0.34)
+				if(g_macroOpened[client] == false && g_macroTick[client] == 33)
 				{
-					g_macroTime[client] = GetEngineTime();
-
 					g_macroOpened[client] = true;
+
+					g_macroTick[client] = 1;
 				}
 
-				if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] <= 0.03)
+				if(g_macroTick[client] <= 2)
 				{
 					buttons |= IN_ATTACK;
 				}
 			}
 		}
-		
-		if(g_macroOpened[client] == true && GetEngineTime() - g_macroTime[client] >= 0.12)
+
+		if(g_macroOpened[client] == true && g_macroTick[client] == 13)
 		{
 			buttons |= IN_JUMP;
 
-			g_macroTime[client] = GetEngineTime();
-
 			g_macroOpened[client] = false;
+		}
+
+		if(g_macroTick[client] < 33)
+		{
+			g_macroTick[client]++;
 		}
 	}
 
