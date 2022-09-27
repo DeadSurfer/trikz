@@ -116,7 +116,7 @@ public Action cmd_booststats(int client, int args)
 	SetClientCookie(client, g_cookie, value);
 
 	char format[256] = "";
-	Format(format, sizeof(format), "%T", client, g_boostStats[client] ? "BSON" : "BSOFF");
+	Format(format, sizeof(format), "%T", g_boostStats[client] ? "BSON" : "BSOFF", client);
 	SendMessage(client, format);
 
 	return Plugin_Handled;
