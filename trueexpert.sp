@@ -204,7 +204,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.55",
+	version = "4.56",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -369,6 +369,11 @@ public void OnPluginStart()
 
 	g_kv = new KeyValues("TrueExpertHud");
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+	if(g_devmap == false)
+	{
+		ServerCommand("sv_nostats 0");
+	}
 
 	return;
 }
@@ -7393,6 +7398,16 @@ public Action timer_changelevel(Handle timer, bool value)
 	g_devmap = value;
 
 	ForceChangeLevel(g_map, "Reason: Devmap");
+
+	if(value == false)
+	{
+		ServerCommand("sv_nostats 0");
+	}
+
+	else if(value == true)
+	{
+		ServerCommand("sv_nostats 1");
+	}
 
 	return Plugin_Stop;
 }
