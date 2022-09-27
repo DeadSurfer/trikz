@@ -39,10 +39,10 @@ bool g_macroDisabled[MAXPLAYER] = {false, ...};
 ConVar gCV_macroEnable = null;
 ConVar gCV_tickMain = null;
 ConVar gCV_tickRepeat = null;
-ConVar gCV_tickJump = null;
+ConVar gCV_tickAttack = null;
 int g_macroTickMain = 0;
 int g_macroTickRepeat = 0;
-int g_macroTickJump = 0;
+int g_macroTickAttack = 0;
 
 public Plugin myinfo =
 {
@@ -60,7 +60,7 @@ public void OnPluginStart()
 	gCV_macroEnable = CreateConVar("sm_macro_enable", "0.0", "Do enable or disable plugin.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
 	gCV_tickMain = CreateConVar("sm_macro_main", "13.0", "Make main delay for attack2.", FCVAR_NOTIFY, false, 0.0, true);
 	gCV_tickRepeat = CreateConVar("sm_macro_repeat", "33.0", "Make repeat delay if hold attack2.", FCVAR_NOTIFY, false, 0.0, true);
-	gCV_tickJump = CreateConVar("sm_macro_jump", "2.0", "Do jump in tick if press or hold attack2.", FCVAR_NOTIFY, false, 0.0, true);
+	gCV_tickAttack = CreateConVar("sm_macro_attack", "2.0", "Do attack in tick if press or hold attack2.", FCVAR_NOTIFY, false, 0.0, true);
 
 	AutoExecConfig(true, "macro", "sourcemod");
 
@@ -104,7 +104,7 @@ public void OnClientPutInServer(int client)
 	g_macroOpened[client] = false;
 	g_macroTickMain = RoundToFloor(gCV_tickMain.FloatValue);
 	g_macroTickRepeat = RoundToFloor(gCV_tickRepeat.FloatValue);
-	g_macroTickJump = RoundToFloor(gCV_tickJump.FloatValue);
+	g_macroTickAttack = RoundToFloor(gCV_tickAttack.FloatValue);
 
 	return;
 }
@@ -129,7 +129,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					g_macroTick[client] = 1;
 				}
 
-				if(g_macroTick[client] <= g_macroTickJump)
+				if(g_macroTick[client] <= g_macroTickAttack)
 				{
 					buttons |= IN_ATTACK;
 				}
