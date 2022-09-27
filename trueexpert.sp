@@ -4853,8 +4853,11 @@ public Action SDKEndTouch(int entity, int other)
 		g_mapFinished[other] = false;
 		g_mapFinished[partner] = false; //expert zone idea
 
-		g_timerTimeStart[other] = GetEngineTime();
-		g_timerTimeStart[partner] = GetEngineTime();
+		//g_timerTimeStart[other] = GetEngineTime();
+		//g_timerTimeStart[partner] = GetEngineTime();
+
+		g_timerTimeStart[other] = float(GetGameTickCount());
+		g_timerTimeStart[partner] = float(GetGameTickCount());
 
 		g_timerReadyToStart[other] = false;
 		g_timerReadyToStart[partner] = false;
@@ -6672,7 +6675,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	//Timer
 	if(IsFakeClient(client) == false && g_timerState[client] == true && IsValidPartner(client) == true)
 	{
-		g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
+		//g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
+		g_timerTime[client] = (float(GetGameTickCount()) - g_timerTimeStart[client]) * (GetTickInterval() + 0.000000001);
 
 		//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
 		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
