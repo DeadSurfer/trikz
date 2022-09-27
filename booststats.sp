@@ -38,7 +38,7 @@
 #define MAXPLAYER MAXPLAYERS + 1
 #define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1) == true)
 
-float g_throwTime[MAXPLAYER][2];
+int g_throwTime[MAXPLAYER][2];
 float g_projectileVel[MAXPLAYER] = {0.0, ...};
 float g_vel[MAXPLAYER] = {0.0, ...};
 bool g_boostStats[MAXPLAYER] = {false, ...};
@@ -124,7 +124,8 @@ public Action cmd_booststats(int client, int args)
 
 public void CalculationProcess(int client)
 {
-	g_throwTime[client][0] = GetEngineTime();
+	//g_throwTime[client][0] = GetEngineTime();
+	g_throwTime[client][0] = GetGameTickCount();
 
 	float vel[3] = {0.0, ...};
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
@@ -200,7 +201,8 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
-	g_throwTime[client][1] = GetEngineTime();
+	//g_throwTime[client][1] = GetEngineTime();
+	g_throwTime[client][1] = GetGameTickCount();
 
 	CreateTimer(0.1, timer_print, client, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -218,7 +220,7 @@ stock void DoPrint(int client)
 {
 	if(IsClientInGame(client) == true)
 	{
-		float time = g_throwTime[client][1] - g_throwTime[client][0];
+		float time = (float(g_throwTime[client][1]) - float(g_throwTime[client][0])) * (GetTickInterval() + 0.000000001);
 
 		if(time < 0.3)
 		{
@@ -231,6 +233,7 @@ stock void DoPrint(int client)
 
 			if(g_boostStats[client] == true)
 			{
+				//PrintToServer("%f %.20f", time, (GetTickInterval() + 0.000000001)); //0.00999999977648200000 - 100 tickrate
 				//PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
 				Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", client);
 				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", client);
