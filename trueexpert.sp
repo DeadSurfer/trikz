@@ -132,7 +132,7 @@ int g_pingModelOwner[MAXENTITY] = {0, ...};
 Handle g_pingTimer[MAXPLAYER] = {INVALID_HANDLE, ...};
 Handle g_cookie[12] = {INVALID_HANDLE, ...};
 
-bool g_zoneFirst[3] = {false, ...};
+//bool g_zoneFirst[3] = {false, ...};
 
 char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
 int g_colorBuffer[MAXPLAYER][3][2];
@@ -198,6 +198,7 @@ int g_skinPlayer[MAXPLAYER] = {0, ...};
 float g_top10SR = 0.0;
 bool g_silentF1F2 = false;
 KeyValues g_kv = null;
+bool g_zoneDrawed[MAXPLAYER] = {false, ...};
 
 public Plugin myinfo =
 {
@@ -402,10 +403,10 @@ public void OnMapStart()
 	{
 		g_zoneHave[i] = false;
 
-		if(g_devmap == true)
-		{
-			g_zoneFirst[i] = false;
-		}
+		//if(g_devmap == true)
+		//{
+		//	g_zoneFirst[i] = false;
+		//}
 	}
 
 	ConVar CV_sourcetv = FindConVar("tv_enable");
@@ -1465,9 +1466,11 @@ public void OnClientPutInServer(int client)
 	g_block[client] = true;
 	//g_timerTime[client] = 0.0;
 
-	if(g_devmap == false && g_zoneHave[2] == true)
+	if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneDrawed[client] == false)
 	{
 		DrawZone(client, 0.0, 3.0, 10);
+
+		g_zoneDrawed[client] = true;
 	}
 
 	g_msg[client] = true;
@@ -1489,7 +1492,7 @@ public void OnClientPutInServer(int client)
 	ResetFactory(client);
 	g_points[client] = 0;
 
-	if(g_zoneHave[2] == false)
+	if(g_zoneHave[0] == false && g_zoneHave[1] == false)
 	{
 		CancelClientMenu(client);
 	}
@@ -1623,6 +1626,8 @@ public void OnClientDisconnect(int client)
 	{
 		g_flashbangDoor[client][i] = false;
 	}
+
+	g_zoneDrawed[client] = false;
 
 	return;
 }
@@ -3563,7 +3568,7 @@ public Action cmd_startmins(int client, int args)
 		{
 			GetClientAbsOrigin(client, g_zoneStartOrigin[0]);
 
-			g_zoneFirst[0] = true;
+			//g_zoneFirst[0] = true;
 		}
 
 		else if(g_devmap == false)
@@ -3763,7 +3768,7 @@ public Action cmd_endmins(int client, int args)
 		{
 			GetClientAbsOrigin(client, g_zoneEndOrigin[0]);
 
-			g_zoneFirst[1] = true;
+			//g_zoneFirst[1] = true;
 		}
 
 		else if(g_devmap == false)
@@ -3917,7 +3922,8 @@ public Action cmd_startmaxs(int client, int args)
 {
 	int flags = GetUserFlagBits(client);
 
-	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[0] == true)
+	//if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[0] == true)
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		GetClientAbsOrigin(client, g_zoneStartOrigin[1]);
 
@@ -3925,7 +3931,7 @@ public Action cmd_startmaxs(int client, int args)
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 		g_mysql.Query(SQLDeleteStartZone, query, _, DBPrio_Normal);
 
-		g_zoneFirst[0] = false;
+		//g_zoneFirst[0] = false;
 
 		return Plugin_Handled;
 	}
@@ -3937,7 +3943,8 @@ public Action cmd_endmaxs(int client, int args)
 {
 	int flags = GetUserFlagBits(client);
 
-	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[1] == true)
+	//if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[1] == true)
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1]);
 
@@ -3945,7 +3952,7 @@ public Action cmd_endmaxs(int client, int args)
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
 		g_mysql.Query(SQLDeleteEndZone, query, _, DBPrio_Normal);
 
-		g_zoneFirst[1] = false;
+		//g_zoneFirst[1] = false;
 
 		return Plugin_Handled;
 	}
@@ -3972,7 +3979,7 @@ public Action cmd_cpmins(int client, int args)
 
 				GetClientAbsOrigin(client, g_cpPos[0][cpnum]);
 
-				g_zoneFirst[2] = true;
+				//g_zoneFirst[2] = true;
 			}
 		}
 
@@ -4020,7 +4027,8 @@ public Action cmd_cpmaxs(int client, int args)
 {
 	int flags = GetUserFlagBits(client);
 
-	if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[2] == true)
+	//if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[2] == true)
+	if(flags & ADMFLAG_CUSTOM1)
 	{
 		char cmd[512] = "";
 		GetCmdArg(args, cmd, sizeof(cmd));
@@ -4035,7 +4043,7 @@ public Action cmd_cpmaxs(int client, int args)
 			Format(query, sizeof(query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
 			g_mysql.Query(SQLCPRemoved, query, cpnum, DBPrio_Normal);
 
-			g_zoneFirst[2] = false;
+			//g_zoneFirst[2] = false;
 		}
 
 		return Plugin_Handled;
@@ -4848,7 +4856,7 @@ public void SQLRecordsTable(Database db, DBResultSet results, const char[] error
 
 public Action SDKEndTouch(int entity, int other)
 {
-	if(IsValidClient(other) == true && g_timerReadyToStart[other] == true && IsValidPartner(other) == true && IsFakeClient(other) == false)
+	if(IsValidClient(other) == true && IsValidPartner(other) == true && IsFakeClient(other) == false && g_timerReadyToStart[g_partner[other]] == true)
 	{
 		int partner = g_partner[other];
 
@@ -4894,7 +4902,7 @@ public Action SDKEndTouch(int entity, int other)
 
 		char query[512] = "";
 		Format(query, sizeof(query), "SELECT * FROM records LIMIT 1");
-		g_mysql.Query(SQLSetTries, query, GetClientSerial(other), DBPrio_Normal);
+		g_mysql.Query(SQLSetTries, query, GetClientSerial(other), DBPrio_High);
 	}
 
 	return Plugin_Continue;
@@ -6333,7 +6341,7 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 		if(results.FetchRow() == false)
 		{
 			Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
-			g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_Normal);
+			g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_High);
 
 			return;
 		}
@@ -6343,7 +6351,7 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 		if(results.FetchRow() == true)
 		{
 			Format(query, sizeof(query), "SELECT tries FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
-			g_mysql.Query(SQLSetTries2, query, GetClientSerial(client), DBPrio_Normal);
+			g_mysql.Query(SQLSetTries2, query, GetClientSerial(client), DBPrio_High);
 		}
 	}
 
@@ -6382,24 +6390,27 @@ public void SQLSetTries2(Database db, DBResultSet results, const char[] error, a
 
 		int client = GetClientFromSerial(data);
 
-		int playerid = GetSteamAccountID(client);
-		int partner = g_partner[client];
-		int partnerid = GetSteamAccountID(partner);
-
-		if(results.FetchRow() == false)
+		if(IsValidClient(client) == true)
 		{
-			Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
-			g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_Normal);
+			int playerid = GetSteamAccountID(client);
+			int partner = g_partner[client];
+			int partnerid = GetSteamAccountID(partner);
 
-			return;
-		}
+			if(results.FetchRow() == false)
+			{
+				Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
+				g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_High);
 
-		results.Rewind();
+				return;
+			}
 
-		if(results.FetchRow() == true)
-		{
-			Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
-			g_mysql.Query(SQLSetTriesUpdated, query, _, DBPrio_Normal);
+			results.Rewind();
+
+			if(results.FetchRow() == true)
+			{
+				Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
+				g_mysql.Query(SQLSetTriesUpdated, query, _, DBPrio_Normal);
+			}
 		}
 	}
 }
@@ -7784,7 +7795,7 @@ stock void VelHud(int client)
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(IsClientInGame(i) == true && IsPlayerAlive(i) == false)
+		if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false)
 		{
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
@@ -7994,7 +8005,7 @@ public void frame_blockExplosion(int entity)
 
 public Action timer_deleteProjectile(Handle timer, int entity)
 {
-	if(entity != INVALID_ENT_REFERENCE)
+	if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) == true)
 	{
 		FlashbangEffect(entity);
 
@@ -8035,13 +8046,13 @@ stock void FlashbangEffect(int entity)
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) == true)
+			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false)
 			{
 				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
 				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
-				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || ((observerTarget == owner || g_partner[owner]) && observerMode < 7))
+				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || ((observerTarget == owner || observerTarget == g_partner[owner]) && observerMode < 7))
 				{
 					clients[count++] = i;
 				}
