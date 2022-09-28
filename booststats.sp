@@ -95,6 +95,8 @@ public void OnClientPutInServer(int client)
 
 	SDKHook(client, SDKHook_StartTouch, SDKStartTouch);
 
+	g_throwTime[client][0] = 0;
+
 	return;
 }
 
