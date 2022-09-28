@@ -83,7 +83,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.24",
+	version = "0.25",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -320,7 +320,7 @@ public Action timer_bot(Handle timer)
 	return Plugin_Continue;
 }
 
-public void SetupSave(int client, int partner, float time)
+stock void SetupSave(int client, int partner, float time)
 {
 	char dir[PLATFORM_MAX_PATH] = "";
 	BuildPath(Path_SM, dir, sizeof(dir), "data/trueexpert");
@@ -345,7 +345,7 @@ public void SetupSave(int client, int partner, float time)
 
 	//int partner = Trikz_GetClientPartner(client);
 	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s_partner.replay", g_map);
-	SaveRecord(partner, record, time, false);
+	SaveRecord(partner, record, time, true);
 
 	char recordBackup[PLATFORM_MAX_PATH] = "";
 	char timeFormat[32] = "";
@@ -356,12 +356,12 @@ public void SetupSave(int client, int partner, float time)
 	SaveRecord(client, recordBackup, time, false);
 
 	BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s_partner.replay", g_map, timeFormat);
-	SaveRecord(partner, recordBackup, time, true);
+	SaveRecord(partner, recordBackup, time, false);
 
 	return;
 }
 
-public void SaveRecord(int client, const char[] path, float time, bool load)
+stock void SaveRecord(int client, const char[] path, float time, bool load)
 {
 	g_frame[client].Resize(g_tick[client]);
 
@@ -371,24 +371,26 @@ public void SaveRecord(int client, const char[] path, float time, bool load)
 	f.WriteInt32(view_as<int>(time));
 
 	any data[sizeof(eFrame)];
-	any dataWrite[sizeof(eFrame) * 100];
+	//any dataWrite[sizeof(eFrame) * 100];
 
-	int framesWritten = 0;
+	//int framesWritten = 0;
 
 	for(int i = 0; i < g_tick[client]; i++)
 	{
 		g_frame[client].GetArray(i, data, sizeof(eFrame));
 
-		for(int j = 0; j < sizeof(eFrame); j++)
-		{
-			dataWrite[(sizeof(eFrame) * framesWritten) + j] = data[j];
-		}
+		//for(int j = 0; j < sizeof(eFrame); j++)
+		//{
+		//	dataWrite[(sizeof(eFrame) * framesWritten) + j] = data[j];
+		//}
 
-		if(++framesWritten == 100 || i == g_tick[client] - 1)
-		{
-			f.Write(dataWrite, sizeof(eFrame) * framesWritten, 4);
-			framesWritten = 0;
-		}
+		//if(++framesWritten == 100 || i == g_tick[client] - 1)
+		//{
+		//	f.Write(dataWrite, sizeof(eFrame) * framesWritten, 4);
+		//	framesWritten = 0;
+		//}
+
+		f.Write(data, sizeof(data), 4);
 	}
 
 	delete f;
@@ -546,7 +548,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			{
 				if(g_frame[client].Length <= g_tick[client])
 				{
-					g_frame[client].Resize(g_tick[client] + (RoundToCeil(g_tickrate) * 2));
+					g_frame[client].Resize(g_tick[client] + 1);
 				}
 
 				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
@@ -557,7 +559,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		{
 			if(g_frame[client].Length <= g_tick[client])
 			{
-				g_frame[client].Resize(g_tick[client] + (RoundToCeil(g_tickrate) * 2));
+				g_frame[client].Resize(g_tick[client] + 1);
 			}
 
 			g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
@@ -587,21 +589,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		vel[0] = 0.0; //prevent shakes at flat surface.
 		vel[1] = 0.0;
-		//vel[2] = 0.0;
 
 		eFrame frame;
 		g_frameCache[client].GetArray(g_tick[client]++, frame, sizeof(eFrame));
 
 		float posPrev[3] = {0.0, ...};
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
+		//GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
+		GetClientAbsOrigin(client, posPrev);
 
-		float velPos[3] = {0.0, ...};
-		MakeVectorFromPoints(posPrev, frame.pos, velPos);
-		ScaleVector(velPos, g_tickrate);
-
+		float velNew[3] = {0.0, ...};
+		MakeVectorFromPoints(posPrev, frame.pos, velNew);
+		ScaleVector(velNew, g_tickrate);
+		
 		float ang[3] = {0.0, ...};
 		ang[0] = frame.ang[0];
 		ang[1] = frame.ang[1];
+
+		buttons = frame.buttons;
 
 		int flags = GetEntityFlags(client);
 		ApplyFlags(flags, frame.flags, FL_ONGROUND);
@@ -646,15 +650,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		else if(1 < g_tick[client] < g_replayTickcount[client])
 		{
-			TeleportEntity(client, NULL_VECTOR, ang, velPos);
+			float fix = GetVectorLength(velNew); //DataTable warning: (class player): Out-of-range value (-36931.695313 / -4096.000000) in SendPropFloat 'm_flFallVelocity', clamping.
+
+			if(fix > 4096.000000)
+			{
+				TeleportEntity(client, frame.pos, ang, NULL_VECTOR);
+			}
+
+			else if(fix <= 4096.000000)
+			{
+				TeleportEntity(client, NULL_VECTOR, ang, velNew);
+			}
 		}
 
 		else if(g_tick[client] == g_replayTickcount[client]) //Do unstuck
 		{
 			TeleportEntity(client, frame.pos, ang, NULL_VECTOR);
 		}
-
-		buttons = frame.buttons;
 
 		g_timeToRestart[client] = GetGameTime();
 	}
@@ -684,13 +696,17 @@ public void SQLConnect(Database db, const char[] error, any data)
 	return;
 }
 
-public void Trikz_OnTimerStart(int client)
+public void Trikz_OnTimerStart(int client, int partner)
 {
-	if(IsFakeClient(client) == false)
+	if(IsFakeClient(client) == false && IsFakeClient(partner) == false)
 	{
 		delete g_frame[client];
 		g_frame[client] = new ArrayList((sizeof(eFrame)));
 		g_tick[client] = 0;
+
+		delete g_frame[partner];
+		g_frame[partner] = new ArrayList((sizeof(eFrame)));
+		g_tick[partner] = 0;
 	}
 
 	return;
@@ -737,7 +753,7 @@ public Action BotSilent(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-public void ApplyFlags(int &flags1, int flags2, int flag)
+stock void ApplyFlags(int &flags1, int flags2, int flag)
 {
 	if((flags2 & flag) != 0)
 	{
@@ -786,13 +802,13 @@ public void SDKWeaponSwitch(int client, int weapon)
 }
 
 // Stops bot_quota from doing anything.
-public MRESReturn Detour_MaintainBotQuota(int pThis)
+stock MRESReturn Detour_MaintainBotQuota(int pThis)
 {
 	return MRES_Supercede;
 }
 
 // Remove flags from replay bots that cause CBasePlayer::UpdateStepSound to return without playing a footstep.
-public MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
+stock MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
 {
 	if(GetEntityMoveType(pThis) == MOVETYPE_NOCLIP)
 	{
@@ -805,7 +821,7 @@ public MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
 }
 
 // Readd flags to replay bots now that CBasePlayer::UpdateStepSound is done.
-public MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
+stock MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 {
 	if(GetEntityMoveType(pThis) == MOVETYPE_WALK)
 	{
