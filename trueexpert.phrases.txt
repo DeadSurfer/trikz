@@ -43,11 +43,11 @@
 	}
 	"TurnOFFDevmap"
 	{
-		"en"	"Turn off dev map?"
+		"en"	"Turn off devmap?"
 	}
 	"TurnONDevmap"
 	{
-		"en"	"Turn on dev map?"
+		"en"	"Turn on devmap?"
 	}
 	"NoclipMenuON"
 	{
