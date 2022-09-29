@@ -1416,22 +1416,9 @@ public int checkpoint_handler(Menu menu, MenuAction action, int param1, int para
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage);
-
-	bool boostfix = gCV_boostfix.BoolValue;
-
-	if(boostfix == true)
-	{
-		SDKHook(client, SDKHook_StartTouch, SDKSkyFix);
-		SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
-	}
-
-	bool autoflashbang = gCV_autoflashbang.BoolValue;
-
-	if(autoflashbang == true)
-	{
-		SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
-	}
-
+	SDKHook(client, SDKHook_StartTouch, SDKSkyFix);
+	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
+	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
 	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
 
 	if(IsClientInGame(client) == true && g_dbPassed == true)
@@ -1845,67 +1832,72 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 
 public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	if(IsValidClient(client) == true && IsValidClient(other) == true && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
+	bool boostfix = gCV_boostfix.BoolValue;
+
+	if(boostfix == true)
 	{
-		float originBooster[3] = {0.0, ...};
-		GetClientAbsOrigin(client, originBooster);
-
-		float originFlyer[3] = {0.0, ...};
-		GetClientAbsOrigin(other, originFlyer);
-
-		float maxsBooster[3] = {0.0, ...};
-		GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-
-		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
-
-		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+		if(IsValidClient(client) == true && IsValidClient(other) == true && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
 		{
-			float velBooster[3] = {0.0, ...};
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
+			float originBooster[3] = {0.0, ...};
+			GetClientAbsOrigin(client, originBooster);
 
-			if(velBooster[2] > 0.0)
+			float originFlyer[3] = {0.0, ...};
+			GetClientAbsOrigin(other, originFlyer);
+
+			float maxsBooster[3] = {0.0, ...};
+			GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+
+			float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
+
+			if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 			{
-				float velFlyer[3] = {0.0, ...};
+				float velBooster[3] = {0.0, ...};
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
 
-				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
-
-				g_skyVel[other][0] = velFlyer[0];
-				g_skyVel[other][1] = velFlyer[1];
-				g_skyVel[other][2] = velBooster[2] * 3.572;
-
-				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-
-				if(g_entityFlags[client] & FL_INWATER)
+				if(velBooster[2] > 0.0)
 				{
-					g_skyVel[other][2] = velBooster[2] * 5.0;
-				}
-				
-				else if(!(g_entityFlags[client] & FL_INWATER))
-				{
-					if(velFlyer[2] > -470.0)
+					float velFlyer[3] = {0.0, ...};
+
+					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
+
+					g_skyVel[other][0] = velFlyer[0];
+					g_skyVel[other][1] = velFlyer[1];
+					g_skyVel[other][2] = velBooster[2] * 3.572;
+
+					//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+
+					if(g_entityFlags[client] & FL_INWATER)
 					{
-						if(g_skyVel[other][2] >= 770.0)
+						g_skyVel[other][2] = velBooster[2] * 5.0;
+					}
+					
+					else if(!(g_entityFlags[client] & FL_INWATER))
+					{
+						if(velFlyer[2] > -470.0)
 						{
-							g_skyVel[other][2] = 770.0;
+							if(g_skyVel[other][2] >= 770.0)
+							{
+								g_skyVel[other][2] = 770.0;
+							}
+						}
+
+						else if(velFlyer[2] <= -470.0)
+						{
+							if(g_skyVel[other][2] >= 800.0)
+							{
+								g_skyVel[other][2] = 800.0;
+							}
 						}
 					}
 
-					else if(velFlyer[2] <= -470.0)
+					#if debug == true
+					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+					#endif
+
+					if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
 					{
-						if(g_skyVel[other][2] >= 800.0)
-						{
-							g_skyVel[other][2] = 800.0;
-						}
+						g_skyBoost[other] = 1;
 					}
-				}
-
-				#if debug == true
-				PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-				#endif
-
-				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
-				{
-					g_skyBoost[other] = 1;
 				}
 			}
 		}
@@ -1916,34 +1908,39 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 public void SDKBoostFix(int client)
 {
-	if(g_boost[client] == 1)
+	bool boostfix = gCV_boostfix.BoolValue;
+
+	if(boostfix == true)
 	{
-		int entity = EntRefToEntIndex(g_flash[client]);
-
-		#if debug == true
-		PrintToServer("%i", entity);
-		#endif
-
-		if(entity != INVALID_ENT_REFERENCE)
+		if(g_boost[client] == 1)
 		{
-			float velEntity[3] = {0.0, ...};
-
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity);
-
-			if(velEntity[2] > 0.0)
-			{
-				velEntity[0] *= 0.135;
-				velEntity[1] *= 0.135;
-				velEntity[2] *= -0.135;
-
-				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velEntity);
-			}
-
-			g_boost[client] = 2; //Trijās vietās kodā atrodas paātrināšana pēc Antona vārdiem.
+			int entity = EntRefToEntIndex(g_flash[client]);
 
 			#if debug == true
-			PrintToServer("1x");
+			PrintToServer("%i", entity);
 			#endif
+
+			if(entity != INVALID_ENT_REFERENCE)
+			{
+				float velEntity[3] = {0.0, ...};
+
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity);
+
+				if(velEntity[2] > 0.0)
+				{
+					velEntity[0] *= 0.135;
+					velEntity[1] *= 0.135;
+					velEntity[2] *= -0.135;
+
+					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velEntity);
+				}
+
+				g_boost[client] = 2; //Trijās vietās kodā atrodas paātrināšana pēc Antona vārdiem.
+
+				#if debug == true
+				PrintToServer("1x");
+				#endif
+			}
 		}
 	}
 
@@ -8133,7 +8130,12 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	RequestFrame(rf_giveflashbang, client); //replays drops knife
+	bool autoflashbang = gCV_autoflashbang.BoolValue;
+
+	if(autoflashbang == true)
+	{
+		RequestFrame(rf_giveflashbang, client); //replays drops knife
+	}
 
 	return;
 }
