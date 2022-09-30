@@ -39,7 +39,7 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
-#define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1) == true)
+#define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 #define IsValidPartner(%1) 0 < g_partner[%1] <= MaxClients
 #define debug false
 
@@ -7021,7 +7021,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 
-	int other = Stuck(client);
+	int other = Stuck(client, false);
 
 	if(IsValidClient(other) == true && IsFakeClient(client) == false && IsPlayerAlive(client) == true && g_block[other] == true)
 	{
@@ -8398,7 +8398,7 @@ stock void MLStats(int client, bool ground)
 	return;
 }
 
-stock int Stuck(int client)
+stock int Stuck(int client, bool fixed)
 {
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
