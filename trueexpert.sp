@@ -7021,9 +7021,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 
-	int other = Stuck(client, true);
+	int other = Stuck(client);
 
-	if(IsValidClient(other) == true && IsFakeClient(client) == false && IsPlayerAlive(client) == true && g_block[other] == true && g_block[client] == false)
+	if(IsValidClient(other) == true && IsFakeClient(client) == false && IsPlayerAlive(client) == true && g_block[other] == true)
 	{
 		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 		{
@@ -8398,7 +8398,7 @@ stock void MLStats(int client, bool ground)
 	return;
 }
 
-stock int Stuck(int client, bool fixed)
+stock int Stuck(int client)
 {
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
@@ -8406,23 +8406,7 @@ stock int Stuck(int client, bool fixed)
 
 	GetClientMins(client, mins);
 
-	if(fixed == true)
-	{
-		for(int i = 0; i <= 1; i++)
-		{
-			mins[i] -= 24.0;
-		}
-	}
-
 	GetClientMaxs(client, maxs);
-
-	if(fixed == true)
-	{
-		for(int i = 0; i <= 1; i++)
-		{
-			maxs[i] += 24.0;
-		}
-	}
 
 	GetClientAbsOrigin(client, origin);
 
