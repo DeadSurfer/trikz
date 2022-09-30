@@ -36,7 +36,7 @@
 #define newdecls required
 
 #define MAXPLAYER MAXPLAYERS + 1
-#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1) == true)
+#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 
 int g_throwTime[MAXPLAYER][2];
 float g_projectileVel[MAXPLAYER] = {0.0, ...};
