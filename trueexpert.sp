@@ -363,11 +363,7 @@ public void OnPluginStart()
 	g_teleport.AddParam(HookParamType_ObjectPtr);
 	g_teleport.AddParam(HookParamType_VectorPtr);
 
-	if(g_kv != null)
-	{
-		delete g_kv;
-	}
-
+	delete g_kv;
 	g_kv = new KeyValues("TrueExpertHud");
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
@@ -526,11 +522,7 @@ public void OnMapStart()
 
 	g_top10ac = 0.0;
 
-	if(g_kv != null)
-	{
-		delete g_kv;
-	}
-
+	delete g_kv;
 	g_kv = new KeyValues("TrueExpertHud");
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
 
