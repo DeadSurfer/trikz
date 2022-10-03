@@ -1045,6 +1045,7 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 
 	g_skyOrigin[client] = GetGroundPos(client);
 	g_skyAble[client] = GetGameTime();
+	GetClientAbsOrigin(client, g_mlsDistance[client][0]);
 
 	return;
 }
@@ -4301,6 +4302,8 @@ stock void ZoneEditorCP(int client, int cpnum)
 
 public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 {
+	bool bDelete = true;
+
 	switch(action)
 	{
 		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
@@ -4522,6 +4525,8 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			if(StrEqual(item, "step", false) == false)
 			{
 				menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
+
+				bDelete = false;
 			}
 		}
 
@@ -4545,7 +4550,10 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_End:
 		{
-			delete menu;
+			if(bDelete == true)
+			{
+				delete menu;
+			}
 		}
 	}
 
@@ -7181,11 +7189,6 @@ public Action ProjectileBoostFix(int entity, int other)
 
 				g_mlsCount[other]++;
 
-				if(g_mlsCount[other] == 1)
-				{
-					GetClientAbsOrigin(other, g_mlsDistance[other][0]);
-				}
-
 				g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 			}
 		}
@@ -8286,13 +8289,21 @@ stock void MLStats(int client, bool ground)
 
 	char print[4][256];
 
-	for(int i = 1; i <= count <= 10; i++)
+	if(count <= 10)
 	{
-		Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
+		for(int i = 1; i <= count <= 10; i++)
+		{
+			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
+		}
 	}
 
-	if(count > 10)
+	else if(count > 10)
 	{
+		for(int i = 1; i <= 10; i++)
+		{
+			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
+		}
+
 		Format(print[0], 256, "%s...\n%s", print[0], g_mlsPrint[client][count]);
 	}
 
