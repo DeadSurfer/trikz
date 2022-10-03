@@ -751,6 +751,8 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	char points[32] = "";
 	GetPoints(client, points);
 
+	int team = GetClientTeam(client);
+
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec", false))
 	{
 		Format(text, sizeof(text), "\x01*%T* [%s] \x07CCCCCC%s \x01:  %s", "Spec", client, points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
@@ -765,13 +767,13 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_All", false))
 	{
-		if(GetClientTeam(client) == 2)
+		if(team == CS_TEAM_T)
 		{
 			Format(text, sizeof(text), "\x01[%s] \x07FF4040%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
 			//Format(text, sizeof(text), "%T", "Cstrike_Chat_All", client, points, name, text);
 		}
 
-		else if(GetClientTeam(client) == 3)
+		else if(team == CS_TEAM_CT)
 		{
 			Format(text, sizeof(text), "\x01[%s] \x0799CCFF%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
 			//Format(text, sizeof(text), "%T", "Cstrike_Chat_All2", client, points, name, text);
@@ -780,13 +782,13 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_AllDead", false))
 	{
-		if(GetClientTeam(client) == 2)
+		if(team == CS_TEAM_T)
 		{
 			Format(text, sizeof(text), "\x01*%T* [%s] \x07FF4040%s \x01:  %s", "Dead", client, points, name, text);
 			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead", client, points, name, text);
 		}
 
-		else if(GetClientTeam(client) == 3)
+		else if(team == CS_TEAM_CT)
 		{
 			Format(text, sizeof(text), "\x01*%T* [%s] \x0799CCFF%s \x01:  %s", "Dead", client, points, name, text);
 			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead2", client, points, name, text);
@@ -1096,7 +1098,7 @@ public void OnTeam(Event event, const char[] name, bool dontBroadcast)
 
 	int team = event.GetInt("team");
 
-	if(team == 1 && IsValidPartner(client) == true)
+	if(team == CS_TEAM_SPECTATOR && IsValidPartner(client) == true)
 	{
 		int partner = g_partner[client];
 
@@ -2790,46 +2792,6 @@ stock void DoRestart(int client)
 
 		delete hForward;
 
-		/*int entity = 0;
-
-		bool ct = false;
-
-		int team = GetClientTeam(client);
-		int teamPartner = GetClientTeam(partner);
-
-		while((entity = FindEntityByClassname(entity, "info_player_counterterrorist")) > 0)
-		{
-			if(ct == false)
-			{
-				ct = true;
-			}
-
-			if(team == CS_TEAM_SPECTATOR)
-			{
-				CS_SwitchTeam(client, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
-			}
-
-			if(teamPartner == CS_TEAM_SPECTATOR)
-			{
-				CS_SwitchTeam(partner, CS_TEAM_CT); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-misc.sp#L2066
-			}
-
-			break;
-		}
-
-		while((entity = FindEntityByClassname(entity, "info_player_terrorist")) > 0)
-		{
-			if(ct == false)
-			{
-				if(team == CS_TEAM_SPECTATOR)
-				{
-					CS_SwitchTeam(client, CS_TEAM_T);
-				}
-			}
-
-			break;
-		}*/
-
 		CS_RespawnPlayer(client);
 		CS_RespawnPlayer(partner);
 
@@ -3710,17 +3672,17 @@ stock void SendMessage(int client, const char[] text)
 
 	switch(team)
 	{
-		case 1:
+		case CS_TEAM_SPECTATOR:
 		{
 			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
 		}
 
-		case 2:
+		case CS_TEAM_T:
 		{
 			Format(teamColor, sizeof(teamColor), "\x07FF4040");
 		}
 
-		case 3:
+		case CS_TEAM_CT:
 		{
 			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
 		}
