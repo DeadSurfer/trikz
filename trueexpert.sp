@@ -205,7 +205,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.56",
+	version = "4.57",
 	url = "http://www.sourcemod.net/"
 }
 
