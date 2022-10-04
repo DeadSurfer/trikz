@@ -203,7 +203,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.58",
+	version = "4.59",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -6997,37 +6997,40 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(macro == true && g_macroDisabled[client] == false && IsPlayerAlive(client) == true)
 	{
-		if(buttons & IN_ATTACK2)
+		if(buttons & IN_ATTACK2 && !(buttons & IN_ATTACK) && g_macroOpened[client] == false)
 		{
 			char classname[32] = "";
 			GetClientWeapon(client, classname, sizeof(classname));
 
 			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
-				if(g_macroOpened[client] == false && g_macroTick[client] == 33)
-				{
-					g_macroOpened[client] = true;
+				g_macroTick[client] = 1;
 
-					g_macroTick[client] = 1;
-				}
-
-				if(g_macroTick[client] <= 2)
-				{
-					buttons |= IN_ATTACK;
-				}
+				g_macroOpened[client] = true;
 			}
 		}
 
-		if(g_macroOpened[client] == true && g_macroTick[client] == 13)
+		if(g_macroOpened[client] == true)
 		{
-			buttons |= IN_JUMP;
+			if(g_macroTick[client] <= 2)
+			{
+				buttons |= IN_ATTACK;
+			}
 
-			g_macroOpened[client] = false;
-		}
+			if(g_macroTick[client] == 13)
+			{
+				buttons |= IN_JUMP;
+			}
 
-		if(g_macroTick[client] < 33)
-		{
-			g_macroTick[client]++;
+			if(g_macroTick[client] < 33)
+			{
+				g_macroTick[client]++;
+
+				if(g_macroTick[client] == 33)
+				{
+					g_macroOpened[client] = false;
+				}
+			}
 		}
 	}
 
@@ -7290,7 +7293,10 @@ public Action timer_changelevel(Handle timer, bool value)
 {
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		ColorTeam(i, false);
+		if(IsValidPartner(i) == true)
+		{
+			ColorTeam(i, false);
+		}
 	}
 	
 	g_devmap = value;
