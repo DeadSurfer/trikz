@@ -132,8 +132,6 @@ int g_pingModelOwner[MAXENTITY] = {0, ...};
 Handle g_pingTimer[MAXPLAYER] = {INVALID_HANDLE, ...};
 Handle g_cookie[12] = {INVALID_HANDLE, ...};
 
-//bool g_zoneFirst[3] = {false, ...};
-
 char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
 int g_colorBuffer[MAXPLAYER][3][2];
 int g_colorCount[MAXPLAYER][2];
@@ -205,7 +203,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.57",
+	version = "4.58",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -398,11 +396,6 @@ public void OnMapStart()
 	for(int i = 0; i <= 2; i++)
 	{
 		g_zoneHave[i] = false;
-
-		//if(g_devmap == true)
-		//{
-		//	g_zoneFirst[i] = false;
-		//}
 	}
 
 	ConVar CV_sourcetv = FindConVar("tv_enable");
@@ -1149,9 +1142,7 @@ public Action autobuy(int client, const char[] command, int argc)
 }
 
 public Action rebuy(int client, const char[] command, int argc)
-{
-	//ColorSelect(client);
-	
+{	
 	if(g_menuOpened[client] == false)
 	{
 		Trikz(client);
@@ -1420,9 +1411,7 @@ public void OnClientPutInServer(int client)
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
 
 		char query[512] = "";
-
 		int steamid = GetSteamAccountID(client);
-
 		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
 		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client), DBPrio_Normal);
 	}
@@ -1968,16 +1957,10 @@ public void Trikz(int client)
 	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
 	menu.AddItem("bhop", format);
 
-	if(g_devmap == false && IsValidPartner(client) == true)
+	if(g_devmap == false)
 	{
-		Format(format, sizeof(format), "%T", "Breakup", client);
-		menu.AddItem("breakup", format, g_devmap == true ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	}
-
-	if(g_devmap == false && IsValidPartner(client) == false)
-	{
-		Format(format, sizeof(format), "%T", "Partner", client);
-		menu.AddItem("partner", format, g_devmap == true ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		Format(format, sizeof(format), "%T", IsValidPartner(client) == true ? "Breakup" : "Partner", client);
+		menu.AddItem(IsValidPartner(client) == true ? "breakup" : "partner", format, ITEMDRAW_DEFAULT);
 	}
 
 	Format(format, sizeof(format), "%T", "Color", client);
@@ -2210,17 +2193,15 @@ stock void Partner(int client)
 		}
 
 		else if(IsValidPartner(client) == true)
-		{
-			char partner[8] = "";
-			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
-			
+		{			
 			Menu menu = new Menu(cancelpartner_handler);
 
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(g_partner[client], name, sizeof(name));
-
 			menu.SetTitle("%T", "CancelPartnership", client, name);
-			
+
+			char partner[8] = "";
+			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
 			char format[256] = "";
 			Format(format, sizeof(format), "%T", "Yes", client);
 			menu.AddItem(partner, format);
@@ -2243,13 +2224,12 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 			char item[8] = "";
 			menu.GetItem(param2, item, sizeof(item));
 			
-			int partner = StringToInt(item);
-			
 			Menu menu2 = new Menu(askpartner_handle);
 
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(param1, name, sizeof(name));
 
+			int partner = StringToInt(item);
 			menu2.SetTitle("%T", "AgreePartner", partner, name);
 			
 			char buffer[8] = "";
@@ -2290,43 +2270,52 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 			{
 				case 0:
 				{
-					if(IsValidPartner(partner) == false)
+					if(IsPlayerAlive(param1) == true)
 					{
-						g_partner[param1] = partner;
-						g_partner[partner] = param1;
+						if(IsValidPartner(partner) == false)
+						{
+							g_partner[param1] = partner;
+							g_partner[partner] = param1;
 
-						static GlobalForward hForward = null;
+							static GlobalForward hForward = null;
 
-						hForward = new GlobalForward("Trikz_OnPartner", ET_Hook, Param_Cell, Param_Cell);
+							hForward = new GlobalForward("Trikz_OnPartner", ET_Hook, Param_Cell, Param_Cell);
 
-						Call_StartForward(hForward);
+							Call_StartForward(hForward);
 
-						Call_PushCell(param1);
-						Call_PushCell(partner);
+							Call_PushCell(param1);
+							Call_PushCell(partner);
 
-						Call_Finish();
+							Call_Finish();
 
-						delete hForward;
+							delete hForward;
 
-						char name[MAX_NAME_LENGTH] = "";
-						GetClientName(partner, name, sizeof(name));
-						Format(format, sizeof(format), "%T", "TeamConfirming", param1, name); //reciever
-						PrintToConsole(param1, "%s", format);
+							char name[MAX_NAME_LENGTH] = "";
+							GetClientName(partner, name, sizeof(name));
+							Format(format, sizeof(format), "%T", "TeamConfirming", param1, name); //reciever
+							PrintToConsole(param1, "%s", format);
 
-						GetClientName(param1, name, sizeof(name));
-						Format(format, sizeof(format), "%T", "GetConfirmed", partner, name); //sender
-						SendMessage(partner, format);
+							GetClientName(param1, name, sizeof(name));
+							Format(format, sizeof(format), "%T", "GetConfirmed", partner, name); //sender
+							SendMessage(partner, format);
 
-						Restart(param1, false); //Expert-Zone idea.
+							Restart(param1, false); //Expert-Zone idea.
 
-						char query[512] = "";
-						Format(query, sizeof(query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
-						g_mysql.Query(SQLGetPartnerRecord, query, GetClientSerial(param1), DBPrio_Normal);
+							char query[512] = "";
+							Format(query, sizeof(query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
+							g_mysql.Query(SQLGetPartnerRecord, query, GetClientSerial(param1), DBPrio_Normal);
+						}
+
+						else if(IsValidPartner(partner) == true)
+						{
+							Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
+							SendMessage(param1, format);
+						}
 					}
 
-					else if(IsValidPartner(partner) == true)
+					else if(IsPlayerAlive(param1) == false)
 					{
-						Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
+						Format(format, sizeof(format), "%T", "YouAreDead", param1);
 						SendMessage(param1, format);
 					}
 				}
@@ -3494,8 +3483,6 @@ public Action cmd_startmins(int client, int args)
 		if(g_devmap == true)
 		{
 			GetClientAbsOrigin(client, g_zoneStartOrigin[0]);
-
-			//g_zoneFirst[0] = true;
 		}
 
 		else if(g_devmap == false)
@@ -3694,8 +3681,6 @@ public Action cmd_endmins(int client, int args)
 		if(g_devmap == true)
 		{
 			GetClientAbsOrigin(client, g_zoneEndOrigin[0]);
-
-			//g_zoneFirst[1] = true;
 		}
 
 		else if(g_devmap == false)
@@ -3849,7 +3834,6 @@ public Action cmd_startmaxs(int client, int args)
 {
 	int flags = GetUserFlagBits(client);
 
-	//if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[0] == true)
 	if(flags & ADMFLAG_CUSTOM1)
 	{
 		GetClientAbsOrigin(client, g_zoneStartOrigin[1]);
@@ -3857,8 +3841,6 @@ public Action cmd_startmaxs(int client, int args)
 		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 		g_mysql.Query(SQLDeleteStartZone, query, _, DBPrio_Normal);
-
-		//g_zoneFirst[0] = false;
 
 		return Plugin_Handled;
 	}
@@ -3870,7 +3852,6 @@ public Action cmd_endmaxs(int client, int args)
 {
 	int flags = GetUserFlagBits(client);
 
-	//if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[1] == true)
 	if(flags & ADMFLAG_CUSTOM1)
 	{
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1]);
@@ -3878,8 +3859,6 @@ public Action cmd_endmaxs(int client, int args)
 		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
 		g_mysql.Query(SQLDeleteEndZone, query, _, DBPrio_Normal);
-
-		//g_zoneFirst[1] = false;
 
 		return Plugin_Handled;
 	}
@@ -3905,8 +3884,6 @@ public Action cmd_cpmins(int client, int args)
 				PrintToChat(client, "CP: No.%i", cpnum);
 
 				GetClientAbsOrigin(client, g_cpPos[0][cpnum]);
-
-				//g_zoneFirst[2] = true;
 			}
 		}
 
@@ -3954,7 +3931,6 @@ public Action cmd_cpmaxs(int client, int args)
 {
 	int flags = GetUserFlagBits(client);
 
-	//if(flags & ADMFLAG_CUSTOM1 && g_zoneFirst[2] == true)
 	if(flags & ADMFLAG_CUSTOM1)
 	{
 		char cmd[512] = "";
@@ -3969,8 +3945,6 @@ public Action cmd_cpmaxs(int client, int args)
 			char query[512] = "";
 			Format(query, sizeof(query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
 			g_mysql.Query(SQLCPRemoved, query, cpnum, DBPrio_Normal);
-
-			//g_zoneFirst[2] = false;
 		}
 
 		return Plugin_Handled;
@@ -6522,6 +6496,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 	end[1][2] += size;
 
 	int zones = 1;
+	int cpnum = 0;
 
 	if(g_cpCount > 0)
 	{
@@ -6529,7 +6504,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 		for(int i = 2; i <= zones; i++)
 		{
-			int cpnum = i - 1; //start count cp from 1.
+			cpnum = i - 1; //start count cp from 1.
 			
 			start[i][0] = g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0] == true ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
 			start[i][1] = g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1] == true ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
@@ -6569,7 +6544,9 @@ stock void DrawZone(int client, float life, float size, int speed)
 		corners[i][3][1] = end[i][1];
 		corners[i][3][2] = start[i][2];
 
+		int k = 0;
 		int modelType = 0;
+		int color[4] = {0, ...};
 
 		if(i == 1)
 		{
@@ -6583,14 +6560,12 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 		for(int j = 0; j <= 3; j++)
 		{
-			int k = j + 1;
+			k = j + 1;
 
 			if(j == 3)
 			{
 				k = 0;
 			}
-
-			int color[4] = {0, ...};
 			
 			TE_SetupBeamPoints(corners[i][j], corners[i][k], g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToClient(client, 0.0);
@@ -6650,19 +6625,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 
-	if(g_skyBoost[client] > 0)
+	if(g_skyBoost[client] == 1)
 	{
-		if(g_skyBoost[client] == 1)
-		{
-			g_skyBoost[client] = 2;
-		}
+		g_skyBoost[client] = 2;
+	}
 
-		else if(g_skyBoost[client] == 2)
-		{
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, g_skyVel[client]);
+	else if(g_skyBoost[client] == 2)
+	{
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, g_skyVel[client]);
 
-			g_skyBoost[client] = 0;
-		}
+		g_skyBoost[client] = 0;
 	}
 
 	if(g_boost[client] > 0)
@@ -7153,34 +7125,17 @@ public Action cmd_devmap(int client, int args)
 			{
 				g_voters++;
 
-				if(g_devmap == true)
-				{
-					Menu menu = new Menu(devmap_handler);
+				Menu menu = new Menu(devmap_handler);
 
-					menu.SetTitle("%T", "TurnOFFDevmap", client);
-					
-					Format(format, sizeof(format), "%T", "Yes", client);
-					menu.AddItem("yes", format);
+				menu.SetTitle("%T", g_devmap == true ? "TurnOFFDevmap" : "TurnONDevmap", client);
 
-					Format(format, sizeof(format), "%T", "No", client);
-					menu.AddItem("no", format);
+				Format(format, sizeof(format), "%T", "Yes", i);
+				menu.AddItem("yes", format);
 
-					menu.Display(i, 20);
-				}
+				Format(format, sizeof(format), "%T", "No", i);
+				menu.AddItem("no", format);
 
-				else if(g_devmap == false)
-				{
-					Menu menu = new Menu(devmap_handler);
-
-					menu.SetTitle("%T", "TurnONDevmap", client);
-
-					Format(format, sizeof(format), "%T", "Yes", client);
-					menu.AddItem("yes", format);
-
-					Format(format, sizeof(format), "%T", "No", client);
-					menu.AddItem("no", format);
-					menu.Display(i, 20);
-				}
+				menu.Display(i, 20);
 			}
 		}
 
@@ -7415,22 +7370,30 @@ public Action cmd_afk(int client, int args)
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false && IsPlayerAlive(i) == false && client != i)
+			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false)
 			{
-				g_afk[i] = false;
-
-				g_voters++;
-
-				Menu menu = new Menu(afk_handler);
-
-				menu.SetTitle("%T", "AreYouHere?", client);
+				if(IsPlayerAlive(i) == true)
+				{
+					g_afk[i] = true;
+				}
 				
-				Format(format, sizeof(format), "%T", "Yes", client);
-				menu.AddItem("yes", format);
-				Format(format, sizeof(format), "%T", "No", client);
-				menu.AddItem("no", format);
+				if(IsPlayerAlive(i) == false && client != i)
+				{
+					g_afk[i] = false;
 
-				menu.Display(i, 20);
+					g_voters++;
+
+					Menu menu = new Menu(afk_handler);
+
+					menu.SetTitle("%T", "AreYouHere?", client);
+					
+					Format(format, sizeof(format), "%T", "Yes", i);
+					menu.AddItem("yes", format);
+					Format(format, sizeof(format), "%T", "No", i);
+					menu.AddItem("no", format);
+
+					menu.Display(i, 20);
+				}
 			}
 		}
 
