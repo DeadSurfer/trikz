@@ -1282,7 +1282,6 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	
 	if(color == true)
 	{
-		//ColorFlashbang(client, true, -1);
 		Partner(client);
 	}
 
@@ -1474,13 +1473,7 @@ public void OnClientPutInServer(int client)
 	ResetFactory(client);
 	g_points[client] = 0;
 
-	if(g_zoneHave[0] == false && g_zoneHave[1] == false)
-	{
-		CancelClientMenu(client);
-	}
-
 	g_clantagOnce[client] = false;
-	//g_macroTime[client] = 0.0;
 	g_macroOpened[client] = false;
 
 	if(IsClientSourceTV(client) == false) //this should provides a crash if reload plugin (DHookEntity). https://issuehint.com/issue/alliedmodders/sourcemod/1688
@@ -1576,21 +1569,16 @@ public void OnClientDisconnect(int client)
 	int partner = g_partner[client];
 	g_partner[partner] = 0;
 
-	if(partner > 0 && g_menuOpened[partner] == true)
+	if(IsValidPartner(client) == true && g_menuOpened[partner] == true)
 	{
 		Trikz(partner);
 	}
 
 	g_partner[client] = 0;
 
-	if(IsValidClient(client) == true)
-	{
-		CancelClientMenu(client);
-	}
+	int entity = 67;
 
-	int entity = 0;
-
-	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
+	while((entity = FindEntityByClassname(entity, "weapon_*")) != INVALID_ENT_REFERENCE) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 	{
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 		{
@@ -1598,7 +1586,7 @@ public void OnClientDisconnect(int client)
 		}
 	}
 
-	if(g_devmap == false && partner > 0 && IsFakeClient(client) == false)
+	if(g_devmap == false && IsValidPartner(client) == true && IsFakeClient(client) == false)
 	{
 		ResetFactory(partner);
 		CS_SetClientClanTag(partner, g_clantag[partner][0]);
@@ -2510,7 +2498,7 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 	return view_as<int>(action);
 }
 
-stock void ColorTeam(int client, bool customSkin, int color = -1)
+stock void ColorTeam(int client, bool allowColor)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2541,7 +2529,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 
 		int partner = g_partner[client];
 
-		if(customSkin == true)
+		if(allowColor == true)
 		{
 			g_colorCount[client][0]++;
 			g_colorCount[partner][0]++;
@@ -2550,12 +2538,6 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			{
 				g_colorCount[client][0] = 0;
 				g_colorCount[partner][0] = 0;
-			}
-
-			else if(0 <= color <= 8)
-			{
-				g_colorCount[client][0] = color;
-				g_colorCount[partner][0] = color;
 			}
 
 			char colorTypeExploded[32][4];
@@ -2593,7 +2575,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 			ShowHudText(partner, 5, "%s (TM)", colorTypeExploded[3]);
 		}
 
-		else if(customSkin == false)
+		else if(allowColor == false)
 		{
 			g_colorCount[client][0] = 0;
 			g_colorCount[partner][0] = 0;
@@ -2612,7 +2594,7 @@ stock void ColorTeam(int client, bool customSkin, int color = -1)
 	return;
 }
 
-stock void ColorFlashbang(int client, int color = -1)
+stock void ColorFlashbang(int client)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2628,11 +2610,6 @@ stock void ColorFlashbang(int client, int color = -1)
 		if(g_colorCount[client][1] == 9)
 		{
 			g_colorCount[client][1] = 0;
-		}
-
-		else if(0 <= color <= 8)
-		{
-			g_colorCount[client][1] = color;
 		}
 
 		char colorTypeExploded[32][4];
@@ -2735,9 +2712,7 @@ stock void Restart(int client, bool ask)
 	{
 		if(g_zoneHave[0] == true && g_zoneHave[1] == true)
 		{
-			int partner = g_partner[client];
-
-			if(partner > 0)
+			if(IsValidPartner(client) == true)
 			{
 				if(ask == false)
 				{
@@ -2772,10 +2747,10 @@ stock void Restart(int client, bool ask)
 
 stock void DoRestart(int client)
 {
-	int partner = g_partner[client];
-
-	if(partner > 0)
+	if(IsValidPartner(client) == true)
 	{
+		int partner = g_partner[client];
+		
 		CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -3653,7 +3628,7 @@ public Action cmd_test(int client, int args)
 		char authid3[64] = "";
 		GetClientAuthId(client, AuthId_Steam3, authid3, sizeof(authid3));
 
-		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID3 after 2nd semicolon)", auth64, authid3); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
+		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID64 = First SteamID3 + Your SteamID3)", auth64, authid3); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
 
 		return Plugin_Handled;
 	}
@@ -7034,15 +7009,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		bool restartCV = gCV_restart.BoolValue;
 		bool partnerCV = gCV_partner.BoolValue;
-		
-		int partner = g_partner[client];
 
-		if(partner > 0 && restartCV == true)
+		if(IsValidPartner(client) == true && restartCV == true)
 		{
 			Restart(client, true);
 		}
 
-		else if(partner == 0 && partnerCV == true)
+		else if(IsValidPartner(client) == false && partnerCV == true)
 		{
 			Partner(client);
 		}
@@ -7360,6 +7333,11 @@ stock void Devmap(bool force)
 
 public Action timer_changelevel(Handle timer, bool value)
 {
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		ColorTeam(i, false);
+	}
+	
 	g_devmap = value;
 
 	ForceChangeLevel(g_map, "Reason: Devmap");
