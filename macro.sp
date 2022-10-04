@@ -49,7 +49,7 @@ public Plugin myinfo =
 	name = "Macro",
 	author = "Nick Jurevich",
 	description = "Make trikz game more comfortable.",
-	version = "0.97",
+	version = "0.98",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -115,37 +115,40 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	
 	if(macro == true && g_macroDisabled[client] == false && IsPlayerAlive(client) == true)
 	{
-		if(buttons & IN_ATTACK2)
+		if(buttons & IN_ATTACK2 && !(buttons & IN_ATTACK) && g_macroOpened[client] == false)
 		{
 			char classname[32] = "";
-			GetClientWeapon(client, classname, sizeof(classname))
+			GetClientWeapon(client, classname, sizeof(classname));
 
 			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
 			{
-				if(g_macroOpened[client] == false && g_macroTick[client] >= g_macroTickRepeat)
-				{
-					g_macroOpened[client] = true;
+				g_macroTick[client] = 1;
 
-					g_macroTick[client] = 1;
-				}
-
-				if(g_macroTick[client] <= g_macroTickAttack)
-				{
-					buttons |= IN_ATTACK;
-				}
+				g_macroOpened[client] = true;
 			}
 		}
 
-		if(g_macroOpened[client] == true && g_macroTick[client] == g_macroTickMain)
+		if(g_macroOpened[client] == true)
 		{
-			buttons |= IN_JUMP;
+			if(g_macroTick[client] <= g_macroTickAttack)
+			{
+				buttons |= IN_ATTACK;
+			}
 
-			g_macroOpened[client] = false;
-		}
+			if(g_macroTick[client] == g_macroTickMain)
+			{
+				buttons |= IN_JUMP;
+			}
 
-		if(g_macroTick[client] < g_macroTickRepeat)
-		{
-			g_macroTick[client]++;
+			if(g_macroTick[client] < g_macroTickRepeat)
+			{
+				g_macroTick[client]++;
+
+				if(g_macroTick[client] == g_macroTickRepeat)
+				{
+					g_macroOpened[client] = false;
+				}
+			}
 		}
 	}
 
