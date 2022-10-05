@@ -7130,7 +7130,7 @@ public Action cmd_devmap(int client, int args)
 
 				Menu menu = new Menu(devmap_handler);
 
-				menu.SetTitle("%T", g_devmap == true ? "TurnOFFDevmap" : "TurnONDevmap", client);
+				menu.SetTitle("%T", g_devmap == true ? "TurnOFFDevmap" : "TurnONDevmap", i);
 
 				Format(format, sizeof(format), "%T", "Yes", i);
 				menu.AddItem("yes", format);
@@ -7391,7 +7391,7 @@ public Action cmd_afk(int client, int args)
 
 					Menu menu = new Menu(afk_handler);
 
-					menu.SetTitle("%T", "AreYouHere?", client);
+					menu.SetTitle("%T", "AreYouHere?", i);
 					
 					Format(format, sizeof(format), "%T", "Yes", i);
 					menu.AddItem("yes", format);
