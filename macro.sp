@@ -140,6 +140,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				buttons |= IN_JUMP;
 			}
 
+			if(g_macroTick[client] >= g_macroTickMain && !(buttons & IN_ATTACK2))
+			{
+				g_macroOpened[client] = false;
+			}
+
 			if(g_macroTick[client] < g_macroTickRepeat)
 			{
 				g_macroTick[client]++;
