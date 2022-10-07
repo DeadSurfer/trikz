@@ -42,7 +42,7 @@ bool g_jumped[MAXPLAYER] = {false, ...};
 float g_origin[MAXPLAYER][3];
 int g_strafeCount[MAXPLAYER] = {0, ...};
 bool g_ladder[MAXPLAYER] = {false, ...};
-float g_preVel[MAXPLAYER][3];
+float g_preVel[MAXPLAYER][2][3];
 bool g_jumpstats[MAXPLAYER] = {false, ...};
 bool g_strafeFirst[MAXPLAYER] = {false, ...};
 int g_tick[MAXPLAYER] = {0, ...};
@@ -217,8 +217,8 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 		float vel[3] = {0.0, ...};
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 
-		g_preVel[client][0] = vel[0];
-		g_preVel[client][1] = vel[1];
+		g_preVel[client][0][0] = vel[0];
+		g_preVel[client][0][1] = vel[1];
 
 		g_countjump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1));
 
@@ -268,13 +268,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			g_tickTime[client] = g_tick[client] * GetTickInterval();
 		}
-
-		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity");
-
-		if(groundEntity == 0 && g_runboost[client] == true)
-		{
-			g_runboost[client] = false;
-		}
 	}
 
 	else if(!(GetEntityFlags(client) & FL_ONGROUND))
@@ -320,7 +313,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(GetEntityFlags(client) & FL_ONGROUND && g_jumped[client] == true)
 	{
-		char print[256] = "";
+		char print[2][256] = {"", ""};
 
 		float origin[3] = {0.0, ...};
 		GetClientAbsOrigin(client, origin);
@@ -339,7 +332,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0; //http://mathonline.wikidot.com/the-distance-between-two-vectors
 
-		float pre = GetVectorLength(g_preVel[client]); //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
+		float pre = GetVectorLength(g_preVel[client][0]); //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
+		float preBooster = GetVectorLength(g_preVel[g_rbBooster[client]][1]);
+
+		char pre_[8] = "";
+		Format(pre_, sizeof(pre_), "%.0f", pre);
+		char preRB[16] = "";
+		Format(preRB, sizeof(preRB), "%.0f/%.0f", pre, preBooster);
 
 		float sync = -1.0;
 		sync += float(g_syncTick[client]);
@@ -352,32 +351,31 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync /= float(g_tickAir[client]);
 		sync *= 100.0;
 
+		Format(print[0], 256, "%s%s%s%sJump: %.0f units\nPre: %s u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
+		Format(print[1], 256, "%s%s%s%sJump: %.0f units, Pre: %s u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
+		
 		if(distance >= 230.0 && pre < 280.0)
 		{
 			if(g_jumpstats[client] == true)
 			{
-				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
-
 				Handle KeyHintText = StartMessageOne("KeyHintText", client);
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 				bfmsg.WriteByte(true);
-				bfmsg.WriteString(print);
+				bfmsg.WriteString(print[0]);
 				EndMessage();
 
-				PrintToConsole(client, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
+				PrintToConsole(client, "%s", print[1]);
 			}
 
 			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true)
 			{
-				Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
-
 				Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 				bfmsg.WriteByte(true);
-				bfmsg.WriteString(print);
+				bfmsg.WriteString(print[0]);
 				EndMessage();
 
-				PrintToConsole(g_rbBooster[client], "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
+				PrintToConsole(g_rbBooster[client], "%s", print[1]);
 			}
 		}
 
@@ -392,21 +390,29 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(distance >= 230.0 && pre < 280.0)
 					{
-						Format(print, sizeof(print), "%s%s%s%sJump: %.0f units\nPre: %.0f u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
-
 						Handle KeyHintText = StartMessageOne("KeyHintText", i);
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 						bfmsg.WriteByte(true);
-						bfmsg.WriteString(print);
+						bfmsg.WriteString(print[0]);
 						EndMessage();
 
-						PrintToConsole(i, "%s%s%s%sJump: %.0f units, Pre: %.0f u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, pre, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
+						PrintToConsole(i, "%s", print[1]);
 					}
 				}
 			}
 		}
 
 		ResetFactory(client);
+	}
+
+	if(GetEntityFlags(client) & FL_ONGROUND)
+	{
+		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity");
+
+		if((groundEntity == 0 || groundEntity > MaxClients) && g_runboost[client] == true)
+		{
+			g_runboost[client] = false;
+		}
 	}
 
 	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND))
@@ -433,7 +439,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	
 	if(GetEntityFlags(client) & FL_ONGROUND && g_ladder[client] == true)
 	{
-		char print[256] = "";
+		char print[2][256] = {"", ""};
 
 		float origin[3] = {0.0, ...};
 		GetClientAbsOrigin(client, origin);
@@ -465,21 +471,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync /= float(g_tickAir[client]);
 		sync *= 100.0;
 
+		Format(print[0], 256, "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+		Format(print[1], 256, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+
 		//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
 
 		if(g_jumpstats[client] == true)
 		{
 			if(distance >= 22.0) //190.0
 			{
-				Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-
 				Handle KeyHintText = StartMessageOne("KeyHintText", client);
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 				bfmsg.WriteByte(true);
-				bfmsg.WriteString(print);
+				bfmsg.WriteString(print[0]);
 				EndMessage();
 
-				PrintToConsole(client, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+				PrintToConsole(client, "%s", print[1]);
 			}
 		}
 
@@ -494,15 +501,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(distance >= 22.0)
 					{
-						Format(print, sizeof(print), "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-
 						Handle KeyHintText = StartMessageOne("KeyHintText", i);
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 						bfmsg.WriteByte(true);
-						bfmsg.WriteString(print);
+						bfmsg.WriteString(print[0]);
 						EndMessage();
 
-						PrintToConsole(i, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+						PrintToConsole(i, "%s", print[1]);
 					}
 				}
 			}
@@ -571,7 +576,7 @@ public Action StartTouchProjectile(int entity, int other)
 	return Plugin_Continue;
 }
 
-public void TouchClient(int client, int other)
+public Action TouchClient(int client, int other)
 {
 	if(0 < other <= MaxClients && g_tickTime[client] >= 0.1)
 	{
@@ -592,13 +597,23 @@ public void TouchClient(int client, int other)
 		if(delta == 0.031250) //Runboost?
 		{
 			g_runboost[client] = true;
-			g_runboost[other] = false;
 
 			g_rbBooster[client] = other;
+
+			float vel[3] = {0.0, ...};
+			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vel); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+
+			g_preVel[other][1][0] = vel[0];
+			g_preVel[other][1][1] = vel[1];
+		}
+
+		if(!(GetEntityFlags(other) & FL_ONGROUND))
+		{
+			ResetFactory(client);
 		}
 	}
 
-	return;
+	return Plugin_Continue;
 }
 
 public Action SDKSkyJump(int client, int other) //client = booster; other = flyer
@@ -657,7 +672,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 					}
 				}
 
-				if(FloatAbs(g_skyOrigin[other] - GetGroundPos(client)) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
 					char print[256] = "";
 
