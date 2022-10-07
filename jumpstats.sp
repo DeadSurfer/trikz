@@ -607,7 +607,7 @@ public Action TouchClient(int client, int other)
 			g_preVel[other][1][1] = vel[1];
 		}
 
-		if(!(GetEntityFlags(other) & FL_ONGROUND))
+		if(!(GetEntityFlags(other) & FL_ONGROUND)) //Allow to see sky boost after rb.
 		{
 			ResetFactory(client);
 		}
