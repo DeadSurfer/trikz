@@ -1866,7 +1866,7 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 					#endif
 
-					if(FloatAbs(g_skyOrigin[other] - GetGroundPos(client)) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
+					if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 					{
 						g_skyBoost[other] = 1;
 					}
@@ -8112,6 +8112,16 @@ public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
 	return false;
 }
 
+public bool TraceEntityFilterPlayerGround(int entity, int contentsMask, any data)
+{
+	if(entity == data)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 public Action timer_removePing(Handle timer, int client)
 {
 	int entity = EntRefToEntIndex(g_pingModel[client]);
@@ -8425,7 +8435,7 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 	GetClientMaxs(client, maxs);
 
 	float pos[3] = {0.0, ...};
-	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
+	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayerGround, client);
 	TR_GetEndPosition(pos);
 
 	if(TR_DidHit(INVALID_HANDLE) == true)
