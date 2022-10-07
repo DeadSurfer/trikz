@@ -1866,7 +1866,7 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 					#endif
 
-					if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.04 || GetGameTime() - g_skyAble[other] > 0.5)
+					if(FloatAbs(g_skyOrigin[other] - GetGroundPos(client)) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 					{
 						g_skyBoost[other] = 1;
 					}
