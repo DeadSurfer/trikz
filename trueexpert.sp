@@ -1974,7 +1974,7 @@ public void Trikz(int client)
 
 	if(g_devmap == true)
 	{
-		Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
+		Format(format, sizeof(format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
 		menu.AddItem("noclip", format);
 
 		Format(format, sizeof(format), "%T", "Checkpoint", client);
@@ -2951,19 +2951,11 @@ public void Top10(int client)
 
 	else if(g_top10ac > GetGameTime())
 	{
+		char format[256] = "";
 		char time[8] = "";
 		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
-
-		char format[256] = "";
-
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i) == true)
-			{
-				Format(format, sizeof(format), "%T", "Top10ac", i, time);
-				SendMessage(i, format);
-			}
-		}
+		Format(format, sizeof(format), "%T", "Top10ac", client, time);
+		SendMessage(client, format);
 	}
 
 	return;
@@ -7518,11 +7510,11 @@ stock void Noclip(int client)
 
 	if(g_devmap == true)
 	{
-		SetEntityMoveType(client, GetEntityMoveType(client) & MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
+		SetEntityMoveType(client, GetEntityMoveType(client) == MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
 
 		if(g_menuOpened[client] == false)
 		{
-			Format(format, sizeof(format), "%T", GetEntityMoveType(client) & MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
+			Format(format, sizeof(format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
 			SendMessage(client, format);
 		}
 	}
