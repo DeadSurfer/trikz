@@ -310,7 +310,7 @@ stock void EntityLinked(int entity, char[] output)
 		{
 			int entityLinked = 0;
 
-			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", target)) != INVALID_ENT_REFERENCE)
+			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", target, 0)) != INVALID_ENT_REFERENCE)
 			{
 				OutputInput(entityLinked, "func_button");
 
@@ -346,7 +346,7 @@ stock void EntityLinked(int entity, char[] output)
 		{
 			int entityLinked = 0;
 
-			while((entityLinked = FindLinkedEntity(entityLinked, "math_counter", target)) != INVALID_ENT_REFERENCE)
+			while((entityLinked = FindLinkedEntity(entityLinked, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
 			{
 				OutputInput(entityLinked, "math_counter");
 			}
@@ -457,7 +457,7 @@ stock void OutputInput(int entity, char[] output, char[] target = "")
 		g_entityID[++g_entityTotalCount] = entity;
 	}
 
-	else if(!(entity > 0))
+	else if(entity < 0)
 	{
 		for(int j = 1; j <= g_mathTotalCount; j++)
 		{
