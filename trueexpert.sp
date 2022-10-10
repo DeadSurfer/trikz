@@ -58,11 +58,11 @@ float g_boostTime[MAXPLAYER] = {0.0, ...};
 float g_skyVel[MAXPLAYER][3];
 bool g_timerReadyToStart[MAXPLAYER] = {false, ...};
 
-float g_cpPos[2][12][3];
-bool g_cp[11][MAXPLAYER];
-bool g_cpLock[11][MAXPLAYER];
-float g_cpTime[11][MAXPLAYER];
-float g_cpDiffSR[11][MAXPLAYER];
+float g_cpPos[12][2][3];
+bool g_cp[MAXPLAYER][11];
+bool g_cpLock[MAXPLAYER][11];
+float g_cpTime[MAXPLAYER][11];
+float g_cpDiffSR[MAXPLAYER][11];
 float g_cpTimeSR[11] = {0.0, ...};
 
 float g_haveRecord[MAXPLAYER] = {0.0, ...};
@@ -298,10 +298,11 @@ public void OnPluginStart()
 	HookUserMessage(GetUserMessageId("RadioText"), OnRadioMessage, true);
 
 	HookEvent("player_spawn", OnSpawn, EventHookMode_Post);
-	HookEntityOutput("func_button", "OnPressed", OnButton);
 	HookEvent("player_jump", OnJump, EventHookMode_Post);
 	HookEvent("player_death", OnDeath, EventHookMode_Post);
 	HookEvent("player_team", OnTeam, EventHookMode_Post);
+
+	HookEntityOutput("func_button", "OnPressed", OnButton);
 
 	AddCommandListener(joinclass, "joinclass");
 	AddCommandListener(autobuy, "autobuy");
@@ -851,13 +852,10 @@ public void frame_SayText2(DataPack dp)
 		}
 
 		Handle SayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
-
 		BfWrite bfmsg = UserMessageToBfWrite(SayText2);
-
 		bfmsg.WriteByte(client);
 		bfmsg.WriteByte(true);
 		bfmsg.WriteString(text);
-
 		EndMessage();
 
 		g_msg[client] = true;
@@ -869,7 +867,6 @@ public void frame_SayText2(DataPack dp)
 public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //RadioText https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/server/cstrike/cs_player.cpp#L3944
 {
 	int dest = msg.ReadByte();
-
 	int client = msg.ReadByte();
 
 	char message[256] = "";
@@ -888,7 +885,6 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
 	msg.ReadString(param4, sizeof(param4), false);
 
 	DataPack dp = new DataPack();
-
 	dp.WriteCell(dest);
 	dp.WriteCell(client);
 	dp.WriteString(message);
@@ -896,7 +892,6 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
 	dp.WriteString(param2);
 	dp.WriteString(param3);
 	dp.WriteString(param4);
-
 	RequestFrame(rf_radiotxt, dp);
 
 	return Plugin_Handled;
@@ -948,9 +943,7 @@ public void rf_radiotxt(DataPack dp)
 		}
 
 		Handle RadioText = StartMessage("RadioText", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
-
 		BfWrite bfmsg = UserMessageToBfWrite(RadioText);
-
 		bfmsg.WriteByte(dest);
 		bfmsg.WriteByte(client);
 		bfmsg.WriteString(message);
@@ -958,7 +951,6 @@ public void rf_radiotxt(DataPack dp)
 		bfmsg.WriteString(param2);
 		bfmsg.WriteString(param3);
 		bfmsg.WriteString(param4);
-
 		EndMessage();
 	}
 
@@ -1040,6 +1032,7 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 
 	g_skyOrigin[client] = GetGroundPos(client);
 	g_skyAble[client] = GetGameTime();
+
 	GetClientAbsOrigin(client, g_mlsDistance[client][0]);
 
 	return;
@@ -1051,7 +1044,6 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 
 	char log[256] = "";
-
 	GetEntityClassname(ragdoll, log, sizeof(log));
 
 	if(StrEqual(log, "cs_ragdoll", false) == false)
@@ -1088,7 +1080,6 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 public void OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
-
 	int team = event.GetInt("team");
 
 	if(team == CS_TEAM_SPECTATOR && IsValidPartner(client) == true)
@@ -1306,7 +1297,6 @@ public void Checkpoint(int client)
 	if(g_devmap == true)
 	{
 		Menu menu = new Menu(checkpoint_handler);
-
 		menu.SetTitle("%T", "Checkpoint", client);
 
 		char format[256] = "";
@@ -1565,7 +1555,7 @@ public void OnClientDisconnect(int client)
 
 	g_partner[client] = 0;
 
-	int entity = MAXPLAYER + 1;
+	int entity = MAXPLAYER;
 
 	while((entity = FindEntityByClassname(entity, "weapon_*")) != INVALID_ENT_REFERENCE) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 	{
@@ -1734,7 +1724,7 @@ public void SQLGetPoints(Database db, DBResultSet results, const char[] error, a
 	{
 		int client = GetClientFromSerial(data);
 
-		if(client > 0 && results.FetchRow() == true)
+		if(IsValidClient(client) == true && results.FetchRow() == true)
 		{
 			g_points[client] = results.FetchInt(0);
 		}
@@ -1829,7 +1819,6 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 				if(velBooster[2] > 0.0)
 				{
 					float velFlyer[3] = {0.0, ...};
-
 					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
 
 					g_skyVel[other][0] = velFlyer[0];
@@ -1895,7 +1884,6 @@ public void SDKBoostFix(int client)
 			if(entity != INVALID_ENT_REFERENCE)
 			{
 				float velEntity[3] = {0.0, ...};
-
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity);
 
 				if(velEntity[2] > 0.0)
@@ -1941,19 +1929,15 @@ public void Trikz(int client)
 	g_menuOpened[client] = true;
 
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
-	
 	menu.SetTitle("%T", "Trikz", client);
 
 	char format[256] = "";
 	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockMenuON" : "BlockMenuOFF", client);
 	menu.AddItem("block", format);
-
 	Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
 	menu.AddItem("autoflash", format);
-
 	Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
 	menu.AddItem("autoswitch", format);
-
 	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
 	menu.AddItem("bhop", format);
 
@@ -1976,7 +1960,6 @@ public void Trikz(int client)
 	{
 		Format(format, sizeof(format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
 		menu.AddItem("noclip", format);
-
 		Format(format, sizeof(format), "%T", "Checkpoint", client);
 		menu.AddItem("checkpoint", format);
 	}
@@ -2152,7 +2135,6 @@ stock void Partner(int client)
 		if(IsValidPartner(client) == false)
 		{
 			Menu menu = new Menu(partner_handler);
-
 			menu.SetTitle("%T", "ChoosePartner", client);
 
 			char name[MAX_NAME_LENGTH] = "";
@@ -2278,16 +2260,11 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 							g_partner[partner] = param1;
 
 							static GlobalForward hForward = null;
-
 							hForward = new GlobalForward("Trikz_OnPartner", ET_Hook, Param_Cell, Param_Cell);
-
 							Call_StartForward(hForward);
-
 							Call_PushCell(param1);
 							Call_PushCell(partner);
-
 							Call_Finish();
-
 							delete hForward;
 
 							char name[MAX_NAME_LENGTH] = "";
@@ -2360,16 +2337,11 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					g_partner[partner] = 0;
 
 					static GlobalForward hForward = null;
-
 					hForward = new GlobalForward("Trikz_OnBreakup", ET_Hook, Param_Cell, Param_Cell);
-
 					Call_StartForward(hForward);
-
 					Call_PushCell(param1);
 					Call_PushCell(partner);
-
 					Call_Finish();
-
 					delete hForward;
 
 					ResetFactory(param1);
@@ -2415,7 +2387,6 @@ public Action cmd_color(int client, int args)
 stock void ColorSelect(int client)
 {
 	Menu menu = new Menu(handler_menuColor);
-
 	menu.SetTitle("%T", "Color", client);
 
 	char format[256] = "";
@@ -2429,7 +2400,6 @@ stock void ColorSelect(int client)
 	menu.AddItem("flashbang_skin", format);
 
 	menu.ExitBackButton = true;
-
 	menu.Display(client, 20);
 
 	return;
@@ -2542,25 +2512,19 @@ stock void ColorTeam(int client, bool allowColor)
 			SetEntityRenderColor(partner, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[partner] == true ? 255 : 125);
 
 			static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-
 			hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
-
 			Call_StartForward(hForward);
-			
 			Call_PushCell(client);
 			Call_PushCell(partner);
 			Call_PushCell(g_colorBuffer[client][0][0]);
 			Call_PushCell(g_colorBuffer[client][1][0]);
 			Call_PushCell(g_colorBuffer[client][2][0]);
-
 			Call_Finish();
-
 			delete hForward;
 
 			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
 
 			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
-
 			ShowHudText(partner, 5, "%s (TM)", colorTypeExploded[3]);
 		}
 
@@ -2602,7 +2566,6 @@ stock void ColorFlashbang(int client)
 		}
 
 		char colorTypeExploded[32][4];
-
 		ExplodeString(g_colorType[g_colorCount[client][1]], ",", colorTypeExploded, 4, sizeof(colorTypeExploded));
 
 		for(int i = 0; i <= 2; i++)
@@ -2611,24 +2574,17 @@ stock void ColorFlashbang(int client)
 		}
 
 		char value[16] = "";
-
 		Format(value, sizeof(value), "%s;%s;%s;%i", colorTypeExploded[0], colorTypeExploded[1], colorTypeExploded[2], g_colorCount[client][1]);
-
 		SetClientCookie(client, g_cookie[10], value);
 
 		static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-
 		hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
-
 		Call_StartForward(hForward);
-
 		Call_PushCell(client);
 		Call_PushCell(g_colorBuffer[client][0][1]);
 		Call_PushCell(g_colorBuffer[client][1][1]);
 		Call_PushCell(g_colorBuffer[client][2][1]);
-
 		Call_Finish();
-
 		delete hForward;
 
 		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
@@ -2711,7 +2667,6 @@ stock void Restart(int client, bool ask)
 				else if(ask == true)
 				{
 					Menu menu = new Menu(handler_askforrestart);
-
 					menu.SetTitle("%T", "AskForRestart", client);
 
 					Format(format, sizeof(format), "%T", "Yes", client);
@@ -2739,28 +2694,22 @@ stock void DoRestart(int client)
 	if(IsValidPartner(client) == true)
 	{
 		int partner = g_partner[client];
-		
+
 		CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
 
 		static GlobalForward hForward = null;
-
 		hForward = new GlobalForward("Trikz_OnRestart", ET_Hook, Param_Cell, Param_Cell);
-
 		Call_StartForward(hForward);
-
 		Call_PushCell(client);
 		Call_PushCell(partner);
-
 		Call_Finish();
-
 		delete hForward;
 
 		CS_RespawnPlayer(client);
 		CS_RespawnPlayer(partner);
 
 		float vel[3] = {0.0, ...};
-
 		TeleportEntity(client, g_timerStartPos, NULL_VECTOR, vel);
 		TeleportEntity(partner, g_timerStartPos, NULL_VECTOR, vel);
 
@@ -3145,7 +3094,6 @@ public Action cmd_skin(int client, int args)
 stock void Skin(int client)
 {
 	Menu menu = new Menu(skinmenu_hanlder);
-
 	menu.SetTitle("Skin");
 
 	menu.AddItem("player_skin", "Player Skin");
@@ -3201,7 +3149,6 @@ stock void PlayerSkin(int client)
 	menu.AddItem("bright_ps", format, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
-
 	menu.Display(client, 20);
 
 	return;
@@ -3225,7 +3172,6 @@ stock void FlashbangSkin(int client)
 	menu.AddItem("wireframe_fs", format, g_skinFlashbang[client] == 3 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
-
 	menu.Display(client, 20);
 
 	return;
@@ -3577,7 +3523,6 @@ public Action cmd_test(int client, int args)
 	if(flags & ADMFLAG_CUSTOM1)
 	{
 		char arg[256] = "";
-
 		GetCmdArgString(arg, sizeof(arg));
 
 		int partner = StringToInt(arg);
@@ -3652,12 +3597,10 @@ stock void SendMessage(int client, const char[] text)
 	if(IsValidClient(client) == true)
 	{
 		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
-
 		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
 		bf.WriteByte(client); //Message author
 		bf.WriteByte(true); //Chat message
 		bf.WriteString(textReplaced); //Message text
-
 		EndMessage();
 	}
 
@@ -3875,7 +3818,7 @@ public Action cmd_cpmins(int client, int args)
 			{
 				PrintToChat(client, "CP: No.%i", cpnum);
 
-				GetClientAbsOrigin(client, g_cpPos[0][cpnum]);
+				GetClientAbsOrigin(client, g_cpPos[cpnum][0]);
 			}
 		}
 
@@ -3912,7 +3855,7 @@ public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, a
 		}
 
 		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[0][data][0]), RoundFloat(g_cpPos[0][data][1]), RoundFloat(g_cpPos[0][data][2]), RoundFloat(g_cpPos[1][data][0]), RoundFloat(g_cpPos[1][data][1]), RoundFloat(g_cpPos[1][data][2]), g_map);
+		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[data][0][0]), RoundFloat(g_cpPos[data][0][1]), RoundFloat(g_cpPos[data][0][2]), RoundFloat(g_cpPos[data][1][0]), RoundFloat(g_cpPos[data][1][1]), RoundFloat(g_cpPos[data][1][2]), g_map);
 		g_mysql.Query(SQLCPInserted, query, data, DBPrio_Normal);
 	}
 
@@ -4002,7 +3945,6 @@ public void ZoneEditor(int client)
 stock void ZoneEditor2(int client)
 {
 	Menu menu = new Menu(zones_handler);
-
 	menu.SetTitle("Zone editor");
 
 	if(g_zoneHave[0] == true)
@@ -4080,30 +4022,26 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 
 stock void ZoneEditorStart(int client)
 {
-	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	menu.SetTitle("Zone editor - Start zone");
 
-	menu2.SetTitle("Zone editor - Start zone");
-
-	menu2.AddItem("starttp", "Teleport to start zone");
-	
+	menu.AddItem("starttp", "Teleport to start zone");
 	char format[16] = "";
 	Format(format, sizeof(format), "Step: %i", g_step);
-	menu2.AddItem("step", format);
+	menu.AddItem("step", format);
+	menu.AddItem("start+xmaxs", "+x/maxs");
+	menu.AddItem("start-xmaxs", "-x/maxs");
+	menu.AddItem("start+ymins", "+y/mins");
+	menu.AddItem("start-ymins", "-y/mins");
+	menu.AddItem("empty", "");
+	menu.AddItem("start+xmins", "+x/mins");
+	menu.AddItem("start-xmins", "-x/mins");
+	menu.AddItem("start+ymaxs", "+y/maxs");
+	menu.AddItem("start-ymaxs", "-y/maxs");
+	menu.AddItem("startupdate", "Update start zone");
 
-	menu2.AddItem("start+xmaxs", "+x/maxs");
-	menu2.AddItem("start-xmaxs", "-x/maxs");
-	menu2.AddItem("start+ymins", "+y/mins");
-	menu2.AddItem("start-ymins", "-y/mins");
-	menu2.AddItem("empty", "");
-	menu2.AddItem("start+xmins", "+x/mins");
-	menu2.AddItem("start-xmins", "-x/mins");
-	menu2.AddItem("start+ymaxs", "+y/maxs");
-	menu2.AddItem("start-ymaxs", "-y/maxs");
-	menu2.AddItem("startupdate", "Update start zone");
-
-	menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
-
-	menu2.Display(client, MENU_TIME_FOREVER);
+	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+	menu.Display(client, MENU_TIME_FOREVER);
 
 	g_ZoneEditor = 0;
 
@@ -4112,30 +4050,26 @@ stock void ZoneEditorStart(int client)
 
 stock void ZoneEditorEnd(int client)
 {
-	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	menu.SetTitle("Zone editor - End zone");
 
-	menu2.SetTitle("Zone editor - End zone");
-
-	menu2.AddItem("endtp", "Teleport to end zone");
-
+	menu.AddItem("endtp", "Teleport to end zone");
 	char format[16] = "";
 	Format(format, sizeof(format), "Step: %i", g_step);
-	menu2.AddItem("step", format);
+	menu.AddItem("step", format);
+	menu.AddItem("end+xmaxs", "+x/maxs");
+	menu.AddItem("end-xmaxs", "-x/maxs");
+	menu.AddItem("end+ymins", "+y/mins");
+	menu.AddItem("end-ymins", "-y/mins");
+	menu.AddItem("empty", "");
+	menu.AddItem("end+xmins", "+x/mins");
+	menu.AddItem("end-xmins", "-x/mins");
+	menu.AddItem("end+ymaxs", "+y/maxs");
+	menu.AddItem("end-ymaxs", "-y/maxs");
+	menu.AddItem("endupdate", "Update start zone");
 
-	menu2.AddItem("end+xmaxs", "+x/maxs");
-	menu2.AddItem("end-xmaxs", "-x/maxs");
-	menu2.AddItem("end+ymins", "+y/mins");
-	menu2.AddItem("end-ymins", "-y/mins");
-	menu2.AddItem("empty", "");
-	menu2.AddItem("end+xmins", "+x/mins");
-	menu2.AddItem("end-xmins", "-x/mins");
-	menu2.AddItem("end+ymaxs", "+y/maxs");
-	menu2.AddItem("end-ymaxs", "-y/maxs");
-	menu2.AddItem("endupdate", "Update start zone");
-
-	menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
-
-	menu2.Display(client, MENU_TIME_FOREVER);
+	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+	menu.Display(client, MENU_TIME_FOREVER);
 
 	g_ZoneEditor = 1;
 
@@ -4144,57 +4078,47 @@ stock void ZoneEditorEnd(int client)
 
 stock void ZoneEditorCP(int client, int cpnum)
 {
-	Menu menu2 = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
-
-	menu2.SetTitle("Zone editor - CP nr. %i zone", cpnum);
+	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	menu.SetTitle("Zone editor - CP nr. %i zone", cpnum);
 
 	char button[32] = "";
 	Format(button, sizeof(button), "Teleport to CP nr. %i zone", cpnum);
 
 	char itemCP[16] = "";
-
 	Format(itemCP, sizeof(itemCP), "tp;%i", cpnum);
-
-	menu2.AddItem(itemCP, button);
+	menu.AddItem(itemCP, button);
 
 	char step[16] = "";
 	Format(step, sizeof(step), "Step: %i", g_step);
-	menu2.AddItem("step", step);
+	menu.AddItem("step", step);
 
 	Format(itemCP, sizeof(itemCP), "5;%i", cpnum);
-
-	menu2.AddItem(itemCP, "+x/maxs");
+	menu.AddItem(itemCP, "+x/maxs");
 	Format(itemCP, sizeof(itemCP), "6;%i", cpnum);
-
-	menu2.AddItem(itemCP, "-x/maxs");
+	menu.AddItem(itemCP, "-x/maxs");
 	Format(itemCP, sizeof(itemCP), "3;%i", cpnum);
-
-	menu2.AddItem(itemCP, "+y/mins");
+	menu.AddItem(itemCP, "+y/mins");
 	Format(itemCP, sizeof(itemCP), "4;%i", cpnum);
+	menu.AddItem(itemCP, "-y/mins");
 
-	menu2.AddItem(itemCP, "-y/mins");
-	menu2.AddItem("empty", "");
+	menu.AddItem("empty", "");
 
 	Format(itemCP, sizeof(itemCP), "1;%i", cpnum);
-	menu2.AddItem(itemCP, "+x/mins");
-
+	menu.AddItem(itemCP, "+x/mins");
 	Format(itemCP, sizeof(itemCP), "2;%i", cpnum);
-	menu2.AddItem(itemCP, "-x/mins");
-
+	menu.AddItem(itemCP, "-x/mins");
 	Format(itemCP, sizeof(itemCP), "7;%i", cpnum);
-	menu2.AddItem(itemCP, "+y/maxs");
-
+	menu.AddItem(itemCP, "+y/maxs");
 	Format(itemCP, sizeof(itemCP), "8;%i", cpnum);
-	menu2.AddItem(itemCP, "-y/maxs");
+	menu.AddItem(itemCP, "-y/maxs");
 
 	char cpupdate[32] = "";
 	Format(cpupdate, sizeof(cpupdate), "cpupdate;%i", cpnum);
 	Format(button, sizeof(button), "Update CP nr. %i zone", cpnum);
-	menu2.AddItem(cpupdate, button);
+	menu.AddItem(cpupdate, button);
 
-	menu2.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
-
-	menu2.Display(client, MENU_TIME_FOREVER);
+	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
+	menu.Display(client, MENU_TIME_FOREVER);
 
 	g_ZoneEditor = 2;
 
@@ -4351,56 +4275,56 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[0][cpnum][0] += g_step;
+				g_cpPos[cpnum][0][0] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "2;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[0][cpnum][0] -= g_step;
+				g_cpPos[cpnum][0][0] -= g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "3;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[0][cpnum][1] += g_step;
+				g_cpPos[cpnum][0][1] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "4;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[0][cpnum][1] -= g_step;
+				g_cpPos[cpnum][0][1] -= g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "5;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[1][cpnum][0] += g_step;
+				g_cpPos[cpnum][1][0] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "6;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[1][cpnum][0] -= g_step;
+				g_cpPos[cpnum][1][0] -= g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "7;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[1][cpnum][1] += g_step;
+				g_cpPos[cpnum][1][1] += g_step;
 			}
 
 			Format(cpFormated, sizeof(cpFormated), "8;%i", cpnum);
 
 			if(StrEqual(item, cpFormated, false) == true)
 			{
-				g_cpPos[1][cpnum][1] -= g_step;
+				g_cpPos[cpnum][1][1] -= g_step;
 			}
 
 			char query[512] = "";
@@ -4581,7 +4505,6 @@ stock void CPSetup(int client)
 		Format(query, sizeof(query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
 
 		DataPack dp = new DataPack();
-
 		dp.WriteCell(client > 0 ? GetClientSerial(client) : 0);
 		dp.WriteCell(i);
 
@@ -4609,13 +4532,13 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, Dat
 
 		if(results.FetchRow() == true)
 		{
-			g_cpPos[0][cp][0] = results.FetchFloat(0);
-			g_cpPos[0][cp][1] = results.FetchFloat(1);
-			g_cpPos[0][cp][2] = results.FetchFloat(2);
+			g_cpPos[cp][0][0] = results.FetchFloat(0);
+			g_cpPos[cp][0][1] = results.FetchFloat(1);
+			g_cpPos[cp][0][2] = results.FetchFloat(2);
 
-			g_cpPos[1][cp][0] = results.FetchFloat(3);
-			g_cpPos[1][cp][1] = results.FetchFloat(4);
-			g_cpPos[1][cp][2] = results.FetchFloat(5);
+			g_cpPos[cp][1][0] = results.FetchFloat(3);
+			g_cpPos[cp][1][1] = results.FetchFloat(4);
+			g_cpPos[cp][1][2] = results.FetchFloat(5);
 
 			if(g_devmap == false)
 			{
@@ -4656,7 +4579,6 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, Dat
 stock void CreateCP(int cpnum)
 {
 	char trigger[64] = "";
-
 	Format(trigger, sizeof(trigger), "trueexpert_cp%i", cpnum);
 
 	int entity = CreateEntityByName("trigger_multiple", -1);
@@ -4670,9 +4592,9 @@ stock void CreateCP(int cpnum)
 	SetEntityModel(entity, "models/player/t_arctic.mdl");
 
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	g_center[cpnum + 1][0] = (g_cpPos[1][cpnum][0] + g_cpPos[0][cpnum][0]) / 2.0;
-	g_center[cpnum + 1][1] = (g_cpPos[1][cpnum][1] + g_cpPos[0][cpnum][1]) / 2.0;
-	g_center[cpnum + 1][2] = (g_cpPos[1][cpnum][2] + g_cpPos[0][cpnum][2]) / 2.0;
+	g_center[cpnum + 1][0] = (g_cpPos[cpnum][1][0] + g_cpPos[cpnum][0][0]) / 2.0;
+	g_center[cpnum + 1][1] = (g_cpPos[cpnum][1][1] + g_cpPos[cpnum][0][1]) / 2.0;
+	g_center[cpnum + 1][2] = (g_cpPos[cpnum][1][2] + g_cpPos[cpnum][0][2]) / 2.0;
 
 	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -4681,14 +4603,14 @@ stock void CreateCP(int cpnum)
 
 	for(int i = 0; i <= 1; i++)
 	{
-		mins[i] = (g_cpPos[0][cpnum][i] - g_cpPos[1][cpnum][i]) / 2.0;
+		mins[i] = (g_cpPos[cpnum][0][i] - g_cpPos[cpnum][1][i]) / 2.0;
 
 		if(mins[i] > 0.0)
 		{
 			mins[i] *= -1.0;
 		}
 
-		maxs[i] = (g_cpPos[0][cpnum][i] - g_cpPos[1][cpnum][i]) / 2.0;
+		maxs[i] = (g_cpPos[cpnum][0][i] - g_cpPos[cpnum][1][i]) / 2.0;
 
 		if(maxs[i] < 0.0)
 		{
@@ -4780,24 +4702,19 @@ public Action SDKEndTouch(int entity, int other)
 
 		for(int i = 1; i <= g_cpCount; i++)
 		{
-			g_cp[i][other] = false;
-			g_cp[i][partner] = false;
+			g_cp[other][i] = false;
+			g_cp[partner][i] = false;
 
-			g_cpLock[i][other] = false;
-			g_cpLock[i][partner] = false;
+			g_cpLock[other][i] = false;
+			g_cpLock[partner][i] = false;
 		}
 
 		static GlobalForward hForward = null;
-
 		hForward = new GlobalForward("Trikz_OnTimerStart", ET_Hook, Param_Cell, Param_Cell);
-
 		Call_StartForward(hForward);
-
 		Call_PushCell(other);
 		Call_PushCell(partner);
-
 		Call_Finish();
-
 		delete hForward;
 
 		char query[512] = "";
@@ -4905,7 +4822,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, true, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, true, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time ASC LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time ASC LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLUpdateRecord, query, _, DBPrio_Normal);
 
 							g_haveRecord[other] = time;
@@ -4920,19 +4837,14 @@ public Action SDKStartTouch(int entity, int other)
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 
 							static GlobalForward hForward = null;
-
 							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 							Call_StartForward(hForward);
-
 							Call_PushCell(other);
 							Call_PushCell(partner);
 							Call_PushFloat(time);
 							Call_PushFloat(timeDiff);
 							Call_PushString("ServerRecord1");
-
 							Call_Finish();
-
 							delete hForward;
 						}
 
@@ -4954,19 +4866,14 @@ public Action SDKStartTouch(int entity, int other)
 							g_mysql.Query(SQLUpdateRecord, query, _, DBPrio_Normal);
 
 							static GlobalForward hForward = null;
-
 							hForward = new GlobalForward("Trikz_OnFinish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 							Call_StartForward(hForward);
-
 							Call_PushCell(other);
 							Call_PushCell(partner);
 							Call_PushFloat(time);
 							Call_PushFloat(timeDiff);
 							Call_PushString("Finish1");
-
 							Call_Finish();
-
 							delete hForward;
 						}
 
@@ -4984,7 +4891,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, false, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, false, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLUpdateRecord, query, _, DBPrio_Normal);
 
 							if(g_haveRecord[other] > time)
@@ -5004,19 +4911,14 @@ public Action SDKStartTouch(int entity, int other)
 							}
 
 							static GlobalForward hForward = null;
-
 							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 							Call_StartForward(hForward);
-
 							Call_PushCell(other);
 							Call_PushCell(partner);
 							Call_PushFloat(time);
 							Call_PushFloat(timeDiff);
 							Call_PushString("Finish2");
-
 							Call_Finish();
-
 							delete hForward;
 						}
 					}
@@ -5040,7 +4942,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, true, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, true, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLInsertRecord, query, _, DBPrio_Normal);
 
 							g_haveRecord[other] = time;
@@ -5056,19 +4958,14 @@ public Action SDKStartTouch(int entity, int other)
 							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 
 							static GlobalForward hForward = null;
-
 							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 							Call_StartForward(hForward);
-
 							Call_PushCell(other);
 							Call_PushCell(partner);
 							Call_PushFloat(time);
 							Call_PushFloat(timeDiff);
 							Call_PushString("ServerRecord2");
-
 							Call_Finish();
-
 							delete hForward;
 						}
 
@@ -5086,7 +4983,7 @@ public Action SDKStartTouch(int entity, int other)
 							FinishMSG(other, false, false, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, false, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLInsertRecord, query, _, DBPrio_Normal);
 
 							if(g_haveRecord[other] == 0.0)
@@ -5103,35 +5000,30 @@ public Action SDKStartTouch(int entity, int other)
 							g_teamRecord[partner] = time;
 
 							static GlobalForward hForward = null;
-
 							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 							Call_StartForward(hForward);
-
 							Call_PushCell(other);
 							Call_PushCell(partner);
 							Call_PushFloat(time);
 							Call_PushFloat(timeDiff);
 							Call_PushString("Finish3");
-
 							Call_Finish();
-
 							delete hForward;
 						}
 					}
 
 					for(int i = 1; i <= g_cpCount; i++)
 					{
-						if(g_cp[i][other] == true)
+						if(g_cp[other][i] == true)
 						{
 							char timeCP[24] = "";
-							FormatSeconds(g_cpDiffSR[i][other], timeCP);
+							FormatSeconds(g_cpDiffSR[other][i], timeCP);
 
 							for(int j = 1; j <= MaxClients; j++)
 							{
 								if(IsClientInGame(j) == true)
 								{
-									Format(format, sizeof(format), "%T", g_cpTime[i][other] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									Format(format, sizeof(format), "%T", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
 									SendMessage(j, format);
 								}
 							}
@@ -5161,7 +5053,7 @@ public Action SDKStartTouch(int entity, int other)
 
 							for(int j = 1; j <= g_cpCount; j++)
 							{
-								if(g_cp[j][other] == true)
+								if(g_cp[other][j] == true)
 								{
 									Format(format, sizeof(format), "%T", "CPNEW", i, j, timeSR);
 									SendMessage(i, format);
@@ -5177,23 +5069,18 @@ public Action SDKStartTouch(int entity, int other)
 
 					CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
 
-					Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[1][other], g_cpTime[2][other], g_cpTime[3][other], g_cpTime[4][other], g_cpTime[5][other], g_cpTime[6][other], g_cpTime[7][other], g_cpTime[8][other], g_cpTime[9][other], g_cpTime[10][other], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+					Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 					g_mysql.Query(SQLInsertRecord, query, _, DBPrio_Normal);
 
 					static GlobalForward hForward = null;
-
 					hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 					Call_StartForward(hForward);
-
 					Call_PushCell(other);
 					Call_PushCell(partner);
 					Call_PushFloat(time);
 					Call_PushFloat(0.0);
 					Call_PushString("FirstServerRecord");
-
 					Call_Finish();
-
 					delete hForward;
 				}
 
@@ -5209,12 +5096,12 @@ public Action SDKStartTouch(int entity, int other)
 
 			if(StrEqual(trigger, triggerCP, false) == true)
 			{
-				g_cp[i][other] = true;
+				g_cp[other][i] = true;
 
-				if(g_cp[i][other] == true && g_cp[i][partner] == true && g_cpLock[i][other] == false)
+				if(g_cp[other][i] == true && g_cp[i][partner] == true && g_cpLock[other][i] == false)
 				{
-					g_cpLock[i][other] = true;
-					g_cpLock[i][partner] = true;
+					g_cpLock[other][i] = true;
+					g_cpLock[partner][i] = true;
 
 					g_cpTime[i][other] = g_timerTime[other];
 					g_cpTime[i][partner] = g_timerTime[other];
@@ -5988,6 +5875,7 @@ public void SQLInsertRecord(Database db, DBResultSet results, const char[] error
 public Action timer_sourcetv(Handle timer)
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable");
+
 	bool sourcetv = CV_sourcetv.BoolValue; //https://sm.alliedmods.net/new-api/convars/__raw
 
 	if(sourcetv == true)
@@ -6065,19 +5953,14 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
 
 			static GlobalForward hForward = null;
-
 			hForward = new GlobalForward("Trikz_OnCheckpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 			Call_StartForward(hForward);
-
 			Call_PushCell(other);
 			Call_PushCell(partner);
 			Call_PushFloat(time);
 			Call_PushFloat(0.0);
 			Call_PushString("FirstCPRecord1");
-
 			Call_Finish();
-
 			delete hForward;
 
 			return;
@@ -6132,19 +6015,14 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
 
 			static GlobalForward hForward = null;
-
 			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 			Call_StartForward(hForward);
-
 			Call_PushCell(other);
 			Call_PushCell(partner);
 			Call_PushFloat(time);
 			Call_PushFloat(0.0);
 			Call_PushString("FirstCPRecord2");
-
 			Call_Finish();
-
 			delete hForward;
 
 			return;
@@ -6156,57 +6034,48 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 		{
 			g_cpTimeSR[cpnum] = results.FetchFloat(0);
 
-			if(g_cpTime[cpnum][other] < g_cpTimeSR[cpnum])
+			if(g_cpTime[other][cpnum] < g_cpTimeSR[cpnum])
 			{
-				g_cpDiffSR[cpnum][other] = g_cpTimeSR[cpnum] - g_cpTime[cpnum][other];
-				g_cpDiffSR[cpnum][partner] = g_cpTimeSR[cpnum] - g_cpTime[cpnum][other];
+				g_cpDiffSR[other][cpnum] = g_cpTimeSR[cpnum] - g_cpTime[other][cpnum];
+				g_cpDiffSR[partner][cpnum] = g_cpTimeSR[cpnum] - g_cpTime[other][cpnum];
 
-				float diff = g_cpDiffSR[cpnum][other];
+				float diff = g_cpDiffSR[other][cpnum];
 				FormatSeconds(diff, timeSR);
 
 				FinishMSG(other, false, false, true, false, true, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, true, cpnum, timeOwn, timeSR);
 
 				static GlobalForward hForward = null;
-
 				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 				Call_StartForward(hForward);
-
 				Call_PushCell(other);
 				Call_PushCell(partner);
 				Call_PushFloat(time);
 				Call_PushFloat(diff);
 				Call_PushString("CPImprove");
-
 				Call_Finish();
-
 				delete hForward;
 			}
 
-			else if(!(g_cpTime[cpnum][other] < g_cpTimeSR[cpnum]))
+			else if(!(g_cpTime[other][cpnum] < g_cpTimeSR[cpnum]))
 			{
-				g_cpDiffSR[cpnum][other] = g_cpTime[cpnum][other] - g_cpTimeSR[cpnum];
-				g_cpDiffSR[cpnum][partner] = g_cpTime[cpnum][other] - g_cpTimeSR[cpnum];
+				g_cpDiffSR[other][cpnum] = g_cpTime[other][cpnum] - g_cpTimeSR[cpnum];
+				g_cpDiffSR[partner][cpnum] = g_cpTime[other][cpnum] - g_cpTimeSR[cpnum];
 
-				float diff = g_cpDiffSR[cpnum][other];
+				float diff = g_cpDiffSR[other][cpnum];
 				FormatSeconds(diff, timeSR);
 
 				FinishMSG(other, false, false, true, false, false, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, false, cpnum, timeOwn, timeSR);
 
 				static GlobalForward hForward = null;
-
 				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
-
 				Call_StartForward(hForward);
-
 				Call_PushCell(other);
 				Call_PushCell(partner);
 				Call_PushFloat(time);
 				Call_PushFloat(diff);
 				Call_PushString("CPDeprove");
-
 				Call_Finish();
 
 				delete hForward;
@@ -6498,15 +6367,15 @@ stock void DrawZone(int client, float life, float size, int speed)
 		{
 			cpnum = i - 1; //start count cp from 1.
 			
-			start[i][0] = g_cpPos[0][cpnum][0] < g_cpPos[1][cpnum][0] == true ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
-			start[i][1] = g_cpPos[0][cpnum][1] < g_cpPos[1][cpnum][1] == true ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
-			start[i][2] = g_cpPos[0][cpnum][2] < g_cpPos[1][cpnum][2] == true ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2];
+			start[i][0] = g_cpPos[cpnum][0][0] < g_cpPos[cpnum][1][0] == true ? g_cpPos[cpnum][0][0] : g_cpPos[cpnum][1][0];
+			start[i][1] = g_cpPos[cpnum][0][1] < g_cpPos[cpnum][1][1] == true ? g_cpPos[cpnum][0][1] : g_cpPos[cpnum][1][1];
+			start[i][2] = g_cpPos[cpnum][0][2] < g_cpPos[cpnum][1][2] == true ? g_cpPos[cpnum][0][2] : g_cpPos[cpnum][1][2];
 
 			start[i][2] += size;
 
-			end[i][0] = g_cpPos[0][cpnum][0] > g_cpPos[1][cpnum][0] == true ? g_cpPos[0][cpnum][0] : g_cpPos[1][cpnum][0];
-			end[i][1] = g_cpPos[0][cpnum][1] > g_cpPos[1][cpnum][1] == true ? g_cpPos[0][cpnum][1] : g_cpPos[1][cpnum][1];
-			end[i][2] = g_cpPos[0][cpnum][2] > g_cpPos[1][cpnum][2] == true ? g_cpPos[0][cpnum][2] : g_cpPos[1][cpnum][2];
+			end[i][0] = g_cpPos[cpnum][0][0] > g_cpPos[cpnum][1][0] == true ? g_cpPos[cpnum][0][0] : g_cpPos[cpnum][1][0];
+			end[i][1] = g_cpPos[cpnum][0][1] > g_cpPos[cpnum][1][1] == true ? g_cpPos[cpnum][0][1] : g_cpPos[cpnum][1][1];
+			end[i][2] = g_cpPos[cpnum][0][2] > g_cpPos[cpnum][1][2] == true ? g_cpPos[cpnum][0][2] : g_cpPos[cpnum][1][2];
 
 			end[i][2] += size;
 		}
@@ -7126,12 +6995,10 @@ public Action cmd_devmap(int client, int args)
 				g_voters++;
 
 				Menu menu = new Menu(devmap_handler);
-
 				menu.SetTitle("%T", g_devmap == true ? "TurnOFFDevmap" : "TurnONDevmap", i);
 
 				Format(format, sizeof(format), "%T", "Yes", i);
 				menu.AddItem("yes", format);
-
 				Format(format, sizeof(format), "%T", "No", i);
 				menu.AddItem("no", format);
 
@@ -7334,13 +7201,10 @@ public Action timer_motd(Handle timer, int client)
 		ConVar hostname = FindConVar("hostname");
 
 		char hostnameBuffer[256] = "";
-
 		hostname.GetString(hostnameBuffer, sizeof(hostnameBuffer));
 
 		char url[192] = "";
-
 		gCV_urlTop.GetString(url, sizeof(url));
-
 		Format(url, sizeof(url), "%s%s", url, g_map);
 
 		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL); //https://forums.alliedmods.net/showthread.php?t=232476
@@ -7387,9 +7251,8 @@ public Action cmd_afk(int client, int args)
 					g_voters++;
 
 					Menu menu = new Menu(afk_handler);
-
 					menu.SetTitle("%T", "AreYouHere?", i);
-					
+
 					Format(format, sizeof(format), "%T", "Yes", i);
 					menu.AddItem("yes", format);
 					Format(format, sizeof(format), "%T", "No", i);
@@ -7566,16 +7429,13 @@ stock void HudMenu(int client)
 	g_menuOpenedHud[client] = true;
 
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
-
 	menu.SetTitle("Hud");
 
 	char format[128] = "";
 	Format(format, sizeof(format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
 	menu.AddItem("vel", format, gCV_vel.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-
 	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
 	menu.AddItem("mls", format, gCV_mlstats.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-
 	Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
 	menu.AddItem("endmsg", format, gCV_endmsg.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
@@ -8259,24 +8119,18 @@ stock void MLStats(int client, bool ground)
 	if(g_mlstats[flyer] == true)
 	{
 		Handle KeyHintText = StartMessageOne("KeyHintText", flyer);
-
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
 		bfmsg.WriteByte(true);
 		bfmsg.WriteString(ground == true ? print[1] : print[0]);
-
 		EndMessage();
 	}
 
 	if(g_mlstats[client] == true)
 	{
 		Handle KeyHintText = StartMessageOne("KeyHintText", client);
-
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
 		bfmsg.WriteByte(true);
 		bfmsg.WriteString(ground == true ? print[2] : print[0]);
-
 		EndMessage();
 	}
 
@@ -8298,12 +8152,9 @@ stock void MLStats(int client, bool ground)
 				Format(print[3], 256, "%s\n%T", print[0], "MLSFinishMsg", i, distance, tp);
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", i);
-
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-
 				bfmsg.WriteByte(true);
 				bfmsg.WriteString(ground == true ? print[3] : print[0]);
-
 				EndMessage();
 
 				if(ground == true)
@@ -8428,6 +8279,7 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 
 	float pos[3] = {0.0, ...};
 	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayerGround, client);
+
 	TR_GetEndPosition(pos);
 
 	if(TR_DidHit(INVALID_HANDLE) == true)
@@ -8468,16 +8320,11 @@ stock MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.c
 	}
 
 	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-
 	hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell, Param_Array);
-
 	Call_StartForward(hForward);
-	
 	Call_PushCell(client);
 	Call_PushArray(origin, 3);
-
 	Call_Finish();
-
 	delete hForward;
 	
 	return MRES_Ignored;
