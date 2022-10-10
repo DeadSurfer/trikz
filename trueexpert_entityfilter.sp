@@ -887,6 +887,7 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(g_mathID[i] == pThis)
 			{
+				PrintToServer("%i", EntRefToEntIndex(pThis));
 				thisIndex = i;
 
 				break;
@@ -1130,7 +1131,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 				else if(StrContains(output, "OnEndTouch", false) != -1)
 				{
-					if(g_stateDisabled[partner][caller] == true && g_StartTouchArtifacial[partner][1][caller] == false)
+					if(g_stateDisabled[partner][caller] == true && g_StartTouchArtifacial[partner][caller][1] == false)
 					{
 						return Plugin_Handled;
 					}
