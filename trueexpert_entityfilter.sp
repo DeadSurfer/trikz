@@ -640,6 +640,8 @@ public void Trikz_OnRestart(int client, int partner)
 {
 	Reset(client);
 	Reset(partner);
+
+	return;
 }
 
 stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
@@ -887,7 +889,6 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 		{
 			if(g_mathID[i] == pThis)
 			{
-				PrintToServer("%i", EntRefToEntIndex(pThis));
 				thisIndex = i;
 
 				break;
