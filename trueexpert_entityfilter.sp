@@ -303,7 +303,7 @@ stock void EntityLinked(int entity, const char[] output)
 
 								g_entityOutput[entityLinked][g_maxMathLinks[math]][GetOutput(output)] = 1;
 
-								break;
+								continue;
 							}
 						}
 					}
@@ -338,7 +338,7 @@ stock void EntityLinked(int entity, const char[] output)
 
 							g_entityOutput[entityLinked][g_maxMathLinks[math]][GetOutput(output)] = 1;
 
-							break;
+							continue;
 						}
 					}
 				}
@@ -450,7 +450,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 			{
 				bReturn = true;
 
-				break;
+				continue;
 			}
 		}
 
@@ -470,7 +470,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 			{
 				bReturn = true;
 
-				break;
+				continue;
 			}
 		}
 
@@ -486,7 +486,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 	{
 		int template = 0;
 
-		bool break_ = false;
+		bool quit = false;
 
 		char name[256] = "";
 
@@ -503,20 +503,17 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 					DHookEntity(g_AcceptInput, false, template);
 
-					break_ = true;
+					quit = true;
 
-					break;
+					continue;
 				}
 			}
 
-			if(break_ == true)
+			if(quit == true)
 			{
-				break;
+				continue;
 			}
 		}
-
-		//g_stateDefaultDisabled[entity] = false;
-		//g_stateDisabled[0][entity] = false;
 
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit);
 
@@ -553,7 +550,6 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
 
 		g_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait");
-		//g_buttonReady[0][entity] = 0.0;
 
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1);
 	}
@@ -573,12 +569,6 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		g_stateDefaultDisabled[entity] = true;
 		g_stateDisabled[0][entity] = true;
 	}
-
-	//else if((i == 0 && GetEntProp(entity, Prop_Data, "m_iDisabled") == 0) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags") == 0) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled") == 0) || (i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked") == 0))
-	//{
-	//	g_stateDefaultDisabled[entity] = false;
-	//	g_stateDisabled[0][entity] = false;
-	//}
 
 	if(i == 0 || 1 < i < 7)
 	{
@@ -778,7 +768,7 @@ stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				{
 					thisIndex = g_entityID[i];
 
-					break;
+					continue;
 				}
 			}
 
@@ -906,7 +896,7 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			{
 				thisIndex = i;
 
-				break;
+				continue;
 			}
 		}
 
@@ -977,24 +967,15 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 
 public Action TouchTrigger(int entity, int other)
 {
-	/*char classname[32]
-	GetEntityClassname(entity, classname, 32)
-	char classname2[32]
-	GetEntityClassname(other, classname2, 32)
-	PrintToServer("e: %i/%s o: %i/%s", entity, classname, other, classname2)
-	int owner = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity")
-	if(StrEqual(classname2, "flashbang_projectile", true))
-		AcceptEntityInput(entity, "StartTouch", owner, owner)*/
+	/*char classname[32] = "";
+	GetEntityClassname(other, classname, sizeof(classname));
 
-	//char classname[32] = "";
-	//GetEntityClassname(other, classname, sizeof(classname));
+	int activator = other;
 
-	//int activator = other;
-
-	//if(StrContains(classname, "projectile", false) != -1)
-	//{
-	//	activator = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity");
-	//}
+	if(StrContains(classname, "projectile", false) != -1)
+	{
+		activator = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity");
+	}*/
 	
 	if(IsValidClient(other) == true)
 	{
@@ -1118,8 +1099,25 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 	if(IsValidClient(activator) == true)
 	{
 		char outputFormated[32] = "";
-		Format(outputFormated, sizeof(outputFormated), "m_%s", output);
-		
+
+		if(caller > 0)
+		{
+			Format(outputFormated, sizeof(outputFormated), "m_%s", output);
+		}
+
+		else if(caller < 0)
+		{
+			if(StrEqual(output, "OnUser3") == true)
+			{
+				Format(outputFormated, sizeof(outputFormated), "m_OnHitMax", output);
+			}
+
+			else if(StrEqual(output, "OnUser4") == true)
+			{
+				Format(outputFormated, sizeof(outputFormated), "m_OnHitMin", output);
+			}
+		}
+
 		int partner = Trikz_GetClientPartner(activator);
 		int outputNum = GetOutput(outputFormated);
 
@@ -1208,16 +1206,6 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 		else if(caller < 0)
 		{
-			if(StrEqual(output, "OnUser3") == true)
-			{
-				Format(outputFormated, sizeof(outputFormated), "m_OnHitMax", output);
-			}
-
-			else if(StrEqual(output, "OnUser4") == true)
-			{
-				Format(outputFormated, sizeof(outputFormated), "m_OnHitMin", output);
-			}
-
 			for(int i = 1; i <= g_mathTotalCount; i++)
 			{
 				if(g_mathID[i] == caller)
