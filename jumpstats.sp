@@ -358,22 +358,28 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(g_jumpstats[client] == true)
 			{
-				Handle KeyHintText = StartMessageOne("KeyHintText", client);
-				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-				bfmsg.WriteByte(true);
-				bfmsg.WriteString(print[0]);
-				EndMessage();
+				if(g_teleported[client] == false)
+				{
+					Handle KeyHintText = StartMessageOne("KeyHintText", client);
+					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+					bfmsg.WriteByte(true);
+					bfmsg.WriteString(print[0]);
+					EndMessage();
+				}
 
 				PrintToConsole(client, "%s", print[1]);
 			}
 
 			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true)
 			{
-				Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
-				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-				bfmsg.WriteByte(true);
-				bfmsg.WriteString(print[0]);
-				EndMessage();
+				if(g_teleported[client] == false)
+				{
+					Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
+					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+					bfmsg.WriteByte(true);
+					bfmsg.WriteString(print[0]);
+					EndMessage();
+				}
 
 				PrintToConsole(g_rbBooster[client], "%s", print[1]);
 			}
@@ -390,11 +396,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(distance >= 230.0 && pre < 280.0)
 					{
-						Handle KeyHintText = StartMessageOne("KeyHintText", i);
-						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-						bfmsg.WriteByte(true);
-						bfmsg.WriteString(print[0]);
-						EndMessage();
+						if(g_teleported[client] == false)
+						{
+							Handle KeyHintText = StartMessageOne("KeyHintText", i);
+							BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+							bfmsg.WriteByte(true);
+							bfmsg.WriteString(print[0]);
+							EndMessage();
+						}
 
 						PrintToConsole(i, "%s", print[1]);
 					}
