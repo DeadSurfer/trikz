@@ -1228,13 +1228,13 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 					{
 						if(IsValidPartner(activator) == true)
 						{
-							g_linkedEntities[activator][g_linkedMathEntitiesDefault[math][i][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][i][outputNum]][i][outputNum];
-							g_linkedEntities[partner][g_linkedMathEntitiesDefault[math][i][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][i][outputNum]][i][outputNum];
+							g_linkedEntities[activator][g_linkedMathEntitiesDefault[math][j][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][j][outputNum]][j][outputNum];
+							g_linkedEntities[partner][g_linkedMathEntitiesDefault[math][j][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][j][outputNum]][j][outputNum];
 						}
 
 						else if(IsValidPartner(activator) == false)
 						{
-							g_linkedEntities[partner][g_linkedMathEntitiesDefault[math][i][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][i][outputNum]][i][outputNum];
+							g_linkedEntities[partner][g_linkedMathEntitiesDefault[math][j][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][j][outputNum]][j][outputNum];
 						}
 					}
 				}
