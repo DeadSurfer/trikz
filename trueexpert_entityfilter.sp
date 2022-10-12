@@ -57,8 +57,8 @@ native int Trikz_GetClientPartner(int client);
 int g_linkedEntitiesDefault[MAXENTITY][MAXLINK][MAXOUTPUT];
 int g_linkedEntities[MAXPLAYER][MAXENTITY];
 int g_linkedMathEntitiesDefault[MAXENTITY][MAXLINK][MAXOUTPUT];
-int g_maxLinks[MAXENTITY];
-int g_maxMathLinks[MAXENTITY];
+int g_maxLinks[MAXENTITY][MAXOUTPUT];
+int g_maxMathLinks[MAXENTITY][MAXOUTPUT];
 int g_entityOutput[MAXENTITY][MAXLINK][MAXOUTPUT];
 float g_mathValueDefault[MAXENTITY] = {0.0, ...};
 float g_mathValue[MAXPLAYER][MAXENTITY];
@@ -178,8 +178,12 @@ public Action timer_load(Handle timer)
 
 	for(int i = 1; i < MAXENTITY; i++)
 	{
-		g_maxLinks[i] = 0;
-		g_maxMathLinks[i] = 0;
+		for(int j = 0; j < MAXOUTPUT; j++)
+		{
+			g_maxLinks[i][j] = 0;
+			g_maxMathLinks[i][j] = 0;
+		}
+
 		g_entityID[i] = 0;
 		g_mathID[i] = 0;
 		g_breakID[i] = 0;
@@ -264,6 +268,10 @@ stock void EntityLinked(int entity, const char[] output)
 	char target[256] = "";
 	char classname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable"};
 	
+	int maxLinks = 0;
+	int maxMathLinks = 0;
+	int outputNum = GetOutput(output);
+
 	for(int i = 0; i < count; i++)
 	{
 		GetOutputActionTargetInput(entity, output, i, input, sizeof(input));
@@ -286,9 +294,11 @@ stock void EntityLinked(int entity, const char[] output)
 					
 					if(entity > 0)
 					{
-						g_linkedEntitiesDefault[entity][++g_maxLinks[entity]][GetOutput(output)] = entityLinked;
+						maxLinks = ++g_maxLinks[entity][outputNum];
 
-						g_entityOutput[entityLinked][g_maxLinks[entity]][GetOutput(output)] = 1;
+						g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityLinked;
+
+						g_entityOutput[entityLinked][maxLinks][outputNum] = 1;
 					}
 
 					else if(entity < 0)
@@ -299,9 +309,11 @@ stock void EntityLinked(int entity, const char[] output)
 
 							if(g_mathID[math] == entity)
 							{
-								g_linkedMathEntitiesDefault[math][++g_maxMathLinks[math]][GetOutput(output)] = entityLinked;
+								maxMathLinks = ++g_maxMathLinks[math][outputNum];
 
-								g_entityOutput[entityLinked][g_maxMathLinks[math]][GetOutput(output)] = 1;
+								g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityLinked;
+
+								g_entityOutput[entityLinked][maxMathLinks][outputNum] = 1;
 
 								continue;
 							}
@@ -321,9 +333,11 @@ stock void EntityLinked(int entity, const char[] output)
 
 				if(entity > 0)
 				{
-					g_linkedEntitiesDefault[entity][++g_maxLinks[entity]][GetOutput(output)] = entityLinked;
+					maxLinks = ++g_maxLinks[entity][outputNum];
 
-					g_entityOutput[entityLinked][g_maxLinks[entity]][GetOutput(output)] = 1;
+					g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityLinked;
+
+					g_entityOutput[entityLinked][maxLinks][outputNum] = 1;
 				}
 
 				else if(entity < 0)
@@ -334,9 +348,11 @@ stock void EntityLinked(int entity, const char[] output)
 
 						if(g_mathID[math] == entity)
 						{
-							g_linkedMathEntitiesDefault[math][++g_maxMathLinks[math]][GetOutput(output)] = entityLinked;
+							maxMathLinks = ++g_maxMathLinks[math][outputNum];
+							
+							g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityLinked;
 
-							g_entityOutput[entityLinked][g_maxMathLinks[math]][GetOutput(output)] = 1;
+							g_entityOutput[entityLinked][maxMathLinks][outputNum] = 1;
 
 							continue;
 						}
@@ -1119,10 +1135,28 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 		}
 
 		int partner = Trikz_GetClientPartner(activator);
+		int linkedEntity = 0;
+		int linkedMathEntity = 0;
 		int outputNum = GetOutput(outputFormated);
 
 		if(caller > 0)
 		{
+			for(int i = 1; i <= g_maxLinks[caller][outputNum]; i++)
+			{
+				linkedEntity = g_linkedEntitiesDefault[caller][i][outputNum];
+
+				if(IsValidPartner(activator) == true)
+				{
+					g_linkedEntities[activator][linkedEntity] += g_entityOutput[linkedEntity][i][outputNum];
+					g_linkedEntities[partner][linkedEntity] += g_entityOutput[linkedEntity][i][outputNum];
+				}
+
+				else if(IsValidPartner(activator) == false)
+				{
+					g_linkedEntities[partner][linkedEntity] += g_entityOutput[linkedEntity][i][outputNum];
+				}
+			}
+
 			if(IsValidPartner(activator) == true)
 			{
 				if(StrContains(output, "OnStartTouch", false) != -1)
@@ -1175,7 +1209,10 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 						return Plugin_Handled;
 					}
 
-					g_StartTouchArtifacial[partner][caller][1] = true;
+					if(g_StartTouchArtifacial[partner][caller][0] == false && g_stateDisabled[partner][caller] == false)
+					{
+						g_StartTouchArtifacial[partner][caller][1] = true;
+					}
 				}
 
 				else if(StrContains(output, "OnEndTouch", false) != -1)
@@ -1188,20 +1225,6 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 					g_StartTouchArtifacial[partner][caller][1] = false;
 				}
 			}
-
-			for(int i = 1; i <= g_maxLinks[caller]; i++)
-			{
-				if(IsValidPartner(activator) == true)
-				{
-					g_linkedEntities[activator][g_linkedEntitiesDefault[caller][i][outputNum]] += g_entityOutput[g_linkedEntitiesDefault[caller][i][outputNum]][i][outputNum];
-					g_linkedEntities[partner][g_linkedEntitiesDefault[caller][i][outputNum]] += g_entityOutput[g_linkedEntitiesDefault[caller][i][outputNum]][i][outputNum];
-				}
-
-				else if(IsValidPartner(activator) == false)
-				{
-					g_linkedEntities[partner][g_linkedEntitiesDefault[caller][i][outputNum]] += g_entityOutput[g_linkedEntitiesDefault[caller][i][outputNum]][i][outputNum];
-				}
-			}
 		}
 
 		else if(caller < 0)
@@ -1212,17 +1235,19 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 				{
 					int math = i;
 
-					for(int j = 1; j <= g_maxMathLinks[math]; j++)
+					for(int j = 1; j <= g_maxMathLinks[math][outputNum]; j++)
 					{
+						linkedMathEntity = g_linkedMathEntitiesDefault[math][j][outputNum];
+
 						if(IsValidPartner(activator) == true)
 						{
-							g_linkedEntities[activator][g_linkedMathEntitiesDefault[math][j][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][j][outputNum]][j][outputNum];
-							g_linkedEntities[partner][g_linkedMathEntitiesDefault[math][j][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][j][outputNum]][j][outputNum];
+							g_linkedEntities[activator][linkedMathEntity] += g_entityOutput[linkedMathEntity][j][outputNum];
+							g_linkedEntities[partner][linkedMathEntity] += g_entityOutput[linkedMathEntity][j][outputNum];
 						}
 
 						else if(IsValidPartner(activator) == false)
 						{
-							g_linkedEntities[partner][g_linkedMathEntitiesDefault[math][j][outputNum]] += g_entityOutput[g_linkedMathEntitiesDefault[math][j][outputNum]][j][outputNum];
+							g_linkedEntities[partner][linkedMathEntity] += g_entityOutput[linkedMathEntity][j][outputNum];
 						}
 					}
 				}
