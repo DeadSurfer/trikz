@@ -269,7 +269,7 @@ stock void EntityLinked(int entity, const char[] output)
 
 	char input[32] = "";
 	char target[256] = "";
-	char classname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable"};
+	char classname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable", "prop_dynamic"};
 	
 	int maxLinks = 0;
 	int maxMathLinks = 0;
@@ -280,7 +280,7 @@ stock void EntityLinked(int entity, const char[] output)
 		GetOutputActionTargetInput(entity, output, i, input, sizeof(input));
 		GetOutputActionTarget(entity, output, i, target, sizeof(target));
 
-		if(StrEqual(input, "Enable", false) == true || StrEqual(input, "Disable", false) == true || StrEqual(input, "Toggle", false) == true || StrEqual(input, "Break", false) == true)
+		if(StrEqual(input, "Enable", false) == true || StrEqual(input, "Disable", false) == true || StrEqual(input, "Toggle", false) == true || StrEqual(input, "Break", false) == true || StrEqual(input, "TurnOn", false) == true || StrEqual(input, "TuronOff", false) == true)
 		{
 			for(int j = 0; j < sizeof(classname); j++)
 			{
@@ -466,6 +466,11 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		i = 9;
 	}
 
+	else if(StrEqual(output, "prop_dynamic", false) == true)
+	{
+		i = 10;
+	}
+
 	bool bReturn = false;
 
 	if(entity > 0)
@@ -521,7 +526,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 			for(int j = 0; j < 16; j++)
 			{
 				Format(name, sizeof(name), "m_iszTemplateEntityNames[%i]", j);
-				GetEntPropString(template, Prop_Data, name, name, sizeof(name));
+				GetEntPropString(template, Prop_Data, name, name, sizeof(name), 0);
 
 				if(StrEqual(target, name, false) == true)
 				{
@@ -555,8 +560,8 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 			g_mathValueDefault[g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
 			g_mathValue[0][g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
 
-			g_mathMin[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin");
-			g_mathMax[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax");
+			g_mathMin[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin", 0);
+			g_mathMax[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax", 0);
 
 			AddOutput(entity, "m_OnHitMin", "OnUser4");
 			AddOutput(entity, "m_OnHitMax", "OnUser3");
@@ -565,7 +570,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		}
 	}
 
-	if(i < 7)
+	if(i < 7 || i == 10)
 	{
 		DHookEntity(g_AcceptInput, false, entity);
 	}
@@ -575,38 +580,38 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		SDKHook(entity, SDKHook_Use, HookButton);
 		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
 
-		g_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait");
+		g_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait", 0);
 
-		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1);
+		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1, 0);
 	}
 
-	if(i < 2)
+	if(i < 2 || i == 10)
 	{
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit);
 	}
 
-	else if(1 < i < 7)
+	else if(1 < i < 7 || i == 10)
 	{
 		SDKHook(entity, SDKHook_Touch, TouchTrigger);
 	}
 
-	if((i == 0 && GetEntProp(entity, Prop_Data, "m_iDisabled") == 1) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags") == 1) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled") == 1) || (i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked") == 1))
+	if((i == 0 && GetEntProp(entity, Prop_Data, "m_iDisabled", 4, 0) == 1) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) == 1) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled", 4, 0) == 1) || (i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked", 4, 0) == 1) || (i == 10 && GetEntProp(entity, Prop_Data, "m_bStartDisabled", 4, 0) == 1))
 	{
 		g_stateDefaultDisabled[entity] = true;
 		g_stateDisabled[0][entity] = true;
 	}
 
-	if(i == 0 || 1 < i < 7)
+	if(i == 0 || 1 < i < 7 || i == 10)
 	{
 		AcceptEntityInput(entity, "Enable");
 	}
 
-	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags") == 1)
+	else if(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) == 1)
 	{
 		AcceptEntityInput(entity, "Toggle");
 	}
 
-	else if(i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked") == 1)
+	else if(i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked", 4, 0) == 1)
 	{
 		AcceptEntityInput(entity, "Unlock");
 	}
@@ -699,14 +704,14 @@ stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 		}
 
-		if(StrEqual(input, "Enable", false) == false && StrEqual(input, "Disable", false) == false && StrEqual(input, "Toggle", false) == false && StrEqual(input, "Break", false) == false && StrEqual(input, "ForceSpawn", false) == false)
+		if(StrEqual(input, "Enable", false) == false && StrEqual(input, "Disable", false) == false && StrEqual(input, "Toggle", false) == false && StrEqual(input, "Break", false) == false && StrEqual(input, "ForceSpawn", false) == false && StrEqual(input, "TurnOn", false) == false && StrEqual(input, "TurnOff", false) == false)
 		{
 			return MRES_Ignored;
 		}
 
 		int partner = Trikz_GetClientPartner(activator);
 
-		if(StrEqual(input, "Enable", false) == true)
+		if(StrEqual(input, "Enable", false) == true || StrEqual(input, "TurnOn", false) == true)
 		{
 			if(g_linkedEntities[activator][pThis] > 0 && IsValidPartner(activator) == true)
 			{
@@ -725,7 +730,7 @@ stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 		}
 
-		else if(StrEqual(input, "Disable", false) == true)
+		else if(StrEqual(input, "Disable", false) == true || StrEqual(input, "TurnOff", false) == true)
 		{
 			if(g_linkedEntities[activator][pThis] > 0 && IsValidPartner(activator) == true)
 			{
@@ -1052,7 +1057,7 @@ public Action EntityVisibleTransmit(int entity, int client)
 
 		else if(IsPlayerAlive(client) == false)
 		{
-			int target = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
+			int target = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
 
 			if(IsValidClient(target) == true)
 			{
@@ -1099,7 +1104,7 @@ public Action HookButton(int entity, int activator, int caller, UseType type, fl
 
 public Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
 {
-	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker);
+	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker, 0);
 
 	return Plugin_Continue;
 }
@@ -1113,7 +1118,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 		if(StrContains(classname, "projectile", false) != -1)
 		{
-			activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity");
+			activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity", 0);
 
 			if(activator < 0)
 			{
@@ -1351,7 +1356,7 @@ stock MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 
 	if(StrContains(classname, "projectile", false) != -1)
 	{
-		int ent2owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity");
+		int ent2owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity", 0);
 
 		if(IsValidClient(ent2owner) == true)
 		{
@@ -1459,7 +1464,7 @@ public Action TransmitPlayer(int entity, int client) //entity - me, client - loo
 public Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
 {
 	//make visible nade only for partner
-	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
 	if(owner < 0)
 	{
@@ -1483,7 +1488,7 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	{
 		if(IsValidClient(ent1) == true)
 		{
-			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity");
+			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity", 0);
 
 			if(owner < 0)
 			{
@@ -1500,7 +1505,7 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	if(IsValidClient(ent1) == true && IsValidClient(ent2) == true)
 	{
 		//make no collide with all players.
-		if(GetEntProp(ent2, Prop_Data, "m_CollisionGroup") == 2)
+		if(GetEntProp(ent2, Prop_Data, "m_CollisionGroup", 4, 0) == 2)
 		{
 			return Plugin_Handled;
 		}
