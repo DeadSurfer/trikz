@@ -130,12 +130,13 @@ public void CalculationProcess(int client)
 	g_throwTick[client][0] = GetGameTickCount();
 
 	float vel[3] = {0.0, ...};
-	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0);
 	vel[2] = 0.0;
+
 	g_vel[client] = GetVectorLength(vel);
 
 	GetClientEyeAngles(client, g_angles[client]);
-	g_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucked"));
+	g_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucked", 4, 0));
 
 	return;
 }
@@ -152,7 +153,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public void SDKSpawnProjectile(int entity)
 {
-	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
 	RequestFrame(frame_projectileVel, entity);
 
@@ -166,12 +167,12 @@ public void frame_projectileVel(int entity)
 {
 	if(IsValidEntity(entity) == true)
 	{
-		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 		
 		if(IsClientValid(client) == true && g_projectileVel[client] == 0.0)
 		{
 			float vel[3] = {0.0, ...};
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel, 0);
 
 			g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		}
@@ -190,7 +191,7 @@ public Action SDKStartTouch(int entity, int other)
 		if(StrContains(classname, "projectile", false) != -1)
 		{
 			float vel[3] = {0.0, ...};
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel, 0);
 
 			g_projectileVel[other] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		}
@@ -227,7 +228,6 @@ stock void DoPrint(int client)
 		if(time < 0.3)
 		{
 			char format[256] = "";
-
 			char timeColor[256] = "";
 			char duck[256] = "";
 
@@ -256,8 +256,8 @@ stock void DoPrint(int client)
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 					if(observerMode < 7 && observerTarget == client && g_boostStats[i] == true)
 					{
@@ -323,12 +323,10 @@ stock void SendMessage(int client, const char[] text)
 	if(IsClientValid(client) == true)
 	{
 		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
-
 		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
 		bf.WriteByte(client); //Message author
 		bf.WriteByte(true); //Chat message
 		bf.WriteString(textReplaced); //Message text
-
 		EndMessage();
 	}
 
