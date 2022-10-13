@@ -215,17 +215,17 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 		g_origin[client][2] = g_runboost[client] == true ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client);
 
 		float vel[3] = {0.0, ...};
-		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 
 		g_preVel[client][0][0] = vel[0];
 		g_preVel[client][0][1] = vel[1];
 
-		g_countjump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1));
+		g_countjump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1, 0));
 
 		g_dotTime[client] = GetEngineTime();
 
 		float flatVel[3] = {0.0, ...};
-		GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel);
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel, 0);
 		flatVel[2] = 0.0;
 
 		g_oldVel[client][0] = flatVel[0];
@@ -288,7 +288,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				eye[2] = 0.0;
 
 				float velAbs[3] = {0.0, ...};
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs, 0);
 				velAbs[2] = 0.0;
 
 				float length = GetVectorLength(velAbs);
@@ -351,8 +351,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync /= float(g_tickAir[client]);
 		sync *= 100.0;
 
-		Format(print[0], 256, "%s%s%s%sJump: %.0f units\nPre: %s u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
-		Format(print[1], 256, "%s%s%s%sJump: %.0f units, Pre: %s u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
+		Format(print[0], 256, "%s%s%s%sJump: %.2f units\nPre: %s u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
+		Format(print[1], 256, "%s%s%s%sJump: %.2f units, Pre: %s u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
 		
 		if(distance >= 230.0 && pre < 280.0)
 		{
@@ -389,8 +389,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 				{
@@ -416,7 +416,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
-		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity");
+		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity", 0);
 
 		if((groundEntity == 0 || groundEntity > MaxClients) && g_runboost[client] == true)
 		{
@@ -480,8 +480,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		sync /= float(g_tickAir[client]);
 		sync *= 100.0;
 
-		Format(print[0], 256, "%s%sLadder: %.0f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
-		Format(print[1], 256, "%s%sLadder: %.0f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+		Format(print[0], 256, "%s%sLadder: %.2f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+		Format(print[1], 256, "%s%sLadder: %.2f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
 
 		//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
 
@@ -503,8 +503,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
 				{
@@ -563,16 +563,16 @@ public Action StartTouchProjectile(int entity, int other)
 	if(0 < other <= MaxClients && (g_jumped[other] == true || g_ladder[other] == true))
 	{
 		//https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L220-L231
-		float entityOrigin[3] = {0.0, ...};
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityOrigin);
+		float nadeOrigin[3] = {0.0, ...};
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", nadeOrigin, 0);
 
-		float otherOrigin[3] = {0.0, ...};
-		GetClientAbsOrigin(other, otherOrigin);
+		float clientOrigin[3] = {0.0, ...};
+		GetClientAbsOrigin(other, clientOrigin);
 
-		float entityMaxs[3] = {0.0, ...};
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", entityMaxs);
+		float nadeMaxs[3] = {0.0, ...};
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", nadeMaxs, 0);
 
-		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2];
+		float delta = clientOrigin[2] - nadeOrigin[2] - nadeMaxs[2];
 
 		if(0.0 < delta < 2.0)
 		{
@@ -610,7 +610,7 @@ public Action TouchClient(int client, int other)
 			g_rbBooster[client] = other;
 
 			float vel[3] = {0.0, ...};
-			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vel); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vel, 0); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
 
 			g_preVel[other][1][0] = vel[0];
 			g_preVel[other][1][1] = vel[1];
@@ -643,12 +643,12 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
 			float velBooster[3] = {0.0, ...};
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster, 0);
 
 			if(velBooster[2] > 0.0)
 			{
 				float velFlyer[3] = {0.0, ...};
-				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
+				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
 
 				float velNew[3] = {0.0, ...};
 				//velNew[0] = velFlyer[0];
@@ -717,8 +717,8 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 					{
 						if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 						{
-							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 							if(observerMode < 7 && (observerTarget == client || observerTarget == other) && g_jumpstats[i] == true)
 							{
@@ -923,7 +923,7 @@ stock void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.ph
 {
 	float flatVel[3] = {0.0, ...};
 
-	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel);
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel, 0);
 	flatVel[2] = 0.0;
 	
 	float velDelta = GetVectorLength(flatVel, false) - GetVectorLength(g_oldVel[client], false);
@@ -949,7 +949,7 @@ stock void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.ph
 stock void MaxVel(int client)
 {
 	float vel[3] = {0.0, ...};
-	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0);
 	vel[2] = 0.0;
 
 	float flatVel = GetVectorLength(vel);
