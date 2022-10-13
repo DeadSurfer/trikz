@@ -589,20 +589,19 @@ public Action TouchClient(int client, int other)
 {
 	if(0 < other <= MaxClients && g_tickTime[client] >= 0.1)
 	{
-		float clientOrigin[3] = {0.0, ...};
-		GetClientAbsOrigin(client, clientOrigin);
+		float originClient[3] = {0.0, ...};
+		GetClientAbsOrigin(client, originClient);
 
-		float otherOrigin[3] = {0.0, ...};
-		GetClientAbsOrigin(other, otherOrigin);
+		float originBooster[3] = {0.0, ...};
+		GetClientAbsOrigin(other, originBooster);
 
 		float clientMaxs[3] = {0.0, ...};
 		GetClientMaxs(client, clientMaxs);
 
-		float delta = clientOrigin[2] - otherOrigin[2] - clientMaxs[2];
+		float delta = originClient[2] - originBooster[2] - clientMaxs[2];
 
 		//PrintToServer("%f", delta);
 
-		//if(delta == -124.031250)
 		if(delta == 0.031250) //Runboost?
 		{
 			g_runboost[client] = true;
@@ -635,10 +634,10 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 		float originFlyer[3] = {0.0, ...};
 		GetClientAbsOrigin(other, originFlyer);
 
-		float maxsBooster[3] = {0.0, ...};
-		GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+		float boosterMaxs[3] = {0.0, ...};
+		GetClientMaxs(client, boosterMaxs); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
 
-		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
+		float delta = originFlyer[2] - originBooster[2] - boosterMaxs[2];
 
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
@@ -922,7 +921,6 @@ stock void Sync(int client, int buttons, int mouse[2])
 stock void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.php?p=2060983
 {
 	float flatVel[3] = {0.0, ...};
-
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel, 0);
 	flatVel[2] = 0.0;
 	
@@ -985,7 +983,7 @@ stock MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.
 	return MRES_Ignored;
 }
 
-public void Trikz_OnTeleport(int client, float origin[3], float vel[3])
+public void Trikz_OnTeleport(int client, float origin[3])
 {
 	g_teleported[client] = true;
 
