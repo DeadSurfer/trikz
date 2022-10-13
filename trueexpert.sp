@@ -95,6 +95,7 @@ ConVar gCV_skin = null;
 ConVar gCV_top = null;
 ConVar gCV_mlstats = null;
 ConVar gCV_vel = null;
+ConVar gCV_sourceTV = null;
 
 bool g_menuOpened[MAXPLAYER] = {false, ...};
 bool g_menuOpenedHud[MAXPLAYER] = {false, ...};
@@ -236,6 +237,7 @@ public void OnPluginStart()
 	gCV_top = CreateConVar("sm_te_top", "0.0", "Allow to use !top command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_mlstats = CreateConVar("sm_te_mlstats", "0.0", "Allow to use !mlstats command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_vel = CreateConVar("sm_te_vel", "0.0", "Allow to use velocity in hint.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_sourceTV = CreateConVar("sm_te_sourcetv", "0.0,", "Save demo only when server record.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
 	AutoExecConfig(true, "plugin.trueexpert", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -399,45 +401,50 @@ public void OnMapStart()
 		g_zoneHave[i] = false;
 	}
 
-	ConVar CV_sourcetv = FindConVar("tv_enable");
+	float sourcetvCV = gCV_sourceTV.FloatValue;
 
-	bool sourcetv = CV_sourcetv.BoolValue; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
-
-	if(sourcetv == true)
+	if(sourcetvCV == 1.0)
 	{
-		if(g_sourcetvchangedFileName == false)
+		ConVar CV_sourcetv = FindConVar("tv_enable");
+
+		bool sourcetv = CV_sourcetv.BoolValue; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
+
+		if(sourcetv == true)
 		{
-			char filenameOld[256] = "";
-			Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
+			if(g_sourcetvchangedFileName == false)
+			{
+				char filenameOld[256] = "";
+				Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
 
-			char filenameNew[256] = "";
-			Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
+				char filenameNew[256] = "";
+				Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
 
-			RenameFile(filenameNew, filenameOld);
+				RenameFile(filenameNew, filenameOld);
 
-			g_sourcetvchangedFileName = true;
+				g_sourcetvchangedFileName = true;
+			}
+
+			if(g_devmap == false)
+			{
+				PrintToServer("SourceTV start recording.");
+
+				FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime());
+				FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime());
+
+				ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map); //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
+			}
 		}
 
-		if(g_devmap == false)
+		if(g_sourcetv == false && sourcetv == false)
 		{
-			PrintToServer("SourceTV start recording.");
+			g_sourcetv = true;
 
-			FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime());
-			FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime());
+			ForceChangeLevel(g_map, "Turning on SourceTV");
 
-			ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map); //https://www.youtube.com/watch?v=GeGd4KOXNb8 https://forums.alliedmods.net/showthread.php?t=59474 https://www.php.net/strftime
+			//this should provides a crash if reload plugin (DHookEntity). https://issuehint.com/issue/alliedmodders/sourcemod/1688
+			ServerCommand("tv_delay 0");
+			ServerCommand("tv_transmitall 1");
 		}
-	}
-
-	if(g_sourcetv == false && sourcetv == false)
-	{
-		g_sourcetv = true;
-
-		ForceChangeLevel(g_map, "Turning on SourceTV");
-
-		//this should provides a crash if reload plugin (DHookEntity). https://issuehint.com/issue/alliedmodders/sourcemod/1688
-		ServerCommand("tv_delay 0");
-		ServerCommand("tv_transmitall 1");
 	}
 
 	g_wModelThrown = PrecacheModel("models/trueexpert/flashbang/flashbang.mdl", true);
@@ -687,30 +694,35 @@ public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] erro
 
 public void OnMapEnd()
 {
-	ConVar CV_sourcetv = FindConVar("tv_enable");
+	float sourcetvCV = gCV_sourceTV.FloatValue;
 
-	bool sourcetv = CV_sourcetv.BoolValue;
-
-	if(sourcetv == true)
+	if(sourcetvCV == 1.0)
 	{
-		ServerCommand("tv_stoprecord");
+		ConVar CV_sourcetv = FindConVar("tv_enable");
 
-		char filenameOld[256] = "";
-		Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
+		bool sourcetv = CV_sourcetv.BoolValue;
 
-		if(g_ServerRecord == true)
+		if(sourcetv == true)
 		{
-			char filenameNew[256] = "";
-			Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
+			ServerCommand("tv_stoprecord");
 
-			RenameFile(filenameNew, filenameOld);
+			char filenameOld[256] = "";
+			Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
 
-			g_ServerRecord = false;
-		}
+			if(g_ServerRecord == true)
+			{
+				char filenameNew[256] = "";
+				Format(filenameNew, sizeof(filenameNew), "%s-%s-%s-ServerRecord.dem", g_date, g_time, g_map);
 
-		else if(g_ServerRecord == false)
-		{
-			DeleteFile(filenameOld);
+				RenameFile(filenameNew, filenameOld);
+
+				g_ServerRecord = false;
+			}
+
+			else if(g_ServerRecord == false)
+			{
+				DeleteFile(filenameOld);
+			}
 		}
 	}
 
@@ -4834,7 +4846,12 @@ public Action SDKStartTouch(int entity, int other)
 							g_ServerRecord = true;
 							g_ServerRecordTime = time;
 
-							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+							float sourcetvCV = gCV_sourceTV.FloatValue;
+
+							if(sourcetvCV == 1.0)
+							{
+								CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+							}
 
 							static GlobalForward hForward = null;
 							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
@@ -4955,7 +4972,12 @@ public Action SDKStartTouch(int entity, int other)
 
 							g_ServerRecordTime = time;
 
-							CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+							float sourcetvCV = gCV_sourceTV.FloatValue;
+
+							if(sourcetvCV == 1.0)
+							{
+								CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+							}
 
 							static GlobalForward hForward = null;
 							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
@@ -5067,7 +5089,12 @@ public Action SDKStartTouch(int entity, int other)
 
 					g_ServerRecord = true;
 
-					CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
+					float sourcetvCV = gCV_sourceTV.FloatValue;
+
+					if(sourcetvCV == 1.0)
+					{
+						CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
+					}
 
 					Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 					g_mysql.Query(SQLInsertRecord, query, _, DBPrio_Normal);
