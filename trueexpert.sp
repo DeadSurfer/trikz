@@ -58,7 +58,7 @@ float g_boostTime[MAXPLAYER] = {0.0, ...};
 float g_skyVel[MAXPLAYER][3];
 bool g_timerReadyToStart[MAXPLAYER] = {false, ...};
 
-float g_cpPos[12][2][3];
+float g_cpPos[11][2][3];
 bool g_cp[MAXPLAYER][11];
 bool g_cpLock[MAXPLAYER][11];
 float g_cpTime[MAXPLAYER][11];
@@ -134,13 +134,13 @@ Handle g_pingTimer[MAXPLAYER] = {INVALID_HANDLE, ...};
 Handle g_cookie[12] = {INVALID_HANDLE, ...};
 
 char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
-int g_colorBuffer[MAXPLAYER][3][2];
+int g_colorBuffer[MAXPLAYER][2][3];
 int g_colorCount[MAXPLAYER][2];
 
 int g_zoneModel[3] = {0, ...};
 int g_laserBeam = 0;
 bool g_sourcetvchangedFileName = true;
-float g_entityVel[MAXPLAYER][3];
+float g_nadeVel[MAXPLAYER][3];
 float g_clientVel[MAXPLAYER][3];
 int g_cpCount = 0;
 //ConVar g_turbophysics;
@@ -996,10 +996,10 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		g_class[client] = 4;
 	}
 
-	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]]);
-	SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client]);
+	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]], 4, 0);
+	SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client], 4, 0);
 
-	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], 255);
 
 	SetEntityRenderMode(client, RENDER_TRANSALPHA); //maru is genius person who fix this bug. thanks maru for idea.
 
@@ -1053,7 +1053,7 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
+	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll", 0);
 
 	char log[256] = "";
 	GetEntityClassname(ragdoll, log, sizeof(log));
@@ -1349,7 +1349,7 @@ public int checkpoint_handler(Menu menu, MenuAction action, int param1, int para
 
 					GetClientEyeAngles(param1, g_cpAng[param1][0]); //https://github.com/Smesh292/trikz/blob/main/checkpoint.sp#L101
 
-					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][0]);
+					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][0], 0);
 
 					if(g_cpToggled[param1][0] == false)
 					{
@@ -1368,7 +1368,7 @@ public int checkpoint_handler(Menu menu, MenuAction action, int param1, int para
 
 					GetClientEyeAngles(param1, g_cpAng[param1][1]);
 
-					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][1]);
+					GetEntPropVector(param1, Prop_Data, "m_vecAbsVelocity", g_cpVel[param1][1], 0);
 
 					if(g_cpToggled[param1][1] == false)
 					{
@@ -1475,11 +1475,11 @@ public void OnClientPutInServer(int client)
 		}
 	}
 
-	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][2][0] == 0)
+	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][0][1] == 0 && g_colorBuffer[client][0][2] == 0)
 	{
 		for(int i = 0; i <= 2; i++)
 		{
-			g_colorBuffer[client][i][0] = 255;
+			g_colorBuffer[client][0][i] = 255;
 		}
 	}
 
@@ -1527,16 +1527,16 @@ public void OnClientCookiesCached(int client)
 
 	for(int i = 0; i <= 2; i++)
 	{
-		g_colorBuffer[client][i][1] = StringToInt(exploded[i]);
+		g_colorBuffer[client][1][i] = StringToInt(exploded[i]);
 	}
 
 	g_colorCount[client][1] = StringToInt(exploded[3]);
 
-	if(g_colorBuffer[client][0][1] == 0 && g_colorBuffer[client][1][1] == 0 && g_colorBuffer[client][2][1] == 0)
+	if(g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][1][1] == 0 && g_colorBuffer[client][1][2] == 0)
 	{
 		for(int i = 0; i <= 2; i++)
 		{
-			g_colorBuffer[client][i][1] = 255;
+			g_colorBuffer[client][1][i] = 255;
 		}
 	}
 
@@ -1571,7 +1571,7 @@ public void OnClientDisconnect(int client)
 
 	while((entity = FindEntityByClassname(entity, "weapon_*")) != INVALID_ENT_REFERENCE) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 	{
-		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
+		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0) == client)
 		{
 			RemoveEntity(entity);
 		}
@@ -1580,7 +1580,6 @@ public void OnClientDisconnect(int client)
 	if(g_devmap == false && IsValidPartner(client) == true && IsFakeClient(client) == false)
 	{
 		ResetFactory(partner);
-		CS_SetClientClanTag(partner, g_clantag[partner][0]);
 	}
 
 	for(int i = 0; i <= 1; i++)
@@ -1826,12 +1825,12 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 			if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 			{
 				float velBooster[3] = {0.0, ...};
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster, 0);
 
 				if(velBooster[2] > 0.0)
 				{
 					float velFlyer[3] = {0.0, ...};
-					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer);
+					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
 
 					g_skyVel[other][0] = velFlyer[0];
 					g_skyVel[other][1] = velFlyer[1];
@@ -1896,7 +1895,7 @@ public void SDKBoostFix(int client)
 			if(entity != INVALID_ENT_REFERENCE)
 			{
 				float velEntity[3] = {0.0, ...};
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity);
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity, 0);
 
 				if(velEntity[2] > 0.0)
 				{
@@ -2084,7 +2083,7 @@ public Action Block(int client) //thanks maru for optimization.
 
 	SetEntityCollisionGroup(client, g_block[client] == true ? 5 : 2);
 
-	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] == true ? 255 : 125);
+	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[client] == true ? 255 : 125);
 
 	if(g_menuOpened[client] == true)
 	{
@@ -2516,25 +2515,23 @@ stock void ColorTeam(int client, bool allowColor)
 
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][i][0] = StringToInt(colorTypeExploded[i]);
-				g_colorBuffer[partner][i][0] = StringToInt(colorTypeExploded[i]);
+				g_colorBuffer[client][0][i] = StringToInt(colorTypeExploded[i]);
+				g_colorBuffer[partner][0][i] = StringToInt(colorTypeExploded[i]);
 			}
 
-			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[client] == true ? 255 : 125);
-			SetEntityRenderColor(partner, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], g_block[partner] == true ? 255 : 125);
+			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[client] == true ? 255 : 125);
+			SetEntityRenderColor(partner, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[partner] == true ? 255 : 125);
 
 			static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-			hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
+			hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Array);
 			Call_StartForward(hForward);
 			Call_PushCell(client);
 			Call_PushCell(partner);
-			Call_PushCell(g_colorBuffer[client][0][0]);
-			Call_PushCell(g_colorBuffer[client][1][0]);
-			Call_PushCell(g_colorBuffer[client][2][0]);
+			Call_PushArray(g_colorBuffer[client][0], 3);
 			Call_Finish();
 			delete hForward;
 
-			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], 255);
 
 			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
 			ShowHudText(partner, 5, "%s (TM)", colorTypeExploded[3]);
@@ -2547,8 +2544,8 @@ stock void ColorTeam(int client, bool allowColor)
 		
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][i][0] = 255;
-				g_colorBuffer[partner][i][0] = 255;
+				g_colorBuffer[client][0][i] = 255;
+				g_colorBuffer[partner][0][i] = 255;
 			}
 
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] == true ? 255 : 125);
@@ -2582,7 +2579,7 @@ stock void ColorFlashbang(int client)
 
 		for(int i = 0; i <= 2; i++)
 		{
-			g_colorBuffer[client][i][1] = StringToInt(colorTypeExploded[i]);
+			g_colorBuffer[client][1][i] = StringToInt(colorTypeExploded[i]);
 		}
 
 		char value[16] = "";
@@ -2590,16 +2587,14 @@ stock void ColorFlashbang(int client)
 		SetClientCookie(client, g_cookie[10], value);
 
 		static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-		hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
+		hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Array); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
 		Call_StartForward(hForward);
 		Call_PushCell(client);
-		Call_PushCell(g_colorBuffer[client][0][1]);
-		Call_PushCell(g_colorBuffer[client][1][1]);
-		Call_PushCell(g_colorBuffer[client][2][1]);
+		Call_PushArray(g_colorBuffer[client][1], 3);
 		Call_Finish();
 		delete hForward;
 
-		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][1][0], g_colorBuffer[client][1][1], g_colorBuffer[client][1][2], 255);
 
 		ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
 	}
@@ -3205,19 +3200,19 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 				if(StrEqual(item, "default_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 0;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 0);
+					SetEntProp(param1, Prop_Data, "m_nSkin", 0, 4, 0);
 				}
 
 				else if(StrEqual(item, "shadow_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 2;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 2);
+					SetEntProp(param1, Prop_Data, "m_nSkin", 2, 4, 0);
 				}
 
 				else if(StrEqual(item, "bright_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 1;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 1);
+					SetEntProp(param1, Prop_Data, "m_nSkin", 1, 4, 0);
 				}
 
 				IntToString(g_skinPlayer[param1], value, sizeof(value));
@@ -3351,10 +3346,10 @@ stock void CreateStart()
 
 	maxs[2] = 124.0; // 62.0 * 2.0 - player hitbox is 62.0 units height. so make 2 player together.
 
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins);
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs);
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0);
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
 
-	SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2, 4, 0);
 
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch);
 	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch);
@@ -3408,10 +3403,10 @@ public void CreateEnd()
 
 	maxs[2] = 124.0;
 
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins); //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs);
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0); //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
 
-	SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2, 4, 0);
 
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch);
 
@@ -4632,10 +4627,10 @@ stock void CreateCP(int cpnum)
 
 	maxs[2] = 124.0;
 
-	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins); //https://forums.alliedmods.net/archive/index.php/t-301101.html
-	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs);
+	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0); //https://forums.alliedmods.net/archive/index.php/t-301101.html
+	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
 
-	SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 2, 4, 0);
 
 	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch);
 
@@ -4752,7 +4747,7 @@ public Action SDKStartTouch(int entity, int other)
 	if(IsValidClient(other) == true && g_devmap == false && IsFakeClient(other) == false)
 	{
 		char trigger[32] = "";
-		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger));
+		GetEntPropString(entity, Prop_Data, "m_iName", trigger, sizeof(trigger), 0);
 
 		int partner = g_partner[other];
 
@@ -5253,8 +5248,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 					if(observerMode < 7 && observerTarget == client)
 					{
@@ -5363,8 +5358,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 						if(observerMode < 7 && observerTarget == client)
 						{
@@ -5449,8 +5444,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 						if(observerMode < 7 && observerTarget == client)
 						{
@@ -5577,8 +5572,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 					if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 					{
@@ -5718,8 +5713,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 						if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 						{
@@ -5832,8 +5827,8 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 						if(observerMode < 7 && observerTarget == client)
 						{
@@ -6480,7 +6475,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	bool bhop = gCV_bhop.BoolValue;
 
-	if(bhop == true && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel") <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
+	if(bhop == true && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel", 4, 0) <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 	{
 		buttons &= ~IN_JUMP; //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	}
@@ -6531,9 +6526,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(g_boost[client] == 2)
 		{
-			velocity[0] = g_clientVel[client][0] - g_entityVel[client][0];
-			velocity[1] = g_clientVel[client][1] - g_entityVel[client][1];
-			velocity[2] = g_entityVel[client][2];
+			velocity[0] = g_clientVel[client][0] - g_nadeVel[client][0];
+			velocity[1] = g_clientVel[client][1] - g_nadeVel[client][1];
+			velocity[2] = g_nadeVel[client][2];
 
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 
@@ -6542,19 +6537,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		else if(g_boost[client] == 3) //Let make loop finish and come back to here.
 		{
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity);
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity, 0);
 
 			if(g_groundBoost[client] == true)
 			{
-				velocity[0] += g_entityVel[client][0];
-				velocity[1] += g_entityVel[client][1];
-				velocity[2] += g_entityVel[client][2];
+				velocity[0] += g_nadeVel[client][0];
+				velocity[1] += g_nadeVel[client][1];
+				velocity[2] += g_nadeVel[client][2];
 			}
 
 			else if(g_groundBoost[client] == false)
 			{
-				velocity[0] += g_entityVel[client][0] * 0.135;
-				velocity[1] += g_entityVel[client][1] * 0.135;
+				velocity[0] += g_nadeVel[client][0] * 0.135;
+				velocity[1] += g_nadeVel[client][1] * 0.135;
 			}
 
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L171-L192
@@ -6572,7 +6567,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(buttons & IN_USE)
 		{
-			if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE)
+			if(GetEntProp(client, Prop_Data, "m_afButtonPressed", 4, 0) & IN_USE)
 			{
 				g_pingTime[client] = GetEngineTime();
 				g_pingLock[client] = false;
@@ -6631,7 +6626,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			SetEntityModel(entity, "models/effects/combineball.mdl");
 			DispatchSpawn(entity);
 
-			SetEntProp(entity, Prop_Data, "m_fEffects", 16); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
+			SetEntProp(entity, Prop_Data, "m_fEffects", 16, 4, 0); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
 
 			float start[3] = {0.0, ...};
 			float angle[3] = {0.0, ...};
@@ -6671,10 +6666,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				//normal[0] -= 270.0;
 				normal[0] -= 360.0;
 
-				SetEntPropVector(entity, Prop_Data, "m_angRotation", normal);
+				SetEntPropVector(entity, Prop_Data, "m_angRotation", normal, 0);
 			}
 
-			SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+			SetEntityRenderColor(entity, g_colorBuffer[client][1][0], g_colorBuffer[client][1][1], g_colorBuffer[client][1][2], 255);
 
 			TeleportEntity(entity, end, NULL_VECTOR, NULL_VECTOR);
 
@@ -6683,7 +6678,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			for(int i = 0; i <= 2; i++)
 			{
-				color[i] = g_colorBuffer[client][i][1];
+				color[i] = g_colorBuffer[client][1][i];
 			}
 
 			color[3] = 255;
@@ -6705,8 +6700,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(IsClientInGame(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 						//if(g_partner[client] == g_partner[g_partner[i]] || i == client)
 						if(g_partner[client] == g_partner[g_partner[i]] || i == client || ((observerTarget == client || observerTarget == g_partner[client]) && observerMode < 7))
@@ -6745,12 +6740,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(IsPlayerAlive(client) == true)
 		{
-			if(g_block[client] == true && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 5)
+			if(g_block[client] == true && GetEntProp(client, Prop_Data, "m_CollisionGroup", 4, 0) != 5)
 			{
 				SetEntityCollisionGroup(client, 5);
 			}
 
-			else if(g_block[client] == false && GetEntProp(client, Prop_Data, "m_CollisionGroup") != 2)
+			else if(g_block[client] == false && GetEntProp(client, Prop_Data, "m_CollisionGroup", 4, 0) != 2)
 			{
 				SetEntityCollisionGroup(client, 2);
 			}
@@ -6775,14 +6770,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 
-	if(IsClientObserver(client) == true && GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_USE) //Make able to swtich wtih E to the partner via spectate.
+	if(IsClientObserver(client) == true && GetEntProp(client, Prop_Data, "m_afButtonPressed", 4, 0) & IN_USE) //Make able to swtich wtih E to the partner via spectate.
 	{
-		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
-		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
+		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
+		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode", 4, 0);
 
 		if(IsValidClient(observerTarget) == true && IsValidPartner(observerTarget) == true && IsPlayerAlive(g_partner[observerTarget]) == true && observerMode < 7)
 		{
-			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget]);
+			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget], 0);
 		}
 	}
 
@@ -6800,7 +6795,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(g_mlsCount[client] > 0)
 		{
-			int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity");
+			int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity", 0);
 
 			char class[32] = "";
 
@@ -6822,27 +6817,27 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(IsValidClient(other) == true && IsFakeClient(client) == false && IsPlayerAlive(client) == true && g_block[other] == true)
 	{
-		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
+		if(GetEntProp(other, Prop_Data, "m_CollisionGroup", 4, 0) == 5)
 		{
 			SetEntityCollisionGroup(other, 2);
 
-			SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][1][0], g_colorBuffer[other][2][0], 125);
+			SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][0][1], g_colorBuffer[other][0][2], 125);
 		}
 	}
 
 	else if(IsFakeClient(client) == false && IsPlayerAlive(client) == true && other == -1 && g_block[client] == true)
 	{
-		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
+		if(GetEntProp(client, Prop_Data, "m_CollisionGroup", 4, 0) == 2)
 		{
 			SetEntityCollisionGroup(client, 5);
 
-			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][1][0], g_colorBuffer[client][2][0], 255);
+			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], 255);
 		}
 	}
 
 	if(buttons & IN_RELOAD)
 	{
-		if(GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_RELOAD)
+		if(GetEntProp(client, Prop_Data, "m_afButtonPressed", 4, 0) & IN_RELOAD)
 		{
 			if(g_restartLock[client][0] == false)
 			{
@@ -6940,7 +6935,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(fix >= 0.15 && g_flashbangDoor[client][1] == true)
 		{
-			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true);
+			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true, 4, 0);
 
 			g_flashbangDoor[client][1] = false;
 		}
@@ -6957,10 +6952,10 @@ public Action ProjectileBoostFix(int entity, int other)
 		GetClientAbsOrigin(other, originOther);
 
 		float originEntity[3] = {0.0, ...};
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity);
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", originEntity, 0);
 
 		float maxsEntity[3] = {0.0, ...};
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity);
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxsEntity, 0);
 
 		float delta = originOther[2] - originEntity[2] - maxsEntity[2];
 
@@ -6971,13 +6966,13 @@ public Action ProjectileBoostFix(int entity, int other)
 		//Thanks to extremix/hornet for idea from 2019 year summer. Extremix version (if(!(clientOrigin[2] - 5 <= entityOrigin[2] <= clientOrigin[2])) //Calculate for Client/Flash - Thanks to extrem)/tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231 //https://forums.alliedmods.net/showthread.php?t=146241
 		if(0.0 < delta < 2.0) //Tengu code from github https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L231
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", g_entityVel[other]);
-			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", g_clientVel[other]);
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", g_nadeVel[other], 0);
+			GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", g_clientVel[other], 0);
 
 			g_boostTime[other] = GetEngineTime();
 			g_groundBoost[other] = g_bouncedOff[entity];
 
-			SetEntProp(entity, Prop_Send, "m_nSolidType", 0); //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
+			SetEntProp(entity, Prop_Send, "m_nSolidType", 0, 4, 0); //https://forums.alliedmods.net/showthread.php?t=286568 non model no solid model Gray83 author of solid model types.
 
 			g_flash[other] = EntIndexToEntRef(entity);
 			g_boost[other] = 1;
@@ -6985,14 +6980,14 @@ public Action ProjectileBoostFix(int entity, int other)
 			if(IsFakeClient(other) == false)
 			{
 				float vel[3] = {0.0, ...};
-				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel);
+				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel, 0);
 
 				g_mlsVel[other][0][0] = vel[0];
 				g_mlsVel[other][0][1] = vel[1];
 
 				g_mlsCount[other]++;
 
-				g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+				g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 			}
 		}
 	}
@@ -7139,7 +7134,7 @@ stock void Devmap(bool force)
 				}
 			}
 
-			CreateTimer(5.0, timer_changelevel, g_devmap == true ? false : true);
+			CreateTimer(5.0, timer_changelevel, g_devmap == true ? false : true, 0);
 		}
 
 		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] <= g_devmapCount[0])
@@ -7235,11 +7230,6 @@ public Action timer_motd(Handle timer, int client)
 		Format(url, sizeof(url), "%s%s", url, g_map);
 
 		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL); //https://forums.alliedmods.net/showthread.php?t=232476
-	}
-
-	else if(IsClientInGame(client) == false)
-	{
-		PrintToServer("MOTD | Player %N (ID: %i) is not in-game.", client, client);
 	}
 
 	return Plugin_Stop;
@@ -7566,7 +7556,7 @@ public Action cmd_vel(int client, int args)
 stock void VelHud(int client)
 {
 	float vel[3] = {0.0, ...};
-	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel);
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel, 0);
 	vel[2] = 0.0;
 
 	//float velXY = SquareRoot(Pow(vel[0], 2.0) + Pow(vel[1], 2.0));
@@ -7582,8 +7572,8 @@ stock void VelHud(int client)
 	{
 		if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false)
 		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 0);
 
 			if(observerMode < 7 && observerTarget == client && g_hudVel[i] == true)
 			{
@@ -7698,8 +7688,8 @@ public Action cmd_time(int client, int args)
 
 	else if(IsPlayerAlive(client) == false)
 	{
-		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget");
-		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode");
+		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
+		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode", 4, 0);
 
 		if(observerMode < 7)
 		{
@@ -7735,7 +7725,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public void SDKProjectile(int entity)
 {
-	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", 0);
 
 	if(IsValidEntity(entity) == true && IsValidEntity(client) == true)
 	{
@@ -7743,7 +7733,7 @@ public void SDKProjectile(int entity)
 
 		if(autoflashbang == true && (g_autoflash[client] == true || IsFakeClient(client) == true))
 		{
-			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2, 4, false); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		}
 
 		RequestFrame(frame_blockExplosion, entity);
@@ -7752,17 +7742,17 @@ public void SDKProjectile(int entity)
 
 		if(g_skinFlashbang[client] > 0)
 		{
-			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown);
-			SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client]);
+			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown, 4, 0);
+			SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client], 4, 0);
 		}
 
-		SetEntityRenderColor(entity, g_colorBuffer[client][0][1], g_colorBuffer[client][1][1], g_colorBuffer[client][2][1], 255);
+		SetEntityRenderColor(entity, g_colorBuffer[client][1][0], g_colorBuffer[client][1][1], g_colorBuffer[client][1][2], 255);
 
 		bool autoswitch = gCV_autoswitch.BoolValue;
 		
 		if(autoswitch == true && (g_autoswitch[client] == true || IsFakeClient(client) == true))
 		{
-			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
+			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false, 4, 0); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
 			g_silentKnife = true;
 
@@ -7782,7 +7772,7 @@ public void frame_blockExplosion(int entity)
 {
 	if(IsValidEntity(entity) == true)
 	{
-		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0); //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
+		SetEntProp(entity, Prop_Data, "m_nNextThinkTick", 0, 4, 0); //https://forums.alliedmods.net/showthread.php?t=301667 avoid random blinds.
 	}
 
 	return;
@@ -7813,7 +7803,7 @@ stock void FlashbangEffect(int entity)
 	bool filter = LibraryExists("trueexpert-entityfilter");
 
 	float origin[3] = {0.0, ...};
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin, 0);
 
 	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
 
@@ -7822,7 +7812,7 @@ stock void FlashbangEffect(int entity)
 
 	if(filter == true)
 	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
 		if(owner == -1)
 		{
@@ -7833,8 +7823,8 @@ stock void FlashbangEffect(int entity)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
 				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || ((observerTarget == owner || observerTarget == g_partner[owner]) && observerMode < 7))
@@ -7849,7 +7839,7 @@ stock void FlashbangEffect(int entity)
 
 	else if(filter == false)
 	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
 		if(owner == -1)
 		{
@@ -7910,8 +7900,8 @@ stock void FlashbangEffect(int entity)
 
 public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR); //https://forums.alliedmods.net/showthread.php?p=1687371
-	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR);
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR, 0); //https://forums.alliedmods.net/showthread.php?p=1687371
+	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR, 0);
 
 	return Plugin_Handled; //Full god-mode.
 }
@@ -7952,15 +7942,15 @@ stock void GiveFlashbang(int client)
 	
 	if(autoflashbang == true && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
 	{
-		if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4) == 0)
+		if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 4) == 0)
 		{
-			GivePlayerItem(client, "weapon_flashbang");
-			GivePlayerItem(client, "weapon_flashbang");
+			GivePlayerItem(client, "weapon_flashbang", 0);
+			GivePlayerItem(client, "weapon_flashbang", 0);
 		}
 
 		if(GetPlayerWeaponSlot(client, CS_SLOT_KNIFE) == -1)
 		{
-			GivePlayerItem(client, "weapon_knife");
+			GivePlayerItem(client, "weapon_knife", 0);
 		}
 	}
 
@@ -8068,8 +8058,6 @@ public Action timer_clantag(Handle timer, int client)
 		else if(g_timerState[client] == false)
 		{
 			CS_SetClientClanTag(client, g_clantag[client][0]);
-
-			return Plugin_Stop;
 		}
 	}
 
@@ -8165,8 +8153,8 @@ stock void MLStats(int client, bool ground)
 	{
 		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 			if(observerMode < 7 && (observerTarget == client || observerTarget == flyer) && g_mlstats[i] == true)
 			{
