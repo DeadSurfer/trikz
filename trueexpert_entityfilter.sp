@@ -1226,14 +1226,9 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 					g_StartTouchArtifacial[partner][caller][1] = false;
 				}
 			}
-
-			AddLinkedEntity(activator, partner, caller, output);
 		}
 
-		else if(caller < 0)
-		{
-			AddLinkedEntity(activator, partner, caller, output);
-		}
+		AddLinkedEntity(activator, partner, caller, output);
 	}
 
 	return Plugin_Continue;
