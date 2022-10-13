@@ -439,7 +439,7 @@ public void LoadRecord()
 {
 	char type[][] = {"", "_partner"};
 
-	for(int i = 0; i <= 1; i++)
+	for(int i = 0; i < sizeof(type); i++)
 	{
 		char filePath[PLATFORM_MAX_PATH] = "";
 		BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s%s.replay", g_map, type[i]);
@@ -837,6 +837,7 @@ public Action Hook_SayText2(UserMsg msg_id, BfRead msg, const int[] players, int
 {
 	int client = msg.ReadByte();
 	msg.ReadByte();
+	
 	char message[24] = "";
 	msg.ReadString(message, 24);
 
@@ -879,7 +880,7 @@ public Action HookTriggers(int entity, int other)
 		return Plugin_Handled;
 	}
 
-	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 	
 	if(0 < owner <= MaxClients && IsFakeClient(owner) == true)
 	{
@@ -906,7 +907,7 @@ public Action TransmitPlayer(int entity, int client) //entity - me, client - loo
 public Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
 {
 	//hide replay nades
-	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
 	if(owner < 0)
 	{
@@ -938,7 +939,7 @@ stock MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	{
 		if(0 < ent1 <= MaxClients)
 		{
-			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity");
+			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity", 0);
 
 			if(owner < 0)
 			{
