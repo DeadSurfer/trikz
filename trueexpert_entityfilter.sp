@@ -1117,7 +1117,6 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 	if(IsValidClient(activator) == true)
 	{
-		char outputFormated[32] = "";
 		int outputNum = -1;
 		int linkedEntity = 0;
 		int linkedMathEntity = 0;
@@ -1125,8 +1124,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 		if(caller > 0)
 		{
-			Format(outputFormated, sizeof(outputFormated), "m_%s", output);
-			outputNum = GetOutput(outputFormated);
+			outputNum = GetOutput(output);
 
 			for(int i = 1; i <= g_maxLinks[caller][outputNum]; i++)
 			{
@@ -1216,17 +1214,19 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 		else if(caller < 0)
 		{
+			char outputChanged[32] = "";
+
 			if(StrEqual(output, "OnUser3", false) == true)
 			{
-				Format(outputFormated, sizeof(outputFormated), "m_OnHitMax", output);
+				Format(outputChanged, sizeof(outputChanged), "OnHitMax", output);
 			}
 
 			else if(StrEqual(output, "OnUser4", false) == true)
 			{
-				Format(outputFormated, sizeof(outputFormated), "m_OnHitMin", output);
+				Format(outputChanged, sizeof(outputChanged), "OnHitMin", output);
 			}
 
-			outputNum = GetOutput(outputFormated);
+			outputNum = GetOutput(outputChanged);
 
 			for(int i = 1; i <= g_mathTotalCount; i++)
 			{
@@ -1333,52 +1333,52 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 stock int GetOutput(const char[] output)
 {
-	if(StrEqual(output, "m_OnStartTouch", false) == true)
-	{
-		return 0;
-	}
-
-	else if(StrEqual(output, "m_OnEndTouchAll", false) == true)
-	{
-		return 1;
-	}
-
-	else if(StrEqual(output, "m_OnTouching", false) == true)
-	{
-		return 2;
-	}
-
-	else if(StrEqual(output, "m_OnEndTouch", false) == true)
-	{
-		return 3;
-	}
-
-	else if(StrEqual(output, "m_OnTrigger", false) == true)
-	{
-		return 4;
-	}
-
-	else if(StrEqual(output, "m_OnStartTouchAll", false) == true)
+	if(StrContains(output, "OnStartTouchAll", false) != -1) //Chain start from first if, then 2nd else if, then 3th...
 	{
 		return 5;
 	}
 
-	else if(StrEqual(output, "m_OnPressed", false) == true)
+	else if(StrContains(output, "OnStartTouch", false) != -1)
+	{
+		return 0;
+	}
+
+	else if(StrContains(output, "OnEndTouchAll", false) != -1)
+	{
+		return 1;
+	}
+
+	else if(StrContains(output, "OnTouching", false) != -1)
+	{
+		return 2;
+	}
+
+	else if(StrContains(output, "OnEndTouch", false) != -1)
+	{
+		return 3;
+	}
+
+	else if(StrContains(output, "OnTrigger", false) != -1)
+	{
+		return 4;
+	}
+
+	else if(StrContains(output, "OnPressed", false) != -1)
 	{
 		return 6;
 	}
 
-	else if(StrEqual(output, "m_OnDamaged", false) == true)
+	else if(StrContains(output, "OnDamaged", false) != -1)
 	{
 		return 7;
 	}
 
-	else if(StrEqual(output, "m_OnHitMin", false) == true)
+	else if(StrContains(output, "OnHitMin", false) != -1)
 	{
 		return 8;
 	}
 
-	else if(StrEqual(output, "m_OnHitMax", false) == true)
+	else if(StrContains(output, "OnHitMax", false) != -1)
 	{
 		return 9;
 	}
