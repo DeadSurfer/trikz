@@ -37,6 +37,7 @@
 #pragma newdecls required
 
 #define MAXPLAYER MAXPLAYERS + 1
+#define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 
 char g_map[192] = "";
 ArrayList g_frame[MAXPLAYER] = {null, ...};
@@ -203,6 +204,8 @@ public void OnClientPutInServer(int client)
 	{
 		SDKHook(client, SDKHook_SetTransmit, TransmitPlayer);
 	}
+
+	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitch);
 
 	return;
 }
@@ -371,24 +374,10 @@ stock void SaveRecord(int client, const char[] path, float time, bool load)
 	f.WriteInt32(view_as<int>(time));
 
 	any data[sizeof(eFrame)];
-	//any dataWrite[sizeof(eFrame) * 100];
-
-	//int framesWritten = 0;
 
 	for(int i = 0; i < g_tick[client]; i++)
 	{
 		g_frame[client].GetArray(i, data, sizeof(eFrame));
-
-		//for(int j = 0; j < sizeof(eFrame); j++)
-		//{
-		//	dataWrite[(sizeof(eFrame) * framesWritten) + j] = data[j];
-		//}
-
-		//if(++framesWritten == 100 || i == g_tick[client] - 1)
-		//{
-		//	f.Write(dataWrite, sizeof(eFrame) * framesWritten, 4);
-		//	framesWritten = 0;
-		//}
 
 		f.Write(data, sizeof(data), 4);
 	}
@@ -579,16 +568,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			SetEntityCollisionGroup(client, 2);
 
-			//int flags = GetEntityFlags(client);
+			/*int flags = GetEntityFlags(client);
 
-			//if((flags & FL_ATCONTROLS) == 0)
-			//{
-			//	SetEntityFlags(client, (flags | FL_ATCONTROLS));
-			//}
+			if((flags & FL_ATCONTROLS) == 0)
+			{
+				SetEntityFlags(client, (flags | FL_ATCONTROLS));
+			}*/
 		}
 
-		vel[0] = 0.0; //prevent shakes at flat surface.
-		vel[1] = 0.0;
+		for(int i = 0; i <= 2; i++)
+		{
+			vel[i] = 0.0; //prevent shakes at flat surface.
+		}
 
 		eFrame frame;
 		g_frameCache[client].GetArray(g_tick[client]++, frame, sizeof(eFrame));
@@ -725,12 +716,10 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	if(GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT)
 	{
-		SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitch);
-		
 		if(IsFakeClient(client) == true)
 		{
-			g_UpdateStepSound.HookEntity(Hook_Pre, client, Hook_UpdateStepSound_Pre);
-			g_UpdateStepSound.HookEntity(Hook_Post, client, Hook_UpdateStepSound_Post);
+			//g_UpdateStepSound.HookEntity(Hook_Pre, client, Hook_UpdateStepSound_Pre);
+			//g_UpdateStepSound.HookEntity(Hook_Post, client, Hook_UpdateStepSound_Post);
 
 			SetEntityCollisionGroup(client, 2);
 		}
@@ -808,7 +797,7 @@ stock MRESReturn Detour_MaintainBotQuota(int pThis)
 }
 
 // Remove flags from replay bots that cause CBasePlayer::UpdateStepSound to return without playing a footstep.
-stock MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
+/*stock MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
 {
 	if(GetEntityMoveType(pThis) == MOVETYPE_NOCLIP)
 	{
@@ -818,10 +807,10 @@ stock MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
 	SetEntityFlags(pThis, GetEntityFlags(pThis) & ~FL_ATCONTROLS);
 
 	return MRES_Ignored;
-}
+}*/
 
 // Readd flags to replay bots now that CBasePlayer::UpdateStepSound is done.
-stock MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
+/*stock MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 {
 	if(GetEntityMoveType(pThis) == MOVETYPE_WALK)
 	{
@@ -831,7 +820,7 @@ stock MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 	SetEntityFlags(pThis, GetEntityFlags(pThis) | FL_ATCONTROLS);
 
 	return MRES_Ignored;
-}
+}*/
 
 public Action Hook_SayText2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp#L2830
 {
@@ -875,14 +864,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public Action HookTriggers(int entity, int other)
 {
-	if(0 < other <= MaxClients && IsFakeClient(other) == true)
+	if(IsValidClient(other) == true && IsFakeClient(other) == true)
 	{
 		return Plugin_Handled;
 	}
 
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 	
-	if(0 < owner <= MaxClients && IsFakeClient(owner) == true)
+	if(IsValidClient(owner) == true && IsFakeClient(owner) == true)
 	{
 		return Plugin_Handled;
 	}
@@ -893,7 +882,7 @@ public Action HookTriggers(int entity, int other)
 public Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
 {
 	//hide replay
-	if(client != entity && 0 < entity <= MaxClients && IsPlayerAlive(client) == true)
+	if(client != entity && IsValidClient(entity) == true && IsPlayerAlive(client) == true)
 	{
 		if(IsFakeClient(entity) == true)
 		{
@@ -914,7 +903,7 @@ public Action TransmitNade(int entity, int client) //entity - nade, client - loo
 		owner = 0;
 	}
 
-	if(IsPlayerAlive(client) == true && entity > 0 && owner != client && IsFakeClient(owner) == true)
+	if(IsPlayerAlive(client) == true && IsValidEntity(entity) && owner != client && IsFakeClient(owner) == true)
 	{
 		return Plugin_Handled;
 	}
@@ -937,7 +926,7 @@ stock MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 
 	if(StrContains(classname, "projectile", false) != -1)
 	{
-		if(0 < ent1 <= MaxClients)
+		if(IsValidClient(ent1) == true)
 		{
 			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity", 0);
 
