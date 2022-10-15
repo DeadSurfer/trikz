@@ -1565,7 +1565,7 @@ public void OnClientDisconnect(int client)
 
 	g_partner[client] = 0;
 
-	int entity = MAXPLAYER;
+	int entity = 0;
 
 	while((entity = FindEntityByClassname(entity, "weapon_*")) != INVALID_ENT_REFERENCE) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 	{
