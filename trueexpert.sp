@@ -759,19 +759,19 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 
 	int team = GetClientTeam(client);
 
-	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec", false))
+	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec", false) == true)
 	{
 		Format(text, sizeof(text), "\x01*%T* [%s] \x07CCCCCC%s \x01:  %s", "Spec", client, points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllSpec", client, points, name, text);
 	}
 
-	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec", false))
+	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec", false) == true)
 	{
 		Format(text, sizeof(text), "\x01(%T) [%s] \x07CCCCCC%s \x01:  %s", "Spectator", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_Spec", client, points, name, text);
 	}
 
-	else if(StrEqual(msgBuffer, "Cstrike_Chat_All", false))
+	else if(StrEqual(msgBuffer, "Cstrike_Chat_All", false) == true)
 	{
 		if(team == CS_TEAM_T)
 		{
@@ -786,7 +786,7 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 		}
 	}
 
-	else if(StrEqual(msgBuffer, "Cstrike_Chat_AllDead", false))
+	else if(StrEqual(msgBuffer, "Cstrike_Chat_AllDead", false) == true)
 	{
 		if(team == CS_TEAM_T)
 		{
@@ -801,36 +801,34 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 		}
 	}
 
-	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT", false))
+	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT", false) == true)
 	{
 		Format(text, sizeof(text), "\x01(%T) [%s] \x0799CCFF%s \x01:  %s", "Counter-Terrorist", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT", client, points, name, text);
 	}
 
-	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT_Dead", false))
+	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT_Dead", false) == true)
 	{
 		Format(text, sizeof(text), "\x01*%T*(%T) [%s] \x0799CCFF%s \x01:  %s", "Dead", client, "Counter-Terrorist", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT_Dead", client, points, name, text);
 	}
 
-	else if(StrEqual(msgBuffer, "Cstrike_Chat_T", false))
+	else if(StrEqual(msgBuffer, "Cstrike_Chat_T", false) == true)
 	{
 		Format(text, sizeof(text), "\x01(%T) [%s] \x07FF4040%s \x01:  %s", "Terrorist", client, points, name, text); //https://forums.alliedmods.net/showthread.php?t=185016
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T", client, points, name, text);
 	}
 
-	else if(StrEqual(msgBuffer, "Cstrike_Chat_T_Dead", false))
+	else if(StrEqual(msgBuffer, "Cstrike_Chat_T_Dead", false) == true)
 	{
 		Format(text, sizeof(text), "\x01*%T*(%T) [%s] \x07FF4040%s \x01:  %s", "Dead", client, "Terrorist", client, points, name, text);
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T_Dead", client, points, name, text);
 	}
 
 	DataPack dp = new DataPack();
-
 	dp.WriteCell(GetClientSerial(client));
 	dp.WriteCell(StrContains(msgBuffer, "_All") != -1);
 	dp.WriteString(text);
-
 	RequestFrame(frame_SayText2, dp);
 
 	return Plugin_Handled;
@@ -849,7 +847,7 @@ public void frame_SayText2(DataPack dp)
 
 	delete dp;
 
-	if(client > 0 && IsClientInGame(client) == true)
+	if(IsValidClient(client) == true)
 	{
 		int clients[MAXPLAYER] = {0, ...};
 		int count = 0;
@@ -1522,8 +1520,8 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
 
-	char exploded[8][16];
-	ExplodeString(value, ";", exploded, 8, 16);
+	char exploded[4][16];
+	ExplodeString(value, ";", exploded, 4, 16);
 
 	for(int i = 0; i <= 2; i++)
 	{
@@ -3314,9 +3312,10 @@ stock void CreateStart()
 	SetEntityModel(entity, "models/player/t_arctic.mdl");
 
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	g_center[0][0] = (g_zoneStartOrigin[0][0] + g_zoneStartOrigin[1][0]) / 2.0;
-	g_center[0][1] = (g_zoneStartOrigin[0][1] + g_zoneStartOrigin[1][1]) / 2.0;
-	g_center[0][2] = (g_zoneStartOrigin[0][2] + g_zoneStartOrigin[1][2]) / 2.0;
+	for(int i = 0; i <= 2; i++)
+	{
+		g_center[0][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
+	}
 
 	TeleportEntity(entity, g_center[0], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -3375,9 +3374,11 @@ public void CreateEnd()
 	SetEntityModel(entity, "models/player/t_arctic.mdl");
 
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	g_center[1][0] = (g_zoneEndOrigin[0][0] + g_zoneEndOrigin[1][0]) / 2.0; // so its mins and maxs in cube devide to two.
-	g_center[1][1] = (g_zoneEndOrigin[0][1] + g_zoneEndOrigin[1][1]) / 2.0;
-	g_center[1][2] = (g_zoneEndOrigin[0][2] + g_zoneEndOrigin[1][2]) / 2.0;
+
+	for(int i = 0; i <= 2; i++)
+	{
+		g_center[1][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0; // so its mins and maxs in cube devide to two.
+	}
 
 	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -4539,13 +4540,13 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, Dat
 
 		if(results.FetchRow() == true)
 		{
-			g_cpPos[cp][0][0] = results.FetchFloat(0);
-			g_cpPos[cp][0][1] = results.FetchFloat(1);
-			g_cpPos[cp][0][2] = results.FetchFloat(2);
+			int result[2] = {0, 3};
 
-			g_cpPos[cp][1][0] = results.FetchFloat(3);
-			g_cpPos[cp][1][1] = results.FetchFloat(4);
-			g_cpPos[cp][1][2] = results.FetchFloat(5);
+			for(int i = 0; i <= 2; i++)
+			{
+				g_cpPos[cp][0][i] = results.FetchFloat(result[0]++);
+				g_cpPos[cp][1][i] = results.FetchFloat(result[1]++);
+			}
 
 			if(g_devmap == false)
 			{
@@ -4585,7 +4586,7 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, Dat
 
 stock void CreateCP(int cpnum)
 {
-	char trigger[64] = "";
+	char trigger[32] = "";
 	Format(trigger, sizeof(trigger), "trueexpert_cp%i", cpnum);
 
 	int entity = CreateEntityByName("trigger_multiple", -1);
@@ -4599,9 +4600,10 @@ stock void CreateCP(int cpnum)
 	SetEntityModel(entity, "models/player/t_arctic.mdl");
 
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
-	g_center[cpnum + 1][0] = (g_cpPos[cpnum][1][0] + g_cpPos[cpnum][0][0]) / 2.0;
-	g_center[cpnum + 1][1] = (g_cpPos[cpnum][1][1] + g_cpPos[cpnum][0][1]) / 2.0;
-	g_center[cpnum + 1][2] = (g_cpPos[cpnum][1][2] + g_cpPos[cpnum][0][2]) / 2.0;
+	for(int i = 0; i <= 2; i++)
+	{
+		g_center[cpnum + 1][i] = (g_cpPos[cpnum][1][i] + g_cpPos[cpnum][0][i]) / 2.0;
+	}
 
 	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -5113,14 +5115,14 @@ public Action SDKStartTouch(int entity, int other)
 
 		for(int i = 1; i <= g_cpCount; i++)
 		{
-			char triggerCP[64] = "";
+			char triggerCP[32] = "";
 			Format(triggerCP, sizeof(triggerCP), "trueexpert_cp%i", i);
 
 			if(StrEqual(trigger, triggerCP, false) == true)
 			{
 				g_cp[other][i] = true;
 
-				if(g_cp[other][i] == true && g_cp[i][partner] == true && g_cpLock[other][i] == false)
+				if(g_cp[i][partner] == true && g_cpLock[partner][i] == false)
 				{
 					g_cpLock[other][i] = true;
 					g_cpLock[partner][i] = true;
@@ -6289,13 +6291,13 @@ public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error
 	{
 		if(results.FetchRow() == true)
 		{
-			g_zoneStartOrigin[0][0] = results.FetchFloat(0);
-			g_zoneStartOrigin[0][1] = results.FetchFloat(1);
-			g_zoneStartOrigin[0][2] = results.FetchFloat(2);
+			int result[2] = {0, 3};
 
-			g_zoneStartOrigin[1][0] = results.FetchFloat(3);
-			g_zoneStartOrigin[1][1] = results.FetchFloat(4);
-			g_zoneStartOrigin[1][2] = results.FetchFloat(5);
+			for(int i = 0; i <= 2; i++)
+			{
+				g_zoneStartOrigin[0][i] = results.FetchFloat(result[0]++);
+				g_zoneStartOrigin[1][i] = results.FetchFloat(result[1]++);
+			}
 
 			CreateStart();
 
@@ -6319,13 +6321,13 @@ public void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, 
 	{
 		if(results.FetchRow() == true)
 		{
-			g_zoneEndOrigin[0][0] = results.FetchFloat(0);
-			g_zoneEndOrigin[0][1] = results.FetchFloat(1);
-			g_zoneEndOrigin[0][2] = results.FetchFloat(2);
+			int result[2] = {0, 3};
 
-			g_zoneEndOrigin[1][0] = results.FetchFloat(3);
-			g_zoneEndOrigin[1][1] = results.FetchFloat(4);
-			g_zoneEndOrigin[1][2] = results.FetchFloat(5);
+			for(int i = 0; i <= 2; i++)
+			{
+				g_zoneEndOrigin[0][i] = results.FetchFloat(result[0]++);
+				g_zoneEndOrigin[1][i] = results.FetchFloat(result[1]++);
+			}
 
 			CreateEnd();
 		}
@@ -6354,29 +6356,19 @@ stock void DrawZone(int client, float life, float size, int speed)
 	float start[12][3];
 	float end[12][3];
 
-	start[0][0] = g_zoneStartOrigin[0][0] < g_zoneStartOrigin[1][0] == true ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0]; //zones calculation from tengu (tengulawl)
-	start[0][1] = g_zoneStartOrigin[0][1] < g_zoneStartOrigin[1][1] == true ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1];
-	start[0][2] = g_zoneStartOrigin[0][2] < g_zoneStartOrigin[1][2] == true ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2];
+	for(int i = 0; i <= 2; i++)
+	{
+		start[0][i] = g_zoneStartOrigin[0][i] < g_zoneStartOrigin[1][i] == true ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i]; //zones calculation from tengu (tengulawl)
+		end[0][i] = g_zoneStartOrigin[0][i] > g_zoneStartOrigin[1][i] == true ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i];
+		start[1][i] = g_zoneEndOrigin[0][i] < g_zoneEndOrigin[1][i] == true ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
+		end[1][i] = g_zoneEndOrigin[0][i] > g_zoneEndOrigin[1][i] == true ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
+	}
 
-	start[0][2] += size;
-
-	end[0][0] = g_zoneStartOrigin[0][0] > g_zoneStartOrigin[1][0] == true ? g_zoneStartOrigin[0][0] : g_zoneStartOrigin[1][0];
-	end[0][1] = g_zoneStartOrigin[0][1] > g_zoneStartOrigin[1][1] == true ? g_zoneStartOrigin[0][1] : g_zoneStartOrigin[1][1];
-	end[0][2] = g_zoneStartOrigin[0][2] > g_zoneStartOrigin[1][2] == true ? g_zoneStartOrigin[0][2] : g_zoneStartOrigin[1][2];
-
-	end[0][2] += size;
-
-	start[1][0] = g_zoneEndOrigin[0][0] < g_zoneEndOrigin[1][0] == true ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0];
-	start[1][1] = g_zoneEndOrigin[0][1] < g_zoneEndOrigin[1][1] == true ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1];
-	start[1][2] = g_zoneEndOrigin[0][2] < g_zoneEndOrigin[1][2] == true ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2];
-
-	start[1][2] += size;
-
-	end[1][0] = (g_zoneEndOrigin[0][0] > g_zoneEndOrigin[1][0]) == true ? g_zoneEndOrigin[0][0] : g_zoneEndOrigin[1][0];
-	end[1][1] = (g_zoneEndOrigin[0][1] > g_zoneEndOrigin[1][1]) == true ? g_zoneEndOrigin[0][1] : g_zoneEndOrigin[1][1];
-	end[1][2] = (g_zoneEndOrigin[0][2] > g_zoneEndOrigin[1][2]) == true ? g_zoneEndOrigin[0][2] : g_zoneEndOrigin[1][2];
-
-	end[1][2] += size;
+	for(int i = 0; i <= 1; i++)
+	{
+		start[i][2] += size;
+		end[i][2] += size;
+	}
 
 	int zones = 1;
 	int cpnum = 0;
@@ -6388,17 +6380,14 @@ stock void DrawZone(int client, float life, float size, int speed)
 		for(int i = 2; i <= zones; i++)
 		{
 			cpnum = i - 1; //start count cp from 1.
-			
-			start[i][0] = g_cpPos[cpnum][0][0] < g_cpPos[cpnum][1][0] == true ? g_cpPos[cpnum][0][0] : g_cpPos[cpnum][1][0];
-			start[i][1] = g_cpPos[cpnum][0][1] < g_cpPos[cpnum][1][1] == true ? g_cpPos[cpnum][0][1] : g_cpPos[cpnum][1][1];
-			start[i][2] = g_cpPos[cpnum][0][2] < g_cpPos[cpnum][1][2] == true ? g_cpPos[cpnum][0][2] : g_cpPos[cpnum][1][2];
+
+			for(int j = 0; j <= 2; j++)
+			{
+				start[i][j] = g_cpPos[cpnum][0][j] < g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
+				end[i][j] = g_cpPos[cpnum][0][j] > g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
+			}
 
 			start[i][2] += size;
-
-			end[i][0] = g_cpPos[cpnum][0][0] > g_cpPos[cpnum][1][0] == true ? g_cpPos[cpnum][0][0] : g_cpPos[cpnum][1][0];
-			end[i][1] = g_cpPos[cpnum][0][1] > g_cpPos[cpnum][1][1] == true ? g_cpPos[cpnum][0][1] : g_cpPos[cpnum][1][1];
-			end[i][2] = g_cpPos[cpnum][0][2] > g_cpPos[cpnum][1][2] == true ? g_cpPos[cpnum][0][2] : g_cpPos[cpnum][1][2];
-
 			end[i][2] += size;
 		}
 	}
@@ -6408,24 +6397,19 @@ stock void DrawZone(int client, float life, float size, int speed)
 	for(int i = 0; i <= zones; i++)
 	{
 		//bottom left front
-		corners[i][0][0] = start[i][0];
-		corners[i][0][1] = start[i][1];
-		corners[i][0][2] = start[i][2];
+		corners[i][0] = start[i]; //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L82
 
 		//bottom right front
+		corners[i][1] = start[i];
 		corners[i][1][0] = end[i][0];
-		corners[i][1][1] = start[i][1];
-		corners[i][1][2] = start[i][2];
 
 		//bottom right back
-		corners[i][2][0] = end[i][0];
-		corners[i][2][1] = end[i][1];
+		corners[i][2] = end[i];
 		corners[i][2][2] = start[i][2];
 
 		//bottom left back
-		corners[i][3][0] = start[i][0];
+		corners[i][3] = start[i];
 		corners[i][3][1] = end[i][1];
-		corners[i][3][2] = start[i][2];
 
 		int k = 0;
 		int modelType = 0;
@@ -6556,8 +6540,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			g_boost[client] = 0;
 
-			g_mlsVel[client][1][0] = velocity[0];
-			g_mlsVel[client][1][1] = velocity[1];
+			g_mlsVel[client][1] = velocity;
+			g_mlsVel[client][1][2] = 0.0;
 
 			MLStats(client, false);
 		}
@@ -6674,14 +6658,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(entity, end, NULL_VECTOR, NULL_VECTOR);
 
 			//https://forums.alliedmods.net/showthread.php?p=1080444
-			int color[4] = {0, ...};
-
-			for(int i = 0; i <= 2; i++)
-			{
-				color[i] = g_colorBuffer[client][1][i];
-			}
-
-			color[3] = 255;
+			int color[4] = {0, 0, 0, 255};
+			color = g_colorBuffer[client][1];
 
 			start[2] -= 8.0;
 
@@ -6981,9 +6959,9 @@ public Action ProjectileBoostFix(int entity, int other)
 			{
 				float vel[3] = {0.0, ...};
 				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", vel, 0);
+				vel[2] = 0.0;
 
-				g_mlsVel[other][0][0] = vel[0];
-				g_mlsVel[other][0][1] = vel[1];
+				g_mlsVel[other][0] = vel;
 
 				g_mlsCount[other]++;
 
@@ -7868,11 +7846,9 @@ stock void FlashbangEffect(int entity)
 	}
 
 	float dir[3] = {0.0, ...}; //https://forums.alliedmods.net/showthread.php?t=274452
-
 	dir[0] = GetRandomFloat(-1.0, 1.0);
 	dir[1] = GetRandomFloat(-1.0, 1.0);
 	dir[2] = 1.0; //always up direction.
-
 	TE_SetupSparks(origin, dir, 1, GetRandomInt(1, 2));
 
 	char sample[2][PLATFORM_MAX_PATH] = {"weapons/flashbang/flashbang_explode1.wav", "weapons/flashbang/flashbang_explode2.wav"};
@@ -7995,7 +7971,7 @@ public Action timer_removePing(Handle timer, int client)
 {
 	int entity = EntRefToEntIndex(g_pingModel[client]);
 
-	if(entity > 0)
+	if(IsValidEntity(entity) == true)
 	{
 		char log[256] = "";
 		GetEntityClassname(g_pingModel[client], log, sizeof(log));
