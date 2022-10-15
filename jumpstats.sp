@@ -178,7 +178,7 @@ public Action cmd_jumpstats(int client, int args)
 	IntToString(g_jumpstats[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie, value);
 
-	PrintToChat(client, g_jumpstats[client] ? "Jump stats is on." : "Jump stats is off.");
+	PrintToChat(client, "Jump stats is %s now.", g_jumpstats[client]  == true ? "on" : "off");
 
 	return Plugin_Handled;
 }
@@ -216,9 +216,9 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 
 		float vel[3] = {0.0, ...};
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
-
-		g_preVel[client][0][0] = vel[0];
-		g_preVel[client][0][1] = vel[1];
+		vel[2] = 0.0;
+		
+		g_preVel[client][0] = vel;
 
 		g_countjump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1, 0));
 
@@ -228,8 +228,7 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel, 0);
 		flatVel[2] = 0.0;
 
-		g_oldVel[client][0] = flatVel[0];
-		g_oldVel[client][1] = flatVel[1];
+		g_oldVel[client] = flatVel;
 
 		g_dotNormal[client] = true;
 	}
@@ -320,12 +319,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		char flat[32] = "";
 
-		if(GetGroundPos(client) - g_origin[client][2] > 0.04)
+		if(GetGroundPos(client) - g_origin[client][2] > 0.0)
 		{
 			Format(flat, sizeof(flat), "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
 
-		else if(GetGroundPos(client) - g_origin[client][2] < -0.04)
+		else if(GetGroundPos(client) - g_origin[client][2] < 0.0)
 		{
 			Format(flat, sizeof(flat), "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
 		}
@@ -610,9 +609,9 @@ public Action TouchClient(int client, int other)
 
 			float vel[3] = {0.0, ...};
 			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vel, 0); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+			vel[2] = 0.0;
 
-			g_preVel[other][1][0] = vel[0];
-			g_preVel[other][1][1] = vel[1];
+			g_preVel[other][1] = vel;
 		}
 
 		if(!(GetEntityFlags(other) & FL_ONGROUND)) //Allow to see sky boost after rb.
@@ -938,8 +937,7 @@ stock void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.ph
 		g_loss[client] -= velDelta;
 	}
 
-	g_oldVel[client][0] = flatVel[0];
-	g_oldVel[client][1] = flatVel[1];
+	g_oldVel[client] = flatVel;
 
 	return;
 }
