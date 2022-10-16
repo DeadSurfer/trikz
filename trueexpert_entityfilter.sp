@@ -223,6 +223,14 @@ public Action timer_load(Handle timer)
 
 		while((entity = FindEntityByClassname(entity, classname[i])) != INVALID_ENT_REFERENCE)
 		{
+			if(0 <= i <= 4)
+			{
+				if(!(GetEntProp(entity, Prop_Data, "m_spawnflags") & 1))
+				{
+					break; //If trigger doesn't have client check, go to next entity.
+				}
+			}
+
 			for(int j = 0; j < sizeof(output); j++)
 			{
 				if((i <= 4 && j <= 4) || (i == 5 && 5 <= j <= 6) || (i == 6 && 9 <= j <= 10))
@@ -446,14 +454,6 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 	else if(StrEqual(output, "prop_dynamic", false) == true)
 	{
 		i = 10;
-	}
-
-	if(2 <= i <= 6)
-	{
-		if(!(GetEntProp(entity, Prop_Data, "m_spawnflags") & 1))
-		{
-			return;
-		}
 	}
 
 	bool bReturn = false;
