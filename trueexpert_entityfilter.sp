@@ -261,7 +261,7 @@ stock void EntityLinked(int entity, const char[] output)
 
 	char input[16] = "";
 	char target[256] = "";
-	char classname[][] = {"func_brush", "func_wall_toggle", "trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_breakable", "prop_dynamic"};
+	char classname[][] = {"func_brush", "func_wall_toggle", "trigger_*", "func_breakable", "prop_dynamic"};
 	
 	int maxLinks = 0;
 	int maxMathLinks = 0;
@@ -272,7 +272,12 @@ stock void EntityLinked(int entity, const char[] output)
 		GetOutputActionTargetInput(entity, output, i, input, sizeof(input));
 		GetOutputActionTarget(entity, output, i, target, sizeof(target));
 
-		if(StrEqual(input, "Enable", false) == true || StrEqual(input, "Disable", false) == true || StrEqual(input, "Toggle", false) == true || StrEqual(input, "Break", false) == true || StrEqual(input, "TurnOn", false) == true || StrEqual(input, "TurnOff", false) == true)
+		if(StrEqual(input, "Enable", false) == true || 
+			StrEqual(input, "Disable", false) == true || 
+			StrEqual(input, "Toggle", false) == true || 
+			StrEqual(input, "Break", false) == true || 
+			StrEqual(input, "TurnOn", false) == true || 
+			StrEqual(input, "TurnOff", false) == true)
 		{
 			for(int j = 0; j < sizeof(classname); j++)
 			{
@@ -411,49 +416,37 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		i = 1;
 	}
 
-	else if(StrEqual(output, "trigger_multiple", false) == true)
+	else if(StrEqual(output, "trigger_*", false) == true)
 	{
 		i = 2;
 	}
 
-	else if(StrEqual(output, "trigger_teleport", false) == true)
+	else if(StrEqual(output, "func_breakable", false) == true)
 	{
 		i = 3;
 	}
 
-	else if(StrEqual(output, "trigger_teleport_relative", false) == true)
+	else if(StrEqual(output, "func_button", false) == true)
 	{
 		i = 4;
 	}
 
-	else if(StrEqual(output, "trigger_push", false) == true)
+	else if(StrEqual(output, "math_counter", false) == true)
 	{
 		i = 5;
 	}
 
-	else if(StrEqual(output, "trigger_gravity", false) == true)
+	else if(StrEqual(output, "prop_dynamic", false) == true)
 	{
 		i = 6;
 	}
 
-	else if(StrEqual(output, "func_breakable", false) == true)
+	if(i == 2)
 	{
-		i = 7;
-	}
-
-	else if(StrEqual(output, "func_button", false) == true)
-	{
-		i = 8;
-	}
-
-	else if(StrEqual(output, "math_counter", false) == true)
-	{
-		i = 9;
-	}
-
-	else if(StrEqual(output, "prop_dynamic", false) == true)
-	{
-		i = 10;
+		if(!(GetEntProp(entity, Prop_Data, "m_spawnflags") & 1))
+		{
+			return; //If trigger doesn't have client check, quit function here.
+		}
 	}
 
 	bool bReturn = false;
@@ -498,7 +491,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		g_mathID[++g_mathTotalCount] = entity;
 	}
 
-	if(i == 7)
+	if(i == 3)
 	{
 		int template = 0;
 
@@ -538,9 +531,12 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		DHookEntity(g_AcceptInput, false, entity);
 	}
 
-	if(i == 9)
+	if(i == 5)
 	{
-		if(IsValidEntity(entity) == true && (GetOutputActionCount(entity, "m_OutValue") == 0 || GetOutputActionCount(entity, "m_OnGetValue") == 0 || GetOutputActionCount(entity, "m_OnUser3") == 0 || GetOutputActionCount(entity, "m_OnUser4") == 0)) //thanks to george for original code.
+		if(IsValidEntity(entity) == true && (GetOutputActionCount(entity, "m_OutValue") == 0 || 
+											GetOutputActionCount(entity, "m_OnGetValue") == 0 || 
+											GetOutputActionCount(entity, "m_OnUser3") == 0 || 
+											GetOutputActionCount(entity, "m_OnUser4") == 0)) //thanks to george for original code.
 		{
 			g_mathValueDefault[g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
 			g_mathValue[0][g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
@@ -555,12 +551,12 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		}
 	}
 
-	if(i < 7 || i == 10)
+	if(i < 3 || i == 6)
 	{
 		DHookEntity(g_AcceptInput, false, entity);
 	}
 
-	else if(i == 8)
+	else if(i == 4)
 	{
 		SDKHook(entity, SDKHook_Use, HookButton);
 		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
@@ -570,23 +566,27 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		SetEntPropFloat(entity, Prop_Data, "m_flWait", 0.1, 0);
 	}
 
-	if(i < 2 || i == 10)
+	if(i < 2 || i == 6)
 	{
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit);
 	}
 
-	else if(1 < i < 7)
+	else if(i == 2)
 	{
 		SDKHook(entity, SDKHook_Touch, TouchTrigger);
 	}
 
-	if((i == 0 && GetEntProp(entity, Prop_Data, "m_iDisabled", 4, 0) == 1) || (i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) == 1) || (1 < i < 7 && GetEntProp(entity, Prop_Data, "m_bDisabled", 4, 0) == 1) || (i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked", 4, 0) == 1) || (i == 10 && GetEntProp(entity, Prop_Data, "m_bStartDisabled", 4, 0) == 1))
+	if((i == 0 && GetEntProp(entity, Prop_Data, "m_iDisabled", 4, 0) == 1) || 
+		(i == 1 && GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) == 1) || 
+		(i == 2 && GetEntProp(entity, Prop_Data, "m_bDisabled", 4, 0) == 1) || 
+		(i == 4 && GetEntProp(entity, Prop_Data, "m_bLocked", 4, 0) == 1) || 
+		(i == 6 && GetEntProp(entity, Prop_Data, "m_bStartDisabled", 4, 0) == 1))
 	{
 		g_stateDefaultDisabled[entity] = true;
 		g_stateDisabled[0][entity] = true;
 	}
 
-	if(i == 0 || 1 < i < 7 || i == 10)
+	if(i == 0 || i == 2 || i == 6)
 	{
 		AcceptEntityInput(entity, "Enable");
 	}
@@ -596,7 +596,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		AcceptEntityInput(entity, "Toggle");
 	}
 
-	else if(i == 8 && GetEntProp(entity, Prop_Data, "m_bLocked", 4, 0) == 1)
+	else if(i == 4 && GetEntProp(entity, Prop_Data, "m_bLocked", 4, 0) == 1)
 	{
 		AcceptEntityInput(entity, "Unlock");
 	}
@@ -681,7 +681,10 @@ stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	{
 		if(IsFakeClient(activator) == true)
 		{
-			if(StrEqual(input, "Volume", false) == true || StrEqual(input, "ToggleSound", false) == true || StrEqual(input, "PlaySound", false) == true || StrEqual(input, "StopSound", false) == true) //https://github.com/Kxnrl/MapMusic-API/blob/master/mapmusic.sp
+			if(StrEqual(input, "Volume", false) == true || 
+				StrEqual(input, "ToggleSound", false) == true || 
+				StrEqual(input, "PlaySound", false) == true || 
+				StrEqual(input, "StopSound", false) == true) //https://github.com/Kxnrl/MapMusic-API/blob/master/mapmusic.sp
 			{
 				DHookSetReturn(hReturn, false);
 
@@ -689,7 +692,13 @@ stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 			}
 		}
 
-		if(StrEqual(input, "Enable", false) == false && StrEqual(input, "Disable", false) == false && StrEqual(input, "Toggle", false) == false && StrEqual(input, "Break", false) == false && StrEqual(input, "ForceSpawn", false) == false && StrEqual(input, "TurnOn", false) == false && StrEqual(input, "TurnOff", false) == false)
+		if(StrEqual(input, "Enable", false) == false && 
+			StrEqual(input, "Disable", false) == false && 
+			StrEqual(input, "Toggle", false) == false && 
+			StrEqual(input, "Break", false) == false && 
+			StrEqual(input, "ForceSpawn", false) == false && 
+			StrEqual(input, "TurnOn", false) == false && 
+			StrEqual(input, "TurnOff", false) == false)
 		{
 			return MRES_Ignored;
 		}
@@ -883,7 +892,10 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	char input[16] = "";
 	DHookGetParamString(hParams, 1, input, sizeof(input));
 
-	if(StrEqual(input, "Add", false) == false && StrEqual(input, "Subtract", false) == false && StrEqual(input, "SetValue", false) == false && StrEqual(input, "SetValueNoFire", false) == false)
+	if(StrEqual(input, "Add", false) == false && 
+		StrEqual(input, "Subtract", false) == false && 
+		StrEqual(input, "SetValue", false) == false && 
+		StrEqual(input, "SetValueNoFire", false) == false)
 	{
 		return MRES_Ignored;
 	}
