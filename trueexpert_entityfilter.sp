@@ -37,7 +37,7 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
-#define MAXLINK 1010 + 1 //Decrease to 64, if you need lower server memory load
+#define MAXLINK 128 + 1
 #define MAXOUTPUT 10 + 1
 #define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 #define IsValidPartner(%1) 0 < Trikz_GetClientPartner(%1) <= MaxClients
@@ -236,7 +236,7 @@ public Action timer_load(Handle timer)
 				if((i <= 4 && j <= 4) || (i == 5 && 5 <= j <= 6) || (i == 6 && 9 <= j <= 10))
 				{
 					Format(outputFormated, sizeof(outputFormated), "m_%s", output[j]);
-					EntityLinked(entity, outputFormated);
+					EntityLink(entity, outputFormated);
 				}
 			}
 		}
@@ -255,7 +255,7 @@ public Action timer_load(Handle timer)
 	return Plugin_Continue;
 }
 
-stock void EntityLinked(int entity, const char[] output)
+stock void EntityLink(int entity, const char[] output)
 {
 	int count = GetOutputActionCount(entity, output);
 
@@ -281,11 +281,11 @@ stock void EntityLinked(int entity, const char[] output)
 		{
 			for(int j = 0; j < sizeof(classname); j++)
 			{
-				int entityLinked = 0;
+				int entityReadyToLink = 0;
 
-				while((entityLinked = FindLinkedEntity(entityLinked, classname[j], target, entity)) != INVALID_ENT_REFERENCE)
+				while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, classname[j], target, entity)) != INVALID_ENT_REFERENCE)
 				{
-					OutputInput(entityLinked, classname[j], target);
+					OutputInput(entityReadyToLink, classname[j], target);
 
 					if(StrEqual(output, "m_OnPressed", false) == true || StrEqual(output, "m_OnDamaged", false) == true)
 					{
@@ -296,9 +296,9 @@ stock void EntityLinked(int entity, const char[] output)
 					{
 						maxLinks = ++g_maxLinks[entity][outputNum];
 
-						g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityLinked;
+						g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityReadyToLink;
 
-						g_entityOutput[entityLinked][maxLinks][outputNum] = 1;
+						g_entityOutput[entityReadyToLink][maxLinks][outputNum] = 1;
 					}
 
 					else if(entity < 0)
@@ -311,9 +311,9 @@ stock void EntityLinked(int entity, const char[] output)
 							{
 								maxMathLinks = ++g_maxMathLinks[math][outputNum];
 
-								g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityLinked;
+								g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityReadyToLink;
 
-								g_entityOutput[entityLinked][maxMathLinks][outputNum] = 1;
+								g_entityOutput[entityReadyToLink][maxMathLinks][outputNum] = 1;
 
 								continue;
 							}
@@ -325,19 +325,19 @@ stock void EntityLinked(int entity, const char[] output)
 
 		else if(StrEqual(input, "Unlock", false) == true || StrEqual(input, "Lock", false) == true)
 		{
-			int entityLinked = 0;
+			int entityReadyToLink = 0;
 
-			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", target, 0)) != INVALID_ENT_REFERENCE)
+			while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, "func_button", target, 0)) != INVALID_ENT_REFERENCE)
 			{
-				OutputInput(entityLinked, "func_button", "");
+				OutputInput(entityReadyToLink, "func_button", "");
 
 				if(entity > 0)
 				{
 					maxLinks = ++g_maxLinks[entity][outputNum];
 
-					g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityLinked;
+					g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityReadyToLink;
 
-					g_entityOutput[entityLinked][maxLinks][outputNum] = 1;
+					g_entityOutput[entityReadyToLink][maxLinks][outputNum] = 1;
 				}
 
 				else if(entity < 0)
@@ -350,26 +350,26 @@ stock void EntityLinked(int entity, const char[] output)
 						{
 							maxMathLinks = ++g_maxMathLinks[math][outputNum];
 							
-							g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityLinked;
+							g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityReadyToLink;
 
-							g_entityOutput[entityLinked][maxMathLinks][outputNum] = 1;
+							g_entityOutput[entityReadyToLink][maxMathLinks][outputNum] = 1;
 
 							continue;
 						}
 					}
 				}
 
-				DHookEntity(g_AcceptInput, false, entityLinked, INVALID_FUNCTION, AcceptInputButton);
+				DHookEntity(g_AcceptInput, false, entityReadyToLink, INVALID_FUNCTION, AcceptInputButton);
 			}
 		}
 
 		else if(StrEqual(input, "Add", false) == true || StrEqual(input, "Subtract", false) == true)
 		{
-			int entityLinked = 0;
+			int entityReadyToLink = 0;
 
-			while((entityLinked = FindLinkedEntity(entityLinked, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
+			while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
 			{
-				OutputInput(entityLinked, "math_counter", "");
+				OutputInput(entityReadyToLink, "math_counter", "");
 			}
 		}
 	}
@@ -997,7 +997,7 @@ public Action TouchTrigger(int entity, int other)
 {
 	char classname[32] = "";
 	GetEntityClassname(other, classname, sizeof(classname));
-
+	
 	int activator = other;
 
 	if(StrContains(classname, "projectile", false) != -1)
@@ -1009,7 +1009,30 @@ public Action TouchTrigger(int entity, int other)
 	{
 		int partner = Trikz_GetClientPartner(activator);
 
-		if(g_touchArtifacial[activator][entity][1] == true || (g_touchArtifacial[activator][entity][1] == true && StrContains(classname, "projectile", false) == -1 && g_stateDisabled[partner][entity] == true))
+		if(g_stateDisabled[partner][entity] == true)
+		{
+			if(g_touchArtifacial[activator][entity][1] == true)
+			{
+				AcceptEntityInput(entity, "EndTouch", other, other);
+			}
+
+			return Plugin_Handled;
+		}
+
+		else if(g_stateDisabled[partner][entity] == false)
+		{
+			if(g_touchArtifacial[activator][entity][1] == false)
+			{
+				if(StrContains(classname, "projectile", false) == -1)
+				{
+					g_touchArtifacial[activator][entity][0] = true;
+				}
+
+				AcceptEntityInput(entity, "StartTouch", other, other);
+			}
+		}
+
+		/*if(g_touchArtifacial[activator][entity][1] == true || (g_touchArtifacial[activator][entity][1] == true && StrContains(classname, "projectile", false) == -1 && g_stateDisabled[partner][entity] == true))
 		{
 			AcceptEntityInput(entity, "EndTouch", other, other);
 		}
@@ -1027,7 +1050,7 @@ public Action TouchTrigger(int entity, int other)
 		if(g_stateDisabled[partner][entity] == true)
 		{
 			return Plugin_Handled;
-		}
+		}*/
 
 		g_touchArtifacial[activator][entity][1] = g_stateDisabled[partner][entity] == true ? false : true;
 	}
@@ -1164,7 +1187,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 					return Plugin_Handled;
 				}
 
-				if(g_touchArtifacial[partner][caller][1] == true)
+				if(g_touchArtifacial[activator][caller][1] == true)
 				{
 					g_touchArtifacial[activator][caller][1] = false;
 				}
