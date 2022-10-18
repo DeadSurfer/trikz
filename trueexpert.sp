@@ -46,6 +46,8 @@
 int g_partner[MAXPLAYER] = {0, ...};
 float g_zoneStartOrigin[2][3]; //start zone mins and maxs
 float g_zoneEndOrigin[2][3]; //end zone mins and maxs
+float g_zoneStartOriginTemp[2][3];
+float g_zoneEndOriginTemp[2][3];
 Database g_mysql = null;
 float g_timerTimeStart[MAXPLAYER] = {0.0, ...};
 float g_timerTime[MAXPLAYER] = {0.0, ...};
@@ -58,7 +60,8 @@ float g_boostTime[MAXPLAYER] = {0.0, ...};
 float g_skyVel[MAXPLAYER][3];
 bool g_timerReadyToStart[MAXPLAYER] = {false, ...};
 
-float g_cpPos[11][2][3];
+float g_cpPos[12][2][3];
+float g_cpPosTemp[12][2][3];
 bool g_cp[MAXPLAYER][11];
 bool g_cpLock[MAXPLAYER][11];
 float g_cpTime[MAXPLAYER][11];
@@ -198,6 +201,8 @@ float g_top10SR = 0.0;
 bool g_silentF1F2 = false;
 KeyValues g_kv = null;
 bool g_zoneDrawed[MAXPLAYER] = {false, ...};
+int g_axis = 0;
+char g_axisLater[][] = {"X", "Y", "Z"};
 
 public Plugin myinfo =
 {
@@ -1067,8 +1072,8 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	{
 		int partner = g_partner[client];
 
-		g_partner[partner] = 0;
 		g_partner[client] = 0;
+		g_partner[partner] = 0;
 
 		if(g_menuOpened[client] == true)
 		{
@@ -3317,6 +3322,8 @@ stock void CreateStart()
 		g_center[0][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
 	}
 
+	g_center[0][2] += 1.0;
+
 	TeleportEntity(entity, g_center[0], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
 	g_timerStartPos[0] = g_center[0][0];
@@ -3343,7 +3350,7 @@ stock void CreateStart()
 		}
 	}
 
-	maxs[2] = 124.0; // 62.0 * 2.0 - player hitbox is 62.0 units height. so make 2 player together.
+	maxs[2] = FloatAbs(g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]);
 
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0);
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
@@ -3380,6 +3387,8 @@ public void CreateEnd()
 		g_center[1][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0; // so its mins and maxs in cube devide to two.
 	}
 
+	g_center[1][2] += 1.0;
+
 	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
 	float mins[3] = {0.0, ...};
@@ -3402,7 +3411,7 @@ public void CreateEnd()
 		}
 	}
 
-	maxs[2] = 124.0;
+	maxs[2] = FloatAbs(g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]);
 
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0); //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
@@ -3428,7 +3437,7 @@ public Action cmd_startmins(int client, int args)
 	{
 		if(g_devmap == true)
 		{
-			GetClientAbsOrigin(client, g_zoneStartOrigin[0]);
+			GetClientAbsOrigin(client, g_zoneStartOriginTemp[0]);
 		}
 
 		else if(g_devmap == false)
@@ -3455,7 +3464,7 @@ public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] er
 	{
 		char query[512] = "";
 		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
-		g_mysql.Query(SQLSetStartZones, query, _, DBPrio_Normal);
+		g_mysql.Query(SQLSetStartZones, query, data, DBPrio_Normal);
 	}
 
 	return;
@@ -3471,7 +3480,7 @@ public Action cmd_deleteallcp(int client, int args)
 		{
 			char query[512] = "";
 			Format(query, sizeof(query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
-			g_mysql.Query(SQLDeleteAllCP, query, _, DBPrio_Normal);
+			g_mysql.Query(SQLDeleteAllCP, query, GetClientSerial(client), DBPrio_Normal);
 		}
 
 		else if(g_devmap == false)
@@ -3487,6 +3496,8 @@ public Action cmd_deleteallcp(int client, int args)
 
 public void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
 {
+	int client = GetClientFromSerial(data);
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLDeleteAllCP: %s", error);
@@ -3496,6 +3507,8 @@ public void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error,
 	{
 		if(results.HasResults == false)
 		{
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by %N [%i]", g_map, client, GetSteamAccountID(client));
+
 			PrintToServer("All checkpoints are deleted on current map.");
 		}
 
@@ -3650,7 +3663,7 @@ public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] erro
 	{
 		char query[512] = "";
 		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
-		g_mysql.Query(SQLSetEndZones, query, _, DBPrio_Normal);
+		g_mysql.Query(SQLSetEndZones, query, data, DBPrio_Normal);
 	}
 
 	return;
@@ -3675,7 +3688,10 @@ public Action cmd_maptier(int client, int args)
 
 				char query[512] = "";
 				Format(query, sizeof(query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
-				g_mysql.Query(SQLTierRemove, query, tier, DBPrio_Normal);
+				DataPack dp = new DataPack();
+				dp.WriteCell(GetClientSerial(client));
+				dp.WriteCell(tier);
+				g_mysql.Query(SQLTierRemove, query, dp, DBPrio_Normal);
 			}
 		}
 
@@ -3692,8 +3708,13 @@ public Action cmd_maptier(int client, int args)
 	return Plugin_Continue;
 }
 
-public void SQLTierRemove(Database db, DBResultSet results, const char[] error, any data)
+public void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPack data)
 {
+	data.Reset();
+	int client = GetClientFromSerial(data.ReadCell());
+	int tier = data.ReadCell();
+	delete data;
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLTierRemove: %s", error);
@@ -3702,15 +3723,23 @@ public void SQLTierRemove(Database db, DBResultSet results, const char[] error, 
 	else if(strlen(error) == 0)
 	{
 		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO tier (tier, map) VALUES (%i, '%s')", data, g_map);
-		g_mysql.Query(SQLTierInsert, query, data, DBPrio_Normal);
+		Format(query, sizeof(query), "INSERT INTO tier (tier, map) VALUES (%i, '%s')", tier, g_map);
+		DataPack dp = new DataPack();
+		dp.WriteCell(GetClientSerial(client));
+		dp.WriteCell(tier);
+		g_mysql.Query(SQLTierInsert, query, dp, DBPrio_Normal);
 	}
 
 	return;
 }
 
-public void SQLTierInsert(Database db, DBResultSet results, const char[] error, any data)
+public void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPack data)
 {
+	data.Reset();
+	int client = GetClientFromSerial(data.ReadCell());
+	int tier = data.ReadCell();
+	delete data;
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLTierInsert: %s", error);
@@ -3720,7 +3749,9 @@ public void SQLTierInsert(Database db, DBResultSet results, const char[] error, 
 	{
 		if(results.HasResults == false)
 		{
-			PrintToServer("Tier %i is set for %s.", data, g_map);
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "Tier %i is set for %s. edited by %N [%i]", tier, g_map, client, GetSteamAccountID(client));
+
+			PrintToServer("Tier %i is set for %s.", tier, g_map);
 		}
 	}
 
@@ -3729,6 +3760,8 @@ public void SQLTierInsert(Database db, DBResultSet results, const char[] error, 
 
 public void SQLSetStartZones(Database db, DBResultSet results, const char[] error, any data)
 {
+	int client = GetClientFromSerial(data);
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLSetStartZones: %s", error);
@@ -3738,6 +3771,8 @@ public void SQLSetStartZones(Database db, DBResultSet results, const char[] erro
 	{
 		if(results.HasResults == false)
 		{
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map, client, GetSteamAccountID(client));
+
 			PrintToServer("Start zone successfuly created.");
 		}
 
@@ -3752,6 +3787,8 @@ public void SQLSetStartZones(Database db, DBResultSet results, const char[] erro
 
 public void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any data)
 {
+	int client = GetClientFromSerial(data);
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLSetEndZones: %s", error);
@@ -3761,6 +3798,8 @@ public void SQLSetEndZones(Database db, DBResultSet results, const char[] error,
 	{
 		if(results.HasResults == false)
 		{
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map, client, GetSteamAccountID(client));
+
 			PrintToServer("End zone successfuly created.");
 		}
 
@@ -3779,11 +3818,12 @@ public Action cmd_startmaxs(int client, int args)
 
 	if(flags & ADMFLAG_CUSTOM1)
 	{
-		GetClientAbsOrigin(client, g_zoneStartOrigin[1]);
+		GetClientAbsOrigin(client, g_zoneStartOriginTemp[1]);
+		g_zoneStartOriginTemp[1][2] += 256.0;
 
 		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
-		g_mysql.Query(SQLDeleteStartZone, query, _, DBPrio_Normal);
+		g_mysql.Query(SQLDeleteStartZone, query, GetClientSerial(client), DBPrio_Normal);
 
 		return Plugin_Handled;
 	}
@@ -3798,10 +3838,11 @@ public Action cmd_endmaxs(int client, int args)
 	if(flags & ADMFLAG_CUSTOM1)
 	{
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1]);
+		g_zoneEndOrigin[1][2] += 256.0;
 
 		char query[512] = "";
 		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
-		g_mysql.Query(SQLDeleteEndZone, query, _, DBPrio_Normal);
+		g_mysql.Query(SQLDeleteEndZone, query, GetClientSerial(client), DBPrio_Normal);
 
 		return Plugin_Handled;
 	}
@@ -3827,6 +3868,7 @@ public Action cmd_cpmins(int client, int args)
 				PrintToChat(client, "CP: No.%i", cpnum);
 
 				GetClientAbsOrigin(client, g_cpPos[cpnum][0]);
+				g_cpPos[cpnum][0][2] += 256.0;
 			}
 		}
 
@@ -3843,8 +3885,13 @@ public Action cmd_cpmins(int client, int args)
 	return Plugin_Continue;
 }
 
-public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, any data)
+public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, DataPack data)
 {
+	data.Reset();
+	int client = GetClientFromSerial(data.ReadCell());
+	int cpnum = data.ReadCell();
+	delete data;
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLCPRemoved: %s", error);
@@ -3854,17 +3901,20 @@ public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, a
 	{
 		if(results.HasResults == false)
 		{
-			PrintToServer("Checkpoint zone no. %i successfuly deleted.", data);
+			PrintToServer("Checkpoint zone no. %i successfuly deleted.", cpnum);
 		}
 
 		else if(results.HasResults == true)
 		{
-			PrintToServer("Checkpoint zone no. %i failed to delete.", data);
+			PrintToServer("Checkpoint zone no. %i failed to delete.", cpnum);
 		}
 
 		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", data, RoundFloat(g_cpPos[data][0][0]), RoundFloat(g_cpPos[data][0][1]), RoundFloat(g_cpPos[data][0][2]), RoundFloat(g_cpPos[data][1][0]), RoundFloat(g_cpPos[data][1][1]), RoundFloat(g_cpPos[data][1][2]), g_map);
-		g_mysql.Query(SQLCPInserted, query, data, DBPrio_Normal);
+		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map);
+		DataPack dp = new DataPack();
+		dp.WriteCell(GetClientSerial(client));
+		dp.WriteCell(cpnum);
+		g_mysql.Query(SQLCPInserted, query, dp, DBPrio_Normal);
 	}
 
 	return;
@@ -3883,11 +3933,14 @@ public Action cmd_cpmaxs(int client, int args)
 
 		if(cpnum > 0)
 		{
-			GetClientAbsOrigin(client, g_cpPos[1][cpnum]);
+			GetClientAbsOrigin(client, g_cpPos[cpnum][1]);
 
 			char query[512] = "";
 			Format(query, sizeof(query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
-			g_mysql.Query(SQLCPRemoved, query, cpnum, DBPrio_Normal);
+			DataPack dp = new DataPack();
+			dp.WriteCell(GetClientSerial(client));
+			dp.WriteCell(cpnum);
+			g_mysql.Query(SQLCPRemoved, query, dp, DBPrio_Normal);
 		}
 
 		return Plugin_Handled;
@@ -3896,8 +3949,13 @@ public Action cmd_cpmaxs(int client, int args)
 	return Plugin_Continue;
 }
 
-public void SQLCPInserted(Database db, DBResultSet results, const char[] error, any data)
+public void SQLCPInserted(Database db, DBResultSet results, const char[] error, DataPack data)
 {
+	data.Reset();
+	int client = GetClientFromSerial(data.ReadCell());
+	int cpnum = data.ReadCell();
+	delete data;
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLCPInserted: %s", error);
@@ -3907,12 +3965,16 @@ public void SQLCPInserted(Database db, DBResultSet results, const char[] error, 
 	{
 		if(results.HasResults == false)
 		{
-			PrintToServer("Checkpoint zone no. %i successfuly created.", data);
+			CPSetup(0);
+
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map, client, GetSteamAccountID(client));
+			
+			PrintToServer("Checkpoint zone no. %i successfuly created.", cpnum);
 		}
 
 		else if(results.HasResults == true)
 		{
-			PrintToServer("Checkpoint zone no. %i failed to create.");
+			PrintToServer("Checkpoint zone no. %i failed to create.", cpnum);
 		}
 	}
 
@@ -3943,14 +4005,7 @@ public Action cmd_zones(int client, int args)
 	return Plugin_Continue;
 }
 
-public void ZoneEditor(int client)
-{
-	CPSetup(client);
-
-	return;
-}
-
-stock void ZoneEditor2(int client)
+stock void ZoneEditor(int client)
 {
 	Menu menu = new Menu(zones_handler);
 	menu.SetTitle("Zone editor");
@@ -3985,6 +4040,9 @@ stock void ZoneEditor2(int client)
 
 	menu.Display(client, MENU_TIME_FOREVER);
 
+	g_step = 1;
+	g_axis = 0;
+
 	return;
 }
 
@@ -3997,20 +4055,43 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 			char item[16] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
+			float nulled[3] = {0.0, ...};
+
+			for(int i = 0; i <= 1; i++)
+			{
+				g_zoneStartOriginTemp[i] = nulled;
+				g_zoneEndOriginTemp[i] = nulled;
+			}
+
 			if(StrEqual(item, "start", false) == true)
 			{
 				ZoneEditorStart(param1);
+
+				for(int i = 0; i <= 1; i++)
+				{
+					g_zoneStartOriginTemp[i] = g_zoneStartOrigin[i];
+				}
 			}
 
 			else if(StrEqual(item, "end", false) == true)
 			{
 				ZoneEditorEnd(param1);
+
+				for(int i = 0; i <= 1; i++)
+				{
+					g_zoneEndOriginTemp[i] = g_zoneEndOrigin[i];
+				}
 			}
 
 			for(int i = 1; i <= g_cpCount; i++)
 			{
 				char cp[16] = "";
 				IntToString(i, cp, sizeof(cp));
+
+				for(int j = 0; j <= 1; j++)
+				{
+					g_cpPosTemp[i][j] = nulled;
+				}
 
 				if(StrEqual(item, cp, false) == true)
 				{
@@ -4037,15 +4118,25 @@ stock void ZoneEditorStart(int client)
 	char format[16] = "";
 	Format(format, sizeof(format), "Step: %i", g_step);
 	menu.AddItem("step", format);
-	menu.AddItem("start+xmaxs", "+x/maxs");
-	menu.AddItem("start-xmaxs", "-x/maxs");
-	menu.AddItem("start+ymins", "+y/mins");
-	menu.AddItem("start-ymins", "-y/mins");
-	menu.AddItem("empty", "");
-	menu.AddItem("start+xmins", "+x/mins");
-	menu.AddItem("start-xmins", "-x/mins");
-	menu.AddItem("start+ymaxs", "+y/maxs");
-	menu.AddItem("start-ymaxs", "-y/maxs");
+
+	char format2[32] = "";
+	Format(format2, sizeof(format2), "0;%i;1;sidestart", g_axis);
+	Format(format, sizeof(format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	Format(format2, sizeof(format2), "0;%i;0;sidestart", g_axis);
+	Format(format, sizeof(format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	Format(format2, sizeof(format2), "1;%i;1;sidestart", g_axis);
+	Format(format, sizeof(format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	Format(format2, sizeof(format2), "1;%i;0;sidestart", g_axis);
+	Format(format, sizeof(format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	menu.AddItem("axis", "Change axis");
 	menu.AddItem("startupdate", "Update start zone");
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
@@ -4065,15 +4156,25 @@ stock void ZoneEditorEnd(int client)
 	char format[16] = "";
 	Format(format, sizeof(format), "Step: %i", g_step);
 	menu.AddItem("step", format);
-	menu.AddItem("end+xmaxs", "+x/maxs");
-	menu.AddItem("end-xmaxs", "-x/maxs");
-	menu.AddItem("end+ymins", "+y/mins");
-	menu.AddItem("end-ymins", "-y/mins");
-	menu.AddItem("empty", "");
-	menu.AddItem("end+xmins", "+x/mins");
-	menu.AddItem("end-xmins", "-x/mins");
-	menu.AddItem("end+ymaxs", "+y/maxs");
-	menu.AddItem("end-ymaxs", "-y/maxs");
+
+	char format2[16] = "";
+	Format(format2, sizeof(format2), "0;%i;1;sideend", g_axis);
+	Format(format, sizeof(format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	Format(format2, sizeof(format2), "0;%i;0;sideend", g_axis);
+	Format(format, sizeof(format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	Format(format2, sizeof(format2), "1;%i;1;sideend", g_axis);
+	Format(format, sizeof(format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	Format(format2, sizeof(format2), "1;%i;0;sideend", g_axis);
+	Format(format, sizeof(format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	menu.AddItem("axis", "Change axis");
 	menu.AddItem("endupdate", "Update start zone");
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
@@ -4086,6 +4187,28 @@ stock void ZoneEditorEnd(int client)
 
 stock void ZoneEditorCP(int client, int cpnum)
 {
+	bool quit = false;
+
+	for(int i = 0; i <= 1; i++)
+	{
+		for(int j = 0; j <= 2; j++)
+		{
+			if(g_cpPosTemp[cpnum][i][j] != 0.0)
+			{
+				quit = true;
+
+				continue;
+			}
+		}
+
+		if(quit == true)
+		{
+			continue;
+		}
+
+		g_cpPosTemp[cpnum][i] = g_cpPos[cpnum][i];
+	}
+
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("Zone editor - CP nr. %i zone", cpnum);
 
@@ -4093,35 +4216,35 @@ stock void ZoneEditorCP(int client, int cpnum)
 	Format(button, sizeof(button), "Teleport to CP nr. %i zone", cpnum);
 
 	char itemCP[16] = "";
-	Format(itemCP, sizeof(itemCP), "tp;%i", cpnum);
+	Format(itemCP, sizeof(itemCP), "%i;cptp", cpnum);
 	menu.AddItem(itemCP, button);
 
 	char step[16] = "";
 	Format(step, sizeof(step), "Step: %i", g_step);
 	menu.AddItem("step", step);
 
-	Format(itemCP, sizeof(itemCP), "5;%i", cpnum);
-	menu.AddItem(itemCP, "+x/maxs");
-	Format(itemCP, sizeof(itemCP), "6;%i", cpnum);
-	menu.AddItem(itemCP, "-x/maxs");
-	Format(itemCP, sizeof(itemCP), "3;%i", cpnum);
-	menu.AddItem(itemCP, "+y/mins");
-	Format(itemCP, sizeof(itemCP), "4;%i", cpnum);
-	menu.AddItem(itemCP, "-y/mins");
+	char format[16] = "";
+	char format2[32] = "";
+	Format(format2, sizeof(format2), "%i;0;%i;1;sidecp", cpnum, g_axis);
+	Format(format, sizeof(format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
 
-	menu.AddItem("empty", "");
+	Format(format2, sizeof(format2), "%i;0;%i;0;sidecp", cpnum, g_axis);
+	Format(format, sizeof(format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
 
-	Format(itemCP, sizeof(itemCP), "1;%i", cpnum);
-	menu.AddItem(itemCP, "+x/mins");
-	Format(itemCP, sizeof(itemCP), "2;%i", cpnum);
-	menu.AddItem(itemCP, "-x/mins");
-	Format(itemCP, sizeof(itemCP), "7;%i", cpnum);
-	menu.AddItem(itemCP, "+y/maxs");
-	Format(itemCP, sizeof(itemCP), "8;%i", cpnum);
-	menu.AddItem(itemCP, "-y/maxs");
+	Format(format2, sizeof(format2), "%i;1;%i;1;sidecp", cpnum, g_axis);
+	Format(format, sizeof(format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	Format(format2, sizeof(format2), "%i;1;%i;0;sidecp", cpnum, g_axis);
+	Format(format, sizeof(format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, format);
+
+	menu.AddItem("axis", "Change axis");
 
 	char cpupdate[32] = "";
-	Format(cpupdate, sizeof(cpupdate), "cpupdate;%i", cpnum);
+	Format(cpupdate, sizeof(cpupdate), "%i;cpupdate", cpnum);
 	Format(button, sizeof(button), "Update CP nr. %i zone", cpnum);
 	menu.AddItem(cpupdate, button);
 
@@ -4137,8 +4260,6 @@ stock void ZoneEditorCP(int client, int cpnum)
 
 public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 {
-	bool bDelete = true;
-
 	switch(action)
 	{
 		case MenuAction_Start: //expert-zone idea. thank to ed, maru.
@@ -4148,72 +4269,27 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_Select:
 		{
-			char item[16] = "";
+			char item[32] = "";
 			menu.GetItem(param2, item, sizeof(item));
+
+			int cpnum = 0;
+
+			char exploded[4][16];
+			ExplodeString(item, ";", exploded, 4, 16, false);
+
+			if(StrContains(item, "cp", false) != -1)
+			{
+				cpnum = StringToInt(exploded[0]);
+			}
+
+			bool cpMenu = StrContains(item, "cp", false) != -1;
+			int side = StringToInt(exploded[cpMenu == true ? 1 : 0]);
+			int axis = StringToInt(exploded[cpMenu == true ? 2 : 1]);
+			int mode = StringToInt(exploded[cpMenu == true ? 3 : 2]);
 
 			if(StrEqual(item, "starttp", false) == true)
 			{
 				TeleportEntity(param1, g_center[0], NULL_VECTOR, NULL_VECTOR);
-			}
-
-			else if(StrEqual(item, "step", false) == true)
-			{
-				ZoneEditorStep();
-
-				if(g_ZoneEditor == 0)
-				{
-					ZoneEditorStart(param1);
-				}
-
-				else if(g_ZoneEditor == 1)
-				{
-					ZoneEditorEnd(param1);
-				}
-
-				else if(g_ZoneEditor == 2)
-				{
-					ZoneEditorCP(param1, g_ZoneEditorCP);
-				}
-			}
-
-			else if(StrEqual(item, "start+xmins", false) == true)
-			{
-				g_zoneStartOrigin[0][0] += g_step;
-			}
-
-			else if(StrEqual(item, "start-xmins", false) == true)
-			{
-				g_zoneStartOrigin[0][0] -= g_step;
-			}
-
-			else if(StrEqual(item, "start+ymins", false) == true)
-			{
-				g_zoneStartOrigin[0][1] += g_step;
-			}
-
-			else if(StrEqual(item, "start-ymins", false) == true)
-			{
-				g_zoneStartOrigin[0][1] -= g_step;
-			}
-
-			else if(StrEqual(item, "start+xmaxs", false) == true)
-			{
-				g_zoneStartOrigin[1][0] += g_step;
-			}
-
-			else if(StrEqual(item, "start-xmaxs", false) == true)
-			{
-				g_zoneStartOrigin[1][0] -= g_step;
-			}
-
-			else if(StrEqual(item, "start+ymaxs", false) == true)
-			{
-				g_zoneStartOrigin[1][1] += g_step;
-			}
-
-			else if(StrEqual(item, "start-ymaxs", false) == true)
-			{
-				g_zoneStartOrigin[1][1] -= g_step;
 			}
 
 			else if(StrEqual(item, "endtp", false) == true)
@@ -4221,147 +4297,91 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				TeleportEntity(param1, g_center[1], NULL_VECTOR, NULL_VECTOR);
 			}
 
-			else if(StrEqual(item, "end+xmins", false) == true)
-			{
-				g_zoneEndOrigin[0][0] += g_step;
-			}
-
-			else if(StrEqual(item, "end-xmins", false) == true)
-			{
-				g_zoneEndOrigin[0][0] -= g_step;
-			}
-
-			else if(StrEqual(item, "end+ymins", false) == true)
-			{
-				g_zoneEndOrigin[0][1] += g_step;
-			}
-
-			else if(StrEqual(item, "end-ymins", false) == true)
-			{
-				g_zoneEndOrigin[0][1] -= g_step;
-			}
-
-			else if(StrEqual(item, "end+xmaxs", false) == true)
-			{
-				g_zoneEndOrigin[1][0] += g_step;
-			}
-
-			else if(StrEqual(item, "end-xmaxs", false) == true)
-			{
-				g_zoneEndOrigin[1][0] -= g_step;
-			}
-
-			else if(StrEqual(item, "end+ymaxs", false) == true)
-			{
-				g_zoneEndOrigin[1][1] += g_step;
-			}
-
-			else if(StrEqual(item, "end-ymaxs", false) == true)
-			{
-				g_zoneEndOrigin[1][1] -= g_step;
-			}
-
-			//char exploded[1][16];
-			char exploded[16][16];
-
-			ExplodeString(item, ";", exploded, 2, sizeof(exploded));
-
-			int cpnum = StringToInt(exploded[1]);
-
-			//PrintToServer("%i, %s | %s | %s", cpnum, item, exploded[0], exploded[1]);
-
-			char cpFormated[16] = "";
-
-			Format(cpFormated, sizeof(cpFormated), "tp;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
+			else if(StrContains(item, "cptp", false) != -1)
 			{
 				TeleportEntity(param1, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR);
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "1;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
+			if(StrEqual(item, "step", false) == true)
 			{
-				g_cpPos[cpnum][0][0] += g_step;
+				g_step *= 2;
+
+				if(g_step == 1024)
+				{
+					g_step = 1;
+				}
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "2;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
+			else if(StrEqual(item, "axis", false) == true)
 			{
-				g_cpPos[cpnum][0][0] -= g_step;
+				g_axis++;
+
+				if(g_axis > 2)
+				{
+					g_axis = 0;
+				}
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "3;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
+			if(StrContains(item, "sidestart", false) != -1)
 			{
-				g_cpPos[cpnum][0][1] += g_step;
+				g_zoneStartOriginTemp[side][axis] += mode == 1 ? g_step : -g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "4;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
+			else if(StrContains(item, "sideend", false) != -1)
 			{
-				g_cpPos[cpnum][0][1] -= g_step;
+				g_zoneEndOriginTemp[side][axis] += mode == 1 ? g_step : -g_step;
 			}
 
-			Format(cpFormated, sizeof(cpFormated), "5;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
+			else if(StrContains(item, "sidecp", false) != -1)
 			{
-				g_cpPos[cpnum][1][0] += g_step;
+				g_cpPosTemp[cpnum][side][axis] += mode == 1 ? g_step : -g_step;
 			}
-
-			Format(cpFormated, sizeof(cpFormated), "6;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
-			{
-				g_cpPos[cpnum][1][0] -= g_step;
-			}
-
-			Format(cpFormated, sizeof(cpFormated), "7;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
-			{
-				g_cpPos[cpnum][1][1] += g_step;
-			}
-
-			Format(cpFormated, sizeof(cpFormated), "8;%i", cpnum);
-
-			if(StrEqual(item, cpFormated, false) == true)
-			{
-				g_cpPos[cpnum][1][1] -= g_step;
-			}
-
-			char query[512] = "";
-
-			Format(cpFormated, sizeof(cpFormated), "cpupdate;%i", cpnum);
 
 			if(StrEqual(item, "startupdate", false) == true)
 			{
+				char query[512] = "";
 				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
-				g_mysql.Query(SQLUpdateZone, query, 0, DBPrio_Normal);
+				DataPack dp = new DataPack();
+				dp.WriteCell(GetClientSerial(param1));
+				dp.WriteCell(0);
+				g_mysql.Query(SQLUpdateZone, query, dp, DBPrio_Normal);
 			}
 
 			else if(StrEqual(item, "endupdate", false) == true)
 			{
+				char query[512] = "";
 				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
-				g_mysql.Query(SQLUpdateZone, query, 1, DBPrio_Normal);
+				DataPack dp = new DataPack();
+				dp.WriteCell(GetClientSerial(param1));
+				dp.WriteCell(1);
+				g_mysql.Query(SQLUpdateZone, query, dp, DBPrio_Normal);
 			}
 
-			else if(StrEqual(item, cpFormated, false) == true)
+			else if(StrContains(item, "cpupdate", false) != -1)
 			{
-				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[0][cpnum][0]), RoundFloat(g_cpPos[0][cpnum][1]), RoundFloat(g_cpPos[0][cpnum][2]), RoundFloat(g_cpPos[1][cpnum][0]), RoundFloat(g_cpPos[1][cpnum][1]), RoundFloat(g_cpPos[1][cpnum][2]), cpnum, g_map);
-				g_mysql.Query(SQLUpdateZone, query, cpnum + 1, DBPrio_Normal);
+				char query[512] = "";
+				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), cpnum, g_map);
+				DataPack dp = new DataPack();
+				dp.WriteCell(GetClientSerial(param1));
+				dp.WriteCell(cpnum + 1);
+				g_mysql.Query(SQLUpdateZone, query, dp, DBPrio_Normal);
 			}
 
-			if(StrEqual(item, "step", false) == false)
-			{
-				menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
+			//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
 
-				bDelete = false;
+			if(g_ZoneEditor == 0)
+			{
+				ZoneEditorStart(param1);
+			}
+
+			else if(g_ZoneEditor == 1)
+			{
+				ZoneEditorEnd(param1);
+			}
+
+			else if(g_ZoneEditor == 2)
+			{
+				ZoneEditorCP(param1, g_ZoneEditorCP);
 			}
 		}
 
@@ -4385,18 +4405,20 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_End:
 		{
-			if(bDelete == true)
-			{
-				delete menu;
-			}
+			delete menu;
 		}
 	}
 
 	return view_as<int>(action);
 }
 
-public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, any data)
+public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
+	data.Reset();
+	int client = GetClientFromSerial(data.ReadCell());
+	int cpnum = data.ReadCell();
+	delete data;
+
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLUpdateZone: %s", error);
@@ -4406,51 +4428,60 @@ public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, 
 	{
 		if(results.HasResults == false)
 		{
-			if(data == 1)
+			if(cpnum == 0)
 			{
-				PrintToServer("End zone successfuly updated.");
-			}
+				for(int i = 0; i <= 1; i++)
+				{
+					g_zoneStartOrigin[i] = g_zoneStartOriginTemp[i];
+				}
 
-			else if(data == 0)
-			{
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map, client, GetSteamAccountID(client));
+
 				PrintToServer("Start zone successfuly updated.");
 			}
 
-			else if(data > 1)
+			else if(cpnum == 1)
 			{
-				PrintToServer("CP zone nr. %i successfuly updated.", data - 1);
+				for(int i = 0; i <= 1; i++)
+				{
+					g_zoneEndOrigin[i] = g_zoneEndOriginTemp[i];
+				}
+
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map, client, GetSteamAccountID(client));
+
+				PrintToServer("End zone successfuly updated.");
+			}
+
+			else if(cpnum > 1)
+			{
+				for(int i = 0; i <= 1; i++)
+				{
+					g_cpPos[cpnum - 1][i] = g_cpPosTemp[cpnum - 1][i];
+				}
+
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "CP zone nr. %i successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", cpnum - 1, RoundFloat(g_cpPos[cpnum - 1][0][0]), RoundFloat(g_cpPos[cpnum - 1][0][1]), RoundFloat(g_cpPos[cpnum - 1][0][2]), RoundFloat(g_cpPos[cpnum - 1][1][0]), RoundFloat(g_cpPos[cpnum - 1][1][1]), RoundFloat(g_cpPos[cpnum - 1][1][2]), g_map, client, GetSteamAccountID(client));
+
+				PrintToServer("CP zone nr. %i successfuly updated.", cpnum - 1);
 			}
 		}
 
 		else if(results.HasResults == true)
 		{
-			if(data == 1)
-			{
-				PrintToServer("End zone failed to update.");
-			}
-
-			else if(data == 0)
+			if(cpnum == 0)
 			{
 				PrintToServer("Start zone failed to update.");
 			}
 
-			else if(data > 1)
+			else if(cpnum == 1)
 			{
-				PrintToServer("CP zone nr. %i failed to update", data - 1);
+				PrintToServer("End zone failed to update.");
+			}
+
+			else if(cpnum > 1)
+			{
+				PrintToServer("CP zone nr. %i failed to update", cpnum - 1);
 			}
 		}
-	}
-
-	return;
-}
-
-stock void ZoneEditorStep()
-{
-	g_step *= 2;
-
-	if(g_step == 1024)
-	{
-		g_step = 1;
 	}
 
 	return;
@@ -4511,18 +4542,13 @@ stock void CPSetup(int client)
 	for(int i = 1; i <= 10; i++)
 	{
 		Format(query, sizeof(query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
-
-		DataPack dp = new DataPack();
-		dp.WriteCell(client > 0 ? GetClientSerial(client) : 0);
-		dp.WriteCell(i);
-
-		g_mysql.Query(SQLCPSetup, query, dp, DBPrio_Normal);
+		g_mysql.Query(SQLCPSetup, query, i, DBPrio_Normal);
 	}
 
 	return;
 }
 
-public void SQLCPSetup(Database db, DBResultSet results, const char[] error, DataPack dp)
+public void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -4531,38 +4557,26 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, Dat
 
 	else if(strlen(error) == 0)
 	{
-		dp.Reset();
-
-		int client = GetClientFromSerial(dp.ReadCell());
-		int cp = dp.ReadCell();
-
-		delete dp;
-
 		if(results.FetchRow() == true)
 		{
 			int result[2] = {0, 3};
 
 			for(int i = 0; i <= 2; i++)
 			{
-				g_cpPos[cp][0][i] = results.FetchFloat(result[0]++);
-				g_cpPos[cp][1][i] = results.FetchFloat(result[1]++);
+				g_cpPos[data][0][i] = results.FetchFloat(result[0]++);
+				g_cpPos[data][1][i] = results.FetchFloat(result[1]++);
 			}
 
 			if(g_devmap == false)
 			{
-				CreateCP(cp);
+				CreateCP(data);
 			}
 
 			g_cpCount++;
 		}
 
-		if(cp == 10)
+		if(data == 10)
 		{
-			if(client > 0)
-			{
-				ZoneEditor2(client);
-			}
-
 			if(g_zoneHave[2] == false)
 			{
 				g_zoneHave[2] = true;
@@ -4605,6 +4619,8 @@ stock void CreateCP(int cpnum)
 		g_center[cpnum + 1][i] = (g_cpPos[cpnum][1][i] + g_cpPos[cpnum][0][i]) / 2.0;
 	}
 
+	g_center[cpnum + 1][2] += 1.0;
+
 	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
 	float mins[3] = {0.0, ...};
@@ -4627,7 +4643,7 @@ stock void CreateCP(int cpnum)
 		}
 	}
 
-	maxs[2] = 124.0;
+	maxs[2] = FloatAbs(g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]);
 
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0); //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
@@ -4779,16 +4795,24 @@ public Action SDKStartTouch(int entity, int other)
 				
 				bool record = false;
 
-				if(g_ServerRecordTime > time)
+				if(g_ServerRecordTime > 0.0)
 				{
-					timeDiff = g_ServerRecordTime - time;
+					if(g_ServerRecordTime > time)
+					{
+						timeDiff = g_ServerRecordTime - time;
 
-					record = true;
+						record = true;
+					}
+
+					else if(g_ServerRecordTime <= time)
+					{
+						timeDiff = time - g_ServerRecordTime;
+					}
 				}
 
-				else if(g_ServerRecordTime <= time)
+				else if(g_ServerRecordTime == 0.0)
 				{
-					timeDiff = time - g_ServerRecordTime;
+					timeDiff = 0.0;
 				}
 
 				char timeSR[24] = "";
@@ -5134,7 +5158,6 @@ public Action SDKStartTouch(int entity, int other)
 					Format(query, sizeof(query), "SELECT cp%i FROM records LIMIT 1", i);
 
 					DataPack dp = new DataPack();
-
 					dp.WriteCell(GetClientSerial(other));
 					dp.WriteCell(i);
 
@@ -6358,10 +6381,21 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 	for(int i = 0; i <= 2; i++)
 	{
-		start[0][i] = g_zoneStartOrigin[0][i] < g_zoneStartOrigin[1][i] == true ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i]; //zones calculation from tengu (tengulawl)
-		end[0][i] = g_zoneStartOrigin[0][i] > g_zoneStartOrigin[1][i] == true ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i];
-		start[1][i] = g_zoneEndOrigin[0][i] < g_zoneEndOrigin[1][i] == true ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
-		end[1][i] = g_zoneEndOrigin[0][i] > g_zoneEndOrigin[1][i] == true ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
+		if(g_devmap == false)
+		{
+			start[0][i] = g_zoneStartOrigin[0][i] < g_zoneStartOrigin[1][i] ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i]; //zones calculation from tengu (tengulawl)
+			end[0][i] = g_zoneStartOrigin[0][i] > g_zoneStartOrigin[1][i] ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i];
+			start[1][i] = g_zoneEndOrigin[0][i] < g_zoneEndOrigin[1][i] ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
+			end[1][i] = g_zoneEndOrigin[0][i] > g_zoneEndOrigin[1][i] ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
+		}
+
+		else if(g_devmap == true)
+		{
+			start[0][i] = g_zoneStartOriginTemp[0][i] < g_zoneStartOriginTemp[1][i] ? g_zoneStartOriginTemp[0][i] : g_zoneStartOriginTemp[1][i]; //zones calculation from tengu (tengulawl)
+			end[0][i] = g_zoneStartOriginTemp[0][i] > g_zoneStartOriginTemp[1][i] ? g_zoneStartOriginTemp[0][i] : g_zoneStartOriginTemp[1][i];
+			start[1][i] = g_zoneEndOriginTemp[0][i] < g_zoneEndOriginTemp[1][i] ? g_zoneEndOriginTemp[0][i] : g_zoneEndOriginTemp[1][i];
+			end[1][i] = g_zoneEndOriginTemp[0][i] > g_zoneEndOriginTemp[1][i] ? g_zoneEndOriginTemp[0][i] : g_zoneEndOriginTemp[1][i];
+		}
 	}
 
 	for(int i = 0; i <= 1; i++)
@@ -6383,8 +6417,17 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 			for(int j = 0; j <= 2; j++)
 			{
-				start[i][j] = g_cpPos[cpnum][0][j] < g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
-				end[i][j] = g_cpPos[cpnum][0][j] > g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
+				if(g_devmap == false)
+				{
+					start[i][j] = g_cpPos[cpnum][0][j] < g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
+					end[i][j] = g_cpPos[cpnum][0][j] > g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
+				}
+
+				else if(g_devmap == true)
+				{
+					start[i][j] = g_cpPosTemp[cpnum][0][j] < g_cpPosTemp[cpnum][1][j] == true ? g_cpPosTemp[cpnum][0][j] : g_cpPosTemp[cpnum][1][j];
+					end[i][j] = g_cpPosTemp[cpnum][0][j] > g_cpPosTemp[cpnum][1][j] == true ? g_cpPosTemp[cpnum][0][j] : g_cpPosTemp[cpnum][1][j];
+				}
 			}
 
 			start[i][2] += size;
@@ -6392,28 +6435,59 @@ stock void DrawZone(int client, float life, float size, int speed)
 		}
 	}
 
-	float corners[12][8][3]; //https://github.com/tengulawl/scripting/blob/master/include/tengu_stocks.inc
+	float point[12][8][3]; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L4828
 
 	for(int i = 0; i <= zones; i++)
 	{
-		//bottom left front
-		corners[i][0] = start[i]; //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L82
+		point[i][0] = start[i];
+		point[i][7] = end[i];
 
-		//bottom right front
-		corners[i][1] = start[i];
-		corners[i][1][0] = end[i][0];
+		// calculate all zone edges
+		for(int j = 1; j < 7; j++)
+		{
+			for(int k = 0; k < 3; k++)
+			{
+				point[i][j][k] = point[i][((j >> (2 - k)) & 1) * 7][k];
+			}
+		}
 
-		//bottom right back
-		corners[i][2] = end[i];
-		corners[i][2][2] = start[i][2];
+		float center[2] = {0.0, ...};
+		center[0] = ((point[i][0][0] + point[i][7][0]) / 2);
+		center[1] = ((point[i][0][1] + point[i][7][1]) / 2);
 
-		//bottom left back
-		corners[i][3] = start[i];
-		corners[i][3][1] = end[i][1];
+		for(int j = 0; j < 8; j++)
+		{
+			for(int k = 0; k < 2; k++)
+			{
+				if(point[i][j][k] < center[k])
+				{
+					point[i][j][k] += 1.0;
+				}
+				else if(point[i][j][k] > center[k])
+				{
+					point[i][j][k] -= 1.0;
+				}
+			}
+		}
 
-		int k = 0;
+		int pairs[][] =
+		{
+			{ 0, 2 },
+			{ 2, 6 },
+			{ 6, 4 },
+			{ 4, 0 },
+			{ 0, 1 },
+			{ 3, 1 },
+			{ 3, 2 },
+			{ 3, 7 },
+			{ 5, 1 },
+			{ 5, 4 },
+			{ 6, 7 },
+			{ 7, 5 }
+		};
+
 		int modelType = 0;
-		int color[4] = {0, ...};
+		int color[4] = {255, ...};
 
 		if(i == 1)
 		{
@@ -6425,16 +6499,9 @@ stock void DrawZone(int client, float life, float size, int speed)
 			modelType = 2;
 		}
 
-		for(int j = 0; j <= 3; j++)
-		{
-			k = j + 1;
-
-			if(j == 3)
-			{
-				k = 0;
-			}
-			
-			TE_SetupBeamPoints(corners[i][j], corners[i][k], g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+		for(int j = 0; j < (g_devmap == true ? 12 : 4); j++) //3d 12, 2d 4
+		{			
+			TE_SetupBeamPoints(point[i][pairs[j][0]], point[i][pairs[j][1]], g_devmap == true ? g_laserBeam : g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToClient(client, 0.0);
 		}
 	}
@@ -6740,9 +6807,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(IsClientInGame(i) == true)
 				{
-					DrawZone(i, 0.1, 3.0, 10);
-
-					EyeAngleTestHud(client);
+					DrawZone(i, 0.15, 3.0, 10);
 				}
 			}
 		}
@@ -8042,7 +8107,7 @@ public Action timer_clantag(Handle timer, int client)
 
 stock void MLStats(int client, bool ground)
 {
-	if(IsFakeClient(client) == true)
+	if(IsFakeClient(client) == true || IsValidClient(client) == false)
 	{
 		return;
 	}
@@ -8075,6 +8140,7 @@ stock void MLStats(int client, bool ground)
 	}
 
 	int flyer = g_mlsFlyer[client];
+
 	float distance = 0.0;
 	char tp[256] = "";
 
@@ -8319,36 +8385,6 @@ stock MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.c
 	delete hForward;
 	
 	return MRES_Ignored;
-}
-
-stock void EyeAngleTestHud(int client)
-{
-	float eye[3] = {0.0, ...};
-	GetClientEyeAngles(client, eye);
-
-	//PrintToServer("%f", eye[1]);
-
-	if(-35.0 >= eye[1] >= -135.0)
-	{
-		PrintHintText(client, "x/mins");
-	}
-
-	else if(135.0 <= eye[1] >= -135.0)
-	{
-		PrintHintText(client, "y/mins");
-	}
-
-	else if(-45.0 <= eye[1] <= 45.0)
-	{
-		PrintHintText(client, "x/maxs");
-	}
-
-	else if(45.0 <= eye[1] <= 135.0)
-	{
-		PrintHintText(client, "y/maxs");
-	}
-
-	return;
 }
 
 stock void FormatSeconds(float time, char[] format)
