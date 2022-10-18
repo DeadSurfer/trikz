@@ -55,13 +55,15 @@ enum struct eFrame
 }
 
 int g_tick[MAXPLAYER] = {0, ...};
+int g_tickReplay = 0;
 int g_steamid3[2] = {0, ...};
 Database g_database = null;
 native bool Trikz_GetTimerState(int client);
 int g_flagsLast[MAXPLAYER] = {0, ...};
 Handle g_DoAnimationEvent = INVALID_HANDLE;
 DynamicDetour g_MaintainBotQuota = null;
-float g_timeToRestart[MAXPLAYER] = {0.0, ...};
+float g_timeToRestart = 0.0;
+float g_timeToStart = 0.0;
 int g_weapon[MAXPLAYER] = {0, ...};
 bool g_switchPrevent[MAXPLAYER] = {false, ...};
 DynamicHook g_UpdateStepSound = null;
@@ -72,7 +74,7 @@ native int Trikz_Restart(int client, bool instant);
 int g_bot[2] = {0, ...};
 bool g_loaded[2] = {false, ...};
 float g_tickrate = 0.0;
-int g_replayTickcount[MAXPLAYER] = {0, ...};
+int g_replayTickcount = 0;
 char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smokegrenade", "p228", "deagle", "elite", "fiveseven", 
 						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
 						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
@@ -427,6 +429,7 @@ public void SQLGetName(Database db, DBResultSet results, const char[] error, any
 public void LoadRecord()
 {
 	char type[][] = {"", "_partner"};
+	int tickcountLower = 0;
 
 	for(int i = 0; i < sizeof(type); i++)
 	{
@@ -444,7 +447,15 @@ public void LoadRecord()
 			f.ReadInt32(g_steamid3[i]);
 			f.ReadInt32(time);
 
-			g_replayTickcount[g_bot[i]] = tickcount;
+			if(tickcountLower == 0)
+			{
+				tickcountLower = tickcount;
+			}
+
+			if(tickcountLower >= tickcount)
+			{
+				g_replayTickcount = tickcount;
+			}
 
 			any data[sizeof(eFrame)];
 
@@ -469,9 +480,11 @@ public void LoadRecord()
 			}
 
 			g_loaded[i] = true;
-			g_tick[g_bot[i]] = 0;
+			//g_tick[g_bot[i]] = 0;
 		}
 	}
+
+	g_tickReplay = 0;
 
 	return;
 }
@@ -560,112 +573,123 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsFakeClient(client) == true && IsPlayerAlive(client) == true && g_tick[client] < g_replayTickcount[client] && g_loaded[0] == true && g_loaded[1] == true)
+	if(IsFakeClient(client) == true && IsPlayerAlive(client) == true)
 	{
-		if(IsClientInGame(client) == true && g_tick[client] == 0)
-		{
-			Trikz_Restart(client, false);
-
-			SetEntityCollisionGroup(client, 2);
-
-			/*int flags = GetEntityFlags(client);
-
-			if((flags & FL_ATCONTROLS) == 0)
-			{
-				SetEntityFlags(client, (flags | FL_ATCONTROLS));
-			}*/
-		}
-
 		for(int i = 0; i <= 2; i++)
 		{
 			vel[i] = 0.0; //prevent shakes at flat surface.
 		}
 
-		eFrame frame;
-		g_frameCache[client].GetArray(g_tick[client]++, frame, sizeof(eFrame));
-
-		float posPrev[3] = {0.0, ...};
-		//GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
-		GetClientAbsOrigin(client, posPrev);
-
-		float velNew[3] = {0.0, ...};
-		MakeVectorFromPoints(posPrev, frame.pos, velNew);
-		ScaleVector(velNew, g_tickrate);
-		
-		float ang[3] = {0.0, ...};
-		ang[0] = frame.ang[0];
-		ang[1] = frame.ang[1];
-
-		buttons = frame.buttons;
-
-		int flags = GetEntityFlags(client);
-		ApplyFlags(flags, frame.flags, FL_ONGROUND);
-		ApplyFlags(flags, frame.flags, FL_PARTIALGROUND);
-		ApplyFlags(flags, frame.flags, FL_INWATER);
-		ApplyFlags(flags, frame.flags, FL_SWIM);
-		SetEntityFlags(client, flags);
-
-		if(g_flagsLast[client] & FL_ONGROUND && !(frame.flags & FL_ONGROUND) && g_DoAnimationEvent != INVALID_HANDLE)
+		if(g_tickReplay < g_replayTickcount && g_loaded[0] == true && g_loaded[1] == true)
 		{
-			SDKCall(g_DoAnimationEvent, g_Linux ? EntIndexToEntRef(client) : client, 3, 0);
-		}
+			//if(IsClientInGame(client) == true && g_tickReplay == 0)
+			//{
+				//Trikz_Restart(client, false);
 
-		g_flagsLast[client] = frame.flags;
+				//SetEntityCollisionGroup(client, 2);
 
-		MoveType movetype = MOVETYPE_NOCLIP;
-		
-		if(frame.movetype == MOVETYPE_LADDER)
-		{
-			movetype = frame.movetype;
-		}
+				/*int flags = GetEntityFlags(client);
 
-		SetEntityMoveType(client, movetype);
-
-		if(frame.weapon > 0)
-		{
-			for(int i = 0; i < sizeof(g_weaponName); i++)
-			{
-				if(frame.weapon == i + 1)
+				if((flags & FL_ATCONTROLS) == 0)
 				{
-					FakeClientCommandEx(client, "use weapon_%s", g_weaponName[i]);
+					SetEntityFlags(client, (flags | FL_ATCONTROLS));
+				}*/
+			//}
 
-					break;
+			eFrame frame;
+			g_frameCache[client].GetArray(g_tickReplay, frame, sizeof(eFrame));
+
+			float posPrev[3] = {0.0, ...};
+			//GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
+			GetClientAbsOrigin(client, posPrev);
+
+			float velNew[3] = {0.0, ...};
+			MakeVectorFromPoints(posPrev, frame.pos, velNew);
+			ScaleVector(velNew, g_tickrate);
+			
+			float ang[3] = {0.0, ...};
+			ang[0] = frame.ang[0];
+			ang[1] = frame.ang[1];
+
+			buttons = frame.buttons;
+
+			int flags = GetEntityFlags(client);
+			ApplyFlags(flags, frame.flags, FL_ONGROUND);
+			ApplyFlags(flags, frame.flags, FL_PARTIALGROUND);
+			ApplyFlags(flags, frame.flags, FL_INWATER);
+			ApplyFlags(flags, frame.flags, FL_SWIM);
+			SetEntityFlags(client, flags);
+
+			if(g_flagsLast[client] & FL_ONGROUND && !(frame.flags & FL_ONGROUND) && g_DoAnimationEvent != INVALID_HANDLE)
+			{
+				SDKCall(g_DoAnimationEvent, g_Linux ? EntIndexToEntRef(client) : client, 3, 0);
+			}
+
+			g_flagsLast[client] = frame.flags;
+
+			MoveType movetype = MOVETYPE_NOCLIP;
+			
+			if(frame.movetype == MOVETYPE_LADDER)
+			{
+				movetype = frame.movetype;
+			}
+
+			SetEntityMoveType(client, movetype);
+
+			if(frame.weapon > 0)
+			{
+				for(int i = 0; i < sizeof(g_weaponName); i++)
+				{
+					if(frame.weapon == i + 1)
+					{
+						FakeClientCommandEx(client, "use weapon_%s", g_weaponName[i]);
+
+						break;
+					}
+				}
+			}
+
+			if(g_tickReplay == 0)
+			{
+				Trikz_Restart(client, false);
+
+				SetEntityCollisionGroup(client, 2);
+
+				TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}));
+
+				g_tickReplay++;
+
+				g_timeToStart = GetGameTime();
+			}
+
+			else if(0 < g_tickReplay < g_replayTickcount && GetGameTime() - g_timeToStart >= 3.0)
+			{
+				float fix = GetVectorLength(velNew); //DataTable warning: (class player): Out-of-range value (-36931.695313 / -4096.000000) in SendPropFloat 'm_flFallVelocity', clamping.
+
+				if(fix > 4096.000000)
+				{
+					TeleportEntity(client, frame.pos, ang, NULL_VECTOR);
+				}
+
+				else if(fix <= 4096.000000)
+				{
+					TeleportEntity(client, NULL_VECTOR, ang, velNew);
+				}
+
+				if(g_bot[0] == client)
+				{
+					g_tickReplay++;
+
+					g_timeToRestart = GetGameTime();
 				}
 			}
 		}
 
-		if(g_tick[client] == 1)
+		else if(g_tickReplay == g_replayTickcount && GetGameTime() - g_timeToRestart >= 3.0)
 		{
-			TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}));
+			g_tickReplay = 0;
+			//g_tick[Trikz_GetClientPartner(client)] = 0;
 		}
-
-		else if(1 < g_tick[client] < g_replayTickcount[client])
-		{
-			float fix = GetVectorLength(velNew); //DataTable warning: (class player): Out-of-range value (-36931.695313 / -4096.000000) in SendPropFloat 'm_flFallVelocity', clamping.
-
-			if(fix > 4096.000000)
-			{
-				TeleportEntity(client, frame.pos, ang, NULL_VECTOR);
-			}
-
-			else if(fix <= 4096.000000)
-			{
-				TeleportEntity(client, NULL_VECTOR, ang, velNew);
-			}
-		}
-
-		else if(g_tick[client] == g_replayTickcount[client]) //Do unstuck
-		{
-			TeleportEntity(client, frame.pos, ang, NULL_VECTOR);
-		}
-
-		g_timeToRestart[client] = GetGameTime();
-	}
-
-	else if(IsFakeClient(client) == true && IsPlayerAlive(client) == true && g_tick[client] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart[client] >= 3.0)
-	{
-		g_tick[client] = 0;
-		g_tick[Trikz_GetClientPartner(client)] = 0;
 	}
 
 	return Plugin_Continue;
