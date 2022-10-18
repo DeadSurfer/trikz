@@ -6391,7 +6391,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 
 		else if(g_devmap == true)
 		{
-			start[0][i] = g_zoneStartOriginTemp[0][i] < g_zoneStartOriginTemp[1][i] ? g_zoneStartOriginTemp[0][i] : g_zoneStartOriginTemp[1][i]; //zones calculation from tengu (tengulawl)
+			start[0][i] = g_zoneStartOriginTemp[0][i] < g_zoneStartOriginTemp[1][i] ? g_zoneStartOriginTemp[0][i] : g_zoneStartOriginTemp[1][i];
 			end[0][i] = g_zoneStartOriginTemp[0][i] > g_zoneStartOriginTemp[1][i] ? g_zoneStartOriginTemp[0][i] : g_zoneStartOriginTemp[1][i];
 			start[1][i] = g_zoneEndOriginTemp[0][i] < g_zoneEndOriginTemp[1][i] ? g_zoneEndOriginTemp[0][i] : g_zoneEndOriginTemp[1][i];
 			end[1][i] = g_zoneEndOriginTemp[0][i] > g_zoneEndOriginTemp[1][i] ? g_zoneEndOriginTemp[0][i] : g_zoneEndOriginTemp[1][i];
@@ -6442,7 +6442,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 		point[i][0] = start[i];
 		point[i][7] = end[i];
 
-		// calculate all zone edges
+		//calculate all zone edges
 		for(int j = 1; j < 7; j++)
 		{
 			for(int k = 0; k < 3; k++)
@@ -6452,8 +6452,8 @@ stock void DrawZone(int client, float life, float size, int speed)
 		}
 
 		float center[2] = {0.0, ...};
-		center[0] = ((point[i][0][0] + point[i][7][0]) / 2);
-		center[1] = ((point[i][0][1] + point[i][7][1]) / 2);
+		center[0] = (point[i][0][0] + point[i][7][0]) / 2;
+		center[1] = (point[i][0][1] + point[i][7][1]) / 2;
 
 		for(int j = 0; j < 8; j++)
 		{
@@ -6463,6 +6463,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 				{
 					point[i][j][k] += 1.0;
 				}
+
 				else if(point[i][j][k] > center[k])
 				{
 					point[i][j][k] -= 1.0;
@@ -6470,22 +6471,7 @@ stock void DrawZone(int client, float life, float size, int speed)
 			}
 		}
 
-		int pairs[][] =
-		{
-			{ 0, 2 },
-			{ 2, 6 },
-			{ 6, 4 },
-			{ 4, 0 },
-			{ 0, 1 },
-			{ 3, 1 },
-			{ 3, 2 },
-			{ 3, 7 },
-			{ 5, 1 },
-			{ 5, 4 },
-			{ 6, 7 },
-			{ 7, 5 }
-		};
-
+		int pairs[][] = {{0, 2}, {2, 6}, {6, 4}, {4, 0}, {0, 1}, {3, 1}, {3, 2}, {3, 7}, {5, 1}, {5, 4}, {6, 7}, {7, 5}};
 		int modelType = 0;
 		int color[4] = {255, ...};
 
@@ -8140,7 +8126,6 @@ stock void MLStats(int client, bool ground)
 	}
 
 	int flyer = g_mlsFlyer[client];
-
 	float distance = 0.0;
 	char tp[256] = "";
 
