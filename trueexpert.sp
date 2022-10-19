@@ -203,6 +203,8 @@ KeyValues g_kv = null;
 bool g_zoneDrawed[MAXPLAYER] = {false, ...};
 int g_axis = 0;
 char g_axisLater[][] = {"X", "Y", "Z"};
+char g_query[512] = "";
+char g_format[256] = "";
 
 public Plugin myinfo =
 {
@@ -549,9 +551,8 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 			char map[192] = "";
 			results.FetchString(0, map, sizeof(map));
 
-			char query[512] = "";
-			Format(query, sizeof(query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s' AND time != 0), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
-			g_mysql.Query(SQLRecalculatePoints, query, _, DBPrio_Normal);
+			Format(g_query, sizeof(g_query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s' AND time != 0), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+			g_mysql.Query(SQLRecalculatePoints, g_query, _, DBPrio_Normal);
 		}
 	}
 
@@ -569,14 +570,12 @@ public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] 
 	{
 		int place = 0;
 
-		char query[512] = "";
-
 		while(results.FetchRow() == true)
 		{
 			int points = results.FetchInt(1) * results.FetchInt(0) / ++place; //thanks to DeadSurfer //https://1drv.ms/u/s!Aq4KvqCyYZmHgpM9uKBA-74lYr2L3Q
-			Format(query, sizeof(query), "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2));
+			Format(g_query, sizeof(g_query), "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2));
 			g_queryLast++;
-			g_mysql.Query(SQLRecalculatePoints2, query, _, DBPrio_Normal);
+			g_mysql.Query(SQLRecalculatePoints2, g_query, _, DBPrio_Normal);
 		}
 	}
 
@@ -612,9 +611,8 @@ public void SQLRecalculatePoints3(Database db, DBResultSet results, const char[]
 	{
 		while(results.FetchRow() == true)
 		{
-			char query[512] = "";
-			Format(query, sizeof(query), "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0)); //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
-			g_mysql.Query(SQLRecalculateUserPoints, query, results.FetchInt(0), DBPrio_Normal);
+			Format(g_query, sizeof(g_query), "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0)); //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
+			g_mysql.Query(SQLRecalculateUserPoints, g_query, results.FetchInt(0), DBPrio_Normal);
 		}
 	}
 
@@ -637,10 +635,9 @@ public void SQLRecalculateUserPoints(Database db, DBResultSet results, const cha
 			points += results.FetchInt(0);
 		}
 
-		char query[512] = "";
-		Format(query, sizeof(query), "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, data);
+		Format(g_query, sizeof(g_query), "UPDATE users SET points = %i WHERE steamid = %i LIMIT 1", points, data);
 		g_queryLast++;
-		g_mysql.Query(SQLUpdateUserPoints, query, _, DBPrio_Normal);
+		g_mysql.Query(SQLUpdateUserPoints, g_query, _, DBPrio_Normal);
 	}
 
 	return;
@@ -680,15 +677,13 @@ public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] erro
 		{
 			g_pointsMaxs = results.FetchInt(0);
 
-			char query[512] = "";
-
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 				{
 					int steamid = GetSteamAccountID(i);
-					Format(query, sizeof(query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
-					g_mysql.Query(SQLGetPoints, query, GetClientSerial(i), DBPrio_Normal);
+					Format(g_query, sizeof(g_query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
+					g_mysql.Query(SQLGetPoints, g_query, GetClientSerial(i), DBPrio_Normal);
 				}
 			}
 		}
@@ -1023,18 +1018,16 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 
 		if(g_button[activator] == true && button == true)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "YouPressedButton", activator);
-			SendMessage(activator, format);
+			Format(g_format, sizeof(g_format), "%T", "YouPressedButton", activator);
+			SendMessage(activator, g_format);
 		}
 
 		bool pbutton = gCV_pbutton.BoolValue;
 
 		if(g_pbutton[g_partner[activator]] == true && pbutton == true)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "YourPartnerPressedButton", g_partner[activator]);
-			SendMessage(g_partner[activator], format);
+			Format(g_format, sizeof(g_format), "%T", "YourPartnerPressedButton", g_partner[activator]);
+			SendMessage(g_partner[activator], g_format);
 		}
 	}
 
@@ -1314,15 +1307,14 @@ public void Checkpoint(int client)
 		Menu menu = new Menu(checkpoint_handler);
 		menu.SetTitle("%T", "Checkpoint", client);
 
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", "CP-save", client);
-		menu.AddItem("Save", format);
-		Format(format, sizeof(format), "%T", "CP-teleport", client);
-		menu.AddItem("Teleport", format, g_cpToggled[client][0] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-		Format(format, sizeof(format), "%T", "CP-saveSecond", client);
-		menu.AddItem("Save second", format);
-		Format(format, sizeof(format), "%T", "CP-teleportSecond", client);
-		menu.AddItem("Teleport second", format, g_cpToggled[client][1] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(g_format, sizeof(g_format), "%T", "CP-save", client);
+		menu.AddItem("Save", g_format);
+		Format(g_format, sizeof(g_format), "%T", "CP-teleport", client);
+		menu.AddItem("Teleport", g_format, g_cpToggled[client][0] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(g_format, sizeof(g_format), "%T", "CP-saveSecond", client);
+		menu.AddItem("Save second", g_format);
+		Format(g_format, sizeof(g_format), "%T", "CP-teleportSecond", client);
+		menu.AddItem("Teleport second", g_format, g_cpToggled[client][1] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -1330,9 +1322,8 @@ public void Checkpoint(int client)
 
 	else if(g_devmap == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	return;
@@ -1415,10 +1406,9 @@ public void OnClientPutInServer(int client)
 	{
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
 
-		char query[512] = "";
 		int steamid = GetSteamAccountID(client);
-		Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
-		g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(client), DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
+		g_mysql.Query(SQLGetPersonalRecord, g_query, GetClientSerial(client), DBPrio_Normal);
 	}
 
 	g_menuOpened[client] = false;
@@ -1441,7 +1431,7 @@ public void OnClientPutInServer(int client)
 	g_block[client] = true;
 	//g_timerTime[client] = 0.0;
 
-	if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneDrawed[client] == false)
+	if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneHave[2] == true && g_zoneDrawed[client] == false)
 	{
 		DrawZone(client, 0.0, 3.0, 10);
 
@@ -1608,13 +1598,13 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 
 		if(IsValidClient(client) == true)
 		{
-			char query[512] = ""; //https://forums.alliedmods.net/showthread.php?t=261378
+			//https://forums.alliedmods.net/showthread.php?t=261378
 			int steamid = GetSteamAccountID(client);
 
 			if(results.FetchRow() == false)
 			{
-				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
-				g_mysql.Query(SQLUserAdded, query, _, DBPrio_Normal);
+				Format(g_query, sizeof(g_query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
+				g_mysql.Query(SQLUserAdded, g_query, _, DBPrio_Normal);
 
 				#if debug == true
 				PrintToServer("SQLAddUser: User (%N) trying to add to database...", client);
@@ -1627,8 +1617,8 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 
 			if(results.FetchRow() == true)
 			{
-				Format(query, sizeof(query), "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid);
-				g_mysql.Query(SQLUpdateUser, query, GetClientSerial(client), DBPrio_High);
+				Format(g_query, sizeof(g_query), "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid);
+				g_mysql.Query(SQLUpdateUser, g_query, GetClientSerial(client), DBPrio_High);
 
 				#if debug == true
 				PrintToServer("SQLAddUser: User (%N) selecting...", client);
@@ -1670,22 +1660,21 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 
 		if(IsValidClient(client) == true)
 		{
-			char query[512] = "";
 			int steamid = GetSteamAccountID(client);
 
 			if(results.FetchRow() == false)
 			{
-				Format(query, sizeof(query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
+				Format(g_query, sizeof(g_query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
 			}
 
 			results.Rewind();
 
 			if(results.FetchRow() == true)
 			{
-				Format(query, sizeof(query), "UPDATE users SET username = \"%N\", lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid);
+				Format(g_query, sizeof(g_query), "UPDATE users SET username = \"%N\", lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid);
 			}
 
-			g_mysql.Query(SQLUpdateUserSuccess, query, GetClientSerial(client), DBPrio_High);
+			g_mysql.Query(SQLUpdateUserSuccess, g_query, GetClientSerial(client), DBPrio_High);
 
 			#if debug == true
 			//PrintToServer("SQLUpdateUser: Successfuly updated user");
@@ -1712,10 +1701,9 @@ public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] 
 		{
 			if(results.HasResults == false)
 			{
-				char query[512] = "";
 				int steamid = GetSteamAccountID(client);
-				Format(query, sizeof(query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
-				g_mysql.Query(SQLGetPoints, query, GetClientSerial(client), DBPrio_High);
+				Format(g_query, sizeof(g_query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
+				g_mysql.Query(SQLGetPoints, g_query, GetClientSerial(client), DBPrio_High);
 
 				#if debug == true
 				PrintToServer("SQLUpdateUserSuccess: Successfuly updated user");
@@ -1945,37 +1933,36 @@ public void Trikz(int client)
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	menu.SetTitle("%T", "Trikz", client);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockMenuON" : "BlockMenuOFF", client);
-	menu.AddItem("block", format);
-	Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
-	menu.AddItem("autoflash", format);
-	Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
-	menu.AddItem("autoswitch", format);
-	Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
-	menu.AddItem("bhop", format);
+	Format(g_format, sizeof(g_format), "%T", g_block[client] == true ? "BlockMenuON" : "BlockMenuOFF", client);
+	menu.AddItem("block", g_format);
+	Format(g_format, sizeof(g_format), "%T", g_autoflash[client] == true ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
+	menu.AddItem("autoflash", g_format);
+	Format(g_format, sizeof(g_format), "%T", g_autoswitch[client] == true ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
+	menu.AddItem("autoswitch", g_format);
+	Format(g_format, sizeof(g_format), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
+	menu.AddItem("bhop", g_format);
 
 	if(g_devmap == false)
 	{
-		Format(format, sizeof(format), "%T", IsValidPartner(client) == true ? "Breakup" : "Partner", client);
-		menu.AddItem(IsValidPartner(client) == true ? "breakup" : "partner", format, ITEMDRAW_DEFAULT);
+		Format(g_format, sizeof(g_format), "%T", IsValidPartner(client) == true ? "Breakup" : "Partner", client);
+		menu.AddItem(IsValidPartner(client) == true ? "breakup" : "partner", g_format, ITEMDRAW_DEFAULT);
 	}
 
-	Format(format, sizeof(format), "%T", "Color", client);
-	menu.AddItem("color", format);
+	Format(g_format, sizeof(g_format), "%T", "Color", client);
+	menu.AddItem("color", g_format);
 
 	if(g_devmap == false)
 	{
-		Format(format, sizeof(format), "%T", "Restart", client);
-		menu.AddItem("restart", format, IsValidPartner(client) == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(g_format, sizeof(g_format), "%T", "Restart", client);
+		menu.AddItem("restart", g_format, IsValidPartner(client) == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 
 	if(g_devmap == true)
 	{
-		Format(format, sizeof(format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
-		menu.AddItem("noclip", format);
-		Format(format, sizeof(format), "%T", "Checkpoint", client);
-		menu.AddItem("checkpoint", format);
+		Format(g_format, sizeof(g_format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
+		menu.AddItem("noclip", g_format);
+		Format(g_format, sizeof(g_format), "%T", "Checkpoint", client);
+		menu.AddItem("checkpoint", g_format);
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -2095,9 +2082,8 @@ public Action Block(int client) //thanks maru for optimization.
 
 	else if(g_menuOpened[client] == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	return Plugin_Handled;
@@ -2121,27 +2107,24 @@ stock void Partner(int client)
 {
 	if(g_devmap == true)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_devmap == false)
 	{
 		if(IsPlayerAlive(client) == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "YouAreDead", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "YouAreDead", client);
+			SendMessage(client, g_format);
 
 			return;
 		}
 
 		if(g_dbPassed == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "Wait for database loading...");
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "Wait for database loading...");
+			SendMessage(client, g_format);
 
 			return;
 		}
@@ -2175,9 +2158,8 @@ stock void Partner(int client)
 			{
 				case false:
 				{
-					char format[256] = "";
-					Format(format, sizeof(format), "%T", "NoFreePlayer", client);
-					SendMessage(client, format);
+					Format(g_format, sizeof(g_format), "%T", "NoFreePlayer", client);
+					SendMessage(client, g_format);
 				}
 
 				case true:
@@ -2198,11 +2180,11 @@ stock void Partner(int client)
 
 			char partner[8] = "";
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "Yes", client);
-			menu.AddItem(partner, format);
-			Format(format, sizeof(format), "%T", "No", client);
-			menu.AddItem("", format);
+
+			Format(g_format, sizeof(g_format), "%T", "Yes", client);
+			menu.AddItem(partner, g_format);
+			Format(g_format, sizeof(g_format), "%T", "No", client);
+			menu.AddItem("", g_format);
 
 			menu.Display(client, 20);
 		}
@@ -2231,11 +2213,10 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 			char buffer[8] = "";
 			IntToString(param1, buffer, sizeof(buffer));
 
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "Yes", partner);
-			menu2.AddItem(buffer, format);
-			Format(format, sizeof(format), "%T", "No", partner);
-			menu2.AddItem(item, format);
+			Format(g_format, sizeof(g_format), "%T", "Yes", partner);
+			menu2.AddItem(buffer, g_format);
+			Format(g_format, sizeof(g_format), "%T", "No", partner);
+			menu2.AddItem(item, g_format);
 
 			menu2.Display(partner, 20);
 		}
@@ -2260,8 +2241,6 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 			int partner = StringToInt(item);
 
-			char format[256] = "";
-
 			switch(param2)
 			{
 				case 0:
@@ -2283,31 +2262,30 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 							char name[MAX_NAME_LENGTH] = "";
 							GetClientName(partner, name, sizeof(name));
-							Format(format, sizeof(format), "%T", "TeamConfirming", param1, name); //reciever
-							PrintToConsole(param1, "%s", format);
+							Format(g_format, sizeof(g_format), "%T", "TeamConfirming", param1, name); //reciever
+							PrintToConsole(param1, "%s", g_format);
 
 							GetClientName(param1, name, sizeof(name));
-							Format(format, sizeof(format), "%T", "GetConfirmed", partner, name); //sender
-							SendMessage(partner, format);
+							Format(g_format, sizeof(g_format), "%T", "GetConfirmed", partner, name); //sender
+							SendMessage(partner, g_format);
 
 							Restart(param1, false); //Expert-Zone idea.
 
-							char query[512] = "";
-							Format(query, sizeof(query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
-							g_mysql.Query(SQLGetPartnerRecord, query, GetClientSerial(param1), DBPrio_Normal);
+							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
+							g_mysql.Query(SQLGetPartnerRecord, g_query, GetClientSerial(param1), DBPrio_Normal);
 						}
 
 						else if(IsValidPartner(partner) == true)
 						{
-							Format(format, sizeof(format), "%T", "AlreadyHavePartner", param1);
-							SendMessage(param1, format);
+							Format(g_format, sizeof(g_format), "%T", "AlreadyHavePartner", param1);
+							SendMessage(param1, g_format);
 						}
 					}
 
 					else if(IsPlayerAlive(param1) == false)
 					{
-						Format(format, sizeof(format), "%T", "YouAreDead", param1);
-						SendMessage(param1, format);
+						Format(g_format, sizeof(g_format), "%T", "YouAreDead", param1);
+						SendMessage(param1, g_format);
 					}
 				}
 
@@ -2315,8 +2293,8 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 				{
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(param1, name, sizeof(name));
-					Format(format, sizeof(format), "%T", "PartnerDeclined", param1, name);
-					PrintToConsole(param1, "%s", format);
+					Format(g_format, sizeof(g_format), "%T", "PartnerDeclined", param1, name);
+					PrintToConsole(param1, "%s", g_format);
 				}
 			}
 		}
@@ -2364,13 +2342,12 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(partner, name, sizeof(name));
 
-					char format[256] = "";
-					Format(format, sizeof(format), "%T", "PartnerCanceled", param1, name);
-					PrintToConsole(param1, "%s", format);
+					Format(g_format, sizeof(g_format), "%T", "PartnerCanceled", param1, name);
+					PrintToConsole(param1, "%s", g_format);
 
 					GetClientName(param1, name, sizeof(name));
-					Format(format, sizeof(format), "%T", "PartnerCanceledBy", partner, name);
-					SendMessage(partner, format);
+					Format(g_format, sizeof(g_format), "%T", "PartnerCanceledBy", partner, name);
+					SendMessage(partner, g_format);
 				}
 			}
 		}
@@ -2403,15 +2380,14 @@ stock void ColorSelect(int client)
 	Menu menu = new Menu(handler_menuColor);
 	menu.SetTitle("%T", "Color", client);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", "ColorTeam", client);
-	menu.AddItem("team_color", format);
-	Format(format, sizeof(format), "%T", "PlayerSkin", client);
-	menu.AddItem("player_skin", format);
-	Format(format, sizeof(format), "%T", "ColorPingFL", client);
-	menu.AddItem("object_color", format);
-	Format(format, sizeof(format), "%T", "FlashbangSkin", client);
-	menu.AddItem("flashbang_skin", format);
+	Format(g_format, sizeof(g_format), "%T", "ColorTeam", client);
+	menu.AddItem("team_color", g_format);
+	Format(g_format, sizeof(g_format), "%T", "PlayerSkin", client);
+	menu.AddItem("player_skin", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ColorPingFL", client);
+	menu.AddItem("object_color", g_format);
+	Format(g_format, sizeof(g_format), "%T", "FlashbangSkin", client);
+	menu.AddItem("flashbang_skin", g_format);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -2481,21 +2457,19 @@ stock void ColorTeam(int client, bool allowColor)
 		{
 			return;
 		}
-
-		char format[256] = "";
 		
 		if(g_devmap == false && IsValidPartner(client) == false)
 		{
-			Format(format, sizeof(format), "%T", "DontHavePartner", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DontHavePartner", client);
+			SendMessage(client, g_format);
 
 			return;
 		}
 
 		else if(g_devmap == true)
 		{
-			Format(format, sizeof(format), "%T", "DevmapIsON", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DevmapIsON", client);
+			SendMessage(client, g_format);
 
 			return;
 		}
@@ -2655,12 +2629,10 @@ public Action cmd_restart(int client, int args)
 
 stock void Restart(int client, bool ask)
 {
-	char format[256] = "";
-
 	if(g_devmap == true)
 	{
-		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_devmap == false)
@@ -2679,10 +2651,10 @@ stock void Restart(int client, bool ask)
 					Menu menu = new Menu(handler_askforrestart);
 					menu.SetTitle("%T", "AskForRestart", client);
 
-					Format(format, sizeof(format), "%T", "Yes", client);
-					menu.AddItem("yes", format);
-					Format(format, sizeof(format), "%T", "No", client);
-					menu.AddItem("no", format);
+					Format(g_format, sizeof(g_format), "%T", "Yes", client);
+					menu.AddItem("yes", g_format);
+					Format(g_format, sizeof(g_format), "%T", "No", client);
+					menu.AddItem("no", g_format);
 
 					menu.Display(client, 20);
 				}
@@ -2690,8 +2662,8 @@ stock void Restart(int client, bool ask)
 
 			else if(IsValidPartner(client) == false)
 			{
-				Format(format, sizeof(format), "%T", "DontHavePartner", client);
-				SendMessage(client, format);
+				Format(g_format, sizeof(g_format), "%T", "DontHavePartner", client);
+				SendMessage(client, g_format);
 			}
 		}
 	}
@@ -2771,9 +2743,8 @@ public Action cmd_autoflash(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", g_autoflash[client] == true ? "AutoflashChatON" : "AutoflashChatOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", g_autoflash[client] == true ? "AutoflashChatON" : "AutoflashChatOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_menuOpened[client] == true)
@@ -2801,9 +2772,8 @@ public Action cmd_autoswitch(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", g_autoswitch[client] == true ? "AutoswitchChatON" : "AutoswitchChatOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", g_autoswitch[client] == true ? "AutoswitchChatON" : "AutoswitchChatOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_menuOpened[client] == true)
@@ -2831,9 +2801,8 @@ public Action cmd_bhop(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", g_bhop[client] == true ? "BhopChatON" : "BhopChatOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", g_bhop[client] == true ? "BhopChatON" : "BhopChatOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_menuOpened[client] == true)
@@ -2861,9 +2830,8 @@ public Action cmd_endmsg(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageChatON" : "EndMessageChatOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", g_endMessage[client] == true ? "EndMessageChatON" : "EndMessageChatOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_menuOpenedHud[client] == true)
@@ -2894,27 +2862,24 @@ public void Top10(int client)
 	{
 		if(g_dbPassed == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "Wait for database loading...");
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "Wait for database loading...");
+			SendMessage(client, g_format);
 
 			return;
 		}
 
 		g_top10ac = GetGameTime() + 10.0;
 
-		char query[512] = "";
-		Format(query, sizeof(query), "SELECT * FROM records LIMIT 1");
-		g_mysql.Query(SQLTop10, query, _, DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "SELECT * FROM records LIMIT 1");
+		g_mysql.Query(SQLTop10, g_query, _, DBPrio_Normal);
 	}
 
 	else if(g_top10ac > GetGameTime())
 	{
-		char format[256] = "";
 		char time[8] = "";
 		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
-		Format(format, sizeof(format), "%T", "Top10ac", client, time);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", "Top10ac", client, time);
+		SendMessage(client, g_format);
 	}
 
 	return;
@@ -2933,26 +2898,23 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 
 		if(bResults == false)
 		{
-			char format[256] = "";
-
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					Format(format, sizeof(format), "%T", "Top10details", i);
-					SendMessage(i, format);
+					Format(g_format, sizeof(g_format), "%T", "Top10details", i);
+					SendMessage(i, g_format);
 
-					Format(format, sizeof(format), "%T", "NoRecords", i);
-					SendMessage(i, format);
+					Format(g_format, sizeof(g_format), "%T", "NoRecords", i);
+					SendMessage(i, g_format);
 				}
 			}
 		}
 
 		else if(bResults == true)
 		{
-			char query[512] = "";
-			Format(query, sizeof(query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 10", g_map);
-			g_mysql.Query(SQLTop10_2, query, _, DBPrio_Normal);
+			Format(g_query, sizeof(g_query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 10", g_map);
+			g_mysql.Query(SQLTop10_2, g_query, _, DBPrio_Normal);
 		}
 	}
 
@@ -2970,17 +2932,15 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 	{
 		if(results.FetchRow() == false)
 		{
-			char format[256] = "";
-
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					Format(format, sizeof(format), "%T", "Top10details", i);
-					SendMessage(i, format);
+					Format(g_format, sizeof(g_format), "%T", "Top10details", i);
+					SendMessage(i, g_format);
 
-					Format(format, sizeof(format), "%T", "NoRecords", i);
-					SendMessage(i, format);
+					Format(g_format, sizeof(g_format), "%T", "NoRecords", i);
+					SendMessage(i, g_format);
 				}
 			}
 
@@ -2998,9 +2958,8 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 
 			float time = results.FetchFloat(2);
 
-			char query[512] = "";
-			Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
-			g_mysql.Query(SQLTop10_3, query, time, DBPrio_Normal);
+			Format(g_query, sizeof(g_query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
+			g_mysql.Query(SQLTop10_3, g_query, time, DBPrio_Normal);
 		}
 	}
 
@@ -3020,8 +2979,6 @@ public void SQLTop10_3(Database db, DBResultSet results, const char[] error, any
 
 		if(results.FetchRow() == true)
 		{
-			char format[256] = "";
-
 			char name1[MAX_NAME_LENGTH] = "";
 			char name2[MAX_NAME_LENGTH] = "";
 
@@ -3050,20 +3007,20 @@ public void SQLTop10_3(Database db, DBResultSet results, const char[] error, any
 				{
 					if(count == 1)
 					{
-						Format(format, sizeof(format), "%T", "Top10details", i);
-						SendMessage(i, format);
+						Format(g_format, sizeof(g_format), "%T", "Top10details", i);
+						SendMessage(i, g_format);
 					}
 					
 					if(count < 10)
 					{
-						Format(format, sizeof(format), "%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
-						SendMessage(i, format);
+						Format(g_format, sizeof(g_format), "%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
+						SendMessage(i, g_format);
 					}
 
 					else if(count == 10)
 					{
-						Format(format, sizeof(format), "%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
-						SendMessage(i, format);
+						Format(g_format, sizeof(g_format), "%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
+						SendMessage(i, g_format);
 					}
 				}
 			}
@@ -3147,16 +3104,15 @@ stock void PlayerSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", "PlayerSkin", client);
-	menu.SetTitle(format);
+	Format(g_format, sizeof(g_format), "%T", "PlayerSkin", client);
+	menu.SetTitle(g_format);
 
-	Format(format, sizeof(format), "%T", "Default", client);
-	menu.AddItem("default_ps", format, g_skinPlayer[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(format, sizeof(format), "%T", "Shadow", client);
-	menu.AddItem("shadow_ps", format, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(format, sizeof(format), "%T", "Bright", client);
-	menu.AddItem("bright_ps", format, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_format, sizeof(g_format), "%T", "Default", client);
+	menu.AddItem("default_ps", g_format, g_skinPlayer[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_format, sizeof(g_format), "%T", "Shadow", client);
+	menu.AddItem("shadow_ps", g_format, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_format, sizeof(g_format), "%T", "Bright", client);
+	menu.AddItem("bright_ps", g_format, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -3168,18 +3124,17 @@ stock void FlashbangSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", "FlashbangSkin", client);
-	menu.SetTitle(format);
+	Format(g_format, sizeof(g_format), "%T", "FlashbangSkin", client);
+	menu.SetTitle(g_format);
 
-	Format(format, sizeof(format), "%T", "Default", client);
-	menu.AddItem("default_fs", format, g_skinFlashbang[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(format, sizeof(format), "%T", "Shadow", client);
-	menu.AddItem("shadow_fs", format, g_skinFlashbang[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(format, sizeof(format), "%T", "Bright", client);
-	menu.AddItem("bright_fs", format, g_skinFlashbang[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(format, sizeof(format), "%T", "Wireframe", client);
-	menu.AddItem("wireframe_fs", format, g_skinFlashbang[client] == 3 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_format, sizeof(g_format), "%T", "Default", client);
+	menu.AddItem("default_fs", g_format, g_skinFlashbang[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_format, sizeof(g_format), "%T", "Shadow", client);
+	menu.AddItem("shadow_fs", g_format, g_skinFlashbang[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_format, sizeof(g_format), "%T", "Bright", client);
+	menu.AddItem("bright_fs", g_format, g_skinFlashbang[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_format, sizeof(g_format), "%T", "Wireframe", client);
+	menu.AddItem("wireframe_fs", g_format, g_skinFlashbang[client] == 3 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -3287,9 +3242,8 @@ public Action cmd_macro(int client, int args)
 	char value[8] = "";
 	IntToString(g_macroDisabled[client], value, sizeof(value));
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
-	SendMessage(client, format);
+	Format(g_format, sizeof(g_format), "%T", g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
+	SendMessage(client, g_format);
 
 	return Plugin_Handled;
 }
@@ -3322,12 +3276,11 @@ stock void CreateStart()
 		g_center[0][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
 	}
 
-	g_center[0][2] += 1.0;
+	g_center[0][2] - (FloatAbs(g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2);
 
 	TeleportEntity(entity, g_center[0], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
-	g_timerStartPos[0] = g_center[0][0];
-	g_timerStartPos[1] = g_center[0][1];
+	g_timerStartPos = g_center[0];
 	g_timerStartPos[2] = g_center[0][2] + 1.0;
 
 	float mins[3] = {0.0, ...};
@@ -3387,7 +3340,7 @@ public void CreateEnd()
 		g_center[1][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0; // so its mins and maxs in cube devide to two.
 	}
 
-	g_center[1][2] += 1.0;
+	g_center[1][2] - (FloatAbs(g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2);
 
 	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -3442,9 +3395,8 @@ public Action cmd_startmins(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+			SendMessage(client, g_format);
 		}
 
 		return Plugin_Handled;
@@ -3462,9 +3414,8 @@ public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] er
 
 	else if(strlen(error) == 0)
 	{
-		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
-		g_mysql.Query(SQLSetStartZones, query, data, DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
+		g_mysql.Query(SQLSetStartZones, g_query, data, DBPrio_Normal);
 	}
 
 	return;
@@ -3478,16 +3429,14 @@ public Action cmd_deleteallcp(int client, int args)
 	{
 		if(g_devmap == true)
 		{
-			char query[512] = "";
-			Format(query, sizeof(query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
-			g_mysql.Query(SQLDeleteAllCP, query, GetClientSerial(client), DBPrio_Normal);
+			Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
+			g_mysql.Query(SQLDeleteAllCP, g_query, GetClientSerial(client), DBPrio_Normal);
 		}
 
 		else if(g_devmap == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+			SendMessage(client, g_format);
 		}
 	}
 
@@ -3641,9 +3590,8 @@ public Action cmd_endmins(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+			SendMessage(client, g_format);
 		}
 
 		return Plugin_Handled;
@@ -3661,9 +3609,8 @@ public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] erro
 
 	else if(strlen(error) == 0)
 	{
-		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
-		g_mysql.Query(SQLSetEndZones, query, data, DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
+		g_mysql.Query(SQLSetEndZones, g_query, data, DBPrio_Normal);
 	}
 
 	return;
@@ -3677,7 +3624,7 @@ public Action cmd_maptier(int client, int args)
 	{
 		if(g_devmap == true)
 		{
-			char arg[512] = "";
+			char arg[256] = "";
 			GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
 			int tier = StringToInt(arg);
@@ -3686,20 +3633,18 @@ public Action cmd_maptier(int client, int args)
 			{
 				PrintToServer("[Args] Tier: %i", tier);
 
-				char query[512] = "";
-				Format(query, sizeof(query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(client));
 				dp.WriteCell(tier);
-				g_mysql.Query(SQLTierRemove, query, dp, DBPrio_Normal);
+				g_mysql.Query(SQLTierRemove, g_query, dp, DBPrio_Normal);
 			}
 		}
 
 		else if(g_devmap == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+			SendMessage(client, g_format);
 		}
 
 		return Plugin_Handled;
@@ -3722,12 +3667,11 @@ public void SQLTierRemove(Database db, DBResultSet results, const char[] error, 
 
 	else if(strlen(error) == 0)
 	{
-		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO tier (tier, map) VALUES (%i, '%s')", tier, g_map);
+		Format(g_query, sizeof(g_query), "INSERT INTO tier (tier, map) VALUES (%i, '%s')", tier, g_map);
 		DataPack dp = new DataPack();
 		dp.WriteCell(GetClientSerial(client));
 		dp.WriteCell(tier);
-		g_mysql.Query(SQLTierInsert, query, dp, DBPrio_Normal);
+		g_mysql.Query(SQLTierInsert, g_query, dp, DBPrio_Normal);
 	}
 
 	return;
@@ -3821,9 +3765,8 @@ public Action cmd_startmaxs(int client, int args)
 		GetClientAbsOrigin(client, g_zoneStartOriginTemp[1]);
 		g_zoneStartOriginTemp[1][2] += 256.0;
 
-		char query[512] = "";
-		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
-		g_mysql.Query(SQLDeleteStartZone, query, GetClientSerial(client), DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
+		g_mysql.Query(SQLDeleteStartZone, g_query, GetClientSerial(client), DBPrio_Normal);
 
 		return Plugin_Handled;
 	}
@@ -3840,9 +3783,8 @@ public Action cmd_endmaxs(int client, int args)
 		GetClientAbsOrigin(client, g_zoneEndOrigin[1]);
 		g_zoneEndOrigin[1][2] += 256.0;
 
-		char query[512] = "";
-		Format(query, sizeof(query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
-		g_mysql.Query(SQLDeleteEndZone, query, GetClientSerial(client), DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
+		g_mysql.Query(SQLDeleteEndZone, g_query, GetClientSerial(client), DBPrio_Normal);
 
 		return Plugin_Handled;
 	}
@@ -3865,7 +3807,7 @@ public Action cmd_cpmins(int client, int args)
 
 			if(cpnum > 0)
 			{
-				PrintToChat(client, "CP: No.%i", cpnum);
+				PrintToChat(client, "CP: No. %i", cpnum);
 
 				GetClientAbsOrigin(client, g_cpPos[cpnum][0]);
 				g_cpPos[cpnum][0][2] += 256.0;
@@ -3874,9 +3816,8 @@ public Action cmd_cpmins(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+			SendMessage(client, g_format);
 		}
 
 		return Plugin_Handled;
@@ -3909,12 +3850,11 @@ public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, D
 			PrintToServer("Checkpoint zone no. %i failed to delete.", cpnum);
 		}
 
-		char query[512] = "";
-		Format(query, sizeof(query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map);
+		Format(g_query, sizeof(g_query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map);
 		DataPack dp = new DataPack();
 		dp.WriteCell(GetClientSerial(client));
 		dp.WriteCell(cpnum);
-		g_mysql.Query(SQLCPInserted, query, dp, DBPrio_Normal);
+		g_mysql.Query(SQLCPInserted, g_query, dp, DBPrio_Normal);
 	}
 
 	return;
@@ -3926,7 +3866,7 @@ public Action cmd_cpmaxs(int client, int args)
 
 	if(flags & ADMFLAG_CUSTOM1)
 	{
-		char cmd[512] = "";
+		char cmd[256] = "";
 		GetCmdArg(args, cmd, sizeof(cmd));
 
 		int cpnum = StringToInt(cmd);
@@ -3935,12 +3875,11 @@ public Action cmd_cpmaxs(int client, int args)
 		{
 			GetClientAbsOrigin(client, g_cpPos[cpnum][1]);
 
-			char query[512] = "";
-			Format(query, sizeof(query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
+			Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
 			DataPack dp = new DataPack();
 			dp.WriteCell(GetClientSerial(client));
 			dp.WriteCell(cpnum);
-			g_mysql.Query(SQLCPRemoved, query, dp, DBPrio_Normal);
+			g_mysql.Query(SQLCPRemoved, g_query, dp, DBPrio_Normal);
 		}
 
 		return Plugin_Handled;
@@ -3994,9 +3933,8 @@ public Action cmd_zones(int client, int args)
 
 		else if(g_devmap == false)
 		{
-			char format[256] = "";
-			Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+			SendMessage(client, g_format);
 		}
 
 		return Plugin_Handled;
@@ -4022,14 +3960,13 @@ stock void ZoneEditor(int client)
 
 	if(g_cpCount > 0)
 	{
-		char cp[16] = "";
-		char format[32] = "";
+		char cp[8] = "";
 
 		for(int i = 1; i <= g_cpCount; i++)
 		{
 			Format(cp, sizeof(cp), "%i", i);
-			Format(format, sizeof(format), "CP nr. %i zone", i);
-			menu.AddItem(cp, format);
+			Format(g_format, sizeof(g_format), "CP nr. %i zone", i);
+			menu.AddItem(cp, g_format);
 		}
 	}
 
@@ -4085,7 +4022,7 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			for(int i = 1; i <= g_cpCount; i++)
 			{
-				char cp[16] = "";
+				char cp[8] = "";
 				IntToString(i, cp, sizeof(cp));
 
 				for(int j = 0; j <= 1; j++)
@@ -4115,26 +4052,26 @@ stock void ZoneEditorStart(int client)
 	menu.SetTitle("Zone editor - Start zone");
 
 	menu.AddItem("starttp", "Teleport to start zone");
-	char format[16] = "";
-	Format(format, sizeof(format), "Step: %i", g_step);
-	menu.AddItem("step", format);
 
-	char format2[32] = "";
+	Format(g_format, sizeof(g_format), "Step: %i", g_step);
+	menu.AddItem("step", g_format);
+
+	char format2[512] = "";
 	Format(format2, sizeof(format2), "0;%i;1;sidestart", g_axis);
-	Format(format, sizeof(format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "0;%i;0;sidestart", g_axis);
-	Format(format, sizeof(format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "1;%i;1;sidestart", g_axis);
-	Format(format, sizeof(format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "1;%i;0;sidestart", g_axis);
-	Format(format, sizeof(format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	menu.AddItem("axis", "Change axis");
 	menu.AddItem("startupdate", "Update start zone");
@@ -4153,26 +4090,26 @@ stock void ZoneEditorEnd(int client)
 	menu.SetTitle("Zone editor - End zone");
 
 	menu.AddItem("endtp", "Teleport to end zone");
-	char format[16] = "";
-	Format(format, sizeof(format), "Step: %i", g_step);
-	menu.AddItem("step", format);
 
-	char format2[16] = "";
+	Format(g_format, sizeof(g_format), "Step: %i", g_step);
+	menu.AddItem("step", g_format);
+
+	char format2[512] = "";
 	Format(format2, sizeof(format2), "0;%i;1;sideend", g_axis);
-	Format(format, sizeof(format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "0;%i;0;sideend", g_axis);
-	Format(format, sizeof(format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "1;%i;1;sideend", g_axis);
-	Format(format, sizeof(format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "1;%i;0;sideend", g_axis);
-	Format(format, sizeof(format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	menu.AddItem("axis", "Change axis");
 	menu.AddItem("endupdate", "Update start zone");
@@ -4223,23 +4160,22 @@ stock void ZoneEditorCP(int client, int cpnum)
 	Format(step, sizeof(step), "Step: %i", g_step);
 	menu.AddItem("step", step);
 
-	char format[16] = "";
-	char format2[32] = "";
+	char format2[512] = "";
 	Format(format2, sizeof(format2), "%i;0;%i;1;sidecp", cpnum, g_axis);
-	Format(format, sizeof(format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "%i;0;%i;0;sidecp", cpnum, g_axis);
-	Format(format, sizeof(format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "%i;1;%i;1;sidecp", cpnum, g_axis);
-	Format(format, sizeof(format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	Format(format2, sizeof(format2), "%i;1;%i;0;sidecp", cpnum, g_axis);
-	Format(format, sizeof(format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
-	menu.AddItem(format2, format);
+	Format(g_format, sizeof(g_format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	menu.AddItem(format2, g_format);
 
 	menu.AddItem("axis", "Change axis");
 
@@ -4289,24 +4225,33 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			if(StrEqual(item, "starttp", false) == true)
 			{
-				TeleportEntity(param1, g_center[0], NULL_VECTOR, NULL_VECTOR);
+				float pos[3] = {0.0, ...};
+				pos = g_center[0];
+				pos[2] += 1.0;
+				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
 
 			else if(StrEqual(item, "endtp", false) == true)
 			{
-				TeleportEntity(param1, g_center[1], NULL_VECTOR, NULL_VECTOR);
+				float pos[3] = {0.0, ...};
+				pos = g_center[1];
+				pos[2] += 1.0;
+				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
 
 			else if(StrContains(item, "cptp", false) != -1)
 			{
-				TeleportEntity(param1, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR);
+				float pos[3] = {0.0, ...};
+				pos = g_center[cpnum + 1];
+				pos[2] += 1.0;
+				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
 
 			if(StrEqual(item, "step", false) == true)
 			{
 				g_step *= 2;
 
-				if(g_step == 1024)
+				if(g_step > 512)
 				{
 					g_step = 1;
 				}
@@ -4339,32 +4284,29 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			if(StrEqual(item, "startupdate", false) == true)
 			{
-				char query[512] = "";
-				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
+				Format(g_query, sizeof(g_query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(0);
-				g_mysql.Query(SQLUpdateZone, query, dp, DBPrio_Normal);
+				g_mysql.Query(SQLUpdateZone, g_query, dp, DBPrio_Normal);
 			}
 
 			else if(StrEqual(item, "endupdate", false) == true)
 			{
-				char query[512] = "";
-				Format(query, sizeof(query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
+				Format(g_query, sizeof(g_query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(1);
-				g_mysql.Query(SQLUpdateZone, query, dp, DBPrio_Normal);
+				g_mysql.Query(SQLUpdateZone, g_query, dp, DBPrio_Normal);
 			}
 
 			else if(StrContains(item, "cpupdate", false) != -1)
 			{
-				char query[512] = "";
-				Format(query, sizeof(query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), cpnum, g_map);
+				Format(g_query, sizeof(g_query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), cpnum, g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(cpnum + 1);
-				g_mysql.Query(SQLUpdateZone, query, dp, DBPrio_Normal);
+				g_mysql.Query(SQLUpdateZone, g_query, dp, DBPrio_Normal);
 			}
 
 			//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
@@ -4454,14 +4396,16 @@ public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, 
 
 			else if(cpnum > 1)
 			{
+				cpnum -= 1;
+
 				for(int i = 0; i <= 1; i++)
 				{
-					g_cpPos[cpnum - 1][i] = g_cpPosTemp[cpnum - 1][i];
+					g_cpPos[cpnum][i] = g_cpPosTemp[cpnum][i];
 				}
 
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "CP zone nr. %i successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", cpnum - 1, RoundFloat(g_cpPos[cpnum - 1][0][0]), RoundFloat(g_cpPos[cpnum - 1][0][1]), RoundFloat(g_cpPos[cpnum - 1][0][2]), RoundFloat(g_cpPos[cpnum - 1][1][0]), RoundFloat(g_cpPos[cpnum - 1][1][1]), RoundFloat(g_cpPos[cpnum - 1][1][2]), g_map, client, GetSteamAccountID(client));
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "CP zone nr. %i successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map, client, GetSteamAccountID(client));
 
-				PrintToServer("CP zone nr. %i successfuly updated.", cpnum - 1);
+				PrintToServer("CP zone nr. %i successfuly updated.", cpnum);
 			}
 		}
 
@@ -4479,7 +4423,8 @@ public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, 
 
 			else if(cpnum > 1)
 			{
-				PrintToServer("CP zone nr. %i failed to update", cpnum - 1);
+				cpnum -= 1;
+				PrintToServer("CP zone nr. %i failed to update", cpnum);
 			}
 		}
 	}
@@ -4537,13 +4482,8 @@ stock void CPSetup(int client)
 {
 	g_cpCount = 0;
 
-	char query[512] = "";
-
-	for(int i = 1; i <= 10; i++)
-	{
-		Format(query, sizeof(query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
-		g_mysql.Query(SQLCPSetup, query, i, DBPrio_Normal);
-	}
+	Format(g_query, sizeof(g_query), "SELECT * FROM cp LIMIT 1");
+	g_mysql.Query(SQLCPSetup, g_query, _, DBPrio_Normal);
 
 	return;
 }
@@ -4553,6 +4493,34 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, any
 	if(strlen(error) > 0)
 	{
 		PrintToServer("SQLCPSetup: %s", error);
+	}
+
+	else if(strlen(error) == 0)
+	{
+		if(results.FetchRow() == true)
+		{
+			for(int i = 1; i <= 10; i++)
+			{
+				Format(g_query, sizeof(g_query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
+				g_mysql.Query(SQLCPSetup2, g_query, i, DBPrio_Normal);
+			}
+		}
+
+		else if(results.FetchRow() == false)
+		{
+			if(g_zoneHave[2] == false)
+			{
+				g_zoneHave[2] = true;
+			}
+		}
+	}
+}
+
+public void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(strlen(error) > 0)
+	{
+		PrintToServer("SQLCPSetup2: %s", error);
 	}
 
 	else if(strlen(error) == 0)
@@ -4586,9 +4554,14 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, any
 			{
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(IsClientInGame(i) == true)
+					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
-						OnClientPutInServer(i);
+						if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneDrawed[i] == false)
+						{
+							DrawZone(i, 0.0, 3.0, 10);
+
+							g_zoneDrawed[i] = true;
+						}
 					}
 				}
 			}
@@ -4619,7 +4592,7 @@ stock void CreateCP(int cpnum)
 		g_center[cpnum + 1][i] = (g_cpPos[cpnum][1][i] + g_cpPos[cpnum][0][i]) / 2.0;
 	}
 
-	g_center[cpnum + 1][2] += 1.0;
+	g_center[cpnum + 1][2] - (FloatAbs(g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2);
 
 	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -4742,9 +4715,8 @@ public Action SDKEndTouch(int entity, int other)
 		Call_Finish();
 		delete hForward;
 
-		char query[512] = "";
-		Format(query, sizeof(query), "SELECT * FROM records LIMIT 1");
-		g_mysql.Query(SQLSetTries, query, GetClientSerial(other), DBPrio_High);
+		Format(g_query, sizeof(g_query), "SELECT * FROM records LIMIT 1");
+		g_mysql.Query(SQLSetTries, g_query, GetClientSerial(other), DBPrio_High);
 	}
 
 	return Plugin_Continue;
@@ -4828,9 +4800,6 @@ public Action SDKStartTouch(int entity, int other)
 					Format(timeSR, sizeof(timeSR), "+%s", timeSR);
 				}
 
-				char format[256] = "";
-				char query[512] = "";
-
 				int playerid = GetSteamAccountID(other);
 				int partnerid = GetSteamAccountID(partner);
 
@@ -4844,19 +4813,19 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "NewServerRecord", i);
-									SendMessage(i, format); //smth like shavit functions.
+									Format(g_format, sizeof(g_format), "%T", "NewServerRecord", i);
+									SendMessage(i, g_format); //smth like shavit functions.
 
-									Format(format, sizeof(format), "%T", "NewServerRecordDetail", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, format);
+									Format(g_format, sizeof(g_format), "%T", "NewServerRecordDetail", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_format);
 								}
 							}
 
 							FinishMSG(other, false, true, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, true, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time ASC LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
-							g_mysql.Query(SQLUpdateRecord, query, _, DBPrio_Normal);
+							Format(g_query, sizeof(g_query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' ORDER BY time ASC LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							g_mysql.Query(SQLUpdateRecord, g_query, _, DBPrio_Normal);
 
 							g_haveRecord[other] = time;
 							g_haveRecord[partner] = time; //logs help also expert zone ideas.
@@ -4892,16 +4861,16 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "Passed", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, format);
+									Format(g_format, sizeof(g_format), "%T", "Passed", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_format);
 								}
 							}
 							
 							FinishMSG(other, false, false, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, false, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
-							g_mysql.Query(SQLUpdateRecord, query, _, DBPrio_Normal);
+							Format(g_query, sizeof(g_query), "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
+							g_mysql.Query(SQLUpdateRecord, g_query, _, DBPrio_Normal);
 
 							static GlobalForward hForward = null;
 							hForward = new GlobalForward("Trikz_OnFinish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
@@ -4921,16 +4890,16 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "PassedImproved", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, format);
+									Format(g_format, sizeof(g_format), "%T", "PassedImproved", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_format);
 								}
 							}
 							
 							FinishMSG(other, false, false, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, false, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
-							g_mysql.Query(SQLUpdateRecord, query, _, DBPrio_Normal);
+							Format(g_query, sizeof(g_query), "UPDATE records SET time = %f, finishes = finishes + 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							g_mysql.Query(SQLUpdateRecord, g_query, _, DBPrio_Normal);
 
 							if(g_haveRecord[other] > time)
 							{
@@ -4969,19 +4938,19 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "NewServerRecordNew", i);
-									SendMessage(i, format); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
+									Format(g_format, sizeof(g_format), "%T", "NewServerRecordNew", i);
+									SendMessage(i, g_format); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
 
-									Format(format, sizeof(format), "%T", "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, format);
+									Format(g_format, sizeof(g_format), "%T", "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_format);
 								}
 							}
 
 							FinishMSG(other, false, true, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, true, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
-							g_mysql.Query(SQLInsertRecord, query, _, DBPrio_Normal);
+							Format(g_query, sizeof(g_query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							g_mysql.Query(SQLInsertRecord, g_query, _, DBPrio_Normal);
 
 							g_haveRecord[other] = time;
 							g_haveRecord[partner] = time;
@@ -5018,16 +4987,16 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(format, sizeof(format), "%T", "JustPassed", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, format);
+									Format(g_format, sizeof(g_format), "%T", "JustPassed", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_format);
 								}
 							}
 
 							FinishMSG(other, false, false, false, false, false, 0, timeOwn, timeSR);
 							FinishMSG(partner, false, false, false, false, false, 0, timeOwn, timeSR);
 
-							Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
-							g_mysql.Query(SQLInsertRecord, query, _, DBPrio_Normal);
+							Format(g_query, sizeof(g_query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+							g_mysql.Query(SQLInsertRecord, g_query, _, DBPrio_Normal);
 
 							if(g_haveRecord[other] == 0.0)
 							{
@@ -5066,8 +5035,8 @@ public Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(j) == true)
 								{
-									Format(format, sizeof(format), "%T", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
-									SendMessage(j, format);
+									Format(g_format, sizeof(g_format), "%T", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									SendMessage(j, g_format);
 								}
 							}
 						}
@@ -5088,18 +5057,18 @@ public Action SDKStartTouch(int entity, int other)
 					{
 						if(IsClientInGame(i) == true)
 						{
-							Format(format, sizeof(format), "%T", "NewServerRecordFirst", i);
-							SendMessage(i, format);
+							Format(g_format, sizeof(g_format), "%T", "NewServerRecordFirst", i);
+							SendMessage(i, g_format);
 
-							Format(format, sizeof(format), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
-							SendMessage(i, format);
+							Format(g_format, sizeof(g_format), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
+							SendMessage(i, g_format);
 
 							for(int j = 1; j <= g_cpCount; j++)
 							{
 								if(g_cp[other][j] == true)
 								{
-									Format(format, sizeof(format), "%T", "CPNEW", i, j, timeSR);
-									SendMessage(i, format);
+									Format(g_format, sizeof(g_format), "%T", "CPNEW", i, j, timeSR);
+									SendMessage(i, g_format);
 								}
 							}
 						}
@@ -5117,8 +5086,8 @@ public Action SDKStartTouch(int entity, int other)
 						CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
 					}
 
-					Format(query, sizeof(query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
-					g_mysql.Query(SQLInsertRecord, query, _, DBPrio_Normal);
+					Format(g_query, sizeof(g_query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
+					g_mysql.Query(SQLInsertRecord, g_query, _, DBPrio_Normal);
 
 					static GlobalForward hForward = null;
 					hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
@@ -5146,7 +5115,7 @@ public Action SDKStartTouch(int entity, int other)
 			{
 				g_cp[other][i] = true;
 
-				if(g_cp[i][partner] == true && g_cpLock[partner][i] == false)
+				if(g_cp[i][partner] == true && g_cpLock[other][i] == false)
 				{
 					g_cpLock[other][i] = true;
 					g_cpLock[partner][i] = true;
@@ -5154,14 +5123,14 @@ public Action SDKStartTouch(int entity, int other)
 					g_cpTime[i][other] = g_timerTime[other];
 					g_cpTime[i][partner] = g_timerTime[other];
 
-					char query[512] = ""; //https://stackoverflow.com/questions/9617453 https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
-					Format(query, sizeof(query), "SELECT cp%i FROM records LIMIT 1", i);
+					//https://stackoverflow.com/questions/9617453 https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
+					Format(g_query, sizeof(g_query), "SELECT cp%i FROM records LIMIT 1", i);
 
 					DataPack dp = new DataPack();
 					dp.WriteCell(GetClientSerial(other));
 					dp.WriteCell(i);
 
-					g_mysql.Query(SQLCPSelect, query, dp, DBPrio_Normal);
+					g_mysql.Query(SQLCPSelect, g_query, dp, DBPrio_Normal);
 				}
 			}
 		}
@@ -5187,8 +5156,6 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 	float x[4] = {0.0, ...}, y[4] = {0.0, ...}, z[4] = {0.0, ...};
 	int r[4] = {0, ...}, g[4] = {0, ...}, b[4] = {0, ...}, a[4] = {0, ...};
-
-	char format[256] = "";
 
 	if(onlyCP == true)
 	{
@@ -5253,21 +5220,21 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(format, sizeof(format), "%T", "CP-recordHud", client, cpnum);
-			ShowHudText(client, 1, format);
+			Format(g_format, sizeof(g_format), "%T", "CP-recordHud", client, cpnum);
+			ShowHudText(client, 1, g_format);
 
 			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 			//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-			Format(format, sizeof(format), "%T", "CP-recordDetailHud", client, time);
-			ShowHudText(client, 2, format);
+			Format(g_format, sizeof(g_format), "%T", "CP-recordDetailHud", client, time);
+			ShowHudText(client, 2, g_format);
 			
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 			//ShowHudText(client, 3, "+00:00:00");
-			//Format(format, sizeof(format), "+00:00:00");
-			Format(format, sizeof(format), "%T", "CP-DetailZeroHud", client, timeSR);
-			ShowHudText(client, 3, format);
+			//Format(g_format, sizeof(g_format), "+00:00:00");
+			Format(g_format, sizeof(g_format), "%T", "CP-DetailZeroHud", client, timeSR);
+			ShowHudText(client, 3, g_format);
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -5281,19 +5248,19 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 						SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 						//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
-						Format(format, sizeof(format), "%T", "CP-recordHud", i, cpnum);
-						ShowHudText(i, 1, format);
+						Format(g_format, sizeof(g_format), "%T", "CP-recordHud", i, cpnum);
+						ShowHudText(i, 1, g_format);
 
 						//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 						SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 						//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-						Format(format, sizeof(format), "%T", "CP-recordDetailHud", i, time);
-						ShowHudText(i, 2, format);
+						Format(g_format, sizeof(g_format), "%T", "CP-recordDetailHud", i, time);
+						ShowHudText(i, 2, g_format);
 
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 						SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-						Format(format, sizeof(format), "%T", "CP-DetailZeroHud", i, timeSR);
-						ShowHudText(i, 3, format);
+						Format(g_format, sizeof(g_format), "%T", "CP-DetailZeroHud", i, timeSR);
+						ShowHudText(i, 3, g_format);
 						//ShowHudText(i, 3, "+00:00:00");
 					}
 				}
@@ -5363,20 +5330,20 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-				Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", client, cpnum);
-				ShowHudText(client, 1, format);
+				Format(g_format, sizeof(g_format), "%T", "CP-recordNotFirstHud", client, cpnum);
+				ShowHudText(client, 1, g_format);
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", client, time);
-				ShowHudText(client, 2, format);
+				Format(g_format, sizeof(g_format), "%T", "CP-recordDetailNotFirstHud", client, time);
+				ShowHudText(client, 2, g_format);
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-				Format(format, sizeof(format), "-%s", timeSR);
-				Format(format, sizeof(format), "%T", "CP-recordImproveNotFirstHud", client, format);
-				ShowHudText(client, 3, format);
+				Format(g_format, sizeof(g_format), "-%s", timeSR);
+				Format(g_format, sizeof(g_format), "%T", "CP-recordImproveNotFirstHud", client, g_format);
+				ShowHudText(client, 3, g_format);
 				//ShowHudText(client, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 
 				for(int i = 1; i <= MaxClients; i++)
@@ -5390,20 +5357,20 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						{
 							//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-							Format(format, sizeof(format), "%T", "CP-recordNotFirstHud", i, cpnum);
+							Format(g_format, sizeof(g_format), "%T", "CP-recordNotFirstHud", i, cpnum);
 							//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
-							ShowHudText(i, 1, format);
+							ShowHudText(i, 1, g_format);
 
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(format, sizeof(format), "%T", "CP-recordDetailNotFirstHud", i, time);
-							ShowHudText(i, 2, format);
+							Format(g_format, sizeof(g_format), "%T", "CP-recordDetailNotFirstHud", i, time);
+							ShowHudText(i, 2, g_format);
 
 							//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-							Format(format, sizeof(format), "%T", "CP-recordImproveNotFirstHud", i, timeSR);
-							ShowHudText(i, 3, format);
+							Format(g_format, sizeof(g_format), "%T", "CP-recordImproveNotFirstHud", i, timeSR);
+							ShowHudText(i, 3, g_format);
 							//ShowHudText(i, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
 						}
 					}
@@ -5453,17 +5420,17 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				//Format(format, sizeof(format), "%T", "CP-recordDeprove"
-				Format(format, sizeof(format), "%T", "CP-recordNonHud", client, time);
-				ShowHudText(client, 1, format);
+				//Format(g_format, sizeof(g_format), "%T", "CP-recordDeprove"
+				Format(g_format, sizeof(g_format), "%T", "CP-recordNonHud", client, time);
+				ShowHudText(client, 1, g_format);
 				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				//Format(format, sizeof(format), "+%s", timeSR);
-				Format(format, sizeof(format), "%T", "CP-recordDeproveHud", client, timeSR);
-				ShowHudText(client, 2, format);
+				//Format(g_format, sizeof(g_format), "+%s", timeSR);
+				Format(g_format, sizeof(g_format), "%T", "CP-recordDeproveHud", client, timeSR);
+				ShowHudText(client, 2, g_format);
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -5477,15 +5444,15 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 							//ShowHudText(i, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(format, sizeof(format), "%T", "CP-recordNonHud", i, time);
-							ShowHudText(i, 1, format);
+							Format(g_format, sizeof(g_format), "%T", "CP-recordNonHud", i, time);
+							ShowHudText(i, 1, g_format);
 
 							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							//Format(format, sizeof(format), "+%s", timeSR);
-							Format(format, sizeof(format), "%T", "CP-recordDeproveHud", i, timeSR);
-							ShowHudText(i, 2, format);
+							//Format(g_format, sizeof(g_format), "+%s", timeSR);
+							Format(g_format, sizeof(g_format), "%T", "CP-recordDeproveHud", i, timeSR);
+							ShowHudText(i, 2, g_format);
 						}
 					}
 				}
@@ -5572,26 +5539,26 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 			//ShowHudText(client, 1, "MAP FINISHED!"); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", client);
-			ShowHudText(client, 1, format);
+			Format(g_format, sizeof(g_format), "%T", "MapFinishedFirstRecordHud", client);
+			ShowHudText(client, 1, g_format);
 
 			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 			//ShowHudText(client, 2, "NEW SERVER RECORD!");
-			Format(format, sizeof(format), "%T", "NewServerRecordHud", client);
-			ShowHudText(client, 2, format);
+			Format(g_format, sizeof(g_format), "%T", "NewServerRecordHud", client);
+			ShowHudText(client, 2, g_format);
 
 			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 			//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-			Format(format, sizeof(format), "%T", "FirstRecordHud", client, time);
-			ShowHudText(client, 3, format);
+			Format(g_format, sizeof(g_format), "%T", "FirstRecordHud", client, time);
+			ShowHudText(client, 3, g_format);
 
 			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 			SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 			//ShowHudText(client, 4, "+00:00:00");
-			Format(format, sizeof(format), "%T", "FirstRecordZeroHud", client, timeSR);
-			ShowHudText(client, 4, format);
+			Format(g_format, sizeof(g_format), "%T", "FirstRecordZeroHud", client, timeSR);
+			ShowHudText(client, 4, g_format);
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -5605,28 +5572,28 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 						SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 						//ShowHudText(i, 1, "MAP FINISHED!");
-						//Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
-						Format(format, sizeof(format), "%T", "MapFinishedFirstRecordHud", i);
-						ShowHudText(i, 1, format);
+						//Format(g_format, sizeof(g_format), "%T", "NewServerRecordHud", i);
+						Format(g_format, sizeof(g_format), "%T", "MapFinishedFirstRecordHud", i);
+						ShowHudText(i, 1, g_format);
 
 						//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 						SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 						//ShowHudText(i, 2, "NEW SERVER RECORD!");
 						//ShowHudText(i, 2, "%T", ""
-						Format(format, sizeof(format), "%T", "NewServerRecordHud", i);
-						ShowHudText(i, 2, format);
+						Format(g_format, sizeof(g_format), "%T", "NewServerRecordHud", i);
+						ShowHudText(i, 2, g_format);
 
 						//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 						SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 						//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-						Format(format, sizeof(format), "%T", "FirstRecordHud", i, time);
-						ShowHudText(i, 3, format);
+						Format(g_format, sizeof(g_format), "%T", "FirstRecordHud", i, time);
+						ShowHudText(i, 3, g_format);
 
 						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 						SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 						//ShowHudText(i, 4, "+00:00:00");
-						Format(format, sizeof(format), "%T", "FirstRecordZeroHud", i, timeSR);
-						ShowHudText(i, 4, format);
+						Format(g_format, sizeof(g_format), "%T", "FirstRecordZeroHud", i, timeSR);
+						ShowHudText(i, 4, g_format);
 					}
 				}
 			}
@@ -5710,29 +5677,29 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
+				Format(g_format, sizeof(g_format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
 				//ShowHudText(client, 1, "MAP FINISHED!");
-				//Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
-				ShowHudText(client, 1, format);
+				//Format(g_format, sizeof(g_format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
+				ShowHudText(client, 1, g_format);
 
 				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "NEW SERVER RECORD!");
-				Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", client);
-				ShowHudText(client, 2, format);
+				Format(g_format, sizeof(g_format), "%T", "NewServerRecordNotFirstHud", client);
+				ShowHudText(client, 2, g_format);
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 				//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", client, time);
-				ShowHudText(client, 3, format);
+				Format(g_format, sizeof(g_format), "%T", "NewServerRecordDetailNotFirstHud", client, time);
+				ShowHudText(client, 3, g_format);
 
 				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 				SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 				//ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond); //https://youtu.be/j4L3YvHowv8?t=45
-				//Format(format, sizeof(format), "-%s", timeSR);
-				Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", client, timeSR);
-				ShowHudText(client, 4, format);
+				//Format(g_format, sizeof(g_format), "-%s", timeSR);
+				Format(g_format, sizeof(g_format), "%T", "NewServerRecordImproveNotFirstHud", client, timeSR);
+				ShowHudText(client, 4, g_format);
 				
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -5746,26 +5713,26 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 							//ShowHudText(i, 1, "MAP FINISHED!");
-							Format(format, sizeof(format), "%T", "NewServerRecordMapFinishedNotFirstHud", i);
-							ShowHudText(i, 1, format);
+							Format(g_format, sizeof(g_format), "%T", "NewServerRecordMapFinishedNotFirstHud", i);
+							ShowHudText(i, 1, g_format);
 							
 							//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
 							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "NEW SERVER RECORD!");
-							Format(format, sizeof(format), "%T", "NewServerRecordNotFirstHud", i);
-							ShowHudText(i, 2, format);
+							Format(g_format, sizeof(g_format), "%T", "NewServerRecordNotFirstHud", i);
+							ShowHudText(i, 2, g_format);
 
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 							//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(format, sizeof(format), "%T", "NewServerRecordDetailNotFirstHud", i, time);
-							ShowHudText(i, 3, format);
+							Format(g_format, sizeof(g_format), "%T", "NewServerRecordDetailNotFirstHud", i, time);
+							ShowHudText(i, 3, g_format);
 
 							//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
 							SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
 							//ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							Format(format, sizeof(format), "%T", "NewServerRecordImproveNotFirstHud", i, timeSR);
-							ShowHudText(i, 4, format);
+							Format(g_format, sizeof(g_format), "%T", "NewServerRecordImproveNotFirstHud", i, timeSR);
+							ShowHudText(i, 4, g_format);
 						}
 					}
 				}
@@ -5832,21 +5799,21 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
 				//ShowHudText(client, 1, "MAP FINISHED!");
-				Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", client);
-				ShowHudText(client, 1, format);
+				Format(g_format, sizeof(g_format), "%T", "MapFinishedDeproveHud", client);
+				ShowHudText(client, 1, g_format);
 
 				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 				//ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", client, time);
-				ShowHudText(client, 2, format);
+				Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveHud", client, time);
+				ShowHudText(client, 2, g_format);
 				
 				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 				//ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				//Format(format, sizeof(format), "+%s", timeSR);
-				Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", client, timeSR);
-				ShowHudText(client, 3, format);
+				//Format(g_format, sizeof(g_format), "+%s", timeSR);
+				Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveOwnHud", client, timeSR);
+				ShowHudText(client, 3, g_format);
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -5859,22 +5826,22 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						{
 							//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
 							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-							Format(format, sizeof(format), "%T", "MapFinishedDeproveHud", i);
+							Format(g_format, sizeof(g_format), "%T", "MapFinishedDeproveHud", i);
 							//ShowHudText(i, 1, "MAP FINISHED!");
-							ShowHudText(i, 1, format);
+							ShowHudText(i, 1, g_format);
 
 							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
 							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
 							//ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveHud", i, time);
-							ShowHudText(i, 2, format);
+							Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveHud", i, time);
+							ShowHudText(i, 2, g_format);
 							
 							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
 							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
 							//ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							//Format(format, sizeof(format), "+%s", timeSR);
-							Format(format, sizeof(format), "%T", "MapFinishedTimeDeproveOwnHud", i, timeSR);
-							ShowHudText(i, 3, format);
+							//Format(g_format, sizeof(g_format), "+%s", timeSR);
+							Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveOwnHud", i, timeSR);
+							ShowHudText(i, 3, g_format);
 						}
 					}
 				}
@@ -5885,7 +5852,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 	return;
 }
 
-public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, DataPack dp)
+public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -5977,13 +5944,9 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 	else if(strlen(error) == 0)
 	{
 		data.Reset();
-
 		int other = GetClientFromSerial(data.ReadCell());
 		int cpnum = data.ReadCell();
-
 		delete data;
-
-		char query[512] = "";
 
 		if(results.FetchRow() == false)
 		{
@@ -6017,14 +5980,14 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 
 		if(results.FetchRow() == true)
 		{
-			Format(query, sizeof(query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
+			Format(g_query, sizeof(g_query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
 
 			DataPack dp = new DataPack();
 
 			dp.WriteCell(GetClientSerial(other));
 			dp.WriteCell(cpnum);
 
-			g_mysql.Query(SQLCPSelect2, query, dp, DBPrio_Normal);
+			g_mysql.Query(SQLCPSelect2, g_query, dp, DBPrio_Normal);
 		}
 	}
 
@@ -6041,10 +6004,8 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 	else if(strlen(error) == 0)
 	{
 		data.Reset();
-
 		int other = GetClientFromSerial(data.ReadCell());
 		int cpnum = data.ReadCell();
-
 		delete data;
 
 		float time = g_timerTime[other];
@@ -6124,7 +6085,6 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				Call_PushFloat(diff);
 				Call_PushString("CPDeprove");
 				Call_Finish();
-
 				delete hForward;
 			}
 		}
@@ -6146,8 +6106,6 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 		PrintToServer("SQLSetTries callback is finished.");
 		#endif
 
-		char query[512] = "";
-
 		int client = GetClientFromSerial(data);
 
 		int playerid = GetSteamAccountID(client);
@@ -6156,8 +6114,8 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 
 		if(results.FetchRow() == false)
 		{
-			Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
-			g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_High);
+			Format(g_query, sizeof(g_query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
+			g_mysql.Query(SQLSetTriesInserted, g_query, _, DBPrio_High);
 
 			return;
 		}
@@ -6166,8 +6124,8 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 
 		if(results.FetchRow() == true)
 		{
-			Format(query, sizeof(query), "SELECT tries FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
-			g_mysql.Query(SQLSetTries2, query, GetClientSerial(client), DBPrio_High);
+			Format(g_query, sizeof(g_query), "SELECT tries FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
+			g_mysql.Query(SQLSetTries2, g_query, GetClientSerial(client), DBPrio_High);
 		}
 	}
 
@@ -6202,8 +6160,6 @@ public void SQLSetTries2(Database db, DBResultSet results, const char[] error, a
 		PrintToServer("SQLSetTries2 callback is finished.");
 		#endif
 
-		char query[512] = "";
-
 		int client = GetClientFromSerial(data);
 
 		if(IsValidClient(client) == true)
@@ -6214,8 +6170,8 @@ public void SQLSetTries2(Database db, DBResultSet results, const char[] error, a
 
 			if(results.FetchRow() == false)
 			{
-				Format(query, sizeof(query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
-				g_mysql.Query(SQLSetTriesInserted, query, _, DBPrio_High);
+				Format(g_query, sizeof(g_query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
+				g_mysql.Query(SQLSetTriesInserted, g_query, _, DBPrio_High);
 
 				return;
 			}
@@ -6224,8 +6180,8 @@ public void SQLSetTries2(Database db, DBResultSet results, const char[] error, a
 
 			if(results.FetchRow() == true)
 			{
-				Format(query, sizeof(query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
-				g_mysql.Query(SQLSetTriesUpdated, query, _, DBPrio_Normal);
+				Format(g_query, sizeof(g_query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
+				g_mysql.Query(SQLSetTriesUpdated, g_query, _, DBPrio_Normal);
 			}
 		}
 	}
@@ -6267,9 +6223,8 @@ public void SQLConnect(Database db, const char[] error, any data)
 
 		g_dbPassed = true; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-stats.sp#L199
 
-		char query[512] = "";
-		Format(query, sizeof(query), "SELECT time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", g_map);
-		g_mysql.Query(SQLGetServerRecord, query, _, DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", g_map);
+		g_mysql.Query(SQLGetServerRecord, g_query, _, DBPrio_Normal);
 
 		g_mysql.Query(SQLRecalculatePoints_GetMap, "SELECT map FROM tier", _, DBPrio_Normal);
 
@@ -6280,8 +6235,8 @@ public void SQLConnect(Database db, const char[] error, any data)
 				g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(i), DBPrio_High);
 
 				int steamid = GetSteamAccountID(i);
-				Format(query, sizeof(query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
-				g_mysql.Query(SQLGetPersonalRecord, query, GetClientSerial(i), DBPrio_Normal);
+				Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
+				g_mysql.Query(SQLGetPersonalRecord, g_query, GetClientSerial(i), DBPrio_Normal);
 			}
 		}
 	}
@@ -6296,9 +6251,8 @@ public void SQLConnect(Database db, const char[] error, any data)
 
 stock void ForceZonesSetup()
 {
-	char query[512] = "";
-	Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
-	g_mysql.Query(SQLSetZoneStart, query);
+	Format(g_query, sizeof(g_query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
+	g_mysql.Query(SQLSetZoneStart, g_query);
 
 	return;
 }
@@ -6324,9 +6278,8 @@ public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error
 
 			CreateStart();
 
-			char query[512] = "";
-			Format(query, sizeof(query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
-			g_mysql.Query(SQLSetZoneEnd, query, _, DBPrio_Normal);
+			Format(g_query, sizeof(g_query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
+			g_mysql.Query(SQLSetZoneEnd, g_query, _, DBPrio_Normal);
 		}
 	}
 
@@ -7033,8 +6986,6 @@ public Action cmd_devmap(int client, int args)
 		return Plugin_Continue;
 	}
 
-	char format[256] = "";
-
 	if(GetEngineTime() - g_devmapTime > 35.0 && GetEngineTime() - g_afkTime > 30.0)
 	{
 		g_voters = 0;
@@ -7048,10 +6999,10 @@ public Action cmd_devmap(int client, int args)
 				Menu menu = new Menu(devmap_handler);
 				menu.SetTitle("%T", g_devmap == true ? "TurnOFFDevmap" : "TurnONDevmap", i);
 
-				Format(format, sizeof(format), "%T", "Yes", i);
-				menu.AddItem("yes", format);
-				Format(format, sizeof(format), "%T", "No", i);
-				menu.AddItem("no", format);
+				Format(g_format, sizeof(g_format), "%T", "Yes", i);
+				menu.AddItem("yes", g_format);
+				Format(g_format, sizeof(g_format), "%T", "No", i);
+				menu.AddItem("no", g_format);
 
 				menu.Display(i, 20);
 			}
@@ -7068,16 +7019,16 @@ public Action cmd_devmap(int client, int args)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				Format(format, sizeof(format), "%T", "DevmapStart", i, name);
-				SendMessage(i, format);
+				Format(g_format, sizeof(g_format), "%T", "DevmapStart", i, name);
+				SendMessage(i, g_format);
 			}
 		}
 	}
 
 	else if(GetEngineTime() - g_devmapTime <= 35.0 || GetEngineTime() - g_afkTime <= 30.0)
 	{
-		Format(format, sizeof(format), "%T", "DevmapNotAllowed", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", "DevmapNotAllowed", client);
+		SendMessage(client, g_format);
 	}
 
 	return Plugin_Handled;
@@ -7132,7 +7083,6 @@ stock void Devmap(bool force)
 {
 	if(force == true || g_voters == 0)
 	{
-		char format[256] = "";
 		char float_[8] = "";
 
 		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] >= g_devmapCount[0])
@@ -7144,8 +7094,8 @@ stock void Devmap(bool force)
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(format, sizeof(format), "%T", "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, format);
+						Format(g_format, sizeof(g_format), "%T", "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_format);
 					}
 				}
 			}
@@ -7157,8 +7107,8 @@ stock void Devmap(bool force)
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(format, sizeof(format), "%T", "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, format);
+						Format(g_format, sizeof(g_format), "%T", "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_format);
 					}
 				}
 			}
@@ -7175,8 +7125,8 @@ stock void Devmap(bool force)
 					if(IsClientInGame(i) == true)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(format, sizeof(format), "%T", "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, format);
+						Format(g_format, sizeof(g_format), "%T", "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_format);
 					}
 				}
 			}
@@ -7188,8 +7138,8 @@ stock void Devmap(bool force)
 					if(IsClientInGame(i) == true)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(format, sizeof(format), "%T", "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, format);
+						Format(g_format, sizeof(g_format), "%T", "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_format);
 					}
 				}
 			}
@@ -7273,8 +7223,6 @@ public Action cmd_afk(int client, int args)
 		return Plugin_Continue;
 	}
 
-	char format[256] = "";
-
 	if(GetEngineTime() - g_afkTime > 30.0 && GetEngineTime() - g_devmapTime > 35.0)
 	{
 		g_voters = 0;
@@ -7299,10 +7247,10 @@ public Action cmd_afk(int client, int args)
 					Menu menu = new Menu(afk_handler);
 					menu.SetTitle("%T", "AreYouHere?", i);
 
-					Format(format, sizeof(format), "%T", "Yes", i);
-					menu.AddItem("yes", format);
-					Format(format, sizeof(format), "%T", "No", i);
-					menu.AddItem("no", format);
+					Format(g_format, sizeof(g_format), "%T", "Yes", i);
+					menu.AddItem("yes", g_format);
+					Format(g_format, sizeof(g_format), "%T", "No", i);
+					menu.AddItem("no", g_format);
 
 					menu.Display(i, 20);
 				}
@@ -7320,16 +7268,16 @@ public Action cmd_afk(int client, int args)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				Format(format, sizeof(format), "%T", "AFKCHECK", i, name);
-				SendMessage(i, format);
+				Format(g_format, sizeof(g_format), "%T", "AFKCHECK", i, name);
+				SendMessage(i, g_format);
 			}
 		}
 	}
 
 	else if(GetEngineTime() - g_afkTime <= 30.0 || GetEngineTime() - g_devmapTime <= 35.0)
 	{
-		Format(format, sizeof(format), "%T", "AFKCHECK2", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", "AFKCHECK2", client);
+		SendMessage(client, g_format);
 	}
 
 	return Plugin_Handled;
@@ -7415,23 +7363,21 @@ stock void Noclip(int client)
 		return;
 	}
 
-	char format[256] = "";
-
 	if(g_devmap == true)
 	{
 		SetEntityMoveType(client, GetEntityMoveType(client) == MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
 
 		if(g_menuOpened[client] == false)
 		{
-			Format(format, sizeof(format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
-			SendMessage(client, format);
+			Format(g_format, sizeof(g_format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
+			SendMessage(client, g_format);
 		}
 	}
 
 	else if(g_devmap == false)
 	{
-		Format(format, sizeof(format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	if(g_menuOpened[client] == true)
@@ -7477,13 +7423,12 @@ stock void HudMenu(int client)
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("Hud");
 
-	char format[128] = "";
-	Format(format, sizeof(format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
-	menu.AddItem("vel", format, gCV_vel.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
-	menu.AddItem("mls", format, gCV_mlstats.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	Format(format, sizeof(format), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
-	menu.AddItem("endmsg", format, gCV_endmsg.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_format, sizeof(g_format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
+	menu.AddItem("vel", g_format, gCV_vel.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_format, sizeof(g_format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
+	menu.AddItem("mls", g_format, gCV_mlstats.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_format, sizeof(g_format), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
+	menu.AddItem("endmsg", g_format, gCV_endmsg.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
 
@@ -7569,9 +7514,8 @@ public Action cmd_vel(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", g_hudVel[client] == true ? "VelChatON" : "VelChatOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", g_hudVel[client] == true ? "VelChatON" : "VelChatOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_menuOpenedHud[client] == true)
@@ -7631,9 +7575,8 @@ public Action cmd_mlstats(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		char format[256] = "";
-		Format(format, sizeof(format), "%T", g_mlstats[client] == true ? "MLStatsChatON" : "MLStatsChatOFF", client);
-		SendMessage(client, format);
+		Format(g_format, sizeof(g_format), "%T", g_mlstats[client] == true ? "MLStatsChatON" : "MLStatsChatOFF", client);
+		SendMessage(client, g_format);
 	}
 
 	else if(g_menuOpenedHud[client] == true)
@@ -7659,9 +7602,8 @@ public Action cmd_button(int client, int args)
 	IntToString(g_button[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[2], value);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
-	SendMessage(client, format);
+	Format(g_format, sizeof(g_format), "%T", g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
+	SendMessage(client, g_format);
 
 	return Plugin_Handled;
 }
@@ -7681,9 +7623,8 @@ public Action cmd_pbutton(int client, int args)
 	IntToString(g_pbutton[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[3], value);
 
-	char format[256] = "";
-	Format(format, sizeof(format), "%T", g_pbutton[client] == true ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
-	SendMessage(client, format);
+	Format(g_format, sizeof(g_format), "%T", g_pbutton[client] == true ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
+	SendMessage(client, g_format);
 
 	return Plugin_Handled;
 }
