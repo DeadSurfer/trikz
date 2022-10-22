@@ -699,7 +699,7 @@
 	}
 	"AskForRestart"
 	{
-		"en"	"Вы действительно хотите начать заново?"
+		"ru"	"Вы действительно хотите начать заново?"
 	}
 	"YouAreDead"
 	{
@@ -721,5 +721,138 @@
 	"MLSTP"
 	{
 		"ru"	" [ТП]"
+	}
+	"CursorPossitionON"
+	{
+		"ru"	"✓ Позиция курсора"
+	}
+	"CursorPossitionOFF"
+	{
+		"ru"	"☓ Позиция курсора"
+	}
+	"DBLoading"
+	{
+		"ru"	"Пожалуйста подождите пока считаются данные!"
+	}
+	"ZoneEditor"
+	{
+		"ru"	"Конструктор зон"
+	}
+	"ZoneEditorAddButton"
+	{
+		"ru"	"Добавить новую зону"
+	}
+	"ZoneEditorEditButton"
+	{
+		"ru"	"Редактировать зону"
+	}
+	"ZoneEditorTPButton"
+	{
+		"ru"	"Переместится на зону"
+	}
+	"ZoneEditorAdd"
+	{
+		"ru"	"Конструктор зон - Добавить"
+	}
+	"ZoneEditorStartZoneButton"
+	{
+		"ru"	"Начальная зона"
+	}
+	"ZoneEditorEndZoneButton"
+	{
+		"ru"	"Конечная зона"
+	}
+	"ZoneEditorCPZoneButton"
+	{
+		"ru"	"Чекпоинт зона"
+	}
+	"ZoneEditorEdit"
+	{
+		"ru"	"Конструктор зон - Редактировать"
+	}
+	"ZoneEditorCPButton"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Чекпоинт зона #{1}"
+	}
+	"ZoneEditorNoZone"
+	{
+		"ru"	"Зоны не настроены."
+	}
+	"ZoneEditorUse"
+	{
+		"ru"	"Нажмите ИСПОЛЬЗОВАТЬ, чтобы установить углы зон"
+	}
+	"ZoneEditorStep1"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Шаг + ({1})"
+	}
+	"ZoneEditorStep2"
+	{
+		"ru"	"Шаг -"
+	}
+	"ZoneEditorSelectedCPnum"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Чекпоинт #{1}"
+	}
+	"ZoneEditorTypeCPnum"
+	{
+		"ru"	"Наберите номер чекпоинта в игровой чат. (1 - 10)"
+	}
+	"ZoneEditorStartZone"
+	{
+		"ru"	"Конструктор зон - Начальная зона"
+	}
+	"ZoneEditorEndZone"
+	{
+		"ru"	"Конструктор зон - Конечная зона"
+	}
+	"ZoneEditorSide1+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 1 | {1} +{2}"
+	}
+	"ZoneEditorSide1-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 1 | {1} -{2}"
+	}
+	"ZoneEditorSide2+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 2 | {1} +{2}"
+	}
+	"ZoneEditorSide2-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 2 | {1} -{2}"
+	}
+	"ZoneEditorAxis"
+	{
+		"ru"	"Сменить ось"
+	}
+	"ZoneEditorApplyStartZone"
+	{
+		"ru"	"Применить начальную зону"
+	}
+	"ZoneEditorApplyEndZone"
+	{
+		"ru"	"Применить конечную зону"
+	}
+	"ZoneEditorCPZone"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Конструктор зон - ЦП зона #{1}"
+	}
+	"ZoneEditorApplyCPZone"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Применить чекпоинт зону #{1}"
+	}
+	"ZoneEditorTP"
+	{
+		"ru"	"Конструктор зон - Телепорт"
 	}
 }
