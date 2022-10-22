@@ -44,10 +44,10 @@
 #define debug false
 
 int g_partner[MAXPLAYER] = {0, ...};
-float g_zoneStartOrigin[2][3]; //start zone mins and maxs
-float g_zoneEndOrigin[2][3]; //end zone mins and maxs
-float g_zoneStartOriginTemp[2][3];
-float g_zoneEndOriginTemp[2][3];
+float g_zoneStartOrigin[2][3]; //start zone corner1 adn corner2
+float g_zoneEndOrigin[2][3]; //end zone corner1 adn corner2
+float g_zoneStartOriginTemp[MAXPLAYER][2][3];
+float g_zoneEndOriginTemp[MAXPLAYER][2][3];
 Database g_mysql = null;
 float g_timerTimeStart[MAXPLAYER] = {0.0, ...};
 float g_timerTime[MAXPLAYER] = {0.0, ...};
@@ -60,13 +60,14 @@ float g_boostTime[MAXPLAYER] = {0.0, ...};
 float g_skyVel[MAXPLAYER][3];
 bool g_timerReadyToStart[MAXPLAYER] = {false, ...};
 
-float g_cpPos[12][2][3];
-float g_cpPosTemp[12][2][3];
+float g_cpPos[11][2][3];
+float g_cpPosTemp[MAXPLAYER][11][2][3];
 bool g_cp[MAXPLAYER][11];
 bool g_cpLock[MAXPLAYER][11];
 float g_cpTime[MAXPLAYER][11];
 float g_cpDiffSR[MAXPLAYER][11];
 float g_cpTimeSR[11] = {0.0, ...};
+int g_cpCountTryToAlign[MAXPLAYER] = {0, ...};
 
 float g_haveRecord[MAXPLAYER] = {0.0, ...};
 float g_ServerRecordTime = 0.0;
@@ -141,6 +142,7 @@ int g_colorBuffer[MAXPLAYER][2][3];
 int g_colorCount[MAXPLAYER][2];
 
 int g_zoneModel[3] = {0, ...};
+int g_laser = 0;
 int g_laserBeam = 0;
 bool g_sourcetvchangedFileName = true;
 float g_nadeVel[MAXPLAYER][3];
@@ -151,7 +153,7 @@ float g_afkTime = 0.0;
 bool g_afk[MAXPLAYER] = {false, ...};
 float g_center[12][3];
 bool g_zoneDraw[MAXPLAYER] = {false, ...};
-float g_engineTime = 0.0;
+float g_engineTime[MAXPLAYER] = {0.0, ...};
 float g_pingTime[MAXPLAYER] = {0.0, ...};
 bool g_pingLock[MAXPLAYER] = {false, ...};
 bool g_msg[MAXPLAYER] = {false, ...};
@@ -168,7 +170,7 @@ bool g_mlstats[MAXPLAYER] = {false, ...};
 float g_mlsDistance[MAXPLAYER][2][3];
 bool g_button[MAXPLAYER] = {false, ...};
 bool g_pbutton[MAXPLAYER] = {false, ...};
-float g_skyOrigin[MAXPLAYER] = {0.0, ...};
+float g_skyOrigin[MAXPLAYER][3];
 int g_entityButtons[MAXPLAYER] = {0, ...};
 bool g_teleported[MAXPLAYER] = {false, ...};
 int g_points[MAXPLAYER] = {0, ...};
@@ -192,26 +194,35 @@ bool g_flashbangDoor[MAXPLAYER][2];
 int g_top10Count = 0;
 DynamicHook g_teleport = null;
 float g_top10ac = 0.0;
-int g_step = 1;
-int g_ZoneEditor = 0;
-int g_ZoneEditorCP = 0;
+int g_step[MAXPLAYER] = {1, ...};
+int g_ZoneEditor[MAXPLAYER] = {0, ...};
+int g_ZoneEditorCP[MAXPLAYER] = {0, ...};
 int g_skinFlashbang[MAXPLAYER] = {0, ...};
 int g_skinPlayer[MAXPLAYER] = {0, ...};
 float g_top10SR = 0.0;
 bool g_silentF1F2 = false;
 KeyValues g_kv = null;
 bool g_zoneDrawed[MAXPLAYER] = {false, ...};
-int g_axis = 0;
+int g_axis[MAXPLAYER] = {0, ...};
 char g_axisLater[][] = {"X", "Y", "Z"};
 char g_query[512] = "";
 char g_format[256] = "";
+bool g_zoneCreator[MAXPLAYER] = {false, ...};
+bool g_zoneCursor[MAXPLAYER] = {false, ...};
+bool g_zoneCreatorUseProcess[MAXPLAYER][2];
+int g_entityXYZ[MAXPLAYER] = {0, ...};
+int g_zoneCreatorSelected[MAXPLAYER] = {0, ...};
+float g_zoneSelected[MAXPLAYER][2][3];
+bool g_zoneSelectedCP[MAXPLAYER] = {false, ...};
+int g_ZoneEditorVIA[MAXPLAYER] = {0, ...};
+bool g_zoneCPnumReadyToNew[MAXPLAYER] = {false, ...};
 
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.59",
+	version = "4.60",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -248,58 +259,46 @@ public void OnPluginStart()
 	
 	AutoExecConfig(true, "plugin.trueexpert", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
-	RegConsoleCmd("sm_t", cmd_trikz);
-	RegConsoleCmd("sm_trikz", cmd_trikz);
-	RegConsoleCmd("sm_bl", cmd_block);
-	RegConsoleCmd("sm_block", cmd_block);
-	RegConsoleCmd("sm_p", cmd_partner);
-	RegConsoleCmd("sm_partner", cmd_partner);
-	RegConsoleCmd("sm_c", cmd_color);
-	RegConsoleCmd("sm_color", cmd_color);
-	RegConsoleCmd("sm_r", cmd_restart);
-	RegConsoleCmd("sm_restart", cmd_restart);
-	RegConsoleCmd("sm_autoflash", cmd_autoflash);
-	RegConsoleCmd("sm_flash", cmd_autoflash);
-	RegConsoleCmd("sm_autoswitch", cmd_autoswitch);
-	RegConsoleCmd("sm_switch", cmd_autoswitch);
-	//RegConsoleCmd("sm_time", cmd_time);
-	RegConsoleCmd("sm_cp", cmd_checkpoint);
-	RegConsoleCmd("sm_devmap", cmd_devmap);
-	RegConsoleCmd("sm_top", cmd_top);
-	RegConsoleCmd("sm_afk", cmd_afk);
-	RegConsoleCmd("sm_nc", cmd_noclip);
-	RegConsoleCmd("sm_noclip", cmd_noclip);
-	RegConsoleCmd("sm_sp", cmd_spec);
-	RegConsoleCmd("sm_spec", cmd_spec);
-	RegConsoleCmd("sm_hud", cmd_hud);
-	RegConsoleCmd("sm_mls", cmd_mlstats);
-	RegConsoleCmd("sm_button", cmd_button);
-	RegConsoleCmd("sm_pbutton", cmd_pbutton);
-	RegConsoleCmd("sm_macro", cmd_macro);
-	RegConsoleCmd("sm_bhop", cmd_bhop);
-	RegConsoleCmd("sm_endmsg", cmd_endmsg);
-	RegConsoleCmd("sm_top10", cmd_top10);
-	RegConsoleCmd("sm_help", cmd_control);
-	RegConsoleCmd("sm_control", cmd_control);
-	RegConsoleCmd("sm_skin", cmd_skin);
-	RegConsoleCmd("sm_vel", cmd_vel);
+	RegConsoleCmd("sm_t", cmd_trikz, "Open trikz menu.");
+	RegConsoleCmd("sm_trikz", cmd_trikz, "Open trikz menu.");
+	RegConsoleCmd("sm_bl", cmd_block, "Toggling collsiion state.");
+	RegConsoleCmd("sm_block", cmd_block, "Toggling collsiion state.");
+	RegConsoleCmd("sm_p", cmd_partner, "Open partner chooser or breakup menu.");
+	RegConsoleCmd("sm_partner", cmd_partner, "Open partner chooser or breakup menu.");
+	RegConsoleCmd("sm_c", cmd_color, "Open color and skin changer menu.");
+	RegConsoleCmd("sm_color", cmd_color, "Open color and skin changer menu.");
+	RegConsoleCmd("sm_r", cmd_restart, "Do restart timer.");
+	RegConsoleCmd("sm_restart", cmd_restart, "Do restart timer.");
+	RegConsoleCmd("sm_autoflash", cmd_autoflash, "Toggling autoflash giving.");
+	RegConsoleCmd("sm_flash", cmd_autoflash, "Toggling autoflash giving.");
+	RegConsoleCmd("sm_autoswitch", cmd_autoswitch, "toggling autoswitch.");
+	RegConsoleCmd("sm_switch", cmd_autoswitch, "Toggling autoswitch.");
+	//RegConsoleCmd("sm_time", cmd_time, "Show timer time in-game chat.");
+	RegConsoleCmd("sm_cp", cmd_checkpoint, "Open checkpoint menu.");
+	RegConsoleCmd("sm_devmap", cmd_devmap, "Start the vote for devmap toggling.");
+	RegConsoleCmd("sm_top", cmd_top, "Open motd with server records.");
+	RegConsoleCmd("sm_afk", cmd_afk, "Start the vote for afk check.");
+	RegConsoleCmd("sm_nc", cmd_noclip, "Toggling noclip.");
+	RegConsoleCmd("sm_noclip", cmd_noclip, "Toggling noclip.");
+	RegConsoleCmd("sm_sp", cmd_spec, "Switch to spectator team.");
+	RegConsoleCmd("sm_spec", cmd_spec, "Switch to specator team.");
+	RegConsoleCmd("sm_hud", cmd_hud, "Open hud menu.");
+	RegConsoleCmd("sm_mls", cmd_mlstats, "Toggling key hint ml-stats.");
+	RegConsoleCmd("sm_button", cmd_button, "Toggling button pressing.");
+	RegConsoleCmd("sm_pbutton", cmd_pbutton, "Toggling partner button pressing.");
+	RegConsoleCmd("sm_macro", cmd_macro, "Toggling a macro.");
+	RegConsoleCmd("sm_bhop", cmd_bhop, "Toggling auto bunnyhoping.");
+	RegConsoleCmd("sm_endmsg", cmd_endmsg, "Toggling cp and end hud message.");
+	RegConsoleCmd("sm_top10", cmd_top10, "Show top 10 teams in-game chat.");
+	RegConsoleCmd("sm_help", cmd_control, "Open help menu.");
+	RegConsoleCmd("sm_control", cmd_control, "Open help menu.");
+	RegConsoleCmd("sm_skin", cmd_skin, "Open skin changing menu.");
+	RegConsoleCmd("sm_vel", cmd_vel, "Toggling a velocity for hint.");
 
-	RegServerCmd("sm_createzones", cmd_createzones);
-	RegServerCmd("sm_createusers", cmd_createusers);
-	RegServerCmd("sm_createrecords", cmd_createrecords);
-	RegServerCmd("sm_createcp", cmd_createcp);
-	RegServerCmd("sm_createtier", cmd_createtier);
-
-	RegConsoleCmd("sm_startmins", cmd_startmins);
-	RegConsoleCmd("sm_startmaxs", cmd_startmaxs);
-	RegConsoleCmd("sm_endmins", cmd_endmins);
-	RegConsoleCmd("sm_endmaxs", cmd_endmaxs);
-	RegConsoleCmd("sm_cpmins", cmd_cpmins);
-	RegConsoleCmd("sm_cpmaxs", cmd_cpmaxs);
-	RegConsoleCmd("sm_zones", cmd_zones);
-	RegConsoleCmd("sm_maptier", cmd_maptier);
-	RegConsoleCmd("sm_deleteallcp", cmd_deleteallcp);
-	RegConsoleCmd("sm_test", cmd_test);
+	RegAdminCmd("sm_zones", cad_zones, ADMFLAG_CUSTOM1, "Open zone editor menu.");
+	RegAdminCmd("sm_maptier", cad_maptier, ADMFLAG_CUSTOM1, "sm_maptier <value> set map tier.");
+	RegAdminCmd("sm_deleteallcp", cad_deleteallcp, ADMFLAG_CUSTOM1, "Delete all checkpoints.");
+	RegAdminCmd("sm_test", cad_test, ADMFLAG_CUSTOM1, "Temporary test function.");
 
 	AddNormalSoundHook(OnSound);
 
@@ -319,14 +318,19 @@ public void OnPluginStart()
 	AddCommandListener(cheer, "cheer");
 	AddCommandListener(showbriefing, "showbriefing");
 	AddCommandListener(headtrack_reset_home_pos, "headtrack_reset_home_pos");
+	AddCommandListener(ACLCPNUM, "say");
+	AddCommandListener(ACLCPNUM, "say_team");
 
-	//char output[5][16] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
+	/*char classname[2][32] = {"trigger_teleport", "trigger_teleport_relative"}; //https://developer.valvesoftware.com/wiki/Trigger_teleport https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+	char output[5][16] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
 
-	//for(int i = 0; i < sizeof(output); i++)
-	//{
-	//	HookEntityOutput("trigger_teleport", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport
-	//	HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
-	//}
+	for(int i = 0; i < sizeof(classname); i++)
+	{
+		for(int j = 0; j < sizeof(output); j++)
+		{
+			HookEntityOutput(classname[i], output[j], output_teleport);
+		}
+	}*/
 
 	LoadTranslations("trueexpert.phrases"); //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 
@@ -472,8 +476,12 @@ public void OnMapStart()
 	g_zoneModel[1] = PrecacheModel("materials/expert_zone/zone_editor/zones/finish.vmt", true);
 	g_zoneModel[2] = PrecacheModel("materials/expert_zone/zone_editor/zones/check_point.vmt", true);
 
-	g_laserBeam = PrecacheModel("materials/sprites/laser.vmt", true);
+	g_laser = PrecacheModel("materials/sprites/laser.vmt", true);
+	g_laserBeam = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	g_smoke = PrecacheModel("materials/sprites/smoke.vmt", true);
+	
+	PrecacheModel("models/effects/combineball.mdl", true);
+	PrecacheModel("models/expert_zone/zone_editor/xyz/xyz.mdl", true);
 
 	PrecacheSound("weapons/flashbang/flashbang_explode1.wav", true);
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true);
@@ -483,19 +491,11 @@ public void OnMapStart()
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
-		//PrintToServer("%i %i %i", i, PLATFORM_MAX_PATH, sizeof(path));
 		DirectoryListing dir = OpenDirectory(path[i]);
-		//PrintToServer("01: %s", path[i]);
-
-		//char filename[12][PLATFORM_MAX_PATH];
-		//char filename[PLATFORM_MAX_PATH][12];
-		//char filename[12][PLATFORM_MAX_PATH];
 		char filename[8][PLATFORM_MAX_PATH];
 
 		FileType type = FileType_Unknown;
-		//char pathFull[12][PLATFORM_MAX_PATH];
 		char pathFull[8][PLATFORM_MAX_PATH];
-		//char pathFull[PLATFORM_MAX_PATH][2];
 
 		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
 		{
@@ -509,15 +509,11 @@ public void OnMapStart()
 				}
 
 				AddFileToDownloadsTable(pathFull[i]);
-
-				//PrintToServer("%s", pathFull[i]);
 			}
 		}
 
 		delete dir;
 	}
-
-	PrecacheModel("models/effects/combineball.mdl", true);
 
 	//g_turbophysics = FindConVar("sv_turbophysics"); //thnaks to maru.
 
@@ -533,6 +529,8 @@ public void OnMapStart()
 	delete g_kv;
 	g_kv = new KeyValues("TrueExpertHud");
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+
+	g_cpCount = 0;
 
 	return;
 }
@@ -681,7 +679,7 @@ public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] erro
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 				{
-					int steamid = GetSteamAccountID(i);
+					int steamid = GetSteamAccountID(i, true);
 					Format(g_query, sizeof(g_query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
 					g_mysql.Query(SQLGetPoints, g_query, GetClientSerial(i), DBPrio_Normal);
 				}
@@ -1278,6 +1276,30 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	return Plugin_Continue;
 }
 
+public Action ACLCPNUM(int client, const char[] command, int argc)
+{
+	if(g_zoneCPnumReadyToNew[client] == true)
+	{
+		char arg[256] = "";
+		GetCmdArgString(arg, sizeof(arg));
+
+		ReplaceString(arg, sizeof(arg), "\"", "", true);
+
+		int cpnum = StringToInt(arg);
+
+		if(0 < cpnum <= 10)
+		{
+			g_ZoneEditorCP[client] = cpnum;
+		}
+
+		ZoneCreator(client);
+
+		g_zoneCPnumReadyToNew[client] = false;
+	}
+
+	return Plugin_Continue;
+}
+
 /*public void output_teleport(const char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
@@ -1406,7 +1428,7 @@ public void OnClientPutInServer(int client)
 	{
 		g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
 
-		int steamid = GetSteamAccountID(client);
+		int steamid = GetSteamAccountID(client, true);
 		Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
 		g_mysql.Query(SQLGetPersonalRecord, g_query, GetClientSerial(client), DBPrio_Normal);
 	}
@@ -1421,9 +1443,7 @@ public void OnClientPutInServer(int client)
 		for(int j = 0; j <= 2; j++)
 		{
 			g_cpOrigin[client][i][j] = 0.0;
-
 			g_cpAng[client][i][j] = 0.0;
-
 			g_cpVel[client][i][j] = 0.0;
 		}
 	}
@@ -1433,7 +1453,7 @@ public void OnClientPutInServer(int client)
 
 	if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneHave[2] == true && g_zoneDrawed[client] == false)
 	{
-		DrawZone(client, 0.0, 3.0, 10);
+		DrawZone(client, 0.0, 3.0, 10, -1, -1);
 
 		g_zoneDrawed[client] = true;
 	}
@@ -1599,7 +1619,7 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 		if(IsValidClient(client) == true)
 		{
 			//https://forums.alliedmods.net/showthread.php?t=261378
-			int steamid = GetSteamAccountID(client);
+			int steamid = GetSteamAccountID(client, true);
 
 			if(results.FetchRow() == false)
 			{
@@ -1660,7 +1680,7 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 
 		if(IsValidClient(client) == true)
 		{
-			int steamid = GetSteamAccountID(client);
+			int steamid = GetSteamAccountID(client, true);
 
 			if(results.FetchRow() == false)
 			{
@@ -1701,7 +1721,7 @@ public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] 
 		{
 			if(results.HasResults == false)
 			{
-				int steamid = GetSteamAccountID(client);
+				int steamid = GetSteamAccountID(client, true);
 				Format(g_query, sizeof(g_query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
 				g_mysql.Query(SQLGetPoints, g_query, GetClientSerial(client), DBPrio_High);
 
@@ -1857,7 +1877,7 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
 					#endif
 
-					if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
+					if(FloatAbs(g_skyOrigin[client][2] - g_skyOrigin[other][2]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 					{
 						g_skyBoost[other] = 1;
 					}
@@ -2123,7 +2143,7 @@ stock void Partner(int client)
 
 		if(g_dbPassed == false)
 		{
-			Format(g_format, sizeof(g_format), "Wait for database loading...");
+			Format(g_format, sizeof(g_format), "%T", "DBLoading", client);
 			SendMessage(client, g_format);
 
 			return;
@@ -2271,7 +2291,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 
 							Restart(param1, false); //Expert-Zone idea.
 
-							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1), GetSteamAccountID(partner), GetSteamAccountID(partner), GetSteamAccountID(param1), g_map);
+							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1, true), GetSteamAccountID(partner, true), GetSteamAccountID(partner, true), GetSteamAccountID(param1, true), g_map);
 							g_mysql.Query(SQLGetPartnerRecord, g_query, GetClientSerial(param1), DBPrio_Normal);
 						}
 
@@ -3276,7 +3296,7 @@ stock void CreateStart()
 		g_center[0][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
 	}
 
-	g_center[0][2] - (FloatAbs(g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2);
+	g_center[0][2] -= FloatAbs((g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0);
 
 	TeleportEntity(entity, g_center[0], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -3286,7 +3306,7 @@ stock void CreateStart()
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
 
-	for(int i = 0; i <= 1; i++)
+	for(int i = 0; i <= 2; i++)
 	{
 		mins[i] = (g_zoneStartOrigin[0][i] - g_zoneStartOrigin[1][i]) / 2.0;
 
@@ -3302,8 +3322,6 @@ stock void CreateStart()
 			maxs[i] *= -1.0;
 		}
 	}
-
-	maxs[2] = FloatAbs(g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]);
 
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0);
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
@@ -3340,14 +3358,14 @@ public void CreateEnd()
 		g_center[1][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0; // so its mins and maxs in cube devide to two.
 	}
 
-	g_center[1][2] - (FloatAbs(g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2);
+	g_center[1][2] -= FloatAbs((g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0);
 
 	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
 
-	for(int i = 0; i <= 1; i++)
+	for(int i = 0; i <= 2; i++)
 	{
 		mins[i] = (g_zoneEndOrigin[0][i] - g_zoneEndOrigin[1][i]) / 2.0;
 
@@ -3363,8 +3381,6 @@ public void CreateEnd()
 			maxs[i] *= -1.0;
 		}
 	}
-
-	maxs[2] = FloatAbs(g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]);
 
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0); //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
@@ -3382,65 +3398,67 @@ public void CreateEnd()
 	return;
 }
 
-public Action cmd_startmins(int client, int args)
+public void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
-	int flags = GetUserFlagBits(client);
-	
-	if(flags & ADMFLAG_CUSTOM1)
-	{
-		if(g_devmap == true)
-		{
-			GetClientAbsOrigin(client, g_zoneStartOriginTemp[0]);
-		}
+	data.Reset();
+	int client = GetClientFromSerial(data.ReadCell());
+	int cpnum = data.ReadCell();
 
-		else if(g_devmap == false)
-		{
-			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, g_format);
-		}
-
-		return Plugin_Handled;
-	}
-
-	return Plugin_Continue;
-}
-
-public void SQLDeleteStartZone(Database db, DBResultSet results, const char[] error, any data)
-{
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLDeleteStartZone: %s", error);
+		PrintToServer("SQLDeleteZone [%i] by %N [%i]: %s", cpnum, client, GetSteamAccountID(client, true), error);
 	}
 
 	else if(strlen(error) == 0)
 	{
-		Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]));
-		g_mysql.Query(SQLSetStartZones, g_query, data, DBPrio_Normal);
+		if(cpnum == 0)
+		{
+			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %f, %f, %f, %f, %f, %f)", g_map, g_zoneStartOriginTemp[client][0][0], g_zoneStartOriginTemp[client][0][1], g_zoneStartOriginTemp[client][0][2], g_zoneStartOriginTemp[client][1][0], g_zoneStartOriginTemp[client][1][1], g_zoneStartOriginTemp[client][1][2]);
+			g_mysql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
+		}
+
+		else if(cpnum == 1)
+		{
+			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %f, %f, %f, %f, %f, %f)", g_map, g_zoneEndOriginTemp[client][0][0], g_zoneEndOriginTemp[client][0][1], g_zoneEndOriginTemp[client][0][2], g_zoneEndOriginTemp[client][1][0], g_zoneEndOriginTemp[client][1][1], g_zoneEndOriginTemp[client][1][2]);
+			g_mysql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
+		}
+
+		else if(cpnum > 1)
+		{
+			cpnum -= 1;
+			Format(g_query, sizeof(g_query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, g_cpPosTemp[client][cpnum][0][0], g_cpPosTemp[client][cpnum][0][1], g_cpPosTemp[client][cpnum][0][2], g_cpPosTemp[client][cpnum][1][0], g_cpPosTemp[client][cpnum][1][1], g_cpPosTemp[client][cpnum][1][2], g_map);
+			g_mysql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
+
+			if(results.HasResults == false)
+			{
+				PrintToServer("Checkpoint zone no. %i successfuly deleted.", cpnum);
+			}
+
+			else if(results.HasResults == true)
+			{
+				PrintToServer("Checkpoint zone no. %i failed to delete.", cpnum);
+			}
+		}
 	}
 
 	return;
 }
 
-public Action cmd_deleteallcp(int client, int args)
+public Action cad_deleteallcp(int client, int args)
 {
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
+	if(g_devmap == true)
 	{
-		if(g_devmap == true)
-		{
-			Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
-			g_mysql.Query(SQLDeleteAllCP, g_query, GetClientSerial(client), DBPrio_Normal);
-		}
-
-		else if(g_devmap == false)
-		{
-			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, g_format);
-		}
+		Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
+		g_mysql.Query(SQLDeleteAllCP, g_query, GetClientSerial(client), DBPrio_Normal);
 	}
 
-	return Plugin_Continue;
+	else if(g_devmap == false)
+	{
+		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_format);
+	}
+
+	return Plugin_Handled;
 }
 
 public void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
@@ -3449,14 +3467,14 @@ public void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error,
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLDeleteAllCP: %s", error);
+		PrintToServer("SQLDeleteAllCP %N [%i]: %s", client, GetSteamAccountID(client), error);
 	}
 
 	else if(strlen(error) == 0)
 	{
 		if(results.HasResults == false)
 		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by %N [%i]", g_map, client, GetSteamAccountID(client));
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by %N [%i]", g_map, client, GetSteamAccountID(client, true));
 
 			PrintToServer("All checkpoints are deleted on current map.");
 		}
@@ -3486,48 +3504,41 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	return Plugin_Continue;
 }
 
-public Action cmd_test(int client, int args)
+public Action cad_test(int client, int args)
 {
-	int flags = GetUserFlagBits(client);
+	char arg[256] = "";
+	GetCmdArgString(arg, sizeof(arg));
 
-	if(flags & ADMFLAG_CUSTOM1)
+	int partner = StringToInt(arg);
+
+	if(IsValidClient(partner) == true && IsValidPartner(client) == false)
 	{
-		char arg[256] = "";
-		GetCmdArgString(arg, sizeof(arg));
+		g_partner[client] = partner;
+		g_partner[partner] = client;
 
-		int partner = StringToInt(arg);
-
-		if(IsValidClient(partner) == true && IsValidPartner(client) == false)
-		{
-			g_partner[client] = partner;
-			g_partner[partner] = client;
-
-			Restart(client, false);
-		}
-
-		PrintToServer("LibraryExists (trueexpert-entityfilter): %s", LibraryExists("trueexpert-entityfilter") == true ? "true" : "false");
-
-		//https://forums.alliedmods.net/showthread.php?t=187746
-		int color = 0;
-		color |= (5 & 255) << 24; //5 red
-		color |= (200 & 255) << 16; // 200 green
-		color |= (255 & 255) << 8; // 255 blue
-		color |= (50 & 255) << 0; // 50 alpha
-
-		PrintToChat(client, "\x08%08XRGBA \x0805C8FF30HEX", color, color); //https://rgbacolorpicker.com/rgba-to-hex https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4?permalink_comment_id=3769893#gistcomment-3769893
-
-		char auth64[64] = "";
-		GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64));
-
-		char authid3[64] = "";
-		GetClientAuthId(client, AuthId_Steam3, authid3, sizeof(authid3));
-
-		PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID64 = First SteamID3 + Your SteamID3)", auth64, authid3); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
-
-		return Plugin_Handled;
+		Restart(client, false);
 	}
 
-	return Plugin_Continue;
+	PrintToServer("LibraryExists (trueexpert-entityfilter): %s", LibraryExists("trueexpert-entityfilter") == true ? "true" : "false");
+
+	//https://forums.alliedmods.net/showthread.php?t=187746
+	int color = 0;
+	color |= (5 & 255) << 24; //5 red
+	color |= (200 & 255) << 16; // 200 green
+	color |= (255 & 255) << 8; // 255 blue
+	color |= (50 & 255) << 0; // 50 alpha
+
+	PrintToChat(client, "\x08%08XRGBA \x0805C8FF30HEX", color, color); //https://rgbacolorpicker.com/rgba-to-hex https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4?permalink_comment_id=3769893#gistcomment-3769893
+
+	char auth64[64] = "";
+	GetClientAuthId(client, AuthId_SteamID64, auth64, sizeof(auth64));
+
+	char authid3[64] = "";
+	GetClientAuthId(client, AuthId_Steam3, authid3, sizeof(authid3));
+
+	PrintToChat(client, "Your SteamID64 is: %s = 76561197960265728 + %i (SteamID64 = First SteamID3 + Your SteamID3)", auth64, authid3); //https://forums.alliedmods.net/showthread.php?t=324112 120192594
+
+	return Plugin_Handled;
 }
 
 stock void SendMessage(int client, const char[] text)
@@ -3577,80 +3588,34 @@ stock void SendMessage(int client, const char[] text)
 	return;
 }
 
-public Action cmd_endmins(int client, int args)
+public Action cad_maptier(int client, int args)
 {
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
+	if(g_devmap == true)
 	{
-		if(g_devmap == true)
-		{
-			GetClientAbsOrigin(client, g_zoneEndOrigin[0]);
-		}
+		char arg[256] = "";
+		GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
-		else if(g_devmap == false)
-		{
-			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, g_format);
-		}
+		int tier = StringToInt(arg);
 
-		return Plugin_Handled;
+		if(tier > 0)
+		{
+			PrintToServer("[Args] Tier: %i", tier);
+
+			Format(g_query, sizeof(g_query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
+			DataPack dp = new DataPack();
+			dp.WriteCell(GetClientSerial(client));
+			dp.WriteCell(tier);
+			g_mysql.Query(SQLTierRemove, g_query, dp, DBPrio_Normal);
+		}
 	}
 
-	return Plugin_Continue;
-}
-
-public void SQLDeleteEndZone(Database db, DBResultSet results, const char[] error, any data)
-{
-	if(strlen(error) > 0)
+	else if(g_devmap == false)
 	{
-		PrintToServer("SQLDeleteEndZone: %s", error);
+		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_format);
 	}
 
-	else if(strlen(error) == 0)
-	{
-		Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %i, %i, %i, %i, %i, %i)", g_map, RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]));
-		g_mysql.Query(SQLSetEndZones, g_query, data, DBPrio_Normal);
-	}
-
-	return;
-}
-
-public Action cmd_maptier(int client, int args)
-{
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
-	{
-		if(g_devmap == true)
-		{
-			char arg[256] = "";
-			GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
-
-			int tier = StringToInt(arg);
-
-			if(tier > 0)
-			{
-				PrintToServer("[Args] Tier: %i", tier);
-
-				Format(g_query, sizeof(g_query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
-				DataPack dp = new DataPack();
-				dp.WriteCell(GetClientSerial(client));
-				dp.WriteCell(tier);
-				g_mysql.Query(SQLTierRemove, g_query, dp, DBPrio_Normal);
-			}
-		}
-
-		else if(g_devmap == false)
-		{
-			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, g_format);
-		}
-
-		return Plugin_Handled;
-	}
-
-	return Plugin_Continue;
+	return Plugin_Handled;
 }
 
 public void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPack data)
@@ -3662,7 +3627,7 @@ public void SQLTierRemove(Database db, DBResultSet results, const char[] error, 
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLTierRemove: %s", error);
+		PrintToServer("SQLTierRemove (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client), error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3686,14 +3651,14 @@ public void SQLTierInsert(Database db, DBResultSet results, const char[] error, 
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLTierInsert: %s", error);
+		PrintToServer("SQLTierInsert (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client), error);
 	}
 
 	else if(strlen(error) == 0)
 	{
 		if(results.HasResults == false)
 		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "Tier %i is set for %s. edited by %N [%i]", tier, g_map, client, GetSteamAccountID(client));
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "Tier %i is set for %s. edited by %N [%i]", tier, g_map, client, GetSteamAccountID(client, true));
 
 			PrintToServer("Tier %i is set for %s.", tier, g_map);
 		}
@@ -3702,283 +3667,157 @@ public void SQLTierInsert(Database db, DBResultSet results, const char[] error, 
 	return;
 }
 
-public void SQLSetStartZones(Database db, DBResultSet results, const char[] error, any data)
+public void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
-	int client = GetClientFromSerial(data);
+	data.Reset();
+	int client = GetClientFromSerial(data.ReadCell());
+	int cpnum = data.ReadCell();
+	delete data;
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLSetStartZones: %s", error);
+		PrintToServer("SQLSetZone (%i) %N [%i]: %s", cpnum, client, GetSteamAccountID(client), error);
 	}
 
 	else if(strlen(error) == 0)
 	{
 		if(results.HasResults == false)
 		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map, client, GetSteamAccountID(client));
-
-			PrintToServer("Start zone successfuly created.");
-		}
-
-		else if(results.HasResults == true)
-		{
-			PrintToServer("Start zone failed to create.");
-		}
-	}
-
-	return;
-}
-
-public void SQLSetEndZones(Database db, DBResultSet results, const char[] error, any data)
-{
-	int client = GetClientFromSerial(data);
-
-	if(strlen(error) > 0)
-	{
-		PrintToServer("SQLSetEndZones: %s", error);
-	}
-
-	else if(strlen(error) == 0)
-	{
-		if(results.HasResults == false)
-		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map, client, GetSteamAccountID(client));
-
-			PrintToServer("End zone successfuly created.");
-		}
-
-		else if(results.HasResults == true)
-		{
-			PrintToServer("End zone failed to create.");
-		}
-	}
-
-	return;
-}
-
-public Action cmd_startmaxs(int client, int args)
-{
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
-	{
-		GetClientAbsOrigin(client, g_zoneStartOriginTemp[1]);
-		g_zoneStartOriginTemp[1][2] += 256.0;
-
-		Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
-		g_mysql.Query(SQLDeleteStartZone, g_query, GetClientSerial(client), DBPrio_Normal);
-
-		return Plugin_Handled;
-	}
-
-	return Plugin_Continue;
-}
-
-public Action cmd_endmaxs(int client, int args)
-{
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
-	{
-		GetClientAbsOrigin(client, g_zoneEndOrigin[1]);
-		g_zoneEndOrigin[1][2] += 256.0;
-
-		Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
-		g_mysql.Query(SQLDeleteEndZone, g_query, GetClientSerial(client), DBPrio_Normal);
-
-		return Plugin_Handled;
-	}
-
-	return Plugin_Continue;
-}
-
-public Action cmd_cpmins(int client, int args)
-{
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
-	{
-		if(g_devmap == true)
-		{
-			char cmd[512] = "";
-			GetCmdArg(args, cmd, sizeof(cmd));
-
-			int cpnum = StringToInt(cmd);
-
-			if(cpnum > 0)
+			if(cpnum == 0)
 			{
-				PrintToChat(client, "CP: No. %i", cpnum);
+				for(int i = 0; i <= 1; i++)
+				{
+					g_zoneStartOrigin[i] = g_zoneStartOriginTemp[client][i];
+				}
 
-				GetClientAbsOrigin(client, g_cpPos[cpnum][0]);
-				g_cpPos[cpnum][0][2] += 256.0;
+				for(int i = 0; i <= 2; i++)
+				{
+					g_center[cpnum][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
+				}
+
+				g_center[cpnum][2] -= FloatAbs((g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0);
+				
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, GetSteamAccountID(client, true));
+			}
+
+			else if(cpnum == 1)
+			{
+				for(int i = 0; i <= 1; i++)
+				{
+					g_zoneEndOrigin[i] = g_zoneEndOriginTemp[client][i];
+				}
+
+				for(int i = 0; i <= 2; i++)
+				{
+					g_center[cpnum][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0;
+				}
+
+				g_center[cpnum][2] -= FloatAbs((g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0);
+
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, GetSteamAccountID(client, true));
+			}
+
+			else if(cpnum > 1)
+			{
+				cpnum -= 1;
+
+				for(int i = 0; i <= 1; i++)
+				{
+					g_cpPos[cpnum][i] = g_cpPosTemp[client][cpnum][i];
+				}
+
+				for(int i = 0; i <= 2; i++)
+				{
+					g_center[cpnum + 1][i] = (g_cpPos[cpnum][0][i] + g_cpPos[cpnum][1][i]) / 2.0;
+				}
+
+				g_center[cpnum + 1][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][0][2]) / 2.0);
+
+				CPSetup(0);
+
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", cpnum, g_cpPos[cpnum][0][0], g_cpPos[cpnum][0][1], g_cpPos[cpnum][0][2], g_cpPos[cpnum][1][0], g_cpPos[cpnum][1][1], g_cpPos[cpnum][1][2], g_map, client, GetSteamAccountID(client, true));
 			}
 		}
 
-		else if(g_devmap == false)
-		{
-			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-			SendMessage(client, g_format);
-		}
-
-		return Plugin_Handled;
-	}
-
-	return Plugin_Continue;
-}
-
-public void SQLCPRemoved(Database db, DBResultSet results, const char[] error, DataPack data)
-{
-	data.Reset();
-	int client = GetClientFromSerial(data.ReadCell());
-	int cpnum = data.ReadCell();
-	delete data;
-
-	if(strlen(error) > 0)
-	{
-		PrintToServer("SQLCPRemoved: %s", error);
-	}
-
-	else if(strlen(error) == 0)
-	{
-		if(results.HasResults == false)
-		{
-			PrintToServer("Checkpoint zone no. %i successfuly deleted.", cpnum);
-		}
-
 		else if(results.HasResults == true)
 		{
-			PrintToServer("Checkpoint zone no. %i failed to delete.", cpnum);
-		}
+			if(cpnum == 0)
+			{
+				PrintToServer("Start zone failed to create.");
+			}
 
-		Format(g_query, sizeof(g_query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %i, %i, %i, %i, %i, %i, '%s')", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map);
-		DataPack dp = new DataPack();
-		dp.WriteCell(GetClientSerial(client));
-		dp.WriteCell(cpnum);
-		g_mysql.Query(SQLCPInserted, g_query, dp, DBPrio_Normal);
-	}
+			else if(cpnum == 1)
+			{
+				PrintToServer("End zone failed to create.");
+			}
 
-	return;
-}
-
-public Action cmd_cpmaxs(int client, int args)
-{
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
-	{
-		char cmd[256] = "";
-		GetCmdArg(args, cmd, sizeof(cmd));
-
-		int cpnum = StringToInt(cmd);
-
-		if(cpnum > 0)
-		{
-			GetClientAbsOrigin(client, g_cpPos[cpnum][1]);
-
-			Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s'", cpnum, g_map);
-			DataPack dp = new DataPack();
-			dp.WriteCell(GetClientSerial(client));
-			dp.WriteCell(cpnum);
-			g_mysql.Query(SQLCPRemoved, g_query, dp, DBPrio_Normal);
-		}
-
-		return Plugin_Handled;
-	}
-
-	return Plugin_Continue;
-}
-
-public void SQLCPInserted(Database db, DBResultSet results, const char[] error, DataPack data)
-{
-	data.Reset();
-	int client = GetClientFromSerial(data.ReadCell());
-	int cpnum = data.ReadCell();
-	delete data;
-
-	if(strlen(error) > 0)
-	{
-		PrintToServer("SQLCPInserted: %s", error);
-	}
-
-	else if(strlen(error) == 0)
-	{
-		if(results.HasResults == false)
-		{
-			CPSetup(0);
-
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map, client, GetSteamAccountID(client));
-			
-			PrintToServer("Checkpoint zone no. %i successfuly created.", cpnum);
-		}
-
-		else if(results.HasResults == true)
-		{
-			PrintToServer("Checkpoint zone no. %i failed to create.", cpnum);
+			else if(cpnum > 1)
+			{
+				PrintToServer("Checkpoint zone no. %i failed to create.", cpnum - 1);
+			}
 		}
 	}
 
 	return;
 }
 
-public Action cmd_zones(int client, int args)
+public Action cad_zones(int client, int args)
 {
-	int flags = GetUserFlagBits(client);
-
-	if(flags & ADMFLAG_CUSTOM1)
+	if(g_devmap == true)
 	{
-		if(g_devmap == true)
+		if(g_zoneHave[2] == true)
 		{
 			ZoneEditor(client);
 		}
 
-		else if(g_devmap == false)
+		else if(g_zoneHave[2] == false)
 		{
-			Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+			Format(g_format, sizeof(g_format), "%T", "DBLoading", client);
 			SendMessage(client, g_format);
 		}
-
-		return Plugin_Handled;
 	}
 
-	return Plugin_Continue;
+	else if(g_devmap == false)
+	{
+		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_format);
+	}
+
+	return Plugin_Handled;
 }
 
 stock void ZoneEditor(int client)
 {
-	Menu menu = new Menu(zones_handler);
-	menu.SetTitle("Zone editor");
+	float nulled[3] = {0.0, ...};
 
-	if(g_zoneHave[0] == true)
+	for(int i = 0; i <= 1; i++)
 	{
-		menu.AddItem("start", "Start zone");
-	}
+		g_zoneStartOriginTemp[client][i] = nulled;
+		g_zoneEndOriginTemp[client][i] = nulled;
 
-	if(g_zoneHave[1] == true)
-	{
-		menu.AddItem("end", "End zone");
-	}
+		g_zoneCreatorUseProcess[client][i] = false;
 
-	if(g_cpCount > 0)
-	{
-		char cp[8] = "";
+		g_zoneSelected[client][i] = nulled;
 
-		for(int i = 1; i <= g_cpCount; i++)
+		for(int j = 1; j <= 10; j++)
 		{
-			Format(cp, sizeof(cp), "%i", i);
-			Format(g_format, sizeof(g_format), "CP nr. %i zone", i);
-			menu.AddItem(cp, g_format);
+			g_cpPosTemp[client][j][i] = nulled;
 		}
 	}
 
-	else if(g_zoneHave[0] == false && g_zoneHave[1] == false && g_cpCount == 0)
-	{
-		menu.AddItem("-1", "No zones are setup.", ITEMDRAW_DISABLED);
-	}
+	g_step[client] = 1;
+	g_zoneCursor[client] = false;
+	g_ZoneEditorCP[client] = 1;
 
+	Menu menu = new Menu(zones_handler);
+	menu.SetTitle("%T", "ZoneEditor", client);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAddButton", client);
+	menu.AddItem("add", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorEditButton", client);
+	menu.AddItem("edit", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorTPButton", client);
+	menu.AddItem("tp", g_format);
 	menu.Display(client, MENU_TIME_FOREVER);
-
-	g_step = 1;
-	g_axis = 0;
 
 	return;
 }
@@ -3989,35 +3828,302 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
+			switch(param2)
+			{
+				case 0:
+				{
+					ZoneAdd(param1);
+				}
+
+				case 1:
+				{
+					ZoneEdit(param1);
+				}
+
+				case 2:
+				{
+					ZoneTP(param1);
+				}
+			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+	}
+
+	return view_as<int>(action);
+}
+
+stock void ZoneAdd(int client)
+{
+	float nulled[3] = {0.0, ...};
+
+	for(int i = 0; i <= 1; i++)
+	{
+		g_zoneStartOriginTemp[client][i] = nulled;
+		g_zoneEndOriginTemp[client][i] = nulled;
+
+		g_zoneCreatorUseProcess[client][i] = false;
+
+		g_zoneSelected[client][i] = nulled;
+
+		for(int j = 1; j <= 10; j++)
+		{
+			g_cpPosTemp[client][j][i] = nulled;
+		}
+	}
+
+	g_step[client] = 1;
+	g_zoneCursor[client] = false;
+	g_ZoneEditorCP[client] = 1;
+	g_ZoneEditorVIA[client] = 0;
+
+	Menu menu = new Menu(zones_add_handler);
+	menu.SetTitle("%T", "ZoneEditorAdd", client);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStartZoneButton", client);
+	menu.AddItem("add_start", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorEndZoneButton", client);
+	menu.AddItem("add_end", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPZoneButton", client);
+	menu.AddItem("add_cp", g_format);
+	menu.ExitBackButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+
+	return;
+}
+
+public int zones_add_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					g_zoneCreatorSelected[param1] = 0;
+					g_zoneSelectedCP[param1] = false;
+					g_ZoneEditor[param1] = 0;
+				}
+
+				case 1:
+				{
+					g_zoneCreatorSelected[param1] = 1;
+					g_zoneSelectedCP[param1] = false;
+					g_ZoneEditor[param1] = 1;
+				}
+				
+				case 2:
+				{
+					g_zoneCreatorSelected[param1] = 2;
+					g_zoneSelectedCP[param1] = true;
+					g_ZoneEditor[param1] = 2;
+				}
+			}
+
+			ZoneCreator(param1);
+		}
+
+		case MenuAction_Cancel:
+		{
+			switch(param2)
+			{
+				case MenuCancel_ExitBack: 
+				{
+					ZoneEditor(param1);
+				}
+			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+	}
+
+	return view_as<int>(action);
+}
+
+stock void ZoneEdit(int client)
+{
+	Menu menu = new Menu(zones_edit_handler);
+	menu.SetTitle("%T", "ZoneEditorEdit", client);
+
+	if(g_zoneHave[0] == true)
+	{
+		Format(g_format, sizeof(g_format), "%T", "ZoneEditorStartZoneButton", client);
+		menu.AddItem("start", g_format);
+	}
+
+	if(g_zoneHave[1] == true)
+	{
+		Format(g_format, sizeof(g_format), "%T", "ZoneEditorEndZoneButton", client);
+		menu.AddItem("end", g_format);
+	}
+
+	if(g_cpCount > 0)
+	{
+		char cp[8] = "";
+
+		for(int i = 1; i <= g_cpCount; i++)
+		{
+			Format(cp, sizeof(cp), "%i", i);
+			Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPButton", client, i);
+			menu.AddItem(cp, g_format);
+		}
+	}
+
+	else if(g_zoneHave[0] == false && g_zoneHave[1] == false && g_cpCount == 0)
+	{
+		Format(g_format, sizeof(g_format), "%T", "ZoneEditorNoZone", client);
+		menu.AddItem("-1", g_format, ITEMDRAW_DISABLED);
+	}
+
+	menu.ExitBackButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+
+	g_step[client] = 1;
+	g_axis[client] = 0;
+
+	g_ZoneEditorVIA[client] = 1;
+
+	return;
+}
+
+stock void ZoneCreator(int client)
+{
+	Menu menu = new Menu(zones_creator_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	menu.SetTitle("%T", "ZoneEditorUse", client);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_format);
+	Format(g_format, sizeof(g_format), "%T", g_zoneCursor[client] == true ? "CursorPossitionON" : "CursorPossitionOFF", client);
+	menu.AddItem("cursor", g_format);
+
+	if(g_zoneSelectedCP[client] == true)
+	{
+		Format(g_format, sizeof(g_format), "%T", "ZoneEditorSelectedCPnum", client, g_ZoneEditorCP[client]);
+		menu.AddItem("cpnum", g_format);
+	}
+
+	menu.ExitBackButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+
+	g_zoneCreator[client] = true;
+
+	return;
+}
+
+public int zones_creator_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Start:
+		{
+			g_zoneDraw[param1] = true;
+		}
+		
+		case MenuAction_Select:
+		{
+			switch(param2)
+			{
+				case 0:
+				{
+					if(g_step[param1] < 64)
+					{
+						g_step[param1] *= 2;
+					}
+
+					ZoneCreator(param1);
+				}
+
+				case 1:
+				{
+					if(g_step[param1] > 1)
+					{
+						g_step[param1] /= 2;
+					}
+
+					ZoneCreator(param1);
+				}
+
+				case 2:
+				{
+					g_zoneCursor[param1] = !g_zoneCursor[param1];
+
+					ZoneCreator(param1);
+				}
+
+				case 3:
+				{
+					g_zoneCPnumReadyToNew[param1] = true;
+
+					Format(g_format, sizeof(g_format), "%T", "ZoneEditorTypeCPnum", param1);
+					SendMessage(param1, g_format);
+				}
+			}
+		}
+
+		case MenuAction_Cancel:
+		{
+			g_zoneDraw[param1] = false;
+
+			switch(param2)
+			{
+				case MenuCancel_ExitBack:
+				{
+					g_zoneCreator[param1] = false;
+
+					ZoneAdd(param1);
+				}
+			}
+		}
+
+		case MenuAction_Display:
+		{
+			g_zoneDraw[param1] = true;
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+	}
+
+	return view_as<int>(action);
+}
+
+public int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
 			char item[16] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
-			float nulled[3] = {0.0, ...};
-
-			for(int i = 0; i <= 1; i++)
-			{
-				g_zoneStartOriginTemp[i] = nulled;
-				g_zoneEndOriginTemp[i] = nulled;
-			}
-
 			if(StrEqual(item, "start", false) == true)
 			{
-				ZoneEditorStart(param1);
-
 				for(int i = 0; i <= 1; i++)
 				{
-					g_zoneStartOriginTemp[i] = g_zoneStartOrigin[i];
+					g_zoneStartOriginTemp[param1][i] = g_zoneStartOrigin[i];
 				}
+				
+				ZoneEditorStart(param1);
 			}
 
 			else if(StrEqual(item, "end", false) == true)
 			{
-				ZoneEditorEnd(param1);
-
 				for(int i = 0; i <= 1; i++)
 				{
-					g_zoneEndOriginTemp[i] = g_zoneEndOrigin[i];
+					g_zoneEndOriginTemp[param1][i] = g_zoneEndOrigin[i];
 				}
+
+				ZoneEditorEnd(param1);
 			}
 
 			for(int i = 1; i <= g_cpCount; i++)
@@ -4025,14 +4131,25 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 				char cp[8] = "";
 				IntToString(i, cp, sizeof(cp));
 
-				for(int j = 0; j <= 1; j++)
-				{
-					g_cpPosTemp[i][j] = nulled;
-				}
-
 				if(StrEqual(item, cp, false) == true)
 				{
+					for(int j = 0; j <= 1; j++)
+					{
+						g_cpPosTemp[param1][i][j] = g_cpPos[i][j];
+					}
+
 					ZoneEditorCP(param1, i);
+				}
+			}
+		}
+
+		case MenuAction_Cancel:
+		{
+			switch(param2)
+			{
+				case MenuCancel_ExitBack:
+				{
+					ZoneEditor(param1);
 				}
 			}
 		}
@@ -4049,37 +4166,39 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 stock void ZoneEditorStart(int client)
 {
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
-	menu.SetTitle("Zone editor - Start zone");
+	menu.SetTitle("%T", "ZoneEditorStartZone", client);
 
-	menu.AddItem("starttp", "Teleport to start zone");
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_format);
 
-	Format(g_format, sizeof(g_format), "Step: %i", g_step);
-	menu.AddItem("step", g_format);
-
-	char format2[512] = "";
-	Format(format2, sizeof(format2), "0;%i;1;sidestart", g_axis);
-	Format(g_format, sizeof(g_format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	char format2[24] = "";
+	Format(format2, sizeof(format2), "0;%i;1;sidestart", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "0;%i;0;sidestart", g_axis);
-	Format(g_format, sizeof(g_format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "0;%i;0;sidestart", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "1;%i;1;sidestart", g_axis);
-	Format(g_format, sizeof(g_format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "1;%i;1;sidestart", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "1;%i;0;sidestart", g_axis);
-	Format(g_format, sizeof(g_format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "1;%i;0;sidestart", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	menu.AddItem("axis", "Change axis");
-	menu.AddItem("startupdate", "Update start zone");
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAxis", client);
+	menu.AddItem("axis", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorApplyStartZone", client);
+	menu.AddItem("startapply", g_format);
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER);
 
-	g_ZoneEditor = 0;
+	g_ZoneEditor[client] = 0;
 
 	return;
 }
@@ -4087,109 +4206,83 @@ stock void ZoneEditorStart(int client)
 stock void ZoneEditorEnd(int client)
 {
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
-	menu.SetTitle("Zone editor - End zone");
+	menu.SetTitle("%T", "ZoneEditorEndZone", client);
 
-	menu.AddItem("endtp", "Teleport to end zone");
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_format);
 
-	Format(g_format, sizeof(g_format), "Step: %i", g_step);
-	menu.AddItem("step", g_format);
-
-	char format2[512] = "";
-	Format(format2, sizeof(format2), "0;%i;1;sideend", g_axis);
-	Format(g_format, sizeof(g_format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	char format2[16] = "";
+	Format(format2, sizeof(format2), "0;%i;1;sideend", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "0;%i;0;sideend", g_axis);
-	Format(g_format, sizeof(g_format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "0;%i;0;sideend", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "1;%i;1;sideend", g_axis);
-	Format(g_format, sizeof(g_format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "1;%i;1;sideend", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "1;%i;0;sideend", g_axis);
-	Format(g_format, sizeof(g_format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "1;%i;0;sideend", g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	menu.AddItem("axis", "Change axis");
-	menu.AddItem("endupdate", "Update start zone");
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAxis", client);
+	menu.AddItem("axis", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorApplyEndZone", client);
+	menu.AddItem("endapply", g_format);
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER);
 
-	g_ZoneEditor = 1;
+	g_ZoneEditor[client] = 1;
 
 	return;
 }
 
 stock void ZoneEditorCP(int client, int cpnum)
 {
-	bool quit = false;
-
-	for(int i = 0; i <= 1; i++)
-	{
-		for(int j = 0; j <= 2; j++)
-		{
-			if(g_cpPosTemp[cpnum][i][j] != 0.0)
-			{
-				quit = true;
-
-				continue;
-			}
-		}
-
-		if(quit == true)
-		{
-			continue;
-		}
-
-		g_cpPosTemp[cpnum][i] = g_cpPos[cpnum][i];
-	}
-
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
-	menu.SetTitle("Zone editor - CP nr. %i zone", cpnum);
+	menu.SetTitle("%T", "ZoneEditorCPZone", client, cpnum);
 
-	char button[32] = "";
-	Format(button, sizeof(button), "Teleport to CP nr. %i zone", cpnum);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_format);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_format);
 
-	char itemCP[16] = "";
-	Format(itemCP, sizeof(itemCP), "%i;cptp", cpnum);
-	menu.AddItem(itemCP, button);
-
-	char step[16] = "";
-	Format(step, sizeof(step), "Step: %i", g_step);
-	menu.AddItem("step", step);
-
-	char format2[512] = "";
-	Format(format2, sizeof(format2), "%i;0;%i;1;sidecp", cpnum, g_axis);
-	Format(g_format, sizeof(g_format), "Side 1 | %s +%i", g_axisLater[g_axis], g_step);
+	char format2[24] = "";
+	Format(format2, sizeof(format2), "%i;0;%i;1;sidecp", cpnum, g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "%i;0;%i;0;sidecp", cpnum, g_axis);
-	Format(g_format, sizeof(g_format), "Side 1 | %s -%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "%i;0;%i;0;sidecp", cpnum, g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "%i;1;%i;1;sidecp", cpnum, g_axis);
-	Format(g_format, sizeof(g_format), "Side 2 | %s +%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "%i;1;%i;1;sidecp", cpnum, g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	Format(format2, sizeof(format2), "%i;1;%i;0;sidecp", cpnum, g_axis);
-	Format(g_format, sizeof(g_format), "Side 2 | %s -%i", g_axisLater[g_axis], g_step);
+	Format(format2, sizeof(format2), "%i;1;%i;0;sidecp", cpnum, g_axis[client]);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
 	menu.AddItem(format2, g_format);
 
-	menu.AddItem("axis", "Change axis");
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAxis", client);
+	menu.AddItem("axis", g_format);
 
-	char cpupdate[32] = "";
-	Format(cpupdate, sizeof(cpupdate), "%i;cpupdate", cpnum);
-	Format(button, sizeof(button), "Update CP nr. %i zone", cpnum);
-	menu.AddItem(cpupdate, button);
+	char cpupdate[16] = "";
+	Format(cpupdate, sizeof(cpupdate), "%i;cpapply", cpnum);
+	Format(g_format, sizeof(g_format), "%T", "ZoneEditorApplyCPZone", client, cpnum);
+	menu.AddItem(cpupdate, g_format);
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER);
 
-	g_ZoneEditor = 2;
-
-	g_ZoneEditorCP = cpnum;
+	g_ZoneEditor[client] = 2;
+	g_ZoneEditorCP[client] = cpnum;
 
 	return;
 }
@@ -4223,107 +4316,89 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			int axis = StringToInt(exploded[cpMenu == true ? 2 : 1]);
 			int mode = StringToInt(exploded[cpMenu == true ? 3 : 2]);
 
-			if(StrEqual(item, "starttp", false) == true)
+			if(StrEqual(item, "step1", false) == true)
 			{
-				float pos[3] = {0.0, ...};
-				pos = g_center[0];
-				pos[2] += 1.0;
-				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
-			}
-
-			else if(StrEqual(item, "endtp", false) == true)
-			{
-				float pos[3] = {0.0, ...};
-				pos = g_center[1];
-				pos[2] += 1.0;
-				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
-			}
-
-			else if(StrContains(item, "cptp", false) != -1)
-			{
-				float pos[3] = {0.0, ...};
-				pos = g_center[cpnum + 1];
-				pos[2] += 1.0;
-				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
-			}
-
-			if(StrEqual(item, "step", false) == true)
-			{
-				g_step *= 2;
-
-				if(g_step > 512)
+				if(g_step[param1] < 64)
 				{
-					g_step = 1;
+					g_step[param1] *= 2;
+				}
+			}
+
+			else if(StrEqual(item, "step2", false) == true)
+			{
+				if(g_step[param1] > 1)
+				{
+					g_step[param1] /= 2;
 				}
 			}
 
 			else if(StrEqual(item, "axis", false) == true)
 			{
-				g_axis++;
+				g_axis[param1]++;
 
-				if(g_axis > 2)
+				if(g_axis[param1] > 2)
 				{
-					g_axis = 0;
+					g_axis[param1] = 0;
 				}
 			}
 
 			if(StrContains(item, "sidestart", false) != -1)
 			{
-				g_zoneStartOriginTemp[side][axis] += mode == 1 ? g_step : -g_step;
+				g_zoneStartOriginTemp[param1][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
 			}
 
 			else if(StrContains(item, "sideend", false) != -1)
 			{
-				g_zoneEndOriginTemp[side][axis] += mode == 1 ? g_step : -g_step;
+				g_zoneEndOriginTemp[param1][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
 			}
 
 			else if(StrContains(item, "sidecp", false) != -1)
 			{
-				g_cpPosTemp[cpnum][side][axis] += mode == 1 ? g_step : -g_step;
+				g_cpPosTemp[param1][cpnum][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
 			}
 
-			if(StrEqual(item, "startupdate", false) == true)
+			if(StrEqual(item, "startapply", false) == true)
 			{
-				Format(g_query, sizeof(g_query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 0 AND map = '%s'", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(0);
-				g_mysql.Query(SQLUpdateZone, g_query, dp, DBPrio_Normal);
+				g_mysql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
-			else if(StrEqual(item, "endupdate", false) == true)
+			else if(StrEqual(item, "endapply", false) == true)
 			{
-				Format(g_query, sizeof(g_query), "UPDATE zones SET possition_x = %i, possition_y = %i, possition_z = %i, possition_x2 = %i, possition_y2 = %i, possition_z2 = %i WHERE type = 1 AND map = '%s'", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(1);
-				g_mysql.Query(SQLUpdateZone, g_query, dp, DBPrio_Normal);
+				g_mysql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
-			else if(StrContains(item, "cpupdate", false) != -1)
+			else if(StrContains(item, "cpapply", false) != -1)
 			{
-				Format(g_query, sizeof(g_query), "UPDATE cp SET cpx = %i, cpy = %i, cpz = %i, cpx2 = %i, cpy2 = %i, cpz2 = %i WHERE cpnum = %i AND map = '%s'", RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), cpnum, g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", cpnum, g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(cpnum + 1);
-				g_mysql.Query(SQLUpdateZone, g_query, dp, DBPrio_Normal);
+				g_mysql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
 			//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
 
-			if(g_ZoneEditor == 0)
+			if(g_ZoneEditor[param1] == 0)
 			{
 				ZoneEditorStart(param1);
 			}
 
-			else if(g_ZoneEditor == 1)
+			else if(g_ZoneEditor[param1] == 1)
 			{
 				ZoneEditorEnd(param1);
 			}
 
-			else if(g_ZoneEditor == 2)
+			else if(g_ZoneEditor[param1] == 2)
 			{
-				ZoneEditorCP(param1, g_ZoneEditorCP);
+				ZoneEditorCP(param1, g_ZoneEditorCP[param1]);
 			}
 		}
 
@@ -4335,7 +4410,18 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case MenuCancel_ExitBack: //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L125
 				{
-					ZoneEditor(param1);
+					switch(g_ZoneEditorVIA[param1])
+					{
+						case 0:
+						{
+							ZoneAdd(param1);
+						}
+
+						case 1:
+						{
+							ZoneEdit(param1);
+						}
+					}
 				}
 			}
 		}
@@ -4354,92 +4440,107 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-public void SQLUpdateZone(Database db, DBResultSet results, const char[] error, DataPack data)
+stock void ZoneTP(int client)
 {
-	data.Reset();
-	int client = GetClientFromSerial(data.ReadCell());
-	int cpnum = data.ReadCell();
-	delete data;
+	Menu menu = new Menu(zones_tp_handler);
+	menu.SetTitle("%T", "ZoneEditorTP", client);
 
-	if(strlen(error) > 0)
+	if(g_zoneHave[0] == true)
 	{
-		PrintToServer("SQLUpdateZone: %s", error);
+		Format(g_format, sizeof(g_format), "%T", "ZoneEditorStartZoneButton", client);
+		menu.AddItem("start", g_format);
 	}
 
-	else if(strlen(error) == 0)
+	if(g_zoneHave[1] == true)
 	{
-		if(results.HasResults == false)
+		Format(g_format, sizeof(g_format), "%T", "ZoneEditorEndZoneButton", client);
+		menu.AddItem("end", g_format);
+	}
+
+	if(g_cpCount > 0)
+	{
+		char cp[8] = "";
+
+		for(int i = 1; i <= g_cpCount; i++)
 		{
-			if(cpnum == 0)
-			{
-				for(int i = 0; i <= 1; i++)
-				{
-					g_zoneStartOrigin[i] = g_zoneStartOriginTemp[i];
-				}
-
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneStartOrigin[0][0]), RoundFloat(g_zoneStartOrigin[0][1]), RoundFloat(g_zoneStartOrigin[0][2]), RoundFloat(g_zoneStartOrigin[1][0]), RoundFloat(g_zoneStartOrigin[1][1]), RoundFloat(g_zoneStartOrigin[1][2]), g_map, client, GetSteamAccountID(client));
-
-				PrintToServer("Start zone successfuly updated.");
-			}
-
-			else if(cpnum == 1)
-			{
-				for(int i = 0; i <= 1; i++)
-				{
-					g_zoneEndOrigin[i] = g_zoneEndOriginTemp[i];
-				}
-
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", RoundFloat(g_zoneEndOrigin[0][0]), RoundFloat(g_zoneEndOrigin[0][1]), RoundFloat(g_zoneEndOrigin[0][2]), RoundFloat(g_zoneEndOrigin[1][0]), RoundFloat(g_zoneEndOrigin[1][1]), RoundFloat(g_zoneEndOrigin[1][2]), g_map, client, GetSteamAccountID(client));
-
-				PrintToServer("End zone successfuly updated.");
-			}
-
-			else if(cpnum > 1)
-			{
-				cpnum -= 1;
-
-				for(int i = 0; i <= 1; i++)
-				{
-					g_cpPos[cpnum][i] = g_cpPosTemp[cpnum][i];
-				}
-
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "CP zone nr. %i successfuly updated. POS1: [X: %i Y: %i Z: %i] POS2: [X: %i Y: %i Z: %i] MAP: [%s] edited by %N [%i]", cpnum, RoundFloat(g_cpPos[cpnum][0][0]), RoundFloat(g_cpPos[cpnum][0][1]), RoundFloat(g_cpPos[cpnum][0][2]), RoundFloat(g_cpPos[cpnum][1][0]), RoundFloat(g_cpPos[cpnum][1][1]), RoundFloat(g_cpPos[cpnum][1][2]), g_map, client, GetSteamAccountID(client));
-
-				PrintToServer("CP zone nr. %i successfuly updated.", cpnum);
-			}
-		}
-
-		else if(results.HasResults == true)
-		{
-			if(cpnum == 0)
-			{
-				PrintToServer("Start zone failed to update.");
-			}
-
-			else if(cpnum == 1)
-			{
-				PrintToServer("End zone failed to update.");
-			}
-
-			else if(cpnum > 1)
-			{
-				cpnum -= 1;
-				PrintToServer("CP zone nr. %i failed to update", cpnum);
-			}
+			Format(cp, sizeof(cp), "%i;cp", i);
+			Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPButton", client, i);
+			menu.AddItem(cp, g_format);
 		}
 	}
+
+	else if(g_zoneHave[0] == false && g_zoneHave[1] == false && g_cpCount == 0)
+	{
+		Format(g_format, sizeof(g_format), "%T", "ZoneEditorNoZone", client);
+		menu.AddItem("-1", g_format, ITEMDRAW_DISABLED);
+	}
+
+	menu.ExitBackButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
 
 	return;
 }
 
-//https://forums.alliedmods.net/showthread.php?t=261378
-
-public Action cmd_createcp(int args)
+public int zones_tp_handler(Menu menu, MenuAction action, int param1, int param2)
 {
-	g_mysql.Query(SQLCreateCPTable, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx INT, cpy INT, cpz INT, cpx2 INT, cpy2 INT, cpz2 INT, map VARCHAR(192), PRIMARY KEY(id))");
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char item[16] = "";
+			menu.GetItem(param2, item, sizeof(item));
 
-	return Plugin_Continue;
+			float pos[3] = {0.0, ...};
+
+			if(StrEqual(item, "start", false) == true)
+			{
+				pos = g_center[0];
+				pos[2] += 1.0;
+				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
+			}
+
+			else if(StrEqual(item, "end", false) == true)
+			{
+				pos = g_center[1];
+				pos[2] += 1.0;
+				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
+			}
+
+			else if(StrContains(item, "cp", false) != -1)
+			{
+				char exploded[1][8];
+				ExplodeString(item, ";", exploded, 1, 8, false);
+				int cpnum = StringToInt(exploded[0]);
+
+				pos = g_center[cpnum + 1];
+				pos[2] += 1.0;
+				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
+			}
+
+			ZoneTP(param1);
+		}
+
+		case MenuAction_Cancel:
+		{
+			switch(param2)
+			{
+				case MenuCancel_ExitBack:
+				{
+					ZoneEditor(param1);
+				}
+			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+	}
+
+	return view_as<int>(action);
 }
+
+//https://forums.alliedmods.net/showthread.php?t=261378
 
 public void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any data)
 {
@@ -4450,17 +4551,10 @@ public void SQLCreateCPTable(Database db, DBResultSet results, const char[] erro
 
 	else if(strlen(error) == 0)
 	{
-		PrintToServer("CP table successfuly created.");
+		PrintToServer("CP table successfuly created, if not exist.");
 	}
 
 	return;
-}
-
-public Action cmd_createtier(int args)
-{
-	g_mysql.Query(SQLCreateTierTable, "CREATE TABLE IF NOT EXISTS tier (id INT AUTO_INCREMENT, tier INT, map VARCHAR(192), PRIMARY KEY(id))");
-
-	return Plugin_Continue;
 }
 
 public void SQLCreateTierTable(Database db, DBResultSet results, const char[] error, any data)
@@ -4472,7 +4566,7 @@ public void SQLCreateTierTable(Database db, DBResultSet results, const char[] er
 
 	else if(strlen(error) == 0)
 	{
-		PrintToServer("Tier table successfuly created.");
+		PrintToServer("Tier table successfuly created, if not exist.");
 	}
 
 	return;
@@ -4481,6 +4575,7 @@ public void SQLCreateTierTable(Database db, DBResultSet results, const char[] er
 stock void CPSetup(int client)
 {
 	g_cpCount = 0;
+	g_zoneHave[2] = false;
 
 	Format(g_query, sizeof(g_query), "SELECT * FROM cp LIMIT 1");
 	g_mysql.Query(SQLCPSetup, g_query, _, DBPrio_Normal);
@@ -4558,7 +4653,7 @@ public void SQLCPSetup2(Database db, DBResultSet results, const char[] error, an
 					{
 						if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneDrawed[i] == false)
 						{
-							DrawZone(i, 0.0, 3.0, 10);
+							DrawZone(i, 0.0, 3.0, 10, -1, -1);
 
 							g_zoneDrawed[i] = true;
 						}
@@ -4592,14 +4687,14 @@ stock void CreateCP(int cpnum)
 		g_center[cpnum + 1][i] = (g_cpPos[cpnum][1][i] + g_cpPos[cpnum][0][i]) / 2.0;
 	}
 
-	g_center[cpnum + 1][2] - (FloatAbs(g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2);
+	g_center[cpnum + 1][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2.0);
 
 	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
 
-	for(int i = 0; i <= 1; i++)
+	for(int i = 0; i <= 2; i++)
 	{
 		mins[i] = (g_cpPos[cpnum][0][i] - g_cpPos[cpnum][1][i]) / 2.0;
 
@@ -4616,8 +4711,6 @@ stock void CreateCP(int cpnum)
 		}
 	}
 
-	maxs[2] = FloatAbs(g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]);
-
 	SetEntPropVector(entity, Prop_Send, "m_vecMins", mins, 0); //https://forums.alliedmods.net/archive/index.php/t-301101.html
 	SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs, 0);
 
@@ -4630,13 +4723,6 @@ stock void CreateCP(int cpnum)
 	return;
 }
 
-public Action cmd_createusers(int args)
-{
-	g_mysql.Query(SQLCreateUserTable, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))");
-
-	return Plugin_Continue;
-}
-
 public void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
@@ -4646,17 +4732,10 @@ public void SQLCreateUserTable(Database db, DBResultSet results, const char[] er
 
 	else if(strlen(error) == 0)
 	{
-		PrintToServer("Successfuly created user table.");
+		PrintToServer("Successfuly created user table, if not exist.");
 	}
 
 	return;
-}
-
-public Action cmd_createrecords(int args)
-{
-	g_mysql.Query(SQLRecordsTable, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, points INT, map VARCHAR(192), date INT, PRIMARY KEY(id))");
-
-	return Plugin_Continue;
 }
 
 public void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
@@ -4668,7 +4747,7 @@ public void SQLRecordsTable(Database db, DBResultSet results, const char[] error
 
 	else if(strlen(error) == 0)
 	{
-		PrintToServer("Successfuly created records table.");
+		PrintToServer("Successfuly created records table, if not exist.");
 	}
 
 	return;
@@ -4706,6 +4785,9 @@ public Action SDKEndTouch(int entity, int other)
 			g_cpLock[other][i] = false;
 			g_cpLock[partner][i] = false;
 		}
+
+		g_cpCountTryToAlign[other] = 0;
+		g_cpCountTryToAlign[partner] = 0;
 
 		static GlobalForward hForward = null;
 		hForward = new GlobalForward("Trikz_OnTimerStart", ET_Hook, Param_Cell, Param_Cell);
@@ -4800,8 +4882,8 @@ public Action SDKStartTouch(int entity, int other)
 					Format(timeSR, sizeof(timeSR), "+%s", timeSR);
 				}
 
-				int playerid = GetSteamAccountID(other);
-				int partnerid = GetSteamAccountID(partner);
+				int playerid = GetSteamAccountID(other, true);
+				int partnerid = GetSteamAccountID(partner, true);
 
 				if(g_ServerRecordTime > 0.0)
 				{
@@ -4939,7 +5021,7 @@ public Action SDKStartTouch(int entity, int other)
 								if(IsClientInGame(i) == true)
 								{
 									Format(g_format, sizeof(g_format), "%T", "NewServerRecordNew", i);
-									SendMessage(i, g_format); // all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
+									SendMessage(i, g_format); //all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
 
 									Format(g_format, sizeof(g_format), "%T", "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, g_format);
@@ -5113,24 +5195,27 @@ public Action SDKStartTouch(int entity, int other)
 
 			if(StrEqual(trigger, triggerCP, false) == true)
 			{
-				g_cp[other][i] = true;
-
-				if(g_cp[i][partner] == true && g_cpLock[other][i] == false)
+				if(g_cpLock[other][i] == false)
 				{
 					g_cpLock[other][i] = true;
-					g_cpLock[partner][i] = true;
 
-					g_cpTime[i][other] = g_timerTime[other];
-					g_cpTime[i][partner] = g_timerTime[other];
+					int cpnumAligned = ++g_cpCountTryToAlign[other];
+					g_cp[other][cpnumAligned] = true;
 
-					//https://stackoverflow.com/questions/9617453 https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
-					Format(g_query, sizeof(g_query), "SELECT cp%i FROM records LIMIT 1", i);
+					if(g_cpLock[partner][i] == true)
+					{
+						g_cpTime[other][cpnumAligned] = g_timerTime[other];
+						g_cpTime[partner][cpnumAligned] = g_timerTime[other];
 
-					DataPack dp = new DataPack();
-					dp.WriteCell(GetClientSerial(other));
-					dp.WriteCell(i);
+						//https://stackoverflow.com/questions/9617453 https://www.w3schools.com/sql/sql_ref_order_by.asp#:~:text=%20SQL%20ORDER%20BY%20Keyword%20%201%20ORDER,data%20returned%20in%20descending%20order.%20%20More%20
+						Format(g_query, sizeof(g_query), "SELECT cp%i FROM records LIMIT 1", cpnumAligned);
 
-					g_mysql.Query(SQLCPSelect, g_query, dp, DBPrio_Normal);
+						DataPack dp = new DataPack();
+						dp.WriteCell(GetClientSerial(other));
+						dp.WriteCell(cpnumAligned);
+
+						g_mysql.Query(SQLCPSelect, g_query, dp, DBPrio_Normal);
+					}
 				}
 			}
 		}
@@ -5151,11 +5236,18 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 	g_kv.GotoFirstSubKey(true);
 
 	char section[64] = "";
-	char posColor[64] = "";
+	char posColor[64];
 	char exploded[7][8];
 
-	float x[4] = {0.0, ...}, y[4] = {0.0, ...}, z[4] = {0.0, ...};
-	int r[4] = {0, ...}, g[4] = {0, ...}, b[4] = {0, ...}, a[4] = {0, ...};
+	float xyz[4][3];
+	int rgba[4][7];
+
+	char key[][] = {"CP-recordHud", "CP-recordDetailHud", "CP-DetailZeroHud"};
+	char key2[][] = {"CP-recordNotFirstHud", "CP-recordDetailNotFirstHud", "CP-recordImproveNotFirstHud"};
+	char key3[][] = {"CP-recordNonHud", "CP-recordDeproveHud"};
+	char key4[][] = {"MapFinishedFirstRecordHud", "NewServerRecordHud", "FirstRecordHud", "FirstRecordZeroHud"};
+	char key5[][] = {"NewServerRecordMapFinishedNotFirstHud", "NewServerRecordNotFirstHud", "NewServerRecordDetailNotFirstHud", "NewServerRecordImproveNotFirstHud"};
+	char key6[][] = {"MapFinishedDeproveHud", "MapFinishedTimeDeproveHud", "MapFinishedTimeDeproveOwnHud"};
 
 	if(onlyCP == true)
 	{
@@ -5165,76 +5257,42 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			{
 				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
 				{
-					g_kv.GetString("CP-RecordHud", posColor, sizeof(posColor));
-
-					//if(strlen(posColor) > 0)
+					for(int i = 0; i <= 2; i++)
 					{
+						g_kv.GetString(key[i], posColor, sizeof(posColor));
+
+						if(strlen(posColor) == 0)
+						{
+							break;
+						}
+
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[0] = StringToFloat(exploded[0]);
-						y[0] = StringToFloat(exploded[1]);
-						z[0] = StringToFloat(exploded[2]);
+						for(int j = 0; j <= 2; j++)
+						{
+							xyz[i][j] = StringToFloat(exploded[j]);
+						}
 						
-						r[0] = StringToInt(exploded[3]);
-						g[0] = StringToInt(exploded[4]);
-						b[0] = StringToInt(exploded[5]);
-						a[0] = StringToInt(exploded[6]);
-					}
-
-					g_kv.GetString("CP-RecordDetailHud", posColor, sizeof(posColor));
-
-					//if(strlen(posColor) > 0)
-					{
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						x[1] = StringToFloat(exploded[0]);
-						y[1] = StringToFloat(exploded[1]);
-						z[1] = StringToFloat(exploded[2]);
-						
-						r[1] = StringToInt(exploded[3]);
-						g[1] = StringToInt(exploded[4]);
-						b[1] = StringToInt(exploded[5]);
-						a[1] = StringToInt(exploded[6]);
-					}
-
-					g_kv.GetString("CP-DetailZeroHud", posColor, sizeof(posColor));
-
-					//if(strlen(posColor) > 0)
-					{
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						x[2] = StringToFloat(exploded[0]);
-						y[2] = StringToFloat(exploded[1]);
-						z[2] = StringToFloat(exploded[2]);
-						
-						r[2] = StringToInt(exploded[3]);
-						g[2] = StringToInt(exploded[4]);
-						b[2] = StringToInt(exploded[5]);
-						a[2] = StringToInt(exploded[6]);
+						for(int j = 3; j <= 6; j++)
+						{
+							rgba[i][j] = StringToInt(exploded[j]);
+						}
 					}
 				}
 			}
 
 			while(g_kv.GotoNextKey(true) == true);
 
-			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-			//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(g_format, sizeof(g_format), "%T", "CP-recordHud", client, cpnum);
-			ShowHudText(client, 1, g_format);
+			int channel = 1;
 
-			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-			//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-			Format(g_format, sizeof(g_format), "%T", "CP-recordDetailHud", client, time);
-			ShowHudText(client, 2, g_format);
-			
-			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-			//ShowHudText(client, 3, "+00:00:00");
-			//Format(g_format, sizeof(g_format), "+00:00:00");
-			Format(g_format, sizeof(g_format), "%T", "CP-DetailZeroHud", client, timeSR);
-			ShowHudText(client, 3, g_format);
+			for(int i = 0; i <= 2; i++)
+			{
+				SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+				if(i == 0){Format(g_format, sizeof(g_format), "%T", key[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+				else if(i == 1){Format(g_format, sizeof(g_format), "%T", key[i], client, time);}
+				else if(i == 2){Format(g_format, sizeof(g_format), "%T", key[i], client, timeSR);}
+				ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+			}
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -5245,23 +5303,16 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 					if(observerMode < 7 && observerTarget == client)
 					{
-						//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-						SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-						//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
-						Format(g_format, sizeof(g_format), "%T", "CP-recordHud", i, cpnum);
-						ShowHudText(i, 1, g_format);
+						int channelSpec = 1;
 
-						//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-						SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-						//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-						Format(g_format, sizeof(g_format), "%T", "CP-recordDetailHud", i, time);
-						ShowHudText(i, 2, g_format);
-
-						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-						SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-						Format(g_format, sizeof(g_format), "%T", "CP-DetailZeroHud", i, timeSR);
-						ShowHudText(i, 3, g_format);
-						//ShowHudText(i, 3, "+00:00:00");
+						for(int j = 0; j <= 2; j++)
+						{
+							SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+							if(j == 0){Format(g_format, sizeof(g_format), "%T", key[j], i, cpnum);}
+							else if(j == 1){Format(g_format, sizeof(g_format), "%T", key[j], i, time);}
+							else if(j == 2){Format(g_format, sizeof(g_format), "%T", key[j], i, timeSR);}
+							ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+						}
 					}
 				}
 			}
@@ -5275,76 +5326,42 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
 					{
-						g_kv.GetString("CP-RecordNotFirstHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
+						for(int i = 0; i <= 2; i++)
 						{
+							g_kv.GetString(key2[i], posColor, sizeof(posColor));
+
+							if(strlen(posColor) == 0)
+							{
+								break;
+							}
+
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							x[0] = StringToFloat(exploded[0]);
-							y[0] = StringToFloat(exploded[1]);
-							z[0] = StringToFloat(exploded[2]);
+							for(int j = 0; j <= 2; j++)
+							{
+								xyz[i][j] = StringToFloat(exploded[j]);
+							}
 							
-							r[0] = StringToInt(exploded[3]);
-							g[0] = StringToInt(exploded[4]);
-							b[0] = StringToInt(exploded[5]);
-							a[0] = StringToInt(exploded[6]);
-						}
-
-						g_kv.GetString("CP-recordDetailNotFirstHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
-						{
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							x[1] = StringToFloat(exploded[0]);
-							y[1] = StringToFloat(exploded[1]);
-							z[1] = StringToFloat(exploded[2]);
-							
-							r[1] = StringToInt(exploded[3]);
-							g[1] = StringToInt(exploded[4]);
-							b[1] = StringToInt(exploded[5]);
-							a[1] = StringToInt(exploded[6]);
-						}
-
-						g_kv.GetString("CP-recordImproveNotFirstHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
-						{
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-							
-							x[2] = StringToFloat(exploded[0]);
-							y[2] = StringToFloat(exploded[1]);
-							z[2] = StringToFloat(exploded[2]);
-							
-							r[2] = StringToInt(exploded[3]);
-							g[2] = StringToInt(exploded[4]);
-							b[2] = StringToInt(exploded[5]);
-							a[2] = StringToInt(exploded[6]);
+							for(int j = 3; j <= 6; j++)
+							{
+								rgba[i][j] = StringToInt(exploded[j]);
+							}
 						}
 					}
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
 
-				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				//ShowHudText(client, 1, "%i. CHECKPOINT RECORD!", cpnum); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-				Format(g_format, sizeof(g_format), "%T", "CP-recordNotFirstHud", client, cpnum);
-				ShowHudText(client, 1, g_format);
+				int channel = 1;
 
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-				//ShowHudText(client, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(g_format, sizeof(g_format), "%T", "CP-recordDetailNotFirstHud", client, time);
-				ShowHudText(client, 2, g_format);
-
-				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-				Format(g_format, sizeof(g_format), "-%s", timeSR);
-				Format(g_format, sizeof(g_format), "%T", "CP-recordImproveNotFirstHud", client, g_format);
-				ShowHudText(client, 3, g_format);
-				//ShowHudText(client, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+				for(int i = 0; i <= 2; i++)
+				{
+					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					if(i == 0){Format(g_format, sizeof(g_format), "%T", key2[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key2[i], client, time);}
+					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key2[i], client, timeSR);}
+					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+				}
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -5355,23 +5372,16 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 						if(observerMode < 7 && observerTarget == client)
 						{
-							//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-							Format(g_format, sizeof(g_format), "%T", "CP-recordNotFirstHud", i, cpnum);
-							//ShowHudText(i, 1, "%i. CHECKPOINT RECORD!", cpnum);
-							ShowHudText(i, 1, g_format);
+							int channelSpec = 1;
 
-							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-							//ShowHudText(i, 2, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(g_format, sizeof(g_format), "%T", "CP-recordDetailNotFirstHud", i, time);
-							ShowHudText(i, 2, g_format);
-
-							//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-							Format(g_format, sizeof(g_format), "%T", "CP-recordImproveNotFirstHud", i, timeSR);
-							ShowHudText(i, 3, g_format);
-							//ShowHudText(i, 3, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
+							for(int j = 0; j <= 2; j++)
+							{
+								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								if(j == 0){Format(g_format, sizeof(g_format), "%T", key2[j], i, cpnum);}
+								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key2[j], i, time);}
+								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key2[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+							}
 						}
 					}
 				}
@@ -5383,54 +5393,41 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
 					{
-						g_kv.GetString("CP-RecordNonHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
+						for(int i = 0; i <= 1; i++)
 						{
+							g_kv.GetString(key3[i], posColor, sizeof(posColor));
+
+							if(strlen(posColor) == 0)
+							{
+								break;
+							}
+
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							x[0] = StringToFloat(exploded[0]);
-							y[0] = StringToFloat(exploded[1]);
-							z[0] = StringToFloat(exploded[2]);
+							for(int j = 0; j <= 2; j++)
+							{
+								xyz[i][j] = StringToFloat(exploded[j]);
+							}
 							
-							r[0] = StringToInt(exploded[3]);
-							g[0] = StringToInt(exploded[4]);
-							b[0] = StringToInt(exploded[5]);
-							a[0] = StringToInt(exploded[6]);
-						}
-
-						g_kv.GetString("CP-RecordDeproveHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
-						{
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-							x[1] = StringToFloat(exploded[0]);
-							y[1] = StringToFloat(exploded[1]);
-							z[1] = StringToFloat(exploded[2]);
-							
-							r[1] = StringToInt(exploded[3]);
-							g[1] = StringToInt(exploded[4]);
-							b[1] = StringToInt(exploded[5]);
-							a[1] = StringToInt(exploded[6]);
+							for(int j = 3; j <= 6; j++)
+							{
+								rgba[i][j] = StringToInt(exploded[j]);
+							}
 						}
 					}
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
 
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				//Format(g_format, sizeof(g_format), "%T", "CP-recordDeprove"
-				Format(g_format, sizeof(g_format), "%T", "CP-recordNonHud", client, time);
-				ShowHudText(client, 1, g_format);
-				//ShowHudText(client, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond); //https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+				int channel = 1;
 
-				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-				//ShowHudText(client, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				//Format(g_format, sizeof(g_format), "+%s", timeSR);
-				Format(g_format, sizeof(g_format), "%T", "CP-recordDeproveHud", client, timeSR);
-				ShowHudText(client, 2, g_format);
+				for(int i = 0; i <= 1; i++)
+				{
+					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					if(i == 0){Format(g_format, sizeof(g_format), "%T", key3[i], client, time);}
+					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key3[i], client, timeSR);}
+					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+				}
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -5441,18 +5438,15 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 						if(observerMode < 7 && observerTarget == client)
 						{
-							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-							//ShowHudText(i, 1, "CHECKPOINT: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(g_format, sizeof(g_format), "%T", "CP-recordNonHud", i, time);
-							ShowHudText(i, 1, g_format);
+							int channelSpec = 1;
 
-							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-							//ShowHudText(i, 2, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							//Format(g_format, sizeof(g_format), "+%s", timeSR);
-							Format(g_format, sizeof(g_format), "%T", "CP-recordDeproveHud", i, timeSR);
-							ShowHudText(i, 2, g_format);
+							for(int j = 0; j <= j; i++)
+							{
+								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								if(j == 0){Format(g_format, sizeof(g_format), "%T", key3[j], i, time);} ////https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key3[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+							}
 						}
 					}
 				}
@@ -5468,97 +5462,43 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 			{
 				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
 				{
-					g_kv.GetString("MapFinishedFirstRecordHud", posColor, sizeof(posColor));
-
-					//if(strlen(posColor) > 0)
+					for(int i = 0; i <= 3; i++)
 					{
+						g_kv.GetString(key4[i], posColor, sizeof(posColor));
+
+						if(strlen(posColor) == 0)
+						{
+							break;
+						}
+
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						x[0] = StringToFloat(exploded[0]);
-						y[0] = StringToFloat(exploded[1]);
-						z[0] = StringToFloat(exploded[2]);
+						for(int j = 0; j <= 2; j++)
+						{
+							xyz[i][j] = StringToFloat(exploded[j]);
+						}
 						
-						r[0] = StringToInt(exploded[3]);
-						g[0] = StringToInt(exploded[4]);
-						b[0] = StringToInt(exploded[5]);
-						a[0] = StringToInt(exploded[6]);
-					}
-
-					g_kv.GetString("NewServerRecordHud", posColor, sizeof(posColor));
-
-					//if(strlen(posColor) > 0)
-					{
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						x[1] = StringToFloat(exploded[0]);
-						y[1] = StringToFloat(exploded[1]);
-						z[1] = StringToFloat(exploded[2]);
-						
-						r[1] = StringToInt(exploded[3]);
-						g[1] = StringToInt(exploded[4]);
-						b[1] = StringToInt(exploded[5]);
-						a[1] = StringToInt(exploded[6]);
-					}
-
-					g_kv.GetString("FirstRecordHud", posColor, sizeof(posColor));
-
-					//if(strlen(posColor) > 0)
-					{
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						x[2] = StringToFloat(exploded[0]);
-						y[2] = StringToFloat(exploded[1]);
-						z[2] = StringToFloat(exploded[2]);
-						
-						r[2] = StringToInt(exploded[3]);
-						g[2] = StringToInt(exploded[4]);
-						b[2] = StringToInt(exploded[5]);
-						a[2] = StringToInt(exploded[6]);
-					}
-
-					g_kv.GetString("FirstRecordZeroHud", posColor, sizeof(posColor));
-
-					//if(strlen(posColor) > 0)
-					{
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						x[3] = StringToFloat(exploded[0]);
-						y[3] = StringToFloat(exploded[1]);
-						z[3] = StringToFloat(exploded[2]);
-						
-						r[3] = StringToInt(exploded[3]);
-						g[3] = StringToInt(exploded[4]);
-						b[3] = StringToInt(exploded[5]);
-						a[3] = StringToInt(exploded[6]);
+						for(int j = 3; j <= 6; j++)
+						{
+							rgba[i][j] = StringToInt(exploded[j]);
+						}
 					}
 				}
 			}
 
 			while(g_kv.GotoNextKey(true) == true);
 
-			//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-			SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-			//ShowHudText(client, 1, "MAP FINISHED!"); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-			Format(g_format, sizeof(g_format), "%T", "MapFinishedFirstRecordHud", client);
-			ShowHudText(client, 1, g_format);
+			int channel = 1;
 
-			//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-			SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-			//ShowHudText(client, 2, "NEW SERVER RECORD!");
-			Format(g_format, sizeof(g_format), "%T", "NewServerRecordHud", client);
-			ShowHudText(client, 2, g_format);
-
-			//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-			SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-			//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-			Format(g_format, sizeof(g_format), "%T", "FirstRecordHud", client, time);
-			ShowHudText(client, 3, g_format);
-
-			//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-			SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
-			//ShowHudText(client, 4, "+00:00:00");
-			Format(g_format, sizeof(g_format), "%T", "FirstRecordZeroHud", client, timeSR);
-			ShowHudText(client, 4, g_format);
+			for(int i = 0; i <= 3; i++)
+			{
+				SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+				if(i == 0){Format(g_format, sizeof(g_format), "%T", key4[i], client);}
+				else if(i == 1){Format(g_format, sizeof(g_format), "%T", key4[i], client);}
+				else if(i == 2){Format(g_format, sizeof(g_format), "%T", key4[i], client, time);}
+				else if(i == 3){Format(g_format, sizeof(g_format), "%T", key4[i], client, timeSR);}
+				ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+			}
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -5569,31 +5509,17 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 					if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 					{
-						//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-						SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-						//ShowHudText(i, 1, "MAP FINISHED!");
-						//Format(g_format, sizeof(g_format), "%T", "NewServerRecordHud", i);
-						Format(g_format, sizeof(g_format), "%T", "MapFinishedFirstRecordHud", i);
-						ShowHudText(i, 1, g_format);
+						int channelSpec = 1;
 
-						//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-						SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-						//ShowHudText(i, 2, "NEW SERVER RECORD!");
-						//ShowHudText(i, 2, "%T", ""
-						Format(g_format, sizeof(g_format), "%T", "NewServerRecordHud", i);
-						ShowHudText(i, 2, g_format);
-
-						//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-						SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-						//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-						Format(g_format, sizeof(g_format), "%T", "FirstRecordHud", i, time);
-						ShowHudText(i, 3, g_format);
-
-						//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-						SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
-						//ShowHudText(i, 4, "+00:00:00");
-						Format(g_format, sizeof(g_format), "%T", "FirstRecordZeroHud", i, timeSR);
-						ShowHudText(i, 4, g_format);
+						for(int j = 0; j <= 3; j++)
+						{
+							SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+							if(j == 0){Format(g_format, sizeof(g_format), "%T", key4[j], i);}
+							else if(j == 1){Format(g_format, sizeof(g_format), "%T", key4[j], i);}
+							else if(j == 2){Format(g_format, sizeof(g_format), "%T", key4[j], i, time);}
+							else if(j == 3){Format(g_format, sizeof(g_format), "%T", key4[j], i, timeSR);}
+							ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+						}
 					}
 				}
 			}
@@ -5607,99 +5533,43 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
 					{
-						g_kv.GetString("NewServerRecordMapFinishedNotFirstHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
+						for(int i = 0; i <= 3; i++)
 						{
+							g_kv.GetString(key5[i], posColor, sizeof(posColor));
+
+							if(strlen(posColor) == 0)
+							{
+								break;
+							}
+
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							x[0] = StringToFloat(exploded[0]);
-							y[0] = StringToFloat(exploded[1]);
-							z[0] = StringToFloat(exploded[2]);
+							for(int j = 0; j <= 2; j++)
+							{
+								xyz[i][j] = StringToFloat(exploded[j]);
+							}
 							
-							r[0] = StringToInt(exploded[3]);
-							g[0] = StringToInt(exploded[4]);
-							b[0] = StringToInt(exploded[5]);
-							a[0] = StringToInt(exploded[6]);
-						}
-
-						g_kv.GetString("NewServerRecordNotFirstHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
-						{
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							x[1] = StringToFloat(exploded[0]);
-							y[1] = StringToFloat(exploded[1]);
-							z[1] = StringToFloat(exploded[2]);
-							
-							r[1] = StringToInt(exploded[3]);
-							g[1] = StringToInt(exploded[4]);
-							b[1] = StringToInt(exploded[5]);
-							a[1] = StringToInt(exploded[6]);
-						}
-						
-						g_kv.GetString("NewServerRecordDetailNotFirstHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
-						{
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							x[2] = StringToFloat(exploded[0]);
-							y[2] = StringToFloat(exploded[1]);
-							z[2] = StringToFloat(exploded[2]);
-							
-							r[2] = StringToInt(exploded[3]);
-							g[2] = StringToInt(exploded[4]);
-							b[2] = StringToInt(exploded[5]);
-							a[2] = StringToInt(exploded[6]);
-						}
-
-						g_kv.GetString("NewServerRecordImproveNotFirstHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
-						{
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							x[3] = StringToFloat(exploded[0]);
-							y[3] = StringToFloat(exploded[1]);
-							z[3] = StringToFloat(exploded[2]);
-							
-							r[3] = StringToInt(exploded[3]);
-							g[3] = StringToInt(exploded[4]);
-							b[3] = StringToInt(exploded[5]);
-							a[3] = StringToInt(exploded[6]);
+							for(int j = 3; j <= 6; j++)
+							{
+								rgba[i][j] = StringToInt(exploded[j]);
+							}
 						}
 					}
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
 
-				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				Format(g_format, sizeof(g_format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
-				//ShowHudText(client, 1, "MAP FINISHED!");
-				//Format(g_format, sizeof(g_format), "%T", "NewServerRecordMapFinishedNotFirstHud", client);
-				ShowHudText(client, 1, g_format);
+				int channel = 1;
 
-				//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-				//ShowHudText(client, 2, "NEW SERVER RECORD!");
-				Format(g_format, sizeof(g_format), "%T", "NewServerRecordNotFirstHud", client);
-				ShowHudText(client, 2, g_format);
-
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-				//ShowHudText(client, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(g_format, sizeof(g_format), "%T", "NewServerRecordDetailNotFirstHud", client, time);
-				ShowHudText(client, 3, g_format);
-
-				//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-				SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
-				//ShowHudText(client, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond); //https://youtu.be/j4L3YvHowv8?t=45
-				//Format(g_format, sizeof(g_format), "-%s", timeSR);
-				Format(g_format, sizeof(g_format), "%T", "NewServerRecordImproveNotFirstHud", client, timeSR);
-				ShowHudText(client, 4, g_format);
+				for(int i = 0; i <= 3; i++)
+				{
+					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					if(i == 0){Format(g_format, sizeof(g_format), "%T", key5[i], client);}
+					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key5[i], client);}
+					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key5[i], client, time);}
+					else if(i == 3){Format(g_format, sizeof(g_format), "%T", key5[i], client, timeSR);} ////https://youtu.be/j4L3YvHowv8?t=45
+					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+				}
 				
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -5710,29 +5580,17 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 						if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 						{
-							//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-							//ShowHudText(i, 1, "MAP FINISHED!");
-							Format(g_format, sizeof(g_format), "%T", "NewServerRecordMapFinishedNotFirstHud", i);
-							ShowHudText(i, 1, g_format);
-							
-							//SetHudTextParams(-1.0, -0.75, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-							//ShowHudText(i, 2, "NEW SERVER RECORD!");
-							Format(g_format, sizeof(g_format), "%T", "NewServerRecordNotFirstHud", i);
-							ShowHudText(i, 2, g_format);
+							int channelSpec = 1;
 
-							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-							//ShowHudText(i, 3, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(g_format, sizeof(g_format), "%T", "NewServerRecordDetailNotFirstHud", i, time);
-							ShowHudText(i, 3, g_format);
-
-							//SetHudTextParams(-1.0, -0.6, 3.0, 0, 255, 0, 255);
-							SetHudTextParams(x[3], y[3], z[3], r[3], g[3], b[3], a[3]);
-							//ShowHudText(i, 4, "-%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							Format(g_format, sizeof(g_format), "%T", "NewServerRecordImproveNotFirstHud", i, timeSR);
-							ShowHudText(i, 4, g_format);
+							for(int j = 0; j <= 3; j++)
+							{
+								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								if(j == 0){Format(g_format, sizeof(g_format), "%T", key5[j], i);}
+								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key5[j], i);}
+								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key5[j], i, time);}
+								else if(j == 3){Format(g_format, sizeof(g_format), "%T", key5[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+							}
 						}
 					}
 				}
@@ -5744,76 +5602,42 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 				{
 					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
 					{
-						g_kv.GetString("MapFinishedDeproveHud", posColor, sizeof(posColor));
-
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						//if(strlen(posColor) > 0)
+						for(int i = 0; i <= 2; i++)
 						{
-							x[0] = StringToFloat(exploded[0]);
-							y[0] = StringToFloat(exploded[1]);
-							z[0] = StringToFloat(exploded[2]);
-							
-							r[0] = StringToInt(exploded[3]);
-							g[0] = StringToInt(exploded[4]);
-							b[0] = StringToInt(exploded[5]);
-							a[0] = StringToInt(exploded[6]);
-						}
+							g_kv.GetString(key6[i], posColor, sizeof(posColor));
 
-						g_kv.GetString("MapFinishedTimeDeproveHud", posColor, sizeof(posColor));
+							if(strlen(posColor) == 0)
+							{
+								break;
+							}
 
-						//if(strlen(posColor) > 0)
-						{
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							x[1] = StringToFloat(exploded[0]);
-							y[1] = StringToFloat(exploded[1]);
-							z[1] = StringToFloat(exploded[2]);
+							for(int j = 0; j <= 2; j++)
+							{
+								xyz[i][j] = StringToFloat(exploded[j]);
+							}
 							
-							r[1] = StringToInt(exploded[3]);
-							g[1] = StringToInt(exploded[4]);
-							b[1] = StringToInt(exploded[5]);
-							a[1] = StringToInt(exploded[6]);
-						}
-
-						g_kv.GetString("MapFinishedTimeDeproveOwnHud", posColor, sizeof(posColor));
-
-						//if(strlen(posColor) > 0)
-						{
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							x[2] = StringToFloat(exploded[0]);
-							y[2] = StringToFloat(exploded[1]);
-							z[2] = StringToFloat(exploded[2]);
-							
-							r[2] = StringToInt(exploded[3]);
-							g[2] = StringToInt(exploded[4]);
-							b[2] = StringToInt(exploded[5]);
-							a[2] = StringToInt(exploded[6]);
+							for(int j = 3; j <= 6; j++)
+							{
+								rgba[i][j] = StringToInt(exploded[j]);
+							}
 						}
 					}
 				}
 
 				while(g_kv.GotoNextKey(true) == true);
 
-				//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-				SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-				//ShowHudText(client, 1, "MAP FINISHED!");
-				Format(g_format, sizeof(g_format), "%T", "MapFinishedDeproveHud", client);
-				ShowHudText(client, 1, g_format);
+				int channel = 1;
 
-				//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-				SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-				//ShowHudText(client, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-				Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveHud", client, time);
-				ShowHudText(client, 2, g_format);
-				
-				//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-				SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-				//ShowHudText(client, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-				//Format(g_format, sizeof(g_format), "+%s", timeSR);
-				Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveOwnHud", client, timeSR);
-				ShowHudText(client, 3, g_format);
+				for(int i = 0; i <= 2; i++)
+				{
+					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					if(i == 0){Format(g_format, sizeof(g_format), "%T", key6[i], client);}
+					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key6[i], client, time);}
+					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key6[i], client, timeSR);}
+					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+				}
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -5824,24 +5648,16 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 						if(observerMode < 7 && observerTarget == client)
 						{
-							//SetHudTextParams(-1.0, -0.8, 3.0, 0, 255, 255, 255);
-							SetHudTextParams(x[0], y[0], z[0], r[0], g[0], b[0], a[0]);
-							Format(g_format, sizeof(g_format), "%T", "MapFinishedDeproveHud", i);
-							//ShowHudText(i, 1, "MAP FINISHED!");
-							ShowHudText(i, 1, g_format);
+							int channelSpec = 1;
 
-							//SetHudTextParams(-1.0, -0.63, 3.0, 255, 255, 255, 255);
-							SetHudTextParams(x[1], y[1], z[1], r[1], g[1], b[1], a[1]);
-							//ShowHudText(i, 2, "TIME: %02.i:%02.i:%02.i", personalHour, personalMinute, personalSecond);
-							Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveHud", i, time);
-							ShowHudText(i, 2, g_format);
-							
-							//SetHudTextParams(-1.0, -0.6, 3.0, 255, 0, 0, 255);
-							SetHudTextParams(x[2], y[2], z[2], r[2], g[2], b[2], a[2]);
-							//ShowHudText(i, 3, "+%02.i:%02.i:%02.i", srHour, srMinute, srSecond);
-							//Format(g_format, sizeof(g_format), "+%s", timeSR);
-							Format(g_format, sizeof(g_format), "%T", "MapFinishedTimeDeproveOwnHud", i, timeSR);
-							ShowHudText(i, 3, g_format);
+							for(int j = 0; j <= 2; j++)
+							{
+								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								if(j == 0){Format(g_format, sizeof(g_format), "%T", key6[j], i);}
+								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key6[j], i, time);}
+								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key6[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+							}
 						}
 					}
 				}
@@ -5981,12 +5797,9 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 		if(results.FetchRow() == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
-
 			DataPack dp = new DataPack();
-
 			dp.WriteCell(GetClientSerial(other));
 			dp.WriteCell(cpnum);
-
 			g_mysql.Query(SQLCPSelect2, g_query, dp, DBPrio_Normal);
 		}
 	}
@@ -6108,9 +5921,9 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 
 		int client = GetClientFromSerial(data);
 
-		int playerid = GetSteamAccountID(client);
+		int playerid = GetSteamAccountID(client, true);
 		int partner = g_partner[client];
-		int partnerid = GetSteamAccountID(partner);
+		int partnerid = GetSteamAccountID(partner, true);
 
 		if(results.FetchRow() == false)
 		{
@@ -6164,9 +5977,9 @@ public void SQLSetTries2(Database db, DBResultSet results, const char[] error, a
 
 		if(IsValidClient(client) == true)
 		{
-			int playerid = GetSteamAccountID(client);
+			int playerid = GetSteamAccountID(client, true);
 			int partner = g_partner[client];
-			int partnerid = GetSteamAccountID(partner);
+			int partnerid = GetSteamAccountID(partner, true);
 
 			if(results.FetchRow() == false)
 			{
@@ -6202,11 +6015,15 @@ public void SQLSetTriesUpdated(Database db, DBResultSet results, const char[] er
 	}
 }
 
-public Action cmd_createzones(int args)
+public void CreateTables()
 {
-	g_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x INT, possition_y INT, possition_z INT, possition_x2 INT, possition_y2 INT, possition_z2 INT, PRIMARY KEY (id))"); //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	g_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x FLOAT, possition_y FLOAT, possition_z FLOAT, possition_x2 FLOAT, possition_y2 FLOAT, possition_z2 FLOAT, PRIMARY KEY (id))", _, DBPrio_High); //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
+	g_mysql.Query(SQLCreateUserTable, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))", _, DBPrio_High);
+	g_mysql.Query(SQLRecordsTable, "CREATE TABLE IF NOT EXISTS records (id INT AUTO_INCREMENT, playerid INT, partnerid INT, time FLOAT, finishes INT, tries INT, cp1 FLOAT, cp2 FLOAT, cp3 FLOAT, cp4 FLOAT, cp5 FLOAT, cp6 FLOAT, cp7 FLOAT, cp8 FLOAT, cp9 FLOAT, cp10 FLOAT, points INT, map VARCHAR(192), date INT, PRIMARY KEY(id))", _, DBPrio_High);
+	g_mysql.Query(SQLCreateCPTable, "CREATE TABLE IF NOT EXISTS cp (id INT AUTO_INCREMENT, cpnum INT, cpx FLOAT, cpy FLOAT, cpz FLOAT, cpx2 FLOAT, cpy2 FLOAT, cpz2 FLOAT, map VARCHAR(192), PRIMARY KEY(id))", _, DBPrio_High);
+	g_mysql.Query(SQLCreateTierTable, "CREATE TABLE IF NOT EXISTS tier (id INT AUTO_INCREMENT, tier INT, map VARCHAR(192), PRIMARY KEY(id))", _, DBPrio_High);
 
-	return Plugin_Continue;
+	return;
 }
 
 public void SQLConnect(Database db, const char[] error, any data)
@@ -6218,6 +6035,8 @@ public void SQLConnect(Database db, const char[] error, any data)
 		g_mysql = db;
 
 		g_mysql.SetCharset("utf8"); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-core.sp#L2883
+
+		CreateTables();
 
 		ForceZonesSetup(); //https://sm.alliedmods.net/new-api/dbi/__raw
 
@@ -6234,7 +6053,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 			{
 				g_mysql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(i), DBPrio_High);
 
-				int steamid = GetSteamAccountID(i);
+				int steamid = GetSteamAccountID(i, true);
 				Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
 				g_mysql.Query(SQLGetPersonalRecord, g_query, GetClientSerial(i), DBPrio_Normal);
 			}
@@ -6321,126 +6140,131 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 
 	else if(strlen(error) == 0)
 	{
-		PrintToServer("Zones table is successfuly created.");
+		PrintToServer("Zones table is successfuly created, if not exist.");
 	}
 
 	return;
 }
 
-stock void DrawZone(int client, float life, float size, int speed)
+stock void DrawZone(int client, float life, float size, int speed, int zonetype, int zonecount)
 {
+	float point[12][2][3];
 	float start[12][3];
 	float end[12][3];
 
-	for(int i = 0; i <= 2; i++)
+	for(int i = 0; i <= 1; i++)
 	{
-		if(g_devmap == false)
-		{
-			start[0][i] = g_zoneStartOrigin[0][i] < g_zoneStartOrigin[1][i] ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i]; //zones calculation from tengu (tengulawl)
-			end[0][i] = g_zoneStartOrigin[0][i] > g_zoneStartOrigin[1][i] ? g_zoneStartOrigin[0][i] : g_zoneStartOrigin[1][i];
-			start[1][i] = g_zoneEndOrigin[0][i] < g_zoneEndOrigin[1][i] ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
-			end[1][i] = g_zoneEndOrigin[0][i] > g_zoneEndOrigin[1][i] ? g_zoneEndOrigin[0][i] : g_zoneEndOrigin[1][i];
-		}
-
-		else if(g_devmap == true)
-		{
-			start[0][i] = g_zoneStartOriginTemp[0][i] < g_zoneStartOriginTemp[1][i] ? g_zoneStartOriginTemp[0][i] : g_zoneStartOriginTemp[1][i];
-			end[0][i] = g_zoneStartOriginTemp[0][i] > g_zoneStartOriginTemp[1][i] ? g_zoneStartOriginTemp[0][i] : g_zoneStartOriginTemp[1][i];
-			start[1][i] = g_zoneEndOriginTemp[0][i] < g_zoneEndOriginTemp[1][i] ? g_zoneEndOriginTemp[0][i] : g_zoneEndOriginTemp[1][i];
-			end[1][i] = g_zoneEndOriginTemp[0][i] > g_zoneEndOriginTemp[1][i] ? g_zoneEndOriginTemp[0][i] : g_zoneEndOriginTemp[1][i];
-		}
+		point[0][i] = g_devmap == true ? g_zoneStartOriginTemp[client][i] : g_zoneStartOrigin[i];
+		point[1][i] = g_devmap == true ? g_zoneEndOriginTemp[client][i] : g_zoneEndOrigin[i];
 	}
 
 	for(int i = 0; i <= 1; i++)
 	{
-		start[i][2] += size;
-		end[i][2] += size;
-	}
-
-	int zones = 1;
-	int cpnum = 0;
-
-	if(g_cpCount > 0)
-	{
-		zones += g_cpCount;
-
-		for(int i = 2; i <= zones; i++)
+		for(int j = 0; j <= 2; j++)
 		{
-			cpnum = i - 1; //start count cp from 1.
+			start[i][j] = point[i][0][j] < point[i][1][j] ? point[i][0][j] : point[i][1][j]; //zones calculation from tengu (tengulawl)
+			end[i][j] = point[i][0][j] > point[i][1][j] ? point[i][0][j] : point[i][1][j];
+		}
 
-			for(int j = 0; j <= 2; j++)
-			{
-				if(g_devmap == false)
-				{
-					start[i][j] = g_cpPos[cpnum][0][j] < g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
-					end[i][j] = g_cpPos[cpnum][0][j] > g_cpPos[cpnum][1][j] == true ? g_cpPos[cpnum][0][j] : g_cpPos[cpnum][1][j];
-				}
-
-				else if(g_devmap == true)
-				{
-					start[i][j] = g_cpPosTemp[cpnum][0][j] < g_cpPosTemp[cpnum][1][j] == true ? g_cpPosTemp[cpnum][0][j] : g_cpPosTemp[cpnum][1][j];
-					end[i][j] = g_cpPosTemp[cpnum][0][j] > g_cpPosTemp[cpnum][1][j] == true ? g_cpPosTemp[cpnum][0][j] : g_cpPosTemp[cpnum][1][j];
-				}
-			}
-
+		if(g_devmap == false)
+		{
 			start[i][2] += size;
 			end[i][2] += size;
 		}
 	}
 
-	float point[12][8][3]; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L4828
+	int zones = 11;
+	int cpnum = 0;
+
+	for(int i = 2; i <= zones; i++)
+	{
+		cpnum = i - 1; //start count cp from 1.
+
+		for(int j = 0; j <= 1; j++)
+		{
+			point[i][j] = g_devmap == true ? g_cpPosTemp[client][cpnum][j] : g_cpPos[cpnum][j];
+		}
+
+		for(int j = 0; j <= 1; j++)
+		{
+			for(int k = 0; k <= 2; k++)
+			{
+				start[i][k] = point[i][0][k] < point[i][1][k] ? point[i][0][k] : point[i][1][k]; 
+				end[i][k] = point[i][0][k] > point[i][1][k] ? point[i][0][k] : point[i][1][k];
+			}
+		}
+
+		if(g_devmap == false)
+		{
+			start[i][2] += size;
+			end[i][2] += size;
+		}
+	}
+
+	int ix = 0;
+	float beam[12][8][3]; //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L4828
 
 	for(int i = 0; i <= zones; i++)
 	{
-		point[i][0] = start[i];
-		point[i][7] = end[i];
+		if(g_devmap == true)
+		{
+			if(zonetype < 2)
+			{
+				ix = zonetype;
+			}
+
+			else if(zonetype == 2)
+			{
+				ix = zonecount + 1;
+			}
+		}
+
+		else if(g_devmap == false)
+		{
+			ix = g_devmap == true ? ix : i;
+		}
+
+		beam[ix][0] = start[ix];
+		beam[ix][7] = end[ix];
 
 		//calculate all zone edges
-		for(int j = 1; j < 7; j++)
+		for(int j = 1; j <= 6; j++)
 		{
-			for(int k = 0; k < 3; k++)
+			for(int k = 0; k <= 2; k++)
 			{
-				point[i][j][k] = point[i][((j >> (2 - k)) & 1) * 7][k];
+				beam[ix][j][k] = beam[ix][((j >> (2 - k)) & 1) * 7][k];
 			}
 		}
 
-		float center[2] = {0.0, ...};
-		center[0] = (point[i][0][0] + point[i][7][0]) / 2;
-		center[1] = (point[i][0][1] + point[i][7][1]) / 2;
-
-		for(int j = 0; j < 8; j++)
+		/*if(g_devmap == true)
 		{
-			for(int k = 0; k < 2; k++)
-			{
-				if(point[i][j][k] < center[k])
-				{
-					point[i][j][k] += 1.0;
-				}
+			float center[2] = {0.0, ...};
+			center[0] = (beam[i][0][0] + beam[i][7][0]) / 2;
+			center[1] = (beam[i][0][1] + beam[i][7][1]) / 2;
 
-				else if(point[i][j][k] > center[k])
+			for(int j = 0; j < 8; j++)
+			{
+				for(int k = 0; k < 2; k++)
 				{
-					point[i][j][k] -= 1.0;
+					if(beam[i][j][k] < center[k])
+					{
+						beam[i][j][k] += 1.0;
+					}
+
+					else if(beam[i][j][k] > center[k])
+					{
+						beam[i][j][k] -= 1.0;
+					}
 				}
 			}
-		}
+		}*/
 
 		int pairs[][] = {{0, 2}, {2, 6}, {6, 4}, {4, 0}, {0, 1}, {3, 1}, {3, 2}, {3, 7}, {5, 1}, {5, 4}, {6, 7}, {7, 5}};
-		int modelType = 0;
 		int color[4] = {255, ...};
-
-		if(i == 1)
-		{
-			modelType = 1;
-		}
-
-		else if(i > 1)
-		{
-			modelType = 2;
-		}
 
 		for(int j = 0; j < (g_devmap == true ? 12 : 4); j++) //3d 12, 2d 4
 		{			
-			TE_SetupBeamPoints(point[i][pairs[j][0]], point[i][pairs[j][1]], g_devmap == true ? g_laserBeam : g_zoneModel[modelType], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SetupBeamPoints(beam[ix][pairs[j][0]], beam[ix][pairs[j][1]], g_devmap == true ? g_laserBeam : g_zoneModel[ix > 2 == true ? 2 : ix], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToClient(client, 0.0);
 		}
 	}
@@ -6634,7 +6458,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				end[i] = start[i] + angle[i]; //Thanks to rumour for pingtool original code.
 			}
 
-			TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceEntityFilterPlayer, client);
+			TR_TraceRayFilter(start, end, MASK_SOLID, RayType_EndPoint, TraceFilter, client);
 
 			if(TR_DidHit(INVALID_HANDLE) == true)
 			{
@@ -6669,7 +6493,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			start[2] -= 8.0;
 
-			TE_SetupBeamPoints(start, end, g_laserBeam, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
+			TE_SetupBeamPoints(start, end, g_laser, 0, 0, 0, 0.5, 1.0, 1.0, 0, 0.0, color, 0);
 
 			if(LibraryExists("trueexpert-entityfilter") == true)
 			{
@@ -6738,38 +6562,166 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if(g_zoneDraw[client] == true)
 	{
-		if(GetEngineTime() - g_engineTime >= 0.1)
+		if(GetEngineTime() - g_engineTime[client] >= 0.07)
 		{
-			g_engineTime = GetEngineTime();
+			g_engineTime[client] = GetEngineTime();
 
 			for(int i = 1; i <= MaxClients; i++)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					DrawZone(i, 0.15, 3.0, 10);
+					DrawZone(i, 0.1, 3.0, 10, g_ZoneEditor[client], g_ZoneEditorCP[client]);
 				}
 			}
 		}
 	}
 
-	if(IsClientObserver(client) == true && GetEntProp(client, Prop_Data, "m_afButtonPressed", 4, 0) & IN_USE) //Make able to swtich wtih E to the partner via spectate.
+	if(GetEntProp(client, Prop_Data, "m_afButtonPressed", 4, 0) & IN_USE) //Make able to swtich wtih E to the partner via spectate.
 	{
-		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
-		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode", 4, 0);
-
-		if(IsValidClient(observerTarget) == true && IsValidPartner(observerTarget) == true && IsPlayerAlive(g_partner[observerTarget]) == true && observerMode < 7)
+		if(IsClientObserver(client) == true)
 		{
-			SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget], 0);
+			int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
+			int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode", 4, 0);
+
+			if(IsValidClient(observerTarget) == true && IsValidPartner(observerTarget) == true && IsPlayerAlive(g_partner[observerTarget]) == true && observerMode < 7)
+			{
+				SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget], 0);
+			}
+		}
+
+		if(g_zoneDraw[client] == true && g_zoneCreator[client] == true)
+		{
+			if(g_zoneCreatorUseProcess[client][0] == true && g_zoneCreatorUseProcess[client][1] == false)
+			{
+				g_zoneCreatorUseProcess[client][1] = true;
+			}
+
+			if(g_zoneCreatorUseProcess[client][0] == false)
+			{
+				g_zoneCreatorUseProcess[client][0] = true;
+			}
 		}
 	}
 
-	if(GetEngineTime() - g_hudTime[client] >= 0.1)
+	if(GetEngineTime() - g_hudTime[client] >= 0.07)
 	{
 		g_hudTime[client] = GetEngineTime();
 
-		if(g_zoneDraw[client] == false)
+		VelHud(client);
+
+		if(g_zoneDraw[client] == true)
 		{
-			VelHud(client);
+			if(g_zoneCreator[client] == true)
+			{
+				float origin[3] = {0.0, ...};
+				GetClientAbsOrigin(client, origin);
+
+				float nulled[3] = {0.0, ...};
+
+				if(g_zoneCreatorUseProcess[client][0] == false)
+				{
+					if(g_zoneCursor[client] == true)
+					{
+						g_zoneSelected[client][0] = GetAimPosition(client);
+						g_zoneSelected[client][1] = GetAimPosition(client);
+					}
+
+					else if(g_zoneCursor[client] == false)
+					{
+						GetClientAbsOrigin(client, g_zoneSelected[client][0]);
+						GetClientAbsOrigin(client, g_zoneSelected[client][1]);
+
+						//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][0] : nulled);
+						//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][1] : nulled);
+
+						g_zoneSelected[client][0] = SnapToGrid(g_zoneSelected[client][0], g_step[client], false);
+						g_zoneSelected[client][1] = SnapToGrid(g_zoneSelected[client][1], g_step[client], false);
+					}
+
+					g_zoneSelected[client][0][2] = origin[2];
+					g_zoneSelected[client][1][2] = origin[2];
+
+					ModelXYZ(client, g_zoneSelected[client][0], true, g_zoneCursor[client] == true ? true : false);
+				}
+
+				else if(g_zoneCreatorUseProcess[client][0] == true && g_zoneCreatorUseProcess[client][1] == false)
+				{
+					if(g_zoneCursor[client] == true)
+					{
+						g_zoneSelected[client][1] = GetAimPosition(client);
+						g_zoneSelected[client][1][2] = origin[2];
+					}
+
+					else if(g_zoneCursor[client] == false)
+					{
+						GetClientAbsOrigin(client, g_zoneSelected[client][1]);
+
+						//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][1] : nulled);
+
+						g_zoneSelected[client][1] = SnapToGrid(g_zoneSelected[client][1], g_step[client], false);
+					}
+
+					ModelXYZ(client, g_zoneSelected[client][1], true, g_zoneCursor[client] == true ? true : false);
+
+					g_zoneSelected[client][1][2] += 256.0;
+				}
+
+				else if(g_zoneCreatorUseProcess[client][1] == true)
+				{
+					switch(g_zoneCreatorSelected[client])
+					{
+						case 0:
+						{
+							ZoneEditorStart(client);
+						}
+
+						case 1:
+						{
+							ZoneEditorEnd(client);
+						}
+
+						case 2:
+						{
+							ZoneEditorCP(client, g_ZoneEditorCP[client]);
+						}
+					}
+
+					g_zoneCreator[client] = false;
+
+					for(int i = 0; i <= 1; i++)
+					{
+						g_zoneCreatorUseProcess[client][i] = false;
+					}
+
+					ModelXYZ(client, nulled, false, false);
+				}
+
+				switch(g_zoneCreatorSelected[client])
+				{
+					case 0:
+					{
+						g_zoneStartOriginTemp[client][0] = g_zoneSelected[client][0];
+						g_zoneStartOriginTemp[client][1] = g_zoneSelected[client][1];
+					}
+
+					case 1:
+					{
+						g_zoneEndOriginTemp[client][0] = g_zoneSelected[client][0];
+						g_zoneEndOriginTemp[client][1] = g_zoneSelected[client][1];
+					}
+
+					case 2:
+					{
+						g_cpPosTemp[client][g_ZoneEditorCP[client]][0] = g_zoneSelected[client][0];
+						g_cpPosTemp[client][g_ZoneEditorCP[client]][1] = g_zoneSelected[client][1];
+					}
+				}
+			}
+		}
+
+		else if(g_zoneDraw[client] == false)
+		{
+			ModelXYZ(client, NULL_VECTOR, false, false);
 		}
 	}
 
@@ -7925,38 +7877,27 @@ stock void GiveFlashbang(int client)
 	return;
 }
 
-public bool TraceEntityFilterPlayer(int entity, int contentMask, int client)
+public bool TraceFilter(int entity, int contentMask, int client)
 {
 	if(LibraryExists("trueexpert-entityfilter") == true)
 	{
 		if(Trikz_GetEntityFilter(client, entity) == false)
 		{
-			if(entity > MaxClients)
-			{
-				return true;
-			}
+			return entity > MaxClients;
 		}
 	}
 
 	else if(LibraryExists("trueexpert-entityfilter") == false)
 	{
-		if(entity > MaxClients)
-		{
-			return true;
-		}
+		return entity > MaxClients;
 	}
 
 	return false;
 }
 
-public bool TraceEntityFilterPlayerGround(int entity, int contentsMask, any data)
+public bool TraceFilterDontHitSelf(int entity, int contentsMask, any data)
 {
-	if(entity == data)
-	{
-		return false;
-	}
-
-	return true;
+	return entity != data;
 }
 
 public Action timer_removePing(Handle timer, int client)
@@ -8172,18 +8113,12 @@ public bool TR_donthitself(int entity, int mask, int client)
 {
 	if(LibraryExists("trueexpert-entityfilter") == true)
 	{
-		if(entity != client && IsValidClient(entity) == true && g_partner[entity] == g_partner[g_partner[client]])
-		{
-			return true;
-		}
+		return entity != client && IsValidClient(entity) == true && g_partner[entity] == g_partner[g_partner[client]];
 	}
 
 	else if(LibraryExists("trueexpert-entityfilter") == false)
 	{
-		if(entity != client && IsValidClient(entity) == true)
-		{
-			return true;
-		}
+		return entity != client && IsValidClient(entity) == true;
 	}
 
 	return false;
@@ -8207,15 +8142,7 @@ public int Native_GetTimerState(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
-	if(g_timerState[client] == true)
-	{
-		return true;
-	}
-
-	else //at else if(g_timerState[client] == false) waring with return value
-	{
-		return false;
-	}
+	return g_timerState[client];
 }
 
 public int Native_SetPartner(Handle plugin, int numParams)
@@ -8244,15 +8171,14 @@ public int Native_GetDevmap(Handle plugin, int numParams)
 	return g_devmap;
 }
 
-stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+stock float[] GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float origin[3] = {0.0, ...};
 	GetClientAbsOrigin(client, origin);
 
 	float originDir[3] = {0.0, ...};
 	GetClientAbsOrigin(client, originDir);
-
-	originDir[2] -= 90.0;
+	originDir[2] -= 2.0;
 
 	float mins[3] = {0.0, ...};
 	GetClientMins(client, mins);
@@ -8260,17 +8186,24 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 	float maxs[3] = {0.0, ...};
 	GetClientMaxs(client, maxs);
 
-	float pos[3] = {0.0, ...};
-	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayerGround, client);
+	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceFilterDontHitSelf, client);
 
+	float pos[3] = {0.0, ...};
 	TR_GetEndPosition(pos);
 
 	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
-		return pos[2];
+		#if debug == true
+		PrintToServer("%f %i", origin[2] - pos[2], TR_GetEntityIndex());
+		#endif
+
+		return pos;
 	}
 
-	return pos[2];
+	else //if(TR_DidHit(INVALID_HANDLE) == false) //function GetGroundPos should return a value. The function does not have a return statement, or it does not have an expression behind the return statement, but the function’s result is used in a expression.
+	{
+		return pos;
+	}
 }
 
 /*public int GetColor(const int r, const int g, const int b, const int a)
@@ -8373,7 +8306,7 @@ stock void GetPoints(int client, char[] points)
 		Format(points, 32, "\x07%s%i\x01", color, g_points[client]);
 	}
 
-	else if(g_points[client] >= 1000)
+	else if(1000 <= g_points[client] < 1000000)
 	{
 		Format(points, 32, "\x07%s%iK\x01", color, g_points[client] / 1000);
 	}
@@ -8382,6 +8315,143 @@ stock void GetPoints(int client, char[] points)
 	{
 		Format(points, 32, "\x07%s%iM\x01", color, g_points[client] / 1000000);
 	}
+
+	return;
+}
+
+stock float[] GetAimPosition(int client) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3890
+{
+	float eyePos[3] = {0.0, ...};
+	GetClientEyePosition(client, eyePos);
+
+	float eyeAngles[3] = {0.0, ...};
+	GetClientEyeAngles(client, eyeAngles);
+
+	TR_TraceRayFilter(eyePos, eyeAngles, MASK_PLAYERSOLID, RayType_Infinite, TraceFilterDontHitSelf, client);
+
+	if(TR_DidHit(INVALID_HANDLE))
+	{
+		float end[3] = {0.0, ...};
+		TR_GetEndPosition(end);
+
+		return SnapToGrid(end, g_step[client], true);
+	}
+
+	return eyePos;
+}
+
+stock float[] SnapToGrid(float pos[3], int grid, bool third) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3832
+{
+	float origin[3] = {0.0, ...};
+	origin = pos;
+
+	origin[0] = float(RoundToNearest(pos[0] / grid) * grid);
+	origin[1] = float(RoundToNearest(pos[1] / grid) * grid);
+
+	if(third == true)
+	{
+		origin[2] = float(RoundToNearest(pos[2] / grid) * grid);
+	}
+
+	return origin;
+}
+
+stock void SnapToWall(float pos[3], int client, float final[3]) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3848
+{
+	bool hit = false;
+
+	float end[3] = {0.0, ...};
+	float temp[3] = {0.0, ...};
+
+	float prefinal[3] = {0.0, ...};
+	prefinal = pos;
+
+	for(int i = 0; i < 4; i++)
+	{
+		end = pos;
+
+		int axis = (i / 2);
+
+		end[axis] += i % 2 == 1 ? -g_step[client] : g_step[client];
+
+		TR_TraceRayFilter(pos, end, MASK_PLAYERSOLID, RayType_EndPoint, TraceFilterDontHitSelf, client);
+
+		if(TR_DidHit(INVALID_HANDLE))
+		{
+			TR_GetEndPosition(temp);
+
+			prefinal[axis] = temp[axis];
+
+			hit = true;
+		}
+	}
+
+	if(hit == true && GetVectorDistance(prefinal, pos) <= g_step[client])
+	{
+		final = SnapToGrid(prefinal, g_step[client], false);
+	}
+
+	return;
+}
+
+stock void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
+{
+	if(g_entityXYZ[client] > 0)
+	{
+		if(IsValidEntity(g_entityXYZ[client]) == true)
+		{
+			RemoveEntity(g_entityXYZ[client]);
+		}
+
+		g_entityXYZ[client] = 0;
+	}
+
+	if(showmodel == false)
+	{
+		return;
+	}
+
+	g_entityXYZ[client] = CreateEntityByName("prop_dynamic_override", -1);
+
+	SetEntityModel(g_entityXYZ[client], "models/expert_zone/zone_editor/xyz/xyz.mdl");
+	DispatchSpawn(g_entityXYZ[client]);
+
+	SetEntProp(g_entityXYZ[client], Prop_Data, "m_fEffects", 16, 4, 0);
+
+	TeleportEntity(g_entityXYZ[client], origin, NULL_VECTOR, NULL_VECTOR);
+
+	if(showbeam == true)
+	{
+		float eyePos[3] = {0.0, ...};
+		GetClientEyePosition(client, eyePos);
+		eyePos[2] -= 8;
+		TE_SetupBeamPoints(eyePos, origin, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0);
+		TE_SendToAll(0.0);
+	}
+
+	//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L4704-L4721
+
+	/*float playerOrigin[3] = {0.0, ...};
+	GetClientAbsOrigin(client, playerOrigin);
+
+	TE_SetupBeamPoints(playerOrigin, origin, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0);
+	TE_SendToAll(0.0);
+
+	//visualize grid snap
+	float snap1[3];
+	float snap2[3];
+
+	for(int i = 0; i < 3; i++)
+	{
+		snap1 = origin;
+		snap1[i] -= g_step[client];
+
+		snap2 = origin;
+		snap2[i] += g_step[client];
+
+		TE_SetupBeamPoints(snap1, snap2, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0);
+		TE_SendToAll(0.0);
+	}*/
 
 	return;
 }
