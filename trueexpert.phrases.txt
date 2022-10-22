@@ -722,4 +722,137 @@
 	{
 		"en"	" [TP]"
 	}
+	"CursorPossitionON"
+	{
+		"en"	"✓ Cursor position"
+	}
+	"CursorPossitionOFF"
+	{
+		"en"	"☓ Cursor position"
+	}
+	"DBLoading"
+	{
+		"en"	"Please wait for database loading!"
+	}
+	"ZoneEditor"
+	{
+		"en"	"Zone editor"
+	}
+	"ZoneEditorAddButton"
+	{
+		"en"	"Add new map zone"
+	}
+	"ZoneEditorEditButton"
+	{
+		"en"	"Edit map zone"
+	}
+	"ZoneEditorTPButton"
+	{
+		"en"	"Teleport to exist zone"
+	}
+	"ZoneEditorAdd"
+	{
+		"en"	"Zone editor - Add"
+	}
+	"ZoneEditorStartZoneButton"
+	{
+		"en"	"Start zone"
+	}
+	"ZoneEditorEndZoneButton"
+	{
+		"en"	"End zone"
+	}
+	"ZoneEditorCPZoneButton"
+	{
+		"en"	"Checkpoint zone"
+	}
+	"ZoneEditorEdit"
+	{
+		"en"	"Zone editor - Edit"
+	}
+	"ZoneEditorCPButton"
+	{
+		"#format"	"{1:i}"
+		"en"	"CP nr. {1} zone"
+	}
+	"ZoneEditorNoZone"
+	{
+		"en"	"No zones are setup."
+	}
+	"ZoneEditorUse"
+	{
+		"en"	"Press USE to set zone corners"
+	}
+	"ZoneEditorStep1"
+	{
+		"#format"	"{1:i}"
+		"en"	"Step + ({1})"
+	}
+	"ZoneEditorStep2"
+	{
+		"en"	"Step -"
+	}
+	"ZoneEditorSelectedCPnum"
+	{
+		"#format"	"{1:i}"
+		"en"	"Checkpoint nr. {1}"
+	}
+	"ZoneEditorTypeCPnum"
+	{
+		"en"	"Type checkpoint number to in-game chat. (1 - 10)"
+	}
+	"ZoneEditorStartZone"
+	{
+		"en"	"Zone editor - Start zone"
+	}
+	"ZoneEditorEndZone"
+	{
+		"en"	"Zone editor - End zone"
+	}
+	"ZoneEditorSide1+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 1 | {1} +{2}"
+	}
+	"ZoneEditorSide1-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 1 | {1} -{2}"
+	}
+	"ZoneEditorSide2+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 2 | {1} +{2}"
+	}
+	"ZoneEditorSide2-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 2 | {1} -{2}"
+	}
+	"ZoneEditorAxis"
+	{
+		"en"	"Change axis"
+	}
+	"ZoneEditorApplyStartZone"
+	{
+		"en"	"Apply start zone"
+	}
+	"ZoneEditorApplyEndZone"
+	{
+		"en"	"Apply end zone"
+	}
+	"ZoneEditorCPZone"
+	{
+		"#format"	"{1:i}"
+		"en"	"Zone editor - CP nr. {1} zone"
+	}
+	"ZoneEditorApplyCPZone"
+	{
+		"#format"	"{1:i}"
+		"en"	"Apply CP nr. {1} zone"
+	}
+	"ZoneEditorTP"
+	{
+		"en"	"Zone editor - Teleport"
+	}
 }
