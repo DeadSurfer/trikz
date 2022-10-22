@@ -6264,7 +6264,7 @@ stock void DrawZone(int client, float life, float size, int speed, int zonetype,
 
 		for(int j = 0; j < (g_devmap == true ? 12 : 4); j++) //3d 12, 2d 4
 		{			
-			TE_SetupBeamPoints(beam[ix][pairs[j][0]], beam[ix][pairs[j][1]], g_devmap == true ? g_laserBeam : g_zoneModel[ix > 2 == true ? 2 : ix], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SetupBeamPoints(beam[ix][pairs[j][1]], beam[ix][pairs[j][0]], g_devmap == true ? g_laserBeam : g_zoneModel[ix > 2 == true ? 2 : ix], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToClient(client, 0.0);
 		}
 	}
