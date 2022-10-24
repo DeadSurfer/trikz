@@ -31,6 +31,7 @@
 #include <dhooks>
 #include <sdktools>
 #include <sdkhooks>
+#include <entitylump>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -66,19 +67,13 @@ float g_mathMin[MAXENTITY] = {0.0, ...};
 float g_mathMax[MAXENTITY] = {0.0, ...};
 bool g_touchArtifacial[MAXPLAYER][MAXENTITY][2]; //Fully used george logic from https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp. Thanks to Ciallo-Ani for opensource code.
 native bool Trikz_GetDevmap();
-native int GetOutputActionCount(int entity, const char[] output);
-native bool GetOutputActionTarget(int entity, const char[] output, int index, char[] target, int maxlen);
-native bool GetOutputActionTargetInput(int entity, const char[] output, int index, char[] targetinput, int maxlen);
-native bool GetOutputActionParameter(int entity, const char[] output, int index, char[] parameter, int maxlen);
-native float GetOutputActionDelay(int entity, const char[] output, int index);
-native int GetOutputActionTimesToFire(int entity, const char[] output, int index);
 
 public Plugin myinfo =
 {
 	name = "Entity filter",
 	author = "Smesh",
 	description = "Makes the game more personal.",
-	version = "0.26",
+	version = "0.27",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -140,6 +135,13 @@ public void OnPluginStart()
 	g_PassServerEntityFilter = CreateGlobalForward("Trikz_CheckSolidity", ET_Hook, Param_Cell, Param_Cell);
 
 	RegPluginLibrary("trueexpert-entityfilter");
+
+	int major = SOURCEMOD_V_MAJOR, minor = SOURCEMOD_V_MINOR;
+
+	if(major == 1 && minor < 12)
+	{
+		SetFailState("SourceMod version is too old!");
+	}
 
 	return;
 }
@@ -213,9 +215,9 @@ public Action timer_load(Handle timer)
 		}
 	}
 	
-	char classname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"};
-	char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"};
-	char outputFormated[24] = "";
+	char classname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"},
+	output[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"},
+	outputFormated[24] = "";
 
 	for(int i = 0; i < sizeof(classname); i++)
 	{
@@ -257,20 +259,13 @@ public Action timer_load(Handle timer)
 
 stock void EntityLink(int entity, const char[] output)
 {
-	int count = GetOutputActionCount(entity, output);
+	int count = GetOutputCount(entity, output), maxLinks = 0, maxMathLinks = 0, outputNum = GetOutput(output);
+	char input[16] = "", target[256] = "", classname[][] = {"func_brush", "func_wall_toggle", "trigger_*", "func_breakable", "prop_dynamic"};
 
-	char input[16] = "";
-	char target[256] = "";
-	char classname[][] = {"func_brush", "func_wall_toggle", "trigger_*", "func_breakable", "prop_dynamic"};
-	
-	int maxLinks = 0;
-	int maxMathLinks = 0;
-	int outputNum = GetOutput(output);
-
-	for(int i = 0; i < count; i++)
+	for(int i = 1; i <= count; i++)
 	{
-		GetOutputActionTargetInput(entity, output, i, input, sizeof(input));
-		GetOutputActionTarget(entity, output, i, target, sizeof(target));
+		GetOutputTargetInput(entity, output, i, input, sizeof(input));
+		GetOutputTarget(entity, output, i, target, sizeof(target));
 
 		if(StrEqual(input, "Enable", false) == true || 
 			StrEqual(input, "Disable", false) == true || 
@@ -449,23 +444,14 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		}
 	}
 
-	bool bReturn = false;
-
 	if(entity > 0)
 	{
 		for(int j = 1; j <= g_entityTotalCount; j++)
 		{
 			if(g_entityID[j] == entity)
 			{
-				bReturn = true;
-
-				continue;
+				return;
 			}
-		}
-
-		if(bReturn == true)
-		{
-			return;
 		}
 
 		g_entityID[++g_entityTotalCount] = entity;
@@ -477,15 +463,8 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 		{
 			if(g_mathID[j] == entity)
 			{
-				bReturn = true;
-
-				continue;
+				return;
 			}
-		}
-
-		if(bReturn == true)
-		{
-			return;
 		}
 
 		g_mathID[++g_mathTotalCount] = entity;
@@ -533,10 +512,10 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 	if(i == 5)
 	{
-		if(IsValidEntity(entity) == true && (GetOutputActionCount(entity, "m_OutValue") == 0 || 
-											GetOutputActionCount(entity, "m_OnGetValue") == 0 || 
-											GetOutputActionCount(entity, "m_OnUser3") == 0 || 
-											GetOutputActionCount(entity, "m_OnUser4") == 0)) //thanks to george for original code.
+		if(IsValidEntity(entity) == true && (GetOutputCount(entity, "m_OutValue") == 0 || 
+											GetOutputCount(entity, "m_OnGetValue") == 0 || 
+											GetOutputCount(entity, "m_OnUser3") == 0 || 
+											GetOutputCount(entity, "m_OnUser4") == 0)) //thanks to george for original code.
 		{
 			g_mathValueDefault[g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
 			g_mathValue[0][g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
@@ -606,18 +585,17 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 stock void AddOutput(int entity, const char[] output, const char[] outputtype)
 {
-	int count = GetOutputActionCount(entity, output);
+	int count = GetOutputCount(entity, output);
+	char output_[4][768];
 
-	char output_[4][256];
-
-	for(int i = 0; i < count; i++)
+	for(int i = 1; i <= count; i++)
 	{
-		GetOutputActionTarget(entity, output, i, output_[0], 256);
-		GetOutputActionTargetInput(entity, output, i, output_[1], 256);
-		GetOutputActionParameter(entity, output, i, output_[2], 256);
-		float delay = GetOutputActionDelay(entity, output, i);
-		int fire = GetOutputActionTimesToFire(entity, output, i);
-		Format(output_[3], 256, "%s %s:%s:%s:%f:%i", outputtype, output_[0], output_[1], output_[2], delay, fire);
+		GetOutputTarget(entity, output, i, output_[0], 256);
+		GetOutputTargetInput(entity, output, i, output_[1], 32);
+		GetOutputParameter(entity, output, i, output_[2], 256);
+		float delay = GetOutputDelay(entity, output, i);
+		int fire = GetOutputTimesToFire(entity, output, i);
+		Format(output_[3], 768, "%s %s:%s:%s:%f:%i", outputtype, output_[0], output_[1], output_[2], delay, fire);
 		SetVariantString(output_[3]);
 		AcceptEntityInput(entity, "AddOutput");
 	}
@@ -1138,10 +1116,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 	if(IsValidClient(activator) == true)
 	{
 		char outputFormated[24] = "";
-		int outputNum = -1;
-		int linkedEntity = 0;
-		int linkedMathEntity = 0;
-		int partner = Trikz_GetClientPartner(activator);
+		int outputNum = -1, linkedEntity = 0, linkedMathEntity = 0, partner = Trikz_GetClientPartner(activator);
 
 		if(caller > 0)
 		{
@@ -1441,4 +1416,118 @@ public int Native_GetEntityFilter(Handle plugin, int numParams)
 	int partner = Trikz_GetClientPartner(client);
 
 	return g_stateDisabled[partner][entity];
+}
+
+stock EntityLumpEntry FindEntityLumpEntry(int entity)
+{
+    int hammerid = GetEntProp(entity, Prop_Data, "m_iHammerID");
+
+    for(int i = 0; i < EntityLump.Length(); i++)
+    {
+        EntityLumpEntry entry = EntityLump.Get(i);
+        
+        char value[32] = "";
+
+        if(entry.GetNextKey("hammerid", value, sizeof(value)) != -1 && StringToInt(value) == hammerid)
+        {
+            return entry;
+        }
+
+        delete entry;
+    }
+
+    return null;
+}
+
+stock any GetOutputAction(int entity, const char[] output = "", int count, char[] result, int maxlength, int type)
+{
+    EntityLumpEntry entry = FindEntityLumpEntry(entity);
+
+    if(entry == INVALID_HANDLE)
+    {
+        return INVALID_HANDLE;
+    }
+
+    char key[64] = "", value[512] = "", exploded[5][256];
+    int countLocal = 0;
+
+    for(int i = 0; i < entry.Length; i++)
+    {
+        entry.Get(i, key, sizeof(key), value, sizeof(value));
+
+        char find = 'O';
+
+        if(FindCharInString(key, find, false) != -1)
+        {
+            if(StrEqual(key, output, true) == true)
+            {
+                if(type == 0)
+                {
+                    countLocal++;
+                }
+
+                else if(type > 0)
+                {
+                    if(++countLocal == count)
+                    {
+                        ExplodeString(value, ",", exploded, 5, 256, false);
+
+                        switch(type)
+                        {
+                            case 1, 2, 3:
+                            {
+                                Format(result, maxlength, "%s", exploded[type - 1]);
+
+                                return true;
+                            }
+
+                            case 4:
+                            {
+                                return StringToFloat(exploded[3]);
+                            }
+
+                            case 5:
+                            {
+                                return StringToInt(exploded[4], 10);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    delete entry;
+
+    return countLocal;
+}
+
+stock int GetOutputCount(int entity, const char[] output = "")
+{
+    return GetOutputAction(entity, output, 0, "", 0, 0);
+}
+
+stock int GetOutputTarget(int entity, const char[] output = "", int count, char[] target, int maxlength)
+{
+    return GetOutputAction(entity, output, count, target, maxlength, 1);
+}
+
+stock int GetOutputTargetInput(int entity, const char[] output = "", int count, char[] input, int maxlength)
+{
+    return GetOutputAction(entity, output, count, input, maxlength, 2);
+}
+
+stock int GetOutputParameter(int entity, const char[] output = "", int count, char[] parameter, int maxlength)
+{
+    return GetOutputAction(entity, output, count, parameter, maxlength, 3);
+}
+
+stock float GetOutputDelay(int entity, const char[] output = "", int count)
+{
+    return GetOutputAction(entity, output, count, "", 0, 4);
+}
+
+stock int GetOutputTimesToFire(int entity, const char[] output = "", int count)
+{
+    return GetOutputAction(entity, output, count, "", 0, 5);
 }
