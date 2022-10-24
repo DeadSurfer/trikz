@@ -1453,11 +1453,9 @@ stock any GetOutputAction(int entity, const char[] output = "", int count, char[
     {
         entry.Get(i, key, sizeof(key), value, sizeof(value));
 
-        char find = 'O';
-
-        if(FindCharInString(key, find, false) != -1)
+        if(FindCharInString(key, 'O', false) != -1)
         {
-            if(StrEqual(key, strlen(output) > 0 ? output : key, true) == true)
+            if(strlen(output) > 0 ? StrEqual(key, output, true) == true : StrContains(key, "O", true) != -1)
             {
                 if(type == 0)
                 {
