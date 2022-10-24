@@ -280,7 +280,7 @@ stock void EntityLink(int entity, const char[] output)
 				{
 					OutputInput(entityReadyToLink, classname[j], target);
 
-					if(StrEqual(output, "m_OnPressed", false) == true || StrEqual(output, "m_OnDamaged", false) == true)
+					if(StrEqual(output, "OnPressed", false) == true || StrEqual(output, "OnDamaged", false) == true)
 					{
 						OutputInput(entity, "func_button", "");
 					}
@@ -503,7 +503,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit);
 
-		AddOutput(entity, "m_OnBreak", "OnUser4");
+		AddOutput(entity, "OnBreak", "OnUser4");
 
 		DHookEntity(g_AcceptInput, false, entity);
 	}
@@ -521,8 +521,8 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 			g_mathMin[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin", 0);
 			g_mathMax[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax", 0);
 
-			AddOutput(entity, "m_OnHitMin", "OnUser4");
-			AddOutput(entity, "m_OnHitMax", "OnUser3");
+			AddOutput(entity, "OnHitMin", "OnUser4");
+			AddOutput(entity, "OnHitMax", "OnUser3");
 
 			DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath);
 		}
