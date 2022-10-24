@@ -1113,13 +1113,12 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 	if(IsValidClient(activator) == true)
 	{
-		char outputFormated[24] = "";
+		char outputChanged[24] = "";
 		int outputNum = -1, linkedEntity = 0, linkedMathEntity = 0, partner = Trikz_GetClientPartner(activator);
 
 		if(caller > 0)
 		{
-			Format(outputFormated, sizeof(outputFormated), "m_%s", output);
-			outputNum = GetOutput(outputFormated);
+			outputNum = GetOutput(output);
 
 			for(int i = 1; i <= g_maxLinks[caller][outputNum]; i++)
 			{
@@ -1171,15 +1170,15 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 		{
 			if(StrEqual(output, "OnUser3", false) == true)
 			{
-				Format(outputFormated, sizeof(outputFormated), "m_OnHitMax", output);
+				Format(outputChanged, sizeof(outputChanged), "OnHitMax", output);
 			}
 
 			else if(StrEqual(output, "OnUser4", false) == true)
 			{
-				Format(outputFormated, sizeof(outputFormated), "m_OnHitMin", output);
+				Format(outputChanged, sizeof(outputChanged), "OnHitMin", output);
 			}
 
-			outputNum = GetOutput(outputFormated);
+			outputNum = GetOutput(outputChanged);
 
 			for(int i = 1; i <= g_mathTotalCount; i++)
 			{
@@ -1282,47 +1281,47 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 stock int GetOutput(const char[] output)
 {
-	if(StrEqual(output, "m_OnStartTouch", false) == true)
+	if(StrEqual(output, "OnStartTouch", false) == true)
 	{
 		return 0;
 	}
 
-	else if(StrEqual(output, "m_OnEndTouchAll", false) == true)
+	else if(StrEqual(output, "OnEndTouchAll", false) == true)
 	{
 		return 1;
 	}
 
-	else if(StrEqual(output, "m_OnEndTouch", false) == true)
+	else if(StrEqual(output, "OnEndTouch", false) == true)
 	{
 		return 2;
 	}
 
-	else if(StrEqual(output, "m_OnTrigger", false) == true)
+	else if(StrEqual(output, "OnTrigger", false) == true)
 	{
 		return 3;
 	}
 
-	else if(StrEqual(output, "m_OnStartTouchAll", false) == true)
+	else if(StrEqual(output, "OnStartTouchAll", false) == true)
 	{
 		return 4;
 	}
 
-	else if(StrEqual(output, "m_OnPressed", false) == true)
+	else if(StrEqual(output, "OnPressed", false) == true)
 	{
 		return 5;
 	}
 
-	else if(StrEqual(output, "m_OnDamaged", false) == true)
+	else if(StrEqual(output, "OnDamaged", false) == true)
 	{
 		return 6;
 	}
 
-	else if(StrEqual(output, "m_OnHitMin", false) == true)
+	else if(StrEqual(output, "OnHitMin", false) == true)
 	{
 		return 7;
 	}
 
-	else if(StrEqual(output, "m_OnHitMax", false) == true)
+	else if(StrEqual(output, "OnHitMax", false) == true)
 	{
 		return 8;
 	}
