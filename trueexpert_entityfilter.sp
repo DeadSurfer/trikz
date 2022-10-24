@@ -1455,7 +1455,7 @@ stock any GetOutputAction(int entity, const char[] output = "", int count, char[
 
         if(FindCharInString(key, 'O', false) != -1)
         {
-            if(strlen(output) > 0 ? StrEqual(key, output, true) == true : StrContains(key, "O", true) != -1)
+            if(strlen(output) > 0 ? StrEqual(key, output, true) == true : StrContains(key, "On", true) != -1)
             {
                 if(type == 0)
                 {
