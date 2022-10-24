@@ -972,22 +972,22 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	char model[PLATFORM_MAX_PATH] = "";
 	GetClientModel(client, model, PLATFORM_MAX_PATH);
 
-	if(StrEqual(model, "models/player/ct_urban.mdl", false) == true)
+	if(StrEqual(model, "models/player/ct_urban.mdl", false) == true || StrEqual(model, "models/player/t_phoenix.mdl", false) == true)
 	{
 		g_class[client] = 1;
 	}
 
-	else if(StrEqual(model, "models/player/ct_gsg9.mdl", false) == true)
+	else if(StrEqual(model, "models/player/ct_gsg9.mdl", false) == true || StrEqual(model, "models/player/t_leet.mdl", false) == true)
 	{
 		g_class[client] = 2;
 	}
 
-	else if(StrEqual(model, "models/player/ct_sas.mdl", false) == true)
+	else if(StrEqual(model, "models/player/ct_sas.mdl", false) == true || StrEqual(model, "models/player/t_arctic.mdl", false) == true)
 	{
 		g_class[client] = 3;
 	}
 
-	else if(StrEqual(model, "models/player/ct_gign.mdl", false) == true)
+	else if(StrEqual(model, "models/player/ct_gign.mdl", false) == true || StrEqual(model, "models/player/t_guerilla.mdl", false) == true)
 	{
 		g_class[client] = 4;
 	}
@@ -1285,7 +1285,7 @@ public Action ACLCPNUM(int client, const char[] command, int argc)
 
 		ReplaceString(arg, sizeof(arg), "\"", "", true);
 
-		int cpnum = StringToInt(arg);
+		int cpnum = StringToInt(arg, 10);
 
 		if(0 < cpnum <= 10)
 		{
@@ -1504,34 +1504,34 @@ public void OnClientCookiesCached(int client)
 	char value[16] = "";
 
 	GetClientCookie(client, g_cookie[0], value, sizeof(value));
-	g_hudVel[client] = view_as<bool>(StringToInt(value));
+	g_hudVel[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[1], value, sizeof(value));
-	g_mlstats[client] = view_as<bool>(StringToInt(value));
+	g_mlstats[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[2], value, sizeof(value));
-	g_button[client] = view_as<bool>(StringToInt(value));
+	g_button[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[3], value, sizeof(value));
-	g_pbutton[client] = view_as<bool>(StringToInt(value));
+	g_pbutton[client] = view_as<bool>(StringToInt(value, 10));
 	
 	GetClientCookie(client, g_cookie[4], value, sizeof(value));
-	g_autoflash[client] = view_as<bool>(StringToInt(value));
+	g_autoflash[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[5], value, sizeof(value));
-	g_autoswitch[client] = view_as<bool>(StringToInt(value));
+	g_autoswitch[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[6], value, sizeof(value));
-	g_bhop[client] = view_as<bool>(StringToInt(value));
+	g_bhop[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[7], value, sizeof(value));
-	g_macroDisabled[client] = view_as<bool>(StringToInt(value));
+	g_macroDisabled[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[8], value, sizeof(value));
-	g_endMessage[client] = view_as<bool>(StringToInt(value));
+	g_endMessage[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[9], value, sizeof(value));
-	g_skinFlashbang[client] = view_as<bool>(StringToInt(value));
+	g_skinFlashbang[client] = view_as<bool>(StringToInt(value, 10));
 
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
 
@@ -1540,10 +1540,10 @@ public void OnClientCookiesCached(int client)
 
 	for(int i = 0; i <= 2; i++)
 	{
-		g_colorBuffer[client][1][i] = StringToInt(exploded[i]);
+		g_colorBuffer[client][1][i] = StringToInt(exploded[i], 10);
 	}
 
-	g_colorCount[client][1] = StringToInt(exploded[3]);
+	g_colorCount[client][1] = StringToInt(exploded[3], 10);
 
 	if(g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][1][1] == 0 && g_colorBuffer[client][1][2] == 0)
 	{
@@ -1554,7 +1554,7 @@ public void OnClientCookiesCached(int client)
 	}
 
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
-	g_skinPlayer[client] = view_as<bool>(StringToInt(value));
+	g_skinPlayer[client] = view_as<bool>(StringToInt(value, 10));
 
 	GiveFlashbang(client);
 
@@ -2227,7 +2227,7 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(param1, name, sizeof(name));
 
-			int partner = StringToInt(item);
+			int partner = StringToInt(item, 10);
 			menu2.SetTitle("%T", "AgreePartner", partner, name);
 			
 			char buffer[8] = "";
@@ -2259,7 +2259,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 			char item[8] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
-			int partner = StringToInt(item);
+			int partner = StringToInt(item, 10);
 
 			switch(param2)
 			{
@@ -2337,7 +2337,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 			char item[8] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
-			int partner = StringToInt(item);
+			int partner = StringToInt(item, 10);
 
 			switch(param2)
 			{
@@ -2512,8 +2512,8 @@ stock void ColorTeam(int client, bool allowColor)
 
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][0][i] = StringToInt(colorTypeExploded[i]);
-				g_colorBuffer[partner][0][i] = StringToInt(colorTypeExploded[i]);
+				g_colorBuffer[client][0][i] = StringToInt(colorTypeExploded[i], 10);
+				g_colorBuffer[partner][0][i] = StringToInt(colorTypeExploded[i], 10);
 			}
 
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[client] == true ? 255 : 125);
@@ -2576,7 +2576,7 @@ stock void ColorFlashbang(int client)
 
 		for(int i = 0; i <= 2; i++)
 		{
-			g_colorBuffer[client][1][i] = StringToInt(colorTypeExploded[i]);
+			g_colorBuffer[client][1][i] = StringToInt(colorTypeExploded[i], 10);
 		}
 
 		char value[16] = "";
@@ -3509,7 +3509,7 @@ public Action cad_test(int client, int args)
 	char arg[256] = "";
 	GetCmdArgString(arg, sizeof(arg));
 
-	int partner = StringToInt(arg);
+	int partner = StringToInt(arg, 10);
 
 	if(IsValidClient(partner) == true && IsValidPartner(client) == false)
 	{
@@ -3595,7 +3595,7 @@ public Action cad_maptier(int client, int args)
 		char arg[256] = "";
 		GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
-		int tier = StringToInt(arg);
+		int tier = StringToInt(arg, 10);
 
 		if(tier > 0)
 		{
@@ -4308,13 +4308,13 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			if(StrContains(item, "cp", false) != -1)
 			{
-				cpnum = StringToInt(exploded[0]);
+				cpnum = StringToInt(exploded[0], 10);
 			}
 
 			bool cpMenu = StrContains(item, "cp", false) != -1;
-			int side = StringToInt(exploded[cpMenu == true ? 1 : 0]);
-			int axis = StringToInt(exploded[cpMenu == true ? 2 : 1]);
-			int mode = StringToInt(exploded[cpMenu == true ? 3 : 2]);
+			int side = StringToInt(exploded[cpMenu == true ? 1 : 0], 10);
+			int axis = StringToInt(exploded[cpMenu == true ? 2 : 1], 10);
+			int mode = StringToInt(exploded[cpMenu == true ? 3 : 2], 10);
 
 			if(StrEqual(item, "step1", false) == true)
 			{
@@ -4510,7 +4510,7 @@ public int zones_tp_handler(Menu menu, MenuAction action, int param1, int param2
 			{
 				char exploded[1][8];
 				ExplodeString(item, ";", exploded, 1, 8, false);
-				int cpnum = StringToInt(exploded[0]);
+				int cpnum = StringToInt(exploded[0], 10);
 
 				pos = g_center[cpnum + 1];
 				pos[2] += 1.0;
@@ -5235,9 +5235,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 
 	g_kv.GotoFirstSubKey(true);
 
-	char section[64] = "";
-	char posColor[64];
-	char exploded[7][8];
+	char section[64] = "", posColor[64], exploded[7][8];
 
 	float xyz[4][3];
 	int rgba[4][7];
@@ -5275,7 +5273,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						
 						for(int j = 3; j <= 6; j++)
 						{
-							rgba[i][j] = StringToInt(exploded[j]);
+							rgba[i][j] = StringToInt(exploded[j], 10);
 						}
 					}
 				}
@@ -5344,7 +5342,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j] = StringToInt(exploded[j]);
+								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
 					}
@@ -5411,7 +5409,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j] = StringToInt(exploded[j]);
+								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
 					}
@@ -5480,7 +5478,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 						
 						for(int j = 3; j <= 6; j++)
 						{
-							rgba[i][j] = StringToInt(exploded[j]);
+							rgba[i][j] = StringToInt(exploded[j], 10);
 						}
 					}
 				}
@@ -5551,7 +5549,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j] = StringToInt(exploded[j]);
+								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
 					}
@@ -5620,7 +5618,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j] = StringToInt(exploded[j]);
+								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
 					}
@@ -6148,9 +6146,7 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 
 stock void DrawZone(int client, float life, float size, int speed, int zonetype, int zonecount)
 {
-	float point[12][2][3];
-	float start[12][3];
-	float end[12][3];
+	float point[12][2][3], start[12][3], end[12][3];
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -6173,8 +6169,7 @@ stock void DrawZone(int client, float life, float size, int speed, int zonetype,
 		}
 	}
 
-	int zones = 11;
-	int cpnum = 0;
+	int zones = 11, cpnum = 0;
 
 	for(int i = 2; i <= zones; i++)
 	{
@@ -7120,15 +7115,7 @@ public Action timer_changelevel(Handle timer, bool value)
 
 	ForceChangeLevel(g_map, "Reason: Devmap");
 
-	if(value == false)
-	{
-		ServerCommand("sv_nostats 0");
-	}
-
-	else if(value == true)
-	{
-		ServerCommand("sv_nostats 1");
-	}
+	ServerCommand("sv_nostats %i", view_as<int>(value));
 
 	return Plugin_Stop;
 }
@@ -7729,8 +7716,7 @@ stock void FlashbangEffect(int entity)
 
 	TE_SetupSmoke(origin, g_smoke, GetRandomFloat(0.5, 1.5), 100); //https://forums.alliedmods.net/showpost.php?p=2552543&postcount=5
 
-	int clients[MAXPLAYER] = {0, ...};
-	int count = 0;
+	int clients[MAXPLAYER] = {0, ...}, count = 0;
 
 	if(filter == true)
 	{
@@ -8094,16 +8080,10 @@ stock void MLStats(int client, bool ground)
 
 stock int Stuck(int client)
 {
-	float mins[3] = {0.0, ...};
-	float maxs[3] = {0.0, ...};
-	float origin[3] = {0.0, ...};
-
+	float mins[3] = {0.0, ...}, maxs[3] = {0.0, ...}, origin[3] = {0.0, ...};
 	GetClientMins(client, mins);
-
 	GetClientMaxs(client, maxs);
-
 	GetClientAbsOrigin(client, origin);
-
 	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client); //Skiper, Gurman idea, plugin 2020 year.
 
 	return TR_GetEntityIndex();
@@ -8359,11 +8339,7 @@ stock float[] SnapToGrid(float pos[3], int grid, bool third) //https://github.co
 stock void SnapToWall(float pos[3], int client, float final[3]) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3848
 {
 	bool hit = false;
-
-	float end[3] = {0.0, ...};
-	float temp[3] = {0.0, ...};
-
-	float prefinal[3] = {0.0, ...};
+	float end[3] = {0.0, ...}, temp[3] = {0.0, ...}, prefinal[3] = {0.0, ...};
 	prefinal = pos;
 
 	for(int i = 0; i < 4; i++)
@@ -8406,19 +8382,44 @@ stock void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 		g_entityXYZ[client] = 0;
 	}
 
-	if(showmodel == false)
+	if(showmodel == true)
 	{
-		return;
+		g_entityXYZ[client] = CreateEntityByName("prop_dynamic_override", -1);
+
+		SetEntityModel(g_entityXYZ[client], "models/expert_zone/zone_editor/xyz/xyz.mdl");
+		DispatchSpawn(g_entityXYZ[client]);
+
+		SetEntProp(g_entityXYZ[client], Prop_Data, "m_fEffects", 16, 4, 0);
+
+		TeleportEntity(g_entityXYZ[client], origin, NULL_VECTOR, NULL_VECTOR);
 	}
 
-	g_entityXYZ[client] = CreateEntityByName("prop_dynamic_override", -1);
+	else if(showmodel == false)
+	{
+		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L4704-L4721
 
-	SetEntityModel(g_entityXYZ[client], "models/expert_zone/zone_editor/xyz/xyz.mdl");
-	DispatchSpawn(g_entityXYZ[client]);
+		float playerOrigin[3] = {0.0, ...};
+		GetClientAbsOrigin(client, playerOrigin);
 
-	SetEntProp(g_entityXYZ[client], Prop_Data, "m_fEffects", 16, 4, 0);
+		TE_SetupBeamPoints(playerOrigin, origin, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0);
+		TE_SendToAll(0.0);
 
-	TeleportEntity(g_entityXYZ[client], origin, NULL_VECTOR, NULL_VECTOR);
+		//visualize grid snap
+		float snap1[3];
+		float snap2[3];
+
+		for(int i = 0; i < 3; i++)
+		{
+			snap1 = origin;
+			snap1[i] -= g_step[client];
+
+			snap2 = origin;
+			snap2[i] += g_step[client];
+
+			TE_SetupBeamPoints(snap1, snap2, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0);
+			TE_SendToAll(0.0);
+		}
+	}
 
 	if(showbeam == true)
 	{
@@ -8428,30 +8429,6 @@ stock void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 		TE_SetupBeamPoints(eyePos, origin, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0);
 		TE_SendToAll(0.0);
 	}
-
-	//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L4704-L4721
-
-	/*float playerOrigin[3] = {0.0, ...};
-	GetClientAbsOrigin(client, playerOrigin);
-
-	TE_SetupBeamPoints(playerOrigin, origin, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0);
-	TE_SendToAll(0.0);
-
-	//visualize grid snap
-	float snap1[3];
-	float snap2[3];
-
-	for(int i = 0; i < 3; i++)
-	{
-		snap1 = origin;
-		snap1[i] -= g_step[client];
-
-		snap2 = origin;
-		snap2[i] += g_step[client];
-
-		TE_SetupBeamPoints(snap1, snap2, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0);
-		TE_SendToAll(0.0);
-	}*/
 
 	return;
 }
