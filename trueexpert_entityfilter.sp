@@ -1113,7 +1113,6 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 	if(IsValidClient(activator) == true)
 	{
-		char outputChanged[24] = "";
 		int outputNum = -1, linkedEntity = 0, linkedMathEntity = 0, partner = Trikz_GetClientPartner(activator);
 
 		if(caller > 0)
@@ -1168,6 +1167,8 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 		else if(caller < 0)
 		{
+			char outputChanged[24] = "";
+			
 			if(StrEqual(output, "OnUser3", false) == true)
 			{
 				Format(outputChanged, sizeof(outputChanged), "OnHitMax", output);
