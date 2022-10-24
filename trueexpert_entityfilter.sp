@@ -215,9 +215,8 @@ public Action timer_load(Handle timer)
 		}
 	}
 	
-	char classname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"},
-	output[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"},
-	outputFormated[24] = "";
+	char classname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"};
+	char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"};
 
 	for(int i = 0; i < sizeof(classname); i++)
 	{
@@ -237,8 +236,7 @@ public Action timer_load(Handle timer)
 			{
 				if((i <= 4 && j <= 4) || (i == 5 && 5 <= j <= 6) || (i == 6 && 9 <= j <= 10))
 				{
-					Format(outputFormated, sizeof(outputFormated), "m_%s", output[j]);
-					EntityLink(entity, outputFormated);
+					EntityLink(entity, output[j]);
 				}
 			}
 		}
