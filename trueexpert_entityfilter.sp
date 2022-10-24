@@ -1168,7 +1168,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 		else if(caller < 0)
 		{
 			char outputChanged[24] = "";
-			
+
 			if(StrEqual(output, "OnUser3", false) == true)
 			{
 				Format(outputChanged, sizeof(outputChanged), "OnHitMax", output);
@@ -1457,7 +1457,7 @@ stock any GetOutputAction(int entity, const char[] output = "", int count, char[
 
         if(FindCharInString(key, find, false) != -1)
         {
-            if(StrEqual(key, output, true) == true)
+            if(StrEqual(key, strlen(output) > 0 ? output : key, true) == true)
             {
                 if(type == 0)
                 {
