@@ -549,7 +549,7 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 			char map[192] = "";
 			results.FetchString(0, map, sizeof(map));
 
-			Format(g_query, sizeof(g_query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s' AND time != 0), (SELECT tier FROM tier WHERE map = '%s'), id FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
+			Format(g_query, sizeof(g_query), "SELECT (SELECT COUNT(*) FROM records WHERE map = '%s' AND time != 0), (SELECT tier FROM tier WHERE map = '%s' LIMIT 1), id FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC", map, map, map); //https://stackoverflow.com/questions/38104018/select-and-count-rows-in-the-same-query
 			g_mysql.Query(SQLRecalculatePoints, g_query, _, DBPrio_Normal);
 		}
 	}
@@ -2978,7 +2978,7 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 
 			float time = results.FetchFloat(2);
 
-			Format(g_query, sizeof(g_query), "SELECT username, (SELECT username FROM users WHERE steamid = %i) FROM users WHERE steamid = %i", partnerid, playerid);
+			Format(g_query, sizeof(g_query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", partnerid, playerid);
 			g_mysql.Query(SQLTop10_3, g_query, time, DBPrio_Normal);
 		}
 	}
