@@ -55,7 +55,6 @@ enum struct eFrame
 }
 
 int g_tick[MAXPLAYER] = {0, ...};
-int g_tickReplay = 0;
 int g_steamid3[2] = {0, ...};
 Database g_database = null;
 native bool Trikz_GetTimerState(int client);
@@ -74,12 +73,13 @@ native int Trikz_Restart(int client, bool instant);
 int g_bot[2] = {0, ...};
 bool g_loaded[2] = {false, ...};
 float g_tickrate = 0.0;
-int g_replayTickcount = 0;
+int g_replayTickcount[MAXPLAYER] = {0, ...};
 char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smokegrenade", "p228", "deagle", "elite", "fiveseven", 
 						"m3", "xm1014", "galil", "ak47", "scout", "sg552", 
 						"awp", "g3sg1", "famas", "m4a1", "aug", "sg550", 
 						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"};
 native bool Trikz_GetDevmap();
+char g_replayType[][] = {"", "_partner"};
 
 public Plugin myinfo =
 {
@@ -197,12 +197,7 @@ public void OnMapStart()
 
 public void OnClientPutInServer(int client)
 {
-	if(LibraryExists("trueexpert-entityfilter") == true)
-	{
-		return;
-	}
-
-	if(Trikz_GetDevmap() == false)
+	if(LibraryExists("trueexpert-entityfilter") == false && Trikz_GetDevmap() == false)
 	{
 		SDKHook(client, SDKHook_SetTransmit, TransmitPlayer);
 	}
@@ -228,95 +223,91 @@ public void OnClientDisconnect(int client)
 
 public Action timer_bot(Handle timer)
 {
-	char record[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s.replay", g_map);
-
-	char recordPartner[PLATFORM_MAX_PATH] = "";
-	BuildPath(Path_SM, recordPartner, sizeof(recordPartner), "data/trueexpert/%s_partner.replay", g_map);
-
-	if(FileExists(record) == true && FileExists(recordPartner) == true)
+	if(LibraryExists("trueexpert") == false)
 	{
-		ConVar cvForce = FindConVar("bot_stop");
-		cvForce.SetInt(1);
+		return Plugin_Continue;
+	}
 
-		cvForce = FindConVar("bot_join_after_player");
-		cvForce.SetInt(0);
+	char record[2][PLATFORM_MAX_PATH] = {"", ""};
 
-		cvForce = FindConVar("bot_quota");
-		cvForce.Flags = GetConVarFlags(FindConVar("bot_quota")) &~ FCVAR_NOTIFY;
+	for(int i = 0; i < sizeof(g_replayType); i++)
+	{
+		BuildPath(Path_SM, record[i], PLATFORM_MAX_PATH, "data/trueexpert/%s%s.replay", g_map, g_replayType[i]);
 
-		cvForce = FindConVar("bot_flipout");
-		cvForce.SetInt(1);
-
-		cvForce = FindConVar("bot_zombie");
-		cvForce.SetInt(1);
-
-		int botShouldAdd = 2;
-
-		for(int i = 1; i <= MaxClients; i++)
+		if(FileExists(record[i]) == false)
 		{
-			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == true)
-			{
-				botShouldAdd--;
-			}
+			return Plugin_Continue;
 		}
+	}
 
-		if(botShouldAdd != 0)
+	ConVar cvForce = FindConVar("bot_stop");
+	cvForce.SetInt(1);
+
+	cvForce = FindConVar("bot_join_after_player");
+	cvForce.SetInt(0);
+
+	cvForce = FindConVar("bot_quota");
+	cvForce.Flags = GetConVarFlags(FindConVar("bot_quota")) &~ FCVAR_NOTIFY;
+
+	cvForce = FindConVar("bot_flipout");
+	cvForce.SetInt(1);
+
+	cvForce = FindConVar("bot_zombie");
+	cvForce.SetInt(1);
+
+	int botShouldAdd = 2;
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) == true && IsFakeClient(i) == true && GetClientTeam(i) != CS_TEAM_SPECTATOR)
 		{
-			for(int i = 1; i <= botShouldAdd; i++)
-			{
-				ServerCommand("bot_add");
-			}
+			botShouldAdd--;
 		}
+	}
 
-		if(botShouldAdd == 0 && g_database != INVALID_HANDLE)
+	for(int i = 1; i <= botShouldAdd; i++)
+	{
+		ServerCommand("bot_add");
+	}
+
+	if(botShouldAdd == 0 && g_database != INVALID_HANDLE)
+	{
+		char query[128] = "";
+		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
+		g_database.Query(SQLGetReplayName, query, _, DBPrio_Normal);
+	}
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) == true && IsFakeClient(i) == true && GetClientTeam(i) != CS_TEAM_SPECTATOR)
 		{
-			char query[512] = "";
-
-			for(int i = 0; i <= 1; i++)
+			if(g_bot[0] == 0)
 			{
-				Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i LIMIT 1", g_steamid3[i]);
-				g_database.Query(SQLGetName, query, i);
+				g_bot[0] = i;
 			}
-		}
 
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == true)
+			if(g_bot[0] != i)
 			{
-				if(g_bot[0] == 0)
-				{
-					g_bot[0] = i;
-				}
+				g_bot[1] = i;
+			}
 
-				if(g_bot[0] != i)
+			if(g_bot[1] > 0)
+			{
+				if(Trikz_GetClientPartner(g_bot[0]) == 0)
 				{
-					g_bot[1] = i;
-				}
+					Trikz_SetPartner(g_bot[0], g_bot[1]);
 
-				if(g_bot[1] > 0)
-				{
-					if(Trikz_GetClientPartner(g_bot[0]) == 0)
+					if(IsClientInGame(g_bot[0]) && IsPlayerAlive(g_bot[0]) == false)
 					{
-						Trikz_SetPartner(g_bot[0], g_bot[1]);
-
-						if(IsClientInGame(g_bot[0]) && IsPlayerAlive(g_bot[0]) == false)
-						{
-							CS_RespawnPlayer(g_bot[0]);
-						}
-
-						if(IsClientInGame(g_bot[1]) == true && IsPlayerAlive(g_bot[1]) == false)
-						{
-							CS_RespawnPlayer(g_bot[1]);
-						}
-
-						LoadRecord();
+						CS_RespawnPlayer(g_bot[0]);
 					}
-				}
 
-				if(g_bot[0] != 0 && g_bot[1] != 0 && Trikz_GetClientPartner(i) == 0)
-				{
-					ServerCommand("bot_kick %N", i);
+					if(IsClientInGame(g_bot[1]) == true && IsPlayerAlive(g_bot[1]) == false)
+					{
+						CS_RespawnPlayer(g_bot[1]);
+					}
+
+					LoadRecord();
 				}
 			}
 		}
@@ -343,25 +334,22 @@ stock void SetupSave(int client, int partner, float time)
 		CreateDirectory(dirBackup, 511);
 	}
 
-	char record[PLATFORM_MAX_PATH] = "";
+	char type[][] = {"", "_partner"};
+	int team[2] = {0, ...};
+	team[0] = client, team[1] = partner;
 
-	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s.replay", g_map);
-	SaveRecord(client, record, time, false);
+	for(int i = 0; i <= 1; i++)
+	{
+		char record[PLATFORM_MAX_PATH] = "";
+		BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s%s.replay", g_map, type[i]);
+		SaveRecord(team[i], record, time, false);
 
-	//int partner = Trikz_GetClientPartner(client);
-	BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s_partner.replay", g_map);
-	SaveRecord(partner, record, time, true);
-
-	char recordBackup[PLATFORM_MAX_PATH] = "";
-	char timeFormat[32] = "";
-
-	FormatTime(timeFormat, sizeof(timeFormat), "%Y%b%d_%H_%M_%S", GetTime());
-
-	BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s.replay", g_map, timeFormat);
-	SaveRecord(client, recordBackup, time, false);
-
-	BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s_partner.replay", g_map, timeFormat);
-	SaveRecord(partner, recordBackup, time, false);
+		char recordBackup[PLATFORM_MAX_PATH] = "";
+		char timeFormat[32] = "";
+		FormatTime(timeFormat, sizeof(timeFormat), "%Y%b%d_%H_%M_%S", GetTime());
+		BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s%s.replay", g_map, timeFormat, type[i]);
+		SaveRecord(team[i], recordBackup, time, team[i] == partner ? true : false);
+	}
 
 	return;
 }
@@ -394,29 +382,32 @@ stock void SaveRecord(int client, const char[] path, float time, bool load)
 	return;
 }
 
-public void SQLGetName(Database db, DBResultSet results, const char[] error, any data)
+public void SQLGetReplayName(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLGetName: %s", error);
+		PrintToServer("SQLGetReplayName: %s", error);
 	}
 
 	else if(strlen(error) == 0)
 	{
 		if(results.FetchRow() == true)
 		{
-			char name[MAX_NAME_LENGTH] = "";
-			results.FetchString(0, name, sizeof(name));
+			char name[2][MAX_NAME_LENGTH] = {"", ""};
 
-			Format(name, sizeof(name), "RECORD %s", name);
-
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i < sizeof(g_replayType); i++)
 			{
-				if(IsClientInGame(i) == true && IsFakeClient(i) == true && IsPlayerAlive(i) == true)
+				results.FetchString(i, name[i], MAX_NAME_LENGTH);
+				Format(name[i], MAX_NAME_LENGTH, "RECORD %s", name[i]);
+
+				for(int j = 1; j <= MaxClients; j++)
 				{
-					if(g_bot[data] == i && g_steamid3[data] > 0)
+					if(IsClientInGame(j) == true && IsFakeClient(j) == true && GetClientTeam(j) != CS_TEAM_SPECTATOR)
 					{
-						SetClientName(i, name);
+						if(g_bot[i] == j && g_steamid3[i] > 0)
+						{
+							SetClientName(j, name[i]);
+						}
 					}
 				}
 			}
@@ -428,63 +419,56 @@ public void SQLGetName(Database db, DBResultSet results, const char[] error, any
 
 public void LoadRecord()
 {
-	char type[][] = {"", "_partner"};
-	int tickcountLower = 0;
+	char filePath[2][PLATFORM_MAX_PATH] = {"", ""};
 
-	for(int i = 0; i < sizeof(type); i++)
+	for(int i = 0; i < sizeof(g_replayType); i++)
 	{
-		char filePath[PLATFORM_MAX_PATH] = "";
-		BuildPath(Path_SM, filePath, sizeof(filePath), "data/trueexpert/%s%s.replay", g_map, type[i]);
+		BuildPath(Path_SM, filePath[i], PLATFORM_MAX_PATH, "data/trueexpert/%s%s.replay", g_map, g_replayType[i]);
 
-		if(FileExists(filePath) == true)
+		if(FileExists(filePath[i]) == false)
 		{
-			File f = OpenFile(filePath, "rb");
-
-			int tickcount = 0;
-			int time = 0;
-			
-			f.ReadInt32(tickcount);
-			f.ReadInt32(g_steamid3[i]);
-			f.ReadInt32(time);
-
-			if(tickcountLower == 0)
-			{
-				tickcountLower = tickcount;
-			}
-
-			if(tickcountLower >= tickcount)
-			{
-				g_replayTickcount = tickcount;
-			}
-
-			any data[sizeof(eFrame)];
-
-			delete g_frameCache[g_bot[i]];
-			g_frameCache[g_bot[i]] = new ArrayList(sizeof(eFrame), tickcount);
-
-			for(int j = 0; j < tickcount; j++)
-			{
-				if(f.Read(data, sizeof(eFrame), 4) >= 0)
-				{
-					g_frameCache[g_bot[i]].SetArray(j, data, sizeof(eFrame));
-				}
-			}
-
-			delete f;
-
-			if(g_database != INVALID_HANDLE)
-			{
-				char query[512] = "";
-				Format(query, sizeof(query), "SELECT username FROM users WHERE steamid = %i", g_steamid3[i]);
-				g_database.Query(SQLGetName, query, i);
-			}
-
-			g_loaded[i] = true;
-			//g_tick[g_bot[i]] = 0;
+			return;
 		}
 	}
 
-	g_tickReplay = 0;
+	File f = null;
+	int tickcount = 0;
+	int time = 0;
+
+	for(int i = 0; i < sizeof(g_replayType); i++)
+	{
+		f = OpenFile(filePath[i], "rb");
+		f.ReadInt32(tickcount);
+		f.ReadInt32(g_steamid3[i]);
+		f.ReadInt32(time);
+
+		g_replayTickcount[g_bot[i]] = tickcount;
+
+		any data[sizeof(eFrame)];
+
+		delete g_frameCache[g_bot[i]];
+		g_frameCache[g_bot[i]] = new ArrayList(sizeof(eFrame), tickcount);
+
+		for(int j = 0; j < tickcount; j++)
+		{
+			if(f.Read(data, sizeof(eFrame), 4) >= 0)
+			{
+				g_frameCache[g_bot[i]].SetArray(j, data, sizeof(eFrame));
+			}
+		}
+
+		delete f;
+
+		if(g_database != INVALID_HANDLE)
+		{
+			char query[128] = "";
+			Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
+			g_database.Query(SQLGetReplayName, query, _, DBPrio_Normal);
+		}
+
+		g_loaded[i] = true;
+		g_tick[g_bot[i]] = 0;
+	}
 
 	return;
 }
@@ -495,25 +479,18 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	{
 		eFrame frame;
 		GetClientAbsOrigin(client, frame.pos);
-
 		float ang[3] = {0.0, ...};
 		GetClientEyeAngles(client, ang);
-
 		frame.ang[0] = ang[0];
 		frame.ang[1] = ang[1];
-
 		frame.buttons = buttons;
-
 		frame.flags = GetEntityFlags(client);
-
 		frame.movetype = GetEntityMoveType(client);
 
 		if(g_weapon[client] > 0)
 		{
 			g_switchPrevent[client] = true;
-
 			frame.weapon = g_weapon[client];
-
 			g_weapon[client] = 0;
 		}
 
@@ -546,13 +523,13 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 		if(differ > 0)
 		{
+			if(g_frame[client].Length <= g_tick[client])
+			{
+				g_frame[client].Resize(g_tick[client] + differ);
+			}
+
 			for(int i = 1; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
 			{
-				if(g_frame[client].Length <= g_tick[client])
-				{
-					g_frame[client].Resize(g_tick[client] + 1);
-				}
-
 				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 			}
 		}
@@ -580,9 +557,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			vel[i] = 0.0; //prevent shakes at flat surface.
 		}
 
-		if(g_tickReplay < g_replayTickcount && g_loaded[0] == true && g_loaded[1] == true)
+		if(g_tick[client] < g_replayTickcount[client] && g_loaded[0] == true && g_loaded[1] == true)
 		{
-			//if(IsClientInGame(client) == true && g_tickReplay == 0)
+			//if(IsClientInGame(client) == true && g_tick[client] == 0)
 			//{
 				//Trikz_Restart(client, false);
 
@@ -597,7 +574,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			//}
 
 			eFrame frame;
-			g_frameCache[client].GetArray(g_tickReplay, frame, sizeof(eFrame));
+			g_frameCache[client].GetArray(g_tick[client], frame, sizeof(eFrame));
 
 			float posPrev[3] = {0.0, ...};
 			//GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
@@ -649,7 +626,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 
-			if(g_tickReplay == 0)
+			if(g_tick[client] == 0)
 			{
 				Trikz_Restart(client, false);
 
@@ -657,12 +634,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 				TeleportEntity(client, frame.pos, ang, view_as<float>({0.0, 0.0, 0.0}));
 
-				g_tickReplay++;
+				g_tick[client]++;
 
 				g_timeToStart = GetGameTime();
 			}
 
-			else if(0 < g_tickReplay < g_replayTickcount && GetGameTime() - g_timeToStart >= 3.0)
+			else if(0 < g_tick[client] < g_replayTickcount[client] && GetGameTime() - g_timeToStart >= 3.0)
 			{
 				float fix = GetVectorLength(velNew); //DataTable warning: (class player): Out-of-range value (-36931.695313 / -4096.000000) in SendPropFloat 'm_flFallVelocity', clamping.
 
@@ -676,18 +653,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					TeleportEntity(client, NULL_VECTOR, ang, velNew);
 				}
 
-				if(g_bot[0] == client)
-				{
-					g_tickReplay++;
+				g_tick[client]++;
 
-					g_timeToRestart = GetGameTime();
-				}
+				g_timeToRestart = GetGameTime();
 			}
 		}
 
-		else if(g_tickReplay == g_replayTickcount && GetGameTime() - g_timeToRestart >= 3.0)
+		else if(g_tick[client] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart >= 3.0)
 		{
-			g_tickReplay = 0;
+			g_tick[client] = 0;
 			//g_tick[Trikz_GetClientPartner(client)] = 0;
 		}
 	}
