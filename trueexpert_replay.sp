@@ -334,20 +334,19 @@ stock void SetupSave(int client, int partner, float time)
 		CreateDirectory(dirBackup, 511);
 	}
 
-	char type[][] = {"", "_partner"};
 	int team[2] = {0, ...};
 	team[0] = client, team[1] = partner;
 
 	for(int i = 0; i <= 1; i++)
 	{
 		char record[PLATFORM_MAX_PATH] = "";
-		BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s%s.replay", g_map, type[i]);
+		BuildPath(Path_SM, record, sizeof(record), "data/trueexpert/%s%s.replay", g_map, g_replayType[i]);
 		SaveRecord(team[i], record, time, false);
 
 		char recordBackup[PLATFORM_MAX_PATH] = "";
 		char timeFormat[32] = "";
 		FormatTime(timeFormat, sizeof(timeFormat), "%Y%b%d_%H_%M_%S", GetTime());
-		BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s%s.replay", g_map, timeFormat, type[i]);
+		BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s%s.replay", g_map, timeFormat, g_replayType[i]);
 		SaveRecord(team[i], recordBackup, time, team[i] == partner ? true : false);
 	}
 
