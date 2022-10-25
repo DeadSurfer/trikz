@@ -6604,119 +6604,122 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		VelHud(client);
 
-		if(g_zoneDraw[client] == true)
+		if(g_devmap == true)
 		{
-			if(g_zoneCreator[client] == true)
+			if(g_zoneDraw[client] == true)
 			{
-				float origin[3] = {0.0, ...};
-				GetClientAbsOrigin(client, origin);
-
-				float nulled[3] = {0.0, ...};
-
-				if(g_zoneCreatorUseProcess[client][0] == false)
+				if(g_zoneCreator[client] == true)
 				{
-					if(g_zoneCursor[client] == true)
+					float origin[3] = {0.0, ...};
+					GetClientAbsOrigin(client, origin);
+
+					float nulled[3] = {0.0, ...};
+
+					if(g_zoneCreatorUseProcess[client][0] == false)
 					{
-						g_zoneSelected[client][0] = GetAimPosition(client);
-						g_zoneSelected[client][1] = GetAimPosition(client);
-					}
+						if(g_zoneCursor[client] == true)
+						{
+							g_zoneSelected[client][0] = GetAimPosition(client);
+							g_zoneSelected[client][1] = GetAimPosition(client);
+						}
 
-					else if(g_zoneCursor[client] == false)
-					{
-						GetClientAbsOrigin(client, g_zoneSelected[client][0]);
-						GetClientAbsOrigin(client, g_zoneSelected[client][1]);
+						else if(g_zoneCursor[client] == false)
+						{
+							GetClientAbsOrigin(client, g_zoneSelected[client][0]);
+							GetClientAbsOrigin(client, g_zoneSelected[client][1]);
 
-						//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][0] : nulled);
-						//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][1] : nulled);
+							//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][0] : nulled);
+							//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][1] : nulled);
 
-						g_zoneSelected[client][0] = SnapToGrid(g_zoneSelected[client][0], g_step[client], false);
-						g_zoneSelected[client][1] = SnapToGrid(g_zoneSelected[client][1], g_step[client], false);
-					}
+							g_zoneSelected[client][0] = SnapToGrid(g_zoneSelected[client][0], g_step[client], false);
+							g_zoneSelected[client][1] = SnapToGrid(g_zoneSelected[client][1], g_step[client], false);
+						}
 
-					g_zoneSelected[client][0][2] = origin[2];
-					g_zoneSelected[client][1][2] = origin[2];
-
-					ModelXYZ(client, g_zoneSelected[client][0], true, g_zoneCursor[client] == true ? true : false);
-				}
-
-				else if(g_zoneCreatorUseProcess[client][0] == true && g_zoneCreatorUseProcess[client][1] == false)
-				{
-					if(g_zoneCursor[client] == true)
-					{
-						g_zoneSelected[client][1] = GetAimPosition(client);
+						g_zoneSelected[client][0][2] = origin[2];
 						g_zoneSelected[client][1][2] = origin[2];
+
+						ModelXYZ(client, g_zoneSelected[client][0], true, g_zoneCursor[client] == true ? true : false);
 					}
 
-					else if(g_zoneCursor[client] == false)
+					else if(g_zoneCreatorUseProcess[client][0] == true && g_zoneCreatorUseProcess[client][1] == false)
 					{
-						GetClientAbsOrigin(client, g_zoneSelected[client][1]);
+						if(g_zoneCursor[client] == true)
+						{
+							g_zoneSelected[client][1] = GetAimPosition(client);
+							g_zoneSelected[client][1][2] = origin[2];
+						}
 
-						//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][1] : nulled);
+						else if(g_zoneCursor[client] == false)
+						{
+							GetClientAbsOrigin(client, g_zoneSelected[client][1]);
 
-						g_zoneSelected[client][1] = SnapToGrid(g_zoneSelected[client][1], g_step[client], false);
+							//SnapToWall(origin, client, g_zoneCursor[client] == true ? g_zoneSelected[client][1] : nulled);
+
+							g_zoneSelected[client][1] = SnapToGrid(g_zoneSelected[client][1], g_step[client], false);
+						}
+
+						ModelXYZ(client, g_zoneSelected[client][1], true, g_zoneCursor[client] == true ? true : false);
+
+						g_zoneSelected[client][1][2] += 256.0;
 					}
 
-					ModelXYZ(client, g_zoneSelected[client][1], true, g_zoneCursor[client] == true ? true : false);
+					else if(g_zoneCreatorUseProcess[client][1] == true)
+					{
+						switch(g_zoneCreatorSelected[client])
+						{
+							case 0:
+							{
+								ZoneEditorStart(client);
+							}
 
-					g_zoneSelected[client][1][2] += 256.0;
-				}
+							case 1:
+							{
+								ZoneEditorEnd(client);
+							}
 
-				else if(g_zoneCreatorUseProcess[client][1] == true)
-				{
+							case 2:
+							{
+								ZoneEditorCP(client, g_ZoneEditorCP[client]);
+							}
+						}
+
+						g_zoneCreator[client] = false;
+
+						for(int i = 0; i <= 1; i++)
+						{
+							g_zoneCreatorUseProcess[client][i] = false;
+						}
+
+						ModelXYZ(client, nulled, false, false);
+					}
+
 					switch(g_zoneCreatorSelected[client])
 					{
 						case 0:
 						{
-							ZoneEditorStart(client);
+							g_zoneStartOriginTemp[client][0] = g_zoneSelected[client][0];
+							g_zoneStartOriginTemp[client][1] = g_zoneSelected[client][1];
 						}
 
 						case 1:
 						{
-							ZoneEditorEnd(client);
+							g_zoneEndOriginTemp[client][0] = g_zoneSelected[client][0];
+							g_zoneEndOriginTemp[client][1] = g_zoneSelected[client][1];
 						}
 
 						case 2:
 						{
-							ZoneEditorCP(client, g_ZoneEditorCP[client]);
+							g_cpPosTemp[client][g_ZoneEditorCP[client]][0] = g_zoneSelected[client][0];
+							g_cpPosTemp[client][g_ZoneEditorCP[client]][1] = g_zoneSelected[client][1];
 						}
-					}
-
-					g_zoneCreator[client] = false;
-
-					for(int i = 0; i <= 1; i++)
-					{
-						g_zoneCreatorUseProcess[client][i] = false;
-					}
-
-					ModelXYZ(client, nulled, false, false);
-				}
-
-				switch(g_zoneCreatorSelected[client])
-				{
-					case 0:
-					{
-						g_zoneStartOriginTemp[client][0] = g_zoneSelected[client][0];
-						g_zoneStartOriginTemp[client][1] = g_zoneSelected[client][1];
-					}
-
-					case 1:
-					{
-						g_zoneEndOriginTemp[client][0] = g_zoneSelected[client][0];
-						g_zoneEndOriginTemp[client][1] = g_zoneSelected[client][1];
-					}
-
-					case 2:
-					{
-						g_cpPosTemp[client][g_ZoneEditorCP[client]][0] = g_zoneSelected[client][0];
-						g_cpPosTemp[client][g_ZoneEditorCP[client]][1] = g_zoneSelected[client][1];
 					}
 				}
 			}
-		}
 
-		else if(g_zoneDraw[client] == false)
-		{
-			ModelXYZ(client, NULL_VECTOR, false, false);
+			else if(g_zoneDraw[client] == false)
+			{
+				ModelXYZ(client, NULL_VECTOR, false, false);
+			}
 		}
 	}
 
@@ -8394,7 +8397,7 @@ stock void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 		TeleportEntity(g_entityXYZ[client], origin, NULL_VECTOR, NULL_VECTOR);
 	}
 
-	else if(showmodel == false)
+	/*else if(showmodel == false)
 	{
 		//https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L4704-L4721
 
@@ -8419,7 +8422,7 @@ stock void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 			TE_SetupBeamPoints(snap1, snap2, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 75}, 0);
 			TE_SendToAll(0.0);
 		}
-	}
+	}*/
 
 	if(showbeam == true)
 	{
