@@ -234,7 +234,7 @@ public Action timer_load(Handle timer)
 
 			for(int j = 0; j < sizeof(output); j++)
 			{
-				if((i <= 4 && j <= 4) || (i == 5 && 5 <= j <= 6) || (i == 6 && 9 <= j <= 10))
+				if((i <= 4 && j <= 4) || (i == 5 && (j == 5 || j == 6)) || (i == 6 && j == 9 || j == 10))
 				{
 					EntityLink(entity, output[j]);
 				}
@@ -510,10 +510,10 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 	if(i == 5)
 	{
-		if(IsValidEntity(entity) == true && (GetOutputCount(entity, "m_OutValue") == 0 || 
-											GetOutputCount(entity, "m_OnGetValue") == 0 || 
-											GetOutputCount(entity, "m_OnUser3") == 0 || 
-											GetOutputCount(entity, "m_OnUser4") == 0)) //thanks to george for original code.
+		if(IsValidEntity(entity) == true && (GetOutputCount(entity, "OutValue") == 0 || 
+											GetOutputCount(entity, "OnGetValue") == 0 || 
+											GetOutputCount(entity, "OnUser3") == 0 || 
+											GetOutputCount(entity, "OnUser4") == 0)) //thanks to george for original code.
 		{
 			g_mathValueDefault[g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
 			g_mathValue[0][g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
@@ -911,14 +911,22 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 
 		if(StrEqual(input, "Add", false) == true)
 		{
-			if(g_mathValue[activator][thisIndex] < g_mathMax[thisIndex])
+			if(g_mathValue[partner][thisIndex] < g_mathMax[thisIndex])
 			{
-				g_mathValue[activator][thisIndex] += value;
+				if(IsValidPartner(activator) == true)
+				{
+					g_mathValue[activator][thisIndex] += value;
+				}
+
 				g_mathValue[partner][thisIndex] += value;
 
-				if(g_mathValue[activator][thisIndex] >= g_mathMax[thisIndex])
+				if(g_mathValue[partner][thisIndex] >= g_mathMax[thisIndex])
 				{
-					g_mathValue[activator][thisIndex] = g_mathMax[thisIndex];
+					if(IsValidPartner(activator) == true)
+					{
+						g_mathValue[activator][thisIndex] = g_mathMax[thisIndex];
+					}
+
 					g_mathValue[partner][thisIndex] = g_mathMax[thisIndex];
 
 					AcceptEntityInput(pThis, "FireUser3", activator, activator);
@@ -928,14 +936,22 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 
 		else if(StrEqual(input, "Subtract", false) == true)
 		{
-			if(g_mathValue[activator][thisIndex] > g_mathMin[thisIndex])
+			if(g_mathValue[partner][thisIndex] > g_mathMin[thisIndex])
 			{
-				g_mathValue[activator][thisIndex] -= value;
+				if(IsValidPartner(activator) == true)
+				{
+					g_mathValue[activator][thisIndex] -= value;
+				}
+
 				g_mathValue[partner][thisIndex] -= value;
 
-				if(g_mathValue[activator][thisIndex] <= g_mathMin[thisIndex])
+				if(g_mathValue[partner][thisIndex] <= g_mathMin[thisIndex])
 				{
-					g_mathValue[activator][thisIndex] = g_mathMin[thisIndex];
+					if(IsValidPartner(activator) == true)
+					{
+						g_mathValue[activator][thisIndex] = g_mathMin[thisIndex];
+					}
+
 					g_mathValue[partner][thisIndex] = g_mathMin[thisIndex];
 
 					AcceptEntityInput(pThis, "FireUser4", activator, activator);
@@ -945,18 +961,30 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 
 		else if(StrEqual(input, "SetValue", true) == false || StrEqual(input, "SetValueNoFire", false) == true)
 		{
-			g_mathValue[activator][thisIndex] = value;
+			if(IsValidPartner(activator) == true)
+			{
+				g_mathValue[activator][thisIndex] = value;
+			}
+
 			g_mathValue[partner][thisIndex] = value;
 
-			if(g_mathValue[activator][thisIndex] < g_mathMin[thisIndex])
+			if(g_mathValue[partner][thisIndex] < g_mathMin[thisIndex])
 			{
-				g_mathValue[activator][thisIndex] = g_mathMin[thisIndex];
+				if(IsValidPartner(activator) == true)
+				{
+					g_mathValue[activator][thisIndex] = g_mathMin[thisIndex];
+				}
+
 				g_mathValue[partner][thisIndex] = g_mathMin[thisIndex];
 			}
 
-			else if(g_mathValue[activator][thisIndex] > g_mathMax[thisIndex])
+			else if(g_mathValue[partner][thisIndex] > g_mathMax[thisIndex])
 			{
-				g_mathValue[activator][thisIndex] = g_mathMax[thisIndex];
+				if(IsValidPartner(activator) == true)
+				{
+					g_mathValue[activator][thisIndex] = g_mathMax[thisIndex];
+				}
+
 				g_mathValue[partner][thisIndex] = g_mathMax[thisIndex];
 			}
 		}
@@ -1171,12 +1199,12 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 
 			if(StrEqual(output, "OnUser3", false) == true)
 			{
-				Format(outputChanged, sizeof(outputChanged), "OnHitMax", output);
+				Format(outputChanged, sizeof(outputChanged), "OnHitMax");
 			}
 
 			else if(StrEqual(output, "OnUser4", false) == true)
 			{
-				Format(outputChanged, sizeof(outputChanged), "OnHitMin", output);
+				Format(outputChanged, sizeof(outputChanged), "OnHitMin");
 			}
 
 			outputNum = GetOutput(outputChanged);
@@ -1418,84 +1446,100 @@ public int Native_GetEntityFilter(Handle plugin, int numParams)
 
 stock EntityLumpEntry FindEntityLumpEntry(int entity)
 {
-    int hammerid = GetEntProp(entity, Prop_Data, "m_iHammerID");
+	/*int hammerid = GetEntProp(entity, Prop_Data, "m_iHammerID", 4, 0); //https://forums.alliedmods.net/showpost.php?p=1643574&postcount=2
 
-    for(int i = 0; i < EntityLump.Length(); i++)
-    {
-        EntityLumpEntry entry = EntityLump.Get(i);
-        
-        char value[32] = "";
+	if(hammerid == 0)
+	{
+		char classname[32] = "";
+		GetEntityClassname(entity, classname, sizeof(classname));
+		PrintToServer("[%s] hammerid: 0", classname);
+	}*/
 
-        if(entry.GetNextKey("hammerid", value, sizeof(value)) != -1 && StringToInt(value) == hammerid)
-        {
-            return entry;
-        }
+	char value[64] = "";
+	char exploded[3][16];
+	float origin[3] = {0.0, ...};
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", origin);
 
-        delete entry;
-    }
+	for(int i = 0; i < EntityLump.Length(); i++)
+	{
+		EntityLumpEntry entry = EntityLump.Get(i);
 
-    return null;
+		//if(entry.GetNextKey("hammerid", value, sizeof(value)) != -1 && StringToInt(value) == hammerid)
+		if(entry.GetNextKey("origin", value, sizeof(value)) != -1)
+		{
+			ExplodeString(value, " ", exploded, 3, 16, false);
+
+			if(origin[0] == StringToFloat(exploded[0]) && origin[1] == StringToFloat(exploded[1]) && origin[2] == StringToFloat(exploded[2]))
+			{
+				return entry;
+			}
+		}
+
+		delete entry;
+	}
+
+	return null;
 }
 
 stock any GetOutputAction(int entity, const char[] output = "", int count, char[] result, int maxlength, int type)
 {
-    EntityLumpEntry entry = FindEntityLumpEntry(entity);
+	EntityLumpEntry entry = FindEntityLumpEntry(entity);
 
-    if(entry == INVALID_HANDLE)
-    {
-        return INVALID_HANDLE;
-    }
+	if(entry == INVALID_HANDLE)
+	{
+		return INVALID_HANDLE;
+	}
 
-    char key[64] = "", value[512] = "", exploded[5][256];
-    int countLocal = 0;
+	char key[64] = "", value[512] = "", exploded[5][256];
+	int countLocal = 0;
 
-    for(int i = 0; i < entry.Length; i++)
-    {
-        entry.Get(i, key, sizeof(key), value, sizeof(value));
+	for(int i = 0; i < entry.Length; i++)
+	{
+		entry.Get(i, key, sizeof(key), value, sizeof(value));
 
-        if(FindCharInString(key, 'O', false) != -1)
-        {
-            if(strlen(output) > 0 ? StrEqual(key, output, true) == true : StrContains(key, "On", true) != -1)
-            {
-                if(type == 0)
-                {
-                    countLocal++;
-                }
+		if(FindCharInString(key, 'O', false) != -1)
+		{
+			if(strlen(output) > 0 ? StrEqual(key, output, true) == true : StrContains(key, "On", true) != -1)
+			{
+				if(type == 0)
+				{
+					countLocal++;
+				}
 
-                else if(type > 0)
-                {
-                    if(++countLocal == count)
-                    {
-                        ExplodeString(value, ",", exploded, 5, 256, false);
+				else if(type > 0)
+				{
+					if(++countLocal == count)
+					{
+						ExplodeString(value, ",", exploded, 5, 256, false);
 
-                        switch(type)
-                        {
-                            case 1, 2, 3:
-                            {
-                                Format(result, maxlength, "%s", exploded[type - 1]);
+						switch(type)
+						{
+							case 1, 2, 3:
+							{
+								Format(result, maxlength, "%s", exploded[type - 1]);
 
-                                return true;
-                            }
+								return true;
+							}
 
-                            case 4:
-                            {
-                                return StringToFloat(exploded[3]);
-                            }
+							case 4:
+							{
+								return StringToFloat(exploded[3]);
+							}
 
-                            case 5:
-                            {
-                                return StringToInt(exploded[4], 10);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+							case 5:
+							{
+								return StringToInt(exploded[4], 10);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    delete entry;
+	delete entry;
 
-    return countLocal;
+	return countLocal;
 }
 
 stock int GetOutputCount(int entity, const char[] output = "")
