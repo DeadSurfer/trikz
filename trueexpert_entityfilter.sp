@@ -158,6 +158,14 @@ public void OnClientPutInServer(int client)
 	if(Trikz_GetDevmap() == false)
 	{
 		SDKHook(client, SDKHook_SetTransmit, TransmitPlayer);
+
+		for(int i = 1; i <= g_entityTotalCount; i++)
+		{
+			for(int j = 0; j <= 1; j++)
+			{
+				g_touchArtifacial[client][g_entityID[i]][j] = false;
+			}
+		}
 	}
 
 	return;
