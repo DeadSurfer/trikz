@@ -226,7 +226,7 @@ public Action timer_load(Handle timer)
 		{
 			if(0 <= i <= 4)
 			{
-				if(!(GetEntProp(entity, Prop_Data, "m_spawnflags") & 1))
+				if(!(GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) & 1))
 				{
 					break; //If trigger doesn't have client check, go to next entity.
 				}
@@ -436,7 +436,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 	if(i == 2)
 	{
-		if(!(GetEntProp(entity, Prop_Data, "m_spawnflags") & 1))
+		if(!(GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) & 1))
 		{
 			return; //If trigger doesn't have client check, quit function here.
 		}
@@ -515,8 +515,8 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 											GetOutputCount(entity, "OnUser3") == 0 || 
 											GetOutputCount(entity, "OnUser4") == 0)) //thanks to george for original code.
 		{
-			g_mathValueDefault[g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
-			g_mathValue[0][g_mathTotalCount] = GetEntDataFloat(entity, FindDataMapInfo(entity, "m_OutValue"));
+			g_mathValueDefault[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_OutValue", 0);
+			g_mathValue[0][g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_OutValue", 0);
 
 			g_mathMin[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMin", 0);
 			g_mathMax[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_flMax", 0);
@@ -1006,7 +1006,7 @@ public Action TouchTrigger(int entity, int other)
 
 	if(StrContains(classname, "projectile", false) != -1)
 	{
-		activator = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity");
+		activator = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity", 0);
 	}
 	
 	if(IsValidClient(activator) == true)
@@ -1458,7 +1458,7 @@ stock EntityLumpEntry FindEntityLumpEntry(int entity)
 	char value[64] = "";
 	char exploded[3][16];
 	float origin[3] = {0.0, ...};
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", origin);
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", origin, 0);
 
 	for(int i = 0; i < EntityLump.Length(); i++)
 	{
