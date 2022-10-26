@@ -224,7 +224,7 @@ public Action timer_load(Handle timer)
 
 		while((entity = FindEntityByClassname(entity, classname[i])) != INVALID_ENT_REFERENCE)
 		{
-			if(0 <= i <= 4)
+			if(i <= 4)
 			{
 				if(!(GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) & 1))
 				{
