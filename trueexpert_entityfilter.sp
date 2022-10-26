@@ -510,9 +510,9 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 	if(i == 5)
 	{
-		if(IsValidEntity(entity) == true && (GetOutputCount(entity, "OutValue") == 0 || 
-											GetOutputCount(entity, "OnGetValue") == 0 || 
-											GetOutputCount(entity, "OnUser3") == 0 || 
+		if(IsValidEntity(entity) == true && (GetOutputCount(entity, "OutValue") == 0 && 
+											GetOutputCount(entity, "OnGetValue") == 0 && 
+											GetOutputCount(entity, "OnUser3") == 0 && 
 											GetOutputCount(entity, "OnUser4") == 0)) //thanks to george for original code.
 		{
 			g_mathValueDefault[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_OutValue", 0);
