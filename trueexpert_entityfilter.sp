@@ -67,6 +67,12 @@ float g_mathMin[MAXENTITY] = {0.0, ...};
 float g_mathMax[MAXENTITY] = {0.0, ...};
 bool g_touchArtifacial[MAXPLAYER][MAXENTITY][2]; //Fully used george logic from https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp. Thanks to Ciallo-Ani for opensource code.
 native bool Trikz_GetDevmap();
+native int GetOutputActionCount(int entity, const char[] output);
+native bool GetOutputActionTarget(int entity, const char[] output, int index, char[] target, int maxlen);
+native bool GetOutputActionTargetInput(int entity, const char[] output, int index, char[] targetinput, int maxlen);
+native bool GetOutputActionParameter(int entity, const char[] output, int index, char[] parameter, int maxlen);
+native float GetOutputActionDelay(int entity, const char[] output, int index);
+native int GetOutputActionTimesToFire(int entity, const char[] output, int index);
 
 public Plugin myinfo =
 {
@@ -265,13 +271,15 @@ public Action timer_load(Handle timer)
 
 stock void EntityLink(int entity, const char[] output)
 {
-	int count = GetOutputCount(entity, output), maxLinks = 0, maxMathLinks = 0, outputNum = GetOutput(output);
+	char outputFormated[24] = "";
+	Format(outputFormated, sizeof(outputFormated), "m_%s", output);
+	int count = GetOutputActionCount(entity, outputFormated);
 	char input[16] = "", target[256] = "", classname[][] = {"func_brush", "func_wall_toggle", "trigger_*", "func_breakable", "prop_dynamic"};
 
-	for(int i = 1; i <= count; i++)
+	for(int i = 0; i < count; i++)
 	{
-		GetOutputTargetInput(entity, output, i, input, sizeof(input));
-		GetOutputTarget(entity, output, i, target, sizeof(target));
+		GetOutputActionTargetInput(entity, outputFormated, i, input, sizeof(input));
+		GetOutputActionTarget(entity, outputFormated, i, target, sizeof(target));
 
 		if(StrEqual(input, "Enable", false) == true || 
 			StrEqual(input, "Disable", false) == true || 
@@ -293,33 +301,7 @@ stock void EntityLink(int entity, const char[] output)
 						OutputInput(entity, "func_button", "");
 					}
 					
-					if(entity > 0)
-					{
-						maxLinks = ++g_maxLinks[entity][outputNum];
-
-						g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityReadyToLink;
-
-						g_entityOutput[entityReadyToLink][maxLinks][outputNum] = 1;
-					}
-
-					else if(entity < 0)
-					{
-						for(int k = 1; k <= g_mathTotalCount; k++)
-						{
-							int math = k;
-
-							if(g_mathID[math] == entity)
-							{
-								maxMathLinks = ++g_maxMathLinks[math][outputNum];
-
-								g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityReadyToLink;
-
-								g_entityOutput[entityReadyToLink][maxMathLinks][outputNum] = 1;
-
-								continue;
-							}
-						}
-					}
+					AddEntityToLinkProcess(entity, output, entityReadyToLink);
 				}
 			}
 		}
@@ -332,33 +314,7 @@ stock void EntityLink(int entity, const char[] output)
 			{
 				OutputInput(entityReadyToLink, "func_button", "");
 
-				if(entity > 0)
-				{
-					maxLinks = ++g_maxLinks[entity][outputNum];
-
-					g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityReadyToLink;
-
-					g_entityOutput[entityReadyToLink][maxLinks][outputNum] = 1;
-				}
-
-				else if(entity < 0)
-				{
-					for(int k = 1; k <= g_mathTotalCount; k++)
-					{
-						int math = k;
-
-						if(g_mathID[math] == entity)
-						{
-							maxMathLinks = ++g_maxMathLinks[math][outputNum];
-							
-							g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityReadyToLink;
-
-							g_entityOutput[entityReadyToLink][maxMathLinks][outputNum] = 1;
-
-							continue;
-						}
-					}
-				}
+				AddEntityToLinkProcess(entity, output, entityReadyToLink);
 
 				DHookEntity(g_AcceptInput, false, entityReadyToLink, INVALID_FUNCTION, AcceptInputButton);
 			}
@@ -518,10 +474,10 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 	if(i == 5)
 	{
-		if(IsValidEntity(entity) == true && (GetOutputCount(entity, "OutValue") == 0 && 
-											GetOutputCount(entity, "OnGetValue") == 0 && 
-											GetOutputCount(entity, "OnUser3") == 0 && 
-											GetOutputCount(entity, "OnUser4") == 0)) //thanks to george for original code.
+		if(IsValidEntity(entity) == true && (GetOutputActionCount(entity, "m_OutValue") == 0 && 
+											GetOutputActionCount(entity, "m_OnGetValue") == 0 && 
+											GetOutputActionCount(entity, "m_OnUser3") == 0 && 
+											GetOutputActionCount(entity, "m_OnUser4") == 0)) //thanks to george for original code.
 		{
 			g_mathValueDefault[g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_OutValue", 0);
 			g_mathValue[0][g_mathTotalCount] = GetEntPropFloat(entity, Prop_Data, "m_OutValue", 0);
@@ -591,19 +547,56 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 
 stock void AddOutput(int entity, const char[] output, const char[] outputtype)
 {
-	int count = GetOutputCount(entity, output);
+	char outputFormted[24] = "";
+	Format(outputFormted, sizeof(outputFormted), "m_%s", output);
+	int count = GetOutputActionCount(entity, outputFormted);
 	char output_[4][768];
 
-	for(int i = 1; i <= count; i++)
+	for(int i = 0; i < count; i++)
 	{
-		GetOutputTarget(entity, output, i, output_[0], 256);
-		GetOutputTargetInput(entity, output, i, output_[1], 32);
-		GetOutputParameter(entity, output, i, output_[2], 256);
-		float delay = GetOutputDelay(entity, output, i);
-		int fire = GetOutputTimesToFire(entity, output, i);
+		GetOutputActionTarget(entity, outputFormted, i, output_[0], 256);
+		GetOutputActionTargetInput(entity, outputFormted, i, output_[1], 32);
+		GetOutputActionParameter(entity, outputFormted, i, output_[2], 256);
+		float delay = GetOutputActionDelay(entity, outputFormted, i);
+		int fire = GetOutputActionTimesToFire(entity, outputFormted, i);
 		Format(output_[3], 768, "%s %s:%s:%s:%f:%i", outputtype, output_[0], output_[1], output_[2], delay, fire);
 		SetVariantString(output_[3]);
 		AcceptEntityInput(entity, "AddOutput");
+	}
+
+	return;
+}
+
+stock void AddEntityToLinkProcess(int entity, const char[] output, int entityReadyToLink)
+{
+	int maxLinks = 0, maxMathLinks = 0, outputNum = GetOutput(output);
+
+	if(entity > 0)
+	{
+		maxLinks = ++g_maxLinks[entity][outputNum];
+
+		g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityReadyToLink;
+
+		g_entityOutput[entityReadyToLink][maxLinks][outputNum] = 1;
+	}
+
+	else if(entity < 0)
+	{
+		for(int k = 1; k <= g_mathTotalCount; k++)
+		{
+			int math = k;
+
+			if(g_mathID[math] == entity)
+			{
+				maxMathLinks = ++g_maxMathLinks[math][outputNum];
+
+				g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityReadyToLink;
+
+				g_entityOutput[entityReadyToLink][maxMathLinks][outputNum] = 1;
+
+				continue;
+			}
+		}
 	}
 
 	return;
@@ -1452,23 +1445,23 @@ public int Native_GetEntityFilter(Handle plugin, int numParams)
 	return g_stateDisabled[partner][entity];
 }
 
-stock EntityLumpEntry FindEntityLumpEntry(int entity)
+/*stock EntityLumpEntry FindEntityLumpEntry(int entity)
 {
-	/*int hammerid = GetEntProp(entity, Prop_Data, "m_iHammerID", 4, 0); //https://forums.alliedmods.net/showpost.php?p=1643574&postcount=2
-
-	if(hammerid == 0)
-	{
-		char classname[32] = "";
-		GetEntityClassname(entity, classname, sizeof(classname));
-		PrintToServer("[%s] hammerid: 0", classname);
-	}*/
+	int hammerid = GetEntProp(entity, Prop_Data, "m_iHammerID", 4, 0); //https://forums.alliedmods.net/showpost.php?p=1643574&postcount=2
 
 	char value[64] = "";
 	char exploded[3][16];
 	float origin[3] = {0.0, ...};
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", origin, 0);
 
-	for(int i = 0; i < EntityLump.Length(); i++)
+	if(hammerid == 0) //Is fully old map?
+	{
+		char classname[32] = "";
+		GetEntityClassname(entity, classname, sizeof(classname));
+		PrintToServer("[%s] hammerid: 0; origin: %f %f %f", classname, origin[0], origin[1], origin[2]);
+	}
+
+	for(int i = 0; i < EntityLump.Length(); i++) //Closed, unitll entitylump got fully post to approve stripper changes
 	{
 		EntityLumpEntry entry = EntityLump.Get(i);
 
@@ -1505,6 +1498,11 @@ stock any GetOutputAction(int entity, const char[] output = "", int count, char[
 	{
 		entry.Get(i, key, sizeof(key), value, sizeof(value));
 
+		//if(StrContains(value, "math_counter", true) != -1)
+		//{
+		//	PrintToServer("%s %s", key, value);
+		//}
+
 		if(FindCharInString(key, 'O', false) != -1)
 		{
 			if(strlen(output) > 0 ? StrEqual(key, output, true) == true : StrContains(key, "On", true) != -1)
@@ -1518,6 +1516,11 @@ stock any GetOutputAction(int entity, const char[] output = "", int count, char[
 				{
 					if(++countLocal == count)
 					{
+						//if(StrContains(value, "relay", true) != -1)
+						//{
+						//	PrintToServer("%s", value);
+						//}
+
 						ExplodeString(value, ",", exploded, 5, 256, false);
 
 						switch(type)
@@ -1543,6 +1546,8 @@ stock any GetOutputAction(int entity, const char[] output = "", int count, char[
 				}
 			}
 		}
+
+		//break; //loop doesn't work here
 	}
 
 	delete entry;
@@ -1578,4 +1583,4 @@ stock float GetOutputDelay(int entity, const char[] output = "", int count)
 stock int GetOutputTimesToFire(int entity, const char[] output = "", int count)
 {
     return GetOutputAction(entity, output, count, "", 0, 5);
-}
+}*/
