@@ -142,12 +142,12 @@ public void OnPluginStart()
 
 	RegPluginLibrary("trueexpert-entityfilter");
 
-	int major = SOURCEMOD_V_MAJOR, minor = SOURCEMOD_V_MINOR;
+	/*int major = SOURCEMOD_V_MAJOR, minor = SOURCEMOD_V_MINOR;
 
 	if(major == 1 && minor < 12)
 	{
 		SetFailState("SourceMod version is too old!");
-	}
+	}*/
 
 	return;
 }
