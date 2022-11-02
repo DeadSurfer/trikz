@@ -1397,20 +1397,20 @@ public Action TransmitNade(int entity, int client) //entity - nade, client - loo
 public Action Trikz_CheckSolidity(int ent1, int ent2)
 {
 	char classname[32] = "";
-	GetEntityClassname(ent2, classname, sizeof(classname));
+	GetEntityClassname(ent2 > MaxClients ? ent2 : ent1, classname, sizeof(classname));
 
 	if(StrContains(classname, "projectile", false) != -1)
 	{
-		if(IsValidClient(ent1) == true)
+		if(IsValidClient(ent1) == true || IsValidClient(ent2) == true)
 		{
-			int owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity", 0);
+			int owner = GetEntPropEnt(ent2 > MaxClients ? ent2 : ent1, Prop_Data, "m_hOwnerEntity", 0);
 
 			if(owner < 0)
 			{
 				owner = 0;
 			}
 
-			if(Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1))))
+			if(Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(ent1 <= MaxClients ? ent1 : ent2))))
 			{
 				return Plugin_Handled;
 			}
@@ -1420,7 +1420,7 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	if(IsValidClient(ent1) == true && IsValidClient(ent2) == true)
 	{
 		//make no collide with all players.
-		if(GetEntProp(ent2, Prop_Data, "m_CollisionGroup", 4, 0) == 2)
+		if(GetEntProp(ent2, Prop_Data, "m_CollisionGroup", 4, 0) == 2 || GetEntProp(ent1, Prop_Data, "m_CollisionGroup", 4, 0) == 2)
 		{
 			return Plugin_Handled;
 		}
