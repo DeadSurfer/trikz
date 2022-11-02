@@ -645,42 +645,42 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 
 			if(velBooster[2] > 0.0)
 			{
-				float velFlyer[3] = {0.0, ...};
-				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
-
-				float velNew[3] = {0.0, ...};
-				//velNew[0] = velFlyer[0];
-				//velNew[1] = velFlyer[1];
-				velNew[2] = velBooster[2] * 3.572;
-
-				//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-
-				if(g_entityFlags[client] & FL_INWATER)
-				{
-					velNew[2] = velBooster[2] * 5.0;
-				}
-				
-				else if(!(g_entityFlags[client] & FL_INWATER))
-				{
-					if(velFlyer[2] > -470.0)
-					{
-						if(velNew[2] >= 770.0)
-						{
-							velNew[2] = 770.0;
-						}
-					}
-
-					else if(velFlyer[2] <= -470.0)
-					{
-						if(velNew[2] >= 800.0)
-						{
-							velNew[2] = 800.0;
-						}
-					}
-				}
-
 				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
+					float velFlyer[3] = {0.0, ...};
+					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
+
+					float velNew[3] = {0.0, ...};
+					//velNew[0] = velFlyer[0];
+					//velNew[1] = velFlyer[1];
+					velNew[2] = velBooster[2] * 3.572;
+
+					//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+
+					if(g_entityFlags[client] & FL_INWATER)
+					{
+						velNew[2] = velBooster[2] * 5.0;
+					}
+					
+					else if(!(g_entityFlags[client] & FL_INWATER))
+					{
+						if(velFlyer[2] > -470.0)
+						{
+							if(velNew[2] >= 770.0)
+							{
+								velNew[2] = 770.0;
+							}
+						}
+
+						else if(velFlyer[2] <= -470.0)
+						{
+							if(velNew[2] >= 800.0)
+							{
+								velNew[2] = 800.0;
+							}
+						}
+					}
+
 					char print[256] = "";
 
 					ConVar gravity = FindConVar("sv_gravity");
