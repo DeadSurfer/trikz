@@ -1496,6 +1496,8 @@ public void OnClientPutInServer(int client)
 		}
 	}
 
+	g_boost[client] = 0; //rare case
+
 	return;
 }
 
@@ -1840,45 +1842,45 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				if(velBooster[2] > 0.0)
 				{
-					float velFlyer[3] = {0.0, ...};
-					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
-
-					g_skyVel[other][0] = velFlyer[0];
-					g_skyVel[other][1] = velFlyer[1];
-					g_skyVel[other][2] = velBooster[2] * 3.572;
-
-					//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-
-					if(g_entityFlags[client] & FL_INWATER)
-					{
-						g_skyVel[other][2] = velBooster[2] * 5.0;
-					}
-					
-					else if(!(g_entityFlags[client] & FL_INWATER))
-					{
-						if(velFlyer[2] > -470.0)
-						{
-							if(g_skyVel[other][2] >= 770.0)
-							{
-								g_skyVel[other][2] = 770.0;
-							}
-						}
-
-						else if(velFlyer[2] <= -470.0)
-						{
-							if(g_skyVel[other][2] >= 800.0)
-							{
-								g_skyVel[other][2] = 800.0;
-							}
-						}
-					}
-
-					#if debug == true
-					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-					#endif
-
 					if(FloatAbs(g_skyOrigin[client][2] - g_skyOrigin[other][2]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 					{
+						float velFlyer[3] = {0.0, ...};
+						GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
+
+						g_skyVel[other][0] = velFlyer[0];
+						g_skyVel[other][1] = velFlyer[1];
+						g_skyVel[other][2] = velBooster[2] * 3.572;
+
+						//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+
+						if(g_entityFlags[client] & FL_INWATER)
+						{
+							g_skyVel[other][2] = velBooster[2] * 5.0;
+						}
+						
+						else if(!(g_entityFlags[client] & FL_INWATER))
+						{
+							if(velFlyer[2] > -470.0)
+							{
+								if(g_skyVel[other][2] >= 770.0)
+								{
+									g_skyVel[other][2] = 770.0;
+								}
+							}
+
+							else if(velFlyer[2] <= -470.0)
+							{
+								if(g_skyVel[other][2] >= 800.0)
+								{
+									g_skyVel[other][2] = 800.0;
+								}
+							}
+						}
+
+						#if debug == true
+						PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+						#endif
+
 						g_skyBoost[other] = 1;
 					}
 				}
@@ -6503,11 +6505,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					if(IsClientInGame(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+						//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+						//int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
 						//if(g_partner[client] == g_partner[g_partner[i]] || i == client)
-						if(g_partner[client] == g_partner[g_partner[i]] || i == client || ((observerTarget == client || observerTarget == g_partner[client]) && observerMode < 7))
+						//if(g_partner[g_partner[i]] == g_partner[client] || i == client || (IsValidClient(observerTarget) == true && g_partner[g_partner[observerTarget]] == g_partner[client] && observerMode < 7))
+						if(g_partner[i] == g_partner[client] || i == client || IsClientObserver(i) == true)
 						{
 							clients[count++] = i;
 							//PrintToServer("%N", i);
@@ -7734,11 +7737,11 @@ stock void FlashbangEffect(int entity)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+				//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				//int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
-				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
-				if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || ((observerTarget == owner || observerTarget == g_partner[owner]) && observerMode < 7))
+				//if(g_partner[i] == g_partner[owner] || i == owner || (IsValidClient(observerTarget) == true && (g_partner[observerTarget] == owner || g_partner[observerTarget] == g_partner[owner]) && observerMode < 7))
+				if(g_partner[i] == g_partner[owner] || i == owner || IsClientObserver(i) == true)
 				{
 					clients[count++] = i;
 				}
@@ -7750,32 +7753,32 @@ stock void FlashbangEffect(int entity)
 
 	else if(filter == false)
 	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
+		//int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
-		if(owner == -1)
-		{
-			owner = 0;
-		}
+		//if(owner == -1)
+		//{
+		//	owner = 0;
+		//}
 
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientInGame(i) == true)
-			{
+		//for(int i = 1; i <= MaxClients; i++)
+		//{
+			//if(IsClientInGame(i) == true)
+			//{
 				//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
 				//int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
 
 				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
 				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || (observerTarget == owner && observerMode < 7))
-				if(IsFakeClient(owner) == false || i == owner || IsClientObserver(i) == true)
-				{
-					clients[count++] = i;
-				}
-			}
-		}
+				//if(IsFakeClient(owner) == false || i == owner || IsClientObserver(i) == true)
+				//{
+					//clients[count++] = i;
+				//}
+			//}
+		//}
 
-		TE_Send(clients, count, 0.0);
+		//TE_Send(clients, count, 0.0);
 
-		//TE_SendToAll(0.0);
+		TE_SendToAll(0.0);
 	}
 
 	float dir[3] = {0.0, ...}; //https://forums.alliedmods.net/showthread.php?t=274452
@@ -7795,13 +7798,13 @@ stock void FlashbangEffect(int entity)
 
 	else if(filter == false)
 	{
-		TE_Send(clients, count, 0.0);
+		//TE_Send(clients, count, 0.0);
 
-		EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
+		//EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
 
-		//TE_SendToAll(0.0); //Idea from "Expert-Zone". So, we just made non empty event.
+		TE_SendToAll(0.0); //Idea from "Expert-Zone". So, we just made non empty event.
 
-		//EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
+		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
 	}
 
 	return;
@@ -7964,7 +7967,7 @@ public Action timer_clantag(Handle timer, int client)
 
 stock void MLStats(int client, bool ground)
 {
-	if(IsFakeClient(client) == true || IsValidClient(client) == false)
+	if(IsFakeClient(client) == true)
 	{
 		return;
 	}
@@ -7997,6 +8000,12 @@ stock void MLStats(int client, bool ground)
 	}
 
 	int flyer = g_mlsFlyer[client];
+
+	if(IsValidClient(flyer) == false)
+	{
+		return;
+	}
+
 	float distance = 0.0;
 	char tp[256] = "";
 
