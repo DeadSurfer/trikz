@@ -221,7 +221,7 @@ public void OnClientDisconnect(int client)
 	return;
 }
 
-public Action timer_bot(Handle timer)
+Action timer_bot(Handle timer)
 {
 	if(LibraryExists("trueexpert") == false)
 	{
@@ -316,7 +316,7 @@ public Action timer_bot(Handle timer)
 	return Plugin_Continue;
 }
 
-stock void SetupSave(int client, int partner, float time)
+void SetupSave(int client, int partner, float time)
 {
 	char dir[PLATFORM_MAX_PATH] = "";
 	BuildPath(Path_SM, dir, sizeof(dir), "data/trueexpert");
@@ -353,7 +353,7 @@ stock void SetupSave(int client, int partner, float time)
 	return;
 }
 
-stock void SaveRecord(int client, const char[] path, float time, bool load)
+void SaveRecord(int client, const char[] path, float time, bool load)
 {
 	g_frame[client].Resize(g_tick[client]);
 
@@ -381,7 +381,7 @@ stock void SaveRecord(int client, const char[] path, float time, bool load)
 	return;
 }
 
-public void SQLGetReplayName(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetReplayName(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -416,7 +416,7 @@ public void SQLGetReplayName(Database db, DBResultSet results, const char[] erro
 	return;
 }
 
-public void LoadRecord()
+void LoadRecord()
 {
 	char filePath[2][PLATFORM_MAX_PATH] = {"", ""};
 
@@ -668,7 +668,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public void SQLConnect(Database db, const char[] error, any data)
+void SQLConnect(Database db, const char[] error, any data)
 {
 	if(db == INVALID_HANDLE)
 	{
@@ -707,7 +707,7 @@ public void Trikz_OnRecord(int client, int partner, float time)
 	return;
 }
 
-public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
+void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -725,7 +725,7 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public Action BotSilent(Event event, const char[] name, bool dontBroadcast)
+Action BotSilent(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -739,7 +739,7 @@ public Action BotSilent(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-stock void ApplyFlags(int &flags1, int flags2, int flag)
+void ApplyFlags(int &flags1, int flags2, int flag)
 {
 	if((flags2 & flag) != 0)
 	{
@@ -754,7 +754,7 @@ stock void ApplyFlags(int &flags1, int flags2, int flag)
 	return;
 }
 
-public void SDKWeaponSwitch(int client, int weapon)
+void SDKWeaponSwitch(int client, int weapon)
 {
 	if(Trikz_GetTimerState(client) == true)
 	{
@@ -788,13 +788,13 @@ public void SDKWeaponSwitch(int client, int weapon)
 }
 
 // Stops bot_quota from doing anything.
-stock MRESReturn Detour_MaintainBotQuota(int pThis)
+MRESReturn Detour_MaintainBotQuota(int pThis)
 {
 	return MRES_Supercede;
 }
 
 // Remove flags from replay bots that cause CBasePlayer::UpdateStepSound to return without playing a footstep.
-/*stock MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
+/*MRESReturn Hook_UpdateStepSound_Pre(int pThis, DHookParam hParams)
 {
 	if(GetEntityMoveType(pThis) == MOVETYPE_NOCLIP)
 	{
@@ -807,7 +807,7 @@ stock MRESReturn Detour_MaintainBotQuota(int pThis)
 }*/
 
 // Readd flags to replay bots now that CBasePlayer::UpdateStepSound is done.
-/*stock MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
+/*MRESReturn Hook_UpdateStepSound_Post(int pThis, DHookParam hParams)
 {
 	if(GetEntityMoveType(pThis) == MOVETYPE_WALK)
 	{
@@ -819,7 +819,7 @@ stock MRESReturn Detour_MaintainBotQuota(int pThis)
 	return MRES_Ignored;
 }*/
 
-public Action Hook_SayText2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp#L2830
+Action Hook_SayText2(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-replay-playback.sp#L2830
 {
 	int client = msg.ReadByte();
 	msg.ReadByte();
@@ -859,7 +859,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 }
 
-public Action HookTriggers(int entity, int other)
+Action HookTriggers(int entity, int other)
 {
 	if(IsValidClient(other) == true && IsFakeClient(other) == true)
 	{
@@ -876,7 +876,7 @@ public Action HookTriggers(int entity, int other)
 	return Plugin_Continue;
 }
 
-public Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
+Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
 {
 	//hide replay
 	if(client != entity && IsValidClient(entity) == true && IsPlayerAlive(client) == true)
@@ -890,7 +890,7 @@ public Action TransmitPlayer(int entity, int client) //entity - me, client - loo
 	return Plugin_Continue;
 }
 
-public Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
+Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
 {
 	//hide replay nades
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
@@ -908,7 +908,7 @@ public Action TransmitNade(int entity, int client) //entity - nade, client - loo
 	return Plugin_Continue;
 }
 
-stock MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
+MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 {
 	if(DHookIsNullParam(hParams, 1) == true || DHookIsNullParam(hParams, 2) == true || Trikz_GetDevmap() == true)
 	{
