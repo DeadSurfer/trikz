@@ -31,7 +31,7 @@
 #include <dhooks>
 #include <sdktools>
 #include <sdkhooks>
-#include <entitylump>
+//#include <entitylump>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -74,14 +74,14 @@ native bool GetOutputActionParameter(int entity, const char[] output, int index,
 native float GetOutputActionDelay(int entity, const char[] output, int index);
 native int GetOutputActionTimesToFire(int entity, const char[] output, int index);
 
-public Plugin myinfo =
+Plugin myinfo =
 {
 	name = "Entity filter",
 	author = "Smesh",
 	description = "Makes the game more personal.",
 	version = "0.27",
 	url = "http://www.sourcemod.net/"
-}
+};
 
 public void OnPluginStart()
 {
@@ -177,7 +177,7 @@ public void OnClientPutInServer(int client)
 	return;
 }
 
-public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
+void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	if(Trikz_GetDevmap() == false)
 	{
@@ -187,7 +187,7 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public Action timer_load(Handle timer)
+Action timer_load(Handle timer)
 {
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
@@ -269,7 +269,7 @@ public Action timer_load(Handle timer)
 	return Plugin_Continue;
 }
 
-stock void EntityLink(int entity, const char[] output)
+void EntityLink(int entity, const char[] output)
 {
 	char outputFormated[24] = "";
 	Format(outputFormated, sizeof(outputFormated), "m_%s", output);
@@ -334,7 +334,7 @@ stock void EntityLink(int entity, const char[] output)
 	return;
 }
 
-stock int FindLinkedEntity(int entity, const char[] classname, const char[] target, int parent = 0)
+int FindLinkedEntity(int entity, const char[] classname, const char[] target, int parent = 0)
 {
 	char name[256] = "";
 
@@ -359,7 +359,7 @@ stock int FindLinkedEntity(int entity, const char[] classname, const char[] targ
 	return INVALID_ENT_REFERENCE;
 }
 
-stock void OutputInput(int entity, const char[] output, const char[] target = "")
+void OutputInput(int entity, const char[] output, const char[] target = "")
 {
 	int i = 0;
 
@@ -545,7 +545,7 @@ stock void OutputInput(int entity, const char[] output, const char[] target = ""
 	return;
 }
 
-stock void AddOutput(int entity, const char[] output, const char[] outputtype)
+void AddOutput(int entity, const char[] output, const char[] outputtype)
 {
 	char outputFormted[24] = "";
 	Format(outputFormted, sizeof(outputFormted), "m_%s", output);
@@ -567,7 +567,7 @@ stock void AddOutput(int entity, const char[] output, const char[] outputtype)
 	return;
 }
 
-stock void AddEntityToLinkProcess(int entity, const char[] output, int entityReadyToLink)
+void AddEntityToLinkProcess(int entity, const char[] output, int entityReadyToLink)
 {
 	int maxLinks = 0, maxMathLinks = 0, outputNum = GetOutput(output);
 
@@ -602,7 +602,7 @@ stock void AddEntityToLinkProcess(int entity, const char[] output, int entityRea
 	return;
 }
 
-stock void Reset(int client)
+void Reset(int client)
 {
 	for(int i = 1; i <= g_entityTotalCount; i++)
 	{
@@ -632,7 +632,7 @@ public void Trikz_OnRestart(int client, int partner)
 	return;
 }
 
-stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
+MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 {
 	char input[16] = "";
 	DHookGetParamString(hParams, 1, input, sizeof(input));
@@ -797,7 +797,7 @@ stock MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Ignored;
 }
 
-stock MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
+MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 {
 	char input[16] = "";
 	DHookGetParamString(hParams, 1, input, sizeof(input));
@@ -864,7 +864,7 @@ stock MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Ignored;
 }
 
-stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
+MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 {
 	char input[16] = "";
 	DHookGetParamString(hParams, 1, input, sizeof(input));
@@ -998,7 +998,7 @@ stock MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Ignored;
 }
 
-public Action TouchTrigger(int entity, int other)
+Action TouchTrigger(int entity, int other)
 {
 	char classname[32] = "";
 	GetEntityClassname(other, classname, sizeof(classname));
@@ -1063,7 +1063,7 @@ public Action TouchTrigger(int entity, int other)
 	return Plugin_Continue;
 }
 
-public Action EntityVisibleTransmit(int entity, int client)
+Action EntityVisibleTransmit(int entity, int client)
 {
 	if(IsValidClient(client) == true)
 	{
@@ -1096,7 +1096,7 @@ public Action EntityVisibleTransmit(int entity, int client)
 	return Plugin_Continue;
 }
 
-public Action HookButton(int entity, int activator, int caller, UseType type, float value)
+Action HookButton(int entity, int activator, int caller, UseType type, float value)
 {
 	int partner = Trikz_GetClientPartner(activator);
 
@@ -1115,14 +1115,14 @@ public Action HookButton(int entity, int activator, int caller, UseType type, fl
 	return Plugin_Continue;
 }
 
-public Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
+Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
 {
 	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker, 0);
 
 	return Plugin_Continue;
 }
 
-public Action EntityOutputHook(char[] output, int caller, int activator, float delay)
+Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 {
 	if(activator > MaxClients)
 	{
@@ -1235,7 +1235,7 @@ public Action EntityOutputHook(char[] output, int caller, int activator, float d
 	return Plugin_Continue;
 }
 
-stock MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
+MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 {
 	if(DHookIsNullParam(hParams, 1) == true || DHookIsNullParam(hParams, 2) == true || Trikz_GetDevmap() == true)
 	{
@@ -1309,7 +1309,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	return;
 }
 
-stock int GetOutput(const char[] output)
+int GetOutput(const char[] output)
 {
 	if(StrEqual(output, "OnStartTouch", false) == true)
 	{
@@ -1362,7 +1362,7 @@ stock int GetOutput(const char[] output)
 	}
 }
 
-public Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
+Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
 {
 	//make visible only partner
 	if(client != entity && IsValidClient(entity) == true && IsPlayerAlive(client) == true)
@@ -1376,7 +1376,7 @@ public Action TransmitPlayer(int entity, int client) //entity - me, client - loo
 	return Plugin_Continue;
 }
 
-public Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
+Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
 {
 	//make visible nade only for partner
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
@@ -1435,7 +1435,7 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	return Plugin_Continue;
 }
 
-public int Native_GetEntityFilter(Handle plugin, int numParams)
+int Native_GetEntityFilter(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	int entity = GetNativeCell(2);
@@ -1445,7 +1445,7 @@ public int Native_GetEntityFilter(Handle plugin, int numParams)
 	return g_stateDisabled[partner][entity];
 }
 
-/*stock EntityLumpEntry FindEntityLumpEntry(int entity)
+/*EntityLumpEntry FindEntityLumpEntry(int entity)
 {
 	int hammerid = GetEntProp(entity, Prop_Data, "m_iHammerID", 4, 0); //https://forums.alliedmods.net/showpost.php?p=1643574&postcount=2
 
@@ -1482,7 +1482,7 @@ public int Native_GetEntityFilter(Handle plugin, int numParams)
 	return null;
 }
 
-stock any GetOutputAction(int entity, const char[] output = "", int count, char[] result, int maxlength, int type)
+any GetOutputAction(int entity, const char[] output = "", int count, char[] result, int maxlength, int type)
 {
 	EntityLumpEntry entry = FindEntityLumpEntry(entity);
 
@@ -1555,32 +1555,32 @@ stock any GetOutputAction(int entity, const char[] output = "", int count, char[
 	return countLocal;
 }
 
-stock int GetOutputCount(int entity, const char[] output = "")
+int GetOutputCount(int entity, const char[] output = "")
 {
     return GetOutputAction(entity, output, 0, "", 0, 0);
 }
 
-stock int GetOutputTarget(int entity, const char[] output = "", int count, char[] target, int maxlength)
+int GetOutputTarget(int entity, const char[] output = "", int count, char[] target, int maxlength)
 {
     return GetOutputAction(entity, output, count, target, maxlength, 1);
 }
 
-stock int GetOutputTargetInput(int entity, const char[] output = "", int count, char[] input, int maxlength)
+int GetOutputTargetInput(int entity, const char[] output = "", int count, char[] input, int maxlength)
 {
     return GetOutputAction(entity, output, count, input, maxlength, 2);
 }
 
-stock int GetOutputParameter(int entity, const char[] output = "", int count, char[] parameter, int maxlength)
+int GetOutputParameter(int entity, const char[] output = "", int count, char[] parameter, int maxlength)
 {
     return GetOutputAction(entity, output, count, parameter, maxlength, 3);
 }
 
-stock float GetOutputDelay(int entity, const char[] output = "", int count)
+float GetOutputDelay(int entity, const char[] output = "", int count)
 {
     return GetOutputAction(entity, output, count, "", 0, 4);
 }
 
-stock int GetOutputTimesToFire(int entity, const char[] output = "", int count)
+int GetOutputTimesToFire(int entity, const char[] output = "", int count)
 {
     return GetOutputAction(entity, output, count, "", 0, 5);
 }*/
