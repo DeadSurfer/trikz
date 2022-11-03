@@ -535,7 +535,7 @@ public void OnMapStart()
 	return;
 }
 
-public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -557,7 +557,7 @@ public void SQLRecalculatePoints_GetMap(Database db, DBResultSet results, const 
 	return;
 }
 
-public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -580,7 +580,7 @@ public void SQLRecalculatePoints(Database db, DBResultSet results, const char[] 
 	return;
 }
 
-public void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints2(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -598,7 +598,7 @@ public void SQLRecalculatePoints2(Database db, DBResultSet results, const char[]
 	return;
 }
 
-public void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -617,7 +617,7 @@ public void SQLRecalculatePoints3(Database db, DBResultSet results, const char[]
 	return;
 }
 
-public void SQLRecalculateUserPoints(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecalculateUserPoints(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -641,7 +641,7 @@ public void SQLRecalculateUserPoints(Database db, DBResultSet results, const cha
 	return;
 }
 
-public void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, any data)
+void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -662,7 +662,7 @@ public void SQLUpdateUserPoints(Database db, DBResultSet results, const char[] e
 	return;
 }
 
-public void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -727,7 +727,7 @@ public void OnMapEnd()
 	return;
 }
 
-public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
+Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	int client = msg.ReadByte();
 
@@ -832,7 +832,7 @@ public Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int 
 	return Plugin_Handled;
 }
 
-public void frame_SayText2(DataPack dp)
+void frame_SayText2(DataPack dp)
 {
 	dp.Reset();
 
@@ -872,7 +872,7 @@ public void frame_SayText2(DataPack dp)
 	return;
 }
 
-public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //RadioText https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/server/cstrike/cs_player.cpp#L3944
+Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init) //RadioText https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/server/cstrike/cs_player.cpp#L3944
 {
 	int dest = msg.ReadByte();
 	int client = msg.ReadByte();
@@ -905,7 +905,7 @@ public Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, in
 	return Plugin_Handled;
 }
 
-public void rf_radiotxt(DataPack dp)
+void rf_radiotxt(DataPack dp)
 {
 	dp.Reset();
 
@@ -965,7 +965,7 @@ public void rf_radiotxt(DataPack dp)
 	return;
 }
 
-public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
+void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -1008,7 +1008,7 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public void OnButton(const char[] output, int caller, int activator, float delay)
+void OnButton(const char[] output, int caller, int activator, float delay)
 {
 	if(IsValidClient(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
@@ -1032,7 +1032,7 @@ public void OnButton(const char[] output, int caller, int activator, float delay
 	return;
 }
 
-public void OnJump(Event event, const char[] name, bool dontBroadcast)
+void OnJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -1044,7 +1044,7 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public void OnDeath(Event event, const char[] name, bool dontBroadcast)
+void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll", 0);
@@ -1083,7 +1083,7 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public void OnTeam(Event event, const char[] name, bool dontBroadcast)
+void OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int team = event.GetInt("team");
@@ -1112,14 +1112,14 @@ public void OnTeam(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public Action joinclass(int client, const char[] command, int argc)
+Action joinclass(int client, const char[] command, int argc)
 {
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE);
 
 	return Plugin_Continue;
 }
 
-public Action timer_respawn(Handle timer, int client)
+Action timer_respawn(Handle timer, int client)
 {
 	if(IsClientInGame(client) == true && GetClientTeam(client) != CS_TEAM_SPECTATOR && IsPlayerAlive(client) == false)
 	{
@@ -1129,7 +1129,7 @@ public Action timer_respawn(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-public Action autobuy(int client, const char[] command, int argc)
+Action autobuy(int client, const char[] command, int argc)
 {
 	Block(client);
 
@@ -1138,7 +1138,7 @@ public Action autobuy(int client, const char[] command, int argc)
 	return Plugin_Continue;
 }
 
-public Action rebuy(int client, const char[] command, int argc)
+Action rebuy(int client, const char[] command, int argc)
 {	
 	if(g_menuOpened[client] == false)
 	{
@@ -1150,7 +1150,7 @@ public Action rebuy(int client, const char[] command, int argc)
 	return Plugin_Continue;
 }
 
-public Action cheer(int client, const char[] command, int argc)
+Action cheer(int client, const char[] command, int argc)
 {
 	if(IsValidPartner(client) == true)
 	{
@@ -1160,14 +1160,14 @@ public Action cheer(int client, const char[] command, int argc)
 	return Plugin_Continue; //happy holliday.
 }
 
-public Action showbriefing(int client, const char[] command, int argc)
+Action showbriefing(int client, const char[] command, int argc)
 {
 	Control(client);
 
 	return Plugin_Continue;
 }
 
-public void Control(int client)
+void Control(int client)
 {
 	Menu menu = new Menu(menu_info_handler);
 
@@ -1190,7 +1190,7 @@ public void Control(int client)
 	return;
 }
 
-public int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
+int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -1264,7 +1264,7 @@ public int menu_info_handler(Menu menu, MenuAction action, int param1, int param
 	return view_as<int>(action);
 }
 
-public Action headtrack_reset_home_pos(int client, const char[] command, int argc)
+Action headtrack_reset_home_pos(int client, const char[] command, int argc)
 {
 	bool color = gCV_color.BoolValue;
 	
@@ -1276,7 +1276,7 @@ public Action headtrack_reset_home_pos(int client, const char[] command, int arg
 	return Plugin_Continue;
 }
 
-public Action ACLCPNUM(int client, const char[] command, int argc)
+Action ACLCPNUM(int client, const char[] command, int argc)
 {
 	if(g_zoneCPnumReadyToNew[client] == true)
 	{
@@ -1300,7 +1300,7 @@ public Action ACLCPNUM(int client, const char[] command, int argc)
 	return Plugin_Continue;
 }
 
-/*public void output_teleport(const char[] output, int caller, int activator, float delay)
+/*void output_teleport(const char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
 	{
@@ -1308,7 +1308,7 @@ public Action ACLCPNUM(int client, const char[] command, int argc)
 	}
 }*/
 
-public Action cmd_checkpoint(int client, int args)
+Action cmd_checkpoint(int client, int args)
 {
 	bool checkpoint = gCV_checkpoint.BoolValue;
 
@@ -1322,7 +1322,7 @@ public Action cmd_checkpoint(int client, int args)
 	return Plugin_Handled;
 }
 
-public void Checkpoint(int client)
+void Checkpoint(int client)
 {
 	if(g_devmap == true)
 	{
@@ -1351,7 +1351,7 @@ public void Checkpoint(int client)
 	return;
 }
 
-public int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
+int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -1607,7 +1607,7 @@ public void OnClientDisconnect(int client)
 	return;
 }
 
-public void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
+void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -1652,7 +1652,7 @@ public void SQLAddUser(Database db, DBResultSet results, const char[] error, any
 	return;
 }
 
-public void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
+void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -1669,7 +1669,7 @@ public void SQLUserAdded(Database db, DBResultSet results, const char[] error, a
 	return; //void function return nothing. Here code will be escape and below code will be skiped in this function part.
 }
 
-public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, any data)
+void SQLUpdateUser(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -1708,7 +1708,7 @@ public void SQLUpdateUser(Database db, DBResultSet results, const char[] error, 
 	return; //void return nothing
 }
 
-public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] error, any data)
+void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -1737,7 +1737,7 @@ public void SQLUpdateUserSuccess(Database db, DBResultSet results, const char[] 
 	return;
 }
 
-public void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -1757,7 +1757,7 @@ public void SQLGetPoints(Database db, DBResultSet results, const char[] error, a
 	return;
 }
 
-public void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -1784,7 +1784,7 @@ public void SQLGetServerRecord(Database db, DBResultSet results, const char[] er
 	return;
 }
 
-public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -1816,7 +1816,7 @@ public void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] 
 	return;
 }
 
-public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
+Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
 	bool boostfix = gCV_boostfix.BoolValue;
 
@@ -1891,7 +1891,7 @@ public Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 	return Plugin_Continue;
 }
 
-public void SDKBoostFix(int client)
+void SDKBoostFix(int client)
 {
 	bool boostfix = gCV_boostfix.BoolValue;
 
@@ -1931,7 +1931,7 @@ public void SDKBoostFix(int client)
 	return;
 }
 
-public Action cmd_trikz(int client, int args)
+Action cmd_trikz(int client, int args)
 {
 	bool trikz = gCV_trikz.BoolValue;
 
@@ -1948,7 +1948,7 @@ public Action cmd_trikz(int client, int args)
 	return Plugin_Handled;
 }
 
-public void Trikz(int client)
+void Trikz(int client)
 {
 	g_menuOpened[client] = true;
 
@@ -1992,7 +1992,7 @@ public void Trikz(int client)
 	return;
 }
 
-public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
+int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2075,7 +2075,7 @@ public int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-public Action cmd_block(int client, int args)
+Action cmd_block(int client, int args)
 {
 	bool block = gCV_block.BoolValue;
 
@@ -2089,7 +2089,7 @@ public Action cmd_block(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action Block(int client) //thanks maru for optimization.
+Action Block(int client) //thanks maru for optimization.
 {
 	g_block[client] = !g_block[client];
 
@@ -2111,7 +2111,7 @@ public Action Block(int client) //thanks maru for optimization.
 	return Plugin_Handled;
 }
 
-public Action cmd_partner(int client, int args)
+Action cmd_partner(int client, int args)
 {
 	bool partner = gCV_partner.BoolValue;
 
@@ -2125,7 +2125,7 @@ public Action cmd_partner(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void Partner(int client)
+void Partner(int client)
 {
 	if(g_devmap == true)
 	{
@@ -2215,7 +2215,7 @@ stock void Partner(int client)
 	return;
 }
 
-public int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
+int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
@@ -2252,7 +2252,7 @@ public int partner_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-public int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
+int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
@@ -2274,8 +2274,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 							g_partner[param1] = partner;
 							g_partner[partner] = param1;
 
-							static GlobalForward hForward = null;
-							hForward = new GlobalForward("Trikz_OnPartner", ET_Hook, Param_Cell, Param_Cell);
+							GlobalForward hForward = new GlobalForward("Trikz_OnPartner", ET_Hook, Param_Cell, Param_Cell);
 							Call_StartForward(hForward);
 							Call_PushCell(param1);
 							Call_PushCell(partner);
@@ -2330,7 +2329,7 @@ public int askpartner_handle(Menu menu, MenuAction action, int param1, int param
 	return view_as<int>(action);
 }
 
-public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
+int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2350,8 +2349,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 					g_partner[param1] = 0;
 					g_partner[partner] = 0;
 
-					static GlobalForward hForward = null;
-					hForward = new GlobalForward("Trikz_OnBreakup", ET_Hook, Param_Cell, Param_Cell);
+					GlobalForward hForward = new GlobalForward("Trikz_OnBreakup", ET_Hook, Param_Cell, Param_Cell);
 					Call_StartForward(hForward);
 					Call_PushCell(param1);
 					Call_PushCell(partner);
@@ -2383,7 +2381,7 @@ public int cancelpartner_handler(Menu menu, MenuAction action, int param1, int p
 	return view_as<int>(action);
 }
 
-public Action cmd_color(int client, int args)
+Action cmd_color(int client, int args)
 {
 	bool color = gCV_color.BoolValue;
 
@@ -2397,7 +2395,7 @@ public Action cmd_color(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void ColorSelect(int client)
+void ColorSelect(int client)
 {
 	Menu menu = new Menu(handler_menuColor);
 	menu.SetTitle("%T", "Color", client);
@@ -2417,7 +2415,7 @@ stock void ColorSelect(int client)
 	return;
 }
 
-public int handler_menuColor(Menu menu, MenuAction action, int param1, int param2)
+int handler_menuColor(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2469,7 +2467,7 @@ public int handler_menuColor(Menu menu, MenuAction action, int param1, int param
 	return view_as<int>(action);
 }
 
-stock void ColorTeam(int client, bool allowColor)
+void ColorTeam(int client, bool allowColor)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2521,8 +2519,7 @@ stock void ColorTeam(int client, bool allowColor)
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[client] == true ? 255 : 125);
 			SetEntityRenderColor(partner, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[partner] == true ? 255 : 125);
 
-			static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-			hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Array);
+			GlobalForward hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Array); //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 			Call_StartForward(hForward);
 			Call_PushCell(client);
 			Call_PushCell(partner);
@@ -2555,7 +2552,7 @@ stock void ColorTeam(int client, bool allowColor)
 	return;
 }
 
-stock void ColorFlashbang(int client)
+void ColorFlashbang(int client)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
@@ -2585,8 +2582,7 @@ stock void ColorFlashbang(int client)
 		Format(value, sizeof(value), "%s;%s;%s;%i", colorTypeExploded[0], colorTypeExploded[1], colorTypeExploded[2], g_colorCount[client][1]);
 		SetClientCookie(client, g_cookie[10], value);
 
-		static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-		hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Array); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
+		GlobalForward hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Array); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
 		Call_StartForward(hForward);
 		Call_PushCell(client);
 		Call_PushArray(g_colorBuffer[client][1], 3);
@@ -2601,7 +2597,7 @@ stock void ColorFlashbang(int client)
 	return;
 }
 
-public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -2635,7 +2631,7 @@ public void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] e
 	return;
 }
 
-public Action cmd_restart(int client, int args)
+Action cmd_restart(int client, int args)
 {
 	bool restart = gCV_restart.BoolValue;
 
@@ -2649,7 +2645,7 @@ public Action cmd_restart(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void Restart(int client, bool ask)
+void Restart(int client, bool ask)
 {
 	if(g_devmap == true)
 	{
@@ -2693,7 +2689,7 @@ stock void Restart(int client, bool ask)
 	return;
 }
 
-stock void DoRestart(int client)
+void DoRestart(int client)
 {
 	if(IsValidPartner(client) == true)
 	{
@@ -2702,8 +2698,7 @@ stock void DoRestart(int client)
 		CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
 
-		static GlobalForward hForward = null;
-		hForward = new GlobalForward("Trikz_OnRestart", ET_Hook, Param_Cell, Param_Cell);
+		GlobalForward hForward = new GlobalForward("Trikz_OnRestart", ET_Hook, Param_Cell, Param_Cell);
 		Call_StartForward(hForward);
 		Call_PushCell(client);
 		Call_PushCell(partner);
@@ -2722,7 +2717,7 @@ stock void DoRestart(int client)
 	}
 }
 
-public int handler_askforrestart(Menu menu, MenuAction action, int param1, int param2)
+int handler_askforrestart(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2746,7 +2741,7 @@ public int handler_askforrestart(Menu menu, MenuAction action, int param1, int p
 	return view_as<int>(action);
 }
 
-public Action cmd_autoflash(int client, int args)
+Action cmd_autoflash(int client, int args)
 {
 	bool autoflashbang = gCV_autoflashbang.BoolValue;
 	
@@ -2777,7 +2772,7 @@ public Action cmd_autoflash(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_autoswitch(int client, int args)
+Action cmd_autoswitch(int client, int args)
 {
 	bool autoswitch = gCV_autoswitch.BoolValue;
 	
@@ -2806,7 +2801,7 @@ public Action cmd_autoswitch(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_bhop(int client, int args)
+Action cmd_bhop(int client, int args)
 {
 	bool bhop = gCV_bhop.BoolValue;
 	
@@ -2835,7 +2830,7 @@ public Action cmd_bhop(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_endmsg(int client, int args)
+Action cmd_endmsg(int client, int args)
 {
 	bool endmsg = gCV_endmsg.BoolValue;
 
@@ -2864,7 +2859,7 @@ public Action cmd_endmsg(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_top10(int client, int args)
+Action cmd_top10(int client, int args)
 {
 	bool top10 = gCV_top10.BoolValue;
 
@@ -2878,7 +2873,7 @@ public Action cmd_top10(int client, int args)
 	return Plugin_Handled;
 }
 
-public void Top10(int client)
+void Top10(int client)
 {
 	if(g_top10ac <= GetGameTime())
 	{
@@ -2907,7 +2902,7 @@ public void Top10(int client)
 	return;
 }
 
-public void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
+void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -2943,7 +2938,7 @@ public void SQLTop10(Database db, DBResultSet results, const char[] error, any d
 	return;
 }
 
-public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
+void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -2988,7 +2983,7 @@ public void SQLTop10_2(Database db, DBResultSet results, const char[] error, any
 	return;
 }
 
-public void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
+void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -3052,7 +3047,7 @@ public void SQLTop10_3(Database db, DBResultSet results, const char[] error, any
 	return;
 }
 
-public Action cmd_control(int client, int args)
+Action cmd_control(int client, int args)
 {
 	bool control = gCV_control.BoolValue;
 
@@ -3066,7 +3061,7 @@ public Action cmd_control(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_skin(int client, int args)
+Action cmd_skin(int client, int args)
 {
 	bool skin = gCV_skin.BoolValue;
 
@@ -3080,7 +3075,7 @@ public Action cmd_skin(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void Skin(int client)
+void Skin(int client)
 {
 	Menu menu = new Menu(skinmenu_hanlder);
 	menu.SetTitle("Skin");
@@ -3093,7 +3088,7 @@ stock void Skin(int client)
 	return;
 }
 
-public int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2)
+int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3122,7 +3117,7 @@ public int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2
 	return view_as<int>(action);
 }
 
-stock void PlayerSkin(int client)
+void PlayerSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
@@ -3142,7 +3137,7 @@ stock void PlayerSkin(int client)
 	return;
 }
 
-stock void FlashbangSkin(int client)
+void FlashbangSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
@@ -3164,7 +3159,7 @@ stock void FlashbangSkin(int client)
 	return;
 }
 
-public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
+int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3250,7 +3245,7 @@ public int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int 
 	return view_as<int>(action);
 }
 
-public Action cmd_macro(int client, int args)
+Action cmd_macro(int client, int args)
 {
 	bool macro = gCV_macro.BoolValue;
 	
@@ -3270,7 +3265,7 @@ public Action cmd_macro(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action timer_resetfactory(Handle timer, int client)
+Action timer_resetfactory(Handle timer, int client)
 {
 	if(IsClientInGame(client) == true)
 	{
@@ -3280,7 +3275,7 @@ public Action timer_resetfactory(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-stock void CreateStart()
+void CreateStart()
 {
 	int entity = CreateEntityByName("trigger_multiple", -1);
 
@@ -3341,7 +3336,7 @@ stock void CreateStart()
 	return;
 }
 
-public void CreateEnd()
+void CreateEnd()
 {
 	int entity = CreateEntityByName("trigger_multiple", -1);
 
@@ -3393,14 +3388,14 @@ public void CreateEnd()
 
 	PrintToServer("End zone is successfuly setup.");
 
-	CPSetup(0);
+	CPSetup();
 
 	g_zoneHave[1] = true;
 
 	return;
 }
 
-public void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPack data)
+void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
 	int client = GetClientFromSerial(data.ReadCell());
@@ -3446,7 +3441,7 @@ public void SQLDeleteZone(Database db, DBResultSet results, const char[] error, 
 	return;
 }
 
-public Action cad_deleteallcp(int client, int args)
+Action cad_deleteallcp(int client, int args)
 {
 	if(g_devmap == true)
 	{
@@ -3463,7 +3458,7 @@ public Action cad_deleteallcp(int client, int args)
 	return Plugin_Handled;
 }
 
-public void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
+void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data);
 
@@ -3506,7 +3501,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	return Plugin_Continue;
 }
 
-public Action cad_test(int client, int args)
+Action cad_test(int client, int args)
 {
 	char arg[256] = "";
 	GetCmdArgString(arg, sizeof(arg));
@@ -3543,7 +3538,7 @@ public Action cad_test(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void SendMessage(int client, const char[] text)
+void SendMessage(int client, const char[] text)
 {
 	char name[MAX_NAME_LENGTH] = "";
 	GetClientName(client, name, sizeof(name));
@@ -3590,7 +3585,7 @@ stock void SendMessage(int client, const char[] text)
 	return;
 }
 
-public Action cad_maptier(int client, int args)
+Action cad_maptier(int client, int args)
 {
 	if(g_devmap == true)
 	{
@@ -3620,7 +3615,7 @@ public Action cad_maptier(int client, int args)
 	return Plugin_Handled;
 }
 
-public void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPack data)
+void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
 	int client = GetClientFromSerial(data.ReadCell());
@@ -3644,7 +3639,7 @@ public void SQLTierRemove(Database db, DBResultSet results, const char[] error, 
 	return;
 }
 
-public void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPack data)
+void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
 	int client = GetClientFromSerial(data.ReadCell());
@@ -3669,7 +3664,7 @@ public void SQLTierInsert(Database db, DBResultSet results, const char[] error, 
 	return;
 }
 
-public void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack data)
+void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
 	int client = GetClientFromSerial(data.ReadCell());
@@ -3735,7 +3730,7 @@ public void SQLSetZone(Database db, DBResultSet results, const char[] error, Dat
 
 				g_center[cpnum + 1][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][0][2]) / 2.0);
 
-				CPSetup(0);
+				CPSetup();
 
 				LogToFile("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", cpnum, g_cpPos[cpnum][0][0], g_cpPos[cpnum][0][1], g_cpPos[cpnum][0][2], g_cpPos[cpnum][1][0], g_cpPos[cpnum][1][1], g_cpPos[cpnum][1][2], g_map, client, GetSteamAccountID(client, true));
 			}
@@ -3763,7 +3758,7 @@ public void SQLSetZone(Database db, DBResultSet results, const char[] error, Dat
 	return;
 }
 
-public Action cad_zones(int client, int args)
+Action cad_zones(int client, int args)
 {
 	if(g_devmap == true)
 	{
@@ -3788,7 +3783,7 @@ public Action cad_zones(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void ZoneEditor(int client)
+void ZoneEditor(int client)
 {
 	float nulled[3] = {0.0, ...};
 
@@ -3824,7 +3819,7 @@ stock void ZoneEditor(int client)
 	return;
 }
 
-public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
+int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3858,7 +3853,7 @@ public int zones_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-stock void ZoneAdd(int client)
+void ZoneAdd(int client)
 {
 	float nulled[3] = {0.0, ...};
 
@@ -3896,7 +3891,7 @@ stock void ZoneAdd(int client)
 	return;
 }
 
-public int zones_add_handler(Menu menu, MenuAction action, int param1, int param2)
+int zones_add_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3949,7 +3944,7 @@ public int zones_add_handler(Menu menu, MenuAction action, int param1, int param
 	return view_as<int>(action);
 }
 
-stock void ZoneEdit(int client)
+void ZoneEdit(int client)
 {
 	Menu menu = new Menu(zones_edit_handler);
 	menu.SetTitle("%T", "ZoneEditorEdit", client);
@@ -3995,7 +3990,7 @@ stock void ZoneEdit(int client)
 	return;
 }
 
-stock void ZoneCreator(int client)
+void ZoneCreator(int client)
 {
 	Menu menu = new Menu(zones_creator_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorUse", client);
@@ -4020,7 +4015,7 @@ stock void ZoneCreator(int client)
 	return;
 }
 
-public int zones_creator_handler(Menu menu, MenuAction action, int param1, int param2)
+int zones_creator_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4099,7 +4094,7 @@ public int zones_creator_handler(Menu menu, MenuAction action, int param1, int p
 	return view_as<int>(action);
 }
 
-public int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
+int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4165,7 +4160,7 @@ public int zones_edit_handler(Menu menu, MenuAction action, int param1, int para
 	return view_as<int>(action);
 }
 
-stock void ZoneEditorStart(int client)
+void ZoneEditorStart(int client)
 {
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorStartZone", client);
@@ -4205,7 +4200,7 @@ stock void ZoneEditorStart(int client)
 	return;
 }
 
-stock void ZoneEditorEnd(int client)
+void ZoneEditorEnd(int client)
 {
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorEndZone", client);
@@ -4245,7 +4240,7 @@ stock void ZoneEditorEnd(int client)
 	return;
 }
 
-stock void ZoneEditorCP(int client, int cpnum)
+void ZoneEditorCP(int client, int cpnum)
 {
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorCPZone", client, cpnum);
@@ -4289,7 +4284,7 @@ stock void ZoneEditorCP(int client, int cpnum)
 	return;
 }
 
-public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
+int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4442,7 +4437,7 @@ public int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-stock void ZoneTP(int client)
+void ZoneTP(int client)
 {
 	Menu menu = new Menu(zones_tp_handler);
 	menu.SetTitle("%T", "ZoneEditorTP", client);
@@ -4483,7 +4478,7 @@ stock void ZoneTP(int client)
 	return;
 }
 
-public int zones_tp_handler(Menu menu, MenuAction action, int param1, int param2)
+int zones_tp_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4544,7 +4539,7 @@ public int zones_tp_handler(Menu menu, MenuAction action, int param1, int param2
 
 //https://forums.alliedmods.net/showthread.php?t=261378
 
-public void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any data)
+void SQLCreateCPTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -4559,7 +4554,7 @@ public void SQLCreateCPTable(Database db, DBResultSet results, const char[] erro
 	return;
 }
 
-public void SQLCreateTierTable(Database db, DBResultSet results, const char[] error, any data)
+void SQLCreateTierTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -4574,7 +4569,7 @@ public void SQLCreateTierTable(Database db, DBResultSet results, const char[] er
 	return;
 }
 
-stock void CPSetup(int client)
+void CPSetup()
 {
 	g_cpCount = 0;
 	g_zoneHave[2] = false;
@@ -4585,7 +4580,7 @@ stock void CPSetup(int client)
 	return;
 }
 
-public void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
+void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -4613,7 +4608,7 @@ public void SQLCPSetup(Database db, DBResultSet results, const char[] error, any
 	}
 }
 
-public void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
+void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -4668,7 +4663,7 @@ public void SQLCPSetup2(Database db, DBResultSet results, const char[] error, an
 	return;
 }
 
-stock void CreateCP(int cpnum)
+void CreateCP(int cpnum)
 {
 	char trigger[32] = "";
 	Format(trigger, sizeof(trigger), "trueexpert_cp%i", cpnum);
@@ -4725,7 +4720,7 @@ stock void CreateCP(int cpnum)
 	return;
 }
 
-public void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
+void SQLCreateUserTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -4740,7 +4735,7 @@ public void SQLCreateUserTable(Database db, DBResultSet results, const char[] er
 	return;
 }
 
-public void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
+void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -4755,7 +4750,7 @@ public void SQLRecordsTable(Database db, DBResultSet results, const char[] error
 	return;
 }
 
-public Action SDKEndTouch(int entity, int other)
+Action SDKEndTouch(int entity, int other)
 {
 	if(IsValidClient(other) == true && IsValidPartner(other) == true && IsFakeClient(other) == false && g_timerReadyToStart[g_partner[other]] == true)
 	{
@@ -4791,8 +4786,7 @@ public Action SDKEndTouch(int entity, int other)
 		g_cpCountTryToAlign[other] = 0;
 		g_cpCountTryToAlign[partner] = 0;
 
-		static GlobalForward hForward = null;
-		hForward = new GlobalForward("Trikz_OnTimerStart", ET_Hook, Param_Cell, Param_Cell);
+		GlobalForward hForward = new GlobalForward("Trikz_OnTimerStart", ET_Hook, Param_Cell, Param_Cell);
 		Call_StartForward(hForward);
 		Call_PushCell(other);
 		Call_PushCell(partner);
@@ -4806,7 +4800,7 @@ public Action SDKEndTouch(int entity, int other)
 	return Plugin_Continue;
 }
 
-public Action SDKTouch(int entity, int other)
+Action SDKTouch(int entity, int other)
 {
 	if(!(GetEntityFlags(other) & FL_ONGROUND))
 	{
@@ -4816,7 +4810,7 @@ public Action SDKTouch(int entity, int other)
 	return Plugin_Continue;
 }
 
-public Action SDKStartTouch(int entity, int other)
+Action SDKStartTouch(int entity, int other)
 {
 	if(IsValidClient(other) == true && g_devmap == false && IsFakeClient(other) == false)
 	{
@@ -4927,8 +4921,7 @@ public Action SDKStartTouch(int entity, int other)
 								CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 							}
 
-							static GlobalForward hForward = null;
-							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							GlobalForward hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 							Call_StartForward(hForward);
 							Call_PushCell(other);
 							Call_PushCell(partner);
@@ -4956,8 +4949,7 @@ public Action SDKStartTouch(int entity, int other)
 							Format(g_query, sizeof(g_query), "UPDATE records SET finishes = finishes + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
 							g_mysql.Query(SQLUpdateRecord, g_query, _, DBPrio_Normal);
 
-							static GlobalForward hForward = null;
-							hForward = new GlobalForward("Trikz_OnFinish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							GlobalForward hForward = new GlobalForward("Trikz_OnFinish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 							Call_StartForward(hForward);
 							Call_PushCell(other);
 							Call_PushCell(partner);
@@ -5001,8 +4993,7 @@ public Action SDKStartTouch(int entity, int other)
 								g_teamRecord[partner] = time;
 							}
 
-							static GlobalForward hForward = null;
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							GlobalForward hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 							Call_StartForward(hForward);
 							Call_PushCell(other);
 							Call_PushCell(partner);
@@ -5053,8 +5044,7 @@ public Action SDKStartTouch(int entity, int other)
 								CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
 							}
 
-							static GlobalForward hForward = null;
-							hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							GlobalForward hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 							Call_StartForward(hForward);
 							Call_PushCell(other);
 							Call_PushCell(partner);
@@ -5095,8 +5085,7 @@ public Action SDKStartTouch(int entity, int other)
 							g_teamRecord[other] = time;
 							g_teamRecord[partner] = time;
 
-							static GlobalForward hForward = null;
-							hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							GlobalForward hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 							Call_StartForward(hForward);
 							Call_PushCell(other);
 							Call_PushCell(partner);
@@ -5173,8 +5162,7 @@ public Action SDKStartTouch(int entity, int other)
 					Format(g_query, sizeof(g_query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
 					g_mysql.Query(SQLInsertRecord, g_query, _, DBPrio_Normal);
 
-					static GlobalForward hForward = null;
-					hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+					GlobalForward hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 					Call_StartForward(hForward);
 					Call_PushCell(other);
 					Call_PushCell(partner);
@@ -5226,7 +5214,7 @@ public Action SDKStartTouch(int entity, int other)
 	return Plugin_Continue;
 }
 
-stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, const char[] time, const char[] timeSR)
+void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyCP, bool firstCPRecord, bool cpRecord, int cpnum, const char[] time, const char[] timeSR)
 {
 	if(g_endMessage[client] == false)
 	{
@@ -5668,7 +5656,7 @@ stock void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool
 	return;
 }
 
-public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -5685,7 +5673,7 @@ public void SQLUpdateRecord(Database db, DBResultSet results, const char[] error
 	return;
 }
 
-public void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
+void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -5702,7 +5690,7 @@ public void SQLInsertRecord(Database db, DBResultSet results, const char[] error
 	return;
 }
 
-public Action timer_sourcetv(Handle timer)
+Action timer_sourcetv(Handle timer)
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable");
 
@@ -5722,7 +5710,7 @@ public Action timer_sourcetv(Handle timer)
 	return Plugin_Stop;
 }
 
-public Action timer_runsourcetv(Handle timer)
+Action timer_runsourcetv(Handle timer)
 {
 	char filenameOld[256] = "";
 	Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
@@ -5750,7 +5738,7 @@ public Action timer_runsourcetv(Handle timer)
 	return Plugin_Continue;
 }
 
-public void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
+void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	if(strlen(error) > 0)
 	{
@@ -5778,8 +5766,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
 			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
 
-			static GlobalForward hForward = null;
-			hForward = new GlobalForward("Trikz_OnCheckpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+			GlobalForward hForward = new GlobalForward("Trikz_OnCheckpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 			Call_StartForward(hForward);
 			Call_PushCell(other);
 			Call_PushCell(partner);
@@ -5807,7 +5794,7 @@ public void SQLCPSelect(Database db, DBResultSet results, const char[] error, Da
 	return;
 }
 
-public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack data)
+void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	if(strlen(error) > 0)
 	{
@@ -5835,8 +5822,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
 			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
 
-			static GlobalForward hForward = null;
-			hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+			GlobalForward hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 			Call_StartForward(hForward);
 			Call_PushCell(other);
 			Call_PushCell(partner);
@@ -5866,8 +5852,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				FinishMSG(other, false, false, true, false, true, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, true, cpnum, timeOwn, timeSR);
 
-				static GlobalForward hForward = null;
-				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+				GlobalForward hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 				Call_StartForward(hForward);
 				Call_PushCell(other);
 				Call_PushCell(partner);
@@ -5889,8 +5874,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 				FinishMSG(other, false, false, true, false, false, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, false, cpnum, timeOwn, timeSR);
 
-				static GlobalForward hForward = null;
-				hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+				GlobalForward hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 				Call_StartForward(hForward);
 				Call_PushCell(other);
 				Call_PushCell(partner);
@@ -5906,7 +5890,7 @@ public void SQLCPSelect2(Database db, DBResultSet results, const char[] error, D
 	return;
 }
 
-public void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -5945,7 +5929,7 @@ public void SQLSetTries(Database db, DBResultSet results, const char[] error, an
 	return;
 }
 
-public void SQLSetTriesInserted(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetTriesInserted(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -5960,7 +5944,7 @@ public void SQLSetTriesInserted(Database db, DBResultSet results, const char[] e
 	}
 }
 
-public void SQLSetTries2(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetTries2(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -6000,7 +5984,7 @@ public void SQLSetTries2(Database db, DBResultSet results, const char[] error, a
 	}
 }
 
-public void SQLSetTriesUpdated(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetTriesUpdated(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -6015,7 +5999,7 @@ public void SQLSetTriesUpdated(Database db, DBResultSet results, const char[] er
 	}
 }
 
-public void CreateTables()
+void CreateTables()
 {
 	g_mysql.Query(SQLCreateZonesTable, "CREATE TABLE IF NOT EXISTS zones (id INT AUTO_INCREMENT, map VARCHAR(128), type INT, possition_x FLOAT, possition_y FLOAT, possition_z FLOAT, possition_x2 FLOAT, possition_y2 FLOAT, possition_z2 FLOAT, PRIMARY KEY (id))", _, DBPrio_High); //https://stackoverflow.com/questions/8114535/mysql-1075-incorrect-table-definition-autoincrement-vs-another-key
 	g_mysql.Query(SQLCreateUserTable, "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT, username VARCHAR(64), steamid INT, firstjoin INT, lastjoin INT, points INT, PRIMARY KEY(id))", _, DBPrio_High);
@@ -6026,7 +6010,7 @@ public void CreateTables()
 	return;
 }
 
-public void SQLConnect(Database db, const char[] error, any data)
+void SQLConnect(Database db, const char[] error, any data)
 {
 	if(db != INVALID_HANDLE)
 	{
@@ -6068,7 +6052,7 @@ public void SQLConnect(Database db, const char[] error, any data)
 	return;
 }
 
-stock void ForceZonesSetup()
+void ForceZonesSetup()
 {
 	Format(g_query, sizeof(g_query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
 	g_mysql.Query(SQLSetZoneStart, g_query);
@@ -6076,7 +6060,7 @@ stock void ForceZonesSetup()
 	return;
 }
 
-public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -6105,7 +6089,7 @@ public void SQLSetZoneStart(Database db, DBResultSet results, const char[] error
 	return;
 }
 
-public void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any data)
+void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -6131,7 +6115,7 @@ public void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, 
 	return;
 }
 
-public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
+void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -6146,7 +6130,7 @@ public void SQLCreateZonesTable(Database db, DBResultSet results, const char[] e
 	return;
 }
 
-stock void DrawZone(int client, float life, float size, int speed, int zonetype, int zonecount)
+void DrawZone(int client, float life, float size, int speed, int zonetype, int zonecount)
 {
 	float point[12][2][3], start[12][3], end[12][3];
 
@@ -6269,7 +6253,7 @@ stock void DrawZone(int client, float life, float size, int speed, int zonetype,
 	return;
 }
 
-stock void ResetFactory(int client)
+void ResetFactory(int client)
 {
 	g_timerReadyToStart[client] = true;
 	//g_timerTime[client] = 0.0;
@@ -6879,7 +6863,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public Action ProjectileBoostFix(int entity, int other)
+Action ProjectileBoostFix(int entity, int other)
 {
 	if(IsValidClient(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
@@ -6930,7 +6914,7 @@ public Action ProjectileBoostFix(int entity, int other)
 	return Plugin_Continue;
 }
 
-public Action cmd_devmap(int client, int args)
+Action cmd_devmap(int client, int args)
 {
 	bool devmap = gCV_devmap.BoolValue;
 
@@ -6987,7 +6971,7 @@ public Action cmd_devmap(int client, int args)
 	return Plugin_Handled;
 }
 
-public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
+int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -7024,7 +7008,7 @@ public int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-public Action timer_devmap(Handle timer)
+Action timer_devmap(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	Devmap(true);
@@ -7032,7 +7016,7 @@ public Action timer_devmap(Handle timer)
 	return Plugin_Stop;
 }
 
-stock void Devmap(bool force)
+void Devmap(bool force)
 {
 	if(force == true || g_voters == 0)
 	{
@@ -7107,7 +7091,7 @@ stock void Devmap(bool force)
 	return;
 }
 
-public Action timer_changelevel(Handle timer, bool value)
+Action timer_changelevel(Handle timer, bool value)
 {
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -7126,7 +7110,7 @@ public Action timer_changelevel(Handle timer, bool value)
 	return Plugin_Stop;
 }
 
-public Action cmd_top(int client, int args)
+Action cmd_top(int client, int args)
 {
 	bool top = gCV_top.BoolValue;
 
@@ -7140,7 +7124,7 @@ public Action cmd_top(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action timer_motd(Handle timer, int client)
+Action timer_motd(Handle timer, int client)
 {
 	if(IsClientInGame(client) == true)
 	{
@@ -7159,7 +7143,7 @@ public Action timer_motd(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-public Action cmd_afk(int client, int args)
+Action cmd_afk(int client, int args)
 {
 	bool afk = gCV_afk.BoolValue;
 
@@ -7228,7 +7212,7 @@ public Action cmd_afk(int client, int args)
 	return Plugin_Handled;
 }
 
-public int afk_handler(Menu menu, MenuAction action, int param1, int param2)
+int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -7263,7 +7247,7 @@ public int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-public Action timer_afk(Handle timer, int client)
+Action timer_afk(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	AFK(client, true);
@@ -7271,7 +7255,7 @@ public Action timer_afk(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-stock void AFK(int client, bool force)
+void AFK(int client, bool force)
 {
 	if(force == true || g_voters == 0)
 	{
@@ -7287,7 +7271,7 @@ stock void AFK(int client, bool force)
 	return;
 }
 
-public Action cmd_noclip(int client, int args)
+Action cmd_noclip(int client, int args)
 {
 	bool noclip = gCV_noclip.BoolValue;
 
@@ -7301,7 +7285,7 @@ public Action cmd_noclip(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void Noclip(int client)
+void Noclip(int client)
 {
 	if(IsValidClient(client) == false)
 	{
@@ -7333,7 +7317,7 @@ stock void Noclip(int client)
 	return;
 }
 
-public Action cmd_spec(int client, int args)
+Action cmd_spec(int client, int args)
 {
 	bool spec = gCV_spec.BoolValue;
 
@@ -7347,7 +7331,7 @@ public Action cmd_spec(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_hud(int client, int args)
+Action cmd_hud(int client, int args)
 {
 	bool hud = gCV_hud.BoolValue;
 
@@ -7361,7 +7345,7 @@ public Action cmd_hud(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void HudMenu(int client)
+void HudMenu(int client)
 {
 	g_menuOpenedHud[client] = true;
 
@@ -7380,7 +7364,7 @@ stock void HudMenu(int client)
 	return;
 }
 
-public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
+int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -7442,7 +7426,7 @@ public int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-public Action cmd_vel(int client, int args)
+Action cmd_vel(int client, int args)
 {
 	bool vel = gCV_vel.BoolValue;
 
@@ -7471,7 +7455,7 @@ public Action cmd_vel(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void VelHud(int client)
+void VelHud(int client)
 {
 	float vel[3] = {0.0, ...};
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vel, 0);
@@ -7503,7 +7487,7 @@ stock void VelHud(int client)
 	return;
 }
 
-public Action cmd_mlstats(int client, int args)
+Action cmd_mlstats(int client, int args)
 {
 	bool mlstats = gCV_mlstats.BoolValue;
 
@@ -7532,7 +7516,7 @@ public Action cmd_mlstats(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_button(int client, int args)
+Action cmd_button(int client, int args)
 {
 	bool button = gCV_button.BoolValue;
 
@@ -7553,7 +7537,7 @@ public Action cmd_button(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_pbutton(int client, int args)
+Action cmd_pbutton(int client, int args)
 {
 	bool pbutton = gCV_pbutton.BoolValue;
 
@@ -7574,7 +7558,7 @@ public Action cmd_pbutton(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action ProjectileBoostFixEndTouch(int entity, int other)
+Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(other == 0)
 	{
@@ -7584,7 +7568,7 @@ public Action ProjectileBoostFixEndTouch(int entity, int other)
 	return Plugin_Continue;
 }
 
-public Action cmd_time(int client, int args)
+/*Action cmd_time(int client, int args)
 {
 	if(IsPlayerAlive(client) == true)
 	{
@@ -7618,7 +7602,7 @@ public Action cmd_time(int client, int args)
 	}
 
 	return Plugin_Handled;
-}
+}*/
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
@@ -7638,7 +7622,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	return;
 }
 
-public void SDKProjectile(int entity)
+void SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", 0);
 
@@ -7683,7 +7667,7 @@ public void SDKProjectile(int entity)
 	return;
 }
 
-public void frame_blockExplosion(int entity)
+void frame_blockExplosion(int entity)
 {
 	if(IsValidEntity(entity) == true)
 	{
@@ -7693,7 +7677,7 @@ public void frame_blockExplosion(int entity)
 	return;
 }
 
-public Action timer_deleteProjectile(Handle timer, int entity)
+Action timer_deleteProjectile(Handle timer, int entity)
 {
 	if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) == true)
 	{
@@ -7713,7 +7697,7 @@ public Action timer_deleteProjectile(Handle timer, int entity)
 	return Plugin_Stop;
 }
 
-stock void FlashbangEffect(int entity)
+void FlashbangEffect(int entity)
 {
 	bool filter = LibraryExists("trueexpert-entityfilter");
 
@@ -7810,7 +7794,7 @@ stock void FlashbangEffect(int entity)
 	return;
 }
 
-public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
+Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR, 0); //https://forums.alliedmods.net/showthread.php?p=1687371
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR, 0);
@@ -7818,7 +7802,7 @@ public Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& 
 	return Plugin_Handled; //Full god-mode.
 }
 
-public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
+void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
 	bool autoflashbang = gCV_autoflashbang.BoolValue;
 
@@ -7830,7 +7814,7 @@ public void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/n
 	return;
 }
 
-public Action SDKWeaponDrop(int client, int weapon)
+Action SDKWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon) == true)
 	{
@@ -7848,7 +7832,7 @@ public Action SDKWeaponDrop(int client, int weapon)
 	return Plugin_Continue;
 }
 
-stock void GiveFlashbang(int client)
+void GiveFlashbang(int client)
 {
 	bool autoflashbang = gCV_autoflashbang.BoolValue;
 	
@@ -7869,7 +7853,7 @@ stock void GiveFlashbang(int client)
 	return;
 }
 
-public bool TraceFilter(int entity, int contentMask, int client)
+bool TraceFilter(int entity, int contentMask, int client)
 {
 	if(LibraryExists("trueexpert-entityfilter") == true)
 	{
@@ -7887,12 +7871,12 @@ public bool TraceFilter(int entity, int contentMask, int client)
 	return false;
 }
 
-public bool TraceFilterDontHitSelf(int entity, int contentsMask, any data)
+bool TraceFilterDontHitSelf(int entity, int contentsMask, any data)
 {
 	return entity != data;
 }
 
-public Action timer_removePing(Handle timer, int client)
+Action timer_removePing(Handle timer, int client)
 {
 	int entity = EntRefToEntIndex(g_pingModel[client]);
 
@@ -7916,7 +7900,7 @@ public Action timer_removePing(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-public Action SDKSetTransmitPing(int entity, int client)
+Action SDKSetTransmitPing(int entity, int client)
 {
 	if(IsPlayerAlive(client) == true && g_pingModelOwner[entity] != client && g_partner[g_pingModelOwner[entity]] != g_partner[g_partner[client]])
 	{
@@ -7926,7 +7910,7 @@ public Action SDKSetTransmitPing(int entity, int client)
 	return Plugin_Continue;
 }
 
-public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
+Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
 	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav", false) == true && g_silentKnife == true)
 	{
@@ -7945,7 +7929,7 @@ public Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLAT
 	return Plugin_Continue;
 }
 
-public Action timer_clantag(Handle timer, int client)
+Action timer_clantag(Handle timer, int client)
 {
 	if(IsValidClient(client) == true)
 	{
@@ -7965,7 +7949,7 @@ public Action timer_clantag(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-stock void MLStats(int client, bool ground)
+void MLStats(int client, bool ground)
 {
 	if(IsFakeClient(client) == true)
 	{
@@ -8090,7 +8074,7 @@ stock void MLStats(int client, bool ground)
 	return;
 }
 
-stock int Stuck(int client)
+int Stuck(int client)
 {
 	float mins[3] = {0.0, ...}, maxs[3] = {0.0, ...}, origin[3] = {0.0, ...};
 	GetClientMins(client, mins);
@@ -8101,7 +8085,7 @@ stock int Stuck(int client)
 	return TR_GetEntityIndex();
 }
 
-public bool TR_donthitself(int entity, int mask, int client)
+bool TR_donthitself(int entity, int mask, int client)
 {
 	if(LibraryExists("trueexpert-entityfilter") == true)
 	{
@@ -8116,28 +8100,28 @@ public bool TR_donthitself(int entity, int mask, int client)
 	return false;
 }
 
-public int Native_GetClientButtons(Handle plugin, int numParams)
+int Native_GetClientButtons(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
 	return g_entityButtons[client];
 }
 
-public int Native_GetClientPartner(Handle plugin, int numParams)
+int Native_GetClientPartner(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
 	return g_partner[client];
 }
 
-public int Native_GetTimerState(Handle plugin, int numParams)
+int Native_GetTimerState(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 
 	return g_timerState[client];
 }
 
-public int Native_SetPartner(Handle plugin, int numParams)
+int Native_SetPartner(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	int partner = GetNativeCell(2);
@@ -8148,7 +8132,7 @@ public int Native_SetPartner(Handle plugin, int numParams)
 	return numParams;
 }
 
-public int Native_Restart(Handle plugin, int numParams)
+int Native_Restart(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	bool ask = GetNativeCell(2);
@@ -8158,12 +8142,12 @@ public int Native_Restart(Handle plugin, int numParams)
 	return numParams;
 }
 
-public int Native_GetDevmap(Handle plugin, int numParams)
+int Native_GetDevmap(Handle plugin, int numParams)
 {
 	return g_devmap;
 }
 
-stock float[] GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+float[] GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float origin[3] = {0.0, ...};
 	GetClientAbsOrigin(client, origin);
@@ -8198,7 +8182,7 @@ stock float[] GetGroundPos(int client) //https://forums.alliedmods.net/showpost.
 	}
 }
 
-/*public int GetColor(const int r, const int g, const int b, const int a)
+/*int GetColor(const int r, const int g, const int b, const int a)
 {
 	int color = 0;
 
@@ -8210,7 +8194,7 @@ stock float[] GetGroundPos(int client) //https://forums.alliedmods.net/showpost.
 	return color;
 }*/
 
-stock MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
 {
 	bool originNull = DHookIsNullParam(hParams, 1);
 	
@@ -8227,8 +8211,7 @@ stock MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.c
 		g_teleported[client] = true;
 	}
 
-	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-	hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell, Param_Array);
+	GlobalForward hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell, Param_Array);
 	Call_StartForward(hForward);
 	Call_PushCell(client);
 	Call_PushArray(origin, 3);
@@ -8238,7 +8221,7 @@ stock MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.c
 	return MRES_Ignored;
 }
 
-stock void FormatSeconds(float time, char[] format)
+void FormatSeconds(float time, char[] format)
 {
 	//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
 	int hour = (RoundToFloor(time) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
@@ -8250,14 +8233,14 @@ stock void FormatSeconds(float time, char[] format)
 	return;
 }
 
-public void rf_giveflashbang(int client)
+void rf_giveflashbang(int client)
 {
 	GiveFlashbang(client);
 
 	return;
 }
 
-stock void GetPoints(int client, char[] points)
+void GetPoints(int client, char[] points)
 {
 	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
 
@@ -8311,7 +8294,7 @@ stock void GetPoints(int client, char[] points)
 	return;
 }
 
-stock float[] GetAimPosition(int client) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3890
+float[] GetAimPosition(int client) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3890
 {
 	float eyePos[3] = {0.0, ...};
 	GetClientEyePosition(client, eyePos);
@@ -8332,7 +8315,7 @@ stock float[] GetAimPosition(int client) //https://github.com/shavitush/bhoptime
 	return eyePos;
 }
 
-stock float[] SnapToGrid(float pos[3], int grid, bool third) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3832
+float[] SnapToGrid(float pos[3], int grid, bool third) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3832
 {
 	float origin[3] = {0.0, ...};
 	origin = pos;
@@ -8348,7 +8331,7 @@ stock float[] SnapToGrid(float pos[3], int grid, bool third) //https://github.co
 	return origin;
 }
 
-stock void SnapToWall(float pos[3], int client, float final[3]) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3848
+/*void SnapToWall(float pos[3], int client, float final[3]) //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3848
 {
 	bool hit = false;
 	float end[3] = {0.0, ...}, temp[3] = {0.0, ...}, prefinal[3] = {0.0, ...};
@@ -8380,9 +8363,9 @@ stock void SnapToWall(float pos[3], int client, float final[3]) //https://github
 	}
 
 	return;
-}
+}*/
 
-stock void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
+void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 {
 	if(g_entityXYZ[client] > 0)
 	{
