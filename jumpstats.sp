@@ -170,7 +170,7 @@ public void OnClientCookiesCached(int client)
 	return;
 }
 
-public Action cmd_jumpstats(int client, int args)
+Action cmd_jumpstats(int client, int args)
 {
 	g_jumpstats[client] = !g_jumpstats[client];
 
@@ -197,7 +197,7 @@ public Action cmd_jumpstats(int client, int args)
 		g_teleported[activator] = true;
 }*/
 
-public void OnJump(Event event, const char[] name, bool dontBroadcast)
+void OnJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -537,7 +537,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	return;
 }
 
-stock void ResetFactory(int client)
+void ResetFactory(int client)
 {
 	g_jumped[client] = false;
 	g_ladder[client] = false;
@@ -557,7 +557,7 @@ stock void ResetFactory(int client)
 	return;
 }
 
-public Action StartTouchProjectile(int entity, int other)
+Action StartTouchProjectile(int entity, int other)
 {
 	if(0 < other <= MaxClients && (g_jumped[other] == true || g_ladder[other] == true))
 	{
@@ -584,7 +584,7 @@ public Action StartTouchProjectile(int entity, int other)
 	return Plugin_Continue;
 }
 
-public Action TouchClient(int client, int other)
+Action TouchClient(int client, int other)
 {
 	if(0 < other <= MaxClients && g_tickTime[client] >= 0.1)
 	{
@@ -623,7 +623,7 @@ public Action TouchClient(int client, int other)
 	return Plugin_Continue;
 }
 
-public Action SDKSkyJump(int client, int other) //client = booster; other = flyer
+Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
 	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("trueexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : g_entityButtons[other] & IN_JUMP) && GetEngineTime() - g_boostTime[client] > 0.15)
 	{
@@ -740,7 +740,7 @@ public Action SDKSkyJump(int client, int other) //client = booster; other = flye
 	return Plugin_Continue;
 }
 
-stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float origin[3] = {0.0, ...};
 	GetClientAbsOrigin(client, origin);
@@ -767,7 +767,7 @@ stock float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.ph
 	return pos[2];
 }
 
-public bool TraceEntityFilterPlayer(int entity, int contentsMask, any data)
+bool TraceEntityFilterPlayer(int entity, int contentsMask, any data)
 {
 	if(entity == data)
 	{
@@ -777,7 +777,7 @@ public bool TraceEntityFilterPlayer(int entity, int contentsMask, any data)
 	return true;
 }
 
-stock void Sync(int client, int buttons, int mouse[2])
+void Sync(int client, int buttons, int mouse[2])
 {
 	if(g_dot[client] < -0.9) //backward
 	{
@@ -917,7 +917,7 @@ stock void Sync(int client, int buttons, int mouse[2])
 	return;
 }
 
-stock void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.php?p=2060983
+void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.php?p=2060983
 {
 	float flatVel[3] = {0.0, ...};
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel, 0);
@@ -942,7 +942,7 @@ stock void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.ph
 	return;
 }
 
-stock void MaxVel(int client)
+void MaxVel(int client)
 {
 	float vel[3] = {0.0, ...};
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0);
@@ -958,7 +958,7 @@ stock void MaxVel(int client)
 	return;
 }
 
-stock MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
 {
 	bool originNull = DHookIsNullParam(hParams, 1);
 	
@@ -970,8 +970,7 @@ stock MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.
 	float origin[3] = {0.0, ...};
 	DHookGetParamVector(hParams, 1, origin);
 
-	static GlobalForward hForward = null; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
-	hForward = new GlobalForward("JS_OnTeleport", ET_Ignore, Param_Cell, Param_Array);
+	GlobalForward hForward = new GlobalForward("JS_OnTeleport", ET_Ignore, Param_Cell, Param_Array); //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 	Call_StartForward(hForward);
 	Call_PushCell(client);
 	Call_PushArray(origin, 3);
