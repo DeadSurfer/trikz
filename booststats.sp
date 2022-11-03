@@ -109,7 +109,7 @@ public void OnClientCookiesCached(int client)
 	return;
 }
 
-public Action cmd_booststats(int client, int args)
+Action cmd_booststats(int client, int args)
 {
 	g_boostStats[client] = !g_boostStats[client];
 
@@ -124,7 +124,7 @@ public Action cmd_booststats(int client, int args)
 	return Plugin_Handled;
 }
 
-public void CalculationProcess(int client)
+void CalculationProcess(int client)
 {
 	//g_throwTick[client][0] = GetEngineTime();
 	g_throwTick[client][0] = GetGameTickCount();
@@ -151,7 +151,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	return;
 }
 
-public void SDKSpawnProjectile(int entity)
+void SDKSpawnProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
@@ -163,7 +163,7 @@ public void SDKSpawnProjectile(int entity)
 }
 
 
-public void frame_projectileVel(int entity)
+void frame_projectileVel(int entity)
 {
 	if(IsValidEntity(entity) == true)
 	{
@@ -181,7 +181,7 @@ public void frame_projectileVel(int entity)
 	return;
 }
 
-public Action SDKStartTouch(int entity, int other)
+Action SDKStartTouch(int entity, int other)
 {
 	if(IsClientValid(other) == true && g_projectileVel[other] == 0.0)
 	{
@@ -200,7 +200,7 @@ public Action SDKStartTouch(int entity, int other)
 	return Plugin_Continue
 }
 
-public void OnJump(Event event, const char[] name, bool dontBroadcast)
+void OnJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -212,14 +212,14 @@ public void OnJump(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public Action timer_print(Handle timer, int client)
+Action timer_print(Handle timer, int client)
 {
 	DoPrint(client);
 
 	return Plugin_Continue;
 }
 
-stock void DoPrint(int client)
+void DoPrint(int client)
 {
 	if(IsClientInGame(client) == true)
 	{
@@ -286,7 +286,7 @@ stock void DoPrint(int client)
 	return;
 }
 
-stock void SendMessage(int client, const char[] text)
+void SendMessage(int client, const char[] text)
 {
 	char name[MAX_NAME_LENGTH] = "";
 	GetClientName(client, name, sizeof(name));
