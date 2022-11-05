@@ -179,10 +179,7 @@ public void OnClientPutInServer(int client)
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	if(Trikz_GetDevmap() == false)
-	{
-		CreateTimer(1.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
-	}
+	CreateTimer(1.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
 
 	return;
 }
@@ -228,6 +225,11 @@ Action timer_load(Handle timer)
 			}
 		}
 	}
+
+	if(Trikz_GetDevmap() == true)
+	{
+		return Plugin_Continue;
+	}
 	
 	char classname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"};
 	char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"};
@@ -259,7 +261,6 @@ Action timer_load(Handle timer)
 		{
 			if(j < 9)
 			{
-				UnhookEntityOutput(classname[i], output[j], EntityOutputHook);
 				HookEntityOutput(classname[i], output[j], EntityOutputHook);
 			}
 		}
@@ -377,6 +378,11 @@ void OutputInput(int entity, const char[] output, const char[] target = "")
 	else if(StrEqual(output, "trigger_*", false) == true)
 	{
 		i = 2;
+
+		if(!(GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) & 1))
+		{
+			return; //If trigger doesn't have client check, quit function here.
+		}
 	}
 
 	else if(StrEqual(output, "func_breakable", false) == true)
@@ -397,14 +403,6 @@ void OutputInput(int entity, const char[] output, const char[] target = "")
 	else if(StrEqual(output, "prop_dynamic", false) == true)
 	{
 		i = 6;
-	}
-
-	if(i == 2)
-	{
-		if(!(GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) & 1))
-		{
-			return; //If trigger doesn't have client check, quit function here.
-		}
 	}
 
 	if(entity > 0)
