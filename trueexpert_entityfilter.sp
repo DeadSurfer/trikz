@@ -74,7 +74,7 @@ native bool GetOutputActionParameter(int entity, const char[] output, int index,
 native float GetOutputActionDelay(int entity, const char[] output, int index);
 native int GetOutputActionTimesToFire(int entity, const char[] output, int index);
 
-Plugin myinfo =
+public Plugin myinfo =
 {
 	name = "Entity filter",
 	author = "Smesh",
@@ -259,6 +259,7 @@ Action timer_load(Handle timer)
 		{
 			if(j < 9)
 			{
+				UnhookEntityOutput(classname[i], output[j], EntityOutputHook);
 				HookEntityOutput(classname[i], output[j], EntityOutputHook);
 			}
 		}
