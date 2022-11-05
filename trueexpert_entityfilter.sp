@@ -179,12 +179,12 @@ public void OnClientPutInServer(int client)
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	CreateTimer(1.0, timer_load, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
+	CreateTimer(1.0, timer_prepare, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
 
 	return;
 }
 
-Action timer_load(Handle timer)
+Action timer_prepare(Handle timer)
 {
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
@@ -252,7 +252,7 @@ Action timer_load(Handle timer)
 			{
 				if((i <= 4 && j <= 4) || (i == 5 && (j == 5 || j == 6)) || (i == 6 && j == 9 || j == 10))
 				{
-					EntityLink(entity, output[j]);
+					LinkProcess(entity, output[j]);
 				}
 			}
 		}
@@ -271,7 +271,7 @@ Action timer_load(Handle timer)
 	return Plugin_Continue;
 }
 
-void EntityLink(int entity, const char[] output)
+void LinkProcess(int entity, const char[] output)
 {
 	char outputFormated[24] = "";
 	Format(outputFormated, sizeof(outputFormated), "m_%s", output);
@@ -296,14 +296,14 @@ void EntityLink(int entity, const char[] output)
 
 				while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, classname[j], target, entity)) != INVALID_ENT_REFERENCE)
 				{
-					OutputInput(entityReadyToLink, classname[j], target);
+					AddToLink(entity, output, entityReadyToLink);
+
+					Prepare(entityReadyToLink, classname[j], target);
 
 					if(StrEqual(output, "OnPressed", false) == true || StrEqual(output, "OnDamaged", false) == true)
 					{
-						OutputInput(entity, "func_button", "");
+						Prepare(entity, "func_button", "");
 					}
-					
-					AddEntityToLinkProcess(entity, output, entityReadyToLink);
 				}
 			}
 		}
@@ -314,9 +314,9 @@ void EntityLink(int entity, const char[] output)
 
 			while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, "func_button", target, 0)) != INVALID_ENT_REFERENCE)
 			{
-				OutputInput(entityReadyToLink, "func_button", "");
+				AddToLink(entity, output, entityReadyToLink);
 
-				AddEntityToLinkProcess(entity, output, entityReadyToLink);
+				Prepare(entityReadyToLink, "func_button", "");
 
 				DHookEntity(g_AcceptInput, false, entityReadyToLink, INVALID_FUNCTION, AcceptInputButton);
 			}
@@ -328,7 +328,7 @@ void EntityLink(int entity, const char[] output)
 
 			while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
 			{
-				OutputInput(entityReadyToLink, "math_counter", "");
+				Prepare(entityReadyToLink, "math_counter", "");
 			}
 		}
 	}
@@ -361,7 +361,7 @@ int FindLinkedEntity(int entity, const char[] classname, const char[] target, in
 	return INVALID_ENT_REFERENCE;
 }
 
-void OutputInput(int entity, const char[] output, const char[] target = "")
+void Prepare(int entity, const char[] output, const char[] target = "")
 {
 	int i = 0;
 
@@ -566,7 +566,7 @@ void AddOutput(int entity, const char[] output, const char[] outputtype)
 	return;
 }
 
-void AddEntityToLinkProcess(int entity, const char[] output, int entityReadyToLink)
+void AddToLink(int entity, const char[] output, int entityReadyToLink)
 {
 	int maxLinks = 0, maxMathLinks = 0, outputNum = GetOutput(output);
 
@@ -1244,7 +1244,7 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	int ent1 = DHookGetParam(hParams, 1); //touch reciever
 	int ent2 = DHookGetParam(hParams, 2); //touch sender
 
-	Action result;
+	Action result = Plugin_Continue;
 
 	Call_StartForward(g_PassServerEntityFilter);
 	Call_PushCell(ent1);
@@ -1295,6 +1295,11 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
+	if(Trikz_GetDevmap() == true)
+	{
+		return;
+	}
+
 	if(StrContains(classname, "projectile", false) != -1)
 	{
 		SDKHook(entity, SDKHook_SetTransmit, TransmitNade);
