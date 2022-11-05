@@ -292,13 +292,13 @@ void LinkProcess(int entity, const char[] output)
 		{
 			for(int j = 0; j < sizeof(classname); j++)
 			{
-				int entityReadyToLink = 0;
+				int entityLinked = 0;
 
-				while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, classname[j], target, entity)) != INVALID_ENT_REFERENCE)
+				while((entityLinked = FindLinkedEntity(entityLinked, classname[j], target, entity)) != INVALID_ENT_REFERENCE)
 				{
-					AddToLink(entity, output, entityReadyToLink);
+					AddToLink(entity, output, entityLinked);
 
-					Prepare(entityReadyToLink, classname[j], target);
+					Prepare(entityLinked, classname[j], target);
 
 					if(StrEqual(output, "OnPressed", false) == true || StrEqual(output, "OnDamaged", false) == true)
 					{
@@ -310,25 +310,25 @@ void LinkProcess(int entity, const char[] output)
 
 		else if(StrEqual(input, "Unlock", false) == true || StrEqual(input, "Lock", false) == true)
 		{
-			int entityReadyToLink = 0;
+			int entityLinked = 0;
 
-			while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, "func_button", target, 0)) != INVALID_ENT_REFERENCE)
+			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", target, 0)) != INVALID_ENT_REFERENCE)
 			{
-				AddToLink(entity, output, entityReadyToLink);
+				AddToLink(entity, output, entityLinked);
 
-				Prepare(entityReadyToLink, "func_button", "");
+				Prepare(entityLinked, "func_button", "");
 
-				DHookEntity(g_AcceptInput, false, entityReadyToLink, INVALID_FUNCTION, AcceptInputButton);
+				DHookEntity(g_AcceptInput, false, entityLinked, INVALID_FUNCTION, AcceptInputButton);
 			}
 		}
 
 		else if(StrEqual(input, "Add", false) == true || StrEqual(input, "Subtract", false) == true)
 		{
-			int entityReadyToLink = 0;
+			int entityLinked = 0;
 
-			while((entityReadyToLink = FindLinkedEntity(entityReadyToLink, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
+			while((entityLinked = FindLinkedEntity(entityLinked, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
 			{
-				Prepare(entityReadyToLink, "math_counter", "");
+				Prepare(entityLinked, "math_counter", "");
 			}
 		}
 	}
@@ -566,7 +566,7 @@ void AddOutput(int entity, const char[] output, const char[] outputtype)
 	return;
 }
 
-void AddToLink(int entity, const char[] output, int entityReadyToLink)
+void AddToLink(int entity, const char[] output, int entityLinked)
 {
 	int maxLinks = 0, maxMathLinks = 0, outputNum = GetOutput(output);
 
@@ -574,9 +574,9 @@ void AddToLink(int entity, const char[] output, int entityReadyToLink)
 	{
 		maxLinks = ++g_maxLinks[entity][outputNum];
 
-		g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityReadyToLink;
+		g_linkedEntitiesDefault[entity][maxLinks][outputNum] = entityLinked;
 
-		g_entityOutput[entityReadyToLink][maxLinks][outputNum] = 1;
+		g_entityOutput[entityLinked][maxLinks][outputNum] = 1;
 	}
 
 	else if(entity < 0)
@@ -589,9 +589,9 @@ void AddToLink(int entity, const char[] output, int entityReadyToLink)
 			{
 				maxMathLinks = ++g_maxMathLinks[math][outputNum];
 
-				g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityReadyToLink;
+				g_linkedMathEntitiesDefault[math][maxMathLinks][outputNum] = entityLinked;
 
-				g_entityOutput[entityReadyToLink][maxMathLinks][outputNum] = 1;
+				g_entityOutput[entityLinked][maxMathLinks][outputNum] = 1;
 
 				continue;
 			}
