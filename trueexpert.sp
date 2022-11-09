@@ -44,8 +44,8 @@
 #define debug false
 
 int g_partner[MAXPLAYER] = {0, ...};
-float g_zoneStartOrigin[2][3]; //start zone corner1 adn corner2
-float g_zoneEndOrigin[2][3]; //end zone corner1 adn corner2
+float g_zoneStartOrigin[2][3]; //start zone corner1 and corner2
+float g_zoneEndOrigin[2][3]; //end zone corner1 and corner2
 float g_zoneStartOriginTemp[MAXPLAYER][2][3];
 float g_zoneEndOriginTemp[MAXPLAYER][2][3];
 Database g_mysql = null;
@@ -83,7 +83,6 @@ ConVar gCV_afk = null;
 ConVar gCV_noclip = null;
 ConVar gCV_spec = null;
 ConVar gCV_button = null;
-ConVar gCV_pbutton = null;
 ConVar gCV_bhop = null;
 ConVar gCV_autoswitch = null;
 ConVar gCV_autoflashbang = null;
@@ -169,7 +168,6 @@ int g_mlsFlyer[MAXPLAYER] = {0, ...};
 bool g_mlstats[MAXPLAYER] = {false, ...};
 float g_mlsDistance[MAXPLAYER][2][3];
 bool g_button[MAXPLAYER] = {false, ...};
-bool g_pbutton[MAXPLAYER] = {false, ...};
 float g_skyOrigin[MAXPLAYER][3];
 int g_entityButtons[MAXPLAYER] = {0, ...};
 bool g_teleported[MAXPLAYER] = {false, ...};
@@ -222,9 +220,9 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.60",
+	version = "4.61",
 	url = "http://www.sourcemod.net/"
-}
+};
 
 public void OnPluginStart()
 {
@@ -239,7 +237,6 @@ public void OnPluginStart()
 	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in devmap.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_spec = CreateConVar("sm_te_spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_button = CreateConVar("sm_te_button", "0.0", "Allow to use text message for button announcments.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_pbutton = CreateConVar("sm_te_pbutton", "0.0", "Allow to use text message for partner button announcments.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_bhop = CreateConVar("sm_te_bhop", "0.0", "Allow to use autobhop.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -285,7 +282,6 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_hud", cmd_hud, "Open hud menu.");
 	RegConsoleCmd("sm_mls", cmd_mlstats, "Toggling key hint ml-stats.");
 	RegConsoleCmd("sm_button", cmd_button, "Toggling button pressing.");
-	RegConsoleCmd("sm_pbutton", cmd_pbutton, "Toggling partner button pressing.");
 	RegConsoleCmd("sm_macro", cmd_macro, "Toggling a macro.");
 	RegConsoleCmd("sm_bhop", cmd_bhop, "Toggling auto bunnyhoping.");
 	RegConsoleCmd("sm_endmsg", cmd_endmsg, "Toggling cp and end hud message.");
@@ -339,15 +335,15 @@ public void OnPluginStart()
 	g_cookie[0] = RegClientCookie("te_vel", "velocity in hint", CookieAccess_Protected);
 	g_cookie[1] = RegClientCookie("te_mls", "mega long stats", CookieAccess_Protected);
 	g_cookie[2] = RegClientCookie("te_button", "button", CookieAccess_Protected);
-	g_cookie[3] = RegClientCookie("te_pbutton", "partner button", CookieAccess_Protected);
-	g_cookie[4] = RegClientCookie("te_autoflash", "autoflash", CookieAccess_Protected);
-	g_cookie[5] = RegClientCookie("te_autoswitch", "autoswitch", CookieAccess_Protected);
-	g_cookie[6] = RegClientCookie("te_bhop", "bhop", CookieAccess_Protected);
-	g_cookie[7] = RegClientCookie("te_macro", "macro", CookieAccess_Protected);
-	g_cookie[8] = RegClientCookie("te_endmsg", "End message.", CookieAccess_Protected);
-	g_cookie[9] = RegClientCookie("te_flashbangskin", "Flashbang skin.", CookieAccess_Protected);
-	g_cookie[10] = RegClientCookie("te_flashbangcolor", "Flashbang color.", CookieAccess_Protected);
-	g_cookie[11] = RegClientCookie("te_playerskin", "Player skin.", CookieAccess_Protected);
+	g_cookie[3] = RegClientCookie("te_autoflash", "autoflash", CookieAccess_Protected);
+	g_cookie[4] = RegClientCookie("te_autoswitch", "autoswitch", CookieAccess_Protected);
+	g_cookie[5] = RegClientCookie("te_bhop", "bhop", CookieAccess_Protected);
+	g_cookie[6] = RegClientCookie("te_macro", "macro", CookieAccess_Protected);
+	g_cookie[7] = RegClientCookie("te_endmsg", "End message.", CookieAccess_Protected);
+	g_cookie[8] = RegClientCookie("te_flashbangskin", "Flashbang skin.", CookieAccess_Protected);
+	g_cookie[9] = RegClientCookie("te_flashbangcolor", "Flashbang color.", CookieAccess_Protected);
+	g_cookie[10] = RegClientCookie("te_playerskin", "Player skin.", CookieAccess_Protected);
+	g_cookie[11] = RegClientCookie("te_greetings", "Greetings", CookieAccess_Protected);
 
 	Handle gamedata = LoadGameConfigFile("sdktools.games");
 
@@ -395,6 +391,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("Trikz_SetPartner", Native_SetPartner);
 	CreateNative("Trikz_Restart", Native_Restart);
 	CreateNative("Trikz_GetDevmap", Native_GetDevmap);
+	CreateNative("Trikz_GetTeamColor", Native_GetTeamColor);
 
 	MarkNativeAsOptional("Trikz_GetEntityFilter");
 
@@ -1018,12 +1015,6 @@ void OnButton(const char[] output, int caller, int activator, float delay)
 		{
 			Format(g_format, sizeof(g_format), "%T", "YouPressedButton", activator);
 			SendMessage(activator, g_format);
-		}
-
-		bool pbutton = gCV_pbutton.BoolValue;
-
-		if(g_pbutton[g_partner[activator]] == true && pbutton == true)
-		{
 			Format(g_format, sizeof(g_format), "%T", "YourPartnerPressedButton", g_partner[activator]);
 			SendMessage(g_partner[activator], g_format);
 		}
@@ -1179,7 +1170,6 @@ void Control(int client)
 	menu.AddItem("bs", "!bs", LibraryExists("trueexpert-booststats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("hud", "!hud", gCV_hud.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("button", "!button", gCV_button.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("pbutton", "!pbutton", gCV_pbutton.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("spec", "!spec", gCV_spec.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("color", "!color", gCV_color.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("afk", "!afk", gCV_afk.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -1230,25 +1220,20 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 6:
 				{
-					cmd_pbutton(param1, 0);
+					cmd_spec(param1, 0);
 				}
 
 				case 7:
 				{
-					cmd_spec(param1, 0);
+					ColorSelect(param1);
 				}
 
 				case 8:
 				{
-					ColorSelect(param1);
-				}
-
-				case 9:
-				{
 					cmd_afk(param1, 0);
 				}
 
-				case 10:
+				case 9:
 				{
 					Trikz(param1);
 				}
@@ -1465,7 +1450,6 @@ public void OnClientPutInServer(int client)
 		g_hudVel[client] = false;
 		g_mlstats[client] = false;
 		g_button[client] = false;
-		g_pbutton[client] = false;
 		g_autoflash[client] = false;
 		g_autoswitch[client] = false;
 		g_bhop[client] = false;
@@ -1498,6 +1482,16 @@ public void OnClientPutInServer(int client)
 
 	g_boost[client] = 0; //rare case
 
+	char value[16] = "";
+	GetClientCookie(client, g_cookie[11], value, sizeof(value));
+
+	int cooldown = StringToInt(value, 10);
+
+	if(cooldown < GetTime())
+	{
+		Greetings(client);
+	}
+
 	return;
 }
 
@@ -1513,29 +1507,26 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[2], value, sizeof(value));
 	g_button[client] = view_as<bool>(StringToInt(value, 10));
-
-	GetClientCookie(client, g_cookie[3], value, sizeof(value));
-	g_pbutton[client] = view_as<bool>(StringToInt(value, 10));
 	
-	GetClientCookie(client, g_cookie[4], value, sizeof(value));
+	GetClientCookie(client, g_cookie[3], value, sizeof(value));
 	g_autoflash[client] = view_as<bool>(StringToInt(value, 10));
 
-	GetClientCookie(client, g_cookie[5], value, sizeof(value));
+	GetClientCookie(client, g_cookie[4], value, sizeof(value));
 	g_autoswitch[client] = view_as<bool>(StringToInt(value, 10));
 
-	GetClientCookie(client, g_cookie[6], value, sizeof(value));
+	GetClientCookie(client, g_cookie[5], value, sizeof(value));
 	g_bhop[client] = view_as<bool>(StringToInt(value, 10));
 
-	GetClientCookie(client, g_cookie[7], value, sizeof(value));
+	GetClientCookie(client, g_cookie[6], value, sizeof(value));
 	g_macroDisabled[client] = view_as<bool>(StringToInt(value, 10));
 
-	GetClientCookie(client, g_cookie[8], value, sizeof(value));
+	GetClientCookie(client, g_cookie[7], value, sizeof(value));
 	g_endMessage[client] = view_as<bool>(StringToInt(value, 10));
 
-	GetClientCookie(client, g_cookie[9], value, sizeof(value));
-	g_skinFlashbang[client] = view_as<bool>(StringToInt(value, 10));
+	GetClientCookie(client, g_cookie[8], value, sizeof(value));
+	g_skinFlashbang[client] = StringToInt(value, 10);
 
-	GetClientCookie(client, g_cookie[10], value, sizeof(value));
+	GetClientCookie(client, g_cookie[9], value, sizeof(value));
 
 	char exploded[4][16];
 	ExplodeString(value, ";", exploded, 4, 16);
@@ -1555,8 +1546,17 @@ public void OnClientCookiesCached(int client)
 		}
 	}
 
+	GetClientCookie(client, g_cookie[10], value, sizeof(value));
+	g_skinPlayer[client] = StringToInt(value, 10);
+
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
-	g_skinPlayer[client] = view_as<bool>(StringToInt(value, 10));
+
+	int cooldown = StringToInt(value, 10);
+
+	if(cooldown < GetTime())
+	{
+		Greetings(client);
+	}
 
 	GiveFlashbang(client);
 
@@ -1603,6 +1603,10 @@ public void OnClientDisconnect(int client)
 	}
 
 	g_zoneDrawed[client] = false;
+
+	char value[16] = "";
+	Format(value, sizeof(value), "%i", GetTime() + 300);
+	SetClientCookie(client, g_cookie[11], value);
 
 	return;
 }
@@ -1666,7 +1670,7 @@ void SQLUserAdded(Database db, DBResultSet results, const char[] error, any data
 		#endif
 	}
 
-	return; //void function return nothing. Here code will be escape and below code will be skiped in this function part.
+	return; //void function return nothing. Here code will quit and below code will be skiped in this function part.
 }
 
 void SQLUpdateUser(Database db, DBResultSet results, const char[] error, any data)
@@ -3518,7 +3522,7 @@ Action cad_test(int client, int args)
 
 	PrintToServer("LibraryExists (trueexpert-entityfilter): %s", LibraryExists("trueexpert-entityfilter") == true ? "true" : "false");
 
-	//https://forums.alliedmods.net/showthread.php?t=187746
+	// https://forums.alliedmods.net/showthread.php?t=187746
 	int color = 0;
 	color |= (5 & 255) << 24; //5 red
 	color |= (200 & 255) << 16; // 200 green
@@ -5222,12 +5226,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 	}
 
 	g_kv.Rewind();
-
 	g_kv.GotoFirstSubKey(true);
 
 	char section[64] = "", posColor[64], exploded[7][8];
-
-	float xyz[4][3];
+	float xy[4][2], holdtime[4] = {0.0, ...};
 	int rgba[4][7];
 
 	char key[][] = {"CP-recordHud", "CP-recordDetailHud", "CP-DetailZeroHud"};
@@ -5256,16 +5258,20 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						for(int j = 0; j <= 2; j++)
+						for(int j = 0; j <= 1; j++)
 						{
-							xyz[i][j] = StringToFloat(exploded[j]);
+							xy[i][j] = StringToFloat(exploded[j]);
 						}
+
+						holdtime[i] = StringToFloat(exploded[2]);
 						
 						for(int j = 3; j <= 6; j++)
 						{
 							rgba[i][j] = StringToInt(exploded[j], 10);
 						}
 					}
+
+					break;
 				}
 			}
 
@@ -5275,7 +5281,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 			for(int i = 0; i <= 2; i++)
 			{
-				SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+				SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 				if(i == 0){Format(g_format, sizeof(g_format), "%T", key[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 				else if(i == 1){Format(g_format, sizeof(g_format), "%T", key[i], client, time);}
 				else if(i == 2){Format(g_format, sizeof(g_format), "%T", key[i], client, timeSR);}
@@ -5295,7 +5301,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 						for(int j = 0; j <= 2; j++)
 						{
-							SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+							SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 							if(j == 0){Format(g_format, sizeof(g_format), "%T", key[j], i, cpnum);}
 							else if(j == 1){Format(g_format, sizeof(g_format), "%T", key[j], i, time);}
 							else if(j == 2){Format(g_format, sizeof(g_format), "%T", key[j], i, timeSR);}
@@ -5325,16 +5331,20 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							for(int j = 0; j <= 2; j++)
+							for(int j = 0; j <= 1; j++)
 							{
-								xyz[i][j] = StringToFloat(exploded[j]);
+								xy[i][j] = StringToFloat(exploded[j]);
 							}
+
+							holdtime[i] = StringToFloat(exploded[2]);
 							
 							for(int j = 3; j <= 6; j++)
 							{
 								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
+
+						break;
 					}
 				}
 
@@ -5344,7 +5354,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 				for(int i = 0; i <= 2; i++)
 				{
-					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 					if(i == 0){Format(g_format, sizeof(g_format), "%T", key2[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key2[i], client, time);}
 					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key2[i], client, timeSR);}
@@ -5364,7 +5374,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= 2; j++)
 							{
-								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_format, sizeof(g_format), "%T", key2[j], i, cpnum);}
 								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key2[j], i, time);}
 								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key2[j], i, timeSR);}
@@ -5392,16 +5402,20 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							for(int j = 0; j <= 2; j++)
+							for(int j = 0; j <= 1; j++)
 							{
-								xyz[i][j] = StringToFloat(exploded[j]);
+								xy[i][j] = StringToFloat(exploded[j]);
 							}
+
+							holdtime[i] = StringToFloat(exploded[2]);
 							
 							for(int j = 3; j <= 6; j++)
 							{
 								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
+
+						break;
 					}
 				}
 
@@ -5411,7 +5425,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 				for(int i = 0; i <= 1; i++)
 				{
-					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 					if(i == 0){Format(g_format, sizeof(g_format), "%T", key3[i], client, time);}
 					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key3[i], client, timeSR);}
 					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
@@ -5430,7 +5444,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= j; i++)
 							{
-								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_format, sizeof(g_format), "%T", key3[j], i, time);} ////https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key3[j], i, timeSR);}
 								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
@@ -5461,16 +5475,20 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 						ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-						for(int j = 0; j <= 2; j++)
+						for(int j = 0; j <= 1; j++)
 						{
-							xyz[i][j] = StringToFloat(exploded[j]);
+							xy[i][j] = StringToFloat(exploded[j]);
 						}
+
+						holdtime[i] = StringToFloat(exploded[2]);
 						
 						for(int j = 3; j <= 6; j++)
 						{
 							rgba[i][j] = StringToInt(exploded[j], 10);
 						}
 					}
+
+					break;
 				}
 			}
 
@@ -5480,7 +5498,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 			for(int i = 0; i <= 3; i++)
 			{
-				SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+				SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 				if(i == 0){Format(g_format, sizeof(g_format), "%T", key4[i], client);}
 				else if(i == 1){Format(g_format, sizeof(g_format), "%T", key4[i], client);}
 				else if(i == 2){Format(g_format, sizeof(g_format), "%T", key4[i], client, time);}
@@ -5501,7 +5519,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 						for(int j = 0; j <= 3; j++)
 						{
-							SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+							SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 							if(j == 0){Format(g_format, sizeof(g_format), "%T", key4[j], i);}
 							else if(j == 1){Format(g_format, sizeof(g_format), "%T", key4[j], i);}
 							else if(j == 2){Format(g_format, sizeof(g_format), "%T", key4[j], i, time);}
@@ -5532,16 +5550,20 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							for(int j = 0; j <= 2; j++)
+							for(int j = 0; j <= 1; j++)
 							{
-								xyz[i][j] = StringToFloat(exploded[j]);
+								xy[i][j] = StringToFloat(exploded[j]);
 							}
+
+							holdtime[i] = StringToFloat(exploded[2]);
 							
 							for(int j = 3; j <= 6; j++)
 							{
 								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
+
+						break;
 					}
 				}
 
@@ -5551,7 +5573,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 				for(int i = 0; i <= 3; i++)
 				{
-					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 					if(i == 0){Format(g_format, sizeof(g_format), "%T", key5[i], client);}
 					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key5[i], client);}
 					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key5[i], client, time);}
@@ -5572,7 +5594,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= 3; j++)
 							{
-								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_format, sizeof(g_format), "%T", key5[j], i);}
 								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key5[j], i);}
 								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key5[j], i, time);}
@@ -5601,16 +5623,20 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							for(int j = 0; j <= 2; j++)
+							for(int j = 0; j <= 1; j++)
 							{
-								xyz[i][j] = StringToFloat(exploded[j]);
+								xy[i][j] = StringToFloat(exploded[j]);
 							}
+
+							holdtime[i] = StringToFloat(exploded[2]);
 							
 							for(int j = 3; j <= 6; j++)
 							{
 								rgba[i][j] = StringToInt(exploded[j], 10);
 							}
 						}
+
+						break;
 					}
 				}
 
@@ -5620,7 +5646,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 				for(int i = 0; i <= 2; i++)
 				{
-					SetHudTextParams(xyz[i][0], xyz[i][1], xyz[i][2], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 					if(i == 0){Format(g_format, sizeof(g_format), "%T", key6[i], client);}
 					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key6[i], client, time);}
 					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key6[i], client, timeSR);}
@@ -5640,7 +5666,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= 2; j++)
 							{
-								SetHudTextParams(xyz[j][0], xyz[j][1], xyz[j][2], rgba[j][3], rgba[j][4], rgba[j][5], rgba[j][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][3], rgba[i][4], rgba[i][5], rgba[i][6]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_format, sizeof(g_format), "%T", key6[j], i);}
 								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key6[j], i, time);}
 								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key6[j], i, timeSR);}
@@ -6423,9 +6449,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			SetEntProp(entity, Prop_Data, "m_fEffects", 16, 4, 0); //https://pastebin.com/SdNC88Ma https://developer.valvesoftware.com/wiki/Effect_flags
 
-			float start[3] = {0.0, ...};
-			float angle[3] = {0.0, ...};
-			float end[3] = {0.0, ...};
+			float start[3] = {0.0, ...}, angle[3] = {0.0, ...}, end[3] = {0.0, ...};
 
 			GetClientEyePosition(client, start);
 
@@ -6492,12 +6516,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
 						//int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
-						//if(g_partner[client] == g_partner[g_partner[i]] || i == client)
 						//if(g_partner[g_partner[i]] == g_partner[client] || i == client || (IsValidClient(observerTarget) == true && g_partner[g_partner[observerTarget]] == g_partner[client] && observerMode < 7))
 						if(g_partner[i] == g_partner[client] || i == client || IsClientObserver(i) == true)
 						{
 							clients[count++] = i;
-							//PrintToServer("%N", i);
 						}
 					}
 				}
@@ -6843,21 +6865,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	float fix = GetEngineTime() - g_flashbangTime[client];
 
-	if(fix >= 0.1 && (g_flashbangDoor[client][0] == true || g_flashbangDoor[client][1] == true))
+	if(fix >= 0.12 && g_flashbangDoor[client][0] == true)
 	{
-		if(g_flashbangDoor[client][0] == true)
-		{
-			FakeClientCommandEx(client, "use weapon_flashbang");
+		FakeClientCommandEx(client, "use weapon_flashbang");
 
-			g_flashbangDoor[client][0] = false;
-		}
+		g_flashbangDoor[client][0] = false;
+	}
 
-		if(fix >= 0.15 && g_flashbangDoor[client][1] == true)
-		{
-			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true, 4, 0);
+	else if(fix >= 0.13 && g_flashbangDoor[client][1] == true)
+	{
+		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true, 4, 0);
 
-			g_flashbangDoor[client][1] = false;
-		}
+		g_flashbangDoor[client][1] = false;
 	}
 
 	return Plugin_Continue;
@@ -7537,27 +7556,6 @@ Action cmd_button(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_pbutton(int client, int args)
-{
-	bool pbutton = gCV_pbutton.BoolValue;
-
-	if(pbutton == false)
-	{
-		return Plugin_Continue;
-	}
-
-	g_pbutton[client] = !g_pbutton[client]; //toggling
-
-	char value[8] = "";
-	IntToString(g_pbutton[client], value, sizeof(value));
-	SetClientCookie(client, g_cookie[3], value);
-
-	Format(g_format, sizeof(g_format), "%T", g_pbutton[client] == true ? "ButtonAnnouncerPartnerON" : "ButtonAnnouncerPartnerOFF", client);
-	SendMessage(client, g_format);
-
-	return Plugin_Handled;
-}
-
 Action ProjectileBoostFixEndTouch(int entity, int other)
 {
 	if(other == 0)
@@ -7737,31 +7735,6 @@ void FlashbangEffect(int entity)
 
 	else if(filter == false)
 	{
-		//int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
-
-		//if(owner == -1)
-		//{
-		//	owner = 0;
-		//}
-
-		//for(int i = 1; i <= MaxClients; i++)
-		//{
-			//if(IsClientInGame(i) == true)
-			//{
-				//int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget");
-				//int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode");
-
-				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner)
-				//if(g_partner[owner] == g_partner[g_partner[i]] || i == owner || (observerTarget == owner && observerMode < 7))
-				//if(IsFakeClient(owner) == false || i == owner || IsClientObserver(i) == true)
-				//{
-					//clients[count++] = i;
-				//}
-			//}
-		//}
-
-		//TE_Send(clients, count, 0.0);
-
 		TE_SendToAll(0.0);
 	}
 
@@ -7782,10 +7755,6 @@ void FlashbangEffect(int entity)
 
 	else if(filter == false)
 	{
-		//TE_Send(clients, count, 0.0);
-
-		//EmitSound(clients, count, sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
-
 		TE_SendToAll(0.0); //Idea from "Expert-Zone". So, we just made non empty event.
 
 		EmitSoundToAll(sample[GetRandomInt(0, 1)], entity, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0); //https://www.youtube.com/watch?v=0Dep7RXhetI&list=PL_2MB6_9kLAHnA4mS_byUpgpjPgETJpsV&index=171 https://github.com/Smesh292/Public-SourcePawn-Plugins/blob/master/trikz.sp#L23 So via "GCFScape" we can found "sound/weapons/flashbang", there we can use 2 sounds as random. flashbang_explode1.wav and flashbang_explode2.wav. These sound are similar, so, better to mix via random. https://forums.alliedmods.net/showthread.php?t=167638 https://world-source.ru/forum/100-2357-1 https://sm.alliedmods.net/new-api/sdktools_sound/__raw
@@ -8147,6 +8116,13 @@ int Native_GetDevmap(Handle plugin, int numParams)
 	return g_devmap;
 }
 
+int Native_GetTeamColor(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	SetNativeArray(2, g_colorBuffer[client][0], 3);
+	return numParams;
+}
+
 float[] GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
 {
 	float origin[3] = {0.0, ...};
@@ -8426,4 +8402,68 @@ void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 	}
 
 	return;
+}
+
+void Greetings(int client)
+{
+	if(IsClientInGame(client) == false)
+	{
+		return;
+	}
+
+	CreateTimer(5.0, timer_greetings, client, TIMER_FLAG_NO_MAPCHANGE);
+
+	return;
+}
+
+Action timer_greetings(Handle timer, int client)
+{
+	g_kv.Rewind();
+	g_kv.GotoFirstSubKey(true);
+
+	char section[16] = "", key[] = "Greetings", posColor[64], exploded[11][8];
+	float xy[2] = {0.0, ...}, holdtime = 0.0, fxtime = 0.0, fadein = 0.0, fadeout = 0.0;
+	int rgba[7] = {0, ...}, effect = 0;
+
+	do
+	{
+		if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, key, true) == true)
+		{
+			g_kv.GetString(key, posColor, sizeof(posColor));
+
+			if(strlen(posColor) == 0)
+			{
+				break;
+			}
+
+			ExplodeString(posColor, ",", exploded, 11, 8, false);
+
+			for(int j = 0; j <= 1; j++)
+			{
+				xy[j] = StringToFloat(exploded[j]);
+			}
+
+			holdtime = StringToFloat(exploded[2]);
+			
+			for(int j = 3; j <= 6; j++)
+			{
+				rgba[j] = StringToInt(exploded[j], 10);
+			}
+
+			effect = StringToInt(exploded[7], 10);
+			fxtime = StringToFloat(exploded[8]);
+			fadein = StringToFloat(exploded[9]);
+			fadeout = StringToFloat(exploded[10]);
+
+			break;
+		}
+	}
+
+	while(g_kv.GotoNextKey(true) == true);
+
+	SetHudTextParams(xy[0], xy[1], holdtime, rgba[3], rgba[4], rgba[5], rgba[6], effect, fxtime, fadein, fadeout); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+	Format(g_format, sizeof(g_format), "%T", g_devmap == true ? "GreetingsPractice" : "GreetingsStatistics", client);
+	ShowHudText(client, 1, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+
+	return Plugin_Continue;
 }
