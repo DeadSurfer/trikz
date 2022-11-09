@@ -1,6 +1,6 @@
 "Phrases"
 {
-	//Example: "Hello, Bail! Welcome to FakeExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
+	//Example: "Hello, Bail! Welcome to TrueExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
 	"Hello"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
@@ -96,14 +96,6 @@
 	"ButtonAnnouncerOFF"
 	{
 		"ru"	"Оповещение о нажатии кнопки теперь выключено."
-	}
-	"ButtonAnnouncerPartnerON"
-	{
-		"ru"	"Оповещение о нажатии кнопки партнёром теперь включено."
-	}
-	"ButtonAnnouncerPartnerOFF"
-	{
-		"ru"	"Оповещение о нажатии кнопки партнёром теперь выключено."
 	}
 	"AFKCHECK"
 	{
@@ -854,5 +846,13 @@
 	"ZoneEditorTP"
 	{
 		"ru"	"Конструктор зон - Телепорт"
+	}
+	"GreetingsStatistics"
+	{
+		"ru"	"\n\n\n\n\nДобро пожаловать!\n\n•   •   •\n\nТекущий режим - статистика.\nПриятной игры!"
+	}
+	"GreetingsPractice"
+	{
+		"ru"	"\n\n\n\n\nДобро пожаловать!\n\n•   •   •\n\nТекущий режим - практика.\nПриятной игры!"
 	}
 }
