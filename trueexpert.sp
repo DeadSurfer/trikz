@@ -311,6 +311,7 @@ public void OnPluginStart()
 	AddCommandListener(joinclass, "joinclass");
 	AddCommandListener(autobuy, "autobuy");
 	AddCommandListener(rebuy, "rebuy");
+	AddCommandListener(commandmenu, "commandmenu");
 	AddCommandListener(cheer, "cheer");
 	AddCommandListener(showbriefing, "showbriefing");
 	AddCommandListener(headtrack_reset_home_pos, "headtrack_reset_home_pos");
@@ -1141,12 +1142,16 @@ Action rebuy(int client, const char[] command, int argc)
 	return Plugin_Continue;
 }
 
+Action commandmenu(int client, const char[] command, int argc)
+{
+	Block(client);
+
+	return Plugin_Continue;
+}
+
 Action cheer(int client, const char[] command, int argc)
 {
-	if(IsValidPartner(client) == true)
-	{
-		Partner(client);
-	}
+	cad_zones(client, 0);
 
 	return Plugin_Continue; //happy holliday.
 }
@@ -1251,12 +1256,7 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action headtrack_reset_home_pos(int client, const char[] command, int argc)
 {
-	bool color = gCV_color.BoolValue;
-	
-	if(color == true)
-	{
-		Partner(client);
-	}
+	Partner(client);
 
 	return Plugin_Continue;
 }
