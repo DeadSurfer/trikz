@@ -1,4 +1,4 @@
-# trikz g
+# Trikz
 So you can hold F1 F2 E R buttons to make some options.<br>
 Database is fakeepxert. Sourcemod.net<br>
 New database is trueexpert.<br>
