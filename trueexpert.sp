@@ -1537,6 +1537,8 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[9], value, sizeof(value));
 
+	PrintToServer("%s", value);
+
 	char exploded[4][16];
 	ExplodeString(value, ";", exploded, 4, 16);
 
@@ -2593,7 +2595,7 @@ void ColorFlashbang(int client)
 
 		char value[16] = "";
 		Format(value, sizeof(value), "%s;%s;%s;%i", colorTypeExploded[0], colorTypeExploded[1], colorTypeExploded[2], g_colorCount[client][1]);
-		SetClientCookie(client, g_cookie[10], value);
+		SetClientCookie(client, g_cookie[9], value);
 
 		GlobalForward hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Array); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
 		Call_StartForward(hForward);
@@ -2769,7 +2771,7 @@ Action cmd_autoflash(int client, int args)
 
 	char value[8] = "";
 	IntToString(g_autoflash[client], value, sizeof(value));
-	SetClientCookie(client, g_cookie[4], value);
+	SetClientCookie(client, g_cookie[3], value);
 
 	if(g_menuOpened[client] == false)
 	{
@@ -2798,7 +2800,7 @@ Action cmd_autoswitch(int client, int args)
 
 	char value[8] = "";
 	IntToString(g_autoswitch[client], value, sizeof(value));
-	SetClientCookie(client, g_cookie[5], value);
+	SetClientCookie(client, g_cookie[4], value);
 
 	if(g_menuOpened[client] == false)
 	{
@@ -2827,7 +2829,7 @@ Action cmd_bhop(int client, int args)
 	
 	char value[8] = "";
 	IntToString(g_bhop[client], value, sizeof(value));
-	SetClientCookie(client, g_cookie[6], value);
+	SetClientCookie(client, g_cookie[5], value);
 
 	if(g_menuOpened[client] == false)
 	{
@@ -2856,7 +2858,7 @@ Action cmd_endmsg(int client, int args)
 
 	char value[8] = "";
 	IntToString(g_bhop[client], value, sizeof(value));
-	SetClientCookie(client, g_cookie[8], value);
+	SetClientCookie(client, g_cookie[7], value);
 
 	if(g_menuOpenedHud[client] == false)
 	{
@@ -3204,7 +3206,7 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 
 				IntToString(g_skinPlayer[param1], value, sizeof(value));
-				SetClientCookie(param1, g_cookie[11], value);
+				SetClientCookie(param1, g_cookie[10], value);
 
 				PlayerSkin(param1);
 			}
@@ -3232,7 +3234,7 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 
 				IntToString(g_skinFlashbang[param1], value, sizeof(value));
-				SetClientCookie(param1, g_cookie[9], value);
+				SetClientCookie(param1, g_cookie[8], value);
 
 				FlashbangSkin(param1);
 			}
@@ -7428,7 +7430,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 					g_endMessage[param1] = !g_endMessage[param1];
 
 					IntToString(g_endMessage[param1], value, sizeof(value));
-					SetClientCookie(param1, g_cookie[8], value);
+					SetClientCookie(param1, g_cookie[7], value);
 				}
 			}
 
@@ -7467,7 +7469,7 @@ Action cmd_vel(int client, int args)
 
 	char value[8] = "";
 	IntToString(g_hudVel[client], value, sizeof(value));
-	SetClientCookie(client, g_cookie[1], value);
+	SetClientCookie(client, g_cookie[0], value);
 
 	if(g_menuOpenedHud[client] == false)
 	{
