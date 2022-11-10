@@ -1012,10 +1012,19 @@ void OnButton(const char[] output, int caller, int activator, float delay)
 	{
 		bool button = gCV_button.BoolValue;
 
-		if(g_button[activator] == true && button == true)
+		if(button == false)
+		{
+			return;
+		}
+
+		if(g_button[activator] == true)
 		{
 			Format(g_format, sizeof(g_format), "%T", "YouPressedButton", activator);
 			SendMessage(activator, g_format);
+		}
+
+		if(g_button[g_partner[activator]] == true)
+		{
 			Format(g_format, sizeof(g_format), "%T", "YourPartnerPressedButton", g_partner[activator]);
 			SendMessage(g_partner[activator], g_format);
 		}
