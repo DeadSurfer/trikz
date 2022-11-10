@@ -8430,9 +8430,9 @@ Action timer_greetings(Handle timer, int client)
 	g_kv.Rewind();
 	g_kv.GotoFirstSubKey(true);
 
-	char section[16] = "", key[] = "Greetings", posColor[64], exploded[11][8];
+	char section[16] = "", key[] = "Greetings", posColor[128], exploded[15][8];
 	float xy[2] = {0.0, ...}, holdtime = 0.0, fxtime = 0.0, fadein = 0.0, fadeout = 0.0;
-	int rgba[7] = {0, ...}, effect = 0;
+	int rgba[2][4], effect = 0;
 
 	do
 	{
@@ -8445,7 +8445,7 @@ Action timer_greetings(Handle timer, int client)
 				break;
 			}
 
-			ExplodeString(posColor, ",", exploded, 11, 8, false);
+			ExplodeString(posColor, ",", exploded, 15, 8, false);
 
 			for(int j = 0; j <= 1; j++)
 			{
@@ -8453,16 +8453,16 @@ Action timer_greetings(Handle timer, int client)
 			}
 
 			holdtime = StringToFloat(exploded[2]);
-			
-			for(int j = 3; j <= 6; j++)
+
+			for(int j = 3; j <= 10; j++)
 			{
-				rgba[j] = StringToInt(exploded[j], 10);
+				rgba[j <= 6 ? 0 : 1][j <= 6 ? j - 3 : j - 7] = StringToInt(exploded[j], 10);
 			}
 
-			effect = StringToInt(exploded[7], 10);
-			fxtime = StringToFloat(exploded[8]);
-			fadein = StringToFloat(exploded[9]);
-			fadeout = StringToFloat(exploded[10]);
+			effect = StringToInt(exploded[11], 10);
+			fxtime = StringToFloat(exploded[12]);
+			fadein = StringToFloat(exploded[13]);
+			fadeout = StringToFloat(exploded[14]);
 
 			break;
 		}
@@ -8470,7 +8470,7 @@ Action timer_greetings(Handle timer, int client)
 
 	while(g_kv.GotoNextKey(true) == true);
 
-	SetHudTextParams(xy[0], xy[1], holdtime, rgba[3], rgba[4], rgba[5], rgba[6], effect, fxtime, fadein, fadeout); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+	SetHudTextParamsEx(xy[0], xy[1], holdtime, rgba[0], rgba[1], effect, fxtime, fadein, fadeout); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 	Format(g_format, sizeof(g_format), "%T", g_devmap == true ? "GreetingsPractice" : "GreetingsStatistics", client);
 	ShowHudText(client, 1, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
