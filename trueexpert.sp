@@ -1537,8 +1537,6 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[9], value, sizeof(value));
 
-	PrintToServer("%s", value);
-
 	char exploded[4][16];
 	ExplodeString(value, ";", exploded, 4, 16);
 
