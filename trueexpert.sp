@@ -226,7 +226,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top, for ex (http://www.trueexpert.rf.gd/?start=0&map=). To open web page, type to in-game chat !top", FCVAR_NOTIFY, false, 0.0, false, 1.0);
+	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top, for ex (http://www.trueexpert.rf.gd/?start=0&map=). To open web page, type to in-game chat !top", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Allow to use trikz menu.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_block = CreateConVar("sm_te_block", "0.0", "Allow to toggling block state.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Allow to use partner system.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -416,9 +416,9 @@ public void OnMapStart()
 	{
 		ConVar CV_sourcetv = FindConVar("tv_enable");
 
-		bool sourcetv = CV_sourcetv.BoolValue; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
+		int sourcetv = CV_sourcetv.IntValue; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 
-		if(sourcetv == true)
+		if(sourcetv == 1.0)
 		{
 			if(g_sourcetvchangedFileName == false)
 			{
@@ -444,7 +444,7 @@ public void OnMapStart()
 			}
 		}
 
-		if(g_sourcetv == false && sourcetv == false)
+		if(g_sourcetv == false && sourcetv == 0.0)
 		{
 			g_sourcetv = true;
 
@@ -696,9 +696,9 @@ public void OnMapEnd()
 	{
 		ConVar CV_sourcetv = FindConVar("tv_enable");
 
-		bool sourcetv = CV_sourcetv.BoolValue;
+		int sourcetv = CV_sourcetv.IntValue;
 
-		if(sourcetv == true)
+		if(sourcetv == 1.0)
 		{
 			ServerCommand("tv_stoprecord");
 
@@ -1010,9 +1010,9 @@ void OnButton(const char[] output, int caller, int activator, float delay)
 {
 	if(IsValidClient(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
-		bool button = gCV_button.BoolValue;
+		int button = gCV_button.IntValue;
 
-		if(button == false)
+		if(button == 0.0)
 		{
 			return;
 		}
@@ -1178,16 +1178,16 @@ void Control(int client)
 
 	menu.SetTitle("Control");
 
-	menu.AddItem("top", "!top", gCV_top.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("top10", "!top10", gCV_top10.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("top", "!top", gCV_top.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("top10", "!top10", gCV_top10.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("js", "!js", LibraryExists("trueexpert-jumpstats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem("bs", "!bs", LibraryExists("trueexpert-booststats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("hud", "!hud", gCV_hud.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("button", "!button", gCV_button.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("spec", "!spec", gCV_spec.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("color", "!color", gCV_color.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("afk", "!afk", gCV_afk.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("trikz", "!trikz", gCV_trikz.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("hud", "!hud", gCV_hud.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("button", "!button", gCV_button.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("spec", "!spec", gCV_spec.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("color", "!color", gCV_color.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("afk", "!afk", gCV_afk.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("trikz", "!trikz", gCV_trikz.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
 
@@ -1304,9 +1304,9 @@ Action ACLCPNUM(int client, const char[] command, int argc)
 
 Action cmd_checkpoint(int client, int args)
 {
-	bool checkpoint = gCV_checkpoint.BoolValue;
+	int checkpoint = gCV_checkpoint.IntValue;
 
-	if(checkpoint == false)
+	if(checkpoint == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -1635,8 +1635,10 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 		{
 			//https://forums.alliedmods.net/showthread.php?t=261378
 			int steamid = GetSteamAccountID(client, true);
+			
+			bool fetchrow = results.FetchRow();
 
-			if(results.FetchRow() == false)
+			if(fetchrow == false)
 			{
 				Format(g_query, sizeof(g_query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
 				g_mysql.Query(SQLUserAdded, g_query, _, DBPrio_Normal);
@@ -1644,13 +1646,9 @@ void SQLAddUser(Database db, DBResultSet results, const char[] error, any data)
 				#if debug == true
 				PrintToServer("SQLAddUser: User (%N) trying to add to database...", client);
 				#endif
-
-				return;
 			}
 
-			results.Rewind();
-
-			if(results.FetchRow() == true)
+			else if(fetchrow == true)
 			{
 				Format(g_query, sizeof(g_query), "SELECT steamid FROM users WHERE steamid = %i LIMIT 1", steamid);
 				g_mysql.Query(SQLUpdateUser, g_query, GetClientSerial(client), DBPrio_High);
@@ -1697,14 +1695,14 @@ void SQLUpdateUser(Database db, DBResultSet results, const char[] error, any dat
 		{
 			int steamid = GetSteamAccountID(client, true);
 
-			if(results.FetchRow() == false)
+			bool fetchrow = results.FetchRow();
+
+			if(fetchrow == false)
 			{
 				Format(g_query, sizeof(g_query), "INSERT INTO users (username, steamid, firstjoin, lastjoin) VALUES (\"%N\", %i, %i, %i)", client, steamid, GetTime(), GetTime());
 			}
 
-			results.Rewind();
-
-			if(results.FetchRow() == true)
+			else if(fetchrow == true)
 			{
 				Format(g_query, sizeof(g_query), "UPDATE users SET username = \"%N\", lastjoin = %i WHERE steamid = %i LIMIT 1", client, GetTime(), steamid);
 			}
@@ -1761,9 +1759,9 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 	{
 		int client = GetClientFromSerial(data);
 
-		if(IsValidClient(client) == true && results.FetchRow() == true)
+		if(IsValidClient(client) == true)
 		{
-			g_points[client] = results.FetchInt(0);
+			g_points[client] = results.FetchRow() == true ? results.FetchInt(0) : 0;
 		}
 	}
 
@@ -1779,19 +1777,7 @@ void SQLGetServerRecord(Database db, DBResultSet results, const char[] error, an
 
 	else if(strlen(error) == 0)
 	{
-		if(results.FetchRow() == false)
-		{
-			g_ServerRecordTime = 0.0;
-
-			return;
-		}
-
-		results.Rewind();
-
-		if(results.FetchRow() == true)
-		{
-			g_ServerRecordTime = results.FetchFloat(0);
-		}
+		g_ServerRecordTime = results.FetchRow() == true ? results.FetchFloat(0) : 0.0;
 	}
 
 	return;
@@ -1810,19 +1796,7 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 		if(IsValidClient(client) == true)
 		{
-			if(results.FetchRow() == false)
-			{
-				g_haveRecord[client] = 0.0;
-
-				return;
-			}
-
-			results.Rewind();
-
-			if(results.FetchRow() == true)
-			{
-				g_haveRecord[client] = results.FetchFloat(0);
-			}
+			g_haveRecord[client] = results.FetchRow() == true ? results.FetchFloat(0) : 0.0;
 		}
 	}
 
@@ -1831,9 +1805,9 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 {
-	bool boostfix = gCV_boostfix.BoolValue;
+	int boostfix = gCV_boostfix.IntValue;
 
-	if(boostfix == true)
+	if(boostfix == 1.0)
 	{
 		if(IsValidClient(client) == true && IsValidClient(other) == true && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
 		{
@@ -1906,9 +1880,9 @@ Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 void SDKBoostFix(int client)
 {
-	bool boostfix = gCV_boostfix.BoolValue;
+	int boostfix = gCV_boostfix.IntValue;
 
-	if(boostfix == true)
+	if(boostfix == 1.0)
 	{
 		if(g_boost[client] == 1)
 		{
@@ -1946,9 +1920,9 @@ void SDKBoostFix(int client)
 
 Action cmd_trikz(int client, int args)
 {
-	bool trikz = gCV_trikz.BoolValue;
+	int trikz = gCV_trikz.IntValue;
 
-	if(trikz == false)
+	if(trikz == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2090,9 +2064,9 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_block(int client, int args)
 {
-	bool block = gCV_block.BoolValue;
+	int block = gCV_block.IntValue;
 
-	if(block == false)
+	if(block == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2126,9 +2100,9 @@ Action Block(int client) //thanks maru for optimization.
 
 Action cmd_partner(int client, int args)
 {
-	bool partner = gCV_partner.BoolValue;
+	int partner = gCV_partner.IntValue;
 
-	if(partner == false)
+	if(partner == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2396,9 +2370,9 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_color(int client, int args)
 {
-	bool color = gCV_color.BoolValue;
+	int color = gCV_color.IntValue;
 
-	if(color == false)
+	if(color == 0.0)
 	{
 		return Plugin_Handled;
 	}
@@ -2484,9 +2458,9 @@ void ColorTeam(int client, bool allowColor)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		bool colorCV = gCV_color.BoolValue;
+		int colorCV = gCV_color.IntValue;
 
-		if(colorCV == false)
+		if(colorCV == 0.0)
 		{
 			return;
 		}
@@ -2569,9 +2543,9 @@ void ColorFlashbang(int client)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		bool colorCV = gCV_color.BoolValue;
+		int colorCV = gCV_color.IntValue;
 
-		if(colorCV == false)
+		if(colorCV == 0.0)
 		{
 			return;
 		}
@@ -2623,21 +2597,9 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 
 		if(IsValidClient(client) == true)
 		{
-			if(results.FetchRow() == false)
-			{
-				g_teamRecord[client] = 0.0;
-				g_teamRecord[g_partner[client]] = 0.0;
-
-				return;
-			}
-
-			results.Rewind();
-
-			if(results.FetchRow() == true)
-			{
-				g_teamRecord[client] = results.FetchFloat(0);
-				g_teamRecord[g_partner[client]] = results.FetchFloat(0);
-			}
+			float time = results.FetchRow() == true ? results.FetchFloat(0) : 0.0;
+			g_teamRecord[client] = time;
+			g_teamRecord[g_partner[client]] = time;
 		}
 	}
 
@@ -2646,9 +2608,9 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 
 Action cmd_restart(int client, int args)
 {
-	bool restart = gCV_restart.BoolValue;
+	int restart = gCV_restart.IntValue;
 
-	if(restart == false)
+	if(restart == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2756,9 +2718,9 @@ int handler_askforrestart(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_autoflash(int client, int args)
 {
-	bool autoflashbang = gCV_autoflashbang.BoolValue;
+	int autoflashbang = gCV_autoflashbang.IntValue;
 	
-	if(autoflashbang == false)
+	if(autoflashbang == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2787,9 +2749,9 @@ Action cmd_autoflash(int client, int args)
 
 Action cmd_autoswitch(int client, int args)
 {
-	bool autoswitch = gCV_autoswitch.BoolValue;
+	int autoswitch = gCV_autoswitch.IntValue;
 	
-	if(autoswitch == false)
+	if(autoswitch == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2816,9 +2778,9 @@ Action cmd_autoswitch(int client, int args)
 
 Action cmd_bhop(int client, int args)
 {
-	bool bhop = gCV_bhop.BoolValue;
+	int bhop = gCV_bhop.IntValue;
 	
-	if(bhop == false)
+	if(bhop == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2845,9 +2807,9 @@ Action cmd_bhop(int client, int args)
 
 Action cmd_endmsg(int client, int args)
 {
-	bool endmsg = gCV_endmsg.BoolValue;
+	int endmsg = gCV_endmsg.IntValue;
 
-	if(endmsg == false)
+	if(endmsg == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2874,9 +2836,9 @@ Action cmd_endmsg(int client, int args)
 
 Action cmd_top10(int client, int args)
 {
-	bool top10 = gCV_top10.BoolValue;
+	int top10 = gCV_top10.IntValue;
 
-	if(top10 == false)
+	if(top10 == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2924,9 +2886,9 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 
 	else if(strlen(error) == 0)
 	{
-		bool bResults = results.FetchRow();
+		bool fetchrow = results.FetchRow();
 
-		if(bResults == false)
+		if(fetchrow == false)
 		{
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -2941,7 +2903,7 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 			}
 		}
 
-		else if(bResults == true)
+		else if(fetchrow == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 10", g_map);
 			g_mysql.Query(SQLTop10_2, g_query, _, DBPrio_Normal);
@@ -3062,9 +3024,9 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 
 Action cmd_control(int client, int args)
 {
-	bool control = gCV_control.BoolValue;
+	int control = gCV_control.IntValue;
 
-	if(control == false)
+	if(control == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3076,9 +3038,9 @@ Action cmd_control(int client, int args)
 
 Action cmd_skin(int client, int args)
 {
-	bool skin = gCV_skin.BoolValue;
+	int skin = gCV_skin.IntValue;
 
-	if(skin == false)
+	if(skin == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3260,9 +3222,9 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_macro(int client, int args)
 {
-	bool macro = gCV_macro.BoolValue;
+	int macro = gCV_macro.IntValue;
 	
-	if(macro == false)
+	if(macro == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3271,6 +3233,7 @@ Action cmd_macro(int client, int args)
 	
 	char value[8] = "";
 	IntToString(g_macroDisabled[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie[6], value);
 
 	Format(g_format, sizeof(g_format), "%T", g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
 	SendMessage(client, g_format);
@@ -3477,7 +3440,7 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLDeleteAllCP %N [%i]: %s", client, GetSteamAccountID(client), error);
+		PrintToServer("SQLDeleteAllCP %N [%i]: %s", client, GetSteamAccountID(client, true), error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3637,7 +3600,7 @@ void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPac
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLTierRemove (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client), error);
+		PrintToServer("SQLTierRemove (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client, true), error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3661,7 +3624,7 @@ void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPac
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLTierInsert (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client), error);
+		PrintToServer("SQLTierInsert (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client, true), error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3686,7 +3649,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLSetZone (%i) %N [%i]: %s", cpnum, client, GetSteamAccountID(client), error);
+		PrintToServer("SQLSetZone (%i) %N [%i]: %s", cpnum, client, GetSteamAccountID(client, true), error);
 	}
 
 	else if(strlen(error) == 0)
@@ -4602,7 +4565,9 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 
 	else if(strlen(error) == 0)
 	{
-		if(results.FetchRow() == true)
+		bool fetchrow = results.FetchRow();
+
+		if(fetchrow == true)
 		{
 			for(int i = 1; i <= 10; i++)
 			{
@@ -4611,7 +4576,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 			}
 		}
 
-		else if(results.FetchRow() == false)
+		else if(fetchrow == false)
 		{
 			if(g_zoneHave[2] == false)
 			{
@@ -4619,6 +4584,8 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 			}
 		}
 	}
+
+	return;
 }
 
 void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
@@ -5729,9 +5696,9 @@ Action timer_sourcetv(Handle timer)
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable");
 
-	bool sourcetv = CV_sourcetv.BoolValue; //https://sm.alliedmods.net/new-api/convars/__raw
+	int sourcetv = CV_sourcetv.IntValue; //https://sm.alliedmods.net/new-api/convars/__raw
 
-	if(sourcetv == true)
+	if(sourcetv == 1.0)
 	{
 		ServerCommand("tv_stoprecord");
 
@@ -5756,9 +5723,9 @@ Action timer_runsourcetv(Handle timer)
 	RenameFile(filenameNew, filenameOld);
 	ConVar CV_sourcetv = FindConVar("tv_enable");
 
-	bool sourcetv = CV_sourcetv.BoolValue; //https://sm.alliedmods.net/new-api/convars/__raw
+	int sourcetv = CV_sourcetv.IntValue; //https://sm.alliedmods.net/new-api/convars/__raw
 
-	if(sourcetv == true)
+	if(sourcetv == 1.0)
 	{
 		PrintToServer("SourceTV is start recording.");
 
@@ -5787,7 +5754,9 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		int cpnum = data.ReadCell();
 		delete data;
 
-		if(results.FetchRow() == false)
+		bool fetchrow = results.FetchRow();
+
+		if(fetchrow == false)
 		{
 			float time = g_timerTime[other];
 
@@ -5810,13 +5779,9 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 			Call_PushString("FirstCPRecord1");
 			Call_Finish();
 			delete hForward;
-
-			return;
 		}
 
-		results.Rewind();
-
-		if(results.FetchRow() == true)
+		else if(fetchrow == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
 			DataPack dp = new DataPack();
@@ -5852,7 +5817,9 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 
 		int partner = g_partner[other];
 
-		if(results.FetchRow() == false)
+		bool fetchrow = results.FetchRow();
+
+		if(fetchrow == false)
 		{
 			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
 			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
@@ -5866,13 +5833,9 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 			Call_PushString("FirstCPRecord2");
 			Call_Finish();
 			delete hForward;
-
-			return;
 		}
 
-		results.Rewind();
-
-		if(results.FetchRow() == true)
+		else if(fetchrow == true)
 		{
 			g_cpTimeSR[cpnum] = results.FetchFloat(0);
 
@@ -5944,17 +5907,15 @@ void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
 		int partner = g_partner[client];
 		int partnerid = GetSteamAccountID(partner, true);
 
-		if(results.FetchRow() == false)
+		bool fetchrow = results.FetchRow();
+
+		if(fetchrow == false)
 		{
 			Format(g_query, sizeof(g_query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
 			g_mysql.Query(SQLSetTriesInserted, g_query, _, DBPrio_High);
-
-			return;
 		}
 
-		results.Rewind();
-
-		if(results.FetchRow() == true)
+		else if(fetchrow == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT tries FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
 			g_mysql.Query(SQLSetTries2, g_query, GetClientSerial(client), DBPrio_High);
@@ -6000,23 +5961,23 @@ void SQLSetTries2(Database db, DBResultSet results, const char[] error, any data
 			int partner = g_partner[client];
 			int partnerid = GetSteamAccountID(partner, true);
 
-			if(results.FetchRow() == false)
+			bool fetchrow = results.FetchRow();
+
+			if(fetchrow == false)
 			{
 				Format(g_query, sizeof(g_query), "INSERT INTO records (playerid, partnerid, tries, map, date) VALUES (%i, %i, 1, '%s', %i)", playerid, partnerid, g_map, GetTime());
 				g_mysql.Query(SQLSetTriesInserted, g_query, _, DBPrio_High);
-
-				return;
 			}
 
-			results.Rewind();
-
-			if(results.FetchRow() == true)
+			else if(fetchrow == true)
 			{
 				Format(g_query, sizeof(g_query), "UPDATE records SET tries = tries + 1 WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
 				g_mysql.Query(SQLSetTriesUpdated, g_query, _, DBPrio_Normal);
 			}
 		}
 	}
+
+	return;
 }
 
 void SQLSetTriesUpdated(Database db, DBResultSet results, const char[] error, any data)
@@ -6303,9 +6264,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	g_entityButtons[client] = buttons;
 
-	bool bhop = gCV_bhop.BoolValue;
+	int bhop = gCV_bhop.IntValue;
 
-	if(bhop == true && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel", 4, 0) <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
+	if(bhop == 1.0 && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel", 4, 0) <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 	{
 		buttons &= ~IN_JUMP; //https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit https://forums.alliedmods.net/showthread.php?t=192163
 	}
@@ -6420,9 +6381,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		bool pingtool = gCV_pingtool.BoolValue;
+		int pingtool = gCV_pingtool.IntValue;
 
-		if(pingtool == true && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] >= 0.2)
+		if(pingtool == 1.0 && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] >= 0.2)
 		{
 			g_pingLock[client] = true;
 
@@ -6812,23 +6773,23 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		g_restartLock[client][1] = true;
 
-		bool restartCV = gCV_restart.BoolValue;
-		bool partnerCV = gCV_partner.BoolValue;
+		int restartCV = gCV_restart.IntValue;
+		int partnerCV = gCV_partner.IntValue;
 
-		if(IsValidPartner(client) == true && restartCV == true)
+		if(IsValidPartner(client) == true && restartCV == 1.0)
 		{
 			Restart(client, true);
 		}
 
-		else if(IsValidPartner(client) == false && partnerCV == true)
+		else if(IsValidPartner(client) == false && partnerCV == 1.0)
 		{
 			Partner(client);
 		}
 	}
 
-	bool macro = gCV_macro.BoolValue;
+	int macro = gCV_macro.IntValue;
 
-	if(macro == true && g_macroDisabled[client] == false && IsPlayerAlive(client) == true)
+	if(macro == 1.0 && g_macroDisabled[client] == false && IsPlayerAlive(client) == true)
 	{
 		if(buttons & IN_ATTACK2 && !(buttons & IN_ATTACK) && g_macroOpened[client] == false)
 		{
@@ -6944,9 +6905,9 @@ Action ProjectileBoostFix(int entity, int other)
 
 Action cmd_devmap(int client, int args)
 {
-	bool devmap = gCV_devmap.BoolValue;
+	int devmap = gCV_devmap.IntValue;
 
-	if(devmap == false)
+	if(devmap == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7140,9 +7101,9 @@ Action timer_changelevel(Handle timer, bool value)
 
 Action cmd_top(int client, int args)
 {
-	bool top = gCV_top.BoolValue;
+	int top = gCV_top.IntValue;
 
-	if(top == false)
+	if(top == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7173,9 +7134,9 @@ Action timer_motd(Handle timer, int client)
 
 Action cmd_afk(int client, int args)
 {
-	bool afk = gCV_afk.BoolValue;
+	int afk = gCV_afk.IntValue;
 
-	if(afk == false)
+	if(afk == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7301,9 +7262,9 @@ void AFK(int client, bool force)
 
 Action cmd_noclip(int client, int args)
 {
-	bool noclip = gCV_noclip.BoolValue;
+	int noclip = gCV_noclip.IntValue;
 
-	if(noclip == false)
+	if(noclip == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7347,9 +7308,9 @@ void Noclip(int client)
 
 Action cmd_spec(int client, int args)
 {
-	bool spec = gCV_spec.BoolValue;
+	int spec = gCV_spec.IntValue;
 
-	if(spec == false)
+	if(spec == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7361,9 +7322,9 @@ Action cmd_spec(int client, int args)
 
 Action cmd_hud(int client, int args)
 {
-	bool hud = gCV_hud.BoolValue;
+	int hud = gCV_hud.IntValue;
 
-	if(hud == false)
+	if(hud == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7381,11 +7342,11 @@ void HudMenu(int client)
 	menu.SetTitle("Hud");
 
 	Format(g_format, sizeof(g_format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
-	menu.AddItem("vel", g_format, gCV_vel.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("vel", g_format, gCV_vel.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_format, sizeof(g_format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
-	menu.AddItem("mls", g_format, gCV_mlstats.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("mls", g_format, gCV_mlstats.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_format, sizeof(g_format), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
-	menu.AddItem("endmsg", g_format, gCV_endmsg.BoolValue == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("endmsg", g_format, gCV_endmsg.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
 
@@ -7456,9 +7417,9 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_vel(int client, int args)
 {
-	bool vel = gCV_vel.BoolValue;
+	int vel = gCV_vel.IntValue;
 
-	if(vel == false)
+	if(vel == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7517,9 +7478,9 @@ void VelHud(int client)
 
 Action cmd_mlstats(int client, int args)
 {
-	bool mlstats = gCV_mlstats.BoolValue;
+	int mlstats = gCV_mlstats.IntValue;
 
-	if(mlstats == false)
+	if(mlstats == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7546,9 +7507,9 @@ Action cmd_mlstats(int client, int args)
 
 Action cmd_button(int client, int args)
 {
-	bool button = gCV_button.BoolValue;
+	int button = gCV_button.IntValue;
 
-	if(button == false)
+	if(button == 0.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7635,9 +7596,9 @@ void SDKProjectile(int entity)
 
 	if(IsValidEntity(entity) == true && IsValidEntity(client) == true)
 	{
-		bool autoflashbang = gCV_autoflashbang.BoolValue;
+		int autoflashbang = gCV_autoflashbang.IntValue;
 
-		if(autoflashbang == true && (g_autoflash[client] == true || IsFakeClient(client) == true))
+		if(autoflashbang == 1.0 && (g_autoflash[client] == true || IsFakeClient(client) == true))
 		{
 			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2, 4, false); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		}
@@ -7654,9 +7615,9 @@ void SDKProjectile(int entity)
 
 		SetEntityRenderColor(entity, g_colorBuffer[client][1][0], g_colorBuffer[client][1][1], g_colorBuffer[client][1][2], 255);
 
-		bool autoswitch = gCV_autoswitch.BoolValue;
+		int autoswitch = gCV_autoswitch.IntValue;
 		
-		if(autoswitch == true && (g_autoswitch[client] == true || IsFakeClient(client) == true))
+		if(autoswitch == 1.0 && (g_autoswitch[client] == true || IsFakeClient(client) == true))
 		{
 			SetEntProp(client, Prop_Data, "m_bDrawViewmodel", false, 4, 0); //Thanks to "Alliedmodders". (2019 year https://forums.alliedmods.net/archive/index.php/t-287052.html)
 
@@ -7782,9 +7743,9 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 
 void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	bool autoflashbang = gCV_autoflashbang.BoolValue;
+	int autoflashbang = gCV_autoflashbang.IntValue;
 
-	if(autoflashbang == true)
+	if(autoflashbang == 1.0)
 	{
 		RequestFrame(rf_giveflashbang, client); //replays drops knife
 	}
@@ -7812,9 +7773,9 @@ Action SDKWeaponDrop(int client, int weapon)
 
 void GiveFlashbang(int client)
 {
-	bool autoflashbang = gCV_autoflashbang.BoolValue;
+	int autoflashbang = gCV_autoflashbang.IntValue;
 	
-	if(autoflashbang == true && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
+	if(autoflashbang == 1.0 && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
 	{
 		if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 4) == 0)
 		{
