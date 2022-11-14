@@ -403,7 +403,7 @@ public void OnMapStart()
 {
 	GetCurrentMap(g_map, sizeof(g_map));
 
-	Database.Connect(SQLConnect, "trueexpert");
+	Database.Connect(SQLConnect, "trueexpert", 0);
 
 	for(int i = 0; i <= 2; i++)
 	{
