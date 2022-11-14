@@ -10,7 +10,7 @@ public void OnMapStart()
 
 void SQLConnect(Database db, const char[] error, any data)
 {
-	db.Query(SQL_GetTier, "SELECT tier, map FROM tier, _, DBPrio_Normal);
+	db.Query(SQL_GetTier, "SELECT tier, map FROM tier", _, DBPrio_Normal);
 
 	return;
 }
