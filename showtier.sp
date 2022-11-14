@@ -10,6 +10,11 @@ public void OnMapStart()
 
 void SQLConnect(Database db, const char[] error, any data)
 {
+	if(db == INVALID_HANDLE)
+	{
+		return;
+	}
+	
 	db.Query(SQL_GetTier, "SELECT tier, map FROM tier", _, DBPrio_Normal);
 
 	return;
@@ -17,27 +22,35 @@ void SQLConnect(Database db, const char[] error, any data)
 
 void SQL_GetTier(Database db, DBResultSet results, const char[] error, any data)
 {
-	static int tier = 0;
-	static char map[192] = "", format[256] = "";
-
-	g_count = 0;
-	
-	while(results.FetchRow() == true)
+	if(strlen(error) > 0)
 	{
-		g_count++;
+		PrintToServer("SQL_GetTier: %s", error);
 	}
 
-	delete g_tier;
-	g_tier = new ArrayList(sizeof(format), 0);
-
-	results.Rewind();
-
-	while(results.FetchRow() == true)
+	else if(strlen(error) == 0)
 	{
-		tier = results.FetchInt(0);
-		results.FetchString(1, map, sizeof(map));
-		Format(format, sizeof(format), "%s;%i", map, tier);
-		g_tier.PushString(format);
+		static int tier = 0;
+		static char map[192] = "", format[256] = "";
+
+		g_count = 0;
+
+		while(results.FetchRow() == true)
+		{
+			g_count++;
+		}
+
+		delete g_tier;
+		g_tier = new ArrayList(sizeof(format), 0);
+
+		results.Rewind();
+
+		while(results.FetchRow() == true)
+		{
+			tier = results.FetchInt(0);
+			results.FetchString(1, map, sizeof(map));
+			Format(format, sizeof(format), "%s;%i", map, tier);
+			g_tier.PushString(format);
+		}
 	}
 
 	return;
