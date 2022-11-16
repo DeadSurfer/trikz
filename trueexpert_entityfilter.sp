@@ -38,7 +38,7 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
-#define MAXLINK 128 + 1
+#define MAXLINK 512 + 1
 #define MAXOUTPUT 10 + 1
 #define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 #define IsValidPartner(%1) 0 < Trikz_GetClientPartner(%1) <= MaxClients
@@ -170,7 +170,11 @@ public void OnClientPutInServer(int client)
 			for(int j = 0; j <= 1; j++)
 			{
 				g_touchArtifacial[client][g_entityID[i]][j] = false;
+
+				continue;
 			}
+
+			continue;
 		}
 	}
 
@@ -195,6 +199,8 @@ Action timer_prepare(Handle timer)
 		{
 			g_maxLinks[i][j] = 0;
 			g_maxMathLinks[i][j] = 0;
+
+			continue;
 		}
 
 		g_entityID[i] = 0;
@@ -210,7 +216,11 @@ Action timer_prepare(Handle timer)
 				g_linkedEntitiesDefault[i][j][k] = 0;
 				g_linkedMathEntitiesDefault[i][j][k] = 0;
 				g_entityOutput[i][j][k] = 0;
+
+				continue;
 			}
+
+			continue;
 		}
 
 		for(int j = 0; j <= MaxClients; j++)
@@ -222,8 +232,14 @@ Action timer_prepare(Handle timer)
 			for(int k = 0; k <= 1; k++)
 			{
 				g_touchArtifacial[j][i][k] = false;
+
+				continue;
 			}
+
+			continue;
 		}
+
+		continue;
 	}
 
 	if(Trikz_GetDevmap() == true)
@@ -254,7 +270,11 @@ Action timer_prepare(Handle timer)
 				{
 					LinkProcess(entity, output[j]);
 				}
+
+				continue;
 			}
+
+			continue;
 		}
 
 		for(int j = 0; j < sizeof(output); j++)
@@ -263,6 +283,8 @@ Action timer_prepare(Handle timer)
 			{
 				HookEntityOutput(classname[i], output[j], EntityOutputHook);
 			}
+
+			continue;
 		}
 	}
 
@@ -304,7 +326,11 @@ void LinkProcess(int entity, const char[] output)
 					{
 						Prepare(entity, "func_button", "");
 					}
+
+					continue;
 				}
+
+				continue;
 			}
 		}
 
@@ -319,6 +345,8 @@ void LinkProcess(int entity, const char[] output)
 				Prepare(entityLinked, "func_button", "");
 
 				DHookEntity(g_AcceptInput, false, entityLinked, INVALID_FUNCTION, AcceptInputButton);
+
+				continue;
 			}
 		}
 
@@ -329,8 +357,12 @@ void LinkProcess(int entity, const char[] output)
 			while((entityLinked = FindLinkedEntity(entityLinked, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
 			{
 				Prepare(entityLinked, "math_counter", "");
+
+				continue;
 			}
 		}
+
+		continue;
 	}
 
 	return;
@@ -356,6 +388,8 @@ int FindLinkedEntity(int entity, const char[] classname, const char[] target, in
 		{
 			return entity;
 		}
+
+		continue;
 	}
 
 	return INVALID_ENT_REFERENCE;
@@ -454,14 +488,18 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 
 					quit = true;
 
-					continue;
+					break;
 				}
+
+				continue;
 			}
 
 			if(quit == true)
 			{
-				continue;
+				break;
 			}
+
+			continue;
 		}
 
 		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit);
@@ -561,6 +599,8 @@ void AddOutput(int entity, const char[] output, const char[] outputtype)
 		Format(output_[3], 768, "%s %s:%s:%s:%f:%i", outputtype, output_[0], output_[1], output_[2], delay, fire);
 		SetVariantString(output_[3]);
 		AcceptEntityInput(entity, "AddOutput");
+
+		continue;
 	}
 
 	return;
@@ -593,8 +633,10 @@ void AddToLink(int entity, const char[] output, int entityLinked)
 
 				g_entityOutput[entityLinked][maxMathLinks][outputNum] = 1;
 
-				continue;
+				break;
 			}
+
+			continue;
 		}
 	}
 
@@ -612,12 +654,18 @@ void Reset(int client)
 		for(int j = 0; j <= 1; j++)
 		{
 			g_touchArtifacial[client][g_entityID[i]][j] = false;
+
+			continue;
 		}
+
+		continue;
 	}
 
 	for(int i = 1; i <= g_mathTotalCount; i++)
 	{
 		g_mathValue[client][i] = g_mathValueDefault[i];
+
+		continue;
 	}
 
 	return;
@@ -769,8 +817,10 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 				{
 					thisIndex = g_entityID[i];
 
-					continue;
+					break;
 				}
+
+				continue;
 			}
 
 			if(thisIndex > 0)
@@ -900,8 +950,10 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 			{
 				thisIndex = i;
 
-				continue;
+				break;
 			}
+
+			continue;
 		}
 
 		if(thisIndex == 0)
@@ -1157,6 +1209,8 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 				}
 
 				g_linkedEntities[partner][linkedEntity] += g_entityOutput[linkedEntity][i][outputNum];
+
+				continue;
 			}
 
 			if(StrContains(output, "OnStartTouch", false) != -1)
@@ -1225,8 +1279,14 @@ Action EntityOutputHook(char[] output, int caller, int activator, float delay)
 						}
 
 						g_linkedEntities[partner][linkedMathEntity] += g_entityOutput[linkedMathEntity][j][outputNum];
+
+						continue;
 					}
+
+					break;
 				}
+
+				continue;
 			}
 		}
 	}
