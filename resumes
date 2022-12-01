@@ -60,8 +60,8 @@
 	//used "youtube".
 
 	//"80.232.242.48" connected to "youtube" ip address.
+	
+	//vpn work like you connect to other user and he connect to "vk.com".
   
   retrun;
  }
-
-	//vpn work like you connect to other user and he connect to "vk.com".
