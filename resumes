@@ -1,0 +1,67 @@
+//If you declarate a static, it creating once. In memory static can be changed by declarated variable.
+
+/*static void trikz()
+{
+	static int x = 0; //This line will be created only once while plugin running.
+	PrintToServer("A variable number of static integer is "%i".", x); //Here we show a variable to the server console, if this function will be called.
+	x++; //Here you always add 1 to "x" variable, so it never gonna craeted again, it never resets while plugin running.
+
+	const int y = 0; //This line will be creating always, if this funtion will be called.
+	y + 1; //Here we add 1 to "z" variable, but this will be no effect.
+	PrintToServer("A variable of const integer is "%i"", y); //A variable must be 0;
+
+	int z = 0; //This line will be creating always, if this function will be called.
+	z + 1; //Here we add 1 to "z" variable.
+	PrintToServer("A variable of normal integer "%i"", z); //Here we show to the server console "z" variable. A variable must be 1.
+
+	int i = 0; //Here we creating integer always.
+	PrintToServer("%i", i++); //This will be 0;
+
+	int j = 0; //Here we creating integer always.
+	PrintToServer("%i", ++j); //Here will be 1.
+
+	//"++" adding 1 to integer variable. Pre increment will add 1 before funtion called, post will add 1 after function called.
+
+	//void return nothing to the funtion.
+	//action return integer value to the function.
+	//
+
+	//global variables will be saved outside function.
+
+	/*
+
+	void foo(int x, float y, const char z) //This is function. Function starts with typeset and name. Also function should have arguments.
+	{//Function open here.
+		//Function inside.
+
+		int value = 9000000000;
+
+		for(int k = 0; k < sizeof(value); k++)
+		{
+			//This loop will do cycle, after finish function will be ended. "while(){}" work same but end if u do "break;". "continue;" will start next cycle, if use it somewhere.
+		}
+
+		if(value == 1 || value == 101)
+		{
+			//code read here
+		}
+
+		//We can call function "foo(1, 2.3, "A")" inside the "OnPluginStart()". "OnPluginStart()" calls once when plugin get run. "OnPlayerRunCmd(...)" funtion calls 100 times per second.
+	}//Function close here.
+
+	*/
+
+	static const int k = 0; //This will be created once and this cant be changed.
+
+	//decompiler dont see static things.
+
+	//"cheat engine" is not decompiler, so we can search address of static elements. If you want to search some addresses via "cheat engine", you must try = you should try, type the value of what you want to search.
+
+	//used "youtube".
+
+	//"80.232.242.48" connected to "youtube" ip address.
+  
+  retrun;
+ }
+
+	//vpn work like you connect to other user and he connect to "vk.com".
