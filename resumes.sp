@@ -60,7 +60,7 @@ public void OnPluginStart()
 
 	//global variables will be saved outside function.
 
-	/*
+	//
 
 	void foo(int x, float y, const char z) //This is function. Function starts with typeset and name. Also function should have arguments.
 	{//Function open here.
@@ -81,7 +81,7 @@ public void OnPluginStart()
 		//We can call function "foo(1, 2.3, "A")" inside the "OnPluginStart()". "OnPluginStart()" calls once when plugin get run. "OnPlayerRunCmd(...)" funtion calls 100 times per second.
 	}//Function close here.
 
-	*/
+	//
 
 	static const int k = 0; //This will be created once and this cant be changed.
 
