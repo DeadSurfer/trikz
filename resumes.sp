@@ -20,6 +20,15 @@ bool g_rainbow[MAXPLAYER] = {false, ...};
 
 native int Trikz_GetTeamColor(int client, int[] color);
 
+public Plugin myinfo =
+{
+	name = "TrueExpert - Rainbow",
+	author = "Niks Smesh Jurēvičs",
+	description = "Allow to make rainbow player and flashbang.",
+	version = "0.1",
+	url = "http://www.sourcemod.net/"
+};
+
 public void OnPluginStart()
 {
 	mp_forcecamera = FindConVar("mp_forcecamera");
@@ -101,12 +110,6 @@ public void OnPluginStart()
 public void OnClientPutInServer(int client)
 {
 	g_rainbow[client] = false;
-	//static int stc = 0;
-	//PrintToServer("%i", stc);
-	//stc += 5;
-	//PrintToServer("%i", stc);
-
-	//trikz();
 
 	if(GetGameTime() >= 3600.0)
 	{
@@ -146,7 +149,7 @@ public void OnClientPostAdminCheck(int client)
 	return;
 }*/
 
-public Action cmd_test(int client, int args)
+Action cmd_test(int client, int args)
 {
 	//SetThirdPersonView(client, args);
 
@@ -181,7 +184,7 @@ public Action cmd_test(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action cmd_rainbow(int client, int args)
+Action cmd_rainbow(int client, int args)
 {
 	g_rainbow[client] = !g_rainbow[client];
 
@@ -245,7 +248,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	return;
 }
 
-public void SDKProjectile(int entity)
+void SDKProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", 0);
 
