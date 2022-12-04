@@ -10,7 +10,7 @@ public Plugin myinfo =
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.116",
+    version = "0.117",
     url = "http://sourcemod.net/"
 };
 
@@ -43,7 +43,7 @@ Action chatlog(int client, const char[] command, int argc)
     }
 
     char auth[64] = "";
-    GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
+    GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true); //GetSteamAccountID = SteamID64 - GetSteamAccountID, (first account SteamID64) + SteamID3 = SteamID64
 
     char buffer[256] = "";
     GetCmdArgString(buffer, sizeof(buffer));
