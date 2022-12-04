@@ -10,7 +10,7 @@ public Plugin myinfo =
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.119",
+    version = "0.120",
     url = "http://sourcemod.net/"
 };
 
@@ -48,7 +48,7 @@ Action chatlog(int client, const char[] command, int argc)
     char name[MAX_NAME_LENGTH] = "";
     GetClientName(client, name, sizeof(name));
 
-    char type[10] = "";
+    char type[6] = "";
 
     if(StrEqual(command, "say", true) == true)
     {
