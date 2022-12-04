@@ -10,7 +10,7 @@ public Plugin myinfo =
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.118",
+    version = "0.119",
     url = "http://sourcemod.net/"
 };
 
@@ -48,6 +48,18 @@ Action chatlog(int client, const char[] command, int argc)
     char name[MAX_NAME_LENGTH] = "";
     GetClientName(client, name, sizeof(name));
 
+    char type[10] = "";
+
+    if(StrEqual(command, "say", true) == true)
+    {
+        Format(type, sizeof(type), "all");
+    }
+
+    else if(StrEqual(command, "say_team", true) == true)
+    {
+        Format(type, sizeof(type), "team");
+    }
+
     char buffer[256] = "";
     GetCmdArgString(buffer, sizeof(buffer));
 
@@ -66,7 +78,7 @@ Action chatlog(int client, const char[] command, int argc)
     char bufferTime[23] = "";
     FormatTime(bufferTime, sizeof(bufferTime), "%Y-%d-%m (%H:%M:%S)", GetTime({0, 0}));
 
-    LogToFile("addons/sourcemod/logs/trueexpert-logger.log", "Date: [%s] SteamID64: [%s] Name: [%s] Command: [%s] Message: [%s]", bufferTime, auth, name, command, buffer);
+    LogToFile("addons/sourcemod/logs/trueexpert-logger.log", "Date: [%s] SteamID64: [%s] Name: [%s] Message (%s): [%s]", bufferTime, auth, name, type, buffer);
 
     return Plugin_Continue;
 }
