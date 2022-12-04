@@ -8,7 +8,7 @@ public Plugin myinfo =
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.112",
+    version = "0.113",
     url = "http://sourcemod.net/"
 };
 
@@ -34,8 +34,10 @@ Action chatlog(int client, const char[] command, int argc)
     char buffer[256] = "";
     GetCmdArgString(buffer, sizeof(buffer));
 
-    char bufferFirst[2] = "";
-    Format(buffer, sizeof(buffer), "%s", buffer);
+    char bufferFirst[3] = "";
+    Format(bufferFirst, sizeof(bufferFirst), "%s", buffer);
+
+    //PrintToServer("debug here: %s", bufferFirst);
 
     if(FindCharInString(bufferFirst, '!', false) > 0)
     {
