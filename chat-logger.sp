@@ -43,7 +43,7 @@ Action chatlog(int client, const char[] command, int argc)
     }
 
     char auth[64] = "";
-    GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true); //GetSteamAccountID = SteamID64 - GetSteamAccountID, (first account SteamID64) + SteamID3 = SteamID64
+    GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true); //(first account SteamID64) + SteamID3 = SteamID64
 
     char buffer[256] = "";
     GetCmdArgString(buffer, sizeof(buffer));
