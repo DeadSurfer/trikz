@@ -19,7 +19,7 @@ public void OnPluginStart()
 
 Action chatlog(int client, const char[] command, int argc)
 {
-    if(client == 0) //Server send message from sourcemod as convars sm_
+    if(client == 0) //Server send message from sourcemod as convars sm_, because we listen all possible commands.
     {
         return Plugin_Continue;
     }
