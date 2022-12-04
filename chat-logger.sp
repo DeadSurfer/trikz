@@ -1,22 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-char comtolist[][] = {"say", "say_team"};
+char g_comtolist[][] = {"say", "say_team"};
 
 public Plugin myinfo = 
 {
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.11",
+    version = "0.112",
     url = "http://sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
-    for(int i = 0; i < sizeof(comtolist); i++) //We take first cell from array, and ittering to the next cell. "sizeof" function getting all two cells from array.
+    for(int i = 0; i < sizeof(g_comtolist); i++) //We take first cell from array, and ittering to the next cell. "sizeof" function getting all two cells from array.
     {
-        AddCommandListener(chatlog, comtolist[i]);
+        AddCommandListener(chatlog, g_comtolist[i]);
     }
 
     return;
@@ -33,6 +33,14 @@ Action chatlog(int client, const char[] command, int argc)
 
     char buffer[256] = "";
     GetCmdArgString(buffer, sizeof(buffer));
+
+    char bufferFirst[2] = "";
+    Format(buffer, sizeof(buffer), "%s", buffer);
+
+    if(FindCharInString(bufferFirst, '!', false) > 0)
+    {
+        return Plugin_Continue;
+    }
 
     char bufferTime[23] = "";
     FormatTime(bufferTime, sizeof(bufferTime), "%Y-%d-%m (%H:%M:%S)", GetTime({0, 0}));
