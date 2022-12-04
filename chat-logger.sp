@@ -14,7 +14,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-    for(int i = 0; i < sizeof(comtolist); i++) //we take first cell from array, and ittering to the next cell.
+    for(int i = 0; i < sizeof(comtolist); i++) //we take first cell from array, and ittering to the next cell. sizeof get all cels from array.
     {
         AddCommandListener(chatlog, comtolist[i]);
     }
