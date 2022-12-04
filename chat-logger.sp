@@ -19,6 +19,11 @@ public void OnPluginStart()
 
 Action chatlog(int client, const char[] command, int argc)
 {
+    if(client == 0)
+    {
+        return Plugin_Continue;
+    }
+    
     int steamid = GetSteamAccountID(client, true);
 
     char buffer[256] = "";
