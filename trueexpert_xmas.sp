@@ -35,6 +35,8 @@ int g_hat[MAXPLAYERS] = {0, ...};
 
 native int Trikz_GetClientPartner(int client);
 
+ConVar g_date = null, g_date2 = null;
+
 public Plugin myinfo =
 {
 	name = "Xmas",
@@ -61,6 +63,10 @@ public void OnPluginStart()
 		}
 	}
 
+	g_date = CreateConVar("sm_te_date_start", "12.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
+	g_date2 = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
+	AutoExecConfig(true, "plugin.trueexpert_xmass.cfg", "sourcemod");
+
 	return;
 }
 
@@ -84,8 +90,33 @@ public void OnPluginEnd()
 	return;
 }
 
+bool TestDate()
+{
+	float monthStart = g_date.FloatValue;
+	float monthEnd = g_date2.FloatValue;
+
+	int date = GetTime({0, 0});
+
+	char buffer[32] = "";
+	Format(buffer, sizeof(buffer), "%m", date);
+
+	float monthCurrent = StringToFloat(buffer);
+
+	if(!(monthStart >= monthCurrent && monthEnd <= monthCurrent))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 public void OnMapStart()
 {
+	if(TestDate() == true)
+	{
+		return;
+	}
+
 	char path[4][PLATFORM_MAX_PATH] = {"models/expert_zone/xmas/", "models/expert_zone/santahat/", "materials/expert_zone/xmas/", "materials/expert_zone/santahat/"};
 
 	for(int i = 0; i < sizeof(path); i++)
@@ -147,6 +178,11 @@ public void OnClientDisconnect(int client)
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
+	if(TestDate() == true)
+	{
+		return;
+	}
+
 	KeyValues kv = new KeyValues("xmas");
 
 	if(kv.ImportFromFile(g_file) == true && kv.GotoFirstSubKey() == true)
@@ -191,6 +227,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
+	if(TestDate() == true)
+	{
+		return;
+	}
+
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	char model[PLATFORM_MAX_PATH] = "";
@@ -223,6 +264,11 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 public Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
+	if(TestDate() == true)
+	{
+		return Plugin_Continue;
+	}
+
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	int team = event.GetInt("team"); //https://wiki.alliedmods.net/Generic_Source_Events#player_team
@@ -333,6 +379,11 @@ public Action SDKTransmit(int entity, int client)
 
 public Action cmd_xmas(int client, int args)
 {
+	if(TestDate() == true)
+	{
+		return Plugin_Continue;
+	}
+
 	int flags = GetUserFlagBits(client);
 	
 	if(flags & ADMFLAG_CUSTOM1)
