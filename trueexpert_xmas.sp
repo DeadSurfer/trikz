@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.21",
+	version = "1.22",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -102,7 +102,7 @@ bool TestDate()
 
 	float monthCurrent = StringToFloat(buffer);
 
-	if(!(monthStart >= monthCurrent && monthEnd <= monthCurrent))
+	if(!(monthStart >= monthCurrent || monthEnd <= monthCurrent))
 	{
 		return true;
 	}
