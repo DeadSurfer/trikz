@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.22",
+	version = "1.24",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -97,12 +97,18 @@ bool TestDate()
 
 	int date = GetTime({0, 0});
 
+	//PrintToServer("debug date value: %i", date);
+
 	char buffer[32] = "";
-	Format(buffer, sizeof(buffer), "%m", date);
+	FormatTime(buffer, sizeof(buffer), "%m", date);
 
-	float monthCurrent = StringToFloat(buffer);
+	//PrintToServer("debug buffer value: %s", buffer);
 
-	if(!(monthStart >= monthCurrent || monthEnd <= monthCurrent))
+	int monthCurrent = StringToInt(buffer);
+
+	//PrintToServer("debug float value: %i %f", monthCurrent, float(monthCurrent));
+
+	if(!(monthStart >= float(monthCurrent) || monthEnd <= float(monthCurrent)))
 	{
 		return true;
 	}
