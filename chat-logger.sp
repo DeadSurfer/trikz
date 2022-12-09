@@ -18,7 +18,7 @@ public void OnPluginStart()
 {
     g_prefixPointEnable = CreateConVar("sm_te_log_enable", "0.0", "Enable log message saving.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_prefixPointHide = CreateConVar("sm_te_log_hide", "0.0", "Allow to hide message if they have explamation or slash before all message.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    AutoExecConfig(true, "plugin.trueexpert-logchat.cfg");
+    AutoExecConfig(true, "plugin.trueexpert-logchat.cfg", "sourcemod");
 
     for(int i = 0; i < sizeof(g_comtolist); i++) //We take first cell from array, and ittering to the next cell. "sizeof" function getting all two cells from array.
     {
