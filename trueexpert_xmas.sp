@@ -40,7 +40,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.2",
+	version = "1.21",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -86,7 +86,7 @@ public void OnPluginEnd()
 
 public void OnMapStart()
 {
-	char path[4][PLATFORM_MAX_PATH] = {"models/trueexpert/xmas/", "models/trueexpert/santahat/", "materials/trueexpert/xmas/", "materials/trueexpert/santahat/"};
+	char path[4][PLATFORM_MAX_PATH] = {"models/expert_zone/xmas/", "models/expert_zone/santahat/", "materials/expert_zone/xmas/", "materials/expert_zone/santahat/"};
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
@@ -119,14 +119,14 @@ public void OnMapStart()
 	char map[192] = "";
 	GetCurrentMap(map, sizeof(map));
 
-	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/trueexpert/");
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/expert_zone/");
 
 	if(DirExists(path[0]) == false)
 	{
 		CreateDirectory(path[0], 511);
 	}
 
-	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/trueexpert/xmas/");
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/expert_zone/xmas/");
 
 	if(DirExists(path[0]) == false)
 	{
@@ -480,7 +480,7 @@ public bool Trace_FilterPlayers(int entity, int contentsMask, any data)
 
 stock void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 {
-	char model[PLATFORM_MAX_PATH] = "models/trueexpert/xmas/";
+	char model[PLATFORM_MAX_PATH] = "models/expert_zone/xmas/";
 
 	if(StrEqual(type, "tree", false)) Format(model, PLATFORM_MAX_PATH, "%sxmastree_mini.mdl", model);
 	else if(StrEqual(type, "tree_big", false)) Format(model, PLATFORM_MAX_PATH, "%sxmastree.mdl", model);
