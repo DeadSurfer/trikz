@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.24",
+	version = "1.25",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -156,14 +156,14 @@ public void OnMapStart()
 	char map[192] = "";
 	GetCurrentMap(map, sizeof(map));
 
-	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/expert_zone/");
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/trueexpert/");
 
 	if(DirExists(path[0]) == false)
 	{
 		CreateDirectory(path[0], 511);
 	}
 
-	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/expert_zone/xmas/");
+	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/trueexpert/xmas/");
 
 	if(DirExists(path[0]) == false)
 	{
@@ -330,7 +330,7 @@ stock void CreateHat(int client)
 
 		g_hat[client] = CreateEntityByName("prop_dynamic");
 
-		DispatchKeyValue(g_hat[client], "model", "models/fakeexpert/santahat/santa.mdl");
+		DispatchKeyValue(g_hat[client], "model", "models/expert_zone/santahat/santa.mdl");
 
 		SetEntProp(g_hat[client], Prop_Data, "m_CollisionGroup", 2);
 
