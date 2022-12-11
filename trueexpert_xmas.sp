@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.25",
+	version = "1.26",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -55,7 +55,7 @@ public void OnPluginStart()
 
 	RegConsoleCmd("sm_xmas", cmd_xmas);
 
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
@@ -79,7 +79,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginEnd()
 {
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
@@ -220,7 +220,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 	delete kv;
 
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
