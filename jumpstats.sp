@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh (Nick Jurevich)",
 	description = "Measures distance difference between two vectors.",
-	version = "0.25",
+	version = "0.26",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -89,7 +89,7 @@ public void OnPluginStart()
 
 	g_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected);
 
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsValidEntity(i) == true)
 		{
@@ -384,7 +384,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 			{
@@ -498,7 +498,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 			{
@@ -711,7 +711,7 @@ Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 						PrintToConsole(other, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 					}
 
-					for(int i = 1; i <= MaxClients; i++)
+					for(int i = 0; i <= MaxClients; ++i)
 					{
 						if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 						{
