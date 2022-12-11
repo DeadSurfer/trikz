@@ -220,7 +220,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.61",
+	version = "4.62",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -527,13 +527,6 @@ public void OnMapStart()
 
 	//RecalculatePoints();
 
-	for(int i = 1; i <= MAXPLAYERS; i++)
-	{
-		g_pingTimer[i] = INVALID_HANDLE;
-
-		continue;
-	}
-
 	g_top10ac = 0.0;
 
 	delete g_kv;
@@ -691,7 +684,7 @@ void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any 
 		{
 			g_pointsMaxs = results.FetchInt(0);
 
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 				{
@@ -869,7 +862,7 @@ void frame_SayText2(DataPack dp)
 		int count = 0;
 		int team = GetClientTeam(client);
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && (allchat == true || GetClientTeam(i) == team))
 			{
@@ -962,7 +955,7 @@ void rf_radiotxt(DataPack dp)
 		int clients[MAXPLAYER] = {0, ...};
 		int count = 0;
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 			{
@@ -1655,6 +1648,8 @@ public void OnClientDisconnect(int client)
 	Format(value, sizeof(value), "%i", GetTime() + 300);
 	SetClientCookie(client, g_cookie[11], value);
 
+	g_pingTimer[client] = INVALID_HANDLE;
+
 	return;
 }
 
@@ -2184,7 +2179,7 @@ void Partner(int client)
 			char name[MAX_NAME_LENGTH] = "";
 			bool player = false;
 
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false && IsPlayerAlive(i) == true) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635 i copy it from denwo and save in github sorry denwo i lost password.
 				{
@@ -2936,7 +2931,7 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 
 		if(fetchrow == false)
 		{
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -2972,7 +2967,7 @@ void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
 	{
 		if(results.FetchRow() == false)
 		{
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -3045,7 +3040,7 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 			FormatSeconds(timeDiff, formatTimeDiff);
 			Format(formatTimeDiff, sizeof(formatTimeDiff), "+%s", formatTimeDiff);
 
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -3846,7 +3841,7 @@ void ZoneEditor(int client)
 
 		g_zoneSelected[client][i] = nulled;
 
-		for(int j = 1; j <= 10; j++)
+		for(int j = 0; j <= 10; ++j)
 		{
 			g_cpPosTemp[client][j][i] = nulled;
 
@@ -3920,7 +3915,7 @@ void ZoneAdd(int client)
 
 		g_zoneSelected[client][i] = nulled;
 
-		for(int j = 1; j <= 10; j++)
+		for(int j = 0; j <= 10; ++j)
 		{
 			g_cpPosTemp[client][j][i] = nulled;
 
@@ -4023,7 +4018,7 @@ void ZoneEdit(int client)
 	{
 		char cp[8] = "";
 
-		for(int i = 1; i <= g_cpCount; i++)
+		for(int i = 0; i <= g_cpCount; ++i)
 		{
 			Format(cp, sizeof(cp), "%i", i);
 			Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPButton", client, i);
@@ -4187,7 +4182,7 @@ int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
 				ZoneEditorEnd(param1);
 			}
 
-			for(int i = 1; i <= g_cpCount; i++)
+			for(int i = 0; i <= g_cpCount; ++i)
 			{
 				char cp[8] = "";
 				IntToString(i, cp, sizeof(cp));
@@ -4526,7 +4521,7 @@ void ZoneTP(int client)
 	{
 		char cp[8] = "";
 
-		for(int i = 1; i <= g_cpCount; i++)
+		for(int i = 0; i <= g_cpCount; ++i)
 		{
 			Format(cp, sizeof(cp), "%i;cp", i);
 			Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPButton", client, i);
@@ -4663,7 +4658,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 
 		if(fetchrow == true)
 		{
-			for(int i = 1; i <= 10; i++)
+			for(int i = 0; i <= 10; ++i)
 			{
 				Format(g_query, sizeof(g_query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
 				g_mysql.Query(SQLCPSetup2, g_query, i, DBPrio_Normal);
@@ -4722,7 +4717,7 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 
 			if(g_devmap == false)
 			{
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
@@ -4858,7 +4853,7 @@ Action SDKEndTouch(int entity, int other)
 		CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.1, timer_clantag, partner, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
-		for(int i = 1; i <= g_cpCount; i++)
+		for(int i = 0; i <= g_cpCount; ++i)
 		{
 			g_cp[other][i] = false;
 			g_cp[partner][i] = false;
@@ -4973,7 +4968,7 @@ Action SDKStartTouch(int entity, int other)
 					{
 						if(g_ServerRecordTime > time)
 						{
-							for(int i = 1; i <= MaxClients; i++)
+							for(int i = 0; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5022,7 +5017,7 @@ Action SDKStartTouch(int entity, int other)
 
 						else if(g_ServerRecordTime <= time >= g_teamRecord[other])
 						{
-							for(int i = 1; i <= MaxClients; i++)
+							for(int i = 0; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5052,7 +5047,7 @@ Action SDKStartTouch(int entity, int other)
 
 						else if(g_ServerRecordTime <= time < g_teamRecord[other])
 						{
-							for(int i = 1; i <= MaxClients; i++)
+							for(int i = 0; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5101,7 +5096,7 @@ Action SDKStartTouch(int entity, int other)
 					{
 						if(g_ServerRecordTime > time)
 						{
-							for(int i = 1; i <= MaxClients; i++)
+							for(int i = 0; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5151,7 +5146,7 @@ Action SDKStartTouch(int entity, int other)
 
 						else if(g_ServerRecordTime <= time)
 						{
-							for(int i = 1; i <= MaxClients; i++)
+							for(int i = 0; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5193,14 +5188,14 @@ Action SDKStartTouch(int entity, int other)
 						}
 					}
 
-					for(int i = 1; i <= g_cpCount; i++)
+					for(int i = 0; i <= g_cpCount; ++i)
 					{
 						if(g_cp[other][i] == true)
 						{
 							char timeCP[24] = "";
 							FormatSeconds(g_cpDiffSR[other][i], timeCP);
 
-							for(int j = 1; j <= MaxClients; j++)
+							for(int j = 0; j <= MaxClients; ++j)
 							{
 								if(IsClientInGame(j) == true)
 								{
@@ -5226,7 +5221,7 @@ Action SDKStartTouch(int entity, int other)
 					g_teamRecord[other] = time;
 					g_teamRecord[partner] = time;
 
-					for(int i = 1; i <= MaxClients; i++)
+					for(int i = 0; i <= MaxClients; ++i)
 					{
 						if(IsClientInGame(i) == true)
 						{
@@ -5236,7 +5231,7 @@ Action SDKStartTouch(int entity, int other)
 							Format(g_format, sizeof(g_format), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
 							SendMessage(i, g_format);
 
-							for(int j = 1; j <= g_cpCount; j++)
+							for(int j = 0; j <= g_cpCount; ++j)
 							{
 								if(g_cp[other][j] == true)
 								{
@@ -5282,7 +5277,7 @@ Action SDKStartTouch(int entity, int other)
 			}
 		}
 
-		for(int i = 1; i <= g_cpCount; i++)
+		for(int i = 0; i <= g_cpCount; ++i)
 		{
 			char triggerCP[32] = "";
 			Format(triggerCP, sizeof(triggerCP), "trueexpert_cp%i", i);
@@ -5398,7 +5393,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				continue;
 			}
 
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
@@ -5483,7 +5478,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -5567,7 +5562,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -5654,7 +5649,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				continue;
 			}
 
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
@@ -5741,7 +5736,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 				
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -5825,7 +5820,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -6227,7 +6222,7 @@ void SQLConnect(Database db, const char[] error, any data)
 
 		g_mysql.Query(SQLRecalculatePoints_GetMap, "SELECT map FROM tier", _, DBPrio_Normal);
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true)
 			{
@@ -6425,7 +6420,7 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 		beam[ix][7] = end[ix];
 
 		//calculate all zone edges
-		for(int j = 1; j <= 6; j++)
+		for(int j = 0; j <= 6; ++j)
 		{
 			for(int k = 0; k <= 2; k++)
 			{
@@ -6711,7 +6706,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int clients[MAXPLAYER] = {0, ...}; //64 + 1
 				int count = 0;
 
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true)
 					{
@@ -6774,7 +6769,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			g_engineTime[client] = GetEngineTime();
 
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -7154,7 +7149,7 @@ Action cmd_devmap(int client, int args)
 	{
 		g_voters = 0;
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false)
 			{
@@ -7181,7 +7176,7 @@ Action cmd_devmap(int client, int args)
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true)
 			{
@@ -7257,7 +7252,7 @@ void Devmap(bool force)
 		{
 			if(g_devmap == true)
 			{
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
@@ -7272,7 +7267,7 @@ void Devmap(bool force)
 
 			else if(g_devmap == false)
 			{
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
@@ -7292,7 +7287,7 @@ void Devmap(bool force)
 		{
 			if(g_devmap == true)
 			{
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true)
 					{
@@ -7307,7 +7302,7 @@ void Devmap(bool force)
 
 			else if(g_devmap == false)
 			{
-				for(int i = 1; i <= MaxClients; i++)
+				for(int i = 0; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true)
 					{
@@ -7334,7 +7329,7 @@ void Devmap(bool force)
 
 Action timer_changelevel(Handle timer, bool value)
 {
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsValidPartner(i) == true)
 		{
@@ -7401,7 +7396,7 @@ Action cmd_afk(int client, int args)
 
 		g_afkClient = client;
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false)
 			{
@@ -7438,7 +7433,7 @@ Action cmd_afk(int client, int args)
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true)
 			{
@@ -7506,7 +7501,7 @@ void AFK(int client, bool force)
 {
 	if(force == true || g_voters == 0)
 	{
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false && g_afk[i] == false && client != i)
 			{
@@ -7719,7 +7714,7 @@ void VelHud(int client)
 		PrintHintText(client, "%.0f", velFlat);
 	}
 
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false)
 		{
@@ -7947,7 +7942,7 @@ void FlashbangEffect(int entity)
 			owner = 0;
 		}
 
-		for(int i = 1; i <= MaxClients; i++)
+		for(int i = 0; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false)
 			{
@@ -8170,7 +8165,7 @@ void MLStats(int client, bool ground)
 
 	if(count <= 10)
 	{
-		for(int i = 1; i <= count <= 10; i++)
+		for(int i = 0; i <= count <= 10; ++i)
 		{
 			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
 
@@ -8180,7 +8175,7 @@ void MLStats(int client, bool ground)
 
 	else if(count > 10)
 	{
-		for(int i = 1; i <= 10; i++)
+		for(int i = 0; i <= 10; ++i)
 		{
 			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
 
@@ -8247,7 +8242,7 @@ void MLStats(int client, bool ground)
 		EndMessage();
 	}
 
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 		{
