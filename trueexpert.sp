@@ -220,7 +220,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.62",
+	version = "4.621",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -378,7 +378,7 @@ public void OnPluginStart()
 
 	delete g_kv;
 	g_kv = new KeyValues("TrueExpertHud");
-	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert-hud.cfg");
 
 	if(g_devmap == false)
 	{
@@ -531,7 +531,7 @@ public void OnMapStart()
 
 	delete g_kv;
 	g_kv = new KeyValues("TrueExpertHud");
-	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert_hud.cfg");
+	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert-hud.cfg");
 
 	g_cpCount = 0;
 
