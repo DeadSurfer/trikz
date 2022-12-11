@@ -31,14 +31,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define debug false
+#include <cstrike>
+
+#define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
+
+char g_format[256] = "";
 
 public Plugin myinfo =
 {
 	name = "Visit announcement",
 	author = "Smesh",
 	description = "Always show connect, disconnect, team changes message in the chat.",
-	version = "0.32",
+	version = "0.33",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -49,25 +53,21 @@ public void OnPluginStart()
 	HookEvent("player_team", teamjoin, EventHookMode_Pre);
 
 	LoadTranslations("visit.phrases");
+
+	return;
 }
 
-public Action connect(Event event, const char[] name, bool dontBroadcast)
+Action connect(Event event, const char[] name, bool dontBroadcast)
 {
-	char sName[MAX_NAME_LENGTH];
+	char sName[MAX_NAME_LENGTH] = "";
 	event.GetString("name", sName, sizeof(sName));
-	//PrintToChatAll("Player %s has joined the game", name_)
-	//PrintToChatAll("%T", "connect", 0, name_);
-	//PrintToChatAll("%t", "connect");
-	char format[256];
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(IsClientInGame(i))
+		if(IsClientInGame(i) == true)
 		{
-			//PrintToChat(i, "\x01%T", "connect", i, sName);
-			//PrintToChat(i, "\x01%T", "connect", i, sName);
-			Format(format, sizeof(format), "%T", "connect", i, sName);
-			SendMessage(format, false, i);
+			Format(g_format, sizeof(g_format), "%T", "connect", i, sName);
+			SendMessage(i, g_format);
 		}
 	}
 
@@ -78,21 +78,17 @@ public Action connect(Event event, const char[] name, bool dontBroadcast)
 
 public Action disconnect(Event event, const char[] name, bool dontBroadcast)
 {
-	char sReason[128];
+	char sReason[128] = "";
 	event.GetString("reason", sReason, sizeof(sReason));
-	char sName[MAX_NAME_LENGTH];
+	char sName[MAX_NAME_LENGTH] = "";
 	event.GetString("name", sName, sizeof(sName));
-	//PrintToChatAll("Player %s left the game (%s)", name_, reason)
-	//PrintToChatAll("\x01%T", "disconnect", sName, sReason);
-	char format[256];
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i))
 		{
-			//PrintToChat(i, "\x01%T", "disconnect", i, sName, sReason);
-			Format(format, sizeof(format), "%T", "disconnect", i, sName, sReason);
-			SendMessage(format, false, i);
+			Format(g_format, sizeof(g_format), "%T", "disconnect", i, sName, sReason);
+			SendMessage(i, g_format);
 		}
 	}
 
@@ -101,7 +97,7 @@ public Action disconnect(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
+Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int team = event.GetInt("team");
@@ -109,52 +105,40 @@ public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 	char sName[MAX_NAME_LENGTH];
 	GetClientName(client, sName, sizeof(sName));
 
-	char format[256];
-
 	switch(team)
 	{
-		case 1:
+		case CS_TEAM_SPECTATOR:
 		{
-			//PrintToChatAll("%N is joining the Spectators", client);
-			//PrintToChatAll("\x01%T", "joinSpectator", sName);
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i))
+				if(IsClientInGame(i) == true)
 				{
-					Format(format, sizeof(format), "%T", "joinSpectator", i, sName);
-					SendMessage(format, false, i);
-					//PrintToChat(i, "\x01%T", "joinSpectator", i, sName);
+					Format(g_format, sizeof(g_format), "%T", "joinSpectator", i, sName);
+					SendMessage(i, g_format);
 				}
 			}
 		}
 
-		case 2:
+		case CS_TEAM_T:
 		{
-			//PrintToChatAll("%N is joining the Terrorist force", client);
-			//PrintToChatAll("\x01%T", "joinTerrorist", sName);
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i))
+				if(IsClientInGame(i) == true)
 				{
-					//PrintToChat(i, "\x01%T", "joinTerrorist", i, sName);
-					Format(format, sizeof(format), "%T", "joinTerrorist", i, sName);
-					SendMessage(format, false, i);
+					Format(g_format, sizeof(g_format), "%T", "joinTerrorist", i, sName);
+					SendMessage(i, g_format);
 				}
 			}
 		}
 
-		case 3:
+		case CS_TEAM_CT:
 		{
-			//PrintToChatAll("%N is joining the Counter-Terrorist force", client);
-			//PrintToChatAll("\x01%T", "joinCounterTerrorist", sName);
-
 			for(int i = 1; i <= MaxClients; i++)
 			{
-				if(IsClientInGame(i))
+				if(IsClientInGame(i) == true)
 				{
-					Format(format, sizeof(format), "%T", "joinCounterTerrorist", i, sName);
-					SendMessage(format, false, i);
-					//PrintToChat(i, "\x01%T", "joinCounterTerrorist", i, sName);
+					Format(g_format, sizeof(g_format), "%T", "joinCounterTerrorist", i, sName);
+					SendMessage(i, g_format);
 				}
 			}
 		}
@@ -165,48 +149,34 @@ public Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-/*public void SendMessage(int client, bool all)
-{
-	if(IsClientInGame(i))
-	{
-	}
-}*/
 
-
-public void SendMessage(const char[] text, bool all, int client)
+void SendMessage(int client, const char[] text)
 {
-	//char text[256];
 	char name[MAX_NAME_LENGTH] = "";
 	GetClientName(client, name, sizeof(name));
 
 	int team = GetClientTeam(client);
 
-	//char teamName[32] = "";
 	char teamColor[32] = "";
 
 	switch(team)
 	{
-		case 1:
+		case CS_TEAM_SPECTATOR:
 		{
-			//Format(teamName, sizeof(teamName), "\x01%T", "Spectator", client);
-			//Format(teamName, sizeof(teamName), "\x01%T")
 			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
 		}
 
-		case 2:
+		case CS_TEAM_T:
 		{
-			//Format(teamName, sizeof(teamName), "\x01%T", "Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x07FF4040");
 		}
 
-		case 3:
+		case CS_TEAM_CT:
 		{
-			//Format(teamName, sizeof(teamName), "\x01%T", "Counter-Terrorist", client);
 			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
 		}
 	}
 
-	//Format(text, 256, "\x01%T", "Hello", client, "FakeExpert", name, teamName);
 	char textReplaced[256] = "";
 	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
 
@@ -214,21 +184,15 @@ public void SendMessage(const char[] text, bool all, int client)
 	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
 	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
 
-	if(all == true)
+	if(IsValidClient(client) == true)
 	{
-		PrintToChatAll("%s", textReplaced);
+		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
+		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
+		bf.WriteByte(client); //Message author
+		bf.WriteByte(true); //Chat message
+		bf.WriteString(textReplaced); //Message text
+		EndMessage();
 	}
 
-	else if(all == false)
-	{
-		if(client > 0 && IsClientInGame(client) == true)
-		{
-			PrintToChat(client, "%s", textReplaced);
-		}
-	}
-
-	#if debug true
-	//PrintToChat(client, "%i MessageDebug", client)
-	#endif
 	return;
 }
