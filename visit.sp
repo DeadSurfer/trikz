@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Visit announcement",
 	author = "Smesh",
 	description = "Always show connect, disconnect, team changes message in the chat.",
-	version = "0.33",
+	version = "0.331",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -62,7 +62,7 @@ Action connect(Event event, const char[] name, bool dontBroadcast)
 	char sName[MAX_NAME_LENGTH] = "";
 	event.GetString("name", sName, sizeof(sName));
 
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
@@ -83,9 +83,9 @@ public Action disconnect(Event event, const char[] name, bool dontBroadcast)
 	char sName[MAX_NAME_LENGTH] = "";
 	event.GetString("name", sName, sizeof(sName));
 
-	for(int i = 1; i <= MaxClients; i++)
+	for(int i = 0; i <= MaxClients; ++i)
 	{
-		if(IsClientInGame(i))
+		if(IsClientInGame(i) == true)
 		{
 			Format(g_format, sizeof(g_format), "%T", "disconnect", i, sName, sReason);
 			SendMessage(i, g_format);
@@ -109,7 +109,7 @@ Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 	{
 		case CS_TEAM_SPECTATOR:
 		{
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -121,7 +121,7 @@ Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 
 		case CS_TEAM_T:
 		{
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -133,7 +133,7 @@ Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 
 		case CS_TEAM_CT:
 		{
-			for(int i = 1; i <= MaxClients; i++)
+			for(int i = 0; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -148,7 +148,6 @@ Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 
 	return Plugin_Continue;
 }
-
 
 void SendMessage(int client, const char[] text)
 {
