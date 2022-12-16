@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.283",
+	version = "1.284",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -58,8 +58,8 @@ public void OnPluginStart()
 	g_date = CreateConVar("sm_te_date_start", "12.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_date2 = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_moveX = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_moveY = CreateConVar("sm_te_move_y", "2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_moveZ = CreateConVar("sm_te_move_z", "-6.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_moveY = CreateConVar("sm_te_move_y", "-2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_moveZ = CreateConVar("sm_te_move_z", "6.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	AutoExecConfig(true, "plugin.trueexpert-xmass", "sourcemod");
 
 	for(int i = 1; i <= MaxClients; ++i)
@@ -318,6 +318,10 @@ stock void CreateHat(int client)
 		GetClientAbsOrigin(client, origin);
 		GetClientAbsAngles(client, angles);
 
+
+		//g_moveX.GetString()
+
+		//PrintToServer("%f %f %f", g_moveX.FloatValue, g_moveY.FloatValue, g_moveZ.FloatValue);
 		offset[0] = g_moveX.FloatValue;
 		offset[1] = g_moveY.FloatValue;
 		offset[2] = g_moveZ.FloatValue;
