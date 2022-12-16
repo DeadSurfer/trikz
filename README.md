@@ -95,3 +95,5 @@ public void Trikz_OnTeleport(int client, float origin[3]) //On teleport<br>
 {
 <br>
 }
+
+[![trophy](https://github-profile-trophy.vercel.app/?username=smesh292)](https://github.com/ryo-ma/github-profile-trophy)
