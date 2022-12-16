@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.28",
+	version = "1.281",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -68,7 +68,7 @@ public void OnPluginStart()
 	g_moveX = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_moveY = CreateConVar("sm_te_move_y", "2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_moveZ = CreateConVar("sm_te_move_z", "-6.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	AutoExecConfig(true, "plugin.trueexpert_xmass", "sourcemod");
+	AutoExecConfig(true, "plugin.trueexpert-xmass", "sourcemod");
 
 	return;
 }
