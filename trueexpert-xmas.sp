@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.285",
+	version = "1.286",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -347,7 +347,7 @@ stock void CreateHat(int client)
 		rotation[1] = g_rotation[1].FloatValue;
 		rotation[2] = g_rotation[2].FloatValue;
 
-		SetEntPropVector(g_hat[client], Prop_Send, "m_angRoration", rotation);
+		SetEntPropVector(g_hat[client], Prop_Send, "m_angRotation", rotation);
 
 		DispatchSpawn(g_hat[client]);
 
