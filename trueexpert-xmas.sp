@@ -35,14 +35,14 @@ int g_hat[MAXPLAYERS] = {0, ...};
 
 native int Trikz_GetClientPartner(int client);
 
-ConVar g_date = null, g_date2 = null;
+ConVar g_date = null, g_date2 = null, g_moveX = null, g_moveY = null, g_moveZ;
 
 public Plugin myinfo =
 {
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.26",
+	version = "1.27",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -65,6 +65,9 @@ public void OnPluginStart()
 
 	g_date = CreateConVar("sm_te_date_start", "12.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_date2 = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
+	g_moveX = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_moveY = CreateConVar("sm_te_move_y", "2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_moveZ = CreateConVar("sm_te_move_z", "-6.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	AutoExecConfig(true, "plugin.trueexpert_xmass.cfg", "sourcemod");
 
 	return;
@@ -308,19 +311,16 @@ stock void CreateHat(int client)
 {
 	if(0 < client <= MaxClients && IsPlayerAlive(client) == true && (GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT) && g_hat[client] == 0)
 	{
-		float origin[3] = {0.0, ...};
-		float angles[3] = {0.0, ...};
-		float forward_[3] = {0.0, ...};
-		float right[3] = {0.0, ...};
-		float up[3] = {0.0, ...};
+		//declanation
+		float origin[3], angles[3], offset[3], forward_[3], right[3], up[3];
 
+		//initialization
 		GetClientAbsOrigin(client, origin);
 		GetClientAbsAngles(client, angles);
 
-		float offset[3] = {0.0, ...};
-
-		offset[1] = -2.0;
-		offset[2] = 6.0;
+		offset[0] = g_moveX.FloatValue;
+		offset[1] = g_moveY.FloatValue;
+		offset[2] = g_moveZ.FloatValue;
 
 		GetAngleVectors(angles, forward_, right, up);
 
@@ -440,9 +440,10 @@ public Action cmd_xmas(int client, int args)
 
 stock void Xmas(int client, char[] type)
 {
-	float origin[3] = {0.0, ...};
-	float angles[3] = {0.0, ...};
+	//declaration
+	float origin[3], angles[3];
 
+	//initialization
 	GetClientEyePosition(client, origin);
 	GetClientEyeAngles(client, angles);
 
@@ -450,17 +451,21 @@ stock void Xmas(int client, char[] type)
 
 	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
+		//declanation
+		float eyeAngles[3];
+		int skin;
+		char info[32];
+
+		//initialization
 		TR_GetEndPosition(origin);
 		TR_GetPlaneNormal(null, angles);
 
 		GetVectorAngles(angles, angles);
-
 		angles[0] += 90.0;
 
-		float eyeAngles[3];
 		GetClientEyeAngles(client, eyeAngles);
 
-		int skin = -1;
+		skin = -1;
 
 		if(StrEqual(type, "tree", false) == true || StrEqual(type, "tree_big", false) == true)
 		{
@@ -501,8 +506,6 @@ stock void Xmas(int client, char[] type)
 		KeyValues kv = new KeyValues("xmas");
 
 		kv.ImportFromFile(g_file);
-
-		char info[32] = "";
 
 		Format(info, sizeof(info), "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]));
 
