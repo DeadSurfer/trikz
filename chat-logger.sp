@@ -10,7 +10,7 @@ public Plugin myinfo =
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.123",
+    version = "0.124",
     url = "http://sourcemod.net/"
 };
 
@@ -28,7 +28,7 @@ public void OnPluginStart()
     return;
 }
 
-Action chatlog(int client, const char[] command, int argc)
+/*static private*/ Action chatlog(int client, const char[] command, int argc)
 {
     //declaration
     float convarEnable, convarPrefix;
@@ -73,7 +73,7 @@ Action chatlog(int client, const char[] command, int argc)
 
     //PrintToServer("debug here: %s", bufferFirst);
 
-    if(convarPrefix == 1.0 && (findEx > 0 || findSlash > 0)) //float value of convar and char "!" passing values.
+    if(convarPrefix == 1.0 && (findEx != -1 || findSlash != -1)) //float value of convar and char "!" passing values.
     {
         return Plugin_Continue;
     }
