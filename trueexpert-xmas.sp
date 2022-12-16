@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.281",
+	version = "1.283",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -55,20 +55,20 @@ public void OnPluginStart()
 
 	RegConsoleCmd("sm_xmas", cmd_xmas);
 
-	for(int i = 0; i <= MaxClients; ++i)
-	{
-		if(IsClientInGame(i) == true)
-		{
-			CreateHat(i);
-		}
-	}
-
 	g_date = CreateConVar("sm_te_date_start", "12.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_date2 = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_moveX = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_moveY = CreateConVar("sm_te_move_y", "2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_moveZ = CreateConVar("sm_te_move_z", "-6.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	AutoExecConfig(true, "plugin.trueexpert-xmass", "sourcemod");
+
+	for(int i = 1; i <= MaxClients; ++i)
+	{
+		if(IsClientInGame(i) == true)
+		{
+			CreateHat(i);
+		}
+	}
 
 	return;
 }
@@ -567,7 +567,7 @@ stock void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	else if(StrEqual(type, "gift9_big", false)) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_curly.mdl", model);
 	else if(StrEqual(type, "gift10_big", false)) Format(model, PLATFORM_MAX_PATH, "%sgiftbox128x128_ribbon_special.mdl", model);
 
-	int entity = CreateEntityByName("prop_dynamic", -1);
+	int entity = CreateEntityByName("prop_dynamic_override", -1);
 
 	DispatchKeyValue(entity, "model", model);
 	DispatchKeyValue(entity, "solid", "1");
