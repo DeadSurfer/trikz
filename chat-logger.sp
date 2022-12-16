@@ -10,7 +10,7 @@ public Plugin myinfo =
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.126",
+    version = "0.127",
     url = "http://sourcemod.net/"
 };
 
@@ -32,7 +32,7 @@ public void OnPluginStart()
 {
     //declaration
     float convarEnable, convarPrefix;
-    char name[MAX_NAME_LENGTH], auth[64], type[4], format[256], buffer[1], time[22],
+    char name[MAX_NAME_LENGTH], auth[64], type[4], format[256], buffer[256], time[22],
     ex, slash;
     int stamp, findEx, findSlash;
 
