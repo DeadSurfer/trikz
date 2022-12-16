@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.287",
+	version = "1.288",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -85,7 +85,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginEnd()
 {
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
@@ -199,23 +199,22 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 	if(kv.ImportFromFile(g_file) == true && kv.GotoFirstSubKey() == true)
 	{
-		char nameKey[32] = "";
+		char nameKey[32];
 
 		do
 		{
 			if(kv.GetSectionName(nameKey, sizeof(nameKey)) == true)
 			{
-				float origin[3] = {0.0, ...};
-				float angles[3] = {0.0, ...};
-
-				char type[64] = "";
+				float origin[3];
+				float angles[3];
+				int skin;
+				char type[64];
 
 				kv.GetVector("origin", origin);
 				kv.GetVector("angles", angles);
-
 				kv.GetString("type", type, sizeof(type));
 
-				int skin = kv.GetNum("skin");
+				skin = kv.GetNum("skin");
 
 				CreateItem(origin, angles, type, skin);
 			}
@@ -226,7 +225,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 	delete kv;
 
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
@@ -312,6 +311,7 @@ stock void RemoveHat(int client)
 
 stock void CreateHat(int client)
 {
+	//PrintToServer("%i %N %i %i", g_hat[client], client, IsPlayerAlive(client) ? "alive":"dead", GetClientTeam(client));
 	if(0 < client <= MaxClients && IsPlayerAlive(client) == true && (GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT) && g_hat[client] == 0)
 	{
 		//declanation
