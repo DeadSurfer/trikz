@@ -10,7 +10,7 @@ public Plugin myinfo =
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.121",
+    version = "0.123",
     url = "http://sourcemod.net/"
 };
 
@@ -30,7 +30,17 @@ public void OnPluginStart()
 
 Action chatlog(int client, const char[] command, int argc)
 {
-    float convarEnable = g_prefixPointEnable.FloatValue;
+    //declaration
+    float convarEnable, convarPrefix;
+    char name[MAX_NAME_LENGTH], auth[64], type[4], format[256], buffer[1], time[21],
+    ex, slash;
+    int stamp, findEx, findSlash;
+
+    //initialization
+    convarEnable = g_prefixPointEnable.FloatValue;
+    convarPrefix = g_prefixPointHide.FloatValue;
+    stamp = GetTime({0, 0});
+    ex = '!', slash = '/';
 
     if(convarEnable != 1.0) //If float value not 1.0, plugin going to skip all code under first Plugin_Continue;
     {
@@ -41,14 +51,10 @@ Action chatlog(int client, const char[] command, int argc)
     {
         return Plugin_Continue;
     }
-
-    char auth[64] = "";
+    
     GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true); //(first account of SteamID64) + SteamID3 = SteamID64
 
-    char name[MAX_NAME_LENGTH] = "";
     GetClientName(client, name, sizeof(name));
-
-    char type[6] = "";
 
     if(StrEqual(command, "say", true) == true)
     {
@@ -59,28 +65,21 @@ Action chatlog(int client, const char[] command, int argc)
     {
         Format(type, sizeof(type), "team");
     }
-
-    char buffer[256] = "";
-    GetCmdArgString(buffer, sizeof(buffer));
-
-    char bufferFirst[3] = "";
-    Format(bufferFirst, sizeof(bufferFirst), "%s", buffer);
+    
+    GetCmdArgString(format, sizeof(format));
+    Format(buffer, sizeof(buffer), "%s", format);
+    findEx = FindCharInString(buffer, ex, false);
+    findSlash = FindCharInString(buffer, slash, false);
 
     //PrintToServer("debug here: %s", bufferFirst);
 
-    float convarPrefix = g_prefixPointHide.FloatValue;
-
-    char ex = '!', slash = '/';
-
-    if(convarPrefix == 1.0 && (FindCharInString(bufferFirst, ex, false) > 0 || FindCharInString(bufferFirst, slash, false) > 0)) //float value of convar and char "!" passing values.
+    if(convarPrefix == 1.0 && (findEx > 0 || findSlash > 0)) //float value of convar and char "!" passing values.
     {
         return Plugin_Continue;
     }
 
-    char bufferTime[23] = "";
-    FormatTime(bufferTime, sizeof(bufferTime), "%Y-%d-%m (%H:%M:%S)", GetTime({0, 0}));
-
-    LogToFile("addons/sourcemod/logs/trueexpert-logger.log", "Date: [%s] SteamID64: [%s] Name: [%s] Message (%s): [%s]", bufferTime, auth, name, type, buffer);
+    FormatTime(time, sizeof(time), "%Y-%d-%m (%H:%M:%S)", stamp);
+    LogToFile("addons/sourcemod/logs/trueexpert-logger.log", "Date: [%s] SteamID64: [%s] Name: [%s] Message (%s): [%s]", time, auth, name, type, buffer);
 
     return Plugin_Continue;
 }
