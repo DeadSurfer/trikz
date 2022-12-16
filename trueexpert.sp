@@ -204,7 +204,7 @@ bool g_zoneDrawed[MAXPLAYER] = {false, ...};
 int g_axis[MAXPLAYER] = {0, ...};
 char g_axisLater[][] = {"X", "Y", "Z"};
 char g_query[512] = "";
-char g_format[256] = "";
+char g_buffer[256] = "";
 bool g_zoneCreator[MAXPLAYER] = {false, ...};
 bool g_zoneCursor[MAXPLAYER] = {false, ...};
 bool g_zoneCreatorUseProcess[MAXPLAYER][2];
@@ -220,7 +220,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.621",
+	version = "4.622",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1036,14 +1036,14 @@ void OnButton(const char[] output, int caller, int activator, float delay)
 
 		if(g_button[activator] == true)
 		{
-			Format(g_format, sizeof(g_format), "%T", "YouPressedButton", activator);
-			SendMessage(activator, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "YouPressedButton", activator);
+			SendMessage(activator, g_buffer);
 		}
 
 		if(g_button[g_partner[activator]] == true)
 		{
-			Format(g_format, sizeof(g_format), "%T", "YourPartnerPressedButton", g_partner[activator]);
-			SendMessage(g_partner[activator], g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "YourPartnerPressedButton", g_partner[activator]);
+			SendMessage(g_partner[activator], g_buffer);
 		}
 	}
 
@@ -1340,14 +1340,14 @@ void Checkpoint(int client)
 		Menu menu = new Menu(checkpoint_handler);
 		menu.SetTitle("%T", "Checkpoint", client);
 
-		Format(g_format, sizeof(g_format), "%T", "CP-save", client);
-		menu.AddItem("Save", g_format);
-		Format(g_format, sizeof(g_format), "%T", "CP-teleport", client);
-		menu.AddItem("Teleport", g_format, g_cpToggled[client][0] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-		Format(g_format, sizeof(g_format), "%T", "CP-saveSecond", client);
-		menu.AddItem("Save second", g_format);
-		Format(g_format, sizeof(g_format), "%T", "CP-teleportSecond", client);
-		menu.AddItem("Teleport second", g_format, g_cpToggled[client][1] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(g_buffer, sizeof(g_buffer), "%T", "CP-save", client);
+		menu.AddItem("Save", g_buffer);
+		Format(g_buffer, sizeof(g_buffer), "%T", "CP-teleport", client);
+		menu.AddItem("Teleport", g_buffer, g_cpToggled[client][0] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(g_buffer, sizeof(g_buffer), "%T", "CP-saveSecond", client);
+		menu.AddItem("Save second", g_buffer);
+		Format(g_buffer, sizeof(g_buffer), "%T", "CP-teleportSecond", client);
+		menu.AddItem("Teleport second", g_buffer, g_cpToggled[client][1] == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -1355,8 +1355,8 @@ void Checkpoint(int client)
 
 	else if(g_devmap == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	return;
@@ -1862,7 +1862,7 @@ Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 
 				if(velBooster[2] > 0.0)
 				{
-					if(FloatAbs(g_skyOrigin[client][2] - g_skyOrigin[other][2]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
+					if(FloatAbs(g_skyOrigin[client][2] - g_skyOrigin[other][2]) >= 16.0 || GetGameTime() - g_skyAble[other] > 0.5)
 					{
 						float velFlyer[3] = {0.0, ...};
 						GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
@@ -1975,36 +1975,36 @@ void Trikz(int client)
 	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	menu.SetTitle("%T", "Trikz", client);
 
-	Format(g_format, sizeof(g_format), "%T", g_block[client] == true ? "BlockMenuON" : "BlockMenuOFF", client);
-	menu.AddItem("block", g_format);
-	Format(g_format, sizeof(g_format), "%T", g_autoflash[client] == true ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
-	menu.AddItem("autoflash", g_format);
-	Format(g_format, sizeof(g_format), "%T", g_autoswitch[client] == true ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
-	menu.AddItem("autoswitch", g_format);
-	Format(g_format, sizeof(g_format), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
-	menu.AddItem("bhop", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_block[client] == true ? "BlockMenuON" : "BlockMenuOFF", client);
+	menu.AddItem("block", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_autoflash[client] == true ? "AutoflashMenuON" : "AutoflashMenuOFF", client);
+	menu.AddItem("autoflash", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_autoswitch[client] == true ? "AutoswitchMenuON" : "AutoswitchMenuOFF", client);
+	menu.AddItem("autoswitch", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_bhop[client] == true ? "BhopMenuON" : "BhopMenuOFF", client);
+	menu.AddItem("bhop", g_buffer);
 
 	if(g_devmap == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", IsValidPartner(client) == true ? "Breakup" : "Partner", client);
-		menu.AddItem(IsValidPartner(client) == true ? "breakup" : "partner", g_format, ITEMDRAW_DEFAULT);
+		Format(g_buffer, sizeof(g_buffer), "%T", IsValidPartner(client) == true ? "Breakup" : "Partner", client);
+		menu.AddItem(IsValidPartner(client) == true ? "breakup" : "partner", g_buffer, ITEMDRAW_DEFAULT);
 	}
 
-	Format(g_format, sizeof(g_format), "%T", "Color", client);
-	menu.AddItem("color", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Color", client);
+	menu.AddItem("color", g_buffer);
 
 	if(g_devmap == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", "Restart", client);
-		menu.AddItem("restart", g_format, IsValidPartner(client) == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(g_buffer, sizeof(g_buffer), "%T", "Restart", client);
+		menu.AddItem("restart", g_buffer, IsValidPartner(client) == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 
 	if(g_devmap == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
-		menu.AddItem("noclip", g_format);
-		Format(g_format, sizeof(g_format), "%T", "Checkpoint", client);
-		menu.AddItem("checkpoint", g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipMenuON" : "NoclipMenuOFF", client);
+		menu.AddItem("noclip", g_buffer);
+		Format(g_buffer, sizeof(g_buffer), "%T", "Checkpoint", client);
+		menu.AddItem("checkpoint", g_buffer);
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -2124,8 +2124,8 @@ Action Block(int client) //thanks maru for optimization.
 
 	else if(g_menuOpened[client] == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	return Plugin_Handled;
@@ -2149,24 +2149,24 @@ void Partner(int client)
 {
 	if(g_devmap == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_devmap == false)
 	{
 		if(IsPlayerAlive(client) == false)
 		{
-			Format(g_format, sizeof(g_format), "%T", "YouAreDead", client);
-			SendMessage(client, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "YouAreDead", client);
+			SendMessage(client, g_buffer);
 
 			return;
 		}
 
 		if(g_dbPassed == false)
 		{
-			Format(g_format, sizeof(g_format), "%T", "DBLoading", client);
-			SendMessage(client, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "DBLoading", client);
+			SendMessage(client, g_buffer);
 
 			return;
 		}
@@ -2202,8 +2202,8 @@ void Partner(int client)
 			{
 				case false:
 				{
-					Format(g_format, sizeof(g_format), "%T", "NoFreePlayer", client);
-					SendMessage(client, g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "NoFreePlayer", client);
+					SendMessage(client, g_buffer);
 				}
 
 				case true:
@@ -2222,13 +2222,13 @@ void Partner(int client)
 			GetClientName(g_partner[client], name, sizeof(name));
 			menu.SetTitle("%T", "CancelPartnership", client, name);
 
-			char partner[8] = "";
+			char partner[4] = "";
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
 
-			Format(g_format, sizeof(g_format), "%T", "Yes", client);
-			menu.AddItem(partner, g_format);
-			Format(g_format, sizeof(g_format), "%T", "No", client);
-			menu.AddItem("", g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "Yes", client);
+			menu.AddItem(partner, g_buffer);
+			Format(g_buffer, sizeof(g_buffer), "%T", "No", client);
+			menu.AddItem("", g_buffer);
 
 			menu.Display(client, 20);
 		}
@@ -2243,7 +2243,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 	{
 		case MenuAction_Select:
 		{
-			char item[8] = "";
+			char item[4] = "";
 			menu.GetItem(param2, item, sizeof(item));
 			
 			Menu menu2 = new Menu(askpartner_handle);
@@ -2254,13 +2254,13 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			int partner = StringToInt(item, 10);
 			menu2.SetTitle("%T", "AgreePartner", partner, name);
 			
-			char buffer[8] = "";
-			IntToString(param1, buffer, sizeof(buffer));
+			char str[4] = "";
+			IntToString(param1, str, sizeof(str)); //sizeof do 4
 
-			Format(g_format, sizeof(g_format), "%T", "Yes", partner);
-			menu2.AddItem(buffer, g_format);
-			Format(g_format, sizeof(g_format), "%T", "No", partner);
-			menu2.AddItem(item, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "Yes", partner);
+			menu2.AddItem(str, g_buffer);
+			Format(g_buffer, sizeof(g_buffer), "%T", "No", partner);
+			menu2.AddItem(item, g_buffer);
 
 			menu2.Display(partner, 20);
 		}
@@ -2280,10 +2280,10 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 	{
 		case MenuAction_Select:
 		{
-			char item[8] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[4] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
-			int partner = StringToInt(item, 10);
+			int partner = StringToInt(infoBuf, 10);
 
 			switch(param2)
 			{
@@ -2305,30 +2305,33 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 
 							char name[MAX_NAME_LENGTH] = "";
 							GetClientName(partner, name, sizeof(name));
-							Format(g_format, sizeof(g_format), "%T", "TeamConfirming", param1, name); //reciever
-							PrintToConsole(param1, "%s", g_format);
+							Format(g_buffer, sizeof(g_buffer), "%T", "TeamConfirming", param1, name); //reciever
+							PrintToConsole(param1, "%s", g_buffer);
 
 							GetClientName(param1, name, sizeof(name));
-							Format(g_format, sizeof(g_format), "%T", "GetConfirmed", partner, name); //sender
-							SendMessage(partner, g_format);
+							Format(g_buffer, sizeof(g_buffer), "%T", "GetConfirmed", partner, name); //sender
+							SendMessage(partner, g_buffer);
 
 							Restart(param1, false); //Expert-Zone idea.
 
-							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", GetSteamAccountID(param1, true), GetSteamAccountID(partner, true), GetSteamAccountID(partner, true), GetSteamAccountID(param1, true), g_map);
+							int client = GetSteamAccountID(param1, true);
+							int iPartner = GetSteamAccountID(partner, true);
+
+							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", client, iPartner, iPartner, client, g_map);
 							g_mysql.Query(SQLGetPartnerRecord, g_query, GetClientSerial(param1), DBPrio_Normal);
 						}
 
 						else if(IsValidPartner(partner) == true)
 						{
-							Format(g_format, sizeof(g_format), "%T", "AlreadyHavePartner", param1);
-							SendMessage(param1, g_format);
+							Format(g_buffer, sizeof(g_buffer), "%T", "AlreadyHavePartner", param1);
+							SendMessage(param1, g_buffer);
 						}
 					}
 
 					else if(IsPlayerAlive(param1) == false)
 					{
-						Format(g_format, sizeof(g_format), "%T", "YouAreDead", param1);
-						SendMessage(param1, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "YouAreDead", param1);
+						SendMessage(param1, g_buffer);
 					}
 				}
 
@@ -2336,8 +2339,8 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 				{
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(param1, name, sizeof(name));
-					Format(g_format, sizeof(g_format), "%T", "PartnerDeclined", param1, name);
-					PrintToConsole(param1, "%s", g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "PartnerDeclined", param1, name);
+					PrintToConsole(param1, "%s", g_buffer);
 				}
 			}
 		}
@@ -2384,12 +2387,12 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(partner, name, sizeof(name));
 
-					Format(g_format, sizeof(g_format), "%T", "PartnerCanceled", param1, name);
-					PrintToConsole(param1, "%s", g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "PartnerCanceled", param1, name);
+					PrintToConsole(param1, "%s", g_buffer);
 
 					GetClientName(param1, name, sizeof(name));
-					Format(g_format, sizeof(g_format), "%T", "PartnerCanceledBy", partner, name);
-					SendMessage(partner, g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "PartnerCanceledBy", partner, name);
+					SendMessage(partner, g_buffer);
 				}
 			}
 		}
@@ -2422,14 +2425,14 @@ void ColorSelect(int client)
 	Menu menu = new Menu(handler_menuColor);
 	menu.SetTitle("%T", "Color", client);
 
-	Format(g_format, sizeof(g_format), "%T", "ColorTeam", client);
-	menu.AddItem("team_color", g_format);
-	Format(g_format, sizeof(g_format), "%T", "PlayerSkin", client);
-	menu.AddItem("player_skin", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ColorPingFL", client);
-	menu.AddItem("object_color", g_format);
-	Format(g_format, sizeof(g_format), "%T", "FlashbangSkin", client);
-	menu.AddItem("flashbang_skin", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ColorTeam", client);
+	menu.AddItem("team_color", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "PlayerSkin", client);
+	menu.AddItem("player_skin", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ColorPingFL", client);
+	menu.AddItem("object_color", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "FlashbangSkin", client);
+	menu.AddItem("flashbang_skin", g_buffer);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -2502,16 +2505,16 @@ void ColorTeam(int client, bool allowColor)
 		
 		if(g_devmap == false && IsValidPartner(client) == false)
 		{
-			Format(g_format, sizeof(g_format), "%T", "DontHavePartner", client);
-			SendMessage(client, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "DontHavePartner", client);
+			SendMessage(client, g_buffer);
 
 			return;
 		}
 
 		else if(g_devmap == true)
 		{
-			Format(g_format, sizeof(g_format), "%T", "DevmapIsON", client);
-			SendMessage(client, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsON", client);
+			SendMessage(client, g_buffer);
 
 			return;
 		}
@@ -2665,8 +2668,8 @@ void Restart(int client, bool ask)
 {
 	if(g_devmap == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_devmap == false)
@@ -2685,10 +2688,10 @@ void Restart(int client, bool ask)
 					Menu menu = new Menu(handler_askforrestart);
 					menu.SetTitle("%T", "AskForRestart", client);
 
-					Format(g_format, sizeof(g_format), "%T", "Yes", client);
-					menu.AddItem("yes", g_format);
-					Format(g_format, sizeof(g_format), "%T", "No", client);
-					menu.AddItem("no", g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Yes", client);
+					menu.AddItem("yes", g_buffer);
+					Format(g_buffer, sizeof(g_buffer), "%T", "No", client);
+					menu.AddItem("no", g_buffer);
 
 					menu.Display(client, 20);
 				}
@@ -2696,8 +2699,8 @@ void Restart(int client, bool ask)
 
 			else if(IsValidPartner(client) == false)
 			{
-				Format(g_format, sizeof(g_format), "%T", "DontHavePartner", client);
-				SendMessage(client, g_format);
+				Format(g_buffer, sizeof(g_buffer), "%T", "DontHavePartner", client);
+				SendMessage(client, g_buffer);
 			}
 		}
 	}
@@ -2710,6 +2713,7 @@ void DoRestart(int client)
 	if(IsValidPartner(client) == true)
 	{
 		int partner = g_partner[client];
+		float vel[3] = {0.0, ...};
 
 		CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
@@ -2724,7 +2728,6 @@ void DoRestart(int client)
 		CS_RespawnPlayer(client);
 		CS_RespawnPlayer(partner);
 
-		float vel[3] = {0.0, ...};
 		TeleportEntity(client, g_timerStartPos, NULL_VECTOR, vel);
 		TeleportEntity(partner, g_timerStartPos, NULL_VECTOR, vel);
 
@@ -2759,7 +2762,8 @@ int handler_askforrestart(Menu menu, MenuAction action, int param1, int param2)
 
 Action cmd_autoflash(int client, int args)
 {
-	int autoflashbang = gCV_autoflashbang.IntValue;
+	float autoflashbang = 0.0;
+	autoflashbang = gCV_autoflashbang.FloatValue;
 	
 	if(autoflashbang == 0.0)
 	{
@@ -2776,8 +2780,8 @@ Action cmd_autoflash(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", g_autoflash[client] == true ? "AutoflashChatON" : "AutoflashChatOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", g_autoflash[client] == true ? "AutoflashChatON" : "AutoflashChatOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_menuOpened[client] == true)
@@ -2790,7 +2794,8 @@ Action cmd_autoflash(int client, int args)
 
 Action cmd_autoswitch(int client, int args)
 {
-	int autoswitch = gCV_autoswitch.IntValue;
+	float autoswitch = 0.0;
+	autoswitch = gCV_autoswitch.FloatValue;
 	
 	if(autoswitch == 0.0)
 	{
@@ -2805,8 +2810,8 @@ Action cmd_autoswitch(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", g_autoswitch[client] == true ? "AutoswitchChatON" : "AutoswitchChatOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", g_autoswitch[client] == true ? "AutoswitchChatON" : "AutoswitchChatOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_menuOpened[client] == true)
@@ -2819,7 +2824,8 @@ Action cmd_autoswitch(int client, int args)
 
 Action cmd_bhop(int client, int args)
 {
-	int bhop = gCV_bhop.IntValue;
+	float bhop = 0.0;
+	bhop = gCV_bhop.FloatValue;
 	
 	if(bhop == 0.0)
 	{
@@ -2834,8 +2840,8 @@ Action cmd_bhop(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", g_bhop[client] == true ? "BhopChatON" : "BhopChatOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", g_bhop[client] == true ? "BhopChatON" : "BhopChatOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_menuOpened[client] == true)
@@ -2848,7 +2854,8 @@ Action cmd_bhop(int client, int args)
 
 Action cmd_endmsg(int client, int args)
 {
-	int endmsg = gCV_endmsg.IntValue;
+	float endmsg = 0.0;
+	endmsg = gCV_endmsg.FloatValue;
 
 	if(endmsg == 0.0)
 	{
@@ -2863,8 +2870,8 @@ Action cmd_endmsg(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", g_endMessage[client] == true ? "EndMessageChatON" : "EndMessageChatOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", g_endMessage[client] == true ? "EndMessageChatON" : "EndMessageChatOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_menuOpenedHud[client] == true)
@@ -2877,7 +2884,8 @@ Action cmd_endmsg(int client, int args)
 
 Action cmd_top10(int client, int args)
 {
-	int top10 = gCV_top10.IntValue;
+	int top10 = 0;
+	top10 = gCV_top10.IntValue;
 
 	if(top10 == 0.0)
 	{
@@ -2895,8 +2903,8 @@ void Top10(int client)
 	{
 		if(g_dbPassed == false)
 		{
-			Format(g_format, sizeof(g_format), "Wait for database loading...");
-			SendMessage(client, g_format);
+			Format(g_buffer, sizeof(g_buffer), "Wait for database loading...");
+			SendMessage(client, g_buffer);
 
 			return;
 		}
@@ -2911,8 +2919,8 @@ void Top10(int client)
 	{
 		char time[8] = "";
 		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
-		Format(g_format, sizeof(g_format), "%T", "Top10ac", client, time);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "Top10ac", client, time);
+		SendMessage(client, g_buffer);
 	}
 
 	return;
@@ -2927,7 +2935,8 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 
 	else if(strlen(error) == 0)
 	{
-		bool fetchrow = results.FetchRow();
+		bool fetchrow = false;
+		fetchrow = results.FetchRow();
 
 		if(fetchrow == false)
 		{
@@ -2935,11 +2944,11 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					Format(g_format, sizeof(g_format), "%T", "Top10details", i);
-					SendMessage(i, g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Top10details", i);
+					SendMessage(i, g_buffer);
 
-					Format(g_format, sizeof(g_format), "%T", "NoRecords", i);
-					SendMessage(i, g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "NoRecords", i);
+					SendMessage(i, g_buffer);
 				}
 
 				continue;
@@ -2948,6 +2957,7 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 
 		else if(fetchrow == true)
 		{
+			//char
 			Format(g_query, sizeof(g_query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 10", g_map);
 			g_mysql.Query(SQLTop10_2, g_query, _, DBPrio_Normal);
 		}
@@ -2971,11 +2981,11 @@ void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					Format(g_format, sizeof(g_format), "%T", "Top10details", i);
-					SendMessage(i, g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Top10details", i);
+					SendMessage(i, g_buffer);
 
-					Format(g_format, sizeof(g_format), "%T", "NoRecords", i);
-					SendMessage(i, g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "NoRecords", i);
+					SendMessage(i, g_buffer);
 				}
 
 				continue;
@@ -3014,29 +3024,32 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 
 	else if(strlen(error) == 0)
 	{
-		float time = data;
+		float time = 0.0;
+		time = data;
 
 		if(results.FetchRow() == true)
 		{
 			char name1[MAX_NAME_LENGTH] = "";
 			char name2[MAX_NAME_LENGTH] = "";
+			char formatTime[8 + 3 + 1] = "";
+			char formatTimeDiff[8 + 3 + 1] = "8"; //00:00:00
+			int count = 0;
 
 			results.FetchString(0, name1, sizeof(name1));
 			results.FetchString(1, name2, sizeof(name2));
 			
-			char formatTime[24] = "";
 			FormatSeconds(time, formatTime);
 
-			int count = ++g_top10Count;
+			count = ++g_top10Count;
 
 			if(count == 1)
 			{
 				g_top10SR = time;
 			}
 
-			float timeDiff = time - g_top10SR;
+			float timeDiff = 0.0;
+			timeDiff = time - g_top10SR;
 
-			char formatTimeDiff[24] = "";
 			FormatSeconds(timeDiff, formatTimeDiff);
 			Format(formatTimeDiff, sizeof(formatTimeDiff), "+%s", formatTimeDiff);
 
@@ -3046,20 +3059,20 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 				{
 					if(count == 1)
 					{
-						Format(g_format, sizeof(g_format), "%T", "Top10details", i);
-						SendMessage(i, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "Top10details", i);
+						SendMessage(i, g_buffer);
 					}
 					
 					if(count < 10)
 					{
-						Format(g_format, sizeof(g_format), "%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
-						SendMessage(i, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "Top10source1-9", i, count, formatTime, formatTimeDiff, name1, name2);
+						SendMessage(i, g_buffer);
 					}
 
 					else if(count == 10)
 					{
-						Format(g_format, sizeof(g_format), "%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
-						SendMessage(i, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "Top10source10", i, count, formatTime, formatTimeDiff, name1, name2);
+						SendMessage(i, g_buffer);
 					}
 				}
 
@@ -3101,11 +3114,25 @@ Action cmd_skin(int client, int args)
 
 void Skin(int client)
 {
-	Menu menu = new Menu(skinmenu_hanlder);
-	menu.SetTitle("Skin");
+	//declaration
+	char item[14] = "";
+	char display[14] = "";
+	char fmt[5] = "Skin";
 
-	menu.AddItem("player_skin", "Player Skin");
-	menu.AddItem("flashbang_skin", "Flashbang Skin");
+	Menu menu = new Menu(skinmenu_hanlder);
+	//char fmt[4] = "Skin";
+	menu.SetTitle("%s", fmt);
+
+	//item[3 + 11] = "player_skin"; //1-3 = 3 english latters
+	//display[3 + 11] = "Player Skin"; //11 - 3 = 8, 14 - 3 = 11
+	Format(item, sizeof(item), "player_skin");
+	Format(display, sizeof(display), "Player Skin");
+	menu.AddItem(item, display);
+	//item = "flashbang_skin";
+	//display = "Flashbang Skin";
+	Format(item, sizeof(item), "flashbang_skin");
+	Format(display, sizeof(display), "Flashbang Skin");
+	menu.AddItem(item, display);
 
 	menu.Display(client, 20);
 
@@ -3145,15 +3172,15 @@ void PlayerSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
-	Format(g_format, sizeof(g_format), "%T", "PlayerSkin", client);
-	menu.SetTitle(g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "PlayerSkin", client);
+	menu.SetTitle(g_buffer);
 
-	Format(g_format, sizeof(g_format), "%T", "Default", client);
-	menu.AddItem("default_ps", g_format, g_skinPlayer[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(g_format, sizeof(g_format), "%T", "Shadow", client);
-	menu.AddItem("shadow_ps", g_format, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(g_format, sizeof(g_format), "%T", "Bright", client);
-	menu.AddItem("bright_ps", g_format, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Default", client);
+	menu.AddItem("default_ps", g_buffer, g_skinPlayer[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Shadow", client);
+	menu.AddItem("shadow_ps", g_buffer, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Bright", client);
+	menu.AddItem("bright_ps", g_buffer, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -3165,17 +3192,17 @@ void FlashbangSkin(int client)
 {
 	Menu menu = new Menu(menuskinchoose_handler);
 
-	Format(g_format, sizeof(g_format), "%T", "FlashbangSkin", client);
-	menu.SetTitle(g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "FlashbangSkin", client);
+	menu.SetTitle(g_buffer);
 
-	Format(g_format, sizeof(g_format), "%T", "Default", client);
-	menu.AddItem("default_fs", g_format, g_skinFlashbang[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(g_format, sizeof(g_format), "%T", "Shadow", client);
-	menu.AddItem("shadow_fs", g_format, g_skinFlashbang[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(g_format, sizeof(g_format), "%T", "Bright", client);
-	menu.AddItem("bright_fs", g_format, g_skinFlashbang[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	Format(g_format, sizeof(g_format), "%T", "Wireframe", client);
-	menu.AddItem("wireframe_fs", g_format, g_skinFlashbang[client] == 3 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Default", client);
+	menu.AddItem("default_fs", g_buffer, g_skinFlashbang[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Shadow", client);
+	menu.AddItem("shadow_fs", g_buffer, g_skinFlashbang[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Bright", client);
+	menu.AddItem("bright_fs", g_buffer, g_skinFlashbang[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(g_buffer, sizeof(g_buffer), "%T", "Wireframe", client);
+	menu.AddItem("wireframe_fs", g_buffer, g_skinFlashbang[client] == 3 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -3192,7 +3219,7 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 			char item[16] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
-			char value[8] = "";
+			char str[1] = ""; //1 = 2 numbers
 
 			if(StrContains(item, "ps", false) != -1)
 			{
@@ -3214,8 +3241,8 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 					SetEntProp(param1, Prop_Data, "m_nSkin", 1, 4, 0);
 				}
 
-				IntToString(g_skinPlayer[param1], value, sizeof(value));
-				SetClientCookie(param1, g_cookie[10], value);
+				IntToString(g_skinPlayer[param1], str, sizeof(str));
+				SetClientCookie(param1, g_cookie[10], str);
 
 				PlayerSkin(param1);
 			}
@@ -3242,8 +3269,8 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 					g_skinFlashbang[param1] = 3;
 				}
 
-				IntToString(g_skinFlashbang[param1], value, sizeof(value));
-				SetClientCookie(param1, g_cookie[8], value);
+				IntToString(g_skinFlashbang[param1], str, sizeof(str));
+				SetClientCookie(param1, g_cookie[8], str);
 
 				FlashbangSkin(param1);
 			}
@@ -3280,12 +3307,12 @@ Action cmd_macro(int client, int args)
 
 	g_macroDisabled[client] = !g_macroDisabled[client];
 	
-	char value[8] = "";
-	IntToString(g_macroDisabled[client], value, sizeof(value));
-	SetClientCookie(client, g_cookie[6], value);
+	char str[4] = "";
+	IntToString(g_macroDisabled[client], str, sizeof(str));
+	SetClientCookie(client, g_cookie[6], str);
 
-	Format(g_format, sizeof(g_format), "%T", g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
-	SendMessage(client, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
+	SendMessage(client, g_buffer);
 
 	return Plugin_Handled;
 }
@@ -3320,7 +3347,8 @@ void CreateStart()
 		continue;
 	}
 
-	g_center[0][2] -= FloatAbs((g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0);
+	float value = (g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0;
+	g_center[0][2] -= FloatAbs(value);
 
 	TeleportEntity(entity, g_center[0], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -3431,12 +3459,14 @@ void CreateEnd()
 void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
-	int client = GetClientFromSerial(data.ReadCell());
+	any id = data.ReadCell();
+	int client = GetClientFromSerial(id);
 	int cpnum = data.ReadCell();
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLDeleteZone [%i] by %N [%i]: %s", cpnum, client, GetSteamAccountID(client, true), error);
+		id = GetSteamAccountID(client, true);
+		PrintToServer("SQLDeleteZone [%i] by %N [%i]: %s", cpnum, client, id, error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3478,14 +3508,15 @@ Action cad_deleteallcp(int client, int args)
 {
 	if(g_devmap == true)
 	{
+		int serial = GetClientSerial(client);
 		Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE map = '%s'", g_map); //https://www.w3schools.com/sql/sql_delete.asp
-		g_mysql.Query(SQLDeleteAllCP, g_query, GetClientSerial(client), DBPrio_Normal);
+		g_mysql.Query(SQLDeleteAllCP, g_query, serial, DBPrio_Normal);
 	}
 
 	else if(g_devmap == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	return Plugin_Handled;
@@ -3494,17 +3525,18 @@ Action cad_deleteallcp(int client, int args)
 void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data);
+	int id = GetSteamAccountID(client, true);
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLDeleteAllCP %N [%i]: %s", client, GetSteamAccountID(client, true), error);
+		PrintToServer("SQLDeleteAllCP %N [%i]: %s", client, id, error);
 	}
 
 	else if(strlen(error) == 0)
 	{
 		if(results.HasResults == false)
 		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by %N [%i]", g_map, client, GetSteamAccountID(client, true));
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by %N [%i]", g_map, client, id);
 
 			PrintToServer("All checkpoints are deleted on current map.");
 		}
@@ -3522,10 +3554,10 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	if(g_devmap == false)
 	{
-		char cmd[64] = ""; //https://forums.alliedmods.net/showthread.php?t=270684
-		kv.GetSectionName(cmd, sizeof(cmd));
+		char section[64] = ""; //https://forums.alliedmods.net/showthread.php?t=270684
+		kv.GetSectionName(section, sizeof(section));
 
-		if(StrEqual(cmd, "ClanTagChanged", false) == true)
+		if(StrEqual(section, "ClanTagChanged", false) == true)
 		{
 			CS_GetClientClanTag(client, g_clantag[client][0], 256);
 		}
@@ -3536,10 +3568,11 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 
 Action cad_test(int client, int args)
 {
-	char arg[256] = "";
-	GetCmdArgString(arg, sizeof(arg));
+	char buffer[256] = "";
+	GetCmdArgString(buffer, sizeof(buffer));
 
-	int partner = StringToInt(arg, 10);
+	int nBase = 10;
+	int partner = StringToInt(buffer, nBase);
 
 	if(IsValidClient(partner) == true && IsValidPartner(client) == false)
 	{
@@ -3571,47 +3604,50 @@ Action cad_test(int client, int args)
 	return Plugin_Handled;
 }
 
-void SendMessage(int client, const char[] text)
+void SendMessage(int client, const char[] buffer)
 {
 	char name[MAX_NAME_LENGTH] = "";
 	GetClientName(client, name, sizeof(name));
 
 	int team = GetClientTeam(client);
 
-	char teamColor[32] = "";
+	char color[32] = "";
 
 	switch(team)
 	{
 		case CS_TEAM_SPECTATOR:
 		{
-			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
+			Format(color, sizeof(color), "\x07CCCCCC");
 		}
 
 		case CS_TEAM_T:
 		{
-			Format(teamColor, sizeof(teamColor), "\x07FF4040");
+			Format(color, sizeof(color), "\x07FF4040");
 		}
 
 		case CS_TEAM_CT:
 		{
-			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
+			Format(color, sizeof(color), "\x0799CCFF");
 		}
 	}
 
-	char textReplaced[256] = "";
-	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
+	char buffer2[256] = "";
+	Format(buffer2, sizeof(buffer2), "\x01%s", buffer);
 
-	ReplaceString(textReplaced, sizeof(textReplaced), ";#", "\x07");
-	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
-	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
+	ReplaceString(buffer2, sizeof(buffer2), ";#", "\x07");
+	ReplaceString(buffer2, sizeof(buffer2), "{default}", "\x01");
+	ReplaceString(buffer2, sizeof(buffer2), "{teamcolor}", color);
 
 	if(IsValidClient(client) == true)
 	{
-		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
-		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
+		char msgname[10] = "SayText2";
+		int flags = USERMSG_RELIABLE | USERMSG_BLOCKHOOKS;
+		Handle msg = StartMessageOne(msgname, client, flags); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
+		BfWrite bf = UserMessageToBfWrite(msg); //dont show color codes in console.
+		//bool insert = false;
 		bf.WriteByte(client); //Message author
 		bf.WriteByte(true); //Chat message
-		bf.WriteString(textReplaced); //Message text
+		bf.WriteString(buffer2); //Message text
 		EndMessage();
 	}
 
@@ -3622,10 +3658,12 @@ Action cad_maptier(int client, int args)
 {
 	if(g_devmap == true)
 	{
-		char arg[256] = "";
-		GetCmdArgString(arg, sizeof(arg)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
+		char buffer[256] = "";
+		GetCmdArgString(buffer, sizeof(buffer)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
-		int tier = StringToInt(arg, 10);
+		int nBase = 10;
+		char str[4] = "";
+		int tier = StringToInt(str, nBase);
 
 		if(tier > 0)
 		{
@@ -3633,16 +3671,18 @@ Action cad_maptier(int client, int args)
 
 			Format(g_query, sizeof(g_query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
 			DataPack dp = new DataPack();
-			dp.WriteCell(GetClientSerial(client));
-			dp.WriteCell(tier);
+			any serial = GetClientSerial(client);
+			bool insert = false;
+			dp.WriteCell(serial, insert);
+			dp.WriteCell(tier, insert);
 			g_mysql.Query(SQLTierRemove, g_query, dp, DBPrio_Normal);
 		}
 	}
 
 	else if(g_devmap == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	return Plugin_Handled;
@@ -3814,15 +3854,15 @@ Action cad_zones(int client, int args)
 
 		else if(g_zoneHave[2] == false)
 		{
-			Format(g_format, sizeof(g_format), "%T", "DBLoading", client);
-			SendMessage(client, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "DBLoading", client);
+			SendMessage(client, g_buffer);
 		}
 	}
 
 	else if(g_devmap == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	return Plugin_Handled;
@@ -3857,12 +3897,12 @@ void ZoneEditor(int client)
 
 	Menu menu = new Menu(zones_handler);
 	menu.SetTitle("%T", "ZoneEditor", client);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAddButton", client);
-	menu.AddItem("add", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorEditButton", client);
-	menu.AddItem("edit", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorTPButton", client);
-	menu.AddItem("tp", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorAddButton", client);
+	menu.AddItem("add", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorEditButton", client);
+	menu.AddItem("edit", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorTPButton", client);
+	menu.AddItem("tp", g_buffer);
 	menu.Display(client, MENU_TIME_FOREVER);
 
 	return;
@@ -3932,12 +3972,12 @@ void ZoneAdd(int client)
 
 	Menu menu = new Menu(zones_add_handler);
 	menu.SetTitle("%T", "ZoneEditorAdd", client);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStartZoneButton", client);
-	menu.AddItem("add_start", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorEndZoneButton", client);
-	menu.AddItem("add_end", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPZoneButton", client);
-	menu.AddItem("add_cp", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStartZoneButton", client);
+	menu.AddItem("add_start", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorEndZoneButton", client);
+	menu.AddItem("add_end", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorCPZoneButton", client);
+	menu.AddItem("add_cp", g_buffer);
 	menu.ExitBackButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);
 
@@ -4004,14 +4044,14 @@ void ZoneEdit(int client)
 
 	if(g_zoneHave[0] == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", "ZoneEditorStartZoneButton", client);
-		menu.AddItem("start", g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStartZoneButton", client);
+		menu.AddItem("start", g_buffer);
 	}
 
 	if(g_zoneHave[1] == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", "ZoneEditorEndZoneButton", client);
-		menu.AddItem("end", g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorEndZoneButton", client);
+		menu.AddItem("end", g_buffer);
 	}
 
 	if(g_cpCount > 0)
@@ -4021,8 +4061,8 @@ void ZoneEdit(int client)
 		for(int i = 0; i <= g_cpCount; ++i)
 		{
 			Format(cp, sizeof(cp), "%i", i);
-			Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPButton", client, i);
-			menu.AddItem(cp, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorCPButton", client, i);
+			menu.AddItem(cp, g_buffer);
 
 			continue;
 		}
@@ -4030,8 +4070,8 @@ void ZoneEdit(int client)
 
 	else if(g_zoneHave[0] == false && g_zoneHave[1] == false && g_cpCount == 0)
 	{
-		Format(g_format, sizeof(g_format), "%T", "ZoneEditorNoZone", client);
-		menu.AddItem("-1", g_format, ITEMDRAW_DISABLED);
+		Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorNoZone", client);
+		menu.AddItem("-1", g_buffer, ITEMDRAW_DISABLED);
 	}
 
 	menu.ExitBackButton = true;
@@ -4049,17 +4089,17 @@ void ZoneCreator(int client)
 {
 	Menu menu = new Menu(zones_creator_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorUse", client);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
-	menu.AddItem("step1", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
-	menu.AddItem("step2", g_format);
-	Format(g_format, sizeof(g_format), "%T", g_zoneCursor[client] == true ? "CursorPossitionON" : "CursorPossitionOFF", client);
-	menu.AddItem("cursor", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_zoneCursor[client] == true ? "CursorPossitionON" : "CursorPossitionOFF", client);
+	menu.AddItem("cursor", g_buffer);
 
 	if(g_zoneSelectedCP[client] == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", "ZoneEditorSelectedCPnum", client, g_ZoneEditorCP[client]);
-		menu.AddItem("cpnum", g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSelectedCPnum", client, g_ZoneEditorCP[client]);
+		menu.AddItem("cpnum", g_buffer);
 	}
 
 	menu.ExitBackButton = true;
@@ -4114,8 +4154,8 @@ int zones_creator_handler(Menu menu, MenuAction action, int param1, int param2)
 				{
 					g_zoneCPnumReadyToNew[param1] = true;
 
-					Format(g_format, sizeof(g_format), "%T", "ZoneEditorTypeCPnum", param1);
-					SendMessage(param1, g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorTypeCPnum", param1);
+					SendMessage(param1, g_buffer);
 				}
 			}
 		}
@@ -4228,32 +4268,32 @@ void ZoneEditorStart(int client)
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorStartZone", client);
 
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
-	menu.AddItem("step1", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
-	menu.AddItem("step2", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_buffer);
 
 	char format2[24] = "";
 	Format(format2, sizeof(format2), "0;%i;1;sidestart", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "0;%i;0;sidestart", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "1;%i;1;sidestart", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "1;%i;0;sidestart", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAxis", client);
-	menu.AddItem("axis", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorApplyStartZone", client);
-	menu.AddItem("startapply", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorAxis", client);
+	menu.AddItem("axis", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorApplyStartZone", client);
+	menu.AddItem("startapply", g_buffer);
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -4268,32 +4308,32 @@ void ZoneEditorEnd(int client)
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorEndZone", client);
 
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
-	menu.AddItem("step1", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
-	menu.AddItem("step2", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_buffer);
 
 	char format2[16] = "";
 	Format(format2, sizeof(format2), "0;%i;1;sideend", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "0;%i;0;sideend", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "1;%i;1;sideend", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "1;%i;0;sideend", g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAxis", client);
-	menu.AddItem("axis", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorApplyEndZone", client);
-	menu.AddItem("endapply", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorAxis", client);
+	menu.AddItem("axis", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorApplyEndZone", client);
+	menu.AddItem("endapply", g_buffer);
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -4308,35 +4348,35 @@ void ZoneEditorCP(int client, int cpnum)
 	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorCPZone", client, cpnum);
 
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep1", client, g_step[client]);
-	menu.AddItem("step1", g_format);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorStep2", client);
-	menu.AddItem("step2", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
+	menu.AddItem("step1", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep2", client);
+	menu.AddItem("step2", g_buffer);
 
 	char format2[24] = "";
 	Format(format2, sizeof(format2), "%i;0;%i;1;sidecp", cpnum, g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide1+", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "%i;0;%i;0;sidecp", cpnum, g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide1-", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "%i;1;%i;1;sidecp", cpnum, g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide2+", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
 	Format(format2, sizeof(format2), "%i;1;%i;0;sidecp", cpnum, g_axis[client]);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
-	menu.AddItem(format2, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorSide2-", client, g_axisLater[g_axis[client]], g_step[client]);
+	menu.AddItem(format2, g_buffer);
 
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorAxis", client);
-	menu.AddItem("axis", g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorAxis", client);
+	menu.AddItem("axis", g_buffer);
 
 	char cpupdate[16] = "";
 	Format(cpupdate, sizeof(cpupdate), "%i;cpapply", cpnum);
-	Format(g_format, sizeof(g_format), "%T", "ZoneEditorApplyCPZone", client, cpnum);
-	menu.AddItem(cpupdate, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorApplyCPZone", client, cpnum);
+	menu.AddItem(cpupdate, g_buffer);
 
 	menu.ExitBackButton = true; //https://cc.bingj.com/cache.aspx?q=ExitBackButton+sourcemod&d=4737211702971338&mkt=en-WW&setlang=en-US&w=wg9m5FNl3EpqPBL0vTge58piA8n5NsLz#L49
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -4507,14 +4547,14 @@ void ZoneTP(int client)
 
 	if(g_zoneHave[0] == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", "ZoneEditorStartZoneButton", client);
-		menu.AddItem("start", g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStartZoneButton", client);
+		menu.AddItem("start", g_buffer);
 	}
 
 	if(g_zoneHave[1] == true)
 	{
-		Format(g_format, sizeof(g_format), "%T", "ZoneEditorEndZoneButton", client);
-		menu.AddItem("end", g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorEndZoneButton", client);
+		menu.AddItem("end", g_buffer);
 	}
 
 	if(g_cpCount > 0)
@@ -4524,8 +4564,8 @@ void ZoneTP(int client)
 		for(int i = 0; i <= g_cpCount; ++i)
 		{
 			Format(cp, sizeof(cp), "%i;cp", i);
-			Format(g_format, sizeof(g_format), "%T", "ZoneEditorCPButton", client, i);
-			menu.AddItem(cp, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorCPButton", client, i);
+			menu.AddItem(cp, g_buffer);
 
 			continue;
 		}
@@ -4533,8 +4573,8 @@ void ZoneTP(int client)
 
 	else if(g_zoneHave[0] == false && g_zoneHave[1] == false && g_cpCount == 0)
 	{
-		Format(g_format, sizeof(g_format), "%T", "ZoneEditorNoZone", client);
-		menu.AddItem("-1", g_format, ITEMDRAW_DISABLED);
+		Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorNoZone", client);
+		menu.AddItem("-1", g_buffer, ITEMDRAW_DISABLED);
 	}
 
 	menu.ExitBackButton = true;
@@ -4972,11 +5012,11 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_format, sizeof(g_format), "%T", "NewServerRecord", i);
-									SendMessage(i, g_format); //smth like shavit functions.
+									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecord", i);
+									SendMessage(i, g_buffer); //smth like shavit functions.
 
-									Format(g_format, sizeof(g_format), "%T", "NewServerRecordDetail", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, g_format);
+									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordDetail", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_buffer);
 								}
 
 								continue;
@@ -5021,8 +5061,8 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_format, sizeof(g_format), "%T", "Passed", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, g_format);
+									Format(g_buffer, sizeof(g_buffer), "%T", "Passed", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_buffer);
 								}
 
 								continue;
@@ -5051,8 +5091,8 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_format, sizeof(g_format), "%T", "PassedImproved", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, g_format);
+									Format(g_buffer, sizeof(g_buffer), "%T", "PassedImproved", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_buffer);
 								}
 
 								continue;
@@ -5100,11 +5140,11 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_format, sizeof(g_format), "%T", "NewServerRecordNew", i);
-									SendMessage(i, g_format); //all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
+									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordNew", i);
+									SendMessage(i, g_buffer); //all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
 
-									Format(g_format, sizeof(g_format), "%T", "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, g_format);
+									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_buffer);
 								}
 
 								continue;
@@ -5150,8 +5190,8 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_format, sizeof(g_format), "%T", "JustPassed", i, name, namePartner, timeOwn, timeSR);
-									SendMessage(i, g_format);
+									Format(g_buffer, sizeof(g_buffer), "%T", "JustPassed", i, name, namePartner, timeOwn, timeSR);
+									SendMessage(i, g_buffer);
 								}
 
 								continue;
@@ -5199,8 +5239,8 @@ Action SDKStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(j) == true)
 								{
-									Format(g_format, sizeof(g_format), "%T", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
-									SendMessage(j, g_format);
+									Format(g_buffer, sizeof(g_buffer), "%T", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									SendMessage(j, g_buffer);
 								}
 
 								continue;
@@ -5225,18 +5265,18 @@ Action SDKStartTouch(int entity, int other)
 					{
 						if(IsClientInGame(i) == true)
 						{
-							Format(g_format, sizeof(g_format), "%T", "NewServerRecordFirst", i);
-							SendMessage(i, g_format);
+							Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordFirst", i);
+							SendMessage(i, g_buffer);
 
-							Format(g_format, sizeof(g_format), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
-							SendMessage(i, g_format);
+							Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
+							SendMessage(i, g_buffer);
 
 							for(int j = 0; j <= g_cpCount; ++j)
 							{
 								if(g_cp[other][j] == true)
 								{
-									Format(g_format, sizeof(g_format), "%T", "CPNEW", i, j, timeSR);
-									SendMessage(i, g_format);
+									Format(g_buffer, sizeof(g_buffer), "%T", "CPNEW", i, j, timeSR);
+									SendMessage(i, g_buffer);
 								}
 
 								continue;
@@ -5385,10 +5425,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			for(int i = 0; i <= 2; i++)
 			{
 				SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-				if(i == 0){Format(g_format, sizeof(g_format), "%T", key[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-				else if(i == 1){Format(g_format, sizeof(g_format), "%T", key[i], client, time);}
-				else if(i == 2){Format(g_format, sizeof(g_format), "%T", key[i], client, timeSR);}
-				ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+				if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+				else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, time);}
+				else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, timeSR);}
+				ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 				continue;
 			}
@@ -5407,10 +5447,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 						for(int j = 0; j <= 2; j++)
 						{
 							SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-							if(j == 0){Format(g_format, sizeof(g_format), "%T", key[j], i, cpnum);}
-							else if(j == 1){Format(g_format, sizeof(g_format), "%T", key[j], i, time);}
-							else if(j == 2){Format(g_format, sizeof(g_format), "%T", key[j], i, timeSR);}
-							ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+							if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, cpnum);}
+							else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, time);}
+							else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
+							ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 							continue;
 						}
@@ -5470,10 +5510,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				for(int i = 0; i <= 2; i++)
 				{
 					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_format, sizeof(g_format), "%T", key2[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key2[i], client, time);}
-					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key2[i], client, timeSR);}
-					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key2[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key2[i], client, time);}
+					else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key2[i], client, timeSR);}
+					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 					continue;
 				}
@@ -5492,10 +5532,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							for(int j = 0; j <= 2; j++)
 							{
 								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_format, sizeof(g_format), "%T", key2[j], i, cpnum);}
-								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key2[j], i, time);}
-								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key2[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, cpnum);}
+								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, time);}
+								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 								continue;
 							}
@@ -5555,9 +5595,9 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				for(int i = 0; i <= 1; i++)
 				{
 					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_format, sizeof(g_format), "%T", key3[i], client, time);}
-					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key3[i], client, timeSR);}
-					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key3[i], client, time);}
+					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key3[i], client, timeSR);}
+					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 					continue;
 				}
@@ -5576,9 +5616,9 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							for(int j = 0; j <= 1; i++)
 							{
 								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_format, sizeof(g_format), "%T", key3[j], i, time);} ////https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key3[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key3[j], i, time);} ////https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key3[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 								continue;
 							}
@@ -5640,11 +5680,11 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			for(int i = 0; i <= 3; i++)
 			{
 				SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-				if(i == 0){Format(g_format, sizeof(g_format), "%T", key4[i], client);}
-				else if(i == 1){Format(g_format, sizeof(g_format), "%T", key4[i], client);}
-				else if(i == 2){Format(g_format, sizeof(g_format), "%T", key4[i], client, time);}
-				else if(i == 3){Format(g_format, sizeof(g_format), "%T", key4[i], client, timeSR);}
-				ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+				if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client);}
+				else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client);}
+				else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client, time);}
+				else if(i == 3){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client, timeSR);}
+				ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 				continue;
 			}
@@ -5663,11 +5703,11 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 						for(int j = 0; j <= 3; j++)
 						{
 							SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-							if(j == 0){Format(g_format, sizeof(g_format), "%T", key4[j], i);}
-							else if(j == 1){Format(g_format, sizeof(g_format), "%T", key4[j], i);}
-							else if(j == 2){Format(g_format, sizeof(g_format), "%T", key4[j], i, time);}
-							else if(j == 3){Format(g_format, sizeof(g_format), "%T", key4[j], i, timeSR);}
-							ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+							if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i);}
+							else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i);}
+							else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i, time);}
+							else if(j == 3){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i, timeSR);}
+							ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 							continue;
 						}
@@ -5727,11 +5767,11 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				for(int i = 0; i <= 3; i++)
 				{
 					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_format, sizeof(g_format), "%T", key5[i], client);}
-					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key5[i], client);}
-					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key5[i], client, time);}
-					else if(i == 3){Format(g_format, sizeof(g_format), "%T", key5[i], client, timeSR);} ////https://youtu.be/j4L3YvHowv8?t=45
-					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client);}
+					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client);}
+					else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client, time);}
+					else if(i == 3){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client, timeSR);} ////https://youtu.be/j4L3YvHowv8?t=45
+					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 					continue;
 				}
@@ -5750,11 +5790,11 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							for(int j = 0; j <= 3; j++)
 							{
 								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_format, sizeof(g_format), "%T", key5[j], i);}
-								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key5[j], i);}
-								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key5[j], i, time);}
-								else if(j == 3){Format(g_format, sizeof(g_format), "%T", key5[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i);}
+								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i);}
+								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i, time);}
+								else if(j == 3){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 								continue;
 							}
@@ -5812,10 +5852,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				for(int i = 0; i <= 2; i++)
 				{
 					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_format, sizeof(g_format), "%T", key6[i], client);}
-					else if(i == 1){Format(g_format, sizeof(g_format), "%T", key6[i], client, time);}
-					else if(i == 2){Format(g_format, sizeof(g_format), "%T", key6[i], client, timeSR);}
-					ShowHudText(client, channel++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key6[i], client);}
+					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key6[i], client, time);}
+					else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key6[i], client, timeSR);}
+					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 					continue;
 				}
@@ -5834,10 +5874,10 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							for(int j = 0; j <= 2; j++)
 							{
 								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_format, sizeof(g_format), "%T", key6[j], i);}
-								else if(j == 1){Format(g_format, sizeof(g_format), "%T", key6[j], i, time);}
-								else if(j == 2){Format(g_format, sizeof(g_format), "%T", key6[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i);}
+								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i, time);}
+								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i, timeSR);}
+								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 								continue;
 							}
@@ -7158,10 +7198,10 @@ Action cmd_devmap(int client, int args)
 				Menu menu = new Menu(devmap_handler);
 				menu.SetTitle("%T", g_devmap == true ? "TurnOFFDevmap" : "TurnONDevmap", i);
 
-				Format(g_format, sizeof(g_format), "%T", "Yes", i);
-				menu.AddItem("yes", g_format);
-				Format(g_format, sizeof(g_format), "%T", "No", i);
-				menu.AddItem("no", g_format);
+				Format(g_buffer, sizeof(g_buffer), "%T", "Yes", i);
+				menu.AddItem("yes", g_buffer);
+				Format(g_buffer, sizeof(g_buffer), "%T", "No", i);
+				menu.AddItem("no", g_buffer);
 
 				menu.Display(i, 20);
 			}
@@ -7180,8 +7220,8 @@ Action cmd_devmap(int client, int args)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				Format(g_format, sizeof(g_format), "%T", "DevmapStart", i, name);
-				SendMessage(i, g_format);
+				Format(g_buffer, sizeof(g_buffer), "%T", "DevmapStart", i, name);
+				SendMessage(i, g_buffer);
 			}
 
 			continue;
@@ -7190,8 +7230,8 @@ Action cmd_devmap(int client, int args)
 
 	else if(GetEngineTime() - g_devmapTime <= 35.0 || GetEngineTime() - g_afkTime <= 30.0)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapNotAllowed", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapNotAllowed", client);
+		SendMessage(client, g_buffer);
 	}
 
 	return Plugin_Handled;
@@ -7257,8 +7297,8 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_format, sizeof(g_format), "%T", "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_buffer);
 					}
 
 					continue;
@@ -7272,8 +7312,8 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_format, sizeof(g_format), "%T", "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_buffer);
 					}
 
 					continue;
@@ -7292,8 +7332,8 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_format, sizeof(g_format), "%T", "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_buffer);
 					}
 
 					continue;
@@ -7307,8 +7347,8 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_format, sizeof(g_format), "%T", "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
-						SendMessage(i, g_format);
+						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						SendMessage(i, g_buffer);
 					}
 
 					continue;
@@ -7414,10 +7454,10 @@ Action cmd_afk(int client, int args)
 					Menu menu = new Menu(afk_handler);
 					menu.SetTitle("%T", "AreYouHere?", i);
 
-					Format(g_format, sizeof(g_format), "%T", "Yes", i);
-					menu.AddItem("yes", g_format);
-					Format(g_format, sizeof(g_format), "%T", "No", i);
-					menu.AddItem("no", g_format);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Yes", i);
+					menu.AddItem("yes", g_buffer);
+					Format(g_buffer, sizeof(g_buffer), "%T", "No", i);
+					menu.AddItem("no", g_buffer);
 
 					menu.Display(i, 20);
 				}
@@ -7437,8 +7477,8 @@ Action cmd_afk(int client, int args)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				Format(g_format, sizeof(g_format), "%T", "AFKCHECK", i, name);
-				SendMessage(i, g_format);
+				Format(g_buffer, sizeof(g_buffer), "%T", "AFKCHECK", i, name);
+				SendMessage(i, g_buffer);
 			}
 
 			continue;
@@ -7447,8 +7487,8 @@ Action cmd_afk(int client, int args)
 
 	else if(GetEngineTime() - g_afkTime <= 30.0 || GetEngineTime() - g_devmapTime <= 35.0)
 	{
-		Format(g_format, sizeof(g_format), "%T", "AFKCHECK2", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "AFKCHECK2", client);
+		SendMessage(client, g_buffer);
 	}
 
 	return Plugin_Handled;
@@ -7542,15 +7582,15 @@ void Noclip(int client)
 
 		if(g_menuOpened[client] == false)
 		{
-			Format(g_format, sizeof(g_format), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
-			SendMessage(client, g_format);
+			Format(g_buffer, sizeof(g_buffer), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
+			SendMessage(client, g_buffer);
 		}
 	}
 
 	else if(g_devmap == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", "DevmapIsOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	if(g_menuOpened[client] == true)
@@ -7596,12 +7636,12 @@ void HudMenu(int client)
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("Hud");
 
-	Format(g_format, sizeof(g_format), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
-	menu.AddItem("vel", g_format, gCV_vel.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	Format(g_format, sizeof(g_format), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
-	menu.AddItem("mls", g_format, gCV_mlstats.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	Format(g_format, sizeof(g_format), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
-	menu.AddItem("endmsg", g_format, gCV_endmsg.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
+	menu.AddItem("vel", g_buffer, gCV_vel.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
+	menu.AddItem("mls", g_buffer, gCV_mlstats.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
+	menu.AddItem("endmsg", g_buffer, gCV_endmsg.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
 
@@ -7687,8 +7727,8 @@ Action cmd_vel(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", g_hudVel[client] == true ? "VelChatON" : "VelChatOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", g_hudVel[client] == true ? "VelChatON" : "VelChatOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_menuOpenedHud[client] == true)
@@ -7750,8 +7790,8 @@ Action cmd_mlstats(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		Format(g_format, sizeof(g_format), "%T", g_mlstats[client] == true ? "MLStatsChatON" : "MLStatsChatOFF", client);
-		SendMessage(client, g_format);
+		Format(g_buffer, sizeof(g_buffer), "%T", g_mlstats[client] == true ? "MLStatsChatON" : "MLStatsChatOFF", client);
+		SendMessage(client, g_buffer);
 	}
 
 	else if(g_menuOpenedHud[client] == true)
@@ -7777,8 +7817,8 @@ Action cmd_button(int client, int args)
 	IntToString(g_button[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[2], value);
 
-	Format(g_format, sizeof(g_format), "%T", g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
-	SendMessage(client, g_format);
+	Format(g_buffer, sizeof(g_buffer), "%T", g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
+	SendMessage(client, g_buffer);
 
 	return Plugin_Handled;
 }
@@ -8707,8 +8747,8 @@ Action timer_greetings(Handle timer, int client)
 	while(g_kv.GotoNextKey(true) == true);
 
 	SetHudTextParamsEx(xy[0], xy[1], holdtime, rgba[0], rgba[1], effect, fxtime, fadein, fadeout); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-	Format(g_format, sizeof(g_format), "%T", g_devmap == true ? "GreetingsPractice" : "GreetingsStatistics", client);
-	ShowHudText(client, 1, g_format); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+	Format(g_buffer, sizeof(g_buffer), "%T", g_devmap == true ? "GreetingsPractice" : "GreetingsStatistics", client);
+	ShowHudText(client, 1, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
 	return Plugin_Continue;
 }
