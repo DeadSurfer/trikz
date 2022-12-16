@@ -220,12 +220,27 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.622",
+	version = "4.623",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
+	//declaration
+
+	//char classname[2][32];
+	//char output[5][16];
+	int offset;
+	Handle gamedata;
+
+	//initialization
+	//int offset;
+	//classname = {"trigger_teleport", "trigger_teleport_relative"}; //https://developer.valvesoftware.com/wiki/Trigger_teleport https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+	//output = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
+	gamedata = LoadGameConfigFile("sdktools.games");
+	offset = GameConfGetOffset(gamedata, "Teleport");
+
+
 	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top, for ex (http://www.trueexpert.rf.gd/?start=0&map=). To open web page, type to in-game chat !top", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Allow to use trikz menu.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_block = CreateConVar("sm_te_block", "0.0", "Allow to toggling block state.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -318,8 +333,8 @@ public void OnPluginStart()
 	AddCommandListener(ACLCPNUM, "say");
 	AddCommandListener(ACLCPNUM, "say_team");
 
-	/*char classname[2][32] = {"trigger_teleport", "trigger_teleport_relative"}; //https://developer.valvesoftware.com/wiki/Trigger_teleport https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
-	char output[5][16] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
+	/*//declaration
+	//initialisation
 
 	for(int i = 0; i < sizeof(classname); i++)
 	{
@@ -350,9 +365,10 @@ public void OnPluginStart()
 	g_cookie[10] = RegClientCookie("te_playerskin", "Player skin.", CookieAccess_Protected);
 	g_cookie[11] = RegClientCookie("te_greetings", "Greetings", CookieAccess_Protected);
 
-	Handle gamedata = LoadGameConfigFile("sdktools.games");
+	//declaration
+	
 
-	int offset = GameConfGetOffset(gamedata, "Teleport");
+	//initialization
 
 	delete gamedata;
 	
@@ -5365,9 +5381,9 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 	g_kv.Rewind();
 	g_kv.GotoFirstSubKey(true);
 
-	char section[64] = "", posColor[64], exploded[7][8];
-	float xy[4][2], holdtime[4] = {0.0, ...};
-	int rgba[4][4];
+	char section[64], posColor[64], exploded[7][8];
+	float xy[4][2], holdtime[4];
+	int rgba[4][4], nBase = 10, size = 4, element = 0;
 
 	char key[][] = {"CP-recordHud", "CP-recordDetailHud", "CP-DetailZeroHud"};
 	char key2[][] = {"CP-recordNotFirstHud", "CP-recordDetailNotFirstHud", "CP-recordImproveNotFirstHud"};
@@ -5406,7 +5422,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 						
 						for(int j = 3; j <= 6; j++)
 						{
-							rgba[i][j - 3] = StringToInt(exploded[j], 10);
+							rgba[i][j - 3] = StringToInt(exploded[j], nBase);
 
 							continue;
 						}
@@ -5437,8 +5453,8 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
 
 					if(observerMode < 7 && observerTarget == client)
 					{
@@ -5491,7 +5507,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j - 3] = StringToInt(exploded[j], 10);
+								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
 
 								continue;
 							}
@@ -5522,8 +5538,8 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
 
 						if(observerMode < 7 && observerTarget == client)
 						{
@@ -5574,7 +5590,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j - 3] = StringToInt(exploded[j], 10);
+								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
 
 								continue;
 							}
@@ -5606,8 +5622,8 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
 
 						if(observerMode < 7 && observerTarget == client)
 						{
@@ -5661,7 +5677,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 						
 						for(int j = 3; j <= 6; j++)
 						{
-							rgba[i][j - 3] = StringToInt(exploded[j], 10);
+							rgba[i][j - 3] = StringToInt(exploded[j], nBase);
 
 							continue;
 						}
@@ -5693,8 +5709,8 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
 
 					if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 					{
@@ -5748,7 +5764,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j - 3] = StringToInt(exploded[j], 10);
+								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
 
 								continue;
 							}
@@ -5780,8 +5796,8 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
 
 						if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 						{
@@ -5833,7 +5849,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 							
 							for(int j = 3; j <= 6; j++)
 							{
-								rgba[i][j - 3] = StringToInt(exploded[j], 10);
+								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
 
 								continue;
 							}
@@ -5864,8 +5880,8 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
 
 						if(observerMode < 7 && observerTarget == client)
 						{
@@ -8697,6 +8713,11 @@ void Greetings(int client)
 
 Action timer_greetings(Handle timer, int client)
 {
+	if(IsClientInGame(client) == false)
+	{
+		return Plugin_Continue;
+	}
+
 	g_kv.Rewind();
 	g_kv.GotoFirstSubKey(true);
 
