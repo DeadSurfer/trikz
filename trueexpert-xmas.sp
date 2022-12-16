@@ -29,20 +29,20 @@
 #define newdecls required
 #define MAXPLAYER MAXPLAYERS + 1
 
-char g_file[PLATFORM_MAX_PATH] = "";
+char g_file[PLATFORM_MAX_PATH];
 
-int g_hat[MAXPLAYERS] = {0, ...};
+int g_hat[MAXPLAYERS];
 
 native int Trikz_GetClientPartner(int client);
 
-ConVar g_date = null, g_date2 = null, g_moveX = null, g_moveY = null, g_moveZ;
+ConVar g_date, g_date2, g_move[3], g_rotation[3];
 
 public Plugin myinfo =
 {
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.284",
+	version = "1.285",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -57,9 +57,12 @@ public void OnPluginStart()
 
 	g_date = CreateConVar("sm_te_date_start", "12.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_date2 = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
-	g_moveX = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_moveY = CreateConVar("sm_te_move_y", "-2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_moveZ = CreateConVar("sm_te_move_z", "6.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_move[0] = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_move[1] = CreateConVar("sm_te_move_y", "-2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_move[2] = CreateConVar("sm_te_move_z", "6.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_rotation[0] = CreateConVar("sm_te_rotate_x", "0.0", "Rorate to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_rotation[1] = CreateConVar("sm_te_rotate_y", "0.0", "Rorate to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_rotation[2] = CreateConVar("sm_te_rotate_z", "0.0", "Rorate to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	AutoExecConfig(true, "plugin.trueexpert-xmass", "sourcemod");
 
 	for(int i = 1; i <= MaxClients; ++i)
@@ -312,7 +315,7 @@ stock void CreateHat(int client)
 	if(0 < client <= MaxClients && IsPlayerAlive(client) == true && (GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT) && g_hat[client] == 0)
 	{
 		//declanation
-		float origin[3], angles[3], offset[3], forward_[3], right[3], up[3];
+		float origin[3], angles[3], offset[3], forward_[3], right[3], up[3], rotation[3];
 
 		//initialization
 		GetClientAbsOrigin(client, origin);
@@ -322,9 +325,9 @@ stock void CreateHat(int client)
 		//g_moveX.GetString()
 
 		//PrintToServer("%f %f %f", g_moveX.FloatValue, g_moveY.FloatValue, g_moveZ.FloatValue);
-		offset[0] = g_moveX.FloatValue;
-		offset[1] = g_moveY.FloatValue;
-		offset[2] = g_moveZ.FloatValue;
+		offset[0] = g_move[0].FloatValue;
+		offset[1] = g_move[1].FloatValue;
+		offset[2] = g_move[2].FloatValue;
 
 		GetAngleVectors(angles, forward_, right, up);
 
@@ -339,6 +342,12 @@ stock void CreateHat(int client)
 		SetEntProp(g_hat[client], Prop_Data, "m_CollisionGroup", 2);
 
 		SetEntPropEnt(g_hat[client], Prop_Send, "m_hOwnerEntity", client);
+
+		rotation[0] = g_rotation[0].FloatValue;
+		rotation[1] = g_rotation[1].FloatValue;
+		rotation[2] = g_rotation[2].FloatValue;
+
+		SetEntPropVector(g_hat[client], Prop_Send, "m_angRoration", rotation);
 
 		DispatchSpawn(g_hat[client]);
 
