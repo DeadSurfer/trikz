@@ -220,7 +220,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.624",
+	version = "4.625",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -6278,7 +6278,7 @@ void SQLConnect(Database db, const char[] error, any data)
 
 		g_mysql.Query(SQLRecalculatePoints_GetMap, "SELECT map FROM tier", _, DBPrio_Normal);
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true)
 			{
