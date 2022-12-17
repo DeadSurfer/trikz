@@ -220,7 +220,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.623",
+	version = "4.624",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -700,7 +700,7 @@ void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any 
 		{
 			g_pointsMaxs = results.FetchInt(0);
 
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 				{
@@ -4773,7 +4773,7 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 
 			if(g_devmap == false)
 			{
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
