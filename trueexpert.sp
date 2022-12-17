@@ -220,7 +220,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.625",
+	version = "4.626",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -878,7 +878,7 @@ void frame_SayText2(DataPack dp)
 		int count = 0;
 		int team = GetClientTeam(client);
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && (allchat == true || GetClientTeam(i) == team))
 			{
@@ -971,7 +971,7 @@ void rf_radiotxt(DataPack dp)
 		int clients[MAXPLAYER] = {0, ...};
 		int count = 0;
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 			{
@@ -2195,7 +2195,7 @@ void Partner(int client)
 			char name[MAX_NAME_LENGTH] = "";
 			bool player = false;
 
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false && IsPlayerAlive(i) == true) //https://github.com/Figawe2/trikz-plugin/blob/master/scripting/trikz.sp#L635 i copy it from denwo and save in github sorry denwo i lost password.
 				{
@@ -2956,7 +2956,7 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 
 		if(fetchrow == false)
 		{
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -2993,7 +2993,7 @@ void SQLTop10_2(Database db, DBResultSet results, const char[] error, any data)
 	{
 		if(results.FetchRow() == false)
 		{
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -3069,7 +3069,7 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 			FormatSeconds(timeDiff, formatTimeDiff);
 			Format(formatTimeDiff, sizeof(formatTimeDiff), "+%s", formatTimeDiff);
 
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -5024,7 +5024,7 @@ Action SDKStartTouch(int entity, int other)
 					{
 						if(g_ServerRecordTime > time)
 						{
-							for(int i = 0; i <= MaxClients; ++i)
+							for(int i = 1; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5073,7 +5073,7 @@ Action SDKStartTouch(int entity, int other)
 
 						else if(g_ServerRecordTime <= time >= g_teamRecord[other])
 						{
-							for(int i = 0; i <= MaxClients; ++i)
+							for(int i = 1; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5103,7 +5103,7 @@ Action SDKStartTouch(int entity, int other)
 
 						else if(g_ServerRecordTime <= time < g_teamRecord[other])
 						{
-							for(int i = 0; i <= MaxClients; ++i)
+							for(int i = 1; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5152,7 +5152,7 @@ Action SDKStartTouch(int entity, int other)
 					{
 						if(g_ServerRecordTime > time)
 						{
-							for(int i = 0; i <= MaxClients; ++i)
+							for(int i = 1; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5202,7 +5202,7 @@ Action SDKStartTouch(int entity, int other)
 
 						else if(g_ServerRecordTime <= time)
 						{
-							for(int i = 0; i <= MaxClients; ++i)
+							for(int i = 1; i <= MaxClients; ++i)
 							{
 								if(IsClientInGame(i) == true)
 								{
@@ -5251,7 +5251,7 @@ Action SDKStartTouch(int entity, int other)
 							char timeCP[24] = "";
 							FormatSeconds(g_cpDiffSR[other][i], timeCP);
 
-							for(int j = 0; j <= MaxClients; ++j)
+							for(int j = 1; j <= MaxClients; ++j)
 							{
 								if(IsClientInGame(j) == true)
 								{
@@ -5277,7 +5277,7 @@ Action SDKStartTouch(int entity, int other)
 					g_teamRecord[other] = time;
 					g_teamRecord[partner] = time;
 
-					for(int i = 0; i <= MaxClients; ++i)
+					for(int i = 1; i <= MaxClients; ++i)
 					{
 						if(IsClientInGame(i) == true)
 						{
@@ -5449,7 +5449,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				continue;
 			}
 
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
@@ -5534,7 +5534,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -5618,7 +5618,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -5705,7 +5705,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 				continue;
 			}
 
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 				{
@@ -5792,7 +5792,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 				
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -5876,7 +5876,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 					continue;
 				}
 
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 					{
@@ -6762,7 +6762,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				int clients[MAXPLAYER] = {0, ...}; //64 + 1
 				int count = 0;
 
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true)
 					{
@@ -6825,7 +6825,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			g_engineTime[client] = GetEngineTime();
 
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
@@ -7205,7 +7205,7 @@ Action cmd_devmap(int client, int args)
 	{
 		g_voters = 0;
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false)
 			{
@@ -7232,7 +7232,7 @@ Action cmd_devmap(int client, int args)
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true)
 			{
@@ -7308,7 +7308,7 @@ void Devmap(bool force)
 		{
 			if(g_devmap == true)
 			{
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
@@ -7323,7 +7323,7 @@ void Devmap(bool force)
 
 			else if(g_devmap == false)
 			{
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
@@ -7343,7 +7343,7 @@ void Devmap(bool force)
 		{
 			if(g_devmap == true)
 			{
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true)
 					{
@@ -7358,7 +7358,7 @@ void Devmap(bool force)
 
 			else if(g_devmap == false)
 			{
-				for(int i = 0; i <= MaxClients; ++i)
+				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true)
 					{
@@ -7385,7 +7385,7 @@ void Devmap(bool force)
 
 Action timer_changelevel(Handle timer, bool value)
 {
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsValidPartner(i) == true)
 		{
@@ -7452,7 +7452,7 @@ Action cmd_afk(int client, int args)
 
 		g_afkClient = client;
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false && IsFakeClient(i) == false)
 			{
@@ -7489,7 +7489,7 @@ Action cmd_afk(int client, int args)
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true)
 			{
@@ -7557,7 +7557,7 @@ void AFK(int client, bool force)
 {
 	if(force == true || g_voters == 0)
 	{
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false && g_afk[i] == false && client != i)
 			{
@@ -7770,7 +7770,7 @@ void VelHud(int client)
 		PrintHintText(client, "%.0f", velFlat);
 	}
 
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false)
 		{
@@ -7998,7 +7998,7 @@ void FlashbangEffect(int entity)
 			owner = 0;
 		}
 
-		for(int i = 0; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; ++i)
 		{
 			if(IsClientInGame(i) == true && IsClientSourceTV(i) == false)
 			{
@@ -8298,7 +8298,7 @@ void MLStats(int client, bool ground)
 		EndMessage();
 	}
 
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 		{
