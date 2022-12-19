@@ -150,7 +150,8 @@ int g_cpCount = 0;
 //ConVar g_turbophysics;
 float g_afkTime = 0.0;
 bool g_afk[MAXPLAYER] = {false, ...};
-float g_center[12][3];
+float g_center[2][3];
+float g_centerCP[10][3];
 bool g_zoneDraw[MAXPLAYER] = {false, ...};
 float g_engineTime[MAXPLAYER] = {0.0, ...};
 float g_pingTime[MAXPLAYER] = {0.0, ...};
@@ -220,7 +221,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.626",
+	version = "4.627",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -239,7 +240,6 @@ public void OnPluginStart()
 	//output = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
 	gamedata = LoadGameConfigFile("sdktools.games");
 	offset = GameConfGetOffset(gamedata, "Teleport");
-
 
 	gCV_urlTop = CreateConVar("sm_te_topurl", "typeURLaddress", "Set url for top, for ex (http://www.trueexpert.rf.gd/?start=0&map=). To open web page, type to in-game chat !top", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	gCV_trikz = CreateConVar("sm_te_trikz", "0.0", "Allow to use trikz menu.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -271,45 +271,45 @@ public void OnPluginStart()
 	
 	AutoExecConfig(true, "plugin.trueexpert", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
-	RegConsoleCmd("sm_t", cmd_trikz, "Open trikz menu.");
-	RegConsoleCmd("sm_trikz", cmd_trikz, "Open trikz menu.");
-	RegConsoleCmd("sm_bl", cmd_block, "Toggling collsiion state.");
-	RegConsoleCmd("sm_block", cmd_block, "Toggling collsiion state.");
-	RegConsoleCmd("sm_p", cmd_partner, "Open partner chooser or breakup menu.");
-	RegConsoleCmd("sm_partner", cmd_partner, "Open partner chooser or breakup menu.");
-	RegConsoleCmd("sm_c", cmd_color, "Open color and skin changer menu.");
-	RegConsoleCmd("sm_color", cmd_color, "Open color and skin changer menu.");
-	RegConsoleCmd("sm_r", cmd_restart, "Do restart timer.");
-	RegConsoleCmd("sm_restart", cmd_restart, "Do restart timer.");
-	RegConsoleCmd("sm_autoflash", cmd_autoflash, "Toggling autoflash giving.");
-	RegConsoleCmd("sm_flash", cmd_autoflash, "Toggling autoflash giving.");
-	RegConsoleCmd("sm_autoswitch", cmd_autoswitch, "toggling autoswitch.");
-	RegConsoleCmd("sm_switch", cmd_autoswitch, "Toggling autoswitch.");
+	RegConsoleCmd("sm_t", CommandTrikz, "Open trikz menu.");
+	RegConsoleCmd("sm_trikz", CommandTrikz, "Open trikz menu.");
+	RegConsoleCmd("sm_bl", CommandBlock, "Toggling collsiion state.");
+	RegConsoleCmd("sm_block", CommandBlock, "Toggling collsiion state.");
+	RegConsoleCmd("sm_p", CommandPartner, "Open partner chooser or breakup menu.");
+	RegConsoleCmd("sm_partner", CommandPartner, "Open partner chooser or breakup menu.");
+	RegConsoleCmd("sm_c", CommandColor, "Open color and skin changer menu.");
+	RegConsoleCmd("sm_color", CommandColor, "Open color and skin changer menu.");
+	RegConsoleCmd("sm_r", CommandRestart, "Do restart timer.");
+	RegConsoleCmd("sm_restart", CommandRestart, "Do restart timer.");
+	RegConsoleCmd("sm_autoflash", CommandAutoflash, "Toggling autoflash giving.");
+	RegConsoleCmd("sm_flash", CommandAutoflash, "Toggling autoflash giving.");
+	RegConsoleCmd("sm_autoswitch", CommandAutoswitch, "toggling autoswitch.");
+	RegConsoleCmd("sm_switch", CommandAutoswitch, "Toggling autoswitch.");
 	//RegConsoleCmd("sm_time", cmd_time, "Show timer time in-game chat.");
-	RegConsoleCmd("sm_cp", cmd_checkpoint, "Open checkpoint menu.");
-	RegConsoleCmd("sm_devmap", cmd_devmap, "Start the vote for devmap toggling.");
-	RegConsoleCmd("sm_top", cmd_top, "Open motd with server records.");
-	RegConsoleCmd("sm_afk", cmd_afk, "Start the vote for afk check.");
-	RegConsoleCmd("sm_nc", cmd_noclip, "Toggling noclip.");
-	RegConsoleCmd("sm_noclip", cmd_noclip, "Toggling noclip.");
-	RegConsoleCmd("sm_sp", cmd_spec, "Switch to spectator team.");
-	RegConsoleCmd("sm_spec", cmd_spec, "Switch to specator team.");
-	RegConsoleCmd("sm_hud", cmd_hud, "Open hud menu.");
-	RegConsoleCmd("sm_mls", cmd_mlstats, "Toggling key hint ml-stats.");
-	RegConsoleCmd("sm_button", cmd_button, "Toggling button pressing.");
-	RegConsoleCmd("sm_macro", cmd_macro, "Toggling a macro.");
-	RegConsoleCmd("sm_bhop", cmd_bhop, "Toggling auto bunnyhoping.");
-	RegConsoleCmd("sm_endmsg", cmd_endmsg, "Toggling cp and end hud message.");
-	RegConsoleCmd("sm_top10", cmd_top10, "Show top 10 teams in-game chat.");
-	RegConsoleCmd("sm_help", cmd_control, "Open help menu.");
-	RegConsoleCmd("sm_control", cmd_control, "Open help menu.");
-	RegConsoleCmd("sm_skin", cmd_skin, "Open skin changing menu.");
-	RegConsoleCmd("sm_vel", cmd_vel, "Toggling a velocity for hint.");
+	RegConsoleCmd("sm_cp", CommandCheckpoint, "Open checkpoint menu.");
+	RegConsoleCmd("sm_devmap", CommandDevmap, "Start the vote for devmap toggling.");
+	RegConsoleCmd("sm_top", CommandTop, "Open motd with server records.");
+	RegConsoleCmd("sm_afk", CommandAfk, "Start the vote for afk check.");
+	RegConsoleCmd("sm_nc", CommandNoclip, "Toggling noclip.");
+	RegConsoleCmd("sm_noclip", CommandNoclip, "Toggling noclip.");
+	RegConsoleCmd("sm_sp", CommandSpec, "Switch to spectator team.");
+	RegConsoleCmd("sm_spec", CommandSpec, "Switch to specator team.");
+	RegConsoleCmd("sm_hud", CommandHud, "Open hud menu.");
+	RegConsoleCmd("sm_mls", CommandMLStats, "Toggling key hint ml-stats.");
+	RegConsoleCmd("sm_button", CommandButton, "Toggling button pressing.");
+	RegConsoleCmd("sm_macro", CommandMacro, "Toggling a macro.");
+	RegConsoleCmd("sm_bhop", CommandBhop, "Toggling auto bunnyhoping.");
+	RegConsoleCmd("sm_endmsg", CommandEndmsg, "Toggling cp and end hud message.");
+	RegConsoleCmd("sm_top10", CommandTop10, "Show top 10 teams in-game chat.");
+	RegConsoleCmd("sm_help", CommandControl, "Open help menu.");
+	RegConsoleCmd("sm_control", CommandControl, "Open help menu.");
+	RegConsoleCmd("sm_skin", CommandSkin, "Open skin changing menu.");
+	RegConsoleCmd("sm_vel", CommandVel, "Toggling a velocity for hint.");
 
-	RegAdminCmd("sm_zones", cad_zones, ADMFLAG_CUSTOM1, "Open zone editor menu.");
-	RegAdminCmd("sm_maptier", cad_maptier, ADMFLAG_CUSTOM1, "sm_maptier <value> set map tier.");
-	RegAdminCmd("sm_deleteallcp", cad_deleteallcp, ADMFLAG_CUSTOM1, "Delete all checkpoints.");
-	RegAdminCmd("sm_test", cad_test, ADMFLAG_CUSTOM1, "Temporary test function.");
+	RegAdminCmd("sm_zones", AdminCommandZones, ADMFLAG_CUSTOM1, "Open zone editor menu.");
+	RegAdminCmd("sm_maptier", AdminCommandMaptier, ADMFLAG_CUSTOM1, "sm_maptier <value> set map tier.");
+	RegAdminCmd("sm_deleteallcp", AdminCommandDeleteAllCP, ADMFLAG_CUSTOM1, "Delete all checkpoints.");
+	RegAdminCmd("sm_test", AdminCommandTest, ADMFLAG_CUSTOM1, "Temporary test function.");
 
 	AddNormalSoundHook(OnSound);
 
@@ -1193,7 +1193,7 @@ Action commandmenu(int client, const char[] command, int argc)
 
 Action cheer(int client, const char[] command, int argc)
 {
-	cad_zones(client, 0);
+	AdminCommandZones(client, 0);
 
 	return Plugin_Continue; //happy holliday.
 }
@@ -1237,7 +1237,7 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				case 0:
 				{
-					cmd_top(param1, 0);
+					CommandTop(param1, 0);
 				}
 
 				case 1:
@@ -1257,17 +1257,17 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 4:
 				{
-					cmd_hud(param1, 0);
+					CommandHud(param1, 0);
 				}
 
 				case 5:
 				{
-					cmd_button(param1, 0);
+					CommandButton(param1, 0);
 				}
 
 				case 6:
 				{
-					cmd_spec(param1, 0);
+					CommandSpec(param1, 0);
 				}
 
 				case 7:
@@ -1277,7 +1277,7 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 8:
 				{
-					cmd_afk(param1, 0);
+					CommandAfk(param1, 0);
 				}
 
 				case 9:
@@ -1335,7 +1335,7 @@ Action ACLCPNUM(int client, const char[] command, int argc)
 	}
 }*/
 
-Action cmd_checkpoint(int client, int args)
+Action CommandCheckpoint(int client, int args)
 {
 	int checkpoint = gCV_checkpoint.IntValue;
 
@@ -1445,11 +1445,11 @@ int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
 
 public void OnClientPutInServer(int client)
 {
-	SDKHook(client, SDKHook_OnTakeDamage, SDKOnTakeDamage);
-	SDKHook(client, SDKHook_StartTouch, SDKSkyFix);
-	SDKHook(client, SDKHook_PostThinkPost, SDKBoostFix); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
-	SDKHook(client, SDKHook_WeaponEquipPost, SDKWeaponEquip);
-	SDKHook(client, SDKHook_WeaponDrop, SDKWeaponDrop);
+	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
+	SDKHook(client, SDKHook_StartTouch, OnStartTouch);
+	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost); //idea by tengulawl/scripting/blob/master/boost-fix tengulawl github.com
+	SDKHook(client, SDKHook_WeaponEquipPost, OnWeaponEquipPost);
+	SDKHook(client, SDKHook_WeaponDrop, OnWeaponDrop);
 
 	if(IsClientInGame(client) == true && g_dbPassed == true)
 	{
@@ -1852,7 +1852,7 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 	return;
 }
 
-Action SDKSkyFix(int client, int other) //client = booster; other = flyer
+Action OnStartTouch(int client, int other) //client = booster; other = flyer
 {
 	int boostfix = gCV_boostfix.IntValue;
 
@@ -1927,7 +1927,7 @@ Action SDKSkyFix(int client, int other) //client = booster; other = flyer
 	return Plugin_Continue;
 }
 
-void SDKBoostFix(int client)
+void OnPostThinkPost(int client)
 {
 	int boostfix = gCV_boostfix.IntValue;
 
@@ -1967,7 +1967,7 @@ void SDKBoostFix(int client)
 	return;
 }
 
-Action cmd_trikz(int client, int args)
+Action CommandTrikz(int client, int args)
 {
 	int trikz = gCV_trikz.IntValue;
 
@@ -2049,17 +2049,17 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 
 			else if(StrEqual(item, "autoflash", true) == true)
 			{
-				cmd_autoflash(param1, 0);
+				CommandAutoflash(param1, 0);
 			}
 
 			else if(StrEqual(item, "autoswitch", true) == true)
 			{
-				cmd_autoswitch(param1, 0);
+				CommandAutoswitch(param1, 0);
 			}
 
 			else if(StrEqual(item, "bhop", true) == true)
 			{
-				cmd_bhop(param1, 0);
+				CommandBhop(param1, 0);
 			}
 
 			else if(StrEqual(item, "breakup", true) == true || StrEqual(item, "partner", true) == true)
@@ -2111,7 +2111,7 @@ int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-Action cmd_block(int client, int args)
+Action CommandBlock(int client, int args)
 {
 	int block = gCV_block.IntValue;
 
@@ -2147,7 +2147,7 @@ Action Block(int client) //thanks maru for optimization.
 	return Plugin_Handled;
 }
 
-Action cmd_partner(int client, int args)
+Action CommandPartner(int client, int args)
 {
 	int partner = gCV_partner.IntValue;
 
@@ -2422,7 +2422,7 @@ int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-Action cmd_color(int client, int args)
+Action CommandColor(int client, int args)
 {
 	int color = gCV_color.IntValue;
 
@@ -2438,7 +2438,7 @@ Action cmd_color(int client, int args)
 
 void ColorSelect(int client)
 {
-	Menu menu = new Menu(handler_menuColor);
+	Menu menu = new Menu(MenuHandlerColor);
 	menu.SetTitle("%T", "Color", client);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ColorTeam", client);
@@ -2456,7 +2456,7 @@ void ColorSelect(int client)
 	return;
 }
 
-int handler_menuColor(Menu menu, MenuAction action, int param1, int param2)
+int MenuHandlerColor(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2666,7 +2666,7 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 	return;
 }
 
-Action cmd_restart(int client, int args)
+Action CommandRestart(int client, int args)
 {
 	int restart = gCV_restart.IntValue;
 
@@ -2701,7 +2701,7 @@ void Restart(int client, bool ask)
 
 				else if(ask == true)
 				{
-					Menu menu = new Menu(handler_askforrestart);
+					Menu menu = new Menu(MenuHandlerAskForRestart);
 					menu.SetTitle("%T", "AskForRestart", client);
 
 					Format(g_buffer, sizeof(g_buffer), "%T", "Yes", client);
@@ -2752,7 +2752,7 @@ void DoRestart(int client)
 	}
 }
 
-int handler_askforrestart(Menu menu, MenuAction action, int param1, int param2)
+int MenuHandlerAskForRestart(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2776,7 +2776,7 @@ int handler_askforrestart(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-Action cmd_autoflash(int client, int args)
+Action CommandAutoflash(int client, int args)
 {
 	float autoflashbang = 0.0;
 	autoflashbang = gCV_autoflashbang.FloatValue;
@@ -2808,7 +2808,7 @@ Action cmd_autoflash(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_autoswitch(int client, int args)
+Action CommandAutoswitch(int client, int args)
 {
 	float autoswitch = 0.0;
 	autoswitch = gCV_autoswitch.FloatValue;
@@ -2838,7 +2838,7 @@ Action cmd_autoswitch(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_bhop(int client, int args)
+Action CommandBhop(int client, int args)
 {
 	float bhop = 0.0;
 	bhop = gCV_bhop.FloatValue;
@@ -2868,7 +2868,7 @@ Action cmd_bhop(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_endmsg(int client, int args)
+Action CommandEndmsg(int client, int args)
 {
 	float endmsg = 0.0;
 	endmsg = gCV_endmsg.FloatValue;
@@ -2898,7 +2898,7 @@ Action cmd_endmsg(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_top10(int client, int args)
+Action CommandTop10(int client, int args)
 {
 	int top10 = 0;
 	top10 = gCV_top10.IntValue;
@@ -3100,7 +3100,7 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 	return;
 }
 
-Action cmd_control(int client, int args)
+Action CommandControl(int client, int args)
 {
 	int control = gCV_control.IntValue;
 
@@ -3114,7 +3114,7 @@ Action cmd_control(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_skin(int client, int args)
+Action CommandSkin(int client, int args)
 {
 	int skin = gCV_skin.IntValue;
 
@@ -3312,7 +3312,7 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-Action cmd_macro(int client, int args)
+Action CommandMacro(int client, int args)
 {
 	int macro = gCV_macro.IntValue;
 	
@@ -3398,9 +3398,9 @@ void CreateStart()
 
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2, 4, 0);
 
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch);
-	SDKHook(entity, SDKHook_EndTouch, SDKEndTouch);
-	SDKHook(entity, SDKHook_Touch, SDKTouch);
+	SDKHook(entity, SDKHook_StartTouch, OnZoneStartTouch);
+	SDKHook(entity, SDKHook_EndTouch, OnZoneEndTouch);
+	SDKHook(entity, SDKHook_Touch, OnZoneTouch);
 
 	PrintToServer("Start zone is successfuly setup.");
 
@@ -3461,7 +3461,7 @@ void CreateEnd()
 
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2, 4, 0);
 
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch);
+	SDKHook(entity, SDKHook_StartTouch, OnZoneStartTouch);
 
 	PrintToServer("End zone is successfuly setup.");
 
@@ -3477,7 +3477,10 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 	data.Reset();
 	any id = data.ReadCell();
 	int client = GetClientFromSerial(id);
+	int type = data.ReadCell();
 	int cpnum = data.ReadCell();
+	//char isCP[2 + 1] = "";
+	//data.ReadString(isCP, sizeof(isCP));
 
 	if(strlen(error) > 0)
 	{
@@ -3487,21 +3490,21 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 
 	else if(strlen(error) == 0)
 	{
-		if(cpnum == 0)
+		if(type == 0)
 		{
 			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %f, %f, %f, %f, %f, %f)", g_map, g_zoneStartOriginTemp[client][0][0], g_zoneStartOriginTemp[client][0][1], g_zoneStartOriginTemp[client][0][2], g_zoneStartOriginTemp[client][1][0], g_zoneStartOriginTemp[client][1][1], g_zoneStartOriginTemp[client][1][2]);
 			g_mysql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 		}
 
-		else if(cpnum == 1)
+		else if(type == 1)
 		{
 			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %f, %f, %f, %f, %f, %f)", g_map, g_zoneEndOriginTemp[client][0][0], g_zoneEndOriginTemp[client][0][1], g_zoneEndOriginTemp[client][0][2], g_zoneEndOriginTemp[client][1][0], g_zoneEndOriginTemp[client][1][1], g_zoneEndOriginTemp[client][1][2]);
 			g_mysql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 		}
 
-		else if(cpnum > 1)
+		else if(type == 2)
 		{
-			cpnum -= 1;
+			//cpnum -= 1;
 			Format(g_query, sizeof(g_query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, g_cpPosTemp[client][cpnum][0][0], g_cpPosTemp[client][cpnum][0][1], g_cpPosTemp[client][cpnum][0][2], g_cpPosTemp[client][cpnum][1][0], g_cpPosTemp[client][cpnum][1][1], g_cpPosTemp[client][cpnum][1][2], g_map);
 			g_mysql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 
@@ -3520,7 +3523,7 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 	return;
 }
 
-Action cad_deleteallcp(int client, int args)
+Action AdminCommandDeleteAllCP(int client, int args)
 {
 	if(g_devmap == true)
 	{
@@ -3582,7 +3585,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	return Plugin_Continue;
 }
 
-Action cad_test(int client, int args)
+Action AdminCommandTest(int client, int args)
 {
 	char buffer[256] = "";
 	GetCmdArgString(buffer, sizeof(buffer));
@@ -3670,7 +3673,7 @@ void SendMessage(int client, const char[] buffer)
 	return;
 }
 
-Action cad_maptier(int client, int args)
+Action AdminCommandMaptier(int client, int args)
 {
 	if(g_devmap == true)
 	{
@@ -3757,7 +3760,10 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 {
 	data.Reset();
 	int client = GetClientFromSerial(data.ReadCell());
+	int type = data.ReadCell();
 	int cpnum = data.ReadCell();
+	//char isCP[2 + 1] = "";
+	//data.ReadString(isCP, sizeof(isCP));
 	delete data;
 
 	if(strlen(error) > 0)
@@ -3769,7 +3775,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 	{
 		if(results.HasResults == false)
 		{
-			if(cpnum == 0)
+			if(type == 0)
 			{
 				for(int i = 0; i <= 1; i++)
 				{
@@ -3790,7 +3796,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 				LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, GetSteamAccountID(client, true));
 			}
 
-			else if(cpnum == 1)
+			else if(type == 1)
 			{
 				for(int i = 0; i <= 1; i++)
 				{
@@ -3811,9 +3817,9 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 				LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, GetSteamAccountID(client, true));
 			}
 
-			else if(cpnum > 1)
+			else if(type == 2)
 			{
-				cpnum -= 1;
+				//cpnum -= 2;
 
 				for(int i = 0; i <= 1; i++)
 				{
@@ -3824,12 +3830,12 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				for(int i = 0; i <= 2; i++)
 				{
-					g_center[cpnum + 1][i] = (g_cpPos[cpnum][0][i] + g_cpPos[cpnum][1][i]) / 2.0;
+					g_centerCP[cpnum][i] = (g_cpPos[cpnum][0][i] + g_cpPos[cpnum][1][i]) / 2.0;
 
 					continue;
 				}
 
-				g_center[cpnum + 1][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][0][2]) / 2.0);
+				g_centerCP[cpnum][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][0][2]) / 2.0);
 
 				CPSetup();
 
@@ -3839,19 +3845,19 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 		else if(results.HasResults == true)
 		{
-			if(cpnum == 0)
+			if(type == 0)
 			{
 				PrintToServer("Start zone failed to create.");
 			}
 
-			else if(cpnum == 1)
+			else if(type == 1)
 			{
 				PrintToServer("End zone failed to create.");
 			}
 
-			else if(cpnum > 1)
+			else if(type == 2)
 			{
-				PrintToServer("Checkpoint zone no. %i failed to create.", cpnum - 1);
+				PrintToServer("Checkpoint zone no. %i failed to create.", cpnum);
 			}
 		}
 	}
@@ -3859,7 +3865,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 	return;
 }
 
-Action cad_zones(int client, int args)
+Action AdminCommandZones(int client, int args)
 {
 	if(g_devmap == true)
 	{
@@ -4281,7 +4287,7 @@ int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void ZoneEditorStart(int client)
 {
-	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(MenuHandlerZones2, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorStartZone", client);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
@@ -4321,7 +4327,7 @@ void ZoneEditorStart(int client)
 
 void ZoneEditorEnd(int client)
 {
-	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(MenuHandlerZones2, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorEndZone", client);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
@@ -4361,7 +4367,7 @@ void ZoneEditorEnd(int client)
 
 void ZoneEditorCP(int client, int cpnum)
 {
-	Menu menu = new Menu(zones2_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(MenuHandlerZones2, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorCPZone", client, cpnum);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
@@ -4403,7 +4409,7 @@ void ZoneEditorCP(int client, int cpnum)
 	return;
 }
 
-int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
+int MenuHandlerZones2(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4479,6 +4485,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(0);
+				dp.WriteCell(0);
 				g_mysql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
@@ -4488,6 +4495,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(1);
+				dp.WriteCell(0);
 				g_mysql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
@@ -4496,7 +4504,9 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", cpnum, g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
-				dp.WriteCell(cpnum + 1);
+				dp.WriteCell(2);
+				dp.WriteCell(cpnum);
+				//dp.WriteString("cp", false);
 				g_mysql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
@@ -4558,7 +4568,7 @@ int zones2_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void ZoneTP(int client)
 {
-	Menu menu = new Menu(zones_tp_handler);
+	Menu menu = new Menu(MenuHandlerZonesTP);
 	menu.SetTitle("%T", "ZoneEditorTP", client);
 
 	if(g_zoneHave[0] == true)
@@ -4599,7 +4609,7 @@ void ZoneTP(int client)
 	return;
 }
 
-int zones_tp_handler(Menu menu, MenuAction action, int param1, int param2)
+int MenuHandlerZonesTP(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4630,7 +4640,7 @@ int zones_tp_handler(Menu menu, MenuAction action, int param1, int param2)
 				ExplodeString(item, ";", exploded, 1, 8, false);
 				int cpnum = StringToInt(exploded[0], 10);
 
-				pos = g_center[cpnum + 1];
+				pos = g_center[cpnum];
 				pos[2] += 1.0;
 				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
@@ -4812,14 +4822,14 @@ void CreateCP(int cpnum)
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	for(int i = 0; i <= 2; i++)
 	{
-		g_center[cpnum + 1][i] = (g_cpPos[cpnum][1][i] + g_cpPos[cpnum][0][i]) / 2.0;
+		g_centerCP[cpnum][i] = (g_cpPos[cpnum][1][i] + g_cpPos[cpnum][0][i]) / 2.0;
 
 		continue;
 	}
 
-	g_center[cpnum + 1][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2.0);
+	g_centerCP[cpnum][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2.0);
 
-	TeleportEntity(entity, g_center[cpnum + 1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	TeleportEntity(entity, g_centerCP[cpnum], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
@@ -4848,7 +4858,7 @@ void CreateCP(int cpnum)
 
 	SetEntProp(entity, Prop_Send, "m_nSolidType", 2, 4, 0);
 
-	SDKHook(entity, SDKHook_StartTouch, SDKStartTouch);
+	SDKHook(entity, SDKHook_StartTouch, OnZoneStartTouch);
 
 	PrintToServer("Checkpoint number %i is successfuly setup.", cpnum);
 
@@ -4885,7 +4895,7 @@ void SQLRecordsTable(Database db, DBResultSet results, const char[] error, any d
 	return;
 }
 
-Action SDKEndTouch(int entity, int other)
+Action OnZoneEndTouch(int entity, int other)
 {
 	if(IsValidClient(other) == true && IsValidPartner(other) == true && IsFakeClient(other) == false && g_timerReadyToStart[g_partner[other]] == true)
 	{
@@ -4937,17 +4947,17 @@ Action SDKEndTouch(int entity, int other)
 	return Plugin_Continue;
 }
 
-Action SDKTouch(int entity, int other)
+Action OnZoneTouch(int entity, int other)
 {
 	if(!(GetEntityFlags(other) & FL_ONGROUND))
 	{
-		SDKEndTouch(entity, other);
+		OnZoneEndTouch(entity, other);
 	}
 
 	return Plugin_Continue;
 }
 
-Action SDKStartTouch(int entity, int other)
+Action OnZoneStartTouch(int entity, int other)
 {
 	if(IsValidClient(other) == true && g_devmap == false && IsFakeClient(other) == false)
 	{
@@ -5057,7 +5067,7 @@ Action SDKStartTouch(int entity, int other)
 
 							if(sourcetvCV == 1.0)
 							{
-								CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+								CreateTimer(60.0, TimerSourceTV, _, TIMER_FLAG_NO_MAPCHANGE);
 							}
 
 							GlobalForward hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
@@ -5186,7 +5196,7 @@ Action SDKStartTouch(int entity, int other)
 
 							if(sourcetvCV == 1.0)
 							{
-								CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+								CreateTimer(60.0, TimerSourceTV, _, TIMER_FLAG_NO_MAPCHANGE);
 							}
 
 							GlobalForward hForward = new GlobalForward("Trikz_OnRecord", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
@@ -5311,7 +5321,7 @@ Action SDKStartTouch(int entity, int other)
 
 					if(sourcetvCV == 1.0)
 					{
-						CreateTimer(60.0, timer_sourcetv, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
+						CreateTimer(60.0, TimerSourceTV, _, TIMER_FLAG_NO_MAPCHANGE); //https://forums.alliedmods.net/showthread.php?t=191615
 					}
 
 					Format(g_query, sizeof(g_query), "UPDATE records SET time = %f, finishes = 1, cp1 = %f, cp2 = %f, cp3 = %f, cp4 = %f, cp5 = %f, cp6 = %f, cp7 = %f, cp8 = %f, cp9 = %f, cp10 = %f, date = %i WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", g_timerTime[other], g_cpTime[other][1], g_cpTime[other][2], g_cpTime[other][3], g_cpTime[other][4], g_cpTime[other][5], g_cpTime[other][6], g_cpTime[other][7], g_cpTime[other][8], g_cpTime[other][9], g_cpTime[other][10], GetTime(), playerid, partnerid, partnerid, playerid, g_map);
@@ -5943,7 +5953,7 @@ void SQLInsertRecord(Database db, DBResultSet results, const char[] error, any d
 	return;
 }
 
-Action timer_sourcetv(Handle timer)
+Action TimerSourceTV(Handle timer)
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable");
 
@@ -5955,7 +5965,7 @@ Action timer_sourcetv(Handle timer)
 
 		g_sourcetvchangedFileName = false;
 
-		CreateTimer(5.0, timer_runsourcetv, _, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(5.0, TimerRunSourceTV, _, TIMER_FLAG_NO_MAPCHANGE);
 
 		g_ServerRecord = false;
 	}
@@ -5963,7 +5973,7 @@ Action timer_sourcetv(Handle timer)
 	return Plugin_Stop;
 }
 
-Action timer_runsourcetv(Handle timer)
+Action TimerRunSourceTV(Handle timer)
 {
 	char filenameOld[256] = "";
 	Format(filenameOld, sizeof(filenameOld), "%s-%s-%s.dem", g_date, g_time, g_map);
@@ -6422,7 +6432,7 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 
 		for(int j = 0; j <= 1; j++)
 		{
-			point[i][j] = g_devmap == true ? g_cpPosTemp[client][cpnum][j] : g_cpPos[cpnum][j];
+			point[i][j] = g_devmap == true ? g_cpPosTemp[client][cpnum - 1][j] : g_cpPos[cpnum][j];
 
 			continue;
 		}
@@ -6476,7 +6486,7 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 		beam[ix][7] = end[ix];
 
 		//calculate all zone edges
-		for(int j = 0; j <= 6; ++j)
+		for(int j = 1; j <= 6; ++j)
 		{
 			for(int k = 0; k <= 2; k++)
 			{
@@ -6977,8 +6987,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 						case 2:
 						{
-							g_cpPosTemp[client][g_ZoneEditorCP[client]][0] = g_zoneSelected[client][0];
-							g_cpPosTemp[client][g_ZoneEditorCP[client]][1] = g_zoneSelected[client][1];
+							g_cpPosTemp[client][g_ZoneEditorCP[client] - 1][0] = g_zoneSelected[client][0];
+							g_cpPosTemp[client][g_ZoneEditorCP[client] - 1][1] = g_zoneSelected[client][1];
 						}
 					}
 				}
@@ -7141,7 +7151,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-Action ProjectileBoostFix(int entity, int other)
+Action OnProjectileStartTouch(int entity, int other)
 {
 	if(IsValidClient(other) == true && g_boost[other] == 0 && !(g_entityFlags[other] & FL_ONGROUND))
 	{
@@ -7192,7 +7202,7 @@ Action ProjectileBoostFix(int entity, int other)
 	return Plugin_Continue;
 }
 
-Action cmd_devmap(int client, int args)
+Action CommandDevmap(int client, int args)
 {
 	int devmap = gCV_devmap.IntValue;
 
@@ -7404,7 +7414,7 @@ Action timer_changelevel(Handle timer, bool value)
 	return Plugin_Stop;
 }
 
-Action cmd_top(int client, int args)
+Action CommandTop(int client, int args)
 {
 	int top = gCV_top.IntValue;
 
@@ -7437,7 +7447,7 @@ Action timer_motd(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-Action cmd_afk(int client, int args)
+Action CommandAfk(int client, int args)
 {
 	int afk = gCV_afk.IntValue;
 
@@ -7571,7 +7581,7 @@ void AFK(int client, bool force)
 	return;
 }
 
-Action cmd_noclip(int client, int args)
+Action CommandNoclip(int client, int args)
 {
 	int noclip = gCV_noclip.IntValue;
 
@@ -7617,7 +7627,7 @@ void Noclip(int client)
 	return;
 }
 
-Action cmd_spec(int client, int args)
+Action CommandSpec(int client, int args)
 {
 	int spec = gCV_spec.IntValue;
 
@@ -7631,7 +7641,7 @@ Action cmd_spec(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_hud(int client, int args)
+Action CommandHud(int client, int args)
 {
 	int hud = gCV_hud.IntValue;
 
@@ -7704,7 +7714,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 
-			cmd_hud(param1, 0);
+			CommandHud(param1, 0);
 		}
 
 		case MenuAction_Cancel:
@@ -7726,7 +7736,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-Action cmd_vel(int client, int args)
+Action CommandVel(int client, int args)
 {
 	int vel = gCV_vel.IntValue;
 
@@ -7789,7 +7799,7 @@ void VelHud(int client)
 	return;
 }
 
-Action cmd_mlstats(int client, int args)
+Action CommandMLStats(int client, int args)
 {
 	int mlstats = gCV_mlstats.IntValue;
 
@@ -7818,7 +7828,7 @@ Action cmd_mlstats(int client, int args)
 	return Plugin_Handled;
 }
 
-Action cmd_button(int client, int args)
+Action CommandButton(int client, int args)
 {
 	int button = gCV_button.IntValue;
 
@@ -7839,7 +7849,7 @@ Action cmd_button(int client, int args)
 	return Plugin_Handled;
 }
 
-Action ProjectileBoostFixEndTouch(int entity, int other)
+Action OnProjectileEndTouch(int entity, int other)
 {
 	if(other == 0)
 	{
@@ -7891,19 +7901,19 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		g_bouncedOff[entity] = false; //"Tengulawl" "boost-fix.sp".
 
-		SDKHook(entity, SDKHook_StartTouch, ProjectileBoostFix);
-		SDKHook(entity, SDKHook_EndTouch, ProjectileBoostFixEndTouch);
+		SDKHook(entity, SDKHook_StartTouch, OnProjectileStartTouch);
+		SDKHook(entity, SDKHook_EndTouch, OnProjectileEndTouch);
 	}
 
 	if(StrEqual(classname, "flashbang_projectile", true) == true)
 	{
-		SDKHook(entity, SDKHook_SpawnPost, SDKProjectile);
+		SDKHook(entity, SDKHook_SpawnPost, OnProjectileSpawnPost);
 	}
 
 	return;
 }
 
-void SDKProjectile(int entity)
+void OnProjectileSpawnPost(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", 0);
 
@@ -7916,9 +7926,9 @@ void SDKProjectile(int entity)
 			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2, 4, false); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		}
 
-		RequestFrame(frame_blockExplosion, entity);
+		RequestFrame(FrameExplosionPrevent, entity);
 
-		CreateTimer(1.5, timer_deleteProjectile, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.5, TimerProjectileRemove, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 
 		if(g_skinFlashbang[client] > 0)
 		{
@@ -7948,7 +7958,7 @@ void SDKProjectile(int entity)
 	return;
 }
 
-void frame_blockExplosion(int entity)
+void FrameExplosionPrevent(int entity)
 {
 	if(IsValidEntity(entity) == true)
 	{
@@ -7958,7 +7968,7 @@ void frame_blockExplosion(int entity)
 	return;
 }
 
-Action timer_deleteProjectile(Handle timer, int entity)
+Action TimerProjectileRemove(Handle timer, int entity)
 {
 	if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) == true)
 	{
@@ -7969,7 +7979,7 @@ Action timer_deleteProjectile(Handle timer, int entity)
 
 		if(StrEqual(log, "flashbang_projectile", false) == false)
 		{
-			LogMessage("timer_deleteProjectile: %s", log);
+			LogMessage("TimerProjectileRemove: %s", log);
 		}
 		
 		RemoveEntity(entity);
@@ -8048,7 +8058,7 @@ void FlashbangEffect(int entity)
 	return;
 }
 
-Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
+Action OnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngle", NULL_VECTOR, 0); //https://forums.alliedmods.net/showthread.php?p=1687371
 	SetEntPropVector(victim, Prop_Send, "m_vecPunchAngleVel", NULL_VECTOR, 0);
@@ -8056,7 +8066,7 @@ Action SDKOnTakeDamage(int victim, int& attacker, int& inflictor, float& damage,
 	return Plugin_Handled; //Full god-mode.
 }
 
-void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
+void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
 	int autoflashbang = gCV_autoflashbang.IntValue;
 
@@ -8068,7 +8078,7 @@ void SDKWeaponEquip(int client, int weapon) //https://sm.alliedmods.net/new-api/
 	return;
 }
 
-Action SDKWeaponDrop(int client, int weapon)
+Action OnWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon) == true)
 	{
@@ -8077,7 +8087,7 @@ Action SDKWeaponDrop(int client, int weapon)
 
 		if(StrContains(log, "weapon", false) == -1)
 		{
-			LogMessage("SDKWeaponDrop: %s", log);
+			LogMessage("OnWeaponDrop: %s", log);
 		}
 
 		RemoveEntity(weapon);
