@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh",
 	description = "Makes the game more personal.",
-	version = "0.28",
+	version = "0.281",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -103,7 +103,7 @@ public void OnPluginStart()
 		delete gamedata;
 	}
 
-	g_AcceptInput = DHookCreate(offset, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, AcceptInput);
+	g_AcceptInput = DHookCreate(offset, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, OnInputEntity);
 	
 	DHookAddParam(g_AcceptInput, HookParamType_CharPtr);
 	DHookAddParam(g_AcceptInput, HookParamType_CBaseEntity);
@@ -111,7 +111,7 @@ public void OnPluginStart()
 	DHookAddParam(g_AcceptInput, HookParamType_Object, 20, DHookPass_ByVal | DHookPass_ODTOR | DHookPass_OCTOR | DHookPass_OASSIGNOP); //varaint_t is a union of 12 (float[3]) plus two int type params 12 + 8 = 20
 	DHookAddParam(g_AcceptInput, HookParamType_Int);
 
-	HookEvent("round_start", Event_RoundStart, EventHookMode_Post);
+	HookEvent("round_start", OnRoundStart, EventHookMode_Post);
 
 	gamedata = LoadGameConfigFile("trueexpert.games");
 	
@@ -163,7 +163,7 @@ public void OnClientPutInServer(int client)
 {
 	if(Trikz_GetDevmap() == false)
 	{
-		SDKHook(client, SDKHook_SetTransmit, TransmitPlayer);
+		SDKHook(client, SDKHook_SetTransmit, OnPlayerTransmit);
 
 		for(int i = 0; i <= g_entityTotalCount; ++i)
 		{
@@ -181,14 +181,14 @@ public void OnClientPutInServer(int client)
 	return;
 }
 
-void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
+void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	CreateTimer(1.0, timer_prepare, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
+	CreateTimer(1.0, OnTimerPrepare, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
 
 	return;
 }
 
-Action timer_prepare(Handle timer)
+Action OnTimerPrepare(Handle timer)
 {
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
@@ -281,14 +281,14 @@ Action timer_prepare(Handle timer)
 		{
 			if(j < 9)
 			{
-				HookEntityOutput(classname[i], output[j], EntityOutputHook);
+				HookEntityOutput(classname[i], output[j], OnEntityOutput);
 			}
 
 			continue;
 		}
 	}
 
-	PrintToServer("Total entities in proccess: %i. Math counters: %i", g_entityTotalCount, g_mathTotalCount);
+	PrintToServer("Total entities in proccess: %i. Math counters: %i", g_entityTotalCount + 1, g_mathTotalCount + 1);
 
 	return Plugin_Continue;
 }
@@ -344,7 +344,7 @@ void LinkProcess(int entity, const char[] output)
 
 				Prepare(entityLinked, "func_button", "");
 
-				DHookEntity(g_AcceptInput, false, entityLinked, INVALID_FUNCTION, AcceptInputButton);
+				DHookEntity(g_AcceptInput, false, entityLinked, INVALID_FUNCTION, OnInputButton);
 
 				continue;
 			}
@@ -449,7 +449,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 			}
 		}
 
-		g_entityID[++g_entityTotalCount] = entity;
+		g_entityID[g_entityTotalCount++] = entity;
 	}
 
 	else if(entity < 0)
@@ -462,7 +462,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 			}
 		}
 
-		g_mathID[++g_mathTotalCount] = entity;
+		g_mathID[g_mathTotalCount++] = entity;
 	}
 
 	if(i == 3)
@@ -484,7 +484,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 				{
 					g_breakID[g_entityTotalCount] = template;
 
-					DHookEntity(g_AcceptInput, false, template);
+					DHookEntity(g_AcceptInput, false, template, INVALID_FUNCTION, OnInputEntity);
 
 					quit = true;
 
@@ -502,11 +502,11 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 			continue;
 		}
 
-		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit);
+		SDKHook(entity, SDKHook_SetTransmit, OnEntityTransmit);
 
 		AddOutput(entity, "OnBreak", "OnUser4");
 
-		DHookEntity(g_AcceptInput, false, entity);
+		DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, OnInputEntity);
 	}
 
 	if(i == 5)
@@ -525,19 +525,19 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 			AddOutput(entity, "OnHitMin", "OnUser4");
 			AddOutput(entity, "OnHitMax", "OnUser3");
 
-			DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, AcceptInputMath);
+			DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, OnInputMath);
 		}
 	}
 
 	if(i < 3 || i == 6)
 	{
-		DHookEntity(g_AcceptInput, false, entity);
+		DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, OnInputEntity);
 	}
 
 	else if(i == 4)
 	{
-		SDKHook(entity, SDKHook_Use, HookButton);
-		SDKHook(entity, SDKHook_OnTakeDamage, HookOnTakeDamage);
+		SDKHook(entity, SDKHook_Use, OnUseButton);
+		SDKHook(entity, SDKHook_OnTakeDamage, OnTakeDamage);
 
 		g_buttonDefaultDelay[entity] = GetEntPropFloat(entity, Prop_Data, "m_flWait", 0);
 
@@ -546,12 +546,12 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 
 	if(i < 2 || i == 6)
 	{
-		SDKHook(entity, SDKHook_SetTransmit, EntityVisibleTransmit);
+		SDKHook(entity, SDKHook_SetTransmit, OnEntityTransmit);
 	}
 
 	else if(i == 2)
 	{
-		SDKHook(entity, SDKHook_Touch, TouchTrigger);
+		SDKHook(entity, SDKHook_Touch, OnPlayerTouchEntity);
 	}
 
 	if((i == 0 && GetEntProp(entity, Prop_Data, "m_iDisabled", 4, 0) == 1) || 
@@ -679,7 +679,7 @@ public void Trikz_OnRestart(int client, int partner)
 	return;
 }
 
-MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
+MRESReturn OnInputEntity(int pThis, Handle hReturn, Handle hParams)
 {
 	char input[16] = "";
 	DHookGetParamString(hParams, 1, input, sizeof(input));
@@ -846,7 +846,7 @@ MRESReturn AcceptInput(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Ignored;
 }
 
-MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
+MRESReturn OnInputButton(int pThis, Handle hReturn, Handle hParams)
 {
 	char input[16] = "";
 	DHookGetParamString(hParams, 1, input, sizeof(input));
@@ -913,7 +913,7 @@ MRESReturn AcceptInputButton(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Ignored;
 }
 
-MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
+MRESReturn OnInputMath(int pThis, Handle hReturn, Handle hParams)
 {
 	char input[16] = "";
 	DHookGetParamString(hParams, 1, input, sizeof(input));
@@ -1049,7 +1049,7 @@ MRESReturn AcceptInputMath(int pThis, Handle hReturn, Handle hParams)
 	return MRES_Ignored;
 }
 
-Action TouchTrigger(int entity, int other)
+Action OnPlayerTouchEntity(int entity, int other)
 {
 	char classname[32] = "";
 	GetEntityClassname(other, classname, sizeof(classname));
@@ -1114,7 +1114,7 @@ Action TouchTrigger(int entity, int other)
 	return Plugin_Continue;
 }
 
-Action EntityVisibleTransmit(int entity, int client)
+Action OnEntityTransmit(int entity, int client)
 {
 	if(IsValidClient(client) == true)
 	{
@@ -1147,7 +1147,7 @@ Action EntityVisibleTransmit(int entity, int client)
 	return Plugin_Continue;
 }
 
-Action HookButton(int entity, int activator, int caller, UseType type, float value)
+Action OnUseButton(int entity, int activator, int caller, UseType type, float value)
 {
 	int partner = Trikz_GetClientPartner(activator);
 
@@ -1166,14 +1166,14 @@ Action HookButton(int entity, int activator, int caller, UseType type, float val
 	return Plugin_Continue;
 }
 
-Action HookOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
+Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) 
 {
 	SetEntPropEnt(victim, Prop_Data, "m_hActivator", attacker, 0);
 
 	return Plugin_Continue;
 }
 
-Action EntityOutputHook(char[] output, int caller, int activator, float delay)
+Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 {
 	if(activator > MaxClients)
 	{
@@ -1362,12 +1362,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 	if(StrContains(classname, "projectile", false) != -1)
 	{
-		SDKHook(entity, SDKHook_SetTransmit, TransmitNade);
+		SDKHook(entity, SDKHook_SetTransmit, OnNadeTransmit);
 	}
 
 	else if(StrEqual(classname, "ambient_generic", false) == true)
 	{
-		DHookEntity(g_AcceptInput, false, entity);
+		DHookEntity(g_AcceptInput, false, entity, INVALID_FUNCTION, OnInputEntity);
 	}
 
 	return;
@@ -1426,7 +1426,7 @@ int GetOutput(const char[] output)
 	}
 }
 
-Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
+Action OnPlayerTransmit(int entity, int client) //entity - me, client - loop all clients
 {
 	//make visible only partner
 	if(client != entity && IsValidClient(entity) == true && IsPlayerAlive(client) == true)
@@ -1440,7 +1440,7 @@ Action TransmitPlayer(int entity, int client) //entity - me, client - loop all c
 	return Plugin_Continue;
 }
 
-Action TransmitNade(int entity, int client) //entity - nade, client - loop all clients
+Action OnNadeTransmit(int entity, int client) //entity - nade, client - loop all clients
 {
 	//make visible nade only for partner
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
