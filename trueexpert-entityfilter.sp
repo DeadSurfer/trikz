@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh",
 	description = "Makes the game more personal.",
-	version = "0.281",
+	version = "0.282",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -223,7 +223,7 @@ Action OnTimerPrepare(Handle timer)
 			continue;
 		}
 
-		for(int j = 0; j <= MaxClients; j++)
+		for(int j = 1; j <= MaxClients; j++)
 		{
 			g_stateDisabled[j][i] = false;
 			g_linkedEntities[j][i] = 0;
@@ -288,7 +288,7 @@ Action OnTimerPrepare(Handle timer)
 		}
 	}
 
-	PrintToServer("Total entities in proccess: %i. Math counters: %i", g_entityTotalCount + 1, g_mathTotalCount + 1);
+	PrintToServer("Total entities in proccess: %i. Math counters: %i", g_entityTotalCount, g_mathTotalCount);
 
 	return Plugin_Continue;
 }
@@ -449,7 +449,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 			}
 		}
 
-		g_entityID[g_entityTotalCount++] = entity;
+		g_entityID[++g_entityTotalCount] = entity;
 	}
 
 	else if(entity < 0)
@@ -462,7 +462,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 			}
 		}
 
-		g_mathID[g_mathTotalCount++] = entity;
+		g_mathID[++g_mathTotalCount] = entity;
 	}
 
 	if(i == 3)
@@ -1199,7 +1199,7 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 		{
 			outputNum = GetOutput(output);
 
-			for(int i = 0; i <= g_maxLinks[caller][outputNum]; ++i)
+			for(int i = 1; i <= g_maxLinks[caller][outputNum]; ++i)
 			{
 				linkedEntity = g_linkedEntitiesDefault[caller][i][outputNum];
 
@@ -1269,7 +1269,7 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 				{
 					int math = i;
 
-					for(int j = 0; j <= g_maxMathLinks[math][outputNum]; ++j)
+					for(int j = 1; j <= g_maxMathLinks[math][outputNum]; ++j)
 					{
 						linkedMathEntity = g_linkedMathEntitiesDefault[math][j][outputNum];
 
