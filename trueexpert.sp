@@ -4074,7 +4074,7 @@ void ZoneEdit(int client)
 	{
 		char cp[8] = "";
 
-		for(int i = 0; i <= g_cpCount; ++i)
+		for(int i = 1; i <= g_cpCount; ++i)
 		{
 			Format(cp, sizeof(cp), "%i", i);
 			Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorCPButton", client, i);
@@ -4238,7 +4238,7 @@ int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
 				ZoneEditorEnd(param1);
 			}
 
-			for(int i = 0; i <= g_cpCount; ++i)
+			for(int i = 1; i <= g_cpCount; ++i)
 			{
 				char cp[8] = "";
 				IntToString(i, cp, sizeof(cp));
@@ -4577,7 +4577,7 @@ void ZoneTP(int client)
 	{
 		char cp[8] = "";
 
-		for(int i = 0; i <= g_cpCount; ++i)
+		for(int i = 1; i <= g_cpCount; ++i)
 		{
 			Format(cp, sizeof(cp), "%i;cp", i);
 			Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorCPButton", client, i);
@@ -4714,7 +4714,7 @@ void SQLCPSetup(Database db, DBResultSet results, const char[] error, any data)
 
 		if(fetchrow == true)
 		{
-			for(int i = 0; i <= 10; ++i)
+			for(int i = 1; i <= 10; ++i)
 			{
 				Format(g_query, sizeof(g_query), "SELECT cpx, cpy, cpz, cpx2, cpy2, cpz2 FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", i, g_map);
 				g_mysql.Query(SQLCPSetup2, g_query, i, DBPrio_Normal);
@@ -4909,7 +4909,7 @@ Action SDKEndTouch(int entity, int other)
 		CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.1, timer_clantag, partner, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
-		for(int i = 0; i <= g_cpCount; ++i)
+		for(int i = 1; i <= g_cpCount; ++i)
 		{
 			g_cp[other][i] = false;
 			g_cp[partner][i] = false;
@@ -5244,7 +5244,7 @@ Action SDKStartTouch(int entity, int other)
 						}
 					}
 
-					for(int i = 0; i <= g_cpCount; ++i)
+					for(int i = 1; i <= g_cpCount; ++i)
 					{
 						if(g_cp[other][i] == true)
 						{
@@ -5333,7 +5333,7 @@ Action SDKStartTouch(int entity, int other)
 			}
 		}
 
-		for(int i = 0; i <= g_cpCount; ++i)
+		for(int i = 1; i <= g_cpCount; ++i)
 		{
 			char triggerCP[32] = "";
 			Format(triggerCP, sizeof(triggerCP), "trueexpert_cp%i", i);
@@ -8221,7 +8221,7 @@ void MLStats(int client, bool ground)
 
 	if(count <= 10)
 	{
-		for(int i = 0; i <= count <= 10; ++i)
+		for(int i = 1; i <= count <= 10; ++i)
 		{
 			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
 
@@ -8231,7 +8231,7 @@ void MLStats(int client, bool ground)
 
 	else if(count > 10)
 	{
-		for(int i = 0; i <= 10; ++i)
+		for(int i = 1; i <= 10; ++i)
 		{
 			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
 
