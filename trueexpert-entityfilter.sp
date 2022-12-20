@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh",
 	description = "Makes the game more personal.",
-	version = "0.282",
+	version = "0.283",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -260,7 +260,7 @@ Action OnTimerPrepare(Handle timer)
 			{
 				if(!(GetEntProp(entity, Prop_Data, "m_spawnflags", 4, 0) & 1))
 				{
-					break; //If trigger doesn't have client check, go to next entity.
+					//break; //If trigger doesn't have client check, go to next entity.
 				}
 			}
 
