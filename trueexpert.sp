@@ -221,7 +221,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.627",
+	version = "4.628",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -7134,14 +7134,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	float fix = GetEngineTime() - g_flashbangTime[client];
 
-	if(fix >= 0.12 && g_flashbangDoor[client][0] == true)
+	if(fix >= 0.11 && g_flashbangDoor[client][0] == true)
 	{
 		FakeClientCommandEx(client, "use weapon_flashbang");
 
 		g_flashbangDoor[client][0] = false;
 	}
 
-	else if(fix >= 0.13 && g_flashbangDoor[client][1] == true)
+	else if(fix >= 0.14 && g_flashbangDoor[client][1] == true)
 	{
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true, 4, 0);
 
