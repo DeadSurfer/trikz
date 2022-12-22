@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh",
 	description = "Makes the game more personal.",
-	version = "0.284",
+	version = "0.285",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1132,7 +1132,7 @@ Action OnEntityTransmit(int entity, int client)
 		{
 			int target = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
 
-			if(IsValidClient(target) == true)
+			if(0 < target <= MaxClients && IsValidClient(target) == true)
 			{
 				int partner = Trikz_GetClientPartner(target);
 
