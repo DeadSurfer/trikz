@@ -221,7 +221,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.628",
+	version = "4.629",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1885,9 +1885,7 @@ Action OnStartTouch(int client, int other) //client = booster; other = flyer
 
 						g_skyVel[other][0] = velFlyer[0];
 						g_skyVel[other][1] = velFlyer[1];
-						g_skyVel[other][2] = velBooster[2] * 3.572;
-
-						//PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+						g_skyVel[other][2] = (velBooster[2] * 3.572) - ((800.0 - (velBooster[2] * 3.572) / 800.0 * 1000.0) / 2.0);
 
 						if(g_entityFlags[client] & FL_INWATER)
 						{
@@ -7141,7 +7139,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		g_flashbangDoor[client][0] = false;
 	}
 
-	else if(fix >= 0.14 && g_flashbangDoor[client][1] == true)
+	else if(fix >= 0.15 && g_flashbangDoor[client][1] == true)
 	{
 		SetEntProp(client, Prop_Data, "m_bDrawViewmodel", true, 4, 0);
 
