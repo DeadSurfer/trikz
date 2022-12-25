@@ -220,8 +220,8 @@ public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
-	description = "Allows to able make trikz more comfortable.",
-	version = "4.632",
+	description = "Allow to make \"trikz\" mode comfortable.",
+	version = "4.633",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1211,16 +1211,26 @@ void Control(int client)
 
 	menu.SetTitle("Control");
 
-	menu.AddItem("top", "!top", gCV_top.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("top10", "!top10", gCV_top10.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("js", "!js", LibraryExists("trueexpert-jumpstats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("bs", "!bs", LibraryExists("trueexpert-booststats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("hud", "!hud", gCV_hud.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("button", "!button", gCV_button.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("spec", "!spec", gCV_spec.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("color", "!color", gCV_color.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("afk", "!afk", gCV_afk.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem("trikz", "!trikz", gCV_trikz.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTop", client);
+	menu.AddItem("top", g_buffer, gCV_top.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTop10", client);
+	menu.AddItem("top10", g_buffer, gCV_top10.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlJS", client);
+	menu.AddItem("js", g_buffer, LibraryExists("trueexpert-jumpstats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlBS", client);
+	menu.AddItem("bs", g_buffer, LibraryExists("trueexpert-booststats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlHUD", client);
+	menu.AddItem("hud", g_buffer, gCV_hud.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlButton", client);
+	menu.AddItem("button", g_buffer, gCV_button.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlSpec", client);
+	menu.AddItem("spec", g_buffer, gCV_spec.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlColor", client);
+	menu.AddItem("color", g_buffer, gCV_color.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlAFK", client);
+	menu.AddItem("afk", g_buffer, gCV_afk.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTrikz", client);
+	menu.AddItem("trikz", g_buffer, gCV_trikz.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Display(client, 20);
 
