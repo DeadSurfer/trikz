@@ -221,7 +221,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.633",
+	version = "4.634",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1209,7 +1209,8 @@ void Control(int client)
 {
 	Menu menu = new Menu(menu_info_handler);
 
-	menu.SetTitle("Control");
+	Format(g_buffer, sizeof(g_buffer), "%T", "Control", client);
+	menu.SetTitle("%s", g_buffer);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTop", client);
 	menu.AddItem("top", g_buffer, gCV_top.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
