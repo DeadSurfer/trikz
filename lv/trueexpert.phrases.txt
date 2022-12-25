@@ -1,0 +1,898 @@
+"Phrases"
+{
+	//Example: "Hello, Bail! Welcome to TrueExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
+	"Hello"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"Hello, ;#FF5733{2}! {default}Welcome to ;#FF4040{1}. {default}Your team is {teamcolor}{3}."
+	}
+	"dbPressed"
+	{
+		"lv"	"Database is not passed througt gate. Please check your database configuration."
+	}
+	"NewServerRecord"
+	{
+		"lv"	";#7CFC00Jauns rekords!"
+	}
+	"NewServerRecordDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
+	}
+	"NewServerRecordNewDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
+	}
+	"NewServerRecordNew"
+	{
+		"lv"	";#7CFC00Jauns rekords!"
+	}
+	"DevmapStart"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Devmap balsošanu sāka {1}"
+	}
+	"DevmapIsOFF"
+	{
+		"lv"	"Ieslēdziet devmap."
+	}
+	"DevmapIsON"
+	{
+		"lv"	"Izslēdziet devmap."
+	}
+	"TurnOFFDevmap"
+	{
+		"lv"	"Izslēgt devmap?"
+	}
+	"TurnONDevmap"
+	{
+		"lv"	"Ieslēgt devmap?"
+	}
+	"NoclipMenuON"
+	{
+		"lv"	"✓ Lidojums"
+	}
+	"NoclipMenuOFF"
+	{
+		"lv"	"☓ Lidojums"
+	}
+	"MLStatsChatOFF"
+	{
+		"lv"	"ML statistika tagad izslēgta."
+	}
+	"MLStatsChatON"
+	{
+		"lv"	"ML statistika tagad ieslēgta."
+	}
+	"VelChatOFF"
+	{
+		"lv"	"Ātrums tagad nebūs redzams."
+	}
+	"VelChatON"
+	{
+		"lv"	"Ātrums tagad būs redzams."
+	}
+	"MLStatsMenuON"
+	{
+		"lv"	"✓ ML Statistika"
+	}
+	"MLStatsMenuOFF"
+	{
+		"lv"	"☓ ML Statistika"
+	}
+	"VelMenuON"
+	{
+		"lv"	"✓ Ātrums"
+	}
+	"VelMenuOFF"
+	{
+		"lv"	"☓ Ātrums"
+	}
+	"ButtonAnnouncerON"
+	{
+		"lv"	"Paziņojums par pogas nospiešanu tagad būs redzams."
+	}
+	"ButtonAnnouncerOFF"
+	{
+		"lv"	"Paziņojums par pogas nospiešanu tagad nebūs redzams."
+	}
+	"AFKCHECK"
+	{
+		"#format"	"{1:s}"
+		"lv"	"AFK pārbaude - balsošanu sāka {1}"
+	}
+	"AFKCHECK2"
+	{
+		"lv"	"AFK pārbaude - balsošana šajā brīdī nav pieejama."
+	}
+	"AreYouHere?"
+	{
+		"lv"	"Vai jūs esat šeit?"
+	}
+	"Yes"
+	{
+		"lv"	"Jā"
+	}
+	"No"
+	{
+		"lv"	"Nē"
+	}
+	"TeamConfirming"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Jūs apstiprinājāt sadarbību ar {1}."
+	}
+	"GetConfirmed"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Jūsu partneris tagad ir {1}."
+	}
+	"AlreadyHavePartner"
+	{
+		"lv"	"Šim spēles dalībniekam ir partneris."
+	}
+	"PartnerDeclined"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Jūs noraidījāt sadarbību ar {1}."
+	}
+	"PartnerCanceled"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Jūs beidzāt sadarbību ar {1}."
+	}
+	"PartnerCanceledBy"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Sadarbību beidza {1}."
+	}
+	"DevmapNotAllowed"
+	{
+		"lv"	"Devmap balsošana nav pieejama dotajā brīdī."
+	}
+	"DontHavePartner"
+	{
+		"lv"	"Jums nav partnera."
+	}
+	"NoFreePlayer"
+	{
+		"lv"	"Nav brīva spēles dalībnieka."
+	}
+	"DevmapWillBeDisabled"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"lv"	"Devmap režims būs izslēgts. \"Jā\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+	}
+	"DevmapWillBeEnabled"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"lv"	"Devmap režims būs ieslēgts. \"Jā\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+	}
+	"DevmapContinue"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"lv"	"Devmap režīms būs pagarināts. \"Nē\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+	}
+	"DevmapWillNotBe"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"lv"	"Devmap režims nebūs ieslēgts. \"Nē\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+	}
+	"AwayFromKeyboard"
+	{
+		"lv"	"Atgaja no tastatūras"
+	}
+	"CancelPartnership"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Vai jūs vēlaties beigt sadarbību ar {1}"
+	}
+	"AgreePartner"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Vai jūs vēlaties uzsākt sadarību ar {1}?"
+	}
+	"PassedImproved"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"Passed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"lv"	"{1} unи {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"Spectator"
+	{
+		"lv"	"Skatītājs"
+	}
+	"Terrorist"
+	{
+		"lv"	"Terorists"
+	}
+	"Counter-Terrorist"
+	{
+		"lv"	"Anti-Terorists"
+	}
+	"Spec"
+	{
+		"lv"	"Skatītājs"
+	}
+	"Dead"
+	{
+		"lv"	"MIRIS"
+	}
+	"JustPassed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"CPImprove"
+	{
+		"#format"	"{1:i},{2:s}"
+		"lv"	"{1}. Čekpoints: ;#7CFC00{2}"
+	}
+	"CPDeprove"
+	{
+		"#format"	"{1:i},{2:s}"
+		"lv"	"{1}. Čekpoints: ;#FF0000{2}"
+	}
+	"NewServerRecordFirst"
+	{
+		"lv"	";#7CFC00Jauns servera rekords!"
+	}
+	"NewServerRecordFirstDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"CPNEW"
+	{
+		"#format"	"{1:i},{2:s}"
+		"lv"	"{1}. Čekpoints: ;#FF0000{2}"
+	}
+	"YouPressedButton"
+	{
+		"lv"	"Jūs nospiedāt mapes pogu."
+	}
+	"YourPartnerPressedButton"
+	{
+		"lv"	"Jūsu partneris nospieda mapes pogu."
+	}
+	"Checkpoint"
+	{
+		"lv"	"Atslēgas pozīcija"
+	}
+	"CP-save"
+	{
+		"lv"	"Saglabāties"
+	}
+	"CP-teleport"
+	{
+		"lv"	"Teleportēties"
+	}
+	"CP-saveSecond"
+	{
+		"lv"	"Saglabāties sekundāri"
+	}
+	"CP-teleportSecond"
+	{
+		"lv"	"Teleportēties sekundāri"
+	}
+	"Trikz"
+	{
+		"lv"	"Trikz"
+	}
+	"BlockMenuON"
+	{
+		"lv"	"✓ Bloks" //U+2713 https://www.compart.com/en/unicode/U+2713
+	}
+	"BlockMenuOFF"
+	{
+		"lv"	"☓ Bloks" //U+2613 https://www.compart.com/en/unicode/U+2613
+	}
+	"AutoflashMenuON"
+	{
+		"lv"	"✓ Autoflešs"
+	}
+	"AutoflashMenuOFF"
+	{
+		"lv"	"☓ Autoflešs"
+	}
+	"AutoswitchMenuON"
+	{
+		"lv"	"✓ Autosvičs"
+	}
+	"AutoswitchMenuOFF"
+	{
+		"lv"	"☓ Autosvičs"
+	}
+	"BhopMenuON"
+	{
+		"lv"	"✓ Bhops"
+	}
+	"BhopMenuOFF"
+	{
+		"lv"	"☓ Bhops"
+	}
+	"BlockChatON"
+	{
+		"lv"	"Sadursme tagad ieslēgta."
+	}
+	"BlockChatOFF"
+	{
+		"lv"	"Sadursme tagad izslēgta."
+	}
+	"Breakup"
+	{
+		"lv"	"Beigt sadarbību"
+	}
+	"Color"
+	{
+		"lv"	"Krāsa"
+	}
+	"ColorTeam"
+	{
+		"lv"	"Komandas krāsa"
+	}
+	"ColorPingFL"
+	{
+		"lv"	"Zīmes krāsa / fleškas"
+	}
+	"Partner"
+	{
+		"lv"	"Partneris"
+	}
+	"Restart"
+	{
+		"lv"	"Sākt no jauna"
+	}
+	"NoclipChatON"
+	{
+		"lv"	"Lidojums tagad ieslēgts."
+	}
+	"NoclipChatOFF"
+	{
+		"lv"	"Lidojums tagad izslēgts."
+	}
+	"ChoosePartner"
+	{
+		"lv"	"Izvēlēties partneri"
+	}
+	"CP-recordHud"
+	{
+		"#format"	"{1:i}"
+		"lv"	"{1}. ČEKPOINTA REKORDS!"
+	}
+	"CP-recordDetailHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"ČEKPOINTS: {1}"
+	}
+	"CP-DetailZeroHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"{1}"
+	}
+	"CP-recordNotFirstHud"
+	{
+		"#format"	"{1:i}"
+		"lv"	"{1}. ČEKPOINTA REKORDS!"
+	}
+	"CP-recordDetailNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"ČEKPOINTS: {1}"
+	}
+	"CP-recordImproveNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"{1}"
+	}
+	"CP-recordNonHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"ČEKPOINTS: {1}"
+	}
+	"CP-recordDeproveHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"{1}"
+	}
+	"MapFinishedFirstRecordHud"
+	{
+		"lv"	"MAPE PABEIGTA!"
+	}
+	"NewServerRecordHud"
+	{
+		"lv"	"JAUNS SERVERA REKORDS!"
+	}
+	"FirstRecordHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"LAIKS: {1}"
+	}
+	"FirstRecordZeroHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"{1}"
+	}
+	"NewServerRecordMapFinishedNotFirstHud"
+	{
+		"lv"	"MAPE PABEIGTA!"
+	}
+	"NewServerRecordNotFirstHud"
+	{
+		"lv"	"JAUNS SERVERA REKORDS!"
+	}
+	"NewServerRecordDetailNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"LAIKS: {1}"
+	}
+	"NewServerRecordImproveNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"{1}"
+	}
+	"MapFinishedDeproveHud"
+	{
+		"lv"	"MAPE PABEIGTA!"
+	}
+	"MapFinishedTimeDeproveHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"LAIKS: {1}"
+	}
+	"MapFinishedTimeDeproveOwnHud"
+	{
+		"#format"	"{1:s}"
+		"lv"	"{1}"
+	}
+	"AutoflashChatON"
+	{
+		"lv"	"Autoflešs tagad ieslēgts."
+	}
+	"AutoflashChatOFF"
+	{
+		"lv"	"Autoflešs tagad izslēgts."
+	}
+	"AutoswitchChatON"
+	{
+		"lv"	"Autosvitčs tagad ieslēgts."
+	}
+	"AutoswitchChatOFF"
+	{
+		"lv"	"Autosvitčs tagad izslēgts."
+	}
+	"BhopChatON"
+	{
+		"lv"	"Autobanihops tagad ieslēgts."
+	}
+	"BhopChatOFF"
+	{
+		"lv"	"Autobanihops tagad izslēgts."
+	}
+	"MacroOFF"
+	{
+		"lv"	"Makross tagad izslēgts."
+	}
+	"MacroON"
+	{
+		"lv"	"Makross tagad ieslēgts."
+	}
+	"EndMessageChatON"
+	{
+		"lv"	"Beigu anotācija tagad ieslēgta."
+	}
+	"EndMessageChatOFF"
+	{
+		"lv"	"Beigu anotācija tagad ieslēgta."
+	}
+	"EndMessageMenuON"
+	{
+		"lv"	"✓ Beigu anotācija"
+	}
+	"EndMessageMenuOFF"
+	{
+		"lv"	"☓ Beigu anotācija"
+	}
+	"Top10details"
+	{
+		"lv"	"Vieta:\tLaiks:\t\tStarpība:\t\tKomanda:"
+	}
+	"Top10source1-9"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"lv"	"#{1}\t\t;#7CFC00{2}\t\t;#FF0000{3}{default}\t{4} & {5}"
+	}
+	"Top10source10"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"lv"	"#{1}\t;#7CFC00{2}\t\t;#FF0000{3}{default}\t{4} & {5}"
+	}
+	/*"Cstrike_Chat_AllSpec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"*SPEC* [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_Spec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"*DEAD*(Terrorist) [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"[{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"[{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"*DEAD* [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"*DEAD* [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"*DEAD*(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"*DEAD*(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"lv"	"*DEAD*(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}*/
+	"Top10ac"
+	{
+		"#format"	"{1:s}"
+		"lv"	"Lūdzu uzgaidiet {1} sekundes pirms jūs varēsiet izmantot \"top10\"."
+	}
+	"Cover_me"
+	{
+		"lv"	"Piesedziet mani!"
+	}
+	"You_take_the_point"
+	{
+		"lv"	"Turiet šo vietu."
+	}
+	"Hold_this_position"
+	{
+		"lv"	"Turiet šo pozīciju."
+	}
+	"Regroup_team"
+	{
+		"lv"	"Pārgrupējieties."
+	}
+	"Follow_me"
+	{
+		"lv"	"Aiz manis."
+	}
+	"Taking_fire"
+	{
+		"lv"	"Zem uguns… vajadzīga palīdzība!"
+	}
+	"Go_go_go"
+	{
+		"lv"	"Ejam, ejam!"
+	}
+	"Team_fall_back"
+	{
+		"lv"	"Komanda, atkāpties!"
+	}
+	"Stick_together_team"
+	{
+		"lv"	"Turamies kopā, komanda."
+	}
+	"Get_in_position_and_wait"
+	{
+		"lv"	"Займите позицию и ждите моей команды."
+	}
+	"Storm_the_front"
+	{
+		"lv"	"Uguns!"
+	}
+	"Report_in_team"
+	{
+		"lv"	"Padod ziņu, komanda."
+	}
+	"Affirmative"
+	{
+		"lv"	"Apstiprinu."
+	}
+	"Roger_that"
+	{
+		"lv"	"Apstiprinu."
+	}
+	"Enemy_spotted"
+	{
+		"lv"	"Pretinieks pamanīts."
+	}
+	"Need_backup"
+	{
+		"lv"	"Vajadzīgi papildspēki."
+	}
+	"Sector_clear"
+	{
+		"lv"	"Sektors tīrs."
+	}
+	"In_position"
+	{
+		"lv"	"Es pozīcijā."
+	}
+	"Reporting_in"
+	{
+		"lv"	"Paziņoju."
+	}
+	"Get_out_of_there"
+	{
+		"lv"	"Ejiet prom, tulīt sprāg!"
+	}
+	"Negative"
+	{
+		"lv"	"Nepiekrītu."
+	}
+	"Enemy_down"
+	{
+		"lv"	"Pretinieks likvidēts."
+	}
+	"PlayerSkin"
+	{
+		"lv"	"Dalībnieka skins"
+	}
+	"FlashbangSkin"
+	{
+		"lv"	"Fleškas skins"
+	}
+	"Default"
+	{
+		"lv"	"Parasts"
+	}
+	"Shadow"
+	{
+		"lv"	"Tumšs"
+	}
+	"Bright"
+	{
+		"lv"	"Gaišs"
+	}
+	"Wireframe"
+	{
+		"lv"	"Rūtiņā"
+	}
+	"AskForRestart"
+	{
+		"lv"	"Jūs tiešām vēlaties sākt no jauna?"
+	}
+	"YouAreDead"
+	{
+		"lv"	"Jūs esat miris."
+	}
+	"Game_radio"
+	{
+		"lv"	"(RADIO)"
+	}
+	"NoRecords"
+	{
+		"lv"	"\t\t\t\tNav neviena ieraksta."
+	}
+	"MLSFinishMsg"
+	{
+		"#format"	"{1:.0f},{2:s}"
+		"lv"	"Distance: {1} juniti{2}"
+	}
+	"MLSTP"
+	{
+		"lv"	" [TP]"
+	}
+	"CursorPossitionON"
+	{
+		"lv"	"✓ Kursora pozīcija"
+	}
+	"CursorPossitionOFF"
+	{
+		"lv"	"☓ Kursora pozīcija"
+	}
+	"DBLoading"
+	{
+		"lv"	"Lūdzu uzgaidiet kamēr dati apstrādājas!"
+	}
+	"ZoneEditor"
+	{
+		"lv"	"Zonas konstruktors"
+	}
+	"ZoneEditorAddButton"
+	{
+		"lv"	"Pievienot jaunu zonu"
+	}
+	"ZoneEditorEditButton"
+	{
+		"lv"	"Rediģēt jaunu zonu"
+	}
+	"ZoneEditorTPButton"
+	{
+		"lv"	"Pārvietoties uz zonu"
+	}
+	"ZoneEditorAdd"
+	{
+		"lv"	"Zonas kostruktors - Pievienot"
+	}
+	"ZoneEditorStartZoneButton"
+	{
+		"lv"	"Sākuma zona"
+	}
+	"ZoneEditorEndZoneButton"
+	{
+		"lv"	"Beigu zona"
+	}
+	"ZoneEditorCPZoneButton"
+	{
+		"lv"	"Čekpointa zona"
+	}
+	"ZoneEditorEdit"
+	{
+		"lv"	"Zonas konstruktos - Rediģēt"
+	}
+	"ZoneEditorCPButton"
+	{
+		"#format"	"{1:i}"
+		"lv"	"Čekpoint zona #{1}"
+	}
+	"ZoneEditorNoZone"
+	{
+		"lv"	"Zonas nav uzstāditas."
+	}
+	"ZoneEditorUse"
+	{
+		"lv"	"Nospiediet IZMANTOT, lai uzstādīt stūrus zonai"
+	}
+	"ZoneEditorStep1"
+	{
+		"#format"	"{1:i}"
+		"lv"	"Шаг + ({1})"
+	}
+	"ZoneEditorStep2"
+	{
+		"lv"	"Шаг -"
+	}
+	"ZoneEditorSelectedCPnum"
+	{
+		"#format"	"{1:i}"
+		"lv"	"Čekpoints #{1}"
+	}
+	"ZoneEditorTypeCPnum"
+	{
+		"lv"	"Ievadiet čekpointa numuru spēles čatā. (1 - 10)"
+	}
+	"ZoneEditorStartZone"
+	{
+		"lv"	"Zonas konstruktos - Sākuma zona"
+	}
+	"ZoneEditorEndZone"
+	{
+		"lv"	"Zonas konstruktors - Beigu zona"
+	}
+	"ZoneEditorSide1+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"lv"	"Puse 1 | {1} +{2}"
+	}
+	"ZoneEditorSide1-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"lv"	"Puse 1 | {1} -{2}"
+	}
+	"ZoneEditorSide2+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"lv"	"Puse 2 | {1} +{2}"
+	}
+	"ZoneEditorSide2-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"lv"	"Puse 2 | {1} -{2}"
+	}
+	"ZoneEditorAxis"
+	{
+		"lv"	"Nomainīt assi"
+	}
+	"ZoneEditorApplyStartZone"
+	{
+		"lv"	"Apstiprināt sākumu zonai"
+	}
+	"ZoneEditorApplyEndZone"
+	{
+		"lv"	"Apstiprināt beigu zonai"
+	}
+	"ZoneEditorCPZone"
+	{
+		"#format"	"{1:i}"
+		"lv"	"Zonu konstruktors - CP zona #{1}"
+	}
+	"ZoneEditorApplyCPZone"
+	{
+		"#format"	"{1:i}"
+		"lv"	"Pielietot čekpointu zonai #{1}"
+	}
+	"ZoneEditorTP"
+	{
+		"lv"	"Zonu konstruktors - Teleports"
+	}
+	"GreetingsStatistics"
+	{
+		"lv"	"\n\n\n\n\nLaipni lūgti!\n\n•   •   •\n\nTekošais režīms - statistika.\nPatīkamu spēli!"
+	}
+	"GreetingsPractice"
+	{
+		"lv"	"\n\n\n\n\nLaipni lūgti!\n\n•   •   •\n\nTekošais režīms - praktika.\nPatīkamu spēli!"
+	}
+	"ControlTop"
+	{
+		"lv"	"!top - Pārskatīt ierakstus."
+	}
+	"ControlTop10"
+	{
+		"lv"	"!top10 - Pirmie 10 ieraksti."
+	}
+	"ControlJS"
+	{
+		"lv"	"!js - Paziņojums par lēcienu."
+	}
+	"ControlBS"
+	{
+		"lv"	"!bs - Paziņojums par metienu."
+	}
+	"ControlHUD"
+	{
+		"lv"	"!hud - Papildus paziņojumi."
+	}
+	"ControlButton"
+	{
+		"lv"	"!button - Paziņojums par mapes pogas nospiešanu."
+	}
+	"ControlSpec"
+	{
+		"lv"	"!spec - Pāriet skatītāju komandā."
+	}
+	"ControlColor"
+	{
+		"lv"	"!color - Krāsas un skini."
+	}
+	"ControlAFK"
+	{
+		"lv"	"!afk - Spēles dalībnieku klātbūtnes pārbaude."
+	}
+	"ControlTrikz"
+	{
+		"lv"	"!trikz - Galvenais komandu sarakts."
+	}
+}
