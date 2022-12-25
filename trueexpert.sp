@@ -221,7 +221,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.631",
+	version = "4.632",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -6108,6 +6108,8 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 				float diff = g_cpDiffSR[other][cpnum];
 				FormatSeconds(diff, timeSR);
 
+				Format(timeSR, sizeof(timeSR), "-%s", timeSR);
+
 				FinishMSG(other, false, false, true, false, true, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, true, cpnum, timeOwn, timeSR);
 
@@ -6129,6 +6131,8 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 
 				float diff = g_cpDiffSR[other][cpnum];
 				FormatSeconds(diff, timeSR);
+
+				Format(timeSR, sizeof(timeSR), "+%s", timeSR);
 
 				FinishMSG(other, false, false, true, false, false, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, false, cpnum, timeOwn, timeSR);
