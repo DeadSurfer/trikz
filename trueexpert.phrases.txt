@@ -855,4 +855,44 @@
 	{
 		"en"	"\n\n\n\n\nGreetings!\n\n•   •   •\n\nCurrent mode is practice.\nHave a nice game!"
 	}
+	"ControlTop"
+	{
+		"en"	"!top - Rank list."
+	}
+	"ControlTop10"
+	{
+		"en"	"!top10 - First 10 ranks."
+	}
+	"ControlJS"
+	{
+		"en"	"!js - Jump statistics."
+	}
+	"ControlBS"
+	{
+		"en"	"!bs - Throw statistics."
+	}
+	"ControlHUD"
+	{
+		"en"	"!hud - Advanced announcements."
+	}
+	"ControlButton"
+	{
+		"en"	"!button - Map button announcements."
+	}
+	"ControlSpec"
+	{
+		"en"	"!spec - Switch to Spectator team."
+	}
+	"ControlColor"
+	{
+		"en"	"!color - Advanced coloring."
+	}
+	"ControlAFK"
+	{
+		"en"	"!afk - Vote of player activity."
+	}
+	"ControlTrikz"
+	{
+		"en"	"!trikz - Main menu."
+	}
 }
