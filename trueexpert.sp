@@ -221,7 +221,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.634",
+	version = "4.635",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -478,12 +478,12 @@ public void OnMapStart()
 		}
 	}
 
-	g_wModelThrown = PrecacheModel("models/trueexpert/flashbang/flashbang.mdl", true);
+	g_wModelThrown = PrecacheModel("models/expert_zone/flashbang/flashbang.mdl", true);
 
-	g_wModelPlayer[1] = PrecacheModel("models/trueexpert/player/ct_urban.mdl", true);
-	g_wModelPlayer[2] = PrecacheModel("models/trueexpert/player/ct_gsg9.mdl", true);
-	g_wModelPlayer[3] = PrecacheModel("models/trueexpert/player/ct_sas.mdl", true);
-	g_wModelPlayer[4] = PrecacheModel("models/trueexpert/player/ct_gign.mdl", true);
+	g_wModelPlayer[1] = PrecacheModel("models/expert_zone/player/ct_urban.mdl", true);
+	g_wModelPlayer[2] = PrecacheModel("models/expert_zone/player/ct_gsg9.mdl", true);
+	g_wModelPlayer[3] = PrecacheModel("models/expert_zone/player/ct_sas.mdl", true);
+	g_wModelPlayer[4] = PrecacheModel("models/expert_zone/player/ct_gign.mdl", true);
 
 	//PrecacheSound("trueexpert/pingtool/click.wav", true); //https://forums.alliedmods.net/showthread.php?t=333211
 	PrecacheSound("items/gift_drop.wav", true);
@@ -507,7 +507,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/flashbang/flashbang_explode2.wav", true);
 
 	//char path[12][PLATFORM_MAX_PATH] = {"models/trueexpert/flashbang/", "models/trueexpert/pingtool/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/pingtool/", "sound/trueexpert/pingtool/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/", "materials/trueexpert/zones/"};
-	char path[8][PLATFORM_MAX_PATH] = {"models/trueexpert/flashbang/", "models/trueexpert/player/", "materials/trueexpert/flashbang/", "materials/trueexpert/player/ct_gign/", "materials/trueexpert/player/ct_gsg9/", "materials/trueexpert/player/ct_sas/", "materials/trueexpert/player/ct_urban/", "materials/trueexpert/player/"};
+	char path[8][PLATFORM_MAX_PATH] = {"models/expert_zone/flashbang/", "models/expert_zone/player/", "materials/expert_zone/flashbang/", "materials/expert_zone/player/ct_gign/", "materials/expert_zone/player/ct_gsg9/", "materials/expert_zone/player/ct_sas/", "materials/expert_zone/player/ct_urban/", "materials/expert_zone/player/"};
 
 	for(int i = 0; i < sizeof(path); i++)
 	{
