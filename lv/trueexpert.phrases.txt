@@ -855,6 +855,10 @@
 	{
 		"lv"	"\n\n\n\n\nLaipni lūgti!\n\n•   •   •\n\nTekošais režīms - praktika.\nPatīkamu spēli!"
 	}
+    "Control"
+    {
+        "lv"    "Tālvadības pults"
+    }
 	"ControlTop"
 	{
 		"lv"	"!top - Pārskatīt ierakstus."
