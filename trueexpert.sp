@@ -221,7 +221,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allows to able make trikz more comfortable.",
-	version = "4.630",
+	version = "4.631",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1885,7 +1885,7 @@ Action OnStartTouch(int client, int other) //client = booster; other = flyer
 
 						g_skyVel[other][0] = velFlyer[0];
 						g_skyVel[other][1] = velFlyer[1];
-						g_skyVel[other][2] = (velBooster[2] * 3.572) - ((800.0 - (velBooster[2] * 3.572) / 800.0) / 2.0);
+						g_skyVel[other][2] = velBooster[2] * 3.572;
 
 						if(g_entityFlags[client] & FL_INWATER)
 						{
@@ -1910,6 +1910,8 @@ Action OnStartTouch(int client, int other) //client = booster; other = flyer
 								}
 							}
 						}
+
+						g_skyVel[other][2] = g_skyVel[other][2] - ((800.0 - g_skyVel[other][2] / 800.0) / 6.0);
 
 						#if debug == true
 						PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
