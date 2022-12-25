@@ -855,6 +855,10 @@
 	{
 		"en"	"\n\n\n\n\nGreetings!\n\n•   •   •\n\nCurrent mode is practice.\nHave a nice game!"
 	}
+	"Control"
+	{
+		"en"	"Control"
+	}
 	"ControlTop"
 	{
 		"en"	"!top - Rank list."
