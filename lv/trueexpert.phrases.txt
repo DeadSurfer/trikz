@@ -778,11 +778,11 @@
 	"ZoneEditorStep1"
 	{
 		"#format"	"{1:i}"
-		"lv"	"Шаг + ({1})"
+		"lv"	"Solis + ({1})"
 	}
 	"ZoneEditorStep2"
 	{
-		"lv"	"Шаг -"
+		"lv"	"Solis -"
 	}
 	"ZoneEditorSelectedCPnum"
 	{
