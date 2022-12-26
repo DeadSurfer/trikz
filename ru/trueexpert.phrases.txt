@@ -254,11 +254,11 @@
 	}
 	"YouPressedButton"
 	{
-		"ru"	"Вы нажали на кнопку."
+		"ru"	"Вы нажали кнопку."
 	}
 	"YourPartnerPressedButton"
 	{
-		"ru"	"Ваш парнер нажал на кнопку."
+		"ru"	"Ваш парнер нажал кнопку."
 	}
 	"Checkpoint"
 	{
