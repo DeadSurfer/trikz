@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.288",
+	version = "1.289",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -103,16 +103,10 @@ bool TestDate()
 
 	int date = GetTime({0, 0});
 
-	//PrintToServer("debug date value: %i", date);
-
 	char buffer[32] = "";
 	FormatTime(buffer, sizeof(buffer), "%m", date);
 
-	//PrintToServer("debug buffer value: %s", buffer);
-
 	int monthCurrent = StringToInt(buffer);
-
-	//PrintToServer("debug float value: %i %f", monthCurrent, float(monthCurrent));
 
 	if(!(monthStart >= float(monthCurrent) || monthEnd <= float(monthCurrent)))
 	{
@@ -311,7 +305,6 @@ stock void RemoveHat(int client)
 
 stock void CreateHat(int client)
 {
-	//PrintToServer("%i %N %i %i", g_hat[client], client, IsPlayerAlive(client) ? "alive":"dead", GetClientTeam(client));
 	if(0 < client <= MaxClients && IsPlayerAlive(client) == true && (GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT) && g_hat[client] == 0)
 	{
 		//declanation
@@ -321,10 +314,6 @@ stock void CreateHat(int client)
 		GetClientAbsOrigin(client, origin);
 		GetClientAbsAngles(client, angles);
 
-
-		//g_moveX.GetString()
-
-		//PrintToServer("%f %f %f", g_moveX.FloatValue, g_moveY.FloatValue, g_moveZ.FloatValue);
 		offset[0] = g_move[0].FloatValue;
 		offset[1] = g_move[1].FloatValue;
 		offset[2] = g_move[2].FloatValue;
@@ -335,7 +324,7 @@ stock void CreateHat(int client)
 		origin[1] += right[1] * offset[0] + forward_[1] * offset[1] + up[1] * offset[2];
 		origin[2] += right[2] * offset[0] + forward_[2] * offset[1] + up[2] * offset[2];
 
-		g_hat[client] = CreateEntityByName("prop_dynamic");
+		g_hat[client] = CreateEntityByName("prop_dynamic_override");
 
 		DispatchKeyValue(g_hat[client], "model", "models/expert_zone/santahat/santa.mdl");
 
