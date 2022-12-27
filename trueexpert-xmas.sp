@@ -35,26 +35,27 @@ int g_hat[MAXPLAYERS];
 
 native int Trikz_GetClientPartner(int client);
 
-ConVar g_date, g_date2, g_move[3], g_rotation[3];
+ConVar g_enable, g_date, g_date2, g_move[3], g_rotation[3];
 
 public Plugin myinfo =
 {
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.289",
+	version = "1.290",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
 	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
-	HookEvent("player_spawn", OnSpawn, EventHookMode_PostNoCopy);
-	HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
-	HookEvent("player_team", OnTeam, EventHookMode_Pre); //https://forums.alliedmods.net/showthread.php?t=135521
+	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_PostNoCopy);
+	HookEvent("player_death", OnPlayerDeath, EventHookMode_PostNoCopy);
+	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre); //https://forums.alliedmods.net/showthread.php?t=135521
 
-	RegConsoleCmd("sm_xmas", cmd_xmas);
+	RegConsoleCmd("sm_xmas", CommandXmas, "Open the xmas menu.");
 
+	g_enable = CreateConVar("sm_te_xmas_enable", "0.0", "Do active plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_date = CreateConVar("sm_te_date_start", "12.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_date2 = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_move[0] = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
@@ -118,6 +119,15 @@ bool TestDate()
 
 public void OnMapStart()
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return;
+	}
+
 	if(TestDate() == true)
 	{
 		return;
@@ -141,7 +151,7 @@ public void OnMapStart()
 			{
 				Format(pathFull[i], PLATFORM_MAX_PATH, "%s%s", path[i], filename[i]);
 
-				if(StrContains(pathFull[i], ".mdl") != -1)
+				if(StrContains(pathFull[i], ".mdl", false) != -1)
 				{
 					PrecacheModel(pathFull[i], true);
 				}
@@ -182,8 +192,17 @@ public void OnClientDisconnect(int client)
 	return;
 }
 
-public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
+void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return;
+	}
+
 	if(TestDate() == true)
 	{
 		return;
@@ -230,8 +249,17 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return;
+	}
+	
 	if(TestDate() == true)
 	{
 		return;
@@ -258,7 +286,7 @@ public void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public void OnDeath(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -267,7 +295,7 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-public Action OnTeam(Event event, const char[] name, bool dontBroadcast)
+Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	if(TestDate() == true)
 	{
@@ -286,11 +314,11 @@ public Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-stock void RemoveHat(int client)
+void RemoveHat(int client)
 {
 	if(g_hat[client] > 0)
 	{
-		SDKUnhook(g_hat[client], SDKHook_SetTransmit, SDKTransmit);
+		SDKUnhook(g_hat[client], SDKHook_SetTransmit, OnHatTransmit);
 
 		if(IsValidEntity(g_hat[client]) == true)
 		{
@@ -303,8 +331,17 @@ stock void RemoveHat(int client)
 	return;
 }
 
-stock void CreateHat(int client)
+void CreateHat(int client)
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return;
+	}
+
 	if(0 < client <= MaxClients && IsPlayerAlive(client) == true && (GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_CT) && g_hat[client] == 0)
 	{
 		//declanation
@@ -340,7 +377,7 @@ stock void CreateHat(int client)
 
 		DispatchSpawn(g_hat[client]);
 
-		SDKHook(g_hat[client], SDKHook_SetTransmit, SDKTransmit);
+		SDKHook(g_hat[client], SDKHook_SetTransmit, OnHatTransmit);
 
 		TeleportEntity(g_hat[client], origin, angles, NULL_VECTOR);
 
@@ -354,8 +391,17 @@ stock void CreateHat(int client)
 	return;
 }
 
-public Action SDKTransmit(int entity, int client)
+Action OnHatTransmit(int entity, int client)
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return Plugin_Continue;
+	}
+
 	if(entity == g_hat[client])
 	{
 		return Plugin_Handled;
@@ -385,8 +431,17 @@ public Action SDKTransmit(int entity, int client)
 	return Plugin_Continue;
 }
 
-public Action cmd_xmas(int client, int args)
+Action CommandXmas(int client, int args)
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return Plugin_Continue;
+	}
+
 	if(TestDate() == true)
 	{
 		return Plugin_Continue;
@@ -440,8 +495,17 @@ public Action cmd_xmas(int client, int args)
 	return Plugin_Continue;
 }
 
-stock void Xmas(int client, char[] type)
+void Xmas(int client, char[] type)
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return;
+	}
+
 	//declaration
 	float origin[3], angles[3];
 
@@ -467,7 +531,7 @@ stock void Xmas(int client, char[] type)
 
 		GetClientEyeAngles(client, eyeAngles);
 
-		skin = -1;
+		//skin = -1;
 
 		if(StrEqual(type, "tree", false) == true || StrEqual(type, "tree_big", false) == true)
 		{
@@ -488,7 +552,7 @@ stock void Xmas(int client, char[] type)
 			skin = GetRandomInt(0, 1);
 		}
 
-		else
+		else if(StrEqual(type, "tree", false) == false || StrEqual(type, "tree_big", false) == false || StrEqual(type, "snowman", false) == false || StrEqual(type, "teddybear", false) == false)
 		{
 			angles[1] = eyeAngles[1];
 
@@ -497,7 +561,7 @@ stock void Xmas(int client, char[] type)
 				skin = GetRandomInt(0, 3);
 			}
 
-			else
+			else if(StrEqual(type, "gift10", false) == false)
 			{
 				skin = GetRandomInt(0, 4);
 			}
@@ -530,7 +594,7 @@ stock void Xmas(int client, char[] type)
 	return;
 }
 
-public bool Trace_FilterPlayers(int entity, int contentsMask, any data)
+bool Trace_FilterPlayers(int entity, int contentsMask, any data)
 {
 	if(entity != data && entity > MaxClients) 
 	{
@@ -540,8 +604,17 @@ public bool Trace_FilterPlayers(int entity, int contentsMask, any data)
 	return false;
 }
 
-stock void CreateItem(float origin[3], float angles[3], char[] type, int skin)
+void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 {
+	char value[3 + 1];
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return;
+	}
+	
 	char model[PLATFORM_MAX_PATH] = "models/expert_zone/xmas/";
 
 	if(StrEqual(type, "tree", false)) Format(model, PLATFORM_MAX_PATH, "%sxmastree_mini.mdl", model);
@@ -577,20 +650,21 @@ stock void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	if(StrEqual(type, "tree_big", false) == true)
 	{
 		char anim[][] = {"windy1", "windy2"};
+		int random = GetRandomInt(0, 1);
 
-		DispatchKeyValue(entity, "DefaultAnim", anim[GetRandomInt(0, 1)]); //https://forums.alliedmods.net/showthread.php?t=313389
+		DispatchKeyValue(entity, "DefaultAnim", anim[random]); //https://forums.alliedmods.net/showthread.php?t=313389
 	}
 
-	DispatchSpawn(entity);
+	DispatchSpawn(entity); //first
 
-	TeleportEntity(entity, origin, angles, NULL_VECTOR);
+	TeleportEntity(entity, origin, angles, NULL_VECTOR); //second
 
-	SetEntProp(entity, Prop_Data, "m_nSkin", skin);
+	SetEntProp(entity, Prop_Data, "m_nSkin", skin); //third
 
 	return;
 }
 
-public int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
+int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -653,6 +727,7 @@ public int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param
 
 	return view_as<int>(action);
 }
+
 //https://forums.alliedmods.net/showthread.php?t=303402 xmas item origin code
 //https://forums.alliedmods.net/showthread.php?t=174714 xmas player hat origin code
 //thanks to expert-zone for more xmas items and hat and maru for minor help.
