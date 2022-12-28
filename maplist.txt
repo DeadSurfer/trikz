@@ -1,4 +1,4 @@
-//http://svn.code.sf.net/p/fakeexpert/svn/cstrike/maps/
+//http://svn.code.sf.net/p/trueexpert/code/cstrike/maps/
 //https://gamebanana.com/mods/cats/5573
 trikz_adventure
 trikz_affinity
@@ -42,6 +42,7 @@ trikz_overdriver
 trikz_p
 trikz_penguin
 trikz_pharaohs_tomb
+trikz_portal2
 trikz_proud
 trikz_RandomRaider
 trikz_reality
