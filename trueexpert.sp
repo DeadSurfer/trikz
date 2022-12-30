@@ -3917,8 +3917,6 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 				{
 					g_cpPos[cpnum][i] = g_cpPosTemp[client][cpnum][i];
 
-					PrintToServer("%f %f %f", g_cpPos[cpnum][i][0], g_cpPos[cpnum][i][1], g_cpPos[cpnum][i][2]);
-
 					continue;
 				}
 
