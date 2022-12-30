@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.645",
+	version = "4.646",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1630,33 +1630,34 @@ public void OnClientPutInServer(int client)
 public void OnClientCookiesCached(int client)
 {
 	char value[16] = "";
+	int nBase = 10;
 
 	GetClientCookie(client, g_cookie[0], value, sizeof(value));
-	g_hudVel[client] = view_as<bool>(StringToInt(value, 10));
+	g_hudVel[client] = view_as<bool>(StringToInt(value, nBase));
 
 	GetClientCookie(client, g_cookie[1], value, sizeof(value));
-	g_mlstats[client] = view_as<bool>(StringToInt(value, 10));
+	g_mlstats[client] = view_as<bool>(StringToInt(value, nBase));
 
 	GetClientCookie(client, g_cookie[2], value, sizeof(value));
-	g_button[client] = view_as<bool>(StringToInt(value, 10));
+	g_button[client] = view_as<bool>(StringToInt(value, nBase));
 	
 	GetClientCookie(client, g_cookie[3], value, sizeof(value));
-	g_autoflash[client] = view_as<bool>(StringToInt(value, 10));
+	g_autoflash[client] = view_as<bool>(StringToInt(value, nBase));
 
 	GetClientCookie(client, g_cookie[4], value, sizeof(value));
-	g_autoswitch[client] = view_as<bool>(StringToInt(value, 10));
+	g_autoswitch[client] = view_as<bool>(StringToInt(value, nBase));
 
 	GetClientCookie(client, g_cookie[5], value, sizeof(value));
-	g_bhop[client] = view_as<bool>(StringToInt(value, 10));
+	g_bhop[client] = view_as<bool>(StringToInt(value, nBase));
 
 	GetClientCookie(client, g_cookie[6], value, sizeof(value));
-	g_macroDisabled[client] = view_as<bool>(StringToInt(value, 10));
+	g_macroDisabled[client] = view_as<bool>(StringToInt(value, nBase));
 
 	GetClientCookie(client, g_cookie[7], value, sizeof(value));
-	g_endMessage[client] = view_as<bool>(StringToInt(value, 10));
+	g_endMessage[client] = view_as<bool>(StringToInt(value, nBase));
 
 	GetClientCookie(client, g_cookie[8], value, sizeof(value));
-	g_skinFlashbang[client] = StringToInt(value, 10);
+	g_skinFlashbang[client] = StringToInt(value, nBase);
 
 	GetClientCookie(client, g_cookie[9], value, sizeof(value));
 
@@ -1665,12 +1666,12 @@ public void OnClientCookiesCached(int client)
 
 	for(int i = 0; i <= 2; i++)
 	{
-		g_colorBuffer[client][1][i] = StringToInt(exploded[i], 10);
+		g_colorBuffer[client][1][i] = StringToInt(exploded[i], nBase);
 
 		continue;
 	}
 
-	g_colorCount[client][1] = StringToInt(exploded[3], 10);
+	g_colorCount[client][1] = StringToInt(exploded[3], nBase);
 
 	if(g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][1][1] == 0 && g_colorBuffer[client][1][2] == 0)
 	{
@@ -1683,11 +1684,11 @@ public void OnClientCookiesCached(int client)
 	}
 
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
-	g_skinPlayer[client] = StringToInt(value, 10);
+	g_skinPlayer[client] = StringToInt(value, nBase);
 
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
 
-	int cooldown = StringToInt(value, 10);
+	int cooldown = StringToInt(value, nBase);
 
 	if(cooldown < GetTime())
 	{
@@ -2362,7 +2363,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			int partner = StringToInt(item, 10);
 			menu2.SetTitle("%T", "AgreePartner", partner, name);
 			
-			char str[4] = "";
+			char str[2 + 1] = "";
 			IntToString(param1, str, sizeof(str)); //sizeof do 4
 
 			Format(g_buffer, sizeof(g_buffer), "%T", "Yes", partner);
@@ -2882,7 +2883,7 @@ Action CommandAutoflash(int client, int args)
 
 	GiveFlashbang(client);
 
-	char value[8] = "";
+	char value[1 + 1] = "";
 	IntToString(g_autoflash[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[3], value);
 
@@ -2912,7 +2913,7 @@ Action CommandAutoswitch(int client, int args)
 	
 	g_autoswitch[client] = !g_autoswitch[client];
 
-	char value[8] = "";
+	char value[1 + 1] = "";
 	IntToString(g_autoswitch[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[4], value);
 
@@ -2942,7 +2943,7 @@ Action CommandBhop(int client, int args)
 
 	g_bhop[client] = !g_bhop[client];
 	
-	char value[8] = "";
+	char value[1 + 1] = "";
 	IntToString(g_bhop[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[5], value);
 
@@ -2972,7 +2973,7 @@ Action CommandEndmsg(int client, int args)
 
 	g_endMessage[client] = !g_endMessage[client];
 
-	char value[8] = "";
+	char value[1 + 1] = "";
 	IntToString(g_bhop[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[7], value);
 
@@ -3327,7 +3328,7 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 			char item[16] = "";
 			menu.GetItem(param2, item, sizeof(item));
 
-			char str[1] = ""; //1 = 2 numbers
+			char str[1 + 1] = ""; //1 = 2 numbers
 
 			if(StrContains(item, "ps", false) != -1)
 			{
@@ -3415,7 +3416,7 @@ Action CommandMacro(int client, int args)
 
 	g_macroDisabled[client] = !g_macroDisabled[client];
 	
-	char str[4] = "";
+	char str[1 + 1] = "";
 	IntToString(g_macroDisabled[client], str, sizeof(str));
 	SetClientCookie(client, g_cookie[6], str);
 
@@ -3571,8 +3572,6 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 	int client = GetClientFromSerial(id);
 	int type = data.ReadCell();
 	int cpnum = data.ReadCell();
-	//char isCP[2 + 1] = "";
-	//data.ReadString(isCP, sizeof(isCP));
 
 	if(strlen(error) > 0)
 	{
@@ -3596,7 +3595,6 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 
 		else if(type == 2)
 		{
-			//cpnum -= 1;
 			Format(g_query, sizeof(g_query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, g_cpPosTemp[client][cpnum][0][0], g_cpPosTemp[client][cpnum][0][1], g_cpPosTemp[client][cpnum][0][2], g_cpPosTemp[client][cpnum][1][0], g_cpPosTemp[client][cpnum][1][1], g_cpPosTemp[client][cpnum][1][2], g_map);
 			g_sql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 
@@ -3773,7 +3771,7 @@ Action AdminCommandMaptier(int client, int args)
 		GetCmdArgString(buffer, sizeof(buffer)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
 		int nBase = 10;
-		char str[4] = "";
+		char str[2 + 1] = "";
 		int tier = StringToInt(str, nBase);
 
 		if(tier > 0)
@@ -3854,8 +3852,6 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 	int client = GetClientFromSerial(data.ReadCell());
 	int type = data.ReadCell();
 	int cpnum = data.ReadCell();
-	//char isCP[2 + 1] = "";
-	//data.ReadString(isCP, sizeof(isCP));
 	delete data;
 
 	if(strlen(error) > 0)
@@ -3911,8 +3907,6 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 			else if(type == 2)
 			{
-				//cpnum -= 2;
-
 				for(int i = 0; i <= 1; i++)
 				{
 					g_cpPos[cpnum][i] = g_cpPosTemp[client][cpnum][i];
@@ -7781,7 +7775,7 @@ int hud_handler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_Select:
 		{
-			char value[8] = "";
+			char value[1 + 1] = "";
 
 			switch(param2)
 			{
@@ -7843,7 +7837,7 @@ Action CommandVel(int client, int args)
 
 	g_hudVel[client] = !g_hudVel[client];
 
-	char value[8] = "";
+	char value[1 + 1] = "";
 	IntToString(g_hudVel[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[0], value);
 
@@ -7906,7 +7900,7 @@ Action CommandMLStats(int client, int args)
 
 	g_mlstats[client] = !g_mlstats[client];
 
-	char value[8] = "";
+	char value[1 + 1] = "";
 	IntToString(g_mlstats[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[1], value);
 
@@ -7935,7 +7929,7 @@ Action CommandButton(int client, int args)
 
 	g_button[client] = !g_button[client];
 
-	char value[8] = "";
+	char value[1 + 1] = "";
 	IntToString(g_button[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[2], value);
 
