@@ -80,7 +80,7 @@ float g_cpPos[11][2][3],
 		g_cpTime[MAXPLAYER][11],
 		g_cpDiffSR[MAXPLAYER][11],
 		g_cpTimeSR[11] = {0.0, ...},
-		g_centerCP[10][3];
+		g_centerCP[11][3];
 bool g_cp[MAXPLAYER][11],
 		g_cpLock[MAXPLAYER][11];
 int g_cpCountTryToAlign[MAXPLAYER] = {0, ...},
@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.644",
+	version = "4.645",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -3917,6 +3917,8 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 				{
 					g_cpPos[cpnum][i] = g_cpPosTemp[client][cpnum][i];
 
+					PrintToServer("%f %f %f", g_cpPos[cpnum][i][0], g_cpPos[cpnum][i][1], g_cpPos[cpnum][i][2]);
+
 					continue;
 				}
 
@@ -4732,7 +4734,7 @@ int MenuHandlerZonesTP(Menu menu, MenuAction action, int param1, int param2)
 				ExplodeString(item, ";", exploded, 1, 8, false);
 				int cpnum = StringToInt(exploded[0], 10);
 
-				pos = g_center[cpnum];
+				pos = g_centerCP[cpnum];
 				pos[2] += 1.0;
 				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
@@ -7083,8 +7085,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 						case 2:
 						{
-							g_cpPosTemp[client][g_ZoneEditorCP[client] - 1][0] = g_zoneSelected[client][0];
-							g_cpPosTemp[client][g_ZoneEditorCP[client] - 1][1] = g_zoneSelected[client][1];
+							g_cpPosTemp[client][g_ZoneEditorCP[client]][0] = g_zoneSelected[client][0];
+							g_cpPosTemp[client][g_ZoneEditorCP[client]][1] = g_zoneSelected[client][1];
 						}
 					}
 				}
