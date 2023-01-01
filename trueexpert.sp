@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.646",
+	version = "4.647",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -501,6 +501,19 @@ public void OnMapStart()
 	for(int i = 0; i <= 2; i++)
 	{
 		g_zoneHave[i] = false;
+
+		for(int j = 0; j <= 1; j++)
+		{
+			for(int k = 0; k <= 10; k++)
+			{
+				g_cpPos[k][j][i] = 0.0;
+
+				for(int l = 1; l <= MAXPLAYERS; l++)
+				{
+					g_cpPosTemp[l][k][j][i] = 0.0;
+				}
+			}
+		}
 
 		continue;
 	}
@@ -4592,7 +4605,6 @@ int MenuHandlerZones2(Menu menu, MenuAction action, int param1, int param2)
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(2);
 				dp.WriteCell(cpnum);
-				//dp.WriteString("cp", false);
 				g_sql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
@@ -6522,7 +6534,7 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 
 		for(int j = 0; j <= 1; j++)
 		{
-			point[i][j] = g_devmap == true ? g_cpPosTemp[client][cpnum - 1][j] : g_cpPos[cpnum][j];
+			point[i][j] = g_devmap == true ? g_cpPosTemp[client][cpnum][j] : g_cpPos[cpnum][j];
 
 			continue;
 		}
