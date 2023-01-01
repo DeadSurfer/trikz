@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.291",
+	version = "1.292",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -109,7 +109,7 @@ bool TestDate()
 
 	int monthCurrent = StringToInt(buffer);
 
-	if(!(monthStart <= float(monthCurrent) || monthEnd >= float(monthCurrent)))
+	if(monthStart <= float(monthCurrent) || monthEnd >= float(monthCurrent))
 	{
 		return true;
 	}
@@ -128,7 +128,7 @@ public void OnMapStart()
 		return;
 	}
 
-	if(TestDate() == true)
+	if(TestDate() == false)
 	{
 		return;
 	}
@@ -203,7 +203,7 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 		return;
 	}
 
-	if(TestDate() == true)
+	if(TestDate() == false)
 	{
 		return;
 	}
@@ -260,7 +260,7 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		return;
 	}
 	
-	if(TestDate() == true)
+	if(TestDate() == false)
 	{
 		return;
 	}
@@ -297,7 +297,7 @@ void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
-	if(TestDate() == true)
+	if(TestDate() == false)
 	{
 		return Plugin_Continue;
 	}
@@ -442,7 +442,7 @@ Action CommandXmas(int client, int args)
 		return Plugin_Continue;
 	}
 
-	if(TestDate() == true)
+	if(TestDate() == false)
 	{
 		return Plugin_Continue;
 	}
