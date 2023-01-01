@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.648",
+	version = "4.649",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1985,19 +1985,21 @@ Action OnStartTouch(int client, int other) //client = booster; other = flyer
 						g_skyVel[other][1] = velFlyer[1];
 						g_skyVel[other][2] = velBooster[2] * 3.572;
 
-						if(800.0 - (((800.0 - 770.0) / 2.0)) > g_skyVel[other][2])
+						float midMax = 800.0 - (800.0 - 750.0) / 2.0;
+
+						if(midMax > g_skyVel[other][2])
 						{
-							g_skyVel[other][2] = g_skyVel[other][2] - (((((800.0 - (((800.0 - 770.0) / 2.0))) - g_skyVel[other][2]) / (800.0 - (((800.0 - 770.0) / 2.0)))) / 2.0) * 1000.0);
+							g_skyVel[other][2] = g_skyVel[other][2] - (midMax - (g_skyVel[other][2] / midMax) * midMax) / 2.0;
 						}
 
-						else if(800.0 - (((800.0 - 770.0) / 2.0)) <= g_skyVel[other][2])
+						else if(midMax <= g_skyVel[other][2])
 						{
-							g_skyVel[other][2] = g_skyVel[other][2] + (((((800.0 - (((800.0 - 770.0) / 2.0))) - g_skyVel[other][2]) / (800.0 - (((800.0 - 770.0) / 2.0)))) / 2.0) * 1000.0);
+							g_skyVel[other][2] = g_skyVel[other][2] + (midMax - (g_skyVel[other][2] / midMax) * midMax) / 2.0;
 						}
 
 						if(g_skyVel[other][2] < 0.0)
 						{
-							g_skyVel[other][2] = 0.0;
+							g_skyVel[other][2] = g_skyVel[other][2];
 						}
 
 						if(g_entityFlags[client] & FL_INWATER)
