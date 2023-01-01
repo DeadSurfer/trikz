@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh",
 	description = "Makes the game more personal.",
-	version = "0.285",
+	version = "0.286",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -157,6 +157,37 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("Trikz_GetEntityFilter", Native_GetEntityFilter);
 
 	return APLRes_Success;
+}
+
+public void OnMapStart()
+{
+	for(int i = 1; i <= MAXPLAYER; i++)
+	{
+		SDKUnhook(i, SDKHook_SetTransmit, OnPlayerTransmit);
+	}
+
+	char classname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"};
+	char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnEndTouch", "OnTrigger", "OnStartTouchAll", "OnPressed", "OnDamaged", "OnUser3", "OnUser4", "OnHitMin", "OnHitMax"};
+
+	for(int i = 0; i < sizeof(classname); i++)
+	{
+		for(int j = 0; j < sizeof(output); j++)
+		{
+			if(j < 9)
+			{
+				UnhookEntityOutput(classname[i], output[j], OnEntityOutput);
+			}
+		}
+	}
+
+	for(int i = 1; i <= 2048; i++)
+	{
+		SDKUnhook(i, SDKHook_SetTransmit, OnEntityTransmit);
+		SDKUnhook(i, SDKHook_Use, OnUseButton);
+		SDKUnhook(i, SDKHook_OnTakeDamage, OnTakeDamage);
+		SDKUnhook(i, SDKHook_Touch, OnPlayerTouchEntity);
+		SDKUnhook(i, SDKHook_SetTransmit, OnNadeTransmit);
+	}
 }
 
 public void OnClientPutInServer(int client)
