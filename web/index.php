@@ -186,6 +186,11 @@ body
 {
 	display: block;
 }
+.copyleft
+{
+  display:inline-block;
+  transform: rotate(180deg);
+}
 </style>
 <script>
 	/* When the user clicks on the button, 
@@ -409,7 +414,7 @@ body
 	<div class=footer>
 		<?php
 			$year = date("Y");
-			echo "<p>Copyleft TrueExpert 2021 - $year year.</p>"; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
+			echo "<p><span class=copyleft>&copy;</span> Copyleft TrueExpert 2021 - $year year.</p>"; //https://www.geeksforgeeks.org/how-to-get-current-year-in-php
 		?>
 	</div>
 </body>
