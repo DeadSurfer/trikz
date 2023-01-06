@@ -702,14 +702,16 @@
 										<td>
 											<center>$rank[rank]</center>
 										</td>
-										
+
 										<td>
 											<a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a>
 											<br>
 											<a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a>
 										</td>
 
-										<td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td>
+										<td class=active-row>
+											<center>$time <font color=#980000>(+$timeDiffFormated)</font></center>
+										</td>
 
 										<td>
 											<center>$row[finishes]</center>
