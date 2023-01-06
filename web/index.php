@@ -319,6 +319,7 @@
 					}
 
 					echo "<tr>
+
 							<th colspan=2>Show <div class=dropdownlimit>
 										<button onclick=myFunction() class=dropbtnlimit>$_GET[limit]</button> records<div id=myDropdownlimit class=dropdown-contentlimit>
 										<a href=?limit=10>10</a>
@@ -327,9 +328,12 @@
 									</div>
 								</div>
 							</th>
+
 							<th>
 							</th>
+
 							<th colspan=3 style=text-align:right>Map: $_SESSION[map]</th>
+							
 						</tr>"; //https://stackoverflow.com/questions/25594610/center-text-of-table-data-connected-with-colspan-2-with-css-select-td-with
 				?>
 
@@ -530,7 +534,13 @@
 
 					if(mysqli_num_rows($result) == 0) //https://stackoverflow.com/questions/4286586/best-way-to-check-if-mysql-query-returned-any-results/4286606#4286606 https://stackoverflow.com/questions/13478206/checking-for-empty-result-php-pdo-and-mysql https://technosmarter.com/php/total-number-of-rows-mysql-table-count.php#:~:text=Count%20the%20number%20of%20rows%20using%20two%20methods.,rows%20using%20the%20PHP%20count%20%28%29%20function%2C%20
 					{
-						echo "<tr><td colspan=6><center>No records found!</center></td></tr>";
+						echo "<tr>
+
+									<td colspan=6>
+										<center>No records found!</center>
+									</td>
+
+								</tr>";
 					}
 
 					while($row = mysqli_fetch_assoc($result))
@@ -585,17 +595,105 @@
 
 						if($rank['rank'] == 1)
 						{
-							echo "<tr><td><center><img src=/topplace/gold_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+							echo "<tr>
+									<td>
+										<center>
+											<img src=/topplace/gold_icon.png>
+										</center>
+									</td>
+									
+									<td>
+
+										<a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a>
+										<br>
+										<a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a>
+									</td>
+
+										<td class=active-row>
+											<center>$time <font color=#980000>(+$timeDiffFormated)</font></center>
+										</td>
+
+									<td>
+										<center>$row[finishes]</center>
+									</td>
+
+									<td>
+										<center>$row[tries]</center>
+									</td>
+									
+									<td>
+										<center>$formatedDateYmd<br>$formatedDateHis</center>
+									</td>
+
+								</tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 						}
 
 						else if($rank['rank'] == 2)
 						{
-							echo "<tr><td><center><img src=/topplace/silver_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+							echo "<tr>
+
+										<td>
+										<center>
+											<img src=/topplace/silver_icon.png>
+										</center>
+										</td>
+
+										<td>
+											<a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a>
+											<br>
+											<a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a>
+										</td>
+
+										<td class=active-row>
+											<center>$time <font color=#980000>(+$timeDiffFormated)</font></center>
+										</td>
+
+										<td>
+											<center>$row[finishes]</center>
+										</td>
+
+										<td>
+											<center>$row[tries]</center>
+										</td>
+
+										<td>
+											<center>$formatedDateYmd<br>$formatedDateHis</center>
+										</td>
+
+									</tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 						}
 
 						else if($rank['rank'] == 3)
 						{
-							echo "<tr><td><center><img src=/topplace/bronze_icon.png></center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+							echo "<tr>
+									<td>
+										<center>
+											<img src=/topplace/bronze_icon.png>
+										</center>
+									</td>
+
+									<td>
+										<a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a>
+										<br>
+										<a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a>
+									</td>
+
+									<td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center>
+									</td>
+
+									<td>
+										<center>$row[finishes]</center>
+									</td>
+
+									<td>
+										<center>$row[tries]</center>
+									</td>
+
+									<td>
+										<center>$formatedDateYmd<br>$formatedDateHis</center>
+									</td>
+
+									</tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 						}
 
 						else if(rank['rank'] != 1 && rank['rank'] != 2 && rank['rank'] != 3)
@@ -613,12 +711,20 @@
 
 				if($back >= 0)
 				{
-					print "<th><center><a href=?start=$back&sort=$sort style=color:#ffffff>Previous</a></center></th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
+					print "<th>
+								<center
+									<a href=?start=$back&sort=$sort style=color:#ffffff>Previous</a>
+								</center>
+							</th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
 				}
 
 				if($start + $limit < $row0[0])
 				{
-					print "<th><center><a href=?start=$next&sort=$sort style=color:#ffffff>Next</a></center></th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
+					print "<th>
+								<center>
+									<a href=?start=$next&sort=$sort style=color:#ffffff>Next</a>
+								</center>
+							</th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
 				}
 
 				echo "</tr></thead>";
