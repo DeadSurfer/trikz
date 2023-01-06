@@ -333,7 +333,7 @@
 							</th>
 
 							<th colspan=3 style=text-align:right>Map: $_SESSION[map]</th>
-							
+
 						</tr>"; //https://stackoverflow.com/questions/25594610/center-text-of-table-data-connected-with-colspan-2-with-css-select-td-with
 				?>
 
@@ -698,7 +698,28 @@
 
 						else if(rank['rank'] != 1 && rank['rank'] != 2 && rank['rank'] != 3)
 						{
-							echo "<tr><td><center>$rank[rank]</center></td><td><a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a><br><a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a></td><td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td><td><center>$row[finishes]</center></td><td><center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center></td></tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+							echo "<tr>
+										<td>
+											<center>$rank[rank]</center>
+										</td>
+										
+										<td>
+											<a href=https://steamcommunity.com/profiles/$player1steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row2[username]</a>
+											<br>
+											<a href=https://steamcommunity.com/profiles/$player2steamid64 target=_blank rel='noopener noreferrer' style=color:#000000>$row3[username]</a>
+										</td>
+
+										<td class=active-row><center>$time <font color=#980000>(+$timeDiffFormated)</font></center></td>
+
+										<td>
+											<center>$row[finishes]</center>
+										</td>
+
+										<td>
+											<center>$row[tries]</center></td><td><center>$formatedDateYmd<br>$formatedDateHis</center>
+										</td>
+
+									</tr>"; //https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
 						}
 					}
 				?>
