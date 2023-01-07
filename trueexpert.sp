@@ -175,7 +175,7 @@ bool g_pingLock[MAXPLAYER] = {false, ...};
 Handle g_cookie[12] = {INVALID_HANDLE, ...};
 
 //Coloring system
-char g_colorType[][] = {"255,255,255,white", "255,0,0,red", "255,165,0,orange", "255,255,0,yellow", "0,255,0,lime", "0,255,255,aqua", "0,191,255,deep sky blue", "0,0,255,blue", "255,0,255,magenta"}; //https://flaviocopes.com/rgb-color-codes/#:~:text=A%20table%20summarizing%20the%20RGB%20color%20codes%2C%20which,%20%20%28178%2C34%2C34%29%20%2053%20more%20rows%20
+char g_colorType[][] = {"255,255,255,white", "78,145,253,blue", "255,123,123,red", "74,229,74,green", "248,237,98,yellow"}; //https://www.color-hex.com/color-palette/ search for warm color type
 int g_colorBuffer[MAXPLAYER][2][3],
 	g_colorCount[MAXPLAYER][2];
 
@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.649",
+	version = "4.650",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -496,7 +496,9 @@ public void OnMapStart()
 {
 	GetCurrentMap(g_map, sizeof(g_map));
 
-	Database.Connect(SQLConnect, "trueexpert", 0);
+	char name[10 + 1] = "trueexpert";
+	any data = 0;
+	Database.Connect(SQLConnect, name, data);
 
 	for(int i = 0; i <= 2; i++)
 	{
@@ -719,7 +721,8 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 		while(results.FetchRow() == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0)); //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
-			g_sql.Query(SQLRecalculateUserPoints, g_query, results.FetchInt(0), DBPrio_Normal);
+			data = results.FetchInt(0);
+			g_sql.Query(SQLRecalculateUserPoints, g_query, data, DBPrio_Normal);
 
 			continue;
 		}
@@ -786,13 +789,15 @@ void SQLGetPointsMaxs(Database db, DBResultSet results, const char[] error, any 
 		{
 			g_pointsMaxs = results.FetchInt(0);
 
-			for(int i = 1; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i) //pre-increment must work once
 			{
 				if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 				{
-					int steamid = GetSteamAccountID(i, true);
+					bool validate = true;
+					int steamid = GetSteamAccountID(i, validate);
 					Format(g_query, sizeof(g_query), "SELECT points FROM users WHERE steamid = %i LIMIT 1", steamid);
-					g_sql.Query(SQLGetPoints, g_query, GetClientSerial(i), DBPrio_Normal);
+					int serial = GetClientSerial(i);
+					g_sql.Query(SQLGetPoints, g_query, serial, DBPrio_Normal);
 				}
 
 				continue;
@@ -1052,7 +1057,7 @@ void rf_radiotxt(DataPack dp)
 
 	Format(message, sizeof(message), "\x01[%s] \x03%s\x01 %T: %T", points, param1, message, client, param2, client);
 
-	if(client > 0 && IsClientInGame(client) == true)
+	if(IsValidClient(client) == true)
 	{
 		int clients[MAXPLAYER] = {0, ...};
 		int count = 0;
@@ -1087,7 +1092,8 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	char model[PLATFORM_MAX_PATH] = "";
-	GetClientModel(client, model, PLATFORM_MAX_PATH);
+	int maxlen = PLATFORM_MAX_PATH;
+	GetClientModel(client, model, maxlen);
 
 	if(StrEqual(model, "models/player/ct_urban.mdl", false) == true || StrEqual(model, "models/player/t_phoenix.mdl", false) == true)
 	{
@@ -1109,16 +1115,34 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		g_class[client] = 4;
 	}
 
-	SetEntProp(client, Prop_Data, "m_nModelIndex", g_wModelPlayer[g_class[client]], 4, 0);
-	SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client], 4, 0);
+	PropType type = Prop_Data;
+	char prop[13 + 1] = "";
+	any value = 0;
+	int size = 4;
+	int element = 0;
+	Format(prop, sizeof(prop), "m_nModelIndex");
 
-	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], 255);
+	value = g_wModelPlayer[g_class[client]];
+	SetEntProp(client, type, prop, value, size, element);
+	Format(prop, sizeof(prop), "m_nSkin");
+	value = g_skinPlayer[client];
+	SetEntProp(client, type, prop, value, size, element);
 
-	SetEntityRenderMode(client, RENDER_TRANSALPHA); //maru is genius person who fix this bug. thanks maru for idea.
+	int r = g_colorBuffer[client][0][0];
+	int g = g_colorBuffer[client][0][1];
+	int b = g_colorBuffer[client][0][2];
+	int a = 255;
+	SetEntityRenderColor(client, r, g, b, a);
+
+	RenderMode mode = RENDER_TRANSALPHA;
+	SetEntityRenderMode(client, mode); //maru is genius person who fix this bug. thanks maru for idea.
 
 	if(g_devmap == false && g_clantagOnce[client] == false)
 	{
-		CS_GetClientClanTag(client, g_clantag[client][0], 256);
+		char buffer[256] = "";
+		Format(buffer, sizeof(buffer), "%s", g_clantag[client][0]);
+		int size2 = 256;
+		CS_GetClientClanTag(client, buffer, size2);
 		g_clantagOnce[client] = true;
 	}
 
@@ -1234,7 +1258,10 @@ void OnTeam(Event event, const char[] name, bool dontBroadcast)
 
 Action joinclass(int client, const char[] command, int argc)
 {
-	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE);
+	float interval = 1.0;
+	any data = client;
+	int flags = TIMER_FLAG_NO_MAPCHANGE;
+	CreateTimer(interval, timer_respawn, data, flags);
 
 	return Plugin_Continue;
 }
@@ -1319,7 +1346,8 @@ void Control(int client)
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTrikz", client);
 	menu.AddItem("trikz", g_buffer, gCV_trikz.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-	menu.Display(client, 20);
+	int time = 20;
+	menu.Display(client, time);
 
 	return;
 }
@@ -1330,11 +1358,14 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
+			int args = 0;
+			char fmt[5 + 1] = "";
+
 			switch(param2)
 			{
 				case 0:
 				{
-					CommandTop(param1, 0);
+					CommandTop(param1, args);
 				}
 
 				case 1:
@@ -1344,27 +1375,29 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 2:
 				{
-					FakeClientCommandEx(param1, "sm_js"); //faster cooamnd respond
+					Format(fmt, sizeof(fmt), "sm_js");
+					FakeClientCommandEx(param1, fmt); //faster cooamnd respond
 				}
 
 				case 3:
 				{
-					FakeClientCommandEx(param1, "sm_bs"); //faster command respond
+					Format(fmt, sizeof(fmt), "sm_bs");
+					FakeClientCommandEx(param1, fmt); //faster command respond
 				}
 
 				case 4:
 				{
-					CommandHud(param1, 0);
+					CommandHud(param1, args);
 				}
 
 				case 5:
 				{
-					CommandButton(param1, 0);
+					CommandButton(param1, args);
 				}
 
 				case 6:
 				{
-					CommandSpec(param1, 0);
+					CommandSpec(param1, args);
 				}
 
 				case 7:
@@ -1374,7 +1407,7 @@ int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				case 8:
 				{
-					CommandAfk(param1, 0);
+					CommandAfk(param1, args);
 				}
 
 				case 9:
@@ -1407,7 +1440,7 @@ Action ACLCPNUM(int client, const char[] command, int argc)
 		char arg[256] = "";
 		GetCmdArgString(arg, sizeof(arg));
 
-		ReplaceString(arg, sizeof(arg), "\"", "", true);
+		ReplaceString(arg, sizeof(arg), "\"", "", true); //somehow working here
 
 		int cpnum = StringToInt(arg, 10);
 
@@ -1550,11 +1583,14 @@ public void OnClientPutInServer(int client)
 
 	if(IsClientInGame(client) == true && g_dbPassed == true)
 	{
-		g_sql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(client), DBPrio_High);
+		char query[28 + 1] = "SELECT id FROM users LIMIT 1";
+		int serial = GetClientSerial(client);
+
+		g_sql.Query(SQLAddUser, query, serial, DBPrio_High);
 
 		int steamid = GetSteamAccountID(client, true);
 		Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
-		g_sql.Query(SQLGetPersonalRecord, g_query, GetClientSerial(client), DBPrio_Normal);
+		g_sql.Query(SQLGetPersonalRecord, g_query, serial, DBPrio_Normal);
 	}
 
 	g_menuOpened[client] = false;
@@ -1723,6 +1759,12 @@ public void OnClientDisconnect(int client)
 	ColorTeam(client, false);
 
 	int partner = g_partner[client];
+
+	if(g_devmap == false && IsValidPartner(client) == true && IsFakeClient(client) == false)
+	{
+		ResetFactory(partner);
+	}
+
 	g_partner[partner] = 0;
 
 	if(IsValidPartner(client) == true && g_menuOpened[partner] == true)
@@ -1744,10 +1786,10 @@ public void OnClientDisconnect(int client)
 		continue;
 	}
 
-	if(g_devmap == false && IsValidPartner(client) == true && IsFakeClient(client) == false)
+	/*if(g_devmap == false && IsValidPartner(client) == true && IsFakeClient(client) == false)
 	{
 		ResetFactory(partner);
-	}
+	}*/
 
 	for(int i = 0; i <= 1; i++)
 	{
@@ -2655,7 +2697,7 @@ void ColorTeam(int client, bool allowColor)
 			g_colorCount[client][0]++;
 			g_colorCount[partner][0]++;
 
-			if(g_colorCount[client][0] == 9)
+			if(g_colorCount[client][0] == sizeof(g_colorType))
 			{
 				g_colorCount[client][0] = 0;
 				g_colorCount[partner][0] = 0;
@@ -2723,7 +2765,7 @@ void ColorFlashbang(int client)
 
 		g_colorCount[client][1]++;
 
-		if(g_colorCount[client][1] == 9)
+		if(g_colorCount[client][1] == sizeof(g_colorType))
 		{
 			g_colorCount[client][1] = 0;
 		}
@@ -8181,7 +8223,7 @@ void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-a
 
 	if(autoflashbang == 1.0)
 	{
-		RequestFrame(rf_giveflashbang, client); //replays drops knife
+		RequestFrame(OnFrameGiveFlashbang, client); //replays drops knife
 	}
 
 	return;
@@ -8600,7 +8642,8 @@ MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/faf
 	GlobalForward hForward = new GlobalForward("Trikz_OnTeleport", ET_Ignore, Param_Cell, Param_Array);
 	Call_StartForward(hForward);
 	Call_PushCell(client);
-	Call_PushArray(origin, 3);
+	int size = 3;
+	Call_PushArray(origin, size);
 	Call_Finish();
 	delete hForward;
 	
@@ -8609,17 +8652,19 @@ MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/faf
 
 void FormatSeconds(float time, char[] format)
 {
+	int maxlength = 24;
+
 	//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
 	int hour = (RoundToFloor(time) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
 	int minute = (RoundToFloor(time) / 60) % 60;
 	int second = RoundToFloor(time) % 60;
 
-	Format(format, 24, "%02.i:%02.i:%02.i", hour, minute, second);
+	Format(format, maxlength, "%02.i:%02.i:%02.i", hour, minute, second);
 
 	return;
 }
 
-void rf_giveflashbang(int client)
+void OnFrameGiveFlashbang(int client)
 {
 	GiveFlashbang(client);
 
@@ -8812,7 +8857,8 @@ void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 		GetClientEyePosition(client, eyePos);
 		eyePos[2] -= 8;
 		TE_SetupBeamPoints(eyePos, origin, g_laser, 0, 0, 0, 0.1, 1.0, 1.0, 0, 0.0, {255, 255, 255, 255}, 0);
-		TE_SendToAll(0.0);
+		float delay = 0.0;
+		TE_SendToAll(delay);
 	}
 
 	return;
@@ -8820,12 +8866,15 @@ void ModelXYZ(int client, float origin[3], bool showmodel, bool showbeam)
 
 void Greetings(int client)
 {
-	if(IsClientInGame(client) == false)
+	if(IsValidClient(client) == false)
 	{
 		return;
 	}
 
-	CreateTimer(5.0, timer_greetings, client, TIMER_FLAG_NO_MAPCHANGE);
+	float interval = 5.0;
+	int flags = TIMER_FLAG_NO_MAPCHANGE;
+	any data = client;
+	CreateTimer(interval, timer_greetings, data, flags);
 
 	return;
 }
@@ -8837,8 +8886,10 @@ Action timer_greetings(Handle timer, int client)
 		return Plugin_Continue;
 	}
 
+	bool keyOnly = true;
+
 	g_kv.Rewind();
-	g_kv.GotoFirstSubKey(true);
+	g_kv.GotoFirstSubKey(keyOnly);
 
 	char section[16] = "", key[] = "Greetings", posColor[128] = "", exploded[15][8];
 	float xy[2] = {0.0, ...}, holdtime = 0.0, fxtime = 0.0, fadein = 0.0, fadeout = 0.0;
@@ -8884,7 +8935,7 @@ Action timer_greetings(Handle timer, int client)
 		continue;
 	}
 
-	while(g_kv.GotoNextKey(true) == true);
+	while(g_kv.GotoNextKey(keyOnly) == true);
 
 	SetHudTextParamsEx(xy[0], xy[1], holdtime, rgba[0], rgba[1], effect, fxtime, fadein, fadeout); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 	Format(g_buffer, sizeof(g_buffer), "%T", g_devmap == true ? "GreetingsPractice" : "GreetingsStatistics", client);
