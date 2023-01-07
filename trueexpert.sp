@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.650",
+	version = "4.651",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -7465,7 +7465,7 @@ void Devmap(bool force)
 	{
 		char float_[8] = "";
 
-		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] >= g_devmapCount[0])
+		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] > g_devmapCount[0])
 		{
 			if(g_devmap == true)
 			{
@@ -7497,10 +7497,13 @@ void Devmap(bool force)
 				}
 			}
 
-			CreateTimer(5.0, timer_changelevel, g_devmap == true ? false : true, 0);
+			float interval = 5.0;
+			any data = g_devmap == true ? false : true;
+			int flags = 0;
+			CreateTimer(interval, timer_changelevel, data, flags);
 		}
 
-		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] <= g_devmapCount[0])
+		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] < g_devmapCount[0])
 		{
 			if(g_devmap == true)
 			{
@@ -7574,7 +7577,9 @@ Action CommandTop(int client, int args)
 		return Plugin_Continue;
 	}
 
-	CreateTimer(0.1, timer_motd, client, TIMER_FLAG_NO_MAPCHANGE); //OnMapStart() is not work from first try.
+	float interval = 0.1;
+	int flags = TIMER_FLAG_NO_MAPCHANGE;
+	CreateTimer(interval, timer_motd, client, flags); //OnMapStart() is not work from first try.
 
 	return Plugin_Handled;
 }
@@ -7585,14 +7590,16 @@ Action timer_motd(Handle timer, int client)
 	{
 		ConVar hostname = FindConVar("hostname");
 
-		char hostnameBuffer[256] = "";
-		hostname.GetString(hostnameBuffer, sizeof(hostnameBuffer));
+		char title[256] = "";
+		hostname.GetString(title, sizeof(title));
 
-		char url[192] = "";
-		gCV_urlTop.GetString(url, sizeof(url));
-		Format(url, sizeof(url), "%s%s", url, g_map);
+		char msg[192] = "";
+		gCV_urlTop.GetString(msg, sizeof(msg));
+		Format(msg, sizeof(msg), "%s%s", msg, g_map);
 
-		ShowMOTDPanel(client, hostnameBuffer, url, MOTDPANEL_TYPE_URL); //https://forums.alliedmods.net/showthread.php?t=232476
+		int type = MOTDPANEL_TYPE_URL;
+
+		ShowMOTDPanel(client, title, msg, type); //https://forums.alliedmods.net/showthread.php?t=232476
 	}
 
 	return Plugin_Stop;
@@ -7636,7 +7643,8 @@ Action CommandAfk(int client, int args)
 					Format(g_buffer, sizeof(g_buffer), "%T", "No", i);
 					menu.AddItem("no", g_buffer);
 
-					menu.Display(i, 20);
+					int time = 20;
+					menu.Display(i, time);
 				}
 			}
 
@@ -7645,7 +7653,9 @@ Action CommandAfk(int client, int args)
 
 		g_afkTime = GetEngineTime();
 
-		CreateTimer(20.0, timer_afk, client, TIMER_FLAG_NO_MAPCHANGE);
+		float interval = 20.0;
+		int flags = TIMER_FLAG_NO_MAPCHANGE;
+		CreateTimer(interval, timer_afk, client, flags);
 
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
@@ -7811,7 +7821,8 @@ void HudMenu(int client)
 	g_menuOpenedHud[client] = true;
 
 	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
-	menu.SetTitle("Hud");
+	char fmt[3 + 1] = "Hud";
+	menu.SetTitle(fmt);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
 	menu.AddItem("vel", g_buffer, gCV_vel.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -7820,7 +7831,8 @@ void HudMenu(int client)
 	Format(g_buffer, sizeof(g_buffer), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
 	menu.AddItem("endmsg", g_buffer, gCV_endmsg.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-	menu.Display(client, 20);
+	int time = 20;
+	menu.Display(client, time);
 
 	return;
 }
@@ -8079,7 +8091,10 @@ void OnProjectileSpawnPost(int entity)
 
 		RequestFrame(FrameExplosionPrevent, entity);
 
-		CreateTimer(1.5, TimerProjectileRemove, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		float interval = 1.5;
+		any data = EntIndexToEntRef(entity);
+		int flags = TIMER_FLAG_NO_MAPCHANGE;
+		CreateTimer(interval, TimerProjectileRemove, data, flags);
 
 		if(g_skinFlashbang[client] > 0)
 		{
@@ -8097,7 +8112,9 @@ void OnProjectileSpawnPost(int entity)
 
 			g_silentKnife = true;
 
-			FakeClientCommandEx(client, "use weapon_knife");
+			char fmt[16 + 1] = "";
+			Format(fmt, sizeof(fmt), "use weapon_knife");
+			FakeClientCommandEx(client, fmt);
 			
 			g_flashbangTime[client] = GetEngineTime();
 
