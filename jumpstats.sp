@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh (Nick Jurevich)",
 	description = "Measures distance difference between two vectors.",
-	version = "0.272",
+	version = "0.273",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -604,6 +604,7 @@ Action TouchClient(int client, int other)
 		if(delta == 0.031250) //Runboost?
 		{
 			g_runboost[client] = true;
+			g_runboost[other] = true;
 
 			g_rbBooster[client] = other;
 
