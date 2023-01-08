@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.651",
+	version = "4.652",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -2342,6 +2342,8 @@ void Partner(int client)
 			return;
 		}
 
+		int time = 20;
+
 		if(IsValidPartner(client) == false)
 		{
 			Menu menu = new Menu(partner_handler);
@@ -2379,7 +2381,7 @@ void Partner(int client)
 
 				case true:
 				{
-					menu.Display(client, 20);
+					menu.Display(client, time);
 				}
 			}
 			
@@ -2401,7 +2403,7 @@ void Partner(int client)
 			Format(g_buffer, sizeof(g_buffer), "%T", "No", client);
 			menu.AddItem("", g_buffer);
 
-			menu.Display(client, 20);
+			menu.Display(client, time);
 		}
 	}
 
@@ -2433,7 +2435,8 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			Format(g_buffer, sizeof(g_buffer), "%T", "No", partner);
 			menu2.AddItem(item, g_buffer);
 
-			menu2.Display(partner, 20);
+			int time = 20;
+			menu2.Display(partner, time);
 		}
 
 		case MenuAction_End:
@@ -2490,6 +2493,8 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 
 							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", client, iPartner, iPartner, client, g_map);
 							g_sql.Query(SQLGetPartnerRecord, g_query, GetClientSerial(param1), DBPrio_Normal);
+
+							RequestFrame(OnFrameAskForColor, partner);
 						}
 
 						else if(IsValidPartner(partner) == true)
@@ -2513,6 +2518,56 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 					Format(g_buffer, sizeof(g_buffer), "%T", "PartnerDeclined", param1, name);
 					PrintToConsole(param1, "%s", g_buffer);
 				}
+			}
+		}
+
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+	}
+
+	return view_as<int>(action);
+}
+
+void OnFrameAskForColor(int client)
+{
+	Menu menu = new Menu(MenuAskForColor);
+	Format(g_buffer, sizeof(g_buffer), "%T", "TeamColor", client);
+	menu.SetTitle("%s", g_buffer);
+
+	char buffers[4][16];
+	char str[1 + 1] = "";
+
+	for(int i = 1; i < sizeof(g_colorType); i++)
+	{
+		IntToString(i, str, sizeof(str));
+		ExplodeString(g_colorType[i], ",", buffers, 4, 16, false);
+		buffers[3][0] = CharToUpper(buffers[3][0]);
+		Format(buffers[3], 16, "%T", buffers[3], client);
+		menu.AddItem(str, buffers[3]);
+	}
+
+	int time = 20;
+	menu.Display(client, time);
+
+	return;
+}
+
+int MenuAskForColor(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char item[1 + 1] = "";
+			menu.GetItem(param2, item, sizeof(item));
+
+			int num = StringToInt(item);
+
+			for(int i = 1; i <= num; i++)
+			{
+				ColorTeam(param1, true);
 			}
 		}
 
@@ -3349,9 +3404,9 @@ void PlayerSkin(int client)
 	Format(g_buffer, sizeof(g_buffer), "%T", "Default", client);
 	menu.AddItem("default_ps", g_buffer, g_skinPlayer[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	Format(g_buffer, sizeof(g_buffer), "%T", "Shadow", client);
-	menu.AddItem("shadow_ps", g_buffer, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("shadow_ps", g_buffer, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	Format(g_buffer, sizeof(g_buffer), "%T", "Bright", client);
-	menu.AddItem("bright_ps", g_buffer, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("bright_ps", g_buffer, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -3402,14 +3457,14 @@ int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
 
 				else if(StrEqual(item, "shadow_ps", false) == true)
 				{
-					g_skinPlayer[param1] = 2;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 2, 4, 0);
+					g_skinPlayer[param1] = 1;
+					SetEntProp(param1, Prop_Data, "m_nSkin", 1, 4, 0);
 				}
 
 				else if(StrEqual(item, "bright_ps", false) == true)
 				{
-					g_skinPlayer[param1] = 1;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 1, 4, 0);
+					g_skinPlayer[param1] = 2;
+					SetEntProp(param1, Prop_Data, "m_nSkin", 2, 4, 0);
 				}
 
 				IntToString(g_skinPlayer[param1], str, sizeof(str));
@@ -7465,7 +7520,7 @@ void Devmap(bool force)
 	{
 		char float_[8] = "";
 
-		if((g_devmapCount[1] > 0 || g_devmapCount[0] > 0) && g_devmapCount[1] > g_devmapCount[0])
+		if(g_devmapCount[1] > g_devmapCount[0])
 		{
 			if(g_devmap == true)
 			{
@@ -7503,7 +7558,7 @@ void Devmap(bool force)
 			CreateTimer(interval, timer_changelevel, data, flags);
 		}
 
-		else if((g_devmapCount[1] || g_devmapCount[0]) && g_devmapCount[1] < g_devmapCount[0])
+		else if(g_devmapCount[1] < g_devmapCount[0])
 		{
 			if(g_devmap == true)
 			{
