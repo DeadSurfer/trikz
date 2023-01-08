@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.654",
+	version = "4.655",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -945,12 +945,12 @@ Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int players
 	dp.WriteCell(GetClientSerial(client));
 	dp.WriteCell(StrContains(msgBuffer, "_All") != -1);
 	dp.WriteString(text);
-	RequestFrame(frame_SayText2, dp);
+	RequestFrame(FrameSayText2, dp);
 
 	return Plugin_Handled;
 }
 
-void frame_SayText2(DataPack dp)
+void FrameSayText2(DataPack dp)
 {
 	dp.Reset();
 
@@ -1020,12 +1020,12 @@ Action OnRadioMessage(UserMsg msg_id, BfRead msg, const int[] players, int playe
 	dp.WriteString(param2);
 	dp.WriteString(param3);
 	dp.WriteString(param4);
-	RequestFrame(rf_radiotxt, dp);
+	RequestFrame(FrameRadioTXT, dp);
 
 	return Plugin_Handled;
 }
 
-void rf_radiotxt(DataPack dp)
+void FrameRadioTXT(DataPack dp)
 {
 	dp.Reset();
 
@@ -1261,12 +1261,12 @@ Action joinclass(int client, const char[] command, int argc)
 	float interval = 1.0;
 	any data = client;
 	int flags = TIMER_FLAG_NO_MAPCHANGE;
-	CreateTimer(interval, timer_respawn, data, flags);
+	CreateTimer(interval, TimerRespawn, data, flags);
 
 	return Plugin_Continue;
 }
 
-Action timer_respawn(Handle timer, int client)
+Action TimerRespawn(Handle timer, int client)
 {
 	if(IsClientInGame(client) == true && GetClientTeam(client) != CS_TEAM_SPECTATOR && IsPlayerAlive(client) == false)
 	{
@@ -1320,7 +1320,7 @@ Action showbriefing(int client, const char[] command, int argc)
 
 void Control(int client)
 {
-	Menu menu = new Menu(menu_info_handler);
+	Menu menu = new Menu(MenuInfoHandler);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "Control", client);
 	menu.SetTitle("%s", g_buffer);
@@ -1352,7 +1352,7 @@ void Control(int client)
 	return;
 }
 
-int menu_info_handler(Menu menu, MenuAction action, int param1, int param2)
+int MenuInfoHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -1483,7 +1483,7 @@ void Checkpoint(int client)
 {
 	if(g_devmap == true)
 	{
-		Menu menu = new Menu(checkpoint_handler);
+		Menu menu = new Menu(CheckpointMenuHandler);
 		menu.SetTitle("%T", "Checkpoint", client);
 
 		Format(g_buffer, sizeof(g_buffer), "%T", "CP-save", client);
@@ -1508,7 +1508,7 @@ void Checkpoint(int client)
 	return;
 }
 
-int checkpoint_handler(Menu menu, MenuAction action, int param1, int param2)
+int CheckpointMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2143,7 +2143,7 @@ void Trikz(int client)
 {
 	g_menuOpened[client] = true;
 
-	Menu menu = new Menu(trikz_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
+	Menu menu = new Menu(TrikzMenuHandler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End); //https://wiki.alliedmods.net/Menus_Step_By_Step_(SourceMod_Scripting)
 	menu.SetTitle("%T", "Trikz", client);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", g_block[client] == true ? "BlockMenuON" : "BlockMenuOFF", client);
@@ -2183,7 +2183,7 @@ void Trikz(int client)
 	return;
 }
 
-int trikz_handler(Menu menu, MenuAction action, int param1, int param2)
+int TrikzMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2346,7 +2346,7 @@ void Partner(int client)
 
 		if(IsValidPartner(client) == false)
 		{
-			Menu menu = new Menu(partner_handler);
+			Menu menu = new Menu(PartnerMenuHandler);
 			menu.SetTitle("%T", "ChoosePartner", client);
 
 			char name[MAX_NAME_LENGTH] = "";
@@ -2389,7 +2389,7 @@ void Partner(int client)
 
 		else if(IsValidPartner(client) == true)
 		{			
-			Menu menu = new Menu(cancelpartner_handler);
+			Menu menu = new Menu(CancelPartnerMenuHandler);
 
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(g_partner[client], name, sizeof(name));
@@ -2410,7 +2410,7 @@ void Partner(int client)
 	return;
 }
 
-int partner_handler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
+int PartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
@@ -2419,7 +2419,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 			char item[4] = "";
 			menu.GetItem(param2, item, sizeof(item));
 			
-			Menu menu2 = new Menu(askpartner_handle);
+			Menu menu2 = new Menu(AskPartnerMenuHandler);
 
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(param1, name, sizeof(name));
@@ -2448,7 +2448,7 @@ int partner_handler(Menu menu, MenuAction action, int param1, int param2) //para
 	return view_as<int>(action);
 }
 
-int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
+int AskPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) //param1 = client; param2 = server -> partner
 {
 	switch(action)
 	{
@@ -2494,7 +2494,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", client, iPartner, iPartner, client, g_map);
 							g_sql.Query(SQLGetPartnerRecord, g_query, GetClientSerial(param1), DBPrio_Normal);
 
-							RequestFrame(OnFrameAskForColor, partner);
+							RequestFrame(FrameAskColor, partner);
 						}
 
 						else if(IsValidPartner(partner) == true)
@@ -2530,7 +2530,7 @@ int askpartner_handle(Menu menu, MenuAction action, int param1, int param2) //pa
 	return view_as<int>(action);
 }
 
-void OnFrameAskForColor(int client)
+void FrameAskColor(int client)
 {
 	Menu menu = new Menu(MenuAskForColor);
 	Format(g_buffer, sizeof(g_buffer), "%T", "TeamColor", client);
@@ -2580,7 +2580,7 @@ int MenuAskForColor(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-int cancelpartner_handler(Menu menu, MenuAction action, int param1, int param2)
+int CancelPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -2941,8 +2941,8 @@ void DoRestart(int client)
 		int partner = g_partner[client];
 		float vel[3] = {0.0, ...};
 
-		CreateTimer(0.1, timer_resetfactory, client, TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.1, timer_resetfactory, partner, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.1, TimerResetFactory, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.1, TimerResetFactory, partner, TIMER_FLAG_NO_MAPCHANGE);
 
 		GlobalForward hForward = new GlobalForward("Trikz_OnRestart", ET_Hook, Param_Cell, Param_Cell);
 		Call_StartForward(hForward);
@@ -3345,7 +3345,7 @@ void Skin(int client)
 	char display[14] = "";
 	char fmt[5] = "Skin";
 
-	Menu menu = new Menu(skinmenu_hanlder);
+	Menu menu = new Menu(SkinClassMenuHandler);
 	//char fmt[4] = "Skin";
 	menu.SetTitle("%s", fmt);
 
@@ -3365,7 +3365,7 @@ void Skin(int client)
 	return;
 }
 
-int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2)
+int SkinClassMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3396,7 +3396,7 @@ int skinmenu_hanlder(Menu menu, MenuAction action, int param1, int param2)
 
 void PlayerSkin(int client)
 {
-	Menu menu = new Menu(menuskinchoose_handler);
+	Menu menu = new Menu(SkinTypeMenuHandler);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "PlayerSkin", client);
 	menu.SetTitle(g_buffer);
@@ -3416,7 +3416,7 @@ void PlayerSkin(int client)
 
 void FlashbangSkin(int client)
 {
-	Menu menu = new Menu(menuskinchoose_handler);
+	Menu menu = new Menu(SkinTypeMenuHandler);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "FlashbangSkin", client);
 	menu.SetTitle(g_buffer);
@@ -3436,7 +3436,7 @@ void FlashbangSkin(int client)
 	return;
 }
 
-int menuskinchoose_handler(Menu menu, MenuAction action, int param1, int param2)
+int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -3543,7 +3543,7 @@ Action CommandMacro(int client, int args)
 	return Plugin_Handled;
 }
 
-Action timer_resetfactory(Handle timer, int client)
+Action TimerResetFactory(Handle timer, int client)
 {
 	if(IsClientInGame(client) == true)
 	{
@@ -4120,7 +4120,7 @@ void ZoneEditor(int client)
 	g_zoneCursor[client] = false;
 	g_ZoneEditorCP[client] = 1;
 
-	Menu menu = new Menu(zones_handler);
+	Menu menu = new Menu(ZoneEditorMainMenuHandler);
 	menu.SetTitle("%T", "ZoneEditor", client);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorAddButton", client);
 	menu.AddItem("add", g_buffer);
@@ -4133,7 +4133,7 @@ void ZoneEditor(int client)
 	return;
 }
 
-int zones_handler(Menu menu, MenuAction action, int param1, int param2)
+int ZoneEditorMainMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4195,7 +4195,7 @@ void ZoneAdd(int client)
 	g_ZoneEditorCP[client] = 1;
 	g_ZoneEditorVIA[client] = 0;
 
-	Menu menu = new Menu(zones_add_handler);
+	Menu menu = new Menu(ZoneEditorAddZoneMenuHandler);
 	menu.SetTitle("%T", "ZoneEditorAdd", client);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStartZoneButton", client);
 	menu.AddItem("add_start", g_buffer);
@@ -4209,7 +4209,7 @@ void ZoneAdd(int client)
 	return;
 }
 
-int zones_add_handler(Menu menu, MenuAction action, int param1, int param2)
+int ZoneEditorAddZoneMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4264,7 +4264,7 @@ int zones_add_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void ZoneEdit(int client)
 {
-	Menu menu = new Menu(zones_edit_handler);
+	Menu menu = new Menu(ZoneEditorEditZoneMenuHandler);
 	menu.SetTitle("%T", "ZoneEditorEdit", client);
 
 	if(g_zoneHave[0] == true)
@@ -4312,7 +4312,7 @@ void ZoneEdit(int client)
 
 void ZoneCreator(int client)
 {
-	Menu menu = new Menu(zones_creator_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(ZoneEditorCreatorMenuHandler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorUse", client);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
 	menu.AddItem("step1", g_buffer);
@@ -4335,7 +4335,7 @@ void ZoneCreator(int client)
 	return;
 }
 
-int zones_creator_handler(Menu menu, MenuAction action, int param1, int param2)
+int ZoneEditorCreatorMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4414,7 +4414,7 @@ int zones_creator_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
+int ZoneEditorEditZoneMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4490,7 +4490,7 @@ int zones_edit_handler(Menu menu, MenuAction action, int param1, int param2)
 
 void ZoneEditorStart(int client)
 {
-	Menu menu = new Menu(MenuHandlerZones2, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(ZoneEditortZoneMenuHandler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorStartZone", client);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
@@ -4530,7 +4530,7 @@ void ZoneEditorStart(int client)
 
 void ZoneEditorEnd(int client)
 {
-	Menu menu = new Menu(MenuHandlerZones2, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(ZoneEditortZoneMenuHandler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorEndZone", client);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
@@ -4570,7 +4570,7 @@ void ZoneEditorEnd(int client)
 
 void ZoneEditorCP(int client, int cpnum)
 {
-	Menu menu = new Menu(MenuHandlerZones2, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(ZoneEditortZoneMenuHandler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	menu.SetTitle("%T", "ZoneEditorCPZone", client, cpnum);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorStep1", client, g_step[client]);
@@ -4612,7 +4612,7 @@ void ZoneEditorCP(int client, int cpnum)
 	return;
 }
 
-int MenuHandlerZones2(Menu menu, MenuAction action, int param1, int param2)
+int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4770,7 +4770,7 @@ int MenuHandlerZones2(Menu menu, MenuAction action, int param1, int param2)
 
 void ZoneTP(int client)
 {
-	Menu menu = new Menu(MenuHandlerZonesTP);
+	Menu menu = new Menu(ZoneEditorTPMenuHandler);
 	menu.SetTitle("%T", "ZoneEditorTP", client);
 
 	if(g_zoneHave[0] == true)
@@ -4811,7 +4811,7 @@ void ZoneTP(int client)
 	return;
 }
 
-int MenuHandlerZonesTP(Menu menu, MenuAction action, int param1, int param2)
+int ZoneEditorTPMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -4907,8 +4907,12 @@ void CPSetup()
 	g_cpCount = 0;
 	g_zoneHave[2] = false;
 
-	Format(g_query, sizeof(g_query), "SELECT * FROM cp LIMIT 1");
-	g_sql.Query(SQLCPSetup, g_query, _, DBPrio_Normal);
+	char format[24 + 1] = "";
+	Format(format, sizeof(format), "SELECT * FROM cp LIMIT 1");
+
+	Format(g_query, sizeof(g_query), format);
+	DBPriority prio = DBPrio_Normal;
+	g_sql.Query(SQLCPSetup, g_query, _, prio);
 
 	return;
 }
@@ -5118,8 +5122,8 @@ Action OnZoneEndTouch(int entity, int other)
 		g_timerReadyToStart[other] = false;
 		g_timerReadyToStart[partner] = false;
 
-		CreateTimer(0.1, timer_clantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.1, timer_clantag, partner, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.1, TimerClantag, other, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.1, TimerClantag, partner, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
 		for(int i = 1; i <= g_cpCount; ++i)
 		{
@@ -5143,7 +5147,9 @@ Action OnZoneEndTouch(int entity, int other)
 		delete hForward;
 
 		Format(g_query, sizeof(g_query), "SELECT * FROM records LIMIT 1");
-		g_sql.Query(SQLSetTries, g_query, GetClientSerial(other), DBPrio_High);
+		int serial = GetClientSerial(other);
+		DBPriority prio = DBPrio_High;
+		g_sql.Query(SQLSetTries, g_query, serial, prio);
 	}
 
 	return Plugin_Continue;
@@ -6692,7 +6698,7 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 		beam[ix][7] = end[ix];
 
 		//calculate all zone edges
-		for(int j = 1; j <= 6; ++j)
+		for(int j = 1; j <= 6; ++j) //pre increment working as postincrement
 		{
 			for(int k = 0; k <= 2; k++)
 			{
@@ -6732,7 +6738,7 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 
 		for(int j = 0; j < (g_devmap == true ? 12 : 4); j++) //3d 12, 2d 4
 		{			
-			TE_SetupBeamPoints(beam[ix][pairs[j][1]], beam[ix][pairs[j][0]], g_devmap == true ? g_laserBeam : g_zoneModel[ix > 2 == true ? 2 : ix], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
+			TE_SetupBeamPoints(beam[ix][pairs[j][1]], beam[ix][pairs[j][0]], g_devmap == true ? g_laserBeam : g_zoneModel[ix > 2 ? 2 : ix], 0, 0, 0, life, size, size, 0, 0.0, color, speed); //https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-zones.sp#L3050
 			TE_SendToClient(client, 0.0);
 
 			continue;
@@ -7009,7 +7015,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				EmitSoundToAll("items/gift_drop.wav", client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
 			}
 
-			g_pingTimer[client] = CreateTimer(5.0, timer_removePing, client, TIMER_FLAG_NO_MAPCHANGE);
+			g_pingTimer[client] = CreateTimer(5.0, TimerClenupPing, client, TIMER_FLAG_NO_MAPCHANGE);
 
 			g_pingModel[client] = EntIndexToEntRef(entity);
 		}
@@ -7340,7 +7346,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	float fix = GetEngineTime() - g_flashbangTime[client];
 
-	if(fix >= 0.11 && g_flashbangDoor[client][0] == true)
+	if(fix >= 0.10 && g_flashbangDoor[client][0] == true) // 0.1 looks like 0.1999...
 	{
 		FakeClientCommandEx(client, "use weapon_flashbang");
 
@@ -7449,7 +7455,7 @@ Action CommandDevmap(int client, int args)
 
 		g_devmapTime = GetEngineTime();
 
-		CreateTimer(20.0, timer_devmap, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(20.0, TimerDevamp, TIMER_FLAG_NO_MAPCHANGE);
 
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
@@ -7512,7 +7518,7 @@ int devmap_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-Action timer_devmap(Handle timer)
+Action TimerDevamp(Handle timer)
 {
 	//devmap idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	Devmap(true);
@@ -7561,7 +7567,7 @@ void Devmap(bool force)
 			float interval = 5.0;
 			any data = g_devmap == true ? false : true;
 			int flags = 0;
-			CreateTimer(interval, timer_changelevel, data, flags);
+			CreateTimer(interval, TimerChangelevel, data, flags);
 		}
 
 		else if(g_devmapCount[1] < g_devmapCount[0])
@@ -7608,7 +7614,7 @@ void Devmap(bool force)
 	return;
 }
 
-Action timer_changelevel(Handle timer, bool value)
+Action TimerChangelevel(Handle timer, bool value)
 {
 	for(int i = 1; i <= MaxClients; ++i)
 	{
@@ -7640,12 +7646,12 @@ Action CommandTop(int client, int args)
 
 	float interval = 0.1;
 	int flags = TIMER_FLAG_NO_MAPCHANGE;
-	CreateTimer(interval, timer_motd, client, flags); //OnMapStart() is not work from first try.
+	CreateTimer(interval, TimerMotd, client, flags); //OnMapStart() is not work from first try.
 
 	return Plugin_Handled;
 }
 
-Action timer_motd(Handle timer, int client)
+Action TimerMotd(Handle timer, int client)
 {
 	if(IsClientInGame(client) == true)
 	{
@@ -7696,7 +7702,7 @@ Action CommandAfk(int client, int args)
 
 					g_voters++;
 
-					Menu menu = new Menu(afk_handler);
+					Menu menu = new Menu(MenuCallbackAFK);
 					menu.SetTitle("%T", "AreYouHere?", i);
 
 					Format(g_buffer, sizeof(g_buffer), "%T", "Yes", i);
@@ -7716,7 +7722,7 @@ Action CommandAfk(int client, int args)
 
 		float interval = 20.0;
 		int flags = TIMER_FLAG_NO_MAPCHANGE;
-		CreateTimer(interval, timer_afk, client, flags);
+		CreateTimer(interval, TimerAFK, client, flags);
 
 		char name[MAX_NAME_LENGTH] = "";
 		GetClientName(client, name, sizeof(name));
@@ -7742,7 +7748,7 @@ Action CommandAfk(int client, int args)
 	return Plugin_Handled;
 }
 
-int afk_handler(Menu menu, MenuAction action, int param1, int param2)
+int MenuCallbackAFK(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -7777,7 +7783,7 @@ int afk_handler(Menu menu, MenuAction action, int param1, int param2)
 	return view_as<int>(action);
 }
 
-Action timer_afk(Handle timer, int client)
+Action TimerAFK(Handle timer, int client)
 {
 	//afk idea by expert zone. thanks to ed and maru. thanks to lon to give tp idea for server i could made it like that "profesional style".
 	AFK(client, true);
@@ -7881,7 +7887,7 @@ void HudMenu(int client)
 {
 	g_menuOpenedHud[client] = true;
 
-	Menu menu = new Menu(hud_handler, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
+	Menu menu = new Menu(MenuCallbackHUD, MenuAction_Start | MenuAction_Select | MenuAction_Display | MenuAction_Cancel | MenuAction_End);
 	char fmt[3 + 1] = "Hud";
 	menu.SetTitle(fmt);
 
@@ -7898,7 +7904,7 @@ void HudMenu(int client)
 	return;
 }
 
-int hud_handler(Menu menu, MenuAction action, int param1, int param2)
+int MenuCallbackHUD(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -8369,7 +8375,7 @@ bool TraceFilterDontHitSelf(int entity, int contentsMask, any data)
 	return entity != data;
 }
 
-Action timer_removePing(Handle timer, int client)
+Action TimerClenupPing(Handle timer, int client)
 {
 	int entity = EntRefToEntIndex(g_pingModel[client]);
 
@@ -8380,7 +8386,7 @@ Action timer_removePing(Handle timer, int client)
 
 		if(StrEqual(log, "prop_dynamic", false) == false)
 		{
-			LogMessage("timer_removePing: %s", log);
+			LogMessage("TimerClenupPing: %s", log);
 		}
 
 		RemoveEntity(entity);
@@ -8422,7 +8428,7 @@ Action OnSound(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MA
 	return Plugin_Continue;
 }
 
-Action timer_clantag(Handle timer, int client)
+Action TimerClantag(Handle timer, int client)
 {
 	if(IsValidClient(client) == true)
 	{
@@ -8584,12 +8590,12 @@ int Stuck(int client)
 	GetClientMins(client, mins);
 	GetClientMaxs(client, maxs);
 	GetClientAbsOrigin(client, origin);
-	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client); //Skiper, Gurman idea, plugin 2020 year.
+	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TraceDontHitSelf, client); //Skiper, Gurman idea, plugin 2020 year.
 
 	return TR_GetEntityIndex();
 }
 
-bool TR_donthitself(int entity, int mask, int client)
+bool TraceDontHitSelf(int entity, int mask, int client)
 {
 	if(LibraryExists("trueexpert-entityfilter") == true)
 	{
@@ -8957,12 +8963,12 @@ void Greetings(int client)
 	float interval = 5.0;
 	int flags = TIMER_FLAG_NO_MAPCHANGE;
 	any data = client;
-	CreateTimer(interval, timer_greetings, data, flags);
+	CreateTimer(interval, TimerGreetings, data, flags);
 
 	return;
 }
 
-Action timer_greetings(Handle timer, int client)
+Action TimerGreetings(Handle timer, int client)
 {
 	if(IsClientInGame(client) == false)
 	{
