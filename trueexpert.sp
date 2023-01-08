@@ -222,7 +222,7 @@ float g_mlsVel[MAXPLAYER][2][3],
 		g_mlsDistance[MAXPLAYER][2][3];
 int g_mlsCount[MAXPLAYER] = {0, ...},
 	g_mlsFlyer[MAXPLAYER] = {0, ...};
-char g_mlsPrint[MAXPLAYER][100][256];
+ArrayList g_mlsBuffer[MAXPLAYER] = {null, ...};
 bool g_mlstats[MAXPLAYER] = {false, ...},
 		g_teleported[MAXPLAYER] = {false, ...};
 
@@ -294,7 +294,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.652",
+	version = "4.653",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -7400,6 +7400,12 @@ Action OnProjectileStartTouch(int entity, int other)
 
 				g_mlsCount[other]++;
 
+				if(g_mlsCount[other] == 1)
+				{
+					delete g_mlsBuffer[other];
+					g_mlsBuffer[other] = new ArrayList(64, 0); //sizeof of enum stuct
+				}
+
 				g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 			}
 		}
@@ -8448,7 +8454,9 @@ void MLStats(int client, bool ground)
 
 	int count = g_mlsCount[client];
 
-	Format(g_mlsPrint[client][count], 256, "%i. %.0f - %.0f\n", count, velPre, velPost);
+	char buffer[256] = "";
+	Format(buffer, sizeof(buffer), "%i. %.0f - %.0f\n", count, velPre, velPost);
+	g_mlsBuffer[client].PushString(buffer);
 
 	char print[4][256];
 
@@ -8456,7 +8464,8 @@ void MLStats(int client, bool ground)
 	{
 		for(int i = 1; i <= count <= 10; ++i)
 		{
-			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
+			g_mlsBuffer[client].GetString(i - 1, buffer, sizeof(buffer));
+			Format(print[0], 256, "%s%s", print[0], buffer);
 
 			continue;
 		}
@@ -8466,12 +8475,14 @@ void MLStats(int client, bool ground)
 	{
 		for(int i = 1; i <= 10; ++i)
 		{
-			Format(print[0], 256, "%s%s", print[0], g_mlsPrint[client][i]);
+			g_mlsBuffer[client].GetString(i - 1, buffer, sizeof(buffer));
+			Format(print[0], 256, "%s%s", print[0], buffer);
 
 			continue;
 		}
 
-		Format(print[0], 256, "%s...\n%s", print[0], g_mlsPrint[client][count]);
+		g_mlsBuffer[client].GetString(count - 1, buffer, sizeof(buffer));
+		Format(print[0], 256, "%s...\n%s", print[0], buffer);
 	}
 
 	int flyer = g_mlsFlyer[client];
