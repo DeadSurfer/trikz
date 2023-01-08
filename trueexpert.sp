@@ -195,8 +195,6 @@ float g_nadeVel[MAXPLAYER][3],
 		g_skyVel[MAXPLAYER][3];
 int g_entityButtons[MAXPLAYER] = {0, ...};
 
-//ConVar g_turbophysics;
-
 //AFK system
 float g_afkTime = 0.0;
 bool g_afk[MAXPLAYER] = {false, ...};
@@ -294,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.653",
+	version = "4.654",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -513,8 +511,14 @@ public void OnMapStart()
 				for(int l = 1; l <= MAXPLAYERS; l++)
 				{
 					g_cpPosTemp[l][k][j][i] = 0.0;
+
+					continue;
 				}
+
+				continue;
 			}
+
+			continue;
 		}
 
 		continue;
@@ -626,10 +630,6 @@ public void OnMapStart()
 
 		continue;
 	}
-
-	//g_turbophysics = FindConVar("sv_turbophysics"); //thnaks to maru.
-
-	//RecalculatePoints();
 
 	g_top10ac = 0.0;
 
