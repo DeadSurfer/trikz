@@ -899,4 +899,24 @@
 	{
 		"lv"	"!trikz - Galvenais komandu sarakts."
 	}
+	"TeamColor"
+	{
+		"lv"	"Izvēlieties komandas krāsu"
+	}
+	"Blue"
+	{
+		"lv"	"Zils"
+	}
+	"Red"
+	{
+		"lv"	"Sarkans"
+	}
+	"Green"
+	{
+		"lv"	"Zaļš"
+	}
+	"Yellow"
+	{
+		"lv"	"Dzeltens"
+	}
 }
