@@ -899,4 +899,24 @@
 	{
 		"en"	"!trikz - Main menu."
 	}
+	"TeamColor"
+	{
+		"en"	"Choose team color"
+	}
+	"Blue"
+	{
+		"en"	"Blue"
+	}
+	"Red"
+	{
+		"en"	"Red"
+	}
+	"Green"
+	{
+		"en"	"Green"
+	}
+	"Yellow"
+	{
+		"en"	"Yellow"
+	}
 }
