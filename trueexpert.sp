@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.655",
+	version = "4.656",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -3692,8 +3692,10 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 
 	if(strlen(error) > 0)
 	{
-		id = GetSteamAccountID(client, true);
-		PrintToServer("SQLDeleteZone [%i] by %N [%i]: %s", cpnum, client, id, error);
+		char auth[32] = "";
+		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
+
+		PrintToServer("SQLDeleteZone - CP: [%i] Type: [%i] Name: [%N] SteamID64: [%s]: Error: [%s]", cpnum, type, client, auth, error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3751,18 +3753,20 @@ Action AdminCommandDeleteAllCP(int client, int args)
 void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any data)
 {
 	int client = GetClientFromSerial(data);
-	int id = GetSteamAccountID(client, true);
+
+	char auth[32] = "";
+	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLDeleteAllCP %N [%i]: %s", client, id, error);
+		PrintToServer("SQLDeleteAllCP - Name: [%N] SteamID64: [%s]: Error: [%s]", client, auth, error);
 	}
 
 	else if(strlen(error) == 0)
 	{
 		if(results.HasResults == false)
 		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by %N [%i]", g_map, client, id);
+			LogToFileEx("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by [%N] SteamID64: [%s]", g_map, client, auth);
 
 			PrintToServer("All checkpoints are deleted on current map.");
 		}
@@ -3923,7 +3927,10 @@ void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPac
 
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLTierRemove (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client, true), error);
+		char auth[32] = "";
+		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
+
+		PrintToServer("SQLTierRemove - Tier: [%i] Name: [%N] SteamID64: [%s]: Error: [%s]", tier, client, auth, error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3945,16 +3952,19 @@ void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPac
 	int tier = data.ReadCell();
 	delete data;
 
+	char auth[32] = "";
+	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
+
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLTierInsert (%i) %N [%i]: %s", tier, client, GetSteamAccountID(client, true), error);
+		PrintToServer("SQLTierInsert - Tier: [%i] Name: [%N] SteamID64: [%s]: Error: [%s]", tier, client, auth, error);
 	}
 
 	else if(strlen(error) == 0)
 	{
 		if(results.HasResults == false)
 		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "Tier %i is set for %s. edited by %N [%i]", tier, g_map, client, GetSteamAccountID(client, true));
+			LogToFile("addons/sourcemod/logs/trueexpert.log", "Tier: [%i] is set for MAP: [%s]. Edited by [%N] SteamID64: [%s]", tier, g_map, client, auth);
 
 			PrintToServer("Tier %i is set for %s.", tier, g_map);
 		}
@@ -3971,9 +3981,12 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 	int cpnum = data.ReadCell();
 	delete data;
 
+	char auth[32] = "";
+	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
+
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQLSetZone (%i) %N [%i]: %s", cpnum, client, GetSteamAccountID(client, true), error);
+		PrintToServer("SQLSetZone - CP: [%i] Name: [%N] SteamID64: [%s]: Error: [%s]", cpnum, client, auth, error);
 	}
 
 	else if(strlen(error) == 0)
@@ -3998,7 +4011,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				g_center[cpnum][2] -= FloatAbs((g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0);
 				
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, GetSteamAccountID(client, true));
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, auth);
 			}
 
 			else if(type == 1)
@@ -4019,7 +4032,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				g_center[cpnum][2] -= FloatAbs((g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0);
 
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, GetSteamAccountID(client, true));
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, auth);
 			}
 
 			else if(type == 2)
@@ -4042,7 +4055,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				CPSetup();
 
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by %N [%i]", cpnum, g_cpPos[cpnum][0][0], g_cpPos[cpnum][0][1], g_cpPos[cpnum][0][2], g_cpPos[cpnum][1][0], g_cpPos[cpnum][1][1], g_cpPos[cpnum][1][2], g_map, client, GetSteamAccountID(client, true));
+				LogToFile("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", cpnum, g_cpPos[cpnum][0][0], g_cpPos[cpnum][0][1], g_cpPos[cpnum][0][2], g_cpPos[cpnum][1][0], g_cpPos[cpnum][1][1], g_cpPos[cpnum][1][2], g_map, client, auth);
 			}
 		}
 
