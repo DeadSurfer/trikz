@@ -29,20 +29,20 @@
 #define newdecls required
 #define MAXPLAYER MAXPLAYERS + 1
 
-char g_file[PLATFORM_MAX_PATH];
+char g_file[PLATFORM_MAX_PATH] = "";
 
-int g_hat[MAXPLAYERS];
+int g_hat[MAXPLAYERS] = {0, ...};
 
 native int Trikz_GetClientPartner(int client);
 
-ConVar g_enable, g_date, g_date2, g_move[3], g_rotation[3];
+ConVar g_enable, g_dateStart, g_dateEnd, g_move[3], g_rotation[3];
 
 public Plugin myinfo =
 {
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.293",
+	version = "1.294",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -56,8 +56,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_xmas", CommandXmas, "Open the xmas menu.");
 
 	g_enable = CreateConVar("sm_te_xmas_enable", "0.0", "Do active plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_date = CreateConVar("sm_te_date_start", "11.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
-	g_date2 = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
+	g_dateStart = CreateConVar("sm_te_date_start", "11.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
+	g_dateEnd = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_move[0] = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_move[1] = CreateConVar("sm_te_move_y", "-2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_move[2] = CreateConVar("sm_te_move_z", "4.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
@@ -99,13 +99,13 @@ public void OnPluginEnd()
 
 bool TestDate()
 {
-	float monthStart = g_date.FloatValue;
-	float monthEnd = g_date2.FloatValue;
+	float monthStart = g_dateStart.FloatValue;
+	float monthEnd = g_dateEnd.FloatValue;
 
-	int date = GetTime({0, 0});
+	int dateCurrent = GetTime({0, 0});
 
 	char buffer[32] = "";
-	FormatTime(buffer, sizeof(buffer), "%m", date);
+	FormatTime(buffer, sizeof(buffer), "%m", dateCurrent);
 
 	int monthCurrent = StringToInt(buffer);
 
@@ -124,7 +124,7 @@ bool TestDate()
 
 public void OnMapStart()
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -175,14 +175,14 @@ public void OnMapStart()
 
 	if(DirExists(path[0]) == false)
 	{
-		CreateDirectory(path[0], 511);
+		CreateDirectory(path[0], 511, false, "DEFAULT_WRITE_PATH");
 	}
 
 	BuildPath(Path_SM, path[0], PLATFORM_MAX_PATH, "data/trueexpert/xmas/");
 
 	if(DirExists(path[0]) == false)
 	{
-		CreateDirectory(path[0], 511);
+		CreateDirectory(path[0], 511, false, "DEFAULT_WRITE_PATH");
 	}
 
 	Format(g_file, PLATFORM_MAX_PATH, "%s%s.cfg", path[0], map);
@@ -199,7 +199,7 @@ public void OnClientDisconnect(int client)
 
 void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -217,16 +217,15 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 	if(kv.ImportFromFile(g_file) == true && kv.GotoFirstSubKey() == true)
 	{
-		char nameKey[32];
+		char nameKey[32] = "";
 
 		do
 		{
 			if(kv.GetSectionName(nameKey, sizeof(nameKey)) == true)
 			{
-				float origin[3];
-				float angles[3];
-				int skin;
-				char type[64];
+				float origin[3] = {0.0, ...}, angles[3] = {0.0, ...};
+				int skin = 0;
+				char type[64] = "";
 
 				kv.GetVector("origin", origin);
 				kv.GetVector("angles", angles);
@@ -256,7 +255,7 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -311,7 +310,7 @@ Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 
 	int team = event.GetInt("team"); //https://wiki.alliedmods.net/Generic_Source_Events#player_team
 
-	if(team == 1)
+	if(team == CS_TEAM_SPECTATOR)
 	{
 		RemoveHat(client);
 	}
@@ -338,7 +337,7 @@ void RemoveHat(int client)
 
 void CreateHat(int client)
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -398,7 +397,7 @@ void CreateHat(int client)
 
 Action OnHatTransmit(int entity, int client)
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -438,7 +437,7 @@ Action OnHatTransmit(int entity, int client)
 
 Action CommandXmas(int client, int args)
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -456,7 +455,7 @@ Action CommandXmas(int client, int args)
 	
 	if(flags & ADMFLAG_CUSTOM1)
 	{
-		Menu menu = new Menu(handler_menu_xmas);
+		Menu menu = new Menu(XmasMenuHandler);
 
 		menu.SetTitle("Xmas");
 
@@ -502,7 +501,7 @@ Action CommandXmas(int client, int args)
 
 void Xmas(int client, char[] type)
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -512,7 +511,7 @@ void Xmas(int client, char[] type)
 	}
 
 	//declaration
-	float origin[3], angles[3];
+	float origin[3] = {0.0, ...}, angles[3] = {0.0, ...};
 
 	//initialization
 	GetClientEyePosition(client, origin);
@@ -523,9 +522,9 @@ void Xmas(int client, char[] type)
 	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
 		//declanation
-		float eyeAngles[3];
-		int skin;
-		char info[32];
+		float eyeAngles[3] = {0.0, ...};
+		int skin = 0;
+		char info[32] = "";
 
 		//initialization
 		TR_GetEndPosition(origin);
@@ -535,8 +534,6 @@ void Xmas(int client, char[] type)
 		angles[0] += 90.0;
 
 		GetClientEyeAngles(client, eyeAngles);
-
-		//skin = -1;
 
 		if(StrEqual(type, "tree", false) == true || StrEqual(type, "tree_big", false) == true)
 		{
@@ -594,6 +591,11 @@ void Xmas(int client, char[] type)
 		kv.ExportToFile(g_file);
 
 		delete kv;
+
+		char auth[32] = "";
+		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
+
+		LogToFileEx("addons/sourcemod/logs/trueexpert-xmas.log", "SteamID64: [%s] Name: [%N] Added: [%s] at [%i %i %i]", auth, client, type, RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]));
 	}
 
 	return;
@@ -611,7 +613,7 @@ bool Trace_FilterPlayers(int entity, int contentsMask, any data)
 
 void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 {
-	char value[3 + 1];
+	char value[3 + 1] = "";
 	g_enable.GetString(value, sizeof(value));
 	float enable = StringToFloat(value);
 
@@ -669,7 +671,7 @@ void CreateItem(float origin[3], float angles[3], char[] type, int skin)
 	return;
 }
 
-int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
+int XmasMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -690,12 +692,12 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 
 					KeyValues kv = new KeyValues("xmas");
 
-					if(kv.ImportFromFile(g_file) == true && kv.GotoFirstSubKey() == true)
+					if(kv.ImportFromFile(g_file) == true && kv.GotoFirstSubKey(true) == true)
 					{
 						char nameKey[32] = "";
 						char nameKeyCurrent[32] = "";
 
-						Format(nameKeyCurrent, sizeof(nameKeyCurrent), "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]))
+						Format(nameKeyCurrent, sizeof(nameKeyCurrent), "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]));
 
 						do
 						{
@@ -703,18 +705,46 @@ int handler_menu_xmas(Menu menu, MenuAction action, int param1, int param2)
 							{
 								if(StrEqual(nameKey, nameKeyCurrent, false) == true)
 								{
-									RemoveEntity(entity);
+									char type[64] = "";
+									kv.GetString("type", type, sizeof(type), "");
 
-									kv.DeleteThis();
+									char auth[32] = "";
+									GetClientAuthId(param1, AuthId_SteamID64, auth, sizeof(auth), true);
 
-									kv.Rewind();
+									LogToFileEx("addons/sourcemod/logs/trueexpert-xmas.log", "SteamID64: [%s] Name: [%N] Removed: [%s] at [%i %i %i]", auth, param1, type, RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]));
 
-									kv.ExportToFile(g_file);
+									break;
 								}
 							}
 						}
 
 						while(kv.GotoNextKey(true) == true);
+
+						kv.Rewind();
+
+						if(kv.GotoFirstSubKey(true) == true)
+						{
+							do
+							{
+								if(kv.GetSectionName(nameKey, sizeof(nameKey)) == true)
+								{
+									if(StrEqual(nameKey, nameKeyCurrent, false) == true)
+									{
+										RemoveEntity(entity);
+
+										kv.DeleteThis();
+
+										kv.Rewind();
+
+										kv.ExportToFile(g_file);
+
+										break;
+									}
+								}
+							}
+
+							while(kv.GotoNextKey(true) == true);
+						}
 					}
 
 					delete kv;
