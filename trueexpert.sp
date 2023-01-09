@@ -3964,7 +3964,7 @@ void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPac
 	{
 		if(results.HasResults == false)
 		{
-			LogToFile("addons/sourcemod/logs/trueexpert.log", "Tier: [%i] is set for MAP: [%s]. Edited by [%N] SteamID64: [%s]", tier, g_map, client, auth);
+			LogToFileEx("addons/sourcemod/logs/trueexpert.log", "Tier: [%i] is set for MAP: [%s]. Edited by [%N] SteamID64: [%s]", tier, g_map, client, auth);
 
 			PrintToServer("Tier %i is set for %s.", tier, g_map);
 		}
@@ -4011,7 +4011,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				g_center[cpnum][2] -= FloatAbs((g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0);
 				
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, auth);
+				LogToFileEx("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, auth);
 			}
 
 			else if(type == 1)
@@ -4032,7 +4032,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				g_center[cpnum][2] -= FloatAbs((g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0);
 
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, auth);
+				LogToFileEx("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, auth);
 			}
 
 			else if(type == 2)
@@ -4055,7 +4055,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				CPSetup();
 
-				LogToFile("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", cpnum, g_cpPos[cpnum][0][0], g_cpPos[cpnum][0][1], g_cpPos[cpnum][0][2], g_cpPos[cpnum][1][0], g_cpPos[cpnum][1][1], g_cpPos[cpnum][1][2], g_map, client, auth);
+				LogToFileEx("addons/sourcemod/logs/trueexpert.log", "Checkpoint zone no. %i successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", cpnum, g_cpPos[cpnum][0][0], g_cpPos[cpnum][0][1], g_cpPos[cpnum][0][2], g_cpPos[cpnum][1][0], g_cpPos[cpnum][1][1], g_cpPos[cpnum][1][2], g_map, client, auth);
 			}
 		}
 
