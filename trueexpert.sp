@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.656",
+	version = "4.657",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1146,6 +1146,9 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 		g_clantagOnce[client] = true;
 	}
 
+	char points[32] = "";
+	GetPoints(client, points); //Set player health of precentage of points
+
 	return;
 }
 
@@ -1278,7 +1281,7 @@ Action TimerRespawn(Handle timer, int client)
 
 Action autobuy(int client, const char[] command, int argc)
 {
-	Block(client);
+	Block(client, false);
 
 	g_silentF1F2 = true;
 
@@ -1299,7 +1302,7 @@ Action rebuy(int client, const char[] command, int argc)
 
 Action commandmenu(int client, const char[] command, int argc)
 {
-	Block(client);
+	Block(client, false);
 
 	return Plugin_Continue;
 }
@@ -1951,6 +1954,10 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 		if(IsValidClient(client) == true)
 		{
 			g_points[client] = results.FetchRow() == true ? results.FetchInt(0) : 0;
+
+			float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
+
+			SetEntityHealth(client, RoundToFloor(precentage) == 0 ? 1 : RoundToFloor(precentage));
 		}
 	}
 
@@ -2199,7 +2206,7 @@ int TrikzMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 			if(StrEqual(item, "block", true) == true)
 			{
-				Block(param1);
+				Block(param1, false);
 			}
 
 			else if(StrEqual(item, "autoflash", true) == true)
@@ -2275,12 +2282,12 @@ Action CommandBlock(int client, int args)
 		return Plugin_Continue;
 	}
 
-	Block(client);
+	Block(client, true);
 
 	return Plugin_Handled;
 }
 
-Action Block(int client) //thanks maru for optimization.
+Action Block(int client, bool chat) //thanks maru for optimization.
 {
 	g_block[client] = !g_block[client];
 
@@ -2288,12 +2295,14 @@ Action Block(int client) //thanks maru for optimization.
 
 	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[client] == true ? 255 : 125);
 
+	SetEntProp(client, Prop_Data, "m_ArmorValue", g_block[client] == true ? 0 : 1);
+
 	if(g_menuOpened[client] == true)
 	{
 		Trikz(client);
 	}
 
-	else if(g_menuOpened[client] == false)
+	else if(g_menuOpened[client] == false && chat == true)
 	{
 		Format(g_buffer, sizeof(g_buffer), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
 		SendMessage(client, g_buffer);
@@ -8776,6 +8785,10 @@ void OnFrameGiveFlashbang(int client)
 void GetPoints(int client, char[] points)
 {
 	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
+
+	SetEntityHealth(client, RoundToFloor(precentage) == 0 ? 1 : RoundToFloor(precentage));
+
+	PrintToServer("%f", precentage);
 
 	char color[8] = "";
 
