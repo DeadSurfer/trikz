@@ -1147,7 +1147,7 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	}
 
 	char points[32] = "";
-	GetPoints(client, points); //Set player health of precentage of points
+	GetPoints(client, points); //Set player health precentage of points
 
 	return;
 }
@@ -8787,8 +8787,6 @@ void GetPoints(int client, char[] points)
 	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
 
 	SetEntityHealth(client, RoundToFloor(precentage) == 0 ? 1 : RoundToFloor(precentage));
-
-	PrintToServer("%f", precentage);
 
 	char color[8] = "";
 
