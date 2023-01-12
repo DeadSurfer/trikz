@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.658",
+	version = "4.659",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -5621,268 +5621,23 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 	g_kv.Rewind();
 	g_kv.GotoFirstSubKey(true);
 
-	char section[64], posColor[64], exploded[7][8];
-	float xy[4][2], holdtime[4];
-	int rgba[4][4], nBase = 10, size = 4, element = 0;
-
-	char key[][] = {"CP-recordHud", "CP-recordDetailHud", "CP-DetailZeroHud"};
-	char key2[][] = {"CP-recordNotFirstHud", "CP-recordDetailNotFirstHud", "CP-recordImproveNotFirstHud"};
-	char key3[][] = {"CP-recordNonHud", "CP-recordDeproveHud"};
-	char key4[][] = {"MapFinishedFirstRecordHud", "NewServerRecordHud", "FirstRecordHud", "FirstRecordZeroHud"};
-	char key5[][] = {"NewServerRecordMapFinishedNotFirstHud", "NewServerRecordNotFirstHud", "NewServerRecordDetailNotFirstHud", "NewServerRecordImproveNotFirstHud"};
-	char key6[][] = {"MapFinishedDeproveHud", "MapFinishedTimeDeproveHud", "MapFinishedTimeDeproveOwnHud"};
-
 	if(onlyCP == true)
 	{
 		if(firstCPRecord == true)
 		{
-			do
-			{
-				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_firstCPRecord", true) == true)
-				{
-					for(int i = 0; i <= 2; i++)
-					{
-						g_kv.GetString(key[i], posColor, sizeof(posColor));
-
-						if(strlen(posColor) == 0)
-						{
-							break;
-						}
-
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						for(int j = 0; j <= 1; j++)
-						{
-							xy[i][j] = StringToFloat(exploded[j]);
-
-							continue;
-						}
-
-						holdtime[i] = StringToFloat(exploded[2]);
-						
-						for(int j = 3; j <= 6; j++)
-						{
-							rgba[i][j - 3] = StringToInt(exploded[j], nBase);
-
-							continue;
-						}
-					}
-
-					break;
-				}
-
-				continue;
-			}
-
-			while(g_kv.GotoNextKey(true) == true);
-
-			int channel = 1;
-
-			for(int i = 0; i <= 2; i++)
-			{
-				SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-				if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-				else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, time);}
-				else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, timeSR);}
-				ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-				continue;
-			}
-
-			for(int i = 1; i <= MaxClients; ++i)
-			{
-				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
-
-					if(observerMode < 7 && observerTarget == client)
-					{
-						int channelSpec = 1;
-
-						for(int j = 0; j <= 2; j++)
-						{
-							SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-							if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, cpnum);}
-							else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, time);}
-							else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
-							ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-							continue;
-						}
-					}
-				}
-
-				continue;
-			}
+			FinishMSGHUD(client, 0, "onlyCP_firstCPRecord", cpnum, time, timeSR);
 		}
 
 		else if(firstCPRecord == false)
 		{
 			if(cpRecord == true)
 			{
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_cpRecord", true) == true)
-					{
-						for(int i = 0; i <= 2; i++)
-						{
-							g_kv.GetString(key2[i], posColor, sizeof(posColor));
-
-							if(strlen(posColor) == 0)
-							{
-								break;
-							}
-
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							for(int j = 0; j <= 1; j++)
-							{
-								xy[i][j] = StringToFloat(exploded[j]);
-
-								continue;
-							}
-
-							holdtime[i] = StringToFloat(exploded[2]);
-							
-							for(int j = 3; j <= 6; j++)
-							{
-								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
-
-								continue;
-							}
-						}
-
-						break;
-					}
-
-					continue;
-				}
-
-				while(g_kv.GotoNextKey(true) == true);
-
-				int channel = 1;
-
-				for(int i = 0; i <= 2; i++)
-				{
-					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key2[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key2[i], client, time);}
-					else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key2[i], client, timeSR);}
-					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-					continue;
-				}
-
-				for(int i = 1; i <= MaxClients; ++i)
-				{
-					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
-
-						if(observerMode < 7 && observerTarget == client)
-						{
-							int channelSpec = 1;
-
-							for(int j = 0; j <= 2; j++)
-							{
-								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, cpnum);}
-								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, time);}
-								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-								continue;
-							}
-						}
-					}
-
-					continue;
-				}
+				FinishMSGHUD(client, 1, "onlyCP_notFirstCPRecord_cpRecord", cpnum, time, timeSR);
 			}
 
 			else if(cpRecord == false)
 			{
-				do
-				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
-					{
-						for(int i = 0; i <= 1; i++)
-						{
-							g_kv.GetString(key3[i], posColor, sizeof(posColor));
-
-							if(strlen(posColor) == 0)
-							{
-								break;
-							}
-
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							for(int j = 0; j <= 1; j++)
-							{
-								xy[i][j] = StringToFloat(exploded[j]);
-
-								continue;
-							}
-
-							holdtime[i] = StringToFloat(exploded[2]);
-							
-							for(int j = 3; j <= 6; j++)
-							{
-								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
-
-								continue;
-							}
-
-							continue;
-						}
-
-						break;
-					}
-
-					continue;
-				}
-
-				while(g_kv.GotoNextKey(true) == true);
-
-				int channel = 1;
-
-				for(int i = 0; i <= 1; i++)
-				{
-					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key3[i], client, time);}
-					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key3[i], client, timeSR);}
-					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-					continue;
-				}
-
-				for(int i = 1; i <= MaxClients; ++i)
-				{
-					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
-
-						if(observerMode < 7 && observerTarget == client)
-						{
-							int channelSpec = 1;
-
-							for(int j = 0; j <= 1; i++)
-							{
-								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key3[j], i, time);} ////https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
-								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key3[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-								continue;
-							}
-						}
-					}
-
-					continue;
-				}
+				FinishMSGHUD(client, 2, "onlyCP_notFirstCPRecord_notCPRecord", cpnum, time, timeSR);
 			}
 		}
 	}
@@ -5891,259 +5646,188 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 	{
 		if(firstServerRecord == true)
 		{
-			do
-			{
-				if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_firstServerRecord", true) == true)
-				{
-					for(int i = 0; i <= 3; i++)
-					{
-						g_kv.GetString(key4[i], posColor, sizeof(posColor));
-
-						if(strlen(posColor) == 0)
-						{
-							break;
-						}
-
-						ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-						for(int j = 0; j <= 1; j++)
-						{
-							xy[i][j] = StringToFloat(exploded[j]);
-
-							continue;
-						}
-
-						holdtime[i] = StringToFloat(exploded[2]);
-						
-						for(int j = 3; j <= 6; j++)
-						{
-							rgba[i][j - 3] = StringToInt(exploded[j], nBase);
-
-							continue;
-						}
-					}
-
-					break;
-				}
-
-				continue;
-			}
-
-			while(g_kv.GotoNextKey(true) == true);
-
-			int channel = 1;
-
-			for(int i = 0; i <= 3; i++)
-			{
-				SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-				if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client);}
-				else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client);}
-				else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client, time);}
-				else if(i == 3){Format(g_buffer, sizeof(g_buffer), "%T", key4[i], client, timeSR);}
-				ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-				continue;
-			}
-
-			for(int i = 1; i <= MaxClients; ++i)
-			{
-				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
-
-					if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
-					{
-						int channelSpec = 1;
-
-						for(int j = 0; j <= 3; j++)
-						{
-							SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-							if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i);}
-							else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i);}
-							else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i, time);}
-							else if(j == 3){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i, timeSR);}
-							ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-							continue;
-						}
-					}
-				}
-
-				continue;
-			}
+			FinishMSGHUD(client, 3, "notOnlyCP_firstServerRecord", cpnum, time, timeSR);
 		}
 
 		else if(firstServerRecord == false)
 		{
 			if(serverRecord == true)
 			{
-				do
+				FinishMSGHUD(client, 4, "notOnlyCP_notFirstServerRecord_serverRecord", cpnum, time, timeSR);
+			}
+
+			else if(serverRecord == false)
+			{
+				FinishMSGHUD(client, 5, "notOnlyCP_notFirstServerRecord_notServerRecord", cpnum, time, timeSR);
+			}
+		}
+	}
+
+	return;
+}
+
+void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, const char[] time, const char[] timeSR)
+{
+	char section[64], posColor[64], exploded[7][8];
+	float xy[4][2], holdtime[4];
+	int rgba[4][4], nBase = 10, size = 4, element = 0;
+
+	char key[][] = {"", "", "", ""};
+
+	switch(keynum)
+	{
+		case 0:
+		{
+			Format(key[0], 64, "CP-recordHud");
+			Format(key[1], 64, "CP-recordDetailHud");
+			Format(key[2], 64, "CP-DetailZeroHud");
+		}
+
+		case 1:
+		{
+			Format(key[0], 64, "CP-recordNotFirstHud");
+			Format(key[1], 64, "CP-recordDetailNotFirstHud");
+			Format(key[2], 64, "CP-recordImproveNotFirstHud");
+		}
+
+		case 2:
+		{
+			Format(key[0], 64, "CP-recordNonHud");
+			Format(key[1], 64, "CP-recordDeproveHud");
+		}
+
+		case 3:
+		{
+			Format(key[0], 64, "MapFinishedFirstRecordHud");
+			Format(key[1], 64, "NewServerRecordHud");
+			Format(key[2], 64, "FirstRecordHud");
+			Format(key[3], 64, "FirstRecordZeroHud");
+		}
+
+		case 4:
+		{
+			Format(key[0], 64, "NewServerRecordMapFinishedNotFirstHud");
+			Format(key[1], 64, "NewServerRecordNotFirstHud");
+			Format(key[2], 64, "NewServerRecordDetailNotFirstHud");
+			Format(key[3], 64, "NewServerRecordImproveNotFirstHud");
+		}
+
+		case 5:
+		{
+			Format(key[0], 64, "MapFinishedDeproveHud");
+			Format(key[1], 64, "MapFinishedTimeDeproveHud");
+			Format(key[2], 64, "MapFinishedTimeDeproveOwnHud");
+		}
+	}
+
+	do
+	{
+		if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, sectiontype, true) == true)
+		{
+			for(int i = 0; i <= sizeof(key); i++)
+			{
+				g_kv.GetString(key[i], posColor, sizeof(posColor));
+
+				if(strlen(posColor) == 0)
 				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_serverRecord", true) == true)
-					{
-						for(int i = 0; i <= 3; i++)
-						{
-							g_kv.GetString(key5[i], posColor, sizeof(posColor));
+					break;
+				}
 
-							if(strlen(posColor) == 0)
-							{
-								break;
-							}
+				ExplodeString(posColor, ",", exploded, 7, 8, false);
 
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							for(int j = 0; j <= 1; j++)
-							{
-								xy[i][j] = StringToFloat(exploded[j]);
-
-								continue;
-							}
-
-							holdtime[i] = StringToFloat(exploded[2]);
-							
-							for(int j = 3; j <= 6; j++)
-							{
-								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
-
-								continue;
-							}
-						}
-
-						break;
-					}
+				for(int j = 0; j <= 1; j++)
+				{
+					xy[i][j] = StringToFloat(exploded[j]);
 
 					continue;
 				}
 
-				while(g_kv.GotoNextKey(true) == true);
-
-				int channel = 1;
-
-				for(int i = 0; i <= 3; i++)
-				{
-					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client);}
-					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client);}
-					else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client, time);}
-					else if(i == 3){Format(g_buffer, sizeof(g_buffer), "%T", key5[i], client, timeSR);} ////https://youtu.be/j4L3YvHowv8?t=45
-					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-					continue;
-				}
+				holdtime[i] = StringToFloat(exploded[2]);
 				
-				for(int i = 1; i <= MaxClients; ++i)
+				for(int j = 3; j <= 6; j++)
 				{
-					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
-					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
-
-						if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
-						{
-							int channelSpec = 1;
-
-							for(int j = 0; j <= 3; j++)
-							{
-								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i);}
-								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i);}
-								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i, time);}
-								else if(j == 3){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-								continue;
-							}
-						}
-					}
+					rgba[i][j - 3] = StringToInt(exploded[j], nBase);
 
 					continue;
 				}
 			}
 
-			else if(serverRecord == false)
+			break;
+		}
+
+		continue;
+	}
+
+	while(g_kv.GotoNextKey(true) == true);
+
+	int channel = 1;
+
+	int i = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) ? 1 : 0;
+
+	for(; i <= sizeof(key); i++)
+	{
+		if(cpnum > 0)
+		{
+			SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, cpnum);} //https://steamuserimages-a.akamaihd.net/ugc/1788470716362427548/185302157bF4CBF4557D0C47842C6BBD705380A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
+			else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, time);}
+			else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, timeSR);}
+			ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+		}
+
+		else if(cpnum == 0)
+		{
+			SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+			if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client);}
+			else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client);}
+			else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, time);}
+			else if(i == 3){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, timeSR);}
+			ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+		}
+
+		continue;
+	}
+
+	for(i = 1; i <= MaxClients; ++i)
+	{
+		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+		{
+			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
+
+			if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
 			{
-				do
+				int channelSpec = 1;
+
+				int j = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) ? 1 : 0;
+
+				for(; j <= sizeof(key); j++)
 				{
-					if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
+					if(cpnum > 0)
 					{
-						for(int i = 0; i <= 2; i++)
-						{
-							g_kv.GetString(key6[i], posColor, sizeof(posColor));
-
-							if(strlen(posColor) == 0)
-							{
-								break;
-							}
-
-							ExplodeString(posColor, ",", exploded, 7, 8, false);
-
-							for(int j = 0; j <= 1; j++)
-							{
-								xy[i][j] = StringToFloat(exploded[j]);
-
-								continue;
-							}
-
-							holdtime[i] = StringToFloat(exploded[2]);
-							
-							for(int j = 3; j <= 6; j++)
-							{
-								rgba[i][j - 3] = StringToInt(exploded[j], nBase);
-
-								continue;
-							}
-						}
-
-						break;
+						SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+						if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, cpnum);}
+						else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, time);}
+						else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
+						ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 					}
 
-					continue;
-				}
-
-				while(g_kv.GotoNextKey(true) == true);
-
-				int channel = 1;
-
-				for(int i = 0; i <= 2; i++)
-				{
-					SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-					if(i == 0){Format(g_buffer, sizeof(g_buffer), "%T", key6[i], client);}
-					else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key6[i], client, time);}
-					else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key6[i], client, timeSR);}
-					ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-					continue;
-				}
-
-				for(int i = 1; i <= MaxClients; ++i)
-				{
-					if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+					else if(cpnum == 0)
 					{
-						int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
-						int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
-
-						if(observerMode < 7 && observerTarget == client)
-						{
-							int channelSpec = 1;
-
-							for(int j = 0; j <= 2; j++)
-							{
-								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
-								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i);}
-								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i, time);}
-								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i, timeSR);}
-								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
-
-								continue;
-							}
-						}
+						SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+						if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i);}
+						else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i);}
+						else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, time);}
+						else if(j == 3){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
+						ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 					}
 
 					continue;
 				}
 			}
 		}
+
+		continue;
 	}
 
 	return;
