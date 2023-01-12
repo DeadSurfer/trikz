@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.657",
+	version = "4.658",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -5702,7 +5702,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 						for(int j = 0; j <= 2; j++)
 						{
-							SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+							SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 							if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, cpnum);}
 							else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, time);}
 							else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
@@ -5787,7 +5787,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= 2; j++)
 							{
-								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, cpnum);}
 								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, time);}
 								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key2[j], i, timeSR);}
@@ -5871,7 +5871,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= 1; i++)
 							{
-								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key3[j], i, time);} ////https://steamuserimages-a.akamaihd.net/ugc/1788470716362384940/4DD466582BD1CF04366BBE6D383DD55A079936DC/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false
 								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key3[j], i, timeSR);}
 								ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
@@ -5958,7 +5958,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 						for(int j = 0; j <= 3; j++)
 						{
-							SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+							SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 							if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i);}
 							else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i);}
 							else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key4[j], i, time);}
@@ -6045,7 +6045,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= 3; j++)
 							{
-								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i);}
 								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i);}
 								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key5[j], i, time);}
@@ -6129,7 +6129,7 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 							for(int j = 0; j <= 2; j++)
 							{
-								SetHudTextParams(xy[i][0], xy[i][1], holdtime[i], rgba[i][0], rgba[i][1], rgba[i][2], rgba[i][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
+								SetHudTextParams(xy[j][0], xy[j][1], holdtime[j], rgba[j][0], rgba[j][1], rgba[j][2], rgba[j][3]); //https://sm.alliedmods.net/new-api/halflife/SetHudTextParams
 								if(j == 0){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i);}
 								else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i, time);}
 								else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key6[j], i, timeSR);}
