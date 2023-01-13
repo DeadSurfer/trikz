@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.660",
+	version = "4.661",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -5617,9 +5617,6 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 		return;
 	}
 
-	g_kv.Rewind();
-	g_kv.GotoFirstSubKey(true);
-
 	if(onlyCP == true)
 	{
 		if(firstCPRecord == true)
@@ -5667,11 +5664,23 @@ void FinishMSG(int client, bool firstServerRecord, bool serverRecord, bool onlyC
 
 void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, const char[] time, const char[] timeSR)
 {
-	char section[64], posColor[64], exploded[7][8];
-	float xy[4][2], holdtime[4];
-	int rgba[4][4], nBase = 10, size = 4, element = 0;
+	g_kv.Rewind();
+	g_kv.GotoFirstSubKey(true);
 
 	char key[4][64] = {"", "", "", ""};
+	char section[64], posColor[64], exploded[7][8];
+	float xy[4][2], holdtime[4];
+	int start = 0, rgba[4][4], nBase = 10, size = 4, element = 0;
+
+	if(StrEqual(sectiontype, "onlyCP_notFirstCPRecord_notCPRecord", true) == true)
+	{
+		start = 1;
+	}
+
+	else if(StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true)
+	{
+		start = 1;
+	}
 
 	switch(keynum)
 	{
@@ -5691,8 +5700,8 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 
 		case 2:
 		{
-			Format(key[0], 64, "CP-recordNonHud");
-			Format(key[1], 64, "CP-recordDeproveHud");
+			Format(key[1], 64, "CP-recordNonHud");
+			Format(key[2], 64, "CP-recordDeproveHud");
 		}
 
 		case 3:
@@ -5723,7 +5732,7 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 	{
 		if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, sectiontype, true) == true)
 		{
-			for(int i = 0; i < sizeof(key); i++)
+			for(int i = start; i < sizeof(key); i++)
 			{
 				g_kv.GetString(key[i], posColor, sizeof(posColor));
 
@@ -5749,6 +5758,14 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 
 					continue;
 				}
+
+				if(cpnum > 0)
+				{
+					if(TestCase(keynum, i) == true)
+					{
+						break;
+					}
+				}
 			}
 
 			break;
@@ -5759,11 +5776,9 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 
 	while(g_kv.GotoNextKey(true) == true);
 
-	int test = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true ? 1 : 0;
-
 	int channel = 1;
 
-	for(int i = test; i < sizeof(key); i++)
+	for(int i = start; i < sizeof(key); i++)
 	{
 		if(cpnum > 0)
 		{
@@ -5772,6 +5787,11 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 			else if(i == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, time);}
 			else if(i == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[i], client, timeSR);}
 			ShowHudText(client, channel++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+
+			if(TestCase(keynum, i) == true)
+			{
+				break;
+			}
 		}
 
 		else if(cpnum == 0)
@@ -5798,9 +5818,7 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 			{
 				int channelSpec = 1;
 
-				test = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) ? 1 : 0;
-
-				for(int j = test; j < sizeof(key); j++)
+				for(int j = start; j < sizeof(key); j++)
 				{
 					if(cpnum > 0)
 					{
@@ -5809,6 +5827,11 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 						else if(j == 1){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, time);}
 						else if(j == 2){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
 						ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
+
+						if(TestCase(keynum, j) == true)
+						{
+							break;
+						}
 					}
 
 					else if(cpnum == 0)
@@ -5830,6 +5853,22 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 	}
 
 	return;
+}
+
+bool TestCase(int keynum, int iter)
+{
+	switch(keynum)
+	{
+		case 0,1,2:
+		{
+			if(iter == 2)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 void SQLUpdateRecord(Database db, DBResultSet results, const char[] error, any data)
