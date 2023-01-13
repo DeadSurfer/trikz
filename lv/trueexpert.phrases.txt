@@ -919,4 +919,12 @@
 	{
 		"lv"	"Dzeltens"
 	}
+	"PrefixTimer"
+	{
+		"lv"	"[Taimeris] "
+	}
+	"PrefixTrikz"
+	{
+		"lv"	"[Trikz] "
+	}
 }
