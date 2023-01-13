@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.659",
+	version = "4.660",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1165,13 +1165,13 @@ void OnButton(const char[] output, int caller, int activator, float delay)
 
 		if(g_button[activator] == true)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", "YouPressedButton", activator);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", activator, "YouPressedButton", activator);
 			SendMessage(activator, g_buffer);
 		}
 
 		if(g_button[g_partner[activator]] == true)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", "YourPartnerPressedButton", g_partner[activator]);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", g_partner[activator], "YourPartnerPressedButton", g_partner[activator]);
 			SendMessage(g_partner[activator], g_buffer);
 		}
 	}
@@ -1504,7 +1504,7 @@ void Checkpoint(int client)
 
 	else if(g_devmap == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, "DevmapIsOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -2304,7 +2304,7 @@ Action Block(int client, bool chat) //thanks maru for optimization.
 
 	else if(g_menuOpened[client] == false && chat == true)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_block[client] == true ? "BlockChatON" : "BlockChatOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -2329,7 +2329,7 @@ void Partner(int client)
 {
 	if(g_devmap == true)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -2337,7 +2337,7 @@ void Partner(int client)
 	{
 		if(IsPlayerAlive(client) == false)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", "YouAreDead", client);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "YouAreDead", client);
 			SendMessage(client, g_buffer);
 
 			return;
@@ -2345,7 +2345,7 @@ void Partner(int client)
 
 		if(g_dbPassed == false)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", "DBLoading", client);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DBLoading", client);
 			SendMessage(client, g_buffer);
 
 			return;
@@ -2384,7 +2384,7 @@ void Partner(int client)
 			{
 				case false:
 				{
-					Format(g_buffer, sizeof(g_buffer), "%T", "NoFreePlayer", client);
+					Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "NoFreePlayer", client);
 					SendMessage(client, g_buffer);
 				}
 
@@ -2488,11 +2488,11 @@ int AskPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) 
 
 							char name[MAX_NAME_LENGTH] = "";
 							GetClientName(partner, name, sizeof(name));
-							Format(g_buffer, sizeof(g_buffer), "%T", "TeamConfirming", param1, name); //reciever
+							Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", param1, "TeamConfirming", param1, name); //reciever
 							PrintToConsole(param1, "%s", g_buffer);
 
 							GetClientName(param1, name, sizeof(name));
-							Format(g_buffer, sizeof(g_buffer), "%T", "GetConfirmed", partner, name); //sender
+							Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", partner, "GetConfirmed", partner, name); //sender
 							SendMessage(partner, g_buffer);
 
 							Restart(param1, false); //Expert-Zone idea.
@@ -2508,14 +2508,14 @@ int AskPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) 
 
 						else if(IsValidPartner(partner) == true)
 						{
-							Format(g_buffer, sizeof(g_buffer), "%T", "AlreadyHavePartner", param1);
+							Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", param1, "AlreadyHavePartner", param1);
 							SendMessage(param1, g_buffer);
 						}
 					}
 
 					else if(IsPlayerAlive(param1) == false)
 					{
-						Format(g_buffer, sizeof(g_buffer), "%T", "YouAreDead", param1);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", param1, "YouAreDead", param1);
 						SendMessage(param1, g_buffer);
 					}
 				}
@@ -2524,7 +2524,7 @@ int AskPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) 
 				{
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(param1, name, sizeof(name));
-					Format(g_buffer, sizeof(g_buffer), "%T", "PartnerDeclined", param1, name);
+					Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", param1, "PartnerDeclined", param1, name);
 					PrintToConsole(param1, "%s", g_buffer);
 				}
 			}
@@ -2622,11 +2622,11 @@ int CancelPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param
 					char name[MAX_NAME_LENGTH] = "";
 					GetClientName(partner, name, sizeof(name));
 
-					Format(g_buffer, sizeof(g_buffer), "%T", "PartnerCanceled", param1, name);
+					Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", param1, "PartnerCanceled", param1, name);
 					PrintToConsole(param1, "%s", g_buffer);
 
 					GetClientName(param1, name, sizeof(name));
-					Format(g_buffer, sizeof(g_buffer), "%T", "PartnerCanceledBy", partner, name);
+					Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", partner, "PartnerCanceledBy", partner, name);
 					SendMessage(partner, g_buffer);
 				}
 			}
@@ -2740,7 +2740,7 @@ void ColorTeam(int client, bool allowColor)
 		
 		if(g_devmap == false && IsValidPartner(client) == false)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", "DontHavePartner", client);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DontHavePartner", client);
 			SendMessage(client, g_buffer);
 
 			return;
@@ -2748,7 +2748,7 @@ void ColorTeam(int client, bool allowColor)
 
 		else if(g_devmap == true)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsON", client);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsON", client);
 			SendMessage(client, g_buffer);
 
 			return;
@@ -2903,7 +2903,7 @@ void Restart(int client, bool ask)
 {
 	if(g_devmap == true)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -2934,7 +2934,7 @@ void Restart(int client, bool ask)
 
 			else if(IsValidPartner(client) == false)
 			{
-				Format(g_buffer, sizeof(g_buffer), "%T", "DontHavePartner", client);
+				Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DontHavePartner", client);
 				SendMessage(client, g_buffer);
 			}
 		}
@@ -3015,7 +3015,7 @@ Action CommandAutoflash(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", g_autoflash[client] == true ? "AutoflashChatON" : "AutoflashChatOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_autoflash[client] == true ? "AutoflashChatON" : "AutoflashChatOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -3045,7 +3045,7 @@ Action CommandAutoswitch(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", g_autoswitch[client] == true ? "AutoswitchChatON" : "AutoswitchChatOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_autoswitch[client] == true ? "AutoswitchChatON" : "AutoswitchChatOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -3075,7 +3075,7 @@ Action CommandBhop(int client, int args)
 
 	if(g_menuOpened[client] == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", g_bhop[client] == true ? "BhopChatON" : "BhopChatOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_bhop[client] == true ? "BhopChatON" : "BhopChatOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -3105,7 +3105,7 @@ Action CommandEndmsg(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", g_endMessage[client] == true ? "EndMessageChatON" : "EndMessageChatOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_endMessage[client] == true ? "EndMessageChatON" : "EndMessageChatOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -3154,7 +3154,7 @@ void Top10(int client)
 	{
 		char time[8] = "";
 		Format(time, sizeof(time), "%.0f", g_top10ac - GetGameTime());
-		Format(g_buffer, sizeof(g_buffer), "%T", "Top10ac", client, time);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "Top10ac", client, time);
 		SendMessage(client, g_buffer);
 	}
 
@@ -3192,7 +3192,6 @@ void SQLTop10(Database db, DBResultSet results, const char[] error, any data)
 
 		else if(fetchrow == true)
 		{
-			//char
 			Format(g_query, sizeof(g_query), "SELECT playerid, partnerid, time FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 10", g_map);
 			g_sql.Query(SQLTop10_2, g_query, _, DBPrio_Normal);
 		}
@@ -3546,7 +3545,7 @@ Action CommandMacro(int client, int args)
 	IntToString(g_macroDisabled[client], str, sizeof(str));
 	SetClientCookie(client, g_cookie[6], str);
 
-	Format(g_buffer, sizeof(g_buffer), "%T", g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
+	Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_macroDisabled[client] == false ? "MacroON" : "MacroOFF", client);
 	SendMessage(client, g_buffer);
 
 	return Plugin_Handled;
@@ -3752,7 +3751,7 @@ Action AdminCommandDeleteAllCP(int client, int args)
 
 	else if(g_devmap == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -3920,7 +3919,7 @@ Action AdminCommandMaptier(int client, int args)
 
 	else if(g_devmap == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -4101,14 +4100,14 @@ Action AdminCommandZones(int client, int args)
 
 		else if(g_zoneHave[2] == false)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", "DBLoading", client);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DBLoading", client);
 			SendMessage(client, g_buffer);
 		}
 	}
 
 	else if(g_devmap == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -4401,7 +4400,7 @@ int ZoneEditorCreatorMenuHandler(Menu menu, MenuAction action, int param1, int p
 				{
 					g_zoneCPnumReadyToNew[param1] = true;
 
-					Format(g_buffer, sizeof(g_buffer), "%T", "ZoneEditorTypeCPnum", param1);
+					Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", param1, "ZoneEditorTypeCPnum", param1);
 					SendMessage(param1, g_buffer);
 				}
 			}
@@ -5268,10 +5267,10 @@ Action OnZoneStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecord", i);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "NewServerRecord", i);
 									SendMessage(i, g_buffer); //smth like shavit functions.
 
-									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordDetail", i, name, namePartner, timeOwn, timeSR);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "NewServerRecordDetail", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, g_buffer);
 								}
 
@@ -5317,7 +5316,7 @@ Action OnZoneStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T", "Passed", i, name, namePartner, timeOwn, timeSR);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "Passed", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, g_buffer);
 								}
 
@@ -5347,7 +5346,7 @@ Action OnZoneStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T", "PassedImproved", i, name, namePartner, timeOwn, timeSR);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "PassedImproved", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, g_buffer);
 								}
 
@@ -5396,10 +5395,10 @@ Action OnZoneStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordNew", i);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "NewServerRecordNew", i);
 									SendMessage(i, g_buffer); //all this plugin is based on expert zone ideas and log helps, so little bit ping from rumour and some alliedmodders code free and hlmod code free. and ws code free. entityfilter is made from george code. alot ideas i steal for leagal reason. gnu allows to copy codes if author accept it or public plugin.
 
-									Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "NewServerRecordNewDetail", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, g_buffer);
 								}
 
@@ -5446,7 +5445,7 @@ Action OnZoneStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(i) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T", "JustPassed", i, name, namePartner, timeOwn, timeSR);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "JustPassed", i, name, namePartner, timeOwn, timeSR);
 									SendMessage(i, g_buffer);
 								}
 
@@ -5495,7 +5494,7 @@ Action OnZoneStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(j) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", j, g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
 									SendMessage(j, g_buffer);
 								}
 
@@ -5521,17 +5520,17 @@ Action OnZoneStartTouch(int entity, int other)
 					{
 						if(IsClientInGame(i) == true)
 						{
-							Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordFirst", i);
+							Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "NewServerRecordFirst", i);
 							SendMessage(i, g_buffer);
 
-							Format(g_buffer, sizeof(g_buffer), "%T", "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
+							Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "NewServerRecordFirstDetail", i, name, namePartner, timeOwn, timeSR);
 							SendMessage(i, g_buffer);
 
-							for(int j = 0; j <= g_cpCount; ++j)
+							for(int j = 1; j <= g_cpCount; ++j)
 							{
 								if(g_cp[other][j] == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T", "CPNEW", i, j, timeSR);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", i, "CPNEW", i, j, timeSR);
 									SendMessage(i, g_buffer);
 								}
 
@@ -5672,7 +5671,7 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 	float xy[4][2], holdtime[4];
 	int rgba[4][4], nBase = 10, size = 4, element = 0;
 
-	char key[][] = {"", "", "", ""};
+	char key[4][64] = {"", "", "", ""};
 
 	switch(keynum)
 	{
@@ -5714,9 +5713,9 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 
 		case 5:
 		{
-			Format(key[0], 64, "MapFinishedDeproveHud");
-			Format(key[1], 64, "MapFinishedTimeDeproveHud");
-			Format(key[2], 64, "MapFinishedTimeDeproveOwnHud");
+			Format(key[1], 64, "MapFinishedDeproveHud");
+			Format(key[2], 64, "MapFinishedTimeDeproveHud");
+			Format(key[3], 64, "MapFinishedTimeDeproveOwnHud");
 		}
 	}
 
@@ -5724,7 +5723,7 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 	{
 		if(g_kv.GetSectionName(section, sizeof(section)) == true && StrEqual(section, sectiontype, true) == true)
 		{
-			for(int i = 0; i <= sizeof(key); i++)
+			for(int i = 0; i < sizeof(key); i++)
 			{
 				g_kv.GetString(key[i], posColor, sizeof(posColor));
 
@@ -5760,11 +5759,11 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 
 	while(g_kv.GotoNextKey(true) == true);
 
+	int test = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) == true ? 1 : 0;
+
 	int channel = 1;
 
-	int i = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) ? 1 : 0;
-
-	for(; i <= sizeof(key); i++)
+	for(int i = test; i < sizeof(key); i++)
 	{
 		if(cpnum > 0)
 		{
@@ -5788,7 +5787,7 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 		continue;
 	}
 
-	for(i = 1; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 		{
@@ -5799,9 +5798,9 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 			{
 				int channelSpec = 1;
 
-				int j = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) ? 1 : 0;
+				test = StrEqual(sectiontype, "notOnlyCP_notFirstServerRecord_notServerRecord", true) ? 1 : 0;
 
-				for(; j <= sizeof(key); j++)
+				for(int j = test; j < sizeof(key); j++)
 				{
 					if(cpnum > 0)
 					{
@@ -7170,7 +7169,7 @@ Action CommandDevmap(int client, int args)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				Format(g_buffer, sizeof(g_buffer), "%T", "DevmapStart", i, name);
+				Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapStart", i, name);
 				SendMessage(i, g_buffer);
 			}
 
@@ -7180,7 +7179,7 @@ Action CommandDevmap(int client, int args)
 
 	else if(GetEngineTime() - g_devmapTime <= 35.0 || GetEngineTime() - g_afkTime <= 30.0)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapNotAllowed", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, "DevmapNotAllowed", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -7247,7 +7246,7 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7262,7 +7261,7 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7285,7 +7284,7 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7300,7 +7299,7 @@ void Devmap(bool force)
 					if(IsClientInGame(i) == true)
 					{
 						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T", "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7437,7 +7436,7 @@ Action CommandAfk(int client, int args)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				Format(g_buffer, sizeof(g_buffer), "%T", "AFKCHECK", i, name);
+				Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "AFKCHECK", i, name);
 				SendMessage(i, g_buffer);
 			}
 
@@ -7447,7 +7446,7 @@ Action CommandAfk(int client, int args)
 
 	else if(GetEngineTime() - g_afkTime <= 30.0 || GetEngineTime() - g_devmapTime <= 35.0)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "AFKCHECK2", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, "AFKCHECK2", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -7542,14 +7541,14 @@ void Noclip(int client)
 
 		if(g_menuOpened[client] == false)
 		{
-			Format(g_buffer, sizeof(g_buffer), "%T", GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, GetEntityMoveType(client) == MOVETYPE_NOCLIP ? "NoclipChatON" : "NoclipChatOFF", client);
 			SendMessage(client, g_buffer);
 		}
 	}
 
 	else if(g_devmap == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, "DevmapIsOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -7689,7 +7688,7 @@ Action CommandVel(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", g_hudVel[client] == true ? "VelChatON" : "VelChatOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_hudVel[client] == true ? "VelChatON" : "VelChatOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -7752,7 +7751,7 @@ Action CommandMLStats(int client, int args)
 
 	if(g_menuOpenedHud[client] == false)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T", g_mlstats[client] == true ? "MLStatsChatON" : "MLStatsChatOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_mlstats[client] == true ? "MLStatsChatON" : "MLStatsChatOFF", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -7779,7 +7778,7 @@ Action CommandButton(int client, int args)
 	IntToString(g_button[client], value, sizeof(value));
 	SetClientCookie(client, g_cookie[2], value);
 
-	Format(g_buffer, sizeof(g_buffer), "%T", g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
+	Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", client, g_button[client] == true ? "ButtonAnnouncerON" : "ButtonAnnouncerOFF", client);
 	SendMessage(client, g_buffer);
 
 	return Plugin_Handled;
@@ -8213,7 +8212,7 @@ void MLStats(int client, bool ground)
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
 		distance = SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0;
 
-		if(g_teleported[client] == true)
+		if(g_teleported[flyer] == true)
 		{
 			Format(tp, sizeof(tp), "%T", "MLSTP", flyer);
 		}
@@ -8222,7 +8221,7 @@ void MLStats(int client, bool ground)
 		Format(print[1], 256, "%s\n%T", print[0], "MLSFinishMsg", flyer, distance, tp);
 		PrintToConsole(flyer, "%s", print[1]);
 
-		if(g_teleported[client] == true)
+		if(g_teleported[flyer] == true)
 		{
 			Format(tp, sizeof(tp), "%T", "MLSTP", client);
 		}
@@ -8263,7 +8262,7 @@ void MLStats(int client, bool ground)
 
 			if(observerMode < 7 && (observerTarget == client || observerTarget == flyer) && g_mlstats[i] == true)
 			{
-				if(g_teleported[client] == true)
+				if(g_teleported[flyer] == true)
 				{
 					Format(tp, sizeof(tp), "%T", "MLSTP", i);
 				}
