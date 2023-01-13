@@ -231,12 +231,12 @@
 	"CPImprove"
 	{
 		"#format"	"{1:i},{2:s}"
-		"ru"	"{1}. Чекпоинт: ;#7CFC00{2}"
+		"ru"	"Чекпоинт #{1}: ;#7CFC00{2}"
 	}
 	"CPDeprove"
 	{
 		"#format"	"{1:i},{2:s}"
-		"ru"	"{1}. Чекпоинт: ;#FF0000{2}"
+		"ru"	"Чекпоинт #{1}: ;#FF0000{2}"
 	}
 	"NewServerRecordFirst"
 	{
@@ -250,7 +250,7 @@
 	"CPNEW"
 	{
 		"#format"	"{1:i},{2:s}"
-		"ru"	"{1}. Чекпоинт: ;#FF0000{2}"
+		"ru"	"Чекпоинт #{1}: ;#FF0000{2}"
 	}
 	"YouPressedButton"
 	{
@@ -363,7 +363,7 @@
 	"CP-recordHud"
 	{
 		"#format"	"{1:i}"
-		"ru"	"{1}. ЧЕКПОИНТ РЕКОРД!"
+		"ru"	"ЧЕКПОИНТ #{1} РЕКОРД!"
 	}
 	"CP-recordDetailHud"
 	{
@@ -378,7 +378,7 @@
 	"CP-recordNotFirstHud"
 	{
 		"#format"	"{1:i}"
-		"ru"	"{1}. ЧЕКПОИНТ РЕКОРД!"
+		"ru"	"ЧЕКПОИНТ #{1} РЕКОРД!"
 	}
 	"CP-recordDetailNotFirstHud"
 	{
