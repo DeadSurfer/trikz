@@ -231,12 +231,12 @@
 	"CPImprove"
 	{
 		"#format"	"{1:i},{2:s}"
-		"lv"	"{1}. Čekpoints: ;#7CFC00{2}"
+		"lv"	"Čekpoints #{1}: ;#7CFC00{2}"
 	}
 	"CPDeprove"
 	{
 		"#format"	"{1:i},{2:s}"
-		"lv"	"{1}. Čekpoints: ;#FF0000{2}"
+		"lv"	"Čekpoints #{1}: ;#FF0000{2}"
 	}
 	"NewServerRecordFirst"
 	{
@@ -250,7 +250,7 @@
 	"CPNEW"
 	{
 		"#format"	"{1:i},{2:s}"
-		"lv"	"{1}. Čekpoints: ;#FF0000{2}"
+		"lv"	"Čekpoints #{1}: ;#FF0000{2}"
 	}
 	"YouPressedButton"
 	{
@@ -363,7 +363,7 @@
 	"CP-recordHud"
 	{
 		"#format"	"{1:i}"
-		"lv"	"{1}. ČEKPOINTA REKORDS!"
+		"lv"	"ČEKPOINTA #{1} REKORDS!"
 	}
 	"CP-recordDetailHud"
 	{
@@ -378,7 +378,7 @@
 	"CP-recordNotFirstHud"
 	{
 		"#format"	"{1:i}"
-		"lv"	"{1}. ČEKPOINTA REKORDS!"
+		"lv"	"ČEKPOINTA #{1} REKORDS!"
 	}
 	"CP-recordDetailNotFirstHud"
 	{
