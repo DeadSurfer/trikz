@@ -919,4 +919,12 @@
 	{
 		"en"	"Yellow"
 	}
+	"PrefixTimer"
+	{
+		"en"	"[Timer] "
+	}
+	"PrefixTrikz"
+	{
+		"en"	"[Trikz] "
+	}
 }
