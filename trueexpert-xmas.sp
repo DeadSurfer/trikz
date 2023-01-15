@@ -35,36 +35,41 @@ int g_hat[MAXPLAYERS] = {0, ...};
 
 native int Trikz_GetClientPartner(int client);
 
-ConVar g_enable, g_dateStart, g_dateEnd, g_move[3], g_rotation[3];
+ConVar g_enable = null, g_dateStart = null, g_dateEnd = null, g_move[3] = {null, ...}, g_rotation[3] = {null, ...}, g_scaleT = null, g_scaleCT = null;
+
+float g_hatMove[3] = {0.0, ...}, g_hatRotate[3] = {0.0, ...};
 
 public Plugin myinfo =
 {
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.294",
+	version = "1.295",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
+	g_enable = CreateConVar("sm_te_xmas_enable", "0.0", "Do active plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_dateStart = CreateConVar("sm_te_date_start", "11.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
+	g_dateEnd = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
+	g_move[0] = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_move[1] = CreateConVar("sm_te_move_y", "-1.9", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_move[2] = CreateConVar("sm_te_move_z", "4.6", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_rotation[0] = CreateConVar("sm_te_rotate_x", "0.0", "Rorate to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_rotation[1] = CreateConVar("sm_te_rotate_y", "0.0", "Rorate to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_rotation[2] = CreateConVar("sm_te_rotate_z", "0.0", "Rorate to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_scaleT = CreateConVar("sm_te_scale_t", "0.9", "Hat scale for Terrorist", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_scaleCT = CreateConVar("sm_te_scale_ct", "1.05", "Hat scale for Counter-Terrorist", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	AutoExecConfig(true, "plugin.trueexpert-xmass", "sourcemod");
+
 	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_PostNoCopy);
 	HookEvent("player_death", OnPlayerDeath, EventHookMode_PostNoCopy);
 	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre); //https://forums.alliedmods.net/showthread.php?t=135521
 
 	RegConsoleCmd("sm_xmas", CommandXmas, "Open the xmas menu.");
-
-	g_enable = CreateConVar("sm_te_xmas_enable", "0.0", "Do active plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_dateStart = CreateConVar("sm_te_date_start", "11.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
-	g_dateEnd = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
-	g_move[0] = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_move[1] = CreateConVar("sm_te_move_y", "-2.0", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_move[2] = CreateConVar("sm_te_move_z", "4.0", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_rotation[0] = CreateConVar("sm_te_rotate_x", "0.0", "Rorate to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_rotation[1] = CreateConVar("sm_te_rotate_y", "0.0", "Rorate to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_rotation[2] = CreateConVar("sm_te_rotate_z", "-10.0", "Rorate to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	AutoExecConfig(true, "plugin.trueexpert-xmass", "sourcemod");
+	RegConsoleCmd("sm_hat", CommandHat, "Do move menu for hat from aim target (!hat m,0,-1.9,4.6) m - move, r - rotate");
 
 	for(int i = 1; i <= MaxClients; ++i)
 	{
@@ -72,6 +77,8 @@ public void OnPluginStart()
 		{
 			CreateHat(i);
 		}
+
+		continue;
 	}
 
 	return;
@@ -92,6 +99,8 @@ public void OnPluginEnd()
 		{
 			RemoveHat(i);
 		}
+
+		continue;
 	}
 
 	return;
@@ -163,9 +172,13 @@ public void OnMapStart()
 
 				AddFileToDownloadsTable(pathFull[i]);
 			}
+
+			continue;
 		}
 
 		delete dir;
+
+		continue;
 	}
 
 	char map[192] = "";
@@ -235,6 +248,8 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 				CreateItem(origin, angles, type, skin);
 			}
+
+			continue;
 		}
 
 		while(kv.GotoNextKey(true) == true);
@@ -250,7 +265,11 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 			CreateHat(i);
 		}
+
+		continue;
 	}
+
+	return;
 }
 
 void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -272,7 +291,6 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	char model[PLATFORM_MAX_PATH] = "";
-
 	GetClientModel(client, model, PLATFORM_MAX_PATH);
 
 	if(StrEqual(model, "models/player/ct_gsg9.mdl", false) == true)
@@ -377,7 +395,20 @@ void CreateHat(int client)
 		rotation[1] = g_rotation[1].FloatValue;
 		rotation[2] = g_rotation[2].FloatValue;
 
-		SetEntPropVector(g_hat[client], Prop_Send, "m_angRotation", rotation);
+		SetEntPropVector(g_hat[client], Prop_Data, "m_angRotation", rotation);
+
+		char model[PLATFORM_MAX_PATH] = "";
+		GetClientModel(client, model, PLATFORM_MAX_PATH);
+
+		if(StrContains(model, "/t_", false) != -1)
+		{
+			SetEntPropFloat(g_hat[client], Prop_Data, "m_flModelScale", g_scaleT.FloatValue);
+		}
+
+		else if(StrContains(model, "/ct_", false) != -1)
+		{
+			SetEntPropFloat(g_hat[client], Prop_Data, "m_flModelScale", g_scaleCT.FloatValue);
+		}
 
 		DispatchSpawn(g_hat[client]);
 
@@ -499,6 +530,117 @@ Action CommandXmas(int client, int args)
 	return Plugin_Continue;
 }
 
+Action CommandHat(int client, int args)
+{
+	char value[3 + 1] = "";
+	g_enable.GetString(value, sizeof(value));
+	float enable = StringToFloat(value);
+
+	if(enable != 1.0)
+	{
+		return Plugin_Continue;
+	}
+
+	if(TestDate() == false)
+	{
+		return Plugin_Continue;
+	}
+
+	int flags = GetUserFlagBits(client);
+	
+	if(flags & ADMFLAG_CUSTOM1)
+	{
+		//declanation
+		float origin[3], angles[3], offset[3], forward_[3], right[3], up[3], rotation[3];
+
+		int target = GetClientAimTarget(client, true);
+
+		char buffer[32] = "";
+		GetCmdArgString(buffer, sizeof(buffer));
+
+		char buffers[4][32];
+		ExplodeString(buffer, ",", buffers, 4, 32, false);
+
+		if(StrEqual(buffers[0], "m", false) == true)
+		{
+			g_hatMove[0] = StringToFloat(buffers[1]);
+			g_hatMove[1] = StringToFloat(buffers[2]);
+			g_hatMove[2] = StringToFloat(buffers[3]);
+		}
+
+		else if(StrEqual(buffers[0], "r", false) == true)
+		{
+			g_hatRotate[0] = StringToFloat(buffers[1]);
+			g_hatRotate[1] = StringToFloat(buffers[2]);
+			g_hatRotate[2] = StringToFloat(buffers[3]);
+		}
+
+		//initialization
+		GetClientAbsOrigin(target, origin);
+		GetClientAbsAngles(target, angles);
+
+		offset[0] = g_hatMove[0];
+		offset[1] = g_hatMove[1];
+		offset[2] = g_hatMove[2];
+
+		GetAngleVectors(angles, forward_, right, up);
+
+		origin[0] += right[0] * offset[0] + forward_[0] * offset[1] + up[0] * offset[2];
+		origin[1] += right[1] * offset[0] + forward_[1] * offset[1] + up[1] * offset[2];
+		origin[2] += right[2] * offset[0] + forward_[2] * offset[1] + up[2] * offset[2];
+
+		if(g_hat[target] > 0)
+		{
+			SDKUnhook(g_hat[target], SDKHook_SetTransmit, OnHatTransmit);
+
+			RemoveEntity(g_hat[target]);
+
+			g_hat[target] = 0;
+		}
+
+		g_hat[target] = CreateEntityByName("prop_dynamic_override");
+
+		DispatchKeyValue(g_hat[target], "model", "models/expert_zone/santahat/santa.mdl");
+
+		SetEntProp(g_hat[target], Prop_Data, "m_CollisionGroup", 2);
+
+		SetEntPropEnt(g_hat[target], Prop_Send, "m_hOwnerEntity", target);
+
+		rotation[0] = g_hatRotate[0];
+		rotation[1] = g_hatRotate[1];
+		rotation[2] = g_hatRotate[2];
+
+		SetEntPropVector(g_hat[target], Prop_Data, "m_angRotation", rotation);
+
+		char model[PLATFORM_MAX_PATH] = "";
+		GetClientModel(target, model, PLATFORM_MAX_PATH);
+
+		if(StrContains(model, "/t_", false) != -1)
+		{
+			SetEntPropFloat(g_hat[target], Prop_Data, "m_flModelScale", g_scaleT.FloatValue);
+		}
+
+		else if(StrContains(model, "/ct_", false) != -1)
+		{
+			SetEntPropFloat(g_hat[target], Prop_Data, "m_flModelScale", g_scaleCT.FloatValue);
+		}
+
+		DispatchSpawn(g_hat[target]);
+
+		SDKHook(g_hat[target], SDKHook_SetTransmit, OnHatTransmit);
+
+		TeleportEntity(g_hat[target], origin, angles, NULL_VECTOR);
+
+		SetVariantString("!activator");
+		AcceptEntityInput(g_hat[target], "SetParent", target, g_hat[target]);
+
+		SetVariantString("forward");
+		AcceptEntityInput(g_hat[target], "SetParentAttachmentMaintainOffset", g_hat[target], g_hat[target]);
+	}
+
+	return Plugin_Continue;
+}
+
 void Xmas(int client, char[] type)
 {
 	char value[3 + 1] = "";
@@ -517,7 +659,7 @@ void Xmas(int client, char[] type)
 	GetClientEyePosition(client, origin);
 	GetClientEyeAngles(client, angles);
 
-	TR_TraceRayFilter(origin, angles, MASK_SOLID, RayType_Infinite, Trace_FilterPlayers, client);
+	TR_TraceRayFilter(origin, angles, MASK_SOLID, RayType_Infinite, TraceFilterPlayers, client);
 
 	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
@@ -601,7 +743,7 @@ void Xmas(int client, char[] type)
 	return;
 }
 
-bool Trace_FilterPlayers(int entity, int contentsMask, any data)
+bool TraceFilterPlayers(int entity, int contentsMask, any data)
 {
 	if(entity != data && entity > MaxClients) 
 	{
@@ -716,6 +858,8 @@ int XmasMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 									break;
 								}
 							}
+
+							continue;
 						}
 
 						while(kv.GotoNextKey(true) == true);
@@ -741,6 +885,8 @@ int XmasMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 										break;
 									}
 								}
+
+								continue;
 							}
 
 							while(kv.GotoNextKey(true) == true);
@@ -751,7 +897,7 @@ int XmasMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 				}
 			}
 
-			else
+			else if(StrEqual(item, "del", false) == false)
 			{
 				Xmas(param1, item);
 			}
