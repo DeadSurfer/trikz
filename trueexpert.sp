@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.661",
+	version = "4.662",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -6776,11 +6776,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(g_block[client] == true && GetEntProp(client, Prop_Data, "m_CollisionGroup", 4, 0) != 5)
 			{
 				SetEntityCollisionGroup(client, 5);
+				SetEntProp(client, Prop_Data, "m_ArmorValue", 0);
 			}
 
 			else if(g_block[client] == false && GetEntProp(client, Prop_Data, "m_CollisionGroup", 4, 0) != 2)
 			{
 				SetEntityCollisionGroup(client, 2);
+				SetEntProp(client, Prop_Data, "m_ArmorValue", 1);
 			}
 		}
 	}
@@ -6988,6 +6990,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			SetEntityCollisionGroup(other, 2);
 
 			SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][0][1], g_colorBuffer[other][0][2], 125);
+
+			SetEntProp(client, Prop_Data, "m_ArmorValue", 1);
 		}
 	}
 
@@ -6998,6 +7002,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			SetEntityCollisionGroup(client, 5);
 
 			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], 255);
+
+			SetEntProp(client, Prop_Data, "m_ArmorValue", 0);
 		}
 	}
 
