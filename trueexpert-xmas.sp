@@ -44,7 +44,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.295",
+	version = "1.296",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -593,7 +593,10 @@ Action CommandHat(int client, int args)
 		{
 			SDKUnhook(g_hat[target], SDKHook_SetTransmit, OnHatTransmit);
 
-			RemoveEntity(g_hat[target]);
+			if(IsValidEntity(g_hat[target]) == true)
+			{
+				RemoveEntity(g_hat[target]);
+			}
 
 			g_hat[target] = 0;
 		}
