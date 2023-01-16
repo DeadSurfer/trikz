@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh (Nick Jurevich)",
 	description = "Measures distance difference between two vectors.",
-	version = "0.273",
+	version = "0.274",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -654,7 +654,7 @@ Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 					float velNew[3] = {0.0, ...};
 					//velNew[0] = velFlyer[0];
 					//velNew[1] = velFlyer[1];
-					velNew[2] = velBooster[2] * 3.572;
+					velNew[2] = velBooster[2] * (velFlyer[2] > 0 ? 1.0 : 3.572);
 
 					float midMax = 800.0 - (800.0 - 750.0) / 2.0;
 
@@ -670,7 +670,7 @@ Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 					if(velNew[2] < 0.0)
 					{
-						velNew[2] = velNew[2];
+						velNew[2] = FloatAbs(velNew[2]);
 					}
 					
 					else if(!(g_entityFlags[client] & FL_INWATER))
