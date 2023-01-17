@@ -80,13 +80,14 @@ char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smo
 						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"};
 native bool Trikz_GetDevmap();
 char g_replayType[][] = {"", "_partner"};
+ArrayList g_frameBeforeLag[MAXPLAYER] = {null, ...};
 
 public Plugin myinfo =
 {
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.26",
+	version = "0.262",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -184,7 +185,7 @@ public void OnMapStart()
 	{
 		GetCurrentMap(g_map, sizeof(g_map));
 
-		CreateTimer(3.0, timer_bot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, TimerBot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	else if(Trikz_GetDevmap() == true)
@@ -199,10 +200,10 @@ public void OnClientPutInServer(int client)
 {
 	if(LibraryExists("trueexpert-entityfilter") == false && Trikz_GetDevmap() == false)
 	{
-		SDKHook(client, SDKHook_SetTransmit, TransmitPlayer);
+		SDKHook(client, SDKHook_SetTransmit, OnPlayerTransmit);
 	}
 
-	SDKHook(client, SDKHook_WeaponSwitchPost, SDKWeaponSwitch);
+	SDKHook(client, SDKHook_WeaponSwitchPost, OnPlayerWeaponSwitchPost);
 
 	return;
 }
@@ -221,7 +222,7 @@ public void OnClientDisconnect(int client)
 	return;
 }
 
-Action timer_bot(Handle timer)
+Action TimerBot(Handle timer)
 {
 	if(LibraryExists("trueexpert") == false)
 	{
@@ -257,7 +258,7 @@ Action timer_bot(Handle timer)
 
 	int botShouldAdd = 2;
 
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true && IsFakeClient(i) == true && GetClientTeam(i) != CS_TEAM_SPECTATOR)
 		{
@@ -265,7 +266,7 @@ Action timer_bot(Handle timer)
 		}
 	}
 
-	for(int i = 0; i <= botShouldAdd; ++i)
+	for(int i = 1; i <= botShouldAdd; ++i)
 	{
 		ServerCommand("bot_add");
 	}
@@ -277,7 +278,7 @@ Action timer_bot(Handle timer)
 		g_database.Query(SQLGetReplayName, query, _, DBPrio_Normal);
 	}
 
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true && IsFakeClient(i) == true && GetClientTeam(i) != CS_TEAM_SPECTATOR)
 		{
@@ -399,7 +400,7 @@ void SQLGetReplayName(Database db, DBResultSet results, const char[] error, any 
 				results.FetchString(i, name[i], MAX_NAME_LENGTH);
 				Format(name[i], MAX_NAME_LENGTH, "RECORD %s", name[i]);
 
-				for(int j = 0; j <= MaxClients; ++j)
+				for(int j = 1; j <= MaxClients; ++j)
 				{
 					if(IsClientInGame(j) == true && IsFakeClient(j) == true && GetClientTeam(j) != CS_TEAM_SPECTATOR)
 					{
@@ -518,7 +519,8 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			}
 		}
 
-		int differ = g_tick[Trikz_GetClientPartner(client)] - g_tick[client];
+		int partner = Trikz_GetClientPartner(client);
+		int differ = g_tick[partner] - g_tick[client];
 
 		if(differ > 0)
 		{
@@ -527,14 +529,34 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 				g_frame[client].Resize(g_tick[client] + differ);
 			}
 
-			for(int i = 0; i <= differ; ++i) //life is good. client which start lags compare partner ticks. so just align by partner.
+			for(int i = 1; i <= differ; ++i) //life is good. client which start lags compare partner ticks. so just align by partner.
 			{
 				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 			}
+
+			/*
+			if(g_tick[partner] < g_tick[client])
+			{
+				g_frameBeforeLag[partner].GetArray(0, ang, 2);
+				angles[0] = ang[0];
+				angles[1] = ang[1];
+				buttons = g_frameBeforeLag[partner].Get(0, 1, false);
+				SetEntityFlags(partner) = g_frameBeforeLag[partner].Get(0, 2, false);
+				SetEntityMoveType(partner) = g_frameBeforeLag[partner].Get(0, 3, false);
+			}
+			*/
 		}
 
 		else if(differ == 0)
 		{
+			/*
+				//g_frameBeforeLag
+				g_frameBeforeLag[client].SetArray(0, ang, 2);
+				g_frameBeforeLag[client].Set(0, buttons, 0, false);
+				g_frameBeforeLag[client].Set(0, GetEntitytFlags(client), 0, false);
+				g_frmaeBeforeLag[client].Set(0, GetEntityMoveType, 0, false);
+			*/
+
 			if(g_frame[client].Length <= g_tick[client])
 			{
 				g_frame[client].Resize(g_tick[client] + 1);
@@ -689,12 +711,18 @@ public void Trikz_OnTimerStart(int client, int partner)
 	if(IsFakeClient(client) == false && IsFakeClient(partner) == false)
 	{
 		delete g_frame[client];
-		g_frame[client] = new ArrayList((sizeof(eFrame)));
+		g_frame[client] = new ArrayList((sizeof(eFrame), 0));
 		g_tick[client] = 0;
 
 		delete g_frame[partner];
-		g_frame[partner] = new ArrayList((sizeof(eFrame)));
+		g_frame[partner] = new ArrayList((sizeof(eFrame), 0));
 		g_tick[partner] = 0;
+
+		delete g_frameBeforeLag[client];
+		g_frameBeforeLag[client] = new ArrayList(sizeof(eFrame), 0);
+
+		delete g_frameBeforeLag[partner];
+		g_frameBeforeLag[partner] = new ArrayList(sizeof(eFrame), 0);
 	}
 
 	return;
@@ -732,8 +760,6 @@ Action BotSilent(Event event, const char[] name, bool dontBroadcast)
 	if(IsFakeClient(client) == true)
 	{
 		event.BroadcastDisabled = true;
-
-		return Plugin_Handled;
 	}
 
 	return Plugin_Continue;
@@ -754,7 +780,7 @@ void ApplyFlags(int &flags1, int flags2, int flag)
 	return;
 }
 
-void SDKWeaponSwitch(int client, int weapon)
+void OnPlayerWeaponSwitchPost(int client, int weapon)
 {
 	if(Trikz_GetTimerState(client) == true)
 	{
@@ -876,7 +902,7 @@ Action HookTriggers(int entity, int other)
 	return Plugin_Continue;
 }
 
-Action TransmitPlayer(int entity, int client) //entity - me, client - loop all clients
+Action OnPlayerTransmit(int entity, int client) //entity - me, client - loop all clients
 {
 	//hide replay
 	if(client != entity && IsValidClient(entity) == true && IsPlayerAlive(client) == true)
