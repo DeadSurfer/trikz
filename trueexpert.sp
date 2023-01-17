@@ -43,6 +43,10 @@
 #define IsValidPartner(%1) 0 < g_partner[%1] <= MaxClients
 #define debug false
 
+#define ZoneStart 0
+#define ZoneEnd 1
+#define ZoneCP 2
+
 //Partner system
 int g_partner[MAXPLAYER] = {0, ...};
 
@@ -292,7 +296,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.667",
+	version = "4.668",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -387,12 +391,12 @@ public void OnPluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), OnSayMessage, true); //thanks to VerMon idea. https://github.com/shavitush/bhoptimer/blob/master/addons/sourcemod/scripting/shavit-chat.sp#L416
 	HookUserMessage(GetUserMessageId("RadioText"), OnRadioMessage, true);
 
-	HookEvent("player_spawn", OnSpawn, EventHookMode_Post);
-	HookEvent("player_jump", OnJump, EventHookMode_Post);
-	HookEvent("player_death", OnDeath, EventHookMode_Post);
-	HookEvent("player_team", OnTeam, EventHookMode_Post);
+	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
+	HookEvent("player_jump", OnPlayerJump, EventHookMode_Post);
+	HookEvent("player_death", OnPlayerDeath, EventHookMode_Post);
+	HookEvent("player_team", OnPlayerTeam, EventHookMode_Post);
 
-	HookEntityOutput("func_button", "OnPressed", OnButton);
+	HookEntityOutput("func_button", "OnPressed", OnPlayerButton);
 
 	AddCommandListener(joinclass, "joinclass");
 	AddCommandListener(autobuy, "autobuy");
@@ -944,9 +948,12 @@ Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int players
 		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T_Dead", client, points, name, text);
 	}
 
+	int serial = GetClientSerial(client);
+	int condition = StrContains(msgBuffer, "_All") != -1;
+
 	DataPack dp = new DataPack();
-	dp.WriteCell(GetClientSerial(client));
-	dp.WriteCell(StrContains(msgBuffer, "_All") != -1);
+	dp.WriteCell(serial);
+	dp.WriteCell(condition);
 	dp.WriteString(text);
 	RequestFrame(FrameSayText2, dp);
 
@@ -957,7 +964,7 @@ void FrameSayText2(DataPack dp)
 {
 	dp.Reset();
 
-	int client = GetClientFromSerial(dp.ReadCell());
+	int serial = dp.ReadCell();
 
 	bool allchat = dp.ReadCell();
 
@@ -965,6 +972,8 @@ void FrameSayText2(DataPack dp)
 	dp.ReadString(text, sizeof(text));
 
 	delete dp;
+
+	int client = GetClientFromSerial(serial);
 
 	if(IsValidClient(client) == true)
 	{
@@ -1090,7 +1099,7 @@ void FrameRadioTXT(DataPack dp)
 	return;
 }
 
-void OnSpawn(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -1155,7 +1164,7 @@ void OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-void OnButton(const char[] output, int caller, int activator, float delay)
+void OnPlayerButton(const char[] output, int caller, int activator, float delay)
 {
 	if(IsValidClient(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
@@ -1182,7 +1191,7 @@ void OnButton(const char[] output, int caller, int activator, float delay)
 	return;
 }
 
-void OnJump(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -1194,20 +1203,18 @@ void OnJump(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-void OnDeath(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll", 0);
 
-	char log[256] = "";
-	GetEntityClassname(ragdoll, log, sizeof(log));
+	char clsname[256] = "";
+	GetEntityClassname(ragdoll, clsname, sizeof(clsname));
 
-	if(StrEqual(log, "cs_ragdoll", false) == false)
+	if(StrEqual(clsname, "cs_ragdoll", false) == true)
 	{
-		LogMessage("OnDeath: %s", log);
+		RemoveEntity(ragdoll);
 	}
-
-	RemoveEntity(ragdoll);
 
 	if(IsValidPartner(client) == true)
 	{
@@ -1233,7 +1240,7 @@ void OnDeath(Event event, const char[] name, bool dontBroadcast)
 	return;
 }
 
-void OnTeam(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int team = event.GetInt("team");
@@ -3696,10 +3703,11 @@ void CreateEnd()
 void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
-	any id = data.ReadCell();
-	int client = GetClientFromSerial(id);
+	int id = data.ReadCell();
 	int type = data.ReadCell();
 	int cpnum = data.ReadCell();
+
+	int client = GetClientFromSerial(id);
 
 	if(strlen(error) > 0)
 	{
@@ -3711,19 +3719,19 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 
 	else if(strlen(error) == 0)
 	{
-		if(type == 0)
+		if(type == ZoneStart)
 		{
-			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 0, %f, %f, %f, %f, %f, %f)", g_map, g_zoneStartOriginTemp[client][0][0], g_zoneStartOriginTemp[client][0][1], g_zoneStartOriginTemp[client][0][2], g_zoneStartOriginTemp[client][1][0], g_zoneStartOriginTemp[client][1][1], g_zoneStartOriginTemp[client][1][2]);
+			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', ZoneStart, %f, %f, %f, %f, %f, %f)", g_map, g_zoneStartOriginTemp[client][0][0], g_zoneStartOriginTemp[client][0][1], g_zoneStartOriginTemp[client][0][2], g_zoneStartOriginTemp[client][1][0], g_zoneStartOriginTemp[client][1][1], g_zoneStartOriginTemp[client][1][2]);
 			g_sql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 		}
 
-		else if(type == 1)
+		else if(type == ZoneEnd)
 		{
-			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', 1, %f, %f, %f, %f, %f, %f)", g_map, g_zoneEndOriginTemp[client][0][0], g_zoneEndOriginTemp[client][0][1], g_zoneEndOriginTemp[client][0][2], g_zoneEndOriginTemp[client][1][0], g_zoneEndOriginTemp[client][1][1], g_zoneEndOriginTemp[client][1][2]);
+			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', ZoneEnd, %f, %f, %f, %f, %f, %f)", g_map, g_zoneEndOriginTemp[client][0][0], g_zoneEndOriginTemp[client][0][1], g_zoneEndOriginTemp[client][0][2], g_zoneEndOriginTemp[client][1][0], g_zoneEndOriginTemp[client][1][1], g_zoneEndOriginTemp[client][1][2]);
 			g_sql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 		}
 
-		else if(type == 2)
+		else if(type == ZoneCP)
 		{
 			Format(g_query, sizeof(g_query), "INSERT INTO cp (cpnum, cpx, cpy, cpz, cpx2, cpy2, cpz2, map) VALUES (%i, %f, %f, %f, %f, %f, %f, '%s')", cpnum, g_cpPosTemp[client][cpnum][0][0], g_cpPosTemp[client][cpnum][0][1], g_cpPosTemp[client][cpnum][0][2], g_cpPosTemp[client][cpnum][1][0], g_cpPosTemp[client][cpnum][1][1], g_cpPosTemp[client][cpnum][1][2], g_map);
 			g_sql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
@@ -3932,9 +3940,11 @@ Action AdminCommandMaptier(int client, int args)
 void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
-	int client = GetClientFromSerial(data.ReadCell());
+	int serial = data.ReadCell();
 	int tier = data.ReadCell();
 	delete data;
+
+	int client = GetClientFromSerial(serial);
 
 	if(strlen(error) > 0)
 	{
@@ -3959,9 +3969,11 @@ void SQLTierRemove(Database db, DBResultSet results, const char[] error, DataPac
 void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
-	int client = GetClientFromSerial(data.ReadCell());
+	int serial = data.ReadCell();
 	int tier = data.ReadCell();
 	delete data;
+
+	int client = GetClientFromSerial(serial);
 
 	char auth[32] = "";
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
@@ -3987,10 +3999,12 @@ void SQLTierInsert(Database db, DBResultSet results, const char[] error, DataPac
 void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack data)
 {
 	data.Reset();
-	int client = GetClientFromSerial(data.ReadCell());
+	int serial = data.ReadCell();
 	int type = data.ReadCell();
 	int cpnum = data.ReadCell();
 	delete data;
+
+	int client = GetClientFromSerial(serial);
 
 	char auth[32] = "";
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true);
@@ -4004,7 +4018,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 	{
 		if(results.HasResults == false)
 		{
-			if(type == 0)
+			if(type == ZoneStart)
 			{
 				for(int i = 0; i <= 1; i++)
 				{
@@ -4025,7 +4039,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 				LogToFileEx("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, auth);
 			}
 
-			else if(type == 1)
+			else if(type == ZoneEnd)
 			{
 				for(int i = 0; i <= 1; i++)
 				{
@@ -4046,7 +4060,7 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 				LogToFileEx("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, auth);
 			}
 
-			else if(type == 2)
+			else if(type == ZoneCP)
 			{
 				for(int i = 0; i <= 1; i++)
 				{
@@ -4072,17 +4086,17 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 		else if(results.HasResults == true)
 		{
-			if(type == 0)
+			if(type == ZoneStart)
 			{
 				PrintToServer("Start zone failed to create.");
 			}
 
-			else if(type == 1)
+			else if(type == ZoneEnd)
 			{
 				PrintToServer("End zone failed to create.");
 			}
 
-			else if(type == 2)
+			else if(type == ZoneCP)
 			{
 				PrintToServer("Checkpoint zone no. %i failed to create.", cpnum);
 			}
@@ -4708,20 +4722,20 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 
 			if(StrEqual(item, "startapply", false) == true)
 			{
-				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 0 LIMIT 1", g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = ZoneStart LIMIT 1", g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
-				dp.WriteCell(0);
+				dp.WriteCell(ZoneStart);
 				dp.WriteCell(0);
 				g_sql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
 			else if(StrEqual(item, "endapply", false) == true)
 			{
-				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = ZoneEnd LIMIT 1", g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
-				dp.WriteCell(1);
+				dp.WriteCell(ZoneEnd);
 				dp.WriteCell(0);
 				g_sql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
@@ -4731,24 +4745,24 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", cpnum, g_map);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
-				dp.WriteCell(2);
+				dp.WriteCell(ZoneCP);
 				dp.WriteCell(cpnum);
 				g_sql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
 			//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
 
-			if(g_ZoneEditor[param1] == 0)
+			if(g_ZoneEditor[param1] == ZoneStart)
 			{
 				ZoneEditorStart(param1);
 			}
 
-			else if(g_ZoneEditor[param1] == 1)
+			else if(g_ZoneEditor[param1] == ZoneEnd)
 			{
 				ZoneEditorEnd(param1);
 			}
 
-			else if(g_ZoneEditor[param1] == 2)
+			else if(g_ZoneEditor[param1] == ZoneCP)
 			{
 				ZoneEditorCP(param1, g_ZoneEditorCP[param1]);
 			}
@@ -5966,9 +5980,11 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 	else if(strlen(error) == 0)
 	{
 		data.Reset();
-		int other = GetClientFromSerial(data.ReadCell());
+		int serial = data.ReadCell();
 		int cpnum = data.ReadCell();
 		delete data;
+
+		int other = GetClientFromSerial(serial);
 
 		bool fetchrow = results.FetchRow();
 
@@ -6000,7 +6016,6 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		else if(fetchrow == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
-			int serial = GetClientSerial(other);
 			DataPack dp = new DataPack();
 			dp.WriteCell(serial);
 			dp.WriteCell(cpnum);
@@ -6021,9 +6036,11 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 	else if(strlen(error) == 0)
 	{
 		data.Reset();
-		int other = GetClientFromSerial(data.ReadCell());
+		int serial = data.ReadCell();
 		int cpnum = data.ReadCell();
 		delete data;
+
+		int other = GetClientFromSerial(serial);
 
 		float time = g_timerTime[other];
 
@@ -6428,12 +6445,12 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 	{
 		if(g_devmap == true)
 		{
-			if(zonetype < 2)
+			if(zonetype < ZoneCP) //First is Start then End, Then CP
 			{
 				ix = zonetype;
 			}
 
-			else if(zonetype == 2)
+			else if(zonetype == ZoneCP)
 			{
 				ix = zonecount + 1;
 			}
