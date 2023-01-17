@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.665",
+	version = "4.666",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -6639,10 +6639,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(entity > 0)
 			{
-				char clsname[256] = "";
+				char clsname[12 + 1] = "";
 				GetEntityClassname(entity, clsname, sizeof(clsname));
 
-				if(StrEqual(clsname, "prop_dynamic_override", false) == true)
+				if(StrEqual(clsname, "prop_dynamic", false) == true)
 				{
 					RemoveEntity(entity);
 				}
@@ -8135,10 +8135,10 @@ Action TimerClenupPing(Handle timer, int client)
 
 	if(IsValidEntity(entity) == true)
 	{
-		char clsname[256] = "";
+		char clsname[12 + 1] = "";
 		GetEntityClassname(entity, clsname, sizeof(clsname));
 
-		if(StrEqual(clsname, "prop_dynamic_override", false) == true)
+		if(StrEqual(clsname, "prop_dynamic", false) == true)
 		{
 			RemoveEntity(entity);
 		}
