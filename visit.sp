@@ -28,29 +28,38 @@
 	any other work released this way by its authors. You can apply it to
 	your programs, too.
 */
-#pragma semicolon 1
-#pragma newdecls required
 
 #include <cstrike>
+
+#pragma semicolon 1
+#pragma newdecls required
 
 #define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 
 char g_format[256] = "";
+
+ConVar g_cvEnable = null, g_cvBot = null;
 
 public Plugin myinfo =
 {
 	name = "Visit announcement",
 	author = "Smesh",
 	description = "Always show connect, disconnect, team changes message in the chat.",
-	version = "0.331",
+	version = "0.332",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
+	g_cvEnable = CreateConVar("sm_visit_enable", "0.0", "Do plugin enable here?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvBot = CreateConVar("sm_visit_bot", "0.0", "Show bots on visit event?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	AutoExecConfig(true, "plugin.visit", "sourcemod");
+
 	HookEvent("player_connect_client", connect, EventHookMode_Pre);
+	//HookEvent("player_connect", connect, EventHookMode_Pre);
 	HookEvent("player_disconnect", disconnect, EventHookMode_Pre);
 	HookEvent("player_team", teamjoin, EventHookMode_Pre);
+	HookEvent("player_changename", changename, EventHookMode_Pre);
 
 	LoadTranslations("visit.phrases");
 
@@ -59,48 +68,76 @@ public void OnPluginStart()
 
 Action connect(Event event, const char[] name, bool dontBroadcast)
 {
+	if(g_cvEnable.FloatValue != 1.0)
+	{
+		return Plugin_Continue;
+	}
+
+	float bot = g_cvBot.FloatValue;
+
 	char sName[MAX_NAME_LENGTH] = "";
 	event.GetString("name", sName, sizeof(sName));
 
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
-			Format(g_format, sizeof(g_format), "%T", "connect", i, sName);
-			SendMessage(i, g_format);
+			if(bot == 1.0 || (bot != 1.0 && IsFakeClient(i) == false))
+			{
+				Format(g_format, sizeof(g_format), "%T", "connect", i, sName);
+				SendMessage(i, g_format);
+			}
 		}
 	}
 
-	SetEventBroadcast(event, true);
+	event.BroadcastDisabled = true;
 
 	return Plugin_Continue;
 }
 
 public Action disconnect(Event event, const char[] name, bool dontBroadcast)
 {
+	if(g_cvEnable.FloatValue != 1.0)
+	{
+		return Plugin_Continue;
+	}
+
+	float bot = g_cvBot.FloatValue;
+
 	char sReason[128] = "";
 	event.GetString("reason", sReason, sizeof(sReason));
+
 	char sName[MAX_NAME_LENGTH] = "";
 	event.GetString("name", sName, sizeof(sName));
 
-	for(int i = 0; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; ++i)
 	{
 		if(IsClientInGame(i) == true)
 		{
-			Format(g_format, sizeof(g_format), "%T", "disconnect", i, sName, sReason);
-			SendMessage(i, g_format);
+			if(bot == 1.0 || (bot != 1.0 && IsFakeClient(i) == false))
+			{
+				Format(g_format, sizeof(g_format), "%T", "disconnect", i, sName, sReason);
+				SendMessage(i, g_format);
+			}
 		}
 	}
 
-	SetEventBroadcast(event, true);
+	event.BroadcastDisabled = true;
 
 	return Plugin_Continue;
 }
 
 Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 {
+	if(g_cvEnable.FloatValue != 1.0)
+	{
+		return Plugin_Continue;
+	}
+
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int team = event.GetInt("team");
+
+	float bot = g_cvBot.FloatValue;
 
 	char sName[MAX_NAME_LENGTH];
 	GetClientName(client, sName, sizeof(sName));
@@ -109,42 +146,64 @@ Action teamjoin(Event event, const char[] name, bool dontBroadcast)
 	{
 		case CS_TEAM_SPECTATOR:
 		{
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					Format(g_format, sizeof(g_format), "%T", "joinSpectator", i, sName);
-					SendMessage(i, g_format);
+					if(bot == 1.0 || (bot != 1.0 && IsFakeClient(i) == false))
+					{
+						Format(g_format, sizeof(g_format), "%T", "joinSpectator", i, sName);
+						SendMessage(i, g_format);
+					}
 				}
 			}
 		}
 
 		case CS_TEAM_T:
 		{
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					Format(g_format, sizeof(g_format), "%T", "joinTerrorist", i, sName);
-					SendMessage(i, g_format);
+					if(bot == 1.0 || (bot != 1.0 && IsFakeClient(i) == false))
+					{
+						Format(g_format, sizeof(g_format), "%T", "joinTerrorist", i, sName);
+						SendMessage(i, g_format);
+					}
 				}
 			}
 		}
 
 		case CS_TEAM_CT:
 		{
-			for(int i = 0; i <= MaxClients; ++i)
+			for(int i = 1; i <= MaxClients; ++i)
 			{
 				if(IsClientInGame(i) == true)
 				{
-					Format(g_format, sizeof(g_format), "%T", "joinCounterTerrorist", i, sName);
-					SendMessage(i, g_format);
+					if(bot == 1.0 || (bot != 1.0 && IsFakeClient(i) == false))
+					{
+						Format(g_format, sizeof(g_format), "%T", "joinCounterTerrorist", i, sName);
+						SendMessage(i, g_format);
+					}
 				}
 			}
 		}
 	}
 
-	SetEventBroadcast(event, true);
+	event.BroadcastDisabled = true;
+
+	return Plugin_Continue;
+}
+
+Action changename(Event event, const char[] name, bool dontBroadcast)
+{
+	float bot = g_cvBot.FloatValue;
+	int client = GetClientOfUserId(event.GetInt("userid"));
+
+	if(bot == 1.0 && IsFakeClient(client) == true)
+	{
+		event.BroadcastDisabled = true;
+	}
 
 	return Plugin_Continue;
 }
