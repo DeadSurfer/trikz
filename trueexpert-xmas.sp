@@ -29,6 +29,12 @@
 #define newdecls required
 #define MAXPLAYER MAXPLAYERS + 1
 
+//https://forums.alliedmods.net/showpost.php?p=2544030&postcount=7
+#define SPECMODE_NONE 0
+#define SPECMODE_FIRSTPERSON 4
+#define SPECMODE_3RDPERSON 5
+#define SPECMODE_FREELOOK 6
+
 char g_file[PLATFORM_MAX_PATH] = "";
 
 int g_hat[MAXPLAYERS] = {0, ...};
@@ -42,9 +48,9 @@ float g_hatMove[3] = {0.0, ...}, g_hatRotate[3] = {0.0, ...};
 public Plugin myinfo =
 {
 	name = "Xmas",
-	author = "Nick Jurevics (Smesh, Smesh292)",
+	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.296",
+	version = "1.297",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -444,7 +450,9 @@ Action OnHatTransmit(int entity, int client)
 
 	if(LibraryExists("trueexpert") == true && LibraryExists("trueexpert-entityfilter") == true)
 	{
-		if(IsPlayerAlive(client) == true && GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") != client && Trikz_GetClientPartner(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+
+		if(IsPlayerAlive(client) == true && owner != client && Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
 		{
 			return Plugin_Handled;
 		}
@@ -455,9 +463,12 @@ Action OnHatTransmit(int entity, int client)
 		return Plugin_Handled;
 	}
 
-	if(IsClientObserver(client) == true && GetEntProp(client, Prop_Send, "m_iObserverMode") == 4 && GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") > 0)
+	int mode = GetEntProp(client, Prop_Send, "m_iObserverMode");
+	int target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+
+	if(IsClientObserver(client) == true && mode == SPECMODE_FIRSTPERSON && target > 0)
 	{
-		if(entity == g_hat[GetEntPropEnt(client, Prop_Send, "m_hObserverTarget")])
+		if(entity == g_hat[target])
 		{
 			return Plugin_Handled;
 		}
