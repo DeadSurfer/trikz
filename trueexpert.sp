@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.664",
+	version = "4.665",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -8136,7 +8136,7 @@ Action TimerClenupPing(Handle timer, int client)
 	if(IsValidEntity(entity) == true)
 	{
 		char clsname[256] = "";
-		GetEntityClassname(g_pingModel[client], clsname, sizeof(clsname));
+		GetEntityClassname(entity, clsname, sizeof(clsname));
 
 		if(StrEqual(clsname, "prop_dynamic_override", false) == true)
 		{
