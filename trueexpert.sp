@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.663",
+	version = "4.664",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -5997,8 +5997,9 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 		else if(fetchrow == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT cp%i FROM records WHERE map = '%s' AND time != 0 ORDER BY time ASC LIMIT 1", cpnum, g_map); //log help me alot with this stuff, logs palīdzēja atrast kodu un saprast kā tas strādā.
+			int serial = GetClientSerial(other);
 			DataPack dp = new DataPack();
-			dp.WriteCell(GetClientSerial(other));
+			dp.WriteCell(serial);
 			dp.WriteCell(cpnum);
 			g_sql.Query(SQLCPSelect2, g_query, dp, DBPrio_Normal);
 		}
@@ -6135,7 +6136,8 @@ void SQLSetTries(Database db, DBResultSet results, const char[] error, any data)
 		else if(fetchrow == true)
 		{
 			Format(g_query, sizeof(g_query), "SELECT tries FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", playerid, partnerid, partnerid, playerid, g_map);
-			g_sql.Query(SQLSetTries2, g_query, GetClientSerial(client), DBPrio_High);
+			int serial = GetClientSerial(client);
+			g_sql.Query(SQLSetTries2, g_query, serial, DBPrio_High);
 		}
 	}
 
@@ -6248,11 +6250,12 @@ void SQLConnect(Database db, const char[] error, any data)
 		{
 			if(IsClientInGame(i) == true)
 			{
-				g_sql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", GetClientSerial(i), DBPrio_High);
+				int serial = GetClientSerial(i);
+				g_sql.Query(SQLAddUser, "SELECT id FROM users LIMIT 1", serial, DBPrio_High);
 
 				int steamid = GetSteamAccountID(i, true);
 				Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE (playerid = %i OR partnerid = %i) AND map = '%s' ORDER BY time ASC LIMIT 1", steamid, steamid, g_map);
-				g_sql.Query(SQLGetPersonalRecord, g_query, GetClientSerial(i), DBPrio_Normal);
+				g_sql.Query(SQLGetPersonalRecord, g_query, serial, DBPrio_Normal);
 			}
 
 			continue;
@@ -6632,19 +6635,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			g_pingLock[client] = true;
 
-			int entityIndex = EntRefToEntIndex(g_pingModel[client]);
+			int entity = EntRefToEntIndex(g_pingModel[client]);
 
-			if(entityIndex > 0)
+			if(entity > 0)
 			{
-				char log[256] = "";
-				GetEntityClassname(entityIndex, log, sizeof(log));
+				char clsname[256] = "";
+				GetEntityClassname(entity, clsname, sizeof(clsname));
 
-				if(StrEqual(log, "prop_dynamic", false) == false)
+				if(StrEqual(clsname, "prop_dynamic_override", false) == true)
 				{
-					LogMessage("runcmd: %s", log);
+					RemoveEntity(entity);
 				}
-
-				RemoveEntity(entityIndex);
 
 				g_pingModel[client] = 0;
 
@@ -6656,7 +6657,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				}
 			}
 
-			int entity = CreateEntityByName("prop_dynamic_override", -1); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
+			entity = CreateEntityByName("prop_dynamic_override", -1); //https://www.bing.com/search?q=prop_dynamic_override&cvid=0babe0a3c6cd43aa9340fa9c3c2e0f78&aqs=edge..69i57.409j0j1&pglt=299&FORM=ANNTA1&PC=U531
 
 			//SetEntityModel(g_pingModel[client], "models/trueexpert/pingtool/pingtool.mdl");
 			SetEntityModel(entity, "models/effects/combineball.mdl");
@@ -7280,18 +7281,20 @@ void Devmap(bool force)
 {
 	if(force == true || g_voters == 0)
 	{
-		char float_[8] = "";
+		char buffer[8] = "";
 
 		if(g_devmapCount[1] > g_devmapCount[0])
 		{
+			float result = (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0;
+
 			if(g_devmap == true)
 			{
 				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
-						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillBeDisabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(buffer, sizeof(buffer), "%.0f", result);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillBeDisabled", i, buffer, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7305,8 +7308,8 @@ void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true && IsFakeClient(i) == false)
 					{
-						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[1]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillBeEnabled", i, float_, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
+						Format(buffer, sizeof(buffer), "%.0f", result);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillBeEnabled", i, buffer, g_devmapCount[1], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7322,14 +7325,16 @@ void Devmap(bool force)
 
 		else if(g_devmapCount[1] < g_devmapCount[0])
 		{
+			float result = (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0;
+
 			if(g_devmap == true)
 			{
 				for(int i = 1; i <= MaxClients; ++i)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapContinue", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(buffer, sizeof(buffer), "%.0f", result);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapContinue", i, buffer, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7343,8 +7348,8 @@ void Devmap(bool force)
 				{
 					if(IsClientInGame(i) == true)
 					{
-						Format(float_, sizeof(float_), "%.0f", (float(g_devmapCount[0]) / (float(g_devmapCount[0]) + float(g_devmapCount[1]))) * 100.0);
-						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillNotBe", i, float_, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
+						Format(buffer, sizeof(buffer), "%.0f", result);
+						Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTrikz", i, "DevmapWillNotBe", i, buffer, g_devmapCount[0], g_devmapCount[0] + g_devmapCount[1]);
 						SendMessage(i, g_buffer);
 					}
 
@@ -7903,7 +7908,8 @@ void OnProjectileSpawnPost(int entity)
 
 		if(autoflashbang == 1.0 && (g_autoflash[client] == true || IsFakeClient(client) == true))
 		{
-			SetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 2, 4, false); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
+			int offset = FindDataMapInfo(client, "m_iAmmo") + 12 * 4;
+			SetEntData(client, offset, 2, 4, false); //https://forums.alliedmods.net/showthread.php?t=114527 https://forums.alliedmods.net/archive/index.php/t-81546.html
 		}
 
 		RequestFrame(FrameExplosionPrevent, entity);
@@ -7959,15 +7965,13 @@ Action TimerProjectileRemove(Handle timer, int entity)
 	{
 		FlashbangEffect(entity);
 
-		char log[256] = "";
-		GetEntityClassname(entity, log, sizeof(log));
-
-		if(StrEqual(log, "flashbang_projectile", false) == false)
-		{
-			LogMessage("TimerProjectileRemove: %s", log);
-		}
+		char clsname[256] = "";
+		GetEntityClassname(entity, clsname, sizeof(clsname));
 		
-		RemoveEntity(entity);
+		if(StrEqual(clsname, "flashbang_projectile", false) == true)
+		{
+			RemoveEntity(entity);
+		}
 	}
 
 	return Plugin_Stop;
@@ -8067,15 +8071,13 @@ Action OnWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon) == true)
 	{
-		char log[256] = "";
-		GetEntityClassname(weapon, log, sizeof(log));
+		char clsname[256] = "";
+		GetEntityClassname(weapon, clsname, sizeof(clsname));
 
-		if(StrContains(log, "weapon", false) == -1)
+		if(StrContains(clsname, "weapon", false) != -1)
 		{
-			LogMessage("OnWeaponDrop: %s", log);
+			RemoveEntity(weapon);
 		}
-
-		RemoveEntity(weapon);
 	}
 
 	return Plugin_Continue;
@@ -8087,7 +8089,9 @@ void GiveFlashbang(int client)
 	
 	if(autoflashbang == 1.0 && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
 	{
-		if(GetEntData(client, FindDataMapInfo(client, "m_iAmmo") + 12 * 4, 4) == 0)
+		int offset = FindDataMapInfo(client, "m_iAmmo") + 12 * 4;
+
+		if(GetEntData(client, offset, 4) == 0)
 		{
 			GivePlayerItem(client, "weapon_flashbang", 0);
 			GivePlayerItem(client, "weapon_flashbang", 0);
@@ -8131,15 +8135,13 @@ Action TimerClenupPing(Handle timer, int client)
 
 	if(IsValidEntity(entity) == true)
 	{
-		char log[256] = "";
-		GetEntityClassname(g_pingModel[client], log, sizeof(log));
+		char clsname[256] = "";
+		GetEntityClassname(g_pingModel[client], clsname, sizeof(clsname));
 
-		if(StrEqual(log, "prop_dynamic", false) == false)
+		if(StrEqual(clsname, "prop_dynamic_override", false) == true)
 		{
-			LogMessage("TimerClenupPing: %s", log);
+			RemoveEntity(entity);
 		}
-
-		RemoveEntity(entity);
 
 		g_pingModel[client] = 0;
 
