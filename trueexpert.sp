@@ -292,7 +292,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.666",
+	version = "4.667",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -679,8 +679,11 @@ void SQLRecalculatePoints(Database db, DBResultSet results, const char[] error, 
 
 		while(results.FetchRow() == true)
 		{
-			int points = results.FetchInt(1) * results.FetchInt(0) / ++place; //thanks to DeadSurfer //https://1drv.ms/u/s!Aq4KvqCyYZmHgpM9uKBA-74lYr2L3Q
-			Format(g_query, sizeof(g_query), "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, results.FetchInt(2));
+			int recordCount = results.FetchInt(0);
+			int tier = results.FetchInt(1);
+			int recordID = results.FetchInt(2);
+			int points = tier * recordCount / ++place; //thanks to DeadSurfer //https://1drv.ms/u/s!Aq4KvqCyYZmHgpM9uKBA-74lYr2L3Q
+			Format(g_query, sizeof(g_query), "UPDATE records SET points = %i WHERE id = %i LIMIT 1", points, recordID);
 			g_queryLast++;
 			g_sql.Query(SQLRecalculatePoints2, g_query, _, DBPrio_Normal);
 
@@ -720,9 +723,9 @@ void SQLRecalculatePoints3(Database db, DBResultSet results, const char[] error,
 	{
 		while(results.FetchRow() == true)
 		{
-			Format(g_query, sizeof(g_query), "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", results.FetchInt(0), results.FetchInt(0)); //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
-			data = results.FetchInt(0);
-			g_sql.Query(SQLRecalculateUserPoints, g_query, data, DBPrio_Normal);
+			int userid = results.FetchInt(0);
+			Format(g_query, sizeof(g_query), "SELECT MAX(points) FROM records WHERE (playerid = %i OR partnerid = %i) GROUP BY map", userid, userid); //https://1drv.ms/u/s!Aq4KvqCyYZmHgpFWHdgkvSKx0wAi0w?e=7eShgc
+			g_sql.Query(SQLRecalculateUserPoints, g_query, userid, DBPrio_Normal);
 
 			continue;
 		}
