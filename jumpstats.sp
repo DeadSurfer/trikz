@@ -79,13 +79,13 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh (Nick Jurevich)",
 	description = "Measures distance difference between two vectors.",
-	version = "0.275",
+	version = "0.276",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
-	HookEvent("player_jump", OnJump, EventHookMode_Post); //https://hlmod.ru/threads/sourcepawn-urok-3-sobytija-events.36891/
+	HookEvent("player_jump", OnPlayerJump, EventHookMode_Post); //https://hlmod.ru/threads/sourcepawn-urok-3-sobytija-events.36891/
 
 	g_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected);
 
@@ -97,7 +97,7 @@ public void OnPluginStart()
 		}
 	}
 
-	RegConsoleCmd("sm_js", cmd_jumpstats);
+	RegConsoleCmd("sm_js", CommandJumpstats, "Show statistics of jumps to key hint (HUD).");
 
 	//char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
 
@@ -170,7 +170,7 @@ public void OnClientCookiesCached(int client)
 	return;
 }
 
-Action cmd_jumpstats(int client, int args)
+Action CommandJumpstats(int client, int args)
 {
 	g_jumpstats[client] = !g_jumpstats[client];
 
@@ -189,7 +189,7 @@ Action cmd_jumpstats(int client, int args)
 	{
 		if(StrEqual(sArgs, "js", false) == true)
 		{
-			cmd_jumpstats(client, 0);
+			CommandJumpstats(client, 0);
 		}
 	}
 
@@ -206,7 +206,7 @@ Action cmd_jumpstats(int client, int args)
 	return;
 }*/
 
-void OnJump(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -479,12 +479,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		float sync = -1.0;
 		sync += float(g_syncTick[client]);
-
-		if(sync == -1.0)
-		{
-			sync = 0.0;
-		}
-
+		sync = sync == -1 ? 0.0 : sync;
 		sync /= float(g_tickAir[client]);
 		sync *= 100.0;
 
