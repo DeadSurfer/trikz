@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh (Nick Jurevich)",
 	description = "Measures distance difference between two vectors.",
-	version = "0.274",
+	version = "0.275",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -185,16 +185,25 @@ Action cmd_jumpstats(int client, int args)
 
 /*public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
-	if(!IsChatTrigger())
-		if(StrEqual(sArgs, "js"))
+	if(IsChatTrigger() == false)
+	{
+		if(StrEqual(sArgs, "js", false) == true)
+		{
 			cmd_jumpstats(client, 0);
+		}
+	}
+
 	return Plugin_Continue;
 }*/
 
 /*void output_teleport(const char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
+	{
 		g_teleported[activator] = true;
+	}
+
+	return;
 }*/
 
 void OnJump(Event event, const char[] name, bool dontBroadcast)
@@ -654,7 +663,7 @@ Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 					float velNew[3] = {0.0, ...};
 					//velNew[0] = velFlyer[0];
 					//velNew[1] = velFlyer[1];
-					velNew[2] = velBooster[2] * (velFlyer[2] > 0 ? 1.0 : 3.572);
+					velNew[2] = velBooster[2] * 3.572;
 
 					float midMax = 800.0 - (800.0 - 750.0) / 2.0;
 
@@ -670,7 +679,7 @@ Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 					if(velNew[2] < 0.0)
 					{
-						velNew[2] = FloatAbs(velNew[2]);
+						velNew[2] = FloatAbs(velNew[2]) / 2.0;
 					}
 					
 					else if(!(g_entityFlags[client] & FL_INWATER))
