@@ -10,14 +10,9 @@
         "en"    "Boost stats is off now."
     }
 
-    "TimeSuccessColor"
+    "TimeColor"
     {
-        "en"    ";#7CFC00"
-    }
-
-    "TimeFailedColor"
-    {
-        "en"    ";#FF0000"
+        "en"    ";#FF3333,;#FF9933,;#FFFF33,;#99FF33,;#33FF33,;#A0A0A0" //-0.100, -0.070, -0.050, -0.030, -0.000, 0.050
     }
 
     "DuckNo"
