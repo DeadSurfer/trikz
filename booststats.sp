@@ -50,15 +50,19 @@ bool g_duck[MAXPLAYER] = {false, ...};
 public Plugin myinfo =
 {
 	name = "Boost stats",
-	author = "Smesh",
+	author = "Smesh (Niks Jurēvičs)",
 	description = "Measures time between attack and jump.",
-	version = "0.39",
+	version = "0.40",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
-	RegConsoleCmd("sm_bs", cmd_booststats);
+	LoadTranslations("booststats.phrases");
+
+	RegPluginLibrary("trueexpert-booststats");
+
+	HookEvent("player_jump", OnPlayerJump, EventHookMode_PostNoCopy);
 
 	g_cookie = RegClientCookie("bs", "booststats", CookieAccess_Protected);
 
@@ -70,11 +74,7 @@ public void OnPluginStart()
 		}
 	}
 
-	HookEvent("player_jump", OnJump, EventHookMode_PostNoCopy);
-
-	RegPluginLibrary("trueexpert-booststats");
-
-	LoadTranslations("booststats.phrases");
+	RegConsoleCmd("sm_bs", CommandBooststats);
 
 	return;
 }
@@ -109,7 +109,7 @@ public void OnClientCookiesCached(int client)
 	return;
 }
 
-Action cmd_booststats(int client, int args)
+Action CommandBooststats(int client, int args)
 {
 	g_boostStats[client] = !g_boostStats[client];
 
@@ -155,15 +155,14 @@ void SDKSpawnProjectile(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 
-	RequestFrame(frame_projectileVel, entity);
+	RequestFrame(FrameProjectileVel, entity);
 
 	CalculationProcess(client);
 
 	return;
 }
 
-
-void frame_projectileVel(int entity)
+void FrameProjectileVel(int entity)
 {
 	if(IsValidEntity(entity) == true)
 	{
@@ -200,19 +199,19 @@ Action SDKStartTouch(int entity, int other)
 	return Plugin_Continue
 }
 
-void OnJump(Event event, const char[] name, bool dontBroadcast)
+void OnPlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	//g_throwTick[client][1] = GetEngineTime();
 	g_throwTick[client][1] = GetGameTickCount();
 
-	CreateTimer(0.1, timer_print, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.1, TimerPrint, client, TIMER_FLAG_NO_MAPCHANGE);
 
 	return;
 }
 
-Action timer_print(Handle timer, int client)
+Action TimerPrint(Handle timer, int client)
 {
 	DoPrint(client);
 
@@ -228,27 +227,57 @@ void DoPrint(int client)
 		if(time < 0.3)
 		{
 			char format[256] = "";
-			char timeColor[256] = "";
+			char color[8 + 1] = "";
 			char duck[256] = "";
+
+			char colorBuffer[53 + 1] = "";
+			Format(colorBuffer, sizeof(colorBuffer), "%T", "TimeColor", client);
+			char buffers[6][8 + 1];
+			ExplodeString(colorBuffer, ",", buffers, 6, 9, false);
+
+			if(time <= -0.100)
+			{
+				Format(color, sizeof(color), "%s", buffers[0]);
+			}
+
+			else if(-0.070 >= time > -0.100)
+			{
+				Format(color, sizeof(color), "%s", buffers[1]);
+			}
+
+			else if(-0.050 >= time > -0.070)
+			{
+				Format(color, sizeof(color), "%s", buffers[2]);
+			}
+
+			else if(-0.030 >= time > -0.050)
+			{
+				Format(color, sizeof(color), "%s", buffers[3]);
+			}
+
+			else if(0.000 >= time > -0.030)
+			{
+				Format(color, sizeof(color), "%s", buffers[4]);
+			}
+
+			else if(time > 0.0)
+			{
+				Format(color, sizeof(color), "%s", buffers[5]);
+			}
 
 			int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
 
 			if(g_boostStats[client] == true)
 			{
-				//PrintToServer("%f %.20f", time, (GetTickInterval() + 0.000000001)); //0.00999999977648200000 - 100 tickrate
-				//PrintToChat(client, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
-				Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", client);
 				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", client);
-				Format(format, sizeof(format), "%T", "Message", client, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+				Format(format, sizeof(format), "%T", "Message", client, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 				SendMessage(client, format);
 			}
 
 			if(IsClientValid(partner) == true && IsClientInGame(partner) == true && g_boostStats[partner] == true)
 			{
-				//PrintToChat(partner, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
-				Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", partner);
 				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", partner);
-				Format(format, sizeof(format), "%T", "MessagePartner", partner, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+				Format(format, sizeof(format), "%T", "MessagePartner", partner, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 				SendMessage(partner, format);
 			}
 
@@ -261,19 +290,15 @@ void DoPrint(int client)
 
 					if(observerMode < 7 && observerTarget == client && g_boostStats[i] == true)
 					{
-						//PrintToChat(i, "\x01Time: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
-						Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", i);
 						Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", i);
-						Format(format, sizeof(format), "%T", "Message", i, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+						Format(format, sizeof(format), "%T", "Message", i, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 						SendMessage(i, format);
 					}
 
 					else if(IsClientValid(partner) == true && observerMode < 7 && observerTarget == partner && g_boostStats[i] == true)
 					{
-						//PrintToChat(i, "\x07DCDCDCTime: %s%.3f\x01, Speed: %.0f, Run: %.0f, Duck: %s, Angles: %.0f/%.0f", time > 0.0 ? "\x07FF0000" : "\x077CFC00", time, g_projectileVel[client], g_vel[client], g_duck[client] ? "Yes" : "No", g_angles[client][0], g_angles[client][1]);
-						Format(timeColor, sizeof(timeColor), "%T", time > 0.0 ? "TimeFailedColor" : "TimeSuccessColor", i);
 						Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", i);
-						Format(format, sizeof(format), "%T", "MessagePartner", i, timeColor, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+						Format(format, sizeof(format), "%T", "MessagePartner", i, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
 						SendMessage(i, format);
 					}
 				}
