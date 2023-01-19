@@ -10,14 +10,9 @@
         "ru"    "Boost статистика теперь выключена."
     }
 
-    "TimeSuccessColor"
+    "TimeColor"
     {
-        "ru"    ";#7CFC00"
-    }
-
-    "TimeFailedColor"
-    {
-        "ru"    ";#FF0000"
+        "ru"    ";#FF3333,;#FF9933,;#FFFF33,;#99FF33,;#33FF33,;#A0A0A0" //-0.100, -0.070, -0.050, -0.030, -0.000, 0.050
     }
 
     "DuckNo"
