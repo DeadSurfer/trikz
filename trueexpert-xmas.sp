@@ -50,7 +50,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.297",
+	version = "1.298",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -60,7 +60,7 @@ public void OnPluginStart()
 	g_dateStart = CreateConVar("sm_te_date_start", "11.0", "Month of start the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_dateEnd = CreateConVar("sm_te_date_end", "2.0", "Month of end the xmass", FCVAR_NOTIFY, true, 1.0, true, 12.0);
 	g_move[0] = CreateConVar("sm_te_move_x", "0.0", "Move to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
-	g_move[1] = CreateConVar("sm_te_move_y", "-1.9", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
+	g_move[1] = CreateConVar("sm_te_move_y", "-1.85", "Move to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_move[2] = CreateConVar("sm_te_move_z", "4.6", "Move to Z coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_rotation[0] = CreateConVar("sm_te_rotate_x", "0.0", "Rorate to X coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
 	g_rotation[1] = CreateConVar("sm_te_rotate_y", "0.0", "Rorate to Y coordinate.", FCVAR_NOTIFY, false, 0.0, false, 0.0);
@@ -73,6 +73,7 @@ public void OnPluginStart()
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_PostNoCopy);
 	HookEvent("player_death", OnPlayerDeath, EventHookMode_PostNoCopy);
 	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre); //https://forums.alliedmods.net/showthread.php?t=135521
+	//AddCommandListener(ListenerJoinclass, "joinclass");
 
 	RegConsoleCmd("sm_xmas", CommandXmas, "Open the xmas menu.");
 	RegConsoleCmd("sm_hat", CommandHat, "Do move menu for hat from aim target (!hat m,0,-1.9,4.6) m - move, r - rotate");
@@ -81,6 +82,7 @@ public void OnPluginStart()
 	{
 		if(IsClientInGame(i) == true)
 		{
+			RemoveHat(i);
 			CreateHat(i);
 		}
 
@@ -294,7 +296,8 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		return;
 	}
 
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 
 	char model[PLATFORM_MAX_PATH] = "";
 	GetClientModel(client, model, PLATFORM_MAX_PATH);
@@ -309,6 +312,7 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		SetEntityModel(client, "models/player/ct_gign.mdl");
 	}
 
+	RemoveHat(client);
 	CreateHat(client);
 
 	return;
@@ -316,7 +320,8 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 
 	RemoveHat(client);
 
@@ -330,7 +335,8 @@ Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		return Plugin_Continue;
 	}
 
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 
 	int team = event.GetInt("team"); //https://wiki.alliedmods.net/Generic_Source_Events#player_team
 
@@ -341,6 +347,18 @@ Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 
 	return Plugin_Continue;
 }
+
+/*Action ListenerJoinclass(int client, const char[] command, int argc)
+{
+	if(TestDate() == false)
+	{
+		return Plugin_Continue;
+	}
+
+	RemoveHat(client);
+
+	return Plugin_Continue
+}*/
 
 void RemoveHat(int client)
 {
@@ -600,17 +618,7 @@ Action CommandHat(int client, int args)
 		origin[1] += right[1] * offset[0] + forward_[1] * offset[1] + up[1] * offset[2];
 		origin[2] += right[2] * offset[0] + forward_[2] * offset[1] + up[2] * offset[2];
 
-		if(g_hat[target] > 0)
-		{
-			SDKUnhook(g_hat[target], SDKHook_SetTransmit, OnHatTransmit);
-
-			if(IsValidEntity(g_hat[target]) == true)
-			{
-				RemoveEntity(g_hat[target]);
-			}
-
-			g_hat[target] = 0;
-		}
+		RemoveHat(target);
 
 		g_hat[target] = CreateEntityByName("prop_dynamic_override");
 
