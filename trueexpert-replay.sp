@@ -87,7 +87,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.262",
+	version = "0.263",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -349,6 +349,8 @@ void SetupSave(int client, int partner, float time)
 		FormatTime(timeFormat, sizeof(timeFormat), "%Y%b%d_%H_%M_%S", GetTime());
 		BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s%s.replay", g_map, timeFormat, g_replayType[i]);
 		SaveRecord(team[i], recordBackup, time, team[i] == partner ? true : false);
+
+		continue;
 	}
 
 	return;
@@ -711,18 +713,18 @@ public void Trikz_OnTimerStart(int client, int partner)
 	if(IsFakeClient(client) == false && IsFakeClient(partner) == false)
 	{
 		delete g_frame[client];
-		g_frame[client] = new ArrayList((sizeof(eFrame), 0));
+		g_frame[client] = new ArrayList((sizeof(eFrame)));
 		g_tick[client] = 0;
 
 		delete g_frame[partner];
-		g_frame[partner] = new ArrayList((sizeof(eFrame), 0));
+		g_frame[partner] = new ArrayList((sizeof(eFrame)));
 		g_tick[partner] = 0;
 
 		delete g_frameBeforeLag[client];
-		g_frameBeforeLag[client] = new ArrayList(sizeof(eFrame), 0);
+		g_frameBeforeLag[client] = new ArrayList(sizeof(eFrame));
 
 		delete g_frameBeforeLag[partner];
-		g_frameBeforeLag[partner] = new ArrayList(sizeof(eFrame), 0);
+		g_frameBeforeLag[partner] = new ArrayList(sizeof(eFrame));
 	}
 
 	return;
