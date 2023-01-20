@@ -296,7 +296,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.669",
+	version = "4.670",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -5392,7 +5392,7 @@ Action OnZoneStartTouch(int entity, int other)
 								g_teamRecord[partner] = time;
 							}
 
-							GlobalForward hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							GlobalForward hForward = new GlobalForward("Trikz_OnFinish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 							Call_StartForward(hForward);
 							Call_PushCell(other);
 							Call_PushCell(partner);
@@ -5488,7 +5488,7 @@ Action OnZoneStartTouch(int entity, int other)
 							g_teamRecord[other] = time;
 							g_teamRecord[partner] = time;
 
-							GlobalForward hForward = new GlobalForward("Trikz_Finish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+							GlobalForward hForward = new GlobalForward("Trikz_OnFinish", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 							Call_StartForward(hForward);
 							Call_PushCell(other);
 							Call_PushCell(partner);
@@ -6058,7 +6058,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 			FinishMSG(other, false, false, true, true, false, cpnum, timeOwn, timeSR);
 			FinishMSG(partner, false, false, true, true, false, cpnum, timeOwn, timeSR);
 
-			GlobalForward hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+			GlobalForward hForward = new GlobalForward("Trikz_OnCheckpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 			Call_StartForward(hForward);
 			Call_PushCell(other);
 			Call_PushCell(partner);
@@ -6086,7 +6086,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 				FinishMSG(other, false, false, true, false, true, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, true, cpnum, timeOwn, timeSR);
 
-				GlobalForward hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+				GlobalForward hForward = new GlobalForward("Trikz_OnCheckpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 				Call_StartForward(hForward);
 				Call_PushCell(other);
 				Call_PushCell(partner);
@@ -6110,7 +6110,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 				FinishMSG(other, false, false, true, false, false, cpnum, timeOwn, timeSR);
 				FinishMSG(partner, false, false, true, false, false, cpnum, timeOwn, timeSR);
 
-				GlobalForward hForward = new GlobalForward("Trikz_Checkpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
+				GlobalForward hForward = new GlobalForward("Trikz_OnCheckpoint", ET_Hook, Param_Cell, Param_Cell, Param_Float, Param_Float, Param_String);
 				Call_StartForward(hForward);
 				Call_PushCell(other);
 				Call_PushCell(partner);
