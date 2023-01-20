@@ -87,7 +87,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.263",
+	version = "0.264",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -216,6 +216,8 @@ public void OnClientDisconnect(int client)
 		{
 			g_bot[i] = 0;
 			g_loaded[i] = false;
+
+			continue;
 		}
 	}
 
@@ -239,6 +241,8 @@ Action TimerBot(Handle timer)
 		{
 			return Plugin_Continue;
 		}
+
+		continue;
 	}
 
 	ConVar cvForce = FindConVar("bot_stop");
@@ -264,11 +268,15 @@ Action TimerBot(Handle timer)
 		{
 			botShouldAdd--;
 		}
+
+		continue;
 	}
 
 	for(int i = 1; i <= botShouldAdd; ++i)
 	{
 		ServerCommand("bot_add");
+
+		continue;
 	}
 
 	if(botShouldAdd == 0 && g_database != INVALID_HANDLE)
@@ -312,6 +320,8 @@ Action TimerBot(Handle timer)
 				}
 			}
 		}
+
+		continue;
 	}
 
 	return Plugin_Continue;
@@ -372,6 +382,8 @@ void SaveRecord(int client, const char[] path, float time, bool load)
 		g_frame[client].GetArray(i, data, sizeof(eFrame));
 
 		f.Write(data, sizeof(data), 4);
+
+		continue;
 	}
 
 	delete f;
@@ -411,7 +423,11 @@ void SQLGetReplayName(Database db, DBResultSet results, const char[] error, any 
 							SetClientName(j, name[i]);
 						}
 					}
+					
+					continue;
 				}
+
+				continue;
 			}
 		}
 	}
@@ -431,6 +447,8 @@ void LoadRecord()
 		{
 			return;
 		}
+
+		continue;
 	}
 
 	File f = null;
@@ -457,6 +475,8 @@ void LoadRecord()
 			{
 				g_frameCache[g_bot[i]].SetArray(j, data, sizeof(eFrame));
 			}
+
+			continue;
 		}
 
 		delete f;
@@ -470,6 +490,8 @@ void LoadRecord()
 
 		g_loaded[i] = true;
 		g_tick[g_bot[i]] = 0;
+
+		continue;
 	}
 
 	return;
@@ -517,6 +539,8 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 							break;
 						}
 					}
+
+					continue;
 				}
 			}
 		}
@@ -534,6 +558,8 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			for(int i = 1; i <= differ; ++i) //life is good. client which start lags compare partner ticks. so just align by partner.
 			{
 				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
+
+				continue;
 			}
 
 			/*
@@ -578,6 +604,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		for(int i = 0; i <= 2; i++)
 		{
 			vel[i] = 0.0; //prevent shakes at flat surface.
+
+			continue;
 		}
 
 		if(g_tick[client] < g_replayTickcount[client] && g_loaded[0] == true && g_loaded[1] == true)
@@ -646,6 +674,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 						break;
 					}
+
+					continue;
 				}
 			}
 
@@ -808,6 +838,8 @@ void OnPlayerWeaponSwitchPost(int client, int weapon)
 
 					break;
 				}
+
+				continue;
 			}
 		}
 	}
