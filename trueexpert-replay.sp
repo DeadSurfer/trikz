@@ -87,7 +87,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.264",
+	version = "0.265",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -185,7 +185,7 @@ public void OnMapStart()
 	{
 		GetCurrentMap(g_map, sizeof(g_map));
 
-		CreateTimer(3.0, TimerBot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, TimerBot, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	else if(Trikz_GetDevmap() == true)
@@ -279,7 +279,7 @@ Action TimerBot(Handle timer)
 		continue;
 	}
 
-	if(botShouldAdd == 0 && g_database != INVALID_HANDLE)
+	if(botShouldAdd < 2 && g_database != INVALID_HANDLE)
 	{
 		char query[128] = "";
 		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
