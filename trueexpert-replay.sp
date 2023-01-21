@@ -87,7 +87,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.265",
+	version = "0.266",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -279,7 +279,7 @@ Action TimerBot(Handle timer)
 		continue;
 	}
 
-	if(botShouldAdd < 2 && g_database != INVALID_HANDLE)
+	if(botShouldAdd == 2 && g_database != INVALID_HANDLE)
 	{
 		char query[128] = "";
 		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
