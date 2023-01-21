@@ -735,7 +735,7 @@
 				if($back >= 0)
 				{
 					print "<th>
-								<center
+								<center>
 									<a href=?start=$back&sort=$sort style=color:#ffffff>Previous</a>
 								</center>
 							</th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
