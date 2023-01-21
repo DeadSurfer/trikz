@@ -296,7 +296,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.670",
+	version = "4.671",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -2978,6 +2978,9 @@ void DoRestart(int client)
 
 		g_block[client] = true;
 		g_block[partner] = true;
+
+		SetEntProp(client, Prop_Data, "m_ArmorValue", 0);
+		SetEntProp(partner, Prop_Data, "m_ArmorValue", 0);
 	}
 }
 
