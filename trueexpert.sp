@@ -113,7 +113,7 @@ ConVar gCV_urlTop = null,
 		gCV_endmsg = null,
 		gCV_top10 = null,
 		gCV_control = null,
-		gCV_skin = null,
+		//gCV_skin = null,
 		gCV_top = null,
 		gCV_mlstats = null,
 		gCV_vel = null,
@@ -179,7 +179,7 @@ bool g_pingLock[MAXPLAYER] = {false, ...};
 Handle g_cookie[12] = {INVALID_HANDLE, ...};
 
 //Coloring system
-char g_colorType[][] = {"255,255,255,white", "78,145,253,blue", "255,123,123,red", "74,229,74,green", "248,237,98,yellow"}; //https://www.color-hex.com/color-palette/ search for warm color type
+char g_colorType[][] = {"255,255,255,white", "2,41,191,blue", "255,0,0,red", "15,146,,green", "218,182,0,yellow"}; //https://www.color-hex.com/color-palette/ search for warm color type
 int g_colorBuffer[MAXPLAYER][2][3],
 	g_colorCount[MAXPLAYER][2];
 
@@ -223,7 +223,7 @@ bool g_clantagOnce[MAXPLAYER] = {false, ...};
 float g_mlsVel[MAXPLAYER][2][3],
 		g_mlsDistance[MAXPLAYER][2][3];
 int g_mlsCount[MAXPLAYER] = {0, ...},
-	g_mlsFlyer[MAXPLAYER] = {0, ...};
+	g_mlsBooster[MAXPLAYER] = {0, ...};
 ArrayList g_mlsBuffer[MAXPLAYER] = {null, ...};
 bool g_mlstats[MAXPLAYER] = {false, ...},
 		g_teleported[MAXPLAYER] = {false, ...};
@@ -296,23 +296,17 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.671",
+	version = "4.672",
 	url = "http://www.sourcemod.net/"
 };
 
 public void OnPluginStart()
 {
 	//declaration
-
-	//char classname[2][32];
-	//char output[5][16];
 	int offset;
 	Handle gamedata;
 
 	//initialization
-	//int offset;
-	//classname = {"trigger_teleport", "trigger_teleport_relative"}; //https://developer.valvesoftware.com/wiki/Trigger_teleport https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
-	//output = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
 	gamedata = LoadGameConfigFile("sdktools.games");
 	offset = GameConfGetOffset(gamedata, "Teleport");
 
@@ -338,7 +332,6 @@ public void OnPluginStart()
 	gCV_endmsg = CreateConVar("sm_te_endmsg", "0.0", "Allow to use !endmsg command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_top10 = CreateConVar("sm_te_top10", "0.0", "Allow to use !top10 command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_control = CreateConVar("sm_te_control", "0.0", "Allow to use control menu.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_skin = CreateConVar("sm_te_skin", "0.0", "Allow to use skin menu.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_top = CreateConVar("sm_te_top", "0.0", "Allow to use !top command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_mlstats = CreateConVar("sm_te_mlstats", "0.0", "Allow to use !mlstats command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_vel = CreateConVar("sm_te_vel", "0.0", "Allow to use velocity in hint.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -360,7 +353,6 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_flash", CommandAutoflash, "Toggling autoflash giving.");
 	RegConsoleCmd("sm_autoswitch", CommandAutoswitch, "toggling autoswitch.");
 	RegConsoleCmd("sm_switch", CommandAutoswitch, "Toggling autoswitch.");
-	//RegConsoleCmd("sm_time", cmd_time, "Show timer time in-game chat.");
 	RegConsoleCmd("sm_cp", CommandCheckpoint, "Open checkpoint menu.");
 	RegConsoleCmd("sm_devmap", CommandDevmap, "Start the vote for devmap toggling.");
 	RegConsoleCmd("sm_top", CommandTop, "Open motd with server records.");
@@ -378,7 +370,6 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_top10", CommandTop10, "Show top 10 teams in-game chat.");
 	RegConsoleCmd("sm_help", CommandControl, "Open help menu.");
 	RegConsoleCmd("sm_control", CommandControl, "Open help menu.");
-	RegConsoleCmd("sm_skin", CommandSkin, "Open skin changing menu.");
 	RegConsoleCmd("sm_vel", CommandVel, "Toggling a velocity for hint.");
 
 	RegAdminCmd("sm_zones", AdminCommandZones, ADMFLAG_CUSTOM1, "Open zone editor menu.");
@@ -408,21 +399,6 @@ public void OnPluginStart()
 	AddCommandListener(ACLCPNUM, "say");
 	AddCommandListener(ACLCPNUM, "say_team");
 
-	/*//declaration
-	//initialisation
-
-	for(int i = 0; i < sizeof(classname); i++)
-	{
-		for(int j = 0; j < sizeof(output); j++)
-		{
-			HookEntityOutput(classname[i], output[j], output_teleport);
-
-			continue;
-		}
-
-		continue;
-	}*/
-
 	LoadTranslations("trueexpert.phrases"); //https://wiki.alliedmods.net/Translations_(SourceMod_Scripting)
 
 	RegPluginLibrary("trueexpert");
@@ -439,11 +415,6 @@ public void OnPluginStart()
 	g_cookie[9] = RegClientCookie("te_flashbangcolor", "Flashbang color.", CookieAccess_Protected);
 	g_cookie[10] = RegClientCookie("te_playerskin", "Player skin.", CookieAccess_Protected);
 	g_cookie[11] = RegClientCookie("te_greetings", "Greetings", CookieAccess_Protected);
-
-	//declaration
-	
-
-	//initialization
 
 	delete gamedata;
 	
@@ -885,13 +856,11 @@ Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int players
 	if(StrEqual(msgBuffer, "Cstrike_Chat_AllSpec", false) == true)
 	{
 		Format(text, sizeof(text), "\x01*%T* [%s] \x07CCCCCC%s \x01:  %s", "Spec", client, points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L566
-		//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllSpec", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_Spec", false) == true)
 	{
 		Format(text, sizeof(text), "\x01(%T) [%s] \x07CCCCCC%s \x01:  %s", "Spectator", client, points, name, text);
-		//Format(text, sizeof(text), "%T", "Cstrike_Chat_Spec", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_All", false) == true)
@@ -899,13 +868,11 @@ Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int players
 		if(team == CS_TEAM_T)
 		{
 			Format(text, sizeof(text), "\x01[%s] \x07FF4040%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L638
-			//Format(text, sizeof(text), "%T", "Cstrike_Chat_All", client, points, name, text);
 		}
 
 		else if(team == CS_TEAM_CT)
 		{
 			Format(text, sizeof(text), "\x01[%s] \x0799CCFF%s \x01:  %s", points, name, text); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc#L513
-			//Format(text, sizeof(text), "%T", "Cstrike_Chat_All2", client, points, name, text);
 		}
 	}
 
@@ -914,38 +881,32 @@ Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int players
 		if(team == CS_TEAM_T)
 		{
 			Format(text, sizeof(text), "\x01*%T* [%s] \x07FF4040%s \x01:  %s", "Dead", client, points, name, text);
-			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead", client, points, name, text);
 		}
 
 		else if(team == CS_TEAM_CT)
 		{
 			Format(text, sizeof(text), "\x01*%T* [%s] \x0799CCFF%s \x01:  %s", "Dead", client, points, name, text);
-			//Format(text, sizeof(text), "%T", "Cstrike_Chat_AllDead2", client, points, name, text);
 		}
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT", false) == true)
 	{
 		Format(text, sizeof(text), "\x01(%T) [%s] \x0799CCFF%s \x01:  %s", "Counter-Terrorist", client, points, name, text);
-		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_CT_Dead", false) == true)
 	{
 		Format(text, sizeof(text), "\x01*%T*(%T) [%s] \x0799CCFF%s \x01:  %s", "Dead", client, "Counter-Terrorist", client, points, name, text);
-		//Format(text, sizeof(text), "%T", "Cstrike_Chat_CT_Dead", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T", false) == true)
 	{
 		Format(text, sizeof(text), "\x01(%T) [%s] \x07FF4040%s \x01:  %s", "Terrorist", client, points, name, text); //https://forums.alliedmods.net/showthread.php?t=185016
-		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T", client, points, name, text);
 	}
 
 	else if(StrEqual(msgBuffer, "Cstrike_Chat_T_Dead", false) == true)
 	{
 		Format(text, sizeof(text), "\x01*%T*(%T) [%s] \x07FF4040%s \x01:  %s", "Dead", client, "Terrorist", client, points, name, text);
-		//Format(text, sizeof(text), "%T", "Cstrike_Chat_T_Dead", client, points, name, text);
 	}
 
 	int serial = GetClientSerial(client);
@@ -1101,7 +1062,8 @@ void FrameRadioTXT(DataPack dp)
 
 void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 
 	char model[PLATFORM_MAX_PATH] = "";
 	int maxlen = PLATFORM_MAX_PATH;
@@ -1133,12 +1095,17 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	int size = 4;
 	int element = 0;
 	Format(prop, sizeof(prop), "m_nModelIndex");
-
 	value = g_wModelPlayer[g_class[client]];
 	SetEntProp(client, type, prop, value, size, element);
-	Format(prop, sizeof(prop), "m_nSkin");
-	value = g_skinPlayer[client];
-	SetEntProp(client, type, prop, value, size, element);
+
+	PropType type2 = Prop_Data;
+	char prop2[7 + 1] = "";
+	any value2 = 0;
+	int size2 = 4;
+	int element2 = 0;
+	Format(prop2, sizeof(prop2), "m_nSkin");
+	value2 = g_skinPlayer[client];
+	SetEntProp(client, type2, prop2, value2, size2, element2);
 
 	int r = g_colorBuffer[client][0][0];
 	int g = g_colorBuffer[client][0][1];
@@ -1151,10 +1118,7 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	if(g_devmap == false && g_clantagOnce[client] == false)
 	{
-		char buffer[256] = "";
-		Format(buffer, sizeof(buffer), "%s", g_clantag[client][0]);
-		int size2 = 256;
-		CS_GetClientClanTag(client, buffer, size2);
+		CS_GetClientClanTag(client, g_clantag[client][0], 256);
 		g_clantagOnce[client] = true;
 	}
 
@@ -1193,7 +1157,8 @@ void OnPlayerButton(const char[] output, int caller, int activator, float delay)
 
 void OnPlayerJump(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 
 	g_skyOrigin[client] = GetGroundPos(client);
 	g_skyAble[client] = GetGameTime();
@@ -1205,7 +1170,8 @@ void OnPlayerJump(Event event, const char[] name, bool dontBroadcast)
 
 void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll", 0);
 
 	char clsname[256] = "";
@@ -1242,7 +1208,8 @@ void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 void OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 	int team = event.GetInt("team");
 
 	if(team == CS_TEAM_SPECTATOR && IsValidPartner(client) == true)
@@ -1469,14 +1436,6 @@ Action ACLCPNUM(int client, const char[] command, int argc)
 
 	return Plugin_Continue;
 }
-
-/*void output_teleport(const char[] output, int caller, int activator, float delay)
-{
-	if(0 < activator <= MaxClients)
-	{
-		g_teleported[activator] = true;
-	}
-}*/
 
 Action CommandCheckpoint(int client, int args)
 {
@@ -1799,11 +1758,6 @@ public void OnClientDisconnect(int client)
 		continue;
 	}
 
-	/*if(g_devmap == false && IsValidPartner(client) == true && IsFakeClient(client) == false)
-	{
-		ResetFactory(partner);
-	}*/
-
 	for(int i = 0; i <= 1; i++)
 	{
 		g_flashbangDoor[client][i] = false;
@@ -1966,8 +1920,7 @@ void SQLGetPoints(Database db, DBResultSet results, const char[] error, any data
 			g_points[client] = results.FetchRow() == true ? results.FetchInt(0) : 0;
 
 			float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
-
-			SetEntityHealth(client, RoundToFloor(precentage) == 0 ? 1 : RoundToFloor(precentage));
+			CS_SetMVPCount(client, precentage <= 100.0 ? RoundToFloor(precentage) : 0);
 		}
 	}
 
@@ -2674,10 +2627,10 @@ void ColorSelect(int client)
 	menu.AddItem("team_color", g_buffer);
 	Format(g_buffer, sizeof(g_buffer), "%T", "PlayerSkin", client);
 	menu.AddItem("player_skin", g_buffer);
-	Format(g_buffer, sizeof(g_buffer), "%T", "ColorPingFL", client);
-	menu.AddItem("object_color", g_buffer);
 	Format(g_buffer, sizeof(g_buffer), "%T", "FlashbangSkin", client);
 	menu.AddItem("flashbang_skin", g_buffer);
+	Format(g_buffer, sizeof(g_buffer), "%T", "ColorPingFL", client);
+	menu.AddItem("object_color", g_buffer);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -2706,13 +2659,13 @@ int MenuHandlerColor(Menu menu, MenuAction action, int param1, int param2)
 
 				case 2:
 				{
-					ColorFlashbang(param1);
-					ColorSelect(param1);
+					FlashbangSkin(param1);
 				}
 
 				case 3:
 				{
-					FlashbangSkin(param1);
+					ColorFlashbang(param1);
+					ColorSelect(param1);
 				}
 			}
 		}
@@ -3345,76 +3298,6 @@ Action CommandControl(int client, int args)
 	return Plugin_Handled;
 }
 
-Action CommandSkin(int client, int args)
-{
-	int skin = gCV_skin.IntValue;
-
-	if(skin == 0.0)
-	{
-		return Plugin_Continue;
-	}
-
-	Skin(client);
-
-	return Plugin_Handled;
-}
-
-void Skin(int client)
-{
-	//declaration
-	char item[14] = "";
-	char display[14] = "";
-	char fmt[5] = "Skin";
-
-	Menu menu = new Menu(SkinClassMenuHandler);
-	//char fmt[4] = "Skin";
-	menu.SetTitle("%s", fmt);
-
-	//item[3 + 11] = "player_skin"; //1-3 = 3 english latters
-	//display[3 + 11] = "Player Skin"; //11 - 3 = 8, 14 - 3 = 11
-	Format(item, sizeof(item), "player_skin");
-	Format(display, sizeof(display), "Player Skin");
-	menu.AddItem(item, display);
-	//item = "flashbang_skin";
-	//display = "Flashbang Skin";
-	Format(item, sizeof(item), "flashbang_skin");
-	Format(display, sizeof(display), "Flashbang Skin");
-	menu.AddItem(item, display);
-
-	menu.Display(client, 20);
-
-	return;
-}
-
-int SkinClassMenuHandler(Menu menu, MenuAction action, int param1, int param2)
-{
-	switch(action)
-	{
-		case MenuAction_Select:
-		{
-			switch(param2)
-			{
-				case 0:
-				{
-					PlayerSkin(param1);
-				}
-
-				case 1:
-				{
-					FlashbangSkin(param1);
-				}
-			}
-		}
-
-		case MenuAction_End:
-		{
-			delete menu;
-		}
-	}
-
-	return view_as<int>(action);
-}
-
 void PlayerSkin(int client)
 {
 	Menu menu = new Menu(SkinTypeMenuHandler);
@@ -3823,20 +3706,35 @@ Action AdminCommandTest(int client, int args)
 	char buffer[256] = "";
 	GetCmdArgString(buffer, sizeof(buffer));
 
+	char buffers[2][2 + 1];
+	ExplodeString(buffer, ",", buffers, 2, 3, false);
+
 	int nBase = 10;
-	int partner = StringToInt(buffer, nBase);
+	int player1 = 0, player2 = 0;
+	player1 = StringToInt(buffers[0], nBase);
+	player2 = StringToInt(buffers[1], nBase);
 
-	if(IsValidClient(partner) == true && IsValidPartner(client) == false)
+	if(IsValidClient(player1) == true && IsValidClient(player2) == true)
 	{
-		g_partner[client] = partner;
-		g_partner[partner] = client;
+		g_partner[player1] = player2;
+		g_partner[player2] = player1;
 
-		Restart(client, false);
+		Restart(player1, false);
+	}
+
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) == true)
+		{
+			PrintToServer("[%N] [%i]", i, i);
+		}
+
+		continue;
 	}
 
 	PrintToServer("LibraryExists (trueexpert-entityfilter): %s", LibraryExists("trueexpert-entityfilter") == true ? "true" : "false");
 
-	// https://forums.alliedmods.net/showthread.php?t=187746
+	//https://forums.alliedmods.net/showthread.php?t=187746
 	int color = 0;
 	color |= (5 & 255) << 24; //5 red
 	color |= (200 & 255) << 16; // 200 green
@@ -3896,7 +3794,6 @@ void SendMessage(int client, const char[] buffer)
 		int flags = USERMSG_RELIABLE | USERMSG_BLOCKHOOKS;
 		Handle msg = StartMessageOne(msgname, client, flags); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
 		BfWrite bf = UserMessageToBfWrite(msg); //dont show color codes in console.
-		//bool insert = false;
 		bf.WriteByte(client); //Message author
 		bf.WriteByte(true); //Chat message
 		bf.WriteString(buffer2); //Message text
@@ -4752,8 +4649,6 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				dp.WriteCell(cpnum);
 				g_sql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
-
-			//menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER); //https://forums.alliedmods.net/showthread.php?p=2091775
 
 			if(g_ZoneEditor[param1] == ZoneStart)
 			{
@@ -5863,6 +5758,7 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 						else if(j == 3){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
 						ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 					}
+
 
 					continue;
 				}
@@ -7186,7 +7082,7 @@ Action OnProjectileStartTouch(int entity, int other)
 					g_mlsBuffer[other] = new ArrayList(64, 0); //sizeof of enum stuct
 				}
 
-				g_mlsFlyer[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
+				g_mlsBooster[other] = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
 			}
 		}
 	}
@@ -7867,42 +7763,6 @@ Action OnProjectileEndTouch(int entity, int other)
 	return Plugin_Continue;
 }
 
-/*Action cmd_time(int client, int args)
-{
-	if(IsPlayerAlive(client) == true)
-	{
-		//https://forums.alliedmods.net/archive/index.php/t-23912.html //ShAyA format OneEyed format second
-		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-		int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
-		int second = RoundToFloor(g_timerTime[client]) % 60;
-
-		PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
-
-		if(IsValidPartner(client) == true)
-		{
-			PrintToChat(g_partner[client], "Time: %02.i:%02.i:%02.i", hour, minute, second);
-		}
-	}
-
-	else if(IsPlayerAlive(client) == false)
-	{
-		int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
-		int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode", 4, 0);
-
-		if(observerMode < 7)
-		{
-			//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
-			int hour = (RoundToFloor(g_timerTime[observerTarget]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-			int minute = (RoundToFloor(g_timerTime[observerTarget]) / 60) % 60;
-			int second = RoundToFloor(g_timerTime[observerTarget]) % 60;
-
-			PrintToChat(client, "Time: %02.i:%02.i:%02.i", hour, minute, second);
-		}
-	}
-
-	return Plugin_Handled;
-}*/
-
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if(StrContains(classname, "projectile", true) != -1)
@@ -8266,12 +8126,7 @@ void MLStats(int client, bool ground)
 		Format(print[0], 256, "%s...\n%s", print[0], buffer);
 	}
 
-	int flyer = g_mlsFlyer[client];
-
-	if(IsValidClient(flyer) == false)
-	{
-		return;
-	}
+	int booster = g_mlsBooster[client];
 
 	float distance = 0.0;
 	char tp[256] = "";
@@ -8282,16 +8137,19 @@ void MLStats(int client, bool ground)
 		float y = g_mlsDistance[client][1][1] - g_mlsDistance[client][0][1];
 		distance = SquareRoot(Pow(x, 2.0) + Pow(y, 2.0)) + 32.0;
 
-		if(g_teleported[flyer] == true)
+		if(IsValidClient(booster) == true)
 		{
-			Format(tp, sizeof(tp), "%T", "MLSTP", flyer);
+			if(g_teleported[client] == true)
+			{
+				Format(tp, sizeof(tp), "%T", "MLSTP", booster);
+			}
+
+			//Format(print[1], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", flyer, distance, "MLSUnits", flyer, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
+			Format(print[1], 256, "%s\n%T", print[0], "MLSFinishMsg", booster, distance, tp);
+			PrintToConsole(booster, "%s", print[1]);
 		}
 
-		//Format(print[1], 256, "%s\n%T: %.0f %T%s", print[0], "MLSDistance", flyer, distance, "MLSUnits", flyer, tp); //player hitbox xy size is 32.0 units. Distance measured from player middle back point. My long jump record on Velo++ server is 279.24 units per 2017 winter. I used logitech g303 for my father present. And smooth mouse pad from glorious gaming. map was trikz_measuregeneric longjump room at 240 block. i grown weed and use it for my self also. 20 januarty.
-		Format(print[1], 256, "%s\n%T", print[0], "MLSFinishMsg", flyer, distance, tp);
-		PrintToConsole(flyer, "%s", print[1]);
-
-		if(g_teleported[flyer] == true)
+		if(g_teleported[client] == true)
 		{
 			Format(tp, sizeof(tp), "%T", "MLSTP", client);
 		}
@@ -8305,9 +8163,9 @@ void MLStats(int client, bool ground)
 		g_teleported[client] = false;
 	}
 
-	if(g_mlstats[flyer] == true)
+	if(IsValidClient(booster) == true && g_mlstats[booster] == true)
 	{
-		Handle KeyHintText = StartMessageOne("KeyHintText", flyer);
+		Handle KeyHintText = StartMessageOne("KeyHintText", booster);
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
 		bfmsg.WriteByte(true);
 		bfmsg.WriteString(ground == true ? print[1] : print[0]);
@@ -8330,9 +8188,9 @@ void MLStats(int client, bool ground)
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
-			if(observerMode < 7 && (observerTarget == client || observerTarget == flyer) && g_mlstats[i] == true)
+			if(observerMode < 7 && (observerTarget == client || (IsValidClient(booster) == true && observerTarget == booster)) && g_mlstats[i] == true)
 			{
-				if(g_teleported[flyer] == true)
+				if(g_teleported[client] == true)
 				{
 					Format(tp, sizeof(tp), "%T", "MLSTP", i);
 				}
@@ -8538,8 +8396,7 @@ void OnFrameGiveFlashbang(int client)
 void GetPoints(int client, char[] points)
 {
 	float precentage = float(g_points[client]) / float(g_pointsMaxs) * 100.0;
-
-	SetEntityHealth(client, RoundToFloor(precentage) == 0 ? 1 : RoundToFloor(precentage));
+	CS_SetMVPCount(client, precentage <= 100.0 ? RoundToFloor(precentage) : 0);
 
 	char color[8] = "";
 
