@@ -113,7 +113,6 @@ ConVar gCV_urlTop = null,
 		gCV_endmsg = null,
 		gCV_top10 = null,
 		gCV_control = null,
-		//gCV_skin = null,
 		gCV_top = null,
 		gCV_mlstats = null,
 		gCV_vel = null,
@@ -296,7 +295,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.672",
+	version = "4.673",
 	url = "http://www.sourcemod.net/"
 };
 
