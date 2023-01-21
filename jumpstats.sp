@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh (Nick Jurevich)",
 	description = "Measures distance difference between two vectors.",
-	version = "0.276",
+	version = "0.277",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -378,7 +378,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				PrintToConsole(client, "%s", print[1]);
 			}
 
-			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true)
+			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true && IsClientInGame(g_rbBooster[client]) == true)
 			{
 				if(g_teleported[client] == false)
 				{
