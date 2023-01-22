@@ -30,7 +30,7 @@ void SQLGetTier(Database db, DBResultSet results, const char[] error, any data)
 	else if(strlen(error) == 0)
 	{
 		static int tier = 0;
-		static char map[192] = "", format[256] = "";
+		static char map[192] = "", buffer[256] = "";
 
 		g_count = 0;
 
@@ -50,8 +50,8 @@ void SQLGetTier(Database db, DBResultSet results, const char[] error, any data)
 		{
 			tier = results.FetchInt(0);
 			results.FetchString(1, map, sizeof(map));
-			Format(format, sizeof(format), "%s;%i", map, tier);
-			g_tier.PushString(format);
+			Format(buffer, sizeof(buffer), "%s;%i", map, tier);
+			g_tier.PushString(buffer);
 			
 			continue;
 		}
