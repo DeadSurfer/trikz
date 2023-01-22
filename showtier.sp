@@ -15,12 +15,12 @@ void SQLConnect(Database db, const char[] error, any data)
 		return;
 	}
 	
-	db.Query(SQL_GetTier, "SELECT tier, map FROM tier", _, DBPrio_Normal);
+	db.Query(SQLGetTier, "SELECT tier, map FROM tier", _, DBPrio_Normal);
 
 	return;
 }
 
-void SQL_GetTier(Database db, DBResultSet results, const char[] error, any data)
+void SQLGetTier(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
@@ -37,6 +37,8 @@ void SQL_GetTier(Database db, DBResultSet results, const char[] error, any data)
 		while(results.FetchRow() == true)
 		{
 			g_count++;
+			
+			continue;
 		}
 
 		delete g_tier;
@@ -50,6 +52,8 @@ void SQL_GetTier(Database db, DBResultSet results, const char[] error, any data)
 			results.FetchString(1, map, sizeof(map));
 			Format(format, sizeof(format), "%s;%i", map, tier);
 			g_tier.PushString(format);
+			
+			continue;
 		}
 	}
 
@@ -58,34 +62,40 @@ void SQL_GetTier(Database db, DBResultSet results, const char[] error, any data)
 
 char[] ShowTier(const char[] displayName)
 {
-	static char format[256] = "", exploded[2][192] = {"", ""};
+	static char buffer[256] = "", buffers[2][192] = {"", ""};
 	static const char roman[][] = {"I", "II", "III", "IV", "V", "VI"};
 
 	for(int i = 0; i < g_count; i++)
 	{
-		g_tier.GetString(i, format, sizeof(format));
-		ExplodeString(format, ";", exploded, 2, 192, false);
+		g_tier.GetString(i, buffer, sizeof(buffer));
+		ExplodeString(buffer, ";", buffers, 2, 192, false);
 
-		if(StrEqual(displayName, exploded[0], false) == true)
+		if(StrEqual(displayName, buffers[0], false) == true)
 		{
 			break;
 		}
+		
+		continue;
 	}
 	
 	for(int i = 0; i < sizeof(roman); i++)
 	{
-		if(i + 1 == StringToInt(exploded[1]))
+		if(i + 1 != StringToInt(buffers[1]))
 		{
-			Format(format, sizeof(format), "[%s] %s", roman[i], displayName);
+			Format(buffer, sizeof(buffer), "[?] %s", displayName);
+			
+			break;
+		}
+		
+		else if(i + 1 == StringToInt(buffers[1]))
+		{
+			Format(buffer, sizeof(buffer), "[%s] %s", roman[i], displayName);
 
 			break;
 		}
-
-		else if(i + 1 != StringToInt(exploded[1]))
-		{
-			Format(format, sizeof(format), "[?] %s", displayName);
-		}
+		
+		continue;
 	}
 
-	return format;
+	return buffer;
 }
