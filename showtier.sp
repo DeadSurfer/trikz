@@ -40,7 +40,7 @@ void SQL_GetTier(Database db, DBResultSet results, const char[] error, any data)
 		}
 
 		delete g_tier;
-		g_tier = new ArrayList(sizeof(format), 0);
+		g_tier = new ArrayList(sizeof(format));
 
 		results.Rewind();
 
