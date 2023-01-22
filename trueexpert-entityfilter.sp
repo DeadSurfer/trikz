@@ -77,9 +77,9 @@ native int GetOutputActionTimesToFire(int entity, const char[] output, int index
 public Plugin myinfo =
 {
 	name = "Entity filter",
-	author = "Smesh",
+	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.287",
+	version = "0.288",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -161,7 +161,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnMapStart()
 {
-	for(int i = 1; i <= MAXPLAYER; i++)
+	for(int i = 1; i <= MAXPLAYERS; i++)
 	{
 		SDKUnhook(i, SDKHook_SetTransmit, OnPlayerTransmit);
 	}
@@ -177,16 +177,22 @@ public void OnMapStart()
 			{
 				UnhookEntityOutput(classname[i], output[j], OnEntityOutput);
 			}
+
+			continue;
 		}
+
+		continue;
 	}
 
-	for(int i = 1; i <= 2048; i++)
+	for(int i = 1; i < MAXENTITY; i++)
 	{
 		SDKUnhook(i, SDKHook_SetTransmit, OnEntityTransmit);
 		SDKUnhook(i, SDKHook_Use, OnUseButton);
 		SDKUnhook(i, SDKHook_OnTakeDamage, OnTakeDamage);
 		SDKUnhook(i, SDKHook_Touch, OnPlayerTouchEntity);
 		SDKUnhook(i, SDKHook_SetTransmit, OnNadeTransmit);
+
+		continue;
 	}
 }
 
@@ -196,7 +202,7 @@ public void OnClientPutInServer(int client)
 	{
 		SDKHook(client, SDKHook_SetTransmit, OnPlayerTransmit);
 
-		for(int i = 0; i <= g_entityTotalCount; ++i)
+		for(int i = 1; i <= g_entityTotalCount; ++i)
 		{
 			for(int j = 0; j <= 1; j++)
 			{
@@ -214,7 +220,7 @@ public void OnClientPutInServer(int client)
 
 void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	CreateTimer(1.0, OnTimerPrepare, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
+	CreateTimer(2.0, OnTimerPrepare, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
 
 	return;
 }
@@ -224,7 +230,7 @@ Action OnTimerPrepare(Handle timer)
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
 
-	for(int i = 0; i < MAXENTITY; ++i)
+	for(int i = 1; i < MAXENTITY; ++i)
 	{
 		for(int j = 0; j < MAXOUTPUT; j++)
 		{
@@ -240,7 +246,7 @@ Action OnTimerPrepare(Handle timer)
 		g_stateDefaultDisabled[i] = false;
 		g_buttonDefaultDelay[i] = 0.0;
 
-		for(int j = 0; j < MAXLINK; ++j)
+		for(int j = 1; j < MAXLINK; ++j)
 		{
 			for(int k = 0; k < MAXOUTPUT; k++)
 			{
@@ -676,7 +682,7 @@ void AddToLink(int entity, const char[] output, int entityLinked)
 
 void Reset(int client)
 {
-	for(int i = 0; i <= g_entityTotalCount; ++i)
+	for(int i = 1; i <= g_entityTotalCount; ++i)
 	{
 		g_stateDisabled[client][g_entityID[i]] = g_stateDefaultDisabled[g_entityID[i]];
 		g_buttonReady[client][g_entityID[i]] = 0.0;
@@ -692,7 +698,7 @@ void Reset(int client)
 		continue;
 	}
 
-	for(int i = 0; i <= g_mathTotalCount; ++i)
+	for(int i = 1; i <= g_mathTotalCount; ++i)
 	{
 		g_mathValue[client][i] = g_mathValueDefault[i];
 
@@ -842,7 +848,7 @@ MRESReturn OnInputEntity(int pThis, Handle hReturn, Handle hParams)
 		{
 			int thisIndex = 0;
 
-			for(int i = 0; i <= g_entityTotalCount; ++i)
+			for(int i = 1; i <= g_entityTotalCount; ++i)
 			{
 				if(g_breakID[i] == pThis)
 				{
@@ -975,7 +981,7 @@ MRESReturn OnInputMath(int pThis, Handle hReturn, Handle hParams)
 
 		int thisIndex = 0;
 
-		for(int i = 0; i <= g_mathTotalCount; ++i)
+		for(int i = 1; i <= g_mathTotalCount; ++i)
 		{
 			if(g_mathID[i] == pThis)
 			{
