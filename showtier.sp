@@ -80,7 +80,7 @@ char[] ShowTier(const char[] displayName)
 	
 	for(int i = 0; i < sizeof(roman); i++)
 	{
-		if(i + 1 != StringToInt(buffers[1]))
+		if(StrEqual(displayName, buffers[0], false) == false)
 		{
 			Format(buffer, sizeof(buffer), "[?] %s", displayName);
 			
