@@ -24,7 +24,7 @@ void SQLGetTier(Database db, DBResultSet results, const char[] error, any data)
 {
 	if(strlen(error) > 0)
 	{
-		PrintToServer("SQL_GetTier: %s", error);
+		PrintToServer("SQLGetTier: %s", error);
 	}
 
 	else if(strlen(error) == 0)
