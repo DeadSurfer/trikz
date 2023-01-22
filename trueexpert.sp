@@ -178,7 +178,7 @@ bool g_pingLock[MAXPLAYER] = {false, ...};
 Handle g_cookie[12] = {INVALID_HANDLE, ...};
 
 //Coloring system
-char g_colorType[][] = {"255,255,255,white", "2,41,191,blue", "255,0,0,red", "15,146,,green", "218,182,0,yellow"}; //https://www.color-hex.com/color-palette/ search for warm color type
+char g_colorType[][] = {"255,255,255,white", "44,44,255,blue", "255,0,0,red", "48,203,0,green", "233,215,0,yellow"}; //https://www.color-hex.com/color-palette/ search for warm color type
 int g_colorBuffer[MAXPLAYER][2][3],
 	g_colorCount[MAXPLAYER][2];
 
@@ -295,7 +295,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.673",
+	version = "4.674",
 	url = "http://www.sourcemod.net/"
 };
 
