@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.290",
+	version = "0.291",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -159,7 +159,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	return APLRes_Success;
 }
 
-public void OnMapStart()
+/*public void OnMapStart()
 {
 	for(int i = 1; i <= MAXPLAYERS; i++)
 	{
@@ -196,7 +196,7 @@ public void OnMapStart()
 
 		continue;
 	}
-}
+}*/
 
 public void OnClientPutInServer(int client)
 {
@@ -232,7 +232,7 @@ Action OnTimerPrepare(Handle timer)
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
 
-	for(int i = 1; i < MAXENTITY; ++i)
+	for(int i = MAXPLAYER; i < MAXENTITY; ++i)
 	{
 		for(int j = 0; j < MAXOUTPUT; j++)
 		{
@@ -305,7 +305,7 @@ Action OnTimerPrepare(Handle timer)
 
 			for(int j = 0; j < sizeof(output); j++)
 			{
-				if((i <= 4 && j <= 4) || (i == 5 && (j == 5 || j == 6)) || (i == 6 && j == 9 || j == 10))
+				if((i <= 4 && j <= 4) || (i == 5 && (j == 5 || j == 6)) || (i == 6 && (j == 9 || j == 10)))
 				{
 					LinkProcess(entity, output[j]);
 				}
