@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.289",
+	version = "0.290",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -660,7 +660,7 @@ void AddToLink(int entity, const char[] output, int entityLinked)
 
 	else if(entity < 0)
 	{
-		for(int k = 0; k <= g_mathTotalCount; ++k)
+		for(int k = 1; k <= g_mathTotalCount; ++k)
 		{
 			int math = k;
 
@@ -1302,7 +1302,7 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 
 			outputNum = GetOutput(outputChanged);
 
-			for(int i = 0; i <= g_mathTotalCount; ++i)
+			for(int i = 1; i <= g_mathTotalCount; ++i)
 			{
 				if(g_mathID[i] == caller)
 				{
