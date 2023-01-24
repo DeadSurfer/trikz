@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.288",
+	version = "0.289",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -164,6 +164,8 @@ public void OnMapStart()
 	for(int i = 1; i <= MAXPLAYERS; i++)
 	{
 		SDKUnhook(i, SDKHook_SetTransmit, OnPlayerTransmit);
+
+		continue;
 	}
 
 	char classname[][] = {"trigger_multiple", "trigger_teleport", "trigger_teleport_relative", "trigger_push", "trigger_gravity", "func_button", "math_counter"};
@@ -1169,7 +1171,7 @@ Action OnEntityTransmit(int entity, int client)
 		{
 			int target = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
 
-			if(0 < target <= MaxClients && IsValidClient(target) == true)
+			if(IsValidClient(target) == true)
 			{
 				int partner = Trikz_GetClientPartner(target);
 
