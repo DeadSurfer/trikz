@@ -295,7 +295,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.674",
+	version = "4.675",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1996,7 +1996,7 @@ Action OnStartTouch(int client, int other) //client = booster; other = flyer
 						g_skyVel[other][1] = velFlyer[1];
 						g_skyVel[other][2] = velBooster[2] * 3.572;
 
-						float midMax = 800.0 - (800.0 - 750.0) / 2.0;
+						float midMax = 800.0 - (800.0 - 770.0) / 2.0;
 
 						if(midMax > g_skyVel[other][2])
 						{
