@@ -290,12 +290,15 @@ char g_buffer[256] = "";
 //Query-SQL system
 char g_query[512] = "";
 
+//Timer dissolver
+//Handle g_timerDissolver[MAXPLAYER] = {INVALID_HANDLE, ...};
+
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.675",
+	version = "4.676",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -612,6 +615,11 @@ public void OnMapStart()
 	g_kv.ImportFromFile("addons/sourcemod/configs/trueexpert-hud.cfg");
 
 	g_cpCount = 0;
+
+	/*for(int i = 1; i <= MAXPLAYERS; i++)
+	{
+		g_timerDissolver[i] = INVALID_HANDLE;
+	}*/
 
 	return;
 }
@@ -2006,11 +2014,6 @@ Action OnStartTouch(int client, int other) //client = booster; other = flyer
 						else if(midMax <= g_skyVel[other][2])
 						{
 							g_skyVel[other][2] = g_skyVel[other][2] + (midMax - (g_skyVel[other][2] / midMax) * midMax) / 2.0;
-						}
-
-						if(g_skyVel[other][2] < 0.0)
-						{
-							g_skyVel[other][2] = FloatAbs(g_skyVel[other][2]) / 2.0;
 						}
 
 						if(g_entityFlags[client] & FL_INWATER)
@@ -7946,6 +7949,11 @@ void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-a
 		RequestFrame(OnFrameGiveFlashbang, client); //replays drops knife
 	}
 
+	/*if(g_timerDissolver[client] != INVALID_HANDLE)
+	{
+		CloseHandle(g_timerDissolver[client]);
+	}*/
+
 	return;
 }
 
@@ -7958,8 +7966,49 @@ Action OnWeaponDrop(int client, int weapon)
 
 		if(StrContains(clsname, "weapon", false) != -1)
 		{
-			RemoveEntity(weapon);
+			//RemoveEntity(weapon);
+			int dissolver = CreateEntityByName("env_entity_dissolver"); //https://forums.alliedmods.net/showthread.php?p=622834
+
+			if(dissolver != -1)
+			{
+				char dname[6 + 1] = "";
+				Format(dname, sizeof(dname), "dis_%i", weapon);
+				DispatchKeyValue(weapon, "targetname", dname);
+				DispatchKeyValue(dissolver, "dissolvetype", "2");
+				DispatchKeyValue(dissolver, "target", dname);
+				//DataPack dp = new DataPack();
+				//dp.WriteCell(client);
+				//dp.WriteCell(weapon);
+				//dp.WriteCell(dissolver);
+				//g_timerDissolver[client] = CreateTimer(3.0, TimerDissolve, dp, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(3.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
+			}
 		}
+	}
+
+	return Plugin_Continue;
+}
+
+//Action TimerDissolve(Handle timer, DataPack dp)
+Action TimerDissolve(Handle timer, int dissolver)
+{
+	/*dp.Reset();
+	int client = dp.ReadCell();
+	int weapon = dp.ReadCell();
+	int dissolver = dp.ReadCell();
+	delete dp;*/
+
+	if(dissolver != -1)
+	{
+		AcceptEntityInput(dissolver, "Dissolve");
+		AcceptEntityInput(dissolver, "Kill");
+
+		/*GlobalForward hForward = new GlobalForward("Trikz_OnWeaponDissolve", ET_Hook, Param_Cell, Param_Cell);
+		Call_StartForward(hForward);
+		Call_PushCell(client);
+		Call_PushCell(weapon);
+		Call_Finish();
+		delete hForward;*/
 	}
 
 	return Plugin_Continue;
