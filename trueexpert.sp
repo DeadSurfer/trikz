@@ -291,14 +291,14 @@ char g_buffer[256] = "";
 char g_query[512] = "";
 
 //Timer dissolver
-//Handle g_timerDissolver[MAXPLAYER] = {INVALID_HANDLE, ...};
+Handle g_timerDissolver[MAXPLAYER] = {INVALID_HANDLE, ...};
 
 public Plugin myinfo =
 {
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.677",
+	version = "4.678",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -616,10 +616,10 @@ public void OnMapStart()
 
 	g_cpCount = 0;
 
-	/*for(int i = 1; i <= MAXPLAYERS; i++)
+	for(int i = 1; i <= MAXPLAYERS; i++)
 	{
 		g_timerDissolver[i] = INVALID_HANDLE;
-	}*/
+	}
 
 	return;
 }
@@ -7949,10 +7949,10 @@ void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-a
 		RequestFrame(OnFrameGiveFlashbang, client); //replays drops knife
 	}
 
-	/*if(g_timerDissolver[client] != INVALID_HANDLE)
+	if(g_timerDissolver[client] != INVALID_HANDLE)
 	{
 		CloseHandle(g_timerDissolver[client]);
-	}*/
+	}
 
 	return;
 }
@@ -7980,8 +7980,8 @@ Action OnWeaponDrop(int client, int weapon)
 				//dp.WriteCell(client);
 				//dp.WriteCell(weapon);
 				//dp.WriteCell(dissolver);
-				//g_timerDissolver[client] = CreateTimer(3.0, TimerDissolve, dp, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(3.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
+				g_timerDissolver[client] = CreateTimer(3.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
+				//CreateTimer(3.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 	}
