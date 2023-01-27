@@ -43,30 +43,54 @@
 #define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 #define IsValidPartner(%1) 0 < Trikz_GetClientPartner(%1) <= MaxClients
 
-Handle g_AcceptInput = INVALID_HANDLE;
-Handle g_PassServerEntityFilter = INVALID_HANDLE;
-bool g_stateDefaultDisabled[MAXENTITY] = {false, ...};
-bool g_stateDisabled[MAXPLAYER][MAXENTITY];
-float g_buttonDefaultDelay[MAXENTITY] = {0.0, ...};
-float g_buttonReady[MAXPLAYER][MAXENTITY];
-int g_entityID[MAXENTITY] = {0, ...};
-int g_entityTotalCount = 0;
-int g_mathID[MAXENTITY] = {0, ...};
-int g_mathTotalCount = 0;
-int g_breakID[MAXENTITY] = {0, ...};
-native int Trikz_GetClientPartner(int client);
-int g_linkedEntitiesDefault[MAXENTITY][MAXLINK][MAXOUTPUT];
-int g_linkedEntities[MAXPLAYER][MAXENTITY];
-int g_linkedMathEntitiesDefault[MAXENTITY][MAXLINK][MAXOUTPUT];
-int g_maxLinks[MAXENTITY][MAXOUTPUT];
-int g_maxMathLinks[MAXENTITY][MAXOUTPUT];
+//DHook hooks
+Handle g_AcceptInput = INVALID_HANDLE,
+		g_PassServerEntityFilter = INVALID_HANDLE;
+
+//Is disabled or enabled storage
+bool g_stateDefaultDisabled[MAXENTITY] = {false, ...},
+		g_stateDisabled[MAXPLAYER][MAXENTITY];
+
+//Button delay storage
+float g_buttonDefaultDelay[MAXENTITY] = {0.0, ...},
+		g_buttonReady[MAXPLAYER][MAXENTITY];
+
+//Storage from reference to index
+int g_entityID[MAXENTITY] = {0, ...},
+		g_entityTotalCount = 0,
+		g_mathID[MAXENTITY] = {0, ...},
+		g_mathTotalCount = 0,
+		g_breakID[MAXENTITY] = {0, ...};
+
+//Linking for entity storage
+int g_linkedEntitiesDefault[MAXENTITY][MAXLINK][MAXOUTPUT],
+	g_linkedEntities[MAXPLAYER][MAXENTITY],
+	g_linkedMathEntitiesDefault[MAXENTITY][MAXLINK][MAXOUTPUT];
+
+//Count maximum link for entity
+int g_maxLinks[MAXENTITY][MAXOUTPUT],
+	g_maxMathLinks[MAXENTITY][MAXOUTPUT];
+
+//Storage for entity output
 int g_entityOutput[MAXENTITY][MAXLINK][MAXOUTPUT];
-float g_mathValueDefault[MAXENTITY] = {0.0, ...};
-float g_mathValue[MAXPLAYER][MAXENTITY];
-float g_mathMin[MAXENTITY] = {0.0, ...};
-float g_mathMax[MAXENTITY] = {0.0, ...};
+
+//Math counter process
+float g_mathValueDefault[MAXENTITY] = {0.0, ...},
+		g_mathValue[MAXPLAYER][MAXENTITY],
+		g_mathMin[MAXENTITY] = {0.0, ...},
+		g_mathMax[MAXENTITY] = {0.0, ...};
+
 bool g_touchArtifacial[MAXPLAYER][MAXENTITY][2]; //Fully used george logic from https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp. Thanks to Ciallo-Ani for opensource code.
+
+//Weapon drop (dissolver)
+//bool g_weapon[MAXPLAYER][MAXENTITY];
+//int g_weaponOwner[MAXPLAYER][MAXENTITY];
+
+//trueexpert main trikz file
+native int Trikz_GetClientPartner(int client);
 native bool Trikz_GetDevmap();
+
+//Outputinfo extension
 native int GetOutputActionCount(int entity, const char[] output);
 native bool GetOutputActionTarget(int entity, const char[] output, int index, char[] target, int maxlen);
 native bool GetOutputActionTargetInput(int entity, const char[] output, int index, char[] targetinput, int maxlen);
@@ -79,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.291",
+	version = "0.292",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -203,6 +227,8 @@ public void OnClientPutInServer(int client)
 	if(Trikz_GetDevmap() == false)
 	{
 		SDKHook(client, SDKHook_SetTransmit, OnPlayerTransmit);
+		//SDKHook(client, SDKHook_WeaponDrop, OnWeaponDrop);
+		//SDKHook(client, SDKHook_WeaponCanUse, OnWeaponCanUse);
 
 		for(int i = 1; i <= g_entityTotalCount; ++i)
 		{
@@ -733,7 +759,7 @@ MRESReturn OnInputEntity(int pThis, Handle hReturn, Handle hParams)
 	char classname[32] = "";
 	GetEntityClassname(activator, classname, sizeof(classname));
 
-	if(StrContains(classname, "projectile", false) != -1)
+	if(StrContains(classname, "projectile", false) != INVALID_ENT_REFERENCE)
 	{
 		DHookSetReturn(hReturn, false);
 		
@@ -1095,7 +1121,7 @@ Action OnPlayerTouchEntity(int entity, int other)
 	
 	int activator = other;
 
-	if(StrContains(classname, "projectile", false) != -1)
+	if(StrContains(classname, "projectile", false) != INVALID_ENT_REFERENCE)
 	{
 		activator = GetEntPropEnt(other, Prop_Data, "m_hOwnerEntity", 0);
 	}
@@ -1118,7 +1144,7 @@ Action OnPlayerTouchEntity(int entity, int other)
 		{
 			if(g_touchArtifacial[activator][entity][1] == false)
 			{
-				if(StrContains(classname, "projectile", false) == -1)
+				if(StrContains(classname, "projectile", false) == INVALID_ENT_REFERENCE)
 				{
 					g_touchArtifacial[activator][entity][0] = true;
 				}
@@ -1219,7 +1245,7 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 		char classname[32] = "";
 		GetEntityClassname(activator, classname, sizeof(classname));
 
-		if(StrContains(classname, "projectile", false) != -1)
+		if(StrContains(classname, "projectile", false) != INVALID_ENT_REFERENCE)
 		{
 			activator = GetEntPropEnt(activator, Prop_Data, "m_hOwnerEntity");
 
@@ -1372,7 +1398,7 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	char classname[32] = "";
 	GetEntityClassname(ent2, classname, sizeof(classname));
 
-	if(StrContains(classname, "projectile", false) != -1)
+	if(StrContains(classname, "projectile", false) != INVALID_ENT_REFERENCE)
 	{
 		int ent2owner = GetEntPropEnt(ent2, Prop_Data, "m_hOwnerEntity", 0);
 
@@ -1399,7 +1425,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		return;
 	}
 
-	if(StrContains(classname, "projectile", false) != -1)
+	if(StrContains(classname, "projectile", false) != INVALID_ENT_REFERENCE)
 	{
 		SDKHook(entity, SDKHook_SetTransmit, OnNadeTransmit);
 	}
@@ -1479,6 +1505,70 @@ Action OnPlayerTransmit(int entity, int client) //entity - me, client - loop all
 	return Plugin_Continue;
 }
 
+/*Action OnWeaponDrop(int client, int weapon)
+{
+	if(IsValidEntity(weapon) == true)
+	{
+		//make visible only for team weapon drop
+		SDKHook(weapon, SDKHook_SetTransmit, OnWeaponTransmit);
+
+		g_weapon[client][weapon] = true;
+		g_weaponOwner[client][weapon] = client;
+	}
+
+	return Plugin_Continue;
+}
+
+Action OnWeaponTransmit(int entity, int client)
+{
+	int owner = g_weaponOwner[client][entity];
+
+	//make visible weapon only for team
+	if(g_weapon[client][entity] == false && IsValidClient(owner) == true && IsPlayerAlive(client) == true)
+	{
+		if(Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+		{
+			return Plugin_Handled;
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+Action OnWeaponCanUse(int client, int weapon)
+{
+	char clsname[32] = "";
+	GetEntityClassname(weapon, clsname, sizeof(clsname));
+
+	if(StrContains(clsname, "weapon", false) != INVALID_ENT_REFERENCE)
+	{
+		int owner = GetEntPropEnt(weapon, Prop_Data, "m_hOwnerEntity");
+
+		if(owner == INVALID_ENT_REFERENCE)
+		{
+			if(g_weapon[client][weapon] == true)
+			{
+				owner = g_weaponOwner[client][weapon];
+
+				if(Trikz_GetClientPartner(owner) != Trikz_GetClientPartner((Trikz_GetClientPartner(client))))
+				{
+					return Plugin_Handled;
+				}
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public void Trikz_OnWeaponDissolve(int client, int weapon)
+{
+	g_weapon[client][weapon] = false;
+	//g_weaponOwner[client][weapon] =;
+
+	return;
+}*/
+
 Action OnNadeTransmit(int entity, int client) //entity - nade, client - loop all clients
 {
 	//make visible nade only for partner
@@ -1502,7 +1592,7 @@ public Action Trikz_CheckSolidity(int ent1, int ent2)
 	char classname[32] = "";
 	GetEntityClassname(ent2 > MaxClients ? ent2 : ent1, classname, sizeof(classname));
 
-	if(StrContains(classname, "projectile", false) != -1)
+	if(StrContains(classname, "projectile", false) != INVALID_ENT_REFERENCE)
 	{
 		if(IsValidClient(ent1) == true || IsValidClient(ent2) == true)
 		{
