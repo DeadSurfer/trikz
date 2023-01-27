@@ -298,7 +298,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.676",
+	version = "4.677",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -7959,7 +7959,7 @@ void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-a
 
 Action OnWeaponDrop(int client, int weapon)
 {
-	if(IsValidEntity(weapon) == true)
+	if(LibraryExists("trueexpert-entityfilter") == true && IsValidEntity(weapon) == true)
 	{
 		char clsname[256] = "";
 		GetEntityClassname(weapon, clsname, sizeof(clsname));
