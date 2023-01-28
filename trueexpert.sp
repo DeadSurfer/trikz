@@ -298,7 +298,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.678",
+	version = "4.679",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1114,9 +1114,9 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	value2 = g_skinPlayer[client];
 	SetEntProp(client, type2, prop2, value2, size2, element2);
 
-	int r = g_colorBuffer[client][0][0];
-	int g = g_colorBuffer[client][0][1];
-	int b = g_colorBuffer[client][0][2];
+	int r = 255;
+	int g = 255;
+	int b = 255;
 	int a = 255;
 	SetEntityRenderColor(client, r, g, b, a);
 
