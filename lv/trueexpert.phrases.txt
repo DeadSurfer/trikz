@@ -17,12 +17,12 @@
 	"NewServerRecordDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
+		"lv"	"{1} un {2} pabeidza mapi ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
 	}
 	"NewServerRecordNewDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
+		"lv"	"{1} un {2} pabeidza mapi ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
 	}
 	"NewServerRecordNew"
 	{
@@ -226,7 +226,7 @@
 	"JustPassed"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+		"lv"	"{1} un {2} pabeidza mapi ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPImprove"
 	{
@@ -245,7 +245,7 @@
 	"NewServerRecordFirstDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"lv"	"{1} un {2} pabeidza mapi ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+		"lv"	"{1} un {2} pabeidza mapi ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPNEW"
 	{
