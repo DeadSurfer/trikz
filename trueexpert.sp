@@ -298,7 +298,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.679",
+	version = "4.680",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -7952,6 +7952,7 @@ void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-a
 	if(g_timerDissolver[client] != INVALID_HANDLE)
 	{
 		CloseHandle(g_timerDissolver[client]);
+		g_timerDissolver[client] = INVALID_HANDLE;
 	}
 
 	return;
@@ -7959,7 +7960,7 @@ void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-a
 
 Action OnWeaponDrop(int client, int weapon)
 {
-	if(LibraryExists("trueexpert-entityfilter") == true && IsValidEntity(weapon) == true)
+	if(LibraryExists("trueexpert-entityfilter") == false && IsValidEntity(weapon) == true)
 	{
 		char clsname[256] = "";
 		GetEntityClassname(weapon, clsname, sizeof(clsname));
