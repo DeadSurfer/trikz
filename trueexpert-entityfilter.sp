@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.292",
+	version = "0.293",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -227,7 +227,7 @@ public void OnClientPutInServer(int client)
 	if(Trikz_GetDevmap() == false)
 	{
 		SDKHook(client, SDKHook_SetTransmit, OnPlayerTransmit);
-		//SDKHook(client, SDKHook_WeaponDrop, OnWeaponDrop);
+		SDKHook(client, SDKHook_WeaponDrop, OnWeaponDrop);
 		//SDKHook(client, SDKHook_WeaponCanUse, OnWeaponCanUse);
 
 		for(int i = 1; i <= g_entityTotalCount; ++i)
@@ -1505,21 +1505,23 @@ Action OnPlayerTransmit(int entity, int client) //entity - me, client - loop all
 	return Plugin_Continue;
 }
 
-/*Action OnWeaponDrop(int client, int weapon)
+Action OnWeaponDrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon) == true)
 	{
 		//make visible only for team weapon drop
-		SDKHook(weapon, SDKHook_SetTransmit, OnWeaponTransmit);
+		//SDKHook(weapon, SDKHook_SetTransmit, OnWeaponTransmit);
 
-		g_weapon[client][weapon] = true;
-		g_weaponOwner[client][weapon] = client;
+		//g_weapon[client][weapon] = true;
+		//g_weaponOwner[client][weapon] = client;
+
+		RemoveEntity(weapon);
 	}
 
 	return Plugin_Continue;
 }
 
-Action OnWeaponTransmit(int entity, int client)
+/*Action OnWeaponTransmit(int entity, int client)
 {
 	int owner = g_weaponOwner[client][entity];
 
