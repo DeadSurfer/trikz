@@ -17,12 +17,12 @@
 	"NewServerRecordDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
 	}
 	"NewServerRecordNewDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#7CFC00{4}{default})"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
 	}
 	"NewServerRecordNew"
 	{
@@ -196,12 +196,12 @@
 	"PassedImproved"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Passed"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Spectator"
 	{
@@ -226,7 +226,7 @@
 	"JustPassed"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPImprove"
 	{
@@ -245,7 +245,7 @@
 	"NewServerRecordFirstDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"ru"	"{1} и {2} завершили карту за ;#7CFC00{3} {default}(SR ;#FF0000{4}{default})"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPNEW"
 	{
