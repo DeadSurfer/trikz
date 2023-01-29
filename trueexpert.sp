@@ -298,7 +298,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.680",
+	version = "4.681",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -3546,7 +3546,8 @@ void CreateEnd()
 		continue;
 	}
 
-	g_center[1][2] -= FloatAbs((g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0);
+	float value = (g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0;
+	g_center[1][2] -= FloatAbs(value);
 
 	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -4971,7 +4972,8 @@ void CreateCP(int cpnum)
 		continue;
 	}
 
-	g_centerCP[cpnum][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2.0);
+	float value = (g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2.0;
+	g_centerCP[cpnum][2] -= FloatAbs(value);
 
 	TeleportEntity(entity, g_centerCP[cpnum], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
@@ -5726,7 +5728,7 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 
 	for(int i = 1; i <= MaxClients; ++i)
 	{
-		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+		if(IsClientInGame(i) == true/* && IsClientObserver(i) == true*/)
 		{
 			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
 			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
@@ -5760,7 +5762,6 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 						else if(j == 3){Format(g_buffer, sizeof(g_buffer), "%T", key[j], i, timeSR);}
 						ShowHudText(i, channelSpec++, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 					}
-
 
 					continue;
 				}
