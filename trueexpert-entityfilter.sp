@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.296",
+	version = "0.297",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -355,7 +355,7 @@ Action OnTimerPrepare(Handle timer)
 		}
 	}
 
-	PrintToServer("Total entities in proccess: %i. Math counters: %i (%f)", g_entityTotalCount, g_mathTotalCount, GetEngineTime() - start);
+	PrintToServer("Total entities in proccess: %i. Math counters: %i (%fs)", g_entityTotalCount, g_mathTotalCount, GetEngineTime() - start);
 
 	return Plugin_Continue;
 }
