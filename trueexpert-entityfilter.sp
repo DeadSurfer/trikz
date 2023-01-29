@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.293",
+	version = "0.294",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -258,7 +258,7 @@ Action OnTimerPrepare(Handle timer)
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
 
-	for(int i = MAXPLAYER; i < MAXENTITY; ++i)
+	for(int i = MAXPLAYERS; i < MAXENTITY; ++i)
 	{
 		for(int j = 0; j < MAXOUTPUT; j++)
 		{
