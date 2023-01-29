@@ -50,7 +50,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.298",
+	version = "1.299",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -688,7 +688,7 @@ void Xmas(int client, char[] type)
 		//declanation
 		float eyeAngles[3] = {0.0, ...};
 		int skin = 0;
-		char info[32] = "";
+		char info[64] = "";
 
 		//initialization
 		TR_GetEndPosition(origin);
@@ -858,8 +858,8 @@ int XmasMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 					if(kv.ImportFromFile(g_file) == true && kv.GotoFirstSubKey(true) == true)
 					{
-						char nameKey[32] = "";
-						char nameKeyCurrent[32] = "";
+						char nameKey[64] = "";
+						char nameKeyCurrent[64] = "";
 
 						Format(nameKeyCurrent, sizeof(nameKeyCurrent), "%i,%i,%i", RoundToFloor(origin[0]), RoundToFloor(origin[1]), RoundToFloor(origin[2]));
 
