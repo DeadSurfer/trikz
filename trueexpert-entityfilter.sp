@@ -39,7 +39,7 @@
 #define MAXPLAYER MAXPLAYERS + 1
 #define MAXENTITY 2048 + 1
 #define MAXLINK 512 + 1
-#define MAXOUTPUT 10 + 1
+#define MAXOUTPUT 9 + 1
 #define IsValidClient(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
 #define IsValidPartner(%1) 0 < Trikz_GetClientPartner(%1) <= MaxClients
 
@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.295",
+	version = "0.296",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -255,6 +255,8 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 Action OnTimerPrepare(Handle timer)
 {
+	float start = GetEngineTime();
+
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
 
@@ -317,7 +319,7 @@ Action OnTimerPrepare(Handle timer)
 
 	for(int i = 0; i < sizeof(classname); i++)
 	{
-		int entity = 0;
+		int entity = INVALID_ENT_REFERENCE;
 
 		while((entity = FindEntityByClassname(entity, classname[i])) != INVALID_ENT_REFERENCE)
 		{
@@ -353,7 +355,7 @@ Action OnTimerPrepare(Handle timer)
 		}
 	}
 
-	PrintToServer("Total entities in proccess: %i. Math counters: %i", g_entityTotalCount, g_mathTotalCount);
+	PrintToServer("Total entities in proccess: %i. Math counters: %i (%f)", g_entityTotalCount, g_mathTotalCount, GetEngineTime() - start);
 
 	return Plugin_Continue;
 }
@@ -379,7 +381,7 @@ void LinkProcess(int entity, const char[] output)
 		{
 			for(int j = 0; j < sizeof(classname); j++)
 			{
-				int entityLinked = 0;
+				int entityLinked = INVALID_ENT_REFERENCE;
 
 				while((entityLinked = FindLinkedEntity(entityLinked, classname[j], target, entity)) != INVALID_ENT_REFERENCE)
 				{
@@ -401,7 +403,7 @@ void LinkProcess(int entity, const char[] output)
 
 		else if(StrEqual(input, "Unlock", false) == true || StrEqual(input, "Lock", false) == true)
 		{
-			int entityLinked = 0;
+			int entityLinked = INVALID_ENT_REFERENCE;
 
 			while((entityLinked = FindLinkedEntity(entityLinked, "func_button", target, 0)) != INVALID_ENT_REFERENCE)
 			{
@@ -417,7 +419,7 @@ void LinkProcess(int entity, const char[] output)
 
 		else if(StrEqual(input, "Add", false) == true || StrEqual(input, "Subtract", false) == true)
 		{
-			int entityLinked = 0;
+			int entityLinked = INVALID_ENT_REFERENCE;
 
 			while((entityLinked = FindLinkedEntity(entityLinked, "math_counter", target, 0)) != INVALID_ENT_REFERENCE)
 			{
