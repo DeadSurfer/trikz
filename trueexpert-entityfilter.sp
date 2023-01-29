@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.294",
+	version = "0.295",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -288,7 +288,7 @@ Action OnTimerPrepare(Handle timer)
 			continue;
 		}
 
-		for(int j = 1; j <= MAXPLAYERS; j++)
+		for(int j = 0; j <= MAXPLAYERS; j++)
 		{
 			g_stateDisabled[j][i] = false;
 			g_linkedEntities[j][i] = 0;
