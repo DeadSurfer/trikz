@@ -298,7 +298,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.681",
+	version = "4.682",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -586,7 +586,7 @@ public void OnMapStart()
 		FileType type = FileType_Unknown;
 		char pathFull[8][PLATFORM_MAX_PATH];
 
-		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type))
+		while(dir.GetNext(filename[i], PLATFORM_MAX_PATH, type) == true)
 		{
 			if(type == FileType_File)
 			{
@@ -1187,6 +1187,8 @@ void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(StrEqual(clsname, "cs_ragdoll", false) == true)
 	{
 		RemoveEntity(ragdoll);
+
+		Dissolver(client, ragdoll);
 	}
 
 	if(IsValidPartner(client) == true)
@@ -2294,7 +2296,7 @@ void Partner(int client)
 {
 	if(g_devmap == true)
 	{
-		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsOFF", client);
+		Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DevmapIsON", client);
 		SendMessage(client, g_buffer);
 	}
 
@@ -7961,10 +7963,17 @@ void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-a
 
 Action OnWeaponDrop(int client, int weapon)
 {
-	if(LibraryExists("trueexpert-entityfilter") == false && IsValidEntity(weapon) == true)
+	Dissolver(client, weapon);
+
+	return Plugin_Continue;
+}
+
+void Dissolver(int client, int entity)
+{
+	if(LibraryExists("trueexpert-entityfilter") == false && IsValidEntity(entity) == true)
 	{
 		char clsname[256] = "";
-		GetEntityClassname(weapon, clsname, sizeof(clsname));
+		GetEntityClassname(entity, clsname, sizeof(clsname));
 
 		if(StrContains(clsname, "weapon", false) != -1)
 		{
@@ -7974,8 +7983,8 @@ Action OnWeaponDrop(int client, int weapon)
 			if(dissolver != -1)
 			{
 				char dname[6 + 1] = "";
-				Format(dname, sizeof(dname), "dis_%i", weapon);
-				DispatchKeyValue(weapon, "targetname", dname);
+				Format(dname, sizeof(dname), "dis_%i", entity);
+				DispatchKeyValue(entity, "targetname", dname);
 				DispatchKeyValue(dissolver, "dissolvetype", "2");
 				DispatchKeyValue(dissolver, "target", dname);
 				//DataPack dp = new DataPack();
@@ -7988,7 +7997,7 @@ Action OnWeaponDrop(int client, int weapon)
 		}
 	}
 
-	return Plugin_Continue;
+	return;
 }
 
 //Action TimerDissolve(Handle timer, DataPack dp)
@@ -8013,7 +8022,7 @@ Action TimerDissolve(Handle timer, int dissolver)
 		delete hForward;*/
 	}
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 void GiveFlashbang(int client)
@@ -8714,5 +8723,5 @@ Action TimerGreetings(Handle timer, int client)
 	Format(g_buffer, sizeof(g_buffer), "%T", g_devmap == true ? "GreetingsPractice" : "GreetingsStatistics", client);
 	ShowHudText(client, 1, g_buffer); //https://sm.alliedmods.net/new-api/halflife/ShowHudText
 
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
