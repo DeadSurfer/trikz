@@ -47,6 +47,9 @@
 #define ZoneEnd 1
 #define ZoneCP 2
 
+#define PSkin 0
+#define FSkin 1
+
 //Partner system
 int g_partner[MAXPLAYER] = {0, ...};
 
@@ -298,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.682",
+	version = "4.683",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1632,11 +1635,11 @@ public void OnClientPutInServer(int client)
 		}
 	}
 
-	if(g_colorBuffer[client][0][0] == 0 && g_colorBuffer[client][0][1] == 0 && g_colorBuffer[client][0][2] == 0)
+	if(g_colorBuffer[client][PSkin][0] == 0 && g_colorBuffer[client][PSkin][1] == 0 && g_colorBuffer[client][PSkin][2] == 0)
 	{
 		for(int i = 0; i <= 2; i++)
 		{
-			g_colorBuffer[client][0][i] = 255;
+			g_colorBuffer[client][PSkin][i] = 255;
 
 			continue;
 		}
@@ -1696,18 +1699,18 @@ public void OnClientCookiesCached(int client)
 
 	for(int i = 0; i <= 2; i++)
 	{
-		g_colorBuffer[client][1][i] = StringToInt(exploded[i], nBase);
+		g_colorBuffer[client][FSkin][i] = StringToInt(exploded[i], nBase);
 
 		continue;
 	}
 
 	g_colorCount[client][1] = StringToInt(exploded[3], nBase);
 
-	if(g_colorBuffer[client][1][0] == 0 && g_colorBuffer[client][1][1] == 0 && g_colorBuffer[client][1][2] == 0)
+	if(g_colorBuffer[client][FSkin][0] == 0 && g_colorBuffer[client][FSkin][1] == 0 && g_colorBuffer[client][FSkin][2] == 0)
 	{
 		for(int i = 0; i <= 2; i++)
 		{
-			g_colorBuffer[client][1][i] = 255;
+			g_colorBuffer[client][FSkin][i] = 255;
 
 			continue;
 		}
@@ -1715,6 +1718,7 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
 	g_skinPlayer[client] = StringToInt(value, nBase);
+	SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client]);
 
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
 
@@ -2260,7 +2264,7 @@ Action Block(int client, bool chat) //thanks maru for optimization.
 
 	SetEntityCollisionGroup(client, g_block[client] == true ? 5 : 2);
 
-	SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[client] == true ? 255 : 125);
+	SetEntityRenderColor(client, g_colorBuffer[client][PSkin][0], g_colorBuffer[client][PSkin][1], g_colorBuffer[client][PSkin][2], g_block[client] == true ? 255 : 125);
 
 	SetEntProp(client, Prop_Data, "m_ArmorValue", g_block[client] == true ? 0 : 1);
 
@@ -2739,24 +2743,24 @@ void ColorTeam(int client, bool allowColor)
 
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][0][i] = StringToInt(colorTypeExploded[i], 10);
-				g_colorBuffer[partner][0][i] = StringToInt(colorTypeExploded[i], 10);
+				g_colorBuffer[client][PSkin][i] = StringToInt(colorTypeExploded[i], 10);
+				g_colorBuffer[partner][PSkin][i] = StringToInt(colorTypeExploded[i], 10);
 
 				continue;
 			}
 
-			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[client] == true ? 255 : 125);
-			SetEntityRenderColor(partner, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], g_block[partner] == true ? 255 : 125);
+			SetEntityRenderColor(client, g_colorBuffer[client][PSkin][0], g_colorBuffer[client][PSkin][1], g_colorBuffer[client][PSkin][2], g_block[client] == true ? 255 : 125);
+			SetEntityRenderColor(partner, g_colorBuffer[client][PSkin][0], g_colorBuffer[client][PSkin][1], g_colorBuffer[client][PSkin][2], g_block[partner] == true ? 255 : 125);
 
 			GlobalForward hForward = new GlobalForward("Trikz_OnColorTeam", ET_Ignore, Param_Cell, Param_Cell, Param_Array); //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
 			Call_StartForward(hForward);
 			Call_PushCell(client);
 			Call_PushCell(partner);
-			Call_PushArray(g_colorBuffer[client][0], 3);
+			Call_PushArray(g_colorBuffer[client][PSkin], 3);
 			Call_Finish();
 			delete hForward;
 
-			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], 255);
+			SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][PSkin][0], g_colorBuffer[client][PSkin][1], g_colorBuffer[client][PSkin][2], 255);
 
 			ShowHudText(client, 5, "%s (TM)", colorTypeExploded[3]);
 			ShowHudText(partner, 5, "%s (TM)", colorTypeExploded[3]);
@@ -2769,8 +2773,8 @@ void ColorTeam(int client, bool allowColor)
 		
 			for(int i = 0; i <= 2; i++)
 			{
-				g_colorBuffer[client][0][i] = 255;
-				g_colorBuffer[partner][0][i] = 255;
+				g_colorBuffer[client][PSkin][i] = 255;
+				g_colorBuffer[partner][PSkin][i] = 255;
 
 				continue;
 			}
@@ -2806,7 +2810,7 @@ void ColorFlashbang(int client)
 
 		for(int i = 0; i <= 2; i++)
 		{
-			g_colorBuffer[client][1][i] = StringToInt(colorTypeExploded[i], 10);
+			g_colorBuffer[client][FSkin][i] = StringToInt(colorTypeExploded[i], 10);
 
 			continue;
 		}
@@ -2818,11 +2822,11 @@ void ColorFlashbang(int client)
 		GlobalForward hForward = new GlobalForward("Trikz_OnColorFlashbang", ET_Ignore, Param_Cell, Param_Array); //public void Trikz_OnColorFlashbang(int client, int red, int green, int blue)
 		Call_StartForward(hForward);
 		Call_PushCell(client);
-		Call_PushArray(g_colorBuffer[client][1], 3);
+		Call_PushArray(g_colorBuffer[client][FSkin], 3);
 		Call_Finish();
 		delete hForward;
 
-		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][1][0], g_colorBuffer[client][1][1], g_colorBuffer[client][1][2], 255);
+		SetHudTextParams(-1.0, -0.3, 3.0, g_colorBuffer[client][FSkin][0], g_colorBuffer[client][FSkin][1], g_colorBuffer[client][FSkin][2], 255);
 
 		ShowHudText(client, 5, "%s (FL)", colorTypeExploded[3]);
 	}
@@ -6632,13 +6636,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				SetEntPropVector(entity, Prop_Data, "m_angRotation", normal, 0);
 			}
 
-			SetEntityRenderColor(entity, g_colorBuffer[client][1][0], g_colorBuffer[client][1][1], g_colorBuffer[client][1][2], 255);
+			SetEntityRenderColor(entity, g_colorBuffer[client][FSkin][0], g_colorBuffer[client][FSkin][1], g_colorBuffer[client][FSkin][2], 255);
 
 			TeleportEntity(entity, end, NULL_VECTOR, NULL_VECTOR);
 
 			//https://forums.alliedmods.net/showthread.php?p=1080444
 			int color[4] = {0, 0, 0, 255};
-			color = g_colorBuffer[client][1];
+			color = g_colorBuffer[client][FSkin];
 
 			start[2] -= 8.0;
 
@@ -6914,7 +6918,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntityCollisionGroup(other, 2);
 
-			SetEntityRenderColor(other, g_colorBuffer[other][0][0], g_colorBuffer[other][0][1], g_colorBuffer[other][0][2], 125);
+			SetEntityRenderColor(other, g_colorBuffer[other][PSkin][0], g_colorBuffer[other][PSkin][1], g_colorBuffer[other][PSkin][2], 125);
 
 			SetEntProp(client, Prop_Data, "m_ArmorValue", 1);
 		}
@@ -6926,7 +6930,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			SetEntityCollisionGroup(client, 5);
 
-			SetEntityRenderColor(client, g_colorBuffer[client][0][0], g_colorBuffer[client][0][1], g_colorBuffer[client][0][2], 255);
+			SetEntityRenderColor(client, g_colorBuffer[client][PSkin][0], g_colorBuffer[client][PSkin][1], g_colorBuffer[client][PSkin][2], 255);
 
 			SetEntProp(client, Prop_Data, "m_ArmorValue", 0);
 		}
@@ -7813,7 +7817,7 @@ void OnProjectileSpawnPost(int entity)
 			SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client], 4, 0);
 		}
 
-		SetEntityRenderColor(entity, g_colorBuffer[client][1][0], g_colorBuffer[client][1][1], g_colorBuffer[client][1][2], 255);
+		SetEntityRenderColor(entity, g_colorBuffer[client][FSkin][0], g_colorBuffer[client][FSkin][1], g_colorBuffer[client][FSkin][2], 255);
 
 		int autoswitch = gCV_autoswitch.IntValue;
 		
@@ -8352,7 +8356,7 @@ int Native_GetDevmap(Handle plugin, int numParams)
 int Native_GetTeamColor(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
-	SetNativeArray(2, g_colorBuffer[client][0], 3);
+	SetNativeArray(2, g_colorBuffer[client][PSkin], 3);
 	return numParams;
 }
 
