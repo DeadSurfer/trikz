@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.683",
+	version = "4.684",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1718,7 +1718,11 @@ public void OnClientCookiesCached(int client)
 
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
 	g_skinPlayer[client] = StringToInt(value, nBase);
-	SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client]);
+
+	if(IsValidEntity(client) == true)
+	{
+		SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client]);
+	}
 
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
 
