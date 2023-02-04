@@ -17,12 +17,12 @@
 	"NewServerRecordDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"	"{1} and {2} finished map in ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
 	}
 	"NewServerRecordNewDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"	"{1} and {2} finished map in ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
 	}
 	"NewServerRecordNew"
 	{
@@ -100,11 +100,11 @@
 	"AFKCHECK"
 	{
 		"#format"	"{1:s}"
-		"en"	"AFK check - vote started by {1}"
+		"en"	"AFK check - a vote started by {1}"
 	}
 	"AFKCHECK2"
 	{
-		"en"	"AFK check - vote is not allowed yet."
+		"en"	"AFK check - a vote is not allowed yet."
 	}
 	"AreYouHere?"
 	{
@@ -121,7 +121,7 @@
 	"TeamConfirming"
 	{
 		"#format"	"{1:s}"
-		"en"	"You have confirmed partnership with {1}."
+		"en"	"You have confirmed a partnership with {1}."
 	}
 	"GetConfirmed"
 	{
@@ -135,7 +135,7 @@
 	"PartnerDeclined"
 	{
 		"#format"	"{1:s}"
-		"en"	"You declined partnership from {1}."
+		"en"	"You declined a partnership from {1}."
 	}
 	"PartnerCanceled"
 	{
@@ -186,22 +186,22 @@
 	"CancelPartnership"
 	{
 		"#format"	"{1:s}"
-		"en"	"Cancel partnership with {1}"
+		"en"	"Cancel a partnership with {1}"
 	}
-	"AgreePartner"
+	"ConfirmPartner"
 	{
 		"#format"	"{1:s}"
-		"en"	"Agree partnership with {1}?"
+		"en"	"I confirm a partnership with {1}?"
 	}
 	"PassedImproved"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"	"{1} and {2} finished map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Passed"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"	"{1} and {2} finished map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"Spectator"
 	{
@@ -226,7 +226,7 @@
 	"JustPassed"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"	"{1} and {2} finished map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"CPImprove"
 	{
@@ -241,7 +241,7 @@
 	"NewServerRecordFirstDetail"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"	"{1} and {2} finished map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
 	}
 	"NewServerRecordFirst"
 	{
@@ -358,7 +358,7 @@
 	}
 	"ChoosePartner"
 	{
-		"en"	"Choose partner"
+		"en"	"Choose a partner"
 	}
 	"CP-recordHud"
 	{
