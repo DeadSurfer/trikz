@@ -188,7 +188,7 @@
 		"#format"	"{1:s}"
 		"lv"	"Vai jūs vēlaties beigt sadarbību ar {1}"
 	}
-	"AgreePartner"
+	"ConfirmPartner"
 	{
 		"#format"	"{1:s}"
 		"lv"	"Vai jūs vēlaties uzsākt sadarību ar {1}?"
