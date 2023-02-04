@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.684",
+	version = "4.685",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -2409,7 +2409,7 @@ int PartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) //p
 			GetClientName(param1, name, sizeof(name));
 
 			int partner = StringToInt(item, 10);
-			menu2.SetTitle("%T", "AgreePartner", partner, name);
+			menu2.SetTitle("%T", "ConfirmPartner", partner, name);
 			
 			char str[2 + 1] = "";
 			IntToString(param1, str, sizeof(str)); //sizeof do 4
