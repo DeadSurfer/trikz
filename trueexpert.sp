@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.685",
+	version = "4.686",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1134,6 +1134,8 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	char points[32] = "";
 	GetPoints(client, points); //Set player health precentage of points
+
+	SetEntProp(client, Prop_Data, "m_ArmorValue", 0);
 
 	return;
 }
