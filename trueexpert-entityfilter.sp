@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.299",
+	version = "0.30",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -230,7 +230,7 @@ public void OnClientPutInServer(int client)
 		SDKHook(client, SDKHook_WeaponDrop, OnWeaponDrop);
 		//SDKHook(client, SDKHook_WeaponCanUse, OnWeaponCanUse);
 
-		for(int i = 1; i <= g_entityTotalCount; ++i)
+		for(int i = 1; i <= g_entityTotalCount; i++)
 		{
 			for(int j = 0; j <= 1; j++)
 			{
@@ -260,7 +260,7 @@ Action OnTimerPrepare(Handle timer)
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
 
-	for(int i = 0; i < MAXENTITY; ++i)
+	for(int i = 0; i < MAXENTITY; i++)
 	{
 		for(int j = 0; j < MAXOUTPUT; j++)
 		{
@@ -276,7 +276,7 @@ Action OnTimerPrepare(Handle timer)
 		g_stateDefaultDisabled[i] = false;
 		g_buttonDefaultDelay[i] = 0.0;
 
-		for(int j = 0; j < MAXLINK; ++j)
+		for(int j = 0; j < MAXLINK; j++)
 		{
 			for(int k = 0; k < MAXOUTPUT; k++)
 			{
@@ -508,7 +508,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 
 	if(entity > 0)
 	{
-		for(int j = 1; j <= g_entityTotalCount; ++j)
+		for(int j = 1; j <= g_entityTotalCount; j++)
 		{
 			if(g_entityID[j] == entity)
 			{
@@ -521,7 +521,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 
 	else if(entity < 0)
 	{
-		for(int j = 1; j <= g_mathTotalCount; ++j)
+		for(int j = 1; j <= g_mathTotalCount; j++)
 		{
 			if(g_mathID[j] == entity)
 			{
@@ -688,7 +688,7 @@ void AddToLink(int entity, const char[] output, int entityLinked)
 
 	else if(entity < 0)
 	{
-		for(int k = 1; k <= g_mathTotalCount; ++k)
+		for(int k = 1; k <= g_mathTotalCount; k++)
 		{
 			int math = k;
 
@@ -712,7 +712,7 @@ void AddToLink(int entity, const char[] output, int entityLinked)
 
 void Reset(int client)
 {
-	for(int i = 1; i <= g_entityTotalCount; ++i)
+	for(int i = 1; i <= g_entityTotalCount; i++)
 	{
 		g_stateDisabled[client][g_entityID[i]] = g_stateDefaultDisabled[g_entityID[i]];
 		g_buttonReady[client][g_entityID[i]] = 0.0;
@@ -728,7 +728,7 @@ void Reset(int client)
 		continue;
 	}
 
-	for(int i = 1; i <= g_mathTotalCount; ++i)
+	for(int i = 1; i <= g_mathTotalCount; i++)
 	{
 		g_mathValue[client][i] = g_mathValueDefault[i];
 
@@ -878,7 +878,7 @@ MRESReturn OnInputEntity(int pThis, Handle hReturn, Handle hParams)
 		{
 			int thisIndex = 0;
 
-			for(int i = 1; i <= g_entityTotalCount; ++i)
+			for(int i = 1; i <= g_entityTotalCount; i++)
 			{
 				if(g_breakID[i] == pThis)
 				{
@@ -1011,7 +1011,7 @@ MRESReturn OnInputMath(int pThis, Handle hReturn, Handle hParams)
 
 		int thisIndex = 0;
 
-		for(int i = 1; i <= g_mathTotalCount; ++i)
+		for(int i = 1; i <= g_mathTotalCount; i++)
 		{
 			if(g_mathID[i] == pThis)
 			{
@@ -1266,7 +1266,7 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 		{
 			outputNum = GetOutput(output);
 
-			for(int i = 1; i <= g_maxLinks[caller][outputNum]; ++i)
+			for(int i = 1; i <= g_maxLinks[caller][outputNum]; i++)
 			{
 				linkedEntity = g_linkedEntitiesDefault[caller][i][outputNum];
 
@@ -1330,13 +1330,13 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 
 			outputNum = GetOutput(outputChanged);
 
-			for(int i = 1; i <= g_mathTotalCount; ++i)
+			for(int i = 1; i <= g_mathTotalCount; i++)
 			{
 				if(g_mathID[i] == caller)
 				{
 					int math = i;
 
-					for(int j = 1; j <= g_maxMathLinks[math][outputNum]; ++j)
+					for(int j = 1; j <= g_maxMathLinks[math][outputNum]; j++)
 					{
 						linkedMathEntity = g_linkedMathEntitiesDefault[math][j][outputNum];
 
