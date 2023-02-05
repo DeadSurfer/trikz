@@ -56,11 +56,11 @@ float g_buttonDefaultDelay[MAXENTITY] = {0.0, ...},
 		g_buttonReady[MAXPLAYER][MAXENTITY];
 
 //Storage from reference to index
-int g_entityID[MAXENTITY] = {0, ...},
+int g_entityID[MAXENTITY] = {INVALID_ENT_REFERENCE, ...},
 		g_entityTotalCount = 0,
-		g_mathID[MAXENTITY] = {0, ...},
+		g_mathID[MAXENTITY] = {INVALID_ENT_REFERENCE, ...},
 		g_mathTotalCount = 0,
-		g_breakID[MAXENTITY] = {0, ...};
+		g_breakID[MAXENTITY] = {INVALID_ENT_REFERENCE, ...};
 
 //Linking for entity storage
 int g_linkedEntitiesDefault[MAXENTITY][MAXLINK][MAXOUTPUT],
@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.297",
+	version = "0.298",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -260,7 +260,7 @@ Action OnTimerPrepare(Handle timer)
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
 
-	for(int i = MAXPLAYERS; i < MAXENTITY; ++i)
+	for(int i = INVALID_ENT_REFERENCE; i < MAXENTITY; ++i)
 	{
 		for(int j = 0; j < MAXOUTPUT; j++)
 		{
@@ -270,13 +270,13 @@ Action OnTimerPrepare(Handle timer)
 			continue;
 		}
 
-		g_entityID[i] = 0;
-		g_mathID[i] = 0;
-		g_breakID[i] = 0;
+		g_entityID[i] = INVALID_ENT_REFERENCE;
+		g_mathID[i] = INVALID_ENT_REFERENCE;
+		g_breakID[i] = INVALID_ENT_REFERENCE;
 		g_stateDefaultDisabled[i] = false;
 		g_buttonDefaultDelay[i] = 0.0;
 
-		for(int j = 1; j < MAXLINK; ++j)
+		for(int j = 0; j < MAXLINK; ++j)
 		{
 			for(int k = 0; k < MAXOUTPUT; k++)
 			{
@@ -508,7 +508,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 
 	if(entity > 0)
 	{
-		for(int j = 0; j <= g_entityTotalCount; ++j)
+		for(int j = 1; j <= g_entityTotalCount; ++j)
 		{
 			if(g_entityID[j] == entity)
 			{
@@ -521,7 +521,7 @@ void Prepare(int entity, const char[] output, const char[] target = "")
 
 	else if(entity < 0)
 	{
-		for(int j = 0; j <= g_mathTotalCount; ++j)
+		for(int j = 1; j <= g_mathTotalCount; ++j)
 		{
 			if(g_mathID[j] == entity)
 			{
