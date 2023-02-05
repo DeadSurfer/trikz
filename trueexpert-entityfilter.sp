@@ -103,7 +103,7 @@ public Plugin myinfo =
 	name = "Entity filter",
 	author = "Smesh (Niks Jurēvičs)",
 	description = "Makes the game more personal.",
-	version = "0.30",
+	version = "0.31",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -260,9 +260,9 @@ Action OnTimerPrepare(Handle timer)
 	g_entityTotalCount = 0;
 	g_mathTotalCount = 0;
 
-	for(int i = 0; i < MAXENTITY; i++)
+	for(int i = 1; i <= MAXENTITY - 1; i++)
 	{
-		for(int j = 0; j < MAXOUTPUT; j++)
+		for(int j = 0; j <= MAXOUTPUT - 1; j++)
 		{
 			g_maxLinks[i][j] = 0;
 			g_maxMathLinks[i][j] = 0;
@@ -276,9 +276,9 @@ Action OnTimerPrepare(Handle timer)
 		g_stateDefaultDisabled[i] = false;
 		g_buttonDefaultDelay[i] = 0.0;
 
-		for(int j = 0; j < MAXLINK; j++)
+		for(int j = 1; j <= MAXLINK - 1; j++)
 		{
-			for(int k = 0; k < MAXOUTPUT; k++)
+			for(int k = 0; k <= MAXOUTPUT - 1; k++)
 			{
 				g_linkedEntitiesDefault[i][j][k] = 0;
 				g_linkedMathEntitiesDefault[i][j][k] = 0;
