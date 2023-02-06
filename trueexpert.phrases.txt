@@ -927,4 +927,8 @@
 	{
 		"en"	"[Trikz] "
 	}
+	"SetupZone"
+	{
+		"en"	"A zones fully not set."
+	}
 }
