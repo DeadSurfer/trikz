@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.688",
+	version = "4.689",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -2922,6 +2922,12 @@ void Restart(int client, bool ask)
 				Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "DontHavePartner", client);
 				SendMessage(client, g_buffer);
 			}
+		}
+
+		else if(g_zoneHave[0] == false || g_zoneHave[1] == false)
+		{
+			Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", client, "SetupZone", client);
+			SendMessage(client, g_buffer);
 		}
 	}
 
@@ -8006,7 +8012,7 @@ Action OnWeaponDrop(int client, int weapon)
 
 void Dissolver(int client, int entity)
 {
-	if(LibraryExists("trueexpert-entityfilter") == false && IsValidEntity(entity) == true)
+	if((LibraryExists("trueexpert-entityfilter") == false || g_devmap == true) && IsValidEntity(entity) == true)
 	{
 		char clsname[256] = "";
 		GetEntityClassname(entity, clsname, sizeof(clsname));
@@ -8027,8 +8033,8 @@ void Dissolver(int client, int entity)
 				//dp.WriteCell(client);
 				//dp.WriteCell(weapon);
 				//dp.WriteCell(dissolver);
-				g_timerDissolver[client] = CreateTimer(3.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
-				//CreateTimer(3.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
+				g_timerDissolver[client] = CreateTimer(2.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
+				//CreateTimer(2.0, TimerDissolve, dissolver, TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 	}
