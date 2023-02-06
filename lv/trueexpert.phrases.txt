@@ -927,4 +927,8 @@
 	{
 		"lv"	"[Trikz] "
 	}
+	"SetupZone"
+	{
+		"lv"	"Zonas pilnībā nav uzstādītas."
+	}
 }
