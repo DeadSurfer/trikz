@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.687",
+	version = "4.688",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -500,6 +500,14 @@ public void OnMapStart()
 
 			continue;
 		}
+
+		continue;
+	}
+
+	for(int i = 0; i <= 1; i++)
+	{
+		g_zoneStartOrigin[i] = NULL_VECTOR;
+		g_zoneEndOrigin[i] = NULL_VECTOR;
 
 		continue;
 	}
@@ -3473,6 +3481,13 @@ Action TimerResetFactory(Handle timer, int client)
 
 void CreateStart()
 {
+	if(g_zoneStartOrigin[0][0] == 0.0 && g_zoneStartOrigin[0][1] == 0.0 && g_zoneStartOrigin[0][2] == 0.0 && g_zoneStartOrigin[1][0] == 0.0 && g_zoneStartOrigin[1][1] == 0.0 && g_zoneStartOrigin[1][2] == 0.0)
+	{
+		CreateEnd();
+		
+		return;
+	}
+
 	int entity = CreateEntityByName("trigger_multiple", -1);
 
 	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer
@@ -3539,6 +3554,13 @@ void CreateStart()
 
 void CreateEnd()
 {
+	if(g_zoneEndOrigin[0][0] == 0.0 && g_zoneEndOrigin[0][1] == 0.0 && g_zoneEndOrigin[0][2] == 0.0 && g_zoneEndOrigin[1][0] == 0.0 && g_zoneEndOrigin[1][1] == 0.0 && g_zoneEndOrigin[1][2] == 0.0)
+	{
+		CPSetup();
+
+		return;
+	}
+
 	int entity = CreateEntityByName("trigger_multiple", -1);
 
 	DispatchKeyValue(entity, "spawnflags", "1"); //https://github.com/shavitush/bhoptimer //from developer valvesoftware it means make able to work with client
@@ -6221,7 +6243,9 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 
 	else if(strlen(error) == 0)
 	{
-		if(results.FetchRow() == true)
+		bool fetchrow = results.FetchRow();
+
+		if(fetchrow == true)
 		{
 			int result[2] = {0, 3};
 
@@ -6232,12 +6256,12 @@ void SQLSetZoneStart(Database db, DBResultSet results, const char[] error, any d
 
 				continue;
 			}
-
-			CreateStart();
-
-			Format(g_query, sizeof(g_query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
-			g_sql.Query(SQLSetZoneEnd, g_query, _, DBPrio_Normal);
 		}
+
+		CreateStart();
+
+		Format(g_query, sizeof(g_query), "SELECT possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2 FROM zones WHERE map = '%s' AND type = 1 LIMIT 1", g_map);
+		g_sql.Query(SQLSetZoneEnd, g_query, _, DBPrio_Normal);
 	}
 
 	return;
@@ -6252,7 +6276,9 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 
 	else if(strlen(error) == 0)
 	{
-		if(results.FetchRow() == true)
+		bool fetchrow = results.FetchRow();
+
+		if(fetchrow == true)
 		{
 			int result[2] = {0, 3};
 
@@ -6263,9 +6289,9 @@ void SQLSetZoneEnd(Database db, DBResultSet results, const char[] error, any dat
 
 				continue;
 			}
-
-			CreateEnd();
 		}
+
+		CreateEnd();
 	}
 
 	return;
