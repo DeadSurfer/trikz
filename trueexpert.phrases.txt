@@ -110,13 +110,13 @@
 	{
 		"en"	"Are you here?"
 	}
-	"Yes"
+	"Confirm"
 	{
-		"en"	"Yes"
+		"en"	"Confirm"
 	}
-	"No"
+	"Dissmit"
 	{
-		"en"	"No"
+		"en"	"Dissmit"
 	}
 	"TeamConfirming"
 	{
