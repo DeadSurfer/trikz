@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.691",
+	version = "4.692",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1617,7 +1617,7 @@ public void OnClientPutInServer(int client)
 
 	if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneHave[2] == true && g_zoneDrawed[client] == false)
 	{
-		DrawZone(client, 0.0, 3.0, 10, -1, -1);
+		DrawZone(client, 0, 0.0, 3.0, 10, -1, -1);
 
 		g_zoneDrawed[client] = true;
 	}
@@ -4980,7 +4980,7 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 					{
 						if(g_devmap == false && g_zoneHave[0] == true && g_zoneHave[1] == true && g_zoneDrawed[i] == false)
 						{
-							DrawZone(i, 0.0, 3.0, 10, -1, -1);
+							DrawZone(i, 0, 0.0, 3.0, 10, -1, -1);
 
 							g_zoneDrawed[i] = true;
 						}
@@ -6324,14 +6324,14 @@ void SQLCreateZonesTable(Database db, DBResultSet results, const char[] error, a
 	return;
 }
 
-void DrawZone(int client, float life, float size, int speed, int zonetype, int zonecount)
+void DrawZone(int client, int owner, float life, float size, int speed, int zonetype, int zonecount)
 {
 	float point[12][2][3], start[12][3], end[12][3];
 
 	for(int i = 0; i <= 1; i++)
 	{
-		point[0][i] = g_devmap == true ? g_zoneStartOriginTemp[client][i] : g_zoneStartOrigin[i];
-		point[1][i] = g_devmap == true ? g_zoneEndOriginTemp[client][i] : g_zoneEndOrigin[i];
+		point[0][i] = g_devmap == true ? g_zoneStartOriginTemp[owner][i] : g_zoneStartOrigin[i];
+		point[1][i] = g_devmap == true ? g_zoneEndOriginTemp[owner][i] : g_zoneEndOrigin[i];
 
 		continue;
 	}
@@ -6363,7 +6363,7 @@ void DrawZone(int client, float life, float size, int speed, int zonetype, int z
 
 		for(int j = 0; j <= 1; j++)
 		{
-			point[i][j] = g_devmap == true ? g_cpPosTemp[client][cpnum][j] : g_cpPos[cpnum][j];
+			point[i][j] = g_devmap == true ? g_cpPosTemp[owner][cpnum][j] : g_cpPos[cpnum][j];
 
 			continue;
 		}
@@ -6770,7 +6770,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				if(IsClientInGame(i) == true)
 				{
-					DrawZone(i, 0.1, 3.0, 10, g_ZoneEditor[client], g_ZoneEditorCP[client]);
+					DrawZone(i, client, 0.1, 3.0, 10, g_ZoneEditor[client], g_ZoneEditorCP[client]);
 				}
 
 				continue;
