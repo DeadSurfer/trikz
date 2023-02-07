@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.689",
+	version = "4.690",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1292,6 +1292,12 @@ Action rebuy(int client, const char[] command, int argc)
 	if(g_menuOpened[client] == false)
 	{
 		Trikz(client);
+	}
+
+	else if(g_menuOpened[client] == true)
+	{
+		CancelClientMenu(client, false, INVALID_HANDLE);
+		g_menuOpened[client] = false;
 	}
 
 	g_silentF1F2 = true;
@@ -2392,9 +2398,9 @@ void Partner(int client)
 			char partner[4] = "";
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
 
-			Format(g_buffer, sizeof(g_buffer), "%T", "Yes", client);
+			Format(g_buffer, sizeof(g_buffer), "%T", "Confirm", client);
 			menu.AddItem(partner, g_buffer);
-			Format(g_buffer, sizeof(g_buffer), "%T", "No", client);
+			Format(g_buffer, sizeof(g_buffer), "%T", "Dissmit", client);
 			menu.AddItem("", g_buffer);
 
 			menu.Display(client, time);
@@ -2424,9 +2430,9 @@ int PartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) //p
 			char str[2 + 1] = "";
 			IntToString(param1, str, sizeof(str)); //sizeof do 4
 
-			Format(g_buffer, sizeof(g_buffer), "%T", "Yes", partner);
+			Format(g_buffer, sizeof(g_buffer), "%T", "Confirm", partner);
 			menu2.AddItem(str, g_buffer);
-			Format(g_buffer, sizeof(g_buffer), "%T", "No", partner);
+			Format(g_buffer, sizeof(g_buffer), "%T", "Dissmit", partner);
 			menu2.AddItem(item, g_buffer);
 
 			int time = 20;
@@ -2908,10 +2914,10 @@ void Restart(int client, bool ask)
 					Menu menu = new Menu(MenuHandlerAskForRestart);
 					menu.SetTitle("%T", "AskForRestart", client);
 
-					Format(g_buffer, sizeof(g_buffer), "%T", "Yes", client);
-					menu.AddItem("yes", g_buffer);
-					Format(g_buffer, sizeof(g_buffer), "%T", "No", client);
-					menu.AddItem("no", g_buffer);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Confirm", client);
+					menu.AddItem("confirm", g_buffer);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Dissmit", client);
+					menu.AddItem("dissmit", g_buffer);
 
 					menu.Display(client, 20);
 				}
@@ -7159,10 +7165,10 @@ Action CommandDevmap(int client, int args)
 				Menu menu = new Menu(devmap_handler);
 				menu.SetTitle("%T", g_devmap == true ? "TurnOFFDevmap" : "TurnONDevmap", i);
 
-				Format(g_buffer, sizeof(g_buffer), "%T", "Yes", i);
-				menu.AddItem("yes", g_buffer);
-				Format(g_buffer, sizeof(g_buffer), "%T", "No", i);
-				menu.AddItem("no", g_buffer);
+				Format(g_buffer, sizeof(g_buffer), "%T", "Confirm", i);
+				menu.AddItem("confirm", g_buffer);
+				Format(g_buffer, sizeof(g_buffer), "%T", "Dissmit", i);
+				menu.AddItem("dissmit", g_buffer);
 
 				menu.Display(i, 20);
 			}
@@ -7426,10 +7432,10 @@ Action CommandAfk(int client, int args)
 					Menu menu = new Menu(MenuCallbackAFK);
 					menu.SetTitle("%T", "AreYouHere?", i);
 
-					Format(g_buffer, sizeof(g_buffer), "%T", "Yes", i);
-					menu.AddItem("yes", g_buffer);
-					Format(g_buffer, sizeof(g_buffer), "%T", "No", i);
-					menu.AddItem("no", g_buffer);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Confirm", i);
+					menu.AddItem("confirm", g_buffer);
+					Format(g_buffer, sizeof(g_buffer), "%T", "Dissmit", i);
+					menu.AddItem("dissmit", g_buffer);
 
 					int time = 20;
 					menu.Display(i, time);
