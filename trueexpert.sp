@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.692",
+	version = "4.693",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -3513,18 +3513,18 @@ void CreateStart()
 	//https://stackoverflow.com/questions/4355894/how-to-get-center-of-set-of-points-using-python
 	for(int i = 0; i <= 2; i++)
 	{
-		g_center[0][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
+		g_center[ZoneStart][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
 
 		continue;
 	}
 
 	float value = (g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0;
-	g_center[0][2] -= FloatAbs(value);
+	g_center[ZoneStart][2] -= FloatAbs(value);
 
-	TeleportEntity(entity, g_center[0], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	TeleportEntity(entity, g_center[ZoneStart], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
-	g_timerStartPos = g_center[0];
-	g_timerStartPos[2] = g_center[0][2] + 1.0;
+	g_timerStartPos = g_center[ZoneStart];
+	g_timerStartPos[2] = g_center[ZoneStart][2] + 1.0;
 
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
@@ -3587,15 +3587,15 @@ void CreateEnd()
 
 	for(int i = 0; i <= 2; i++)
 	{
-		g_center[1][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0; // so its mins and maxs in cube devide to two.
+		g_center[ZoneEnd][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0; // so its mins and maxs in cube devide to two.
 
 		continue;
 	}
 
 	float value = (g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0;
-	g_center[1][2] -= FloatAbs(value);
+	g_center[ZoneEnd][2] -= FloatAbs(value);
 
-	TeleportEntity(entity, g_center[1], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
+	TeleportEntity(entity, g_center[ZoneEnd], NULL_VECTOR, NULL_VECTOR); //Thanks to https://amx-x.ru/viewtopic.php?f=14&t=15098 http://world-source.ru/forum/102-3743-1
 
 	float mins[3] = {0.0, ...};
 	float maxs[3] = {0.0, ...};
@@ -3978,12 +3978,13 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				for(int i = 0; i <= 2; i++)
 				{
-					g_center[cpnum][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
+					g_center[ZoneStart][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
 
 					continue;
 				}
 
-				g_center[cpnum][2] -= FloatAbs((g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0);
+				float value = (g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0;
+				g_center[ZoneStart][2] -= FloatAbs(value);
 				
 				LogToFileEx("addons/sourcemod/logs/trueexpert.log", "Start zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneStartOrigin[0][0], g_zoneStartOrigin[0][1], g_zoneStartOrigin[0][2], g_zoneStartOrigin[1][0], g_zoneStartOrigin[1][1], g_zoneStartOrigin[1][2], g_map, client, auth);
 			}
@@ -3999,12 +4000,13 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 
 				for(int i = 0; i <= 2; i++)
 				{
-					g_center[cpnum][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0;
+					g_center[ZoneEnd][i] = (g_zoneEndOrigin[0][i] + g_zoneEndOrigin[1][i]) / 2.0;
 
 					continue;
 				}
 
-				g_center[cpnum][2] -= FloatAbs((g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0);
+				float value = (g_zoneEndOrigin[0][2] - g_zoneEndOrigin[1][2]) / 2.0;
+				g_center[ZoneEnd][2] -= FloatAbs(value);
 
 				LogToFileEx("addons/sourcemod/logs/trueexpert.log", "End zone successfuly created. POS1: [X: %f Y: %f Z: %f] POS2: [X: %f Y: %f Z: %f] MAP: [%s] edited by [%N] SteamID64: [%s]", g_zoneEndOrigin[0][0], g_zoneEndOrigin[0][1], g_zoneEndOrigin[0][2], g_zoneEndOrigin[1][0], g_zoneEndOrigin[1][1], g_zoneEndOrigin[1][2], g_map, client, auth);
 			}
@@ -4025,7 +4027,8 @@ void SQLSetZone(Database db, DBResultSet results, const char[] error, DataPack d
 					continue;
 				}
 
-				g_centerCP[cpnum][2] -= FloatAbs((g_cpPos[cpnum][0][2] - g_cpPos[cpnum][0][2]) / 2.0);
+				float value = (g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2.0;
+				g_centerCP[cpnum][2] -= FloatAbs(value);
 
 				CPSetup();
 
@@ -4657,16 +4660,46 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 			if(StrContains(item, "sidestart", false) != -1)
 			{
 				g_zoneStartOriginTemp[param1][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
+
+				for(int i = 0; i <= 2; i++)
+				{
+					g_center[ZoneStart][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
+
+					continue;
+				}
+
+				float value = (g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0;
+				g_center[ZoneStart][2] -= FloatAbs(value);
 			}
 
 			else if(StrContains(item, "sideend", false) != -1)
 			{
 				g_zoneEndOriginTemp[param1][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
+
+				for(int i = 0; i <= 2; i++)
+				{
+					g_center[ZoneEnd][i] = (g_zoneStartOrigin[0][i] + g_zoneStartOrigin[1][i]) / 2.0;
+
+					continue;
+				}
+
+				float value = (g_zoneStartOrigin[0][2] - g_zoneStartOrigin[1][2]) / 2.0;
+				g_center[ZoneEnd][2] -= FloatAbs(value);
 			}
 
 			else if(StrContains(item, "sidecp", false) != -1)
 			{
 				g_cpPosTemp[param1][cpnum][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
+
+				for(int i = 0; i <= 2; i++)
+				{
+					g_centerCP[cpnum][i] = (g_cpPos[cpnum][1][i] + g_cpPos[cpnum][0][i]) / 2.0;
+
+					continue;
+				}
+
+				float value = (g_cpPos[cpnum][0][2] - g_cpPos[cpnum][1][2]) / 2.0;
+				g_centerCP[cpnum][2] -= FloatAbs(value);
 			}
 
 			if(StrEqual(item, "startapply", false) == true)
@@ -4809,14 +4842,14 @@ int ZoneEditorTPMenuHandler(Menu menu, MenuAction action, int param1, int param2
 
 			if(StrEqual(item, "start", false) == true)
 			{
-				pos = g_center[0];
+				pos = g_center[ZoneStart];
 				pos[2] += 1.0;
 				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
 
 			else if(StrEqual(item, "end", false) == true)
 			{
-				pos = g_center[1];
+				pos = g_center[ZoneEnd];
 				pos[2] += 1.0;
 				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
