@@ -110,13 +110,13 @@
 	{
 		"lv"	"Vai jūs esat šeit?"
 	}
-	"Yes"
+	"Confirm"
 	{
-		"lv"	"Jā"
+		"lv"	"Apstiprināt"
 	}
-	"No"
+	"Dissmit"
 	{
-		"lv"	"Nē"
+		"lv"	"Noraidīt"
 	}
 	"TeamConfirming"
 	{
