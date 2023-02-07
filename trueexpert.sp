@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.690",
+	version = "4.691",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -3656,13 +3656,13 @@ void SQLDeleteZone(Database db, DBResultSet results, const char[] error, DataPac
 	{
 		if(type == ZoneStart)
 		{
-			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', ZoneStart, %f, %f, %f, %f, %f, %f)", g_map, g_zoneStartOriginTemp[client][0][0], g_zoneStartOriginTemp[client][0][1], g_zoneStartOriginTemp[client][0][2], g_zoneStartOriginTemp[client][1][0], g_zoneStartOriginTemp[client][1][1], g_zoneStartOriginTemp[client][1][2]);
+			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', %i, %f, %f, %f, %f, %f, %f)", g_map, ZoneStart, g_zoneStartOriginTemp[client][0][0], g_zoneStartOriginTemp[client][0][1], g_zoneStartOriginTemp[client][0][2], g_zoneStartOriginTemp[client][1][0], g_zoneStartOriginTemp[client][1][1], g_zoneStartOriginTemp[client][1][2]);
 			g_sql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 		}
 
 		else if(type == ZoneEnd)
 		{
-			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', ZoneEnd, %f, %f, %f, %f, %f, %f)", g_map, g_zoneEndOriginTemp[client][0][0], g_zoneEndOriginTemp[client][0][1], g_zoneEndOriginTemp[client][0][2], g_zoneEndOriginTemp[client][1][0], g_zoneEndOriginTemp[client][1][1], g_zoneEndOriginTemp[client][1][2]);
+			Format(g_query, sizeof(g_query), "INSERT INTO zones (map, type, possition_x, possition_y, possition_z, possition_x2, possition_y2, possition_z2) VALUES ('%s', %i, %f, %f, %f, %f, %f, %f)", g_map, ZoneEnd, g_zoneEndOriginTemp[client][0][0], g_zoneEndOriginTemp[client][0][1], g_zoneEndOriginTemp[client][0][2], g_zoneEndOriginTemp[client][1][0], g_zoneEndOriginTemp[client][1][1], g_zoneEndOriginTemp[client][1][2]);
 			g_sql.Query(SQLSetZone, g_query, data, DBPrio_Normal);
 		}
 
@@ -4671,7 +4671,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 
 			if(StrEqual(item, "startapply", false) == true)
 			{
-				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = ZoneStart LIMIT 1", g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = %i LIMIT 1", g_map, ZoneStart);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(ZoneStart);
@@ -4681,7 +4681,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 
 			else if(StrEqual(item, "endapply", false) == true)
 			{
-				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = ZoneEnd LIMIT 1", g_map);
+				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = %i LIMIT 1", g_map, ZoneEnd);
 				DataPack dp = new DataPack();
 				dp.WriteCell(GetClientSerial(param1));
 				dp.WriteCell(ZoneEnd);
