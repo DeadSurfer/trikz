@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.693",
+	version = "4.694",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -3720,6 +3720,8 @@ void SQLDeleteAllCP(Database db, DBResultSet results, const char[] error, any da
 	{
 		if(results.HasResults == false)
 		{
+			g_cpCount = 0;
+
 			LogToFileEx("addons/sourcemod/logs/trueexpert.log", "All checkpoints are deleted. MAP: [%s] edited by [%N] SteamID64: [%s]", g_map, client, auth);
 
 			PrintToServer("All checkpoints are deleted on current map.");
