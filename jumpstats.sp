@@ -79,7 +79,7 @@ public Plugin myinfo =
 	name = "Jump stats",
 	author = "Smesh (Nick Jurevich)",
 	description = "Measures distance difference between two vectors.",
-	version = "0.279",
+	version = "0.28",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -89,7 +89,7 @@ public void OnPluginStart()
 
 	g_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected);
 
-	for(int i = 1; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsValidEntity(i) == true)
 		{
@@ -370,7 +370,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					Handle KeyHintText = StartMessageOne("KeyHintText", client);
 					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-					bfmsg.WriteByte(true);
+					bfmsg.WriteByte(1);
 					bfmsg.WriteString(print[0]);
 					EndMessage();
 				}
@@ -384,7 +384,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				{
 					Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
 					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-					bfmsg.WriteByte(true);
+					bfmsg.WriteByte(1);
 					bfmsg.WriteString(print[0]);
 					EndMessage();
 				}
@@ -393,14 +393,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		for(int i = 1; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+			if(IsClientInGame(i) == true)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+				int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
-				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
+				if(4 <= mode < 7 && target == client && g_jumpstats[i] == true)
 				{
 					if(distance >= 230.0 && pre < 280.0)
 					{
@@ -408,7 +408,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 						{
 							Handle KeyHintText = StartMessageOne("KeyHintText", i);
 							BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-							bfmsg.WriteByte(true);
+							bfmsg.WriteByte(1);
 							bfmsg.WriteString(print[0]);
 							EndMessage();
 						}
@@ -494,7 +494,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			{
 				Handle KeyHintText = StartMessageOne("KeyHintText", client);
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-				bfmsg.WriteByte(true);
+				bfmsg.WriteByte(1);
 				bfmsg.WriteString(print[0]);
 				EndMessage();
 
@@ -502,20 +502,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		for(int i = 1; i <= MaxClients; ++i)
+		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+			if(IsClientInGame(i) == true)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+				int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
-				if(observerMode < 7 && observerTarget == client && g_jumpstats[i] == true)
+				if(4 <= mode < 7 && target == client && g_jumpstats[i] == true)
 				{
 					if(distance >= 22.0)
 					{
 						Handle KeyHintText = StartMessageOne("KeyHintText", i);
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-						bfmsg.WriteByte(true);
+						bfmsg.WriteByte(1);
 						bfmsg.WriteString(print[0]);
 						EndMessage();
 
@@ -706,7 +706,7 @@ Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", client);
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-						bfmsg.WriteByte(true);
+						bfmsg.WriteByte(1);
 						bfmsg.WriteString(print);
 						EndMessage();
 
@@ -719,27 +719,27 @@ Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 
 						Handle KeyHintText = StartMessageOne("KeyHintText", other);
 						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-						bfmsg.WriteByte(true);
+						bfmsg.WriteByte(1);
 						bfmsg.WriteString(print);
 						EndMessage();
 
 						PrintToConsole(other, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 					}
 
-					for(int i = 1; i <= MaxClients; ++i)
+					for(int i = 1; i <= MaxClients; i++)
 					{
-						if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+						if(IsClientInGame(i) == true)
 						{
-							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+							int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+							int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
-							if(observerMode < 7 && (observerTarget == client || observerTarget == other) && g_jumpstats[i] == true)
+							if(4 <= mode < 7 && (target == client || target == other) && g_jumpstats[i] == true)
 							{
 								Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
 
 								Handle KeyHintText = StartMessageOne("KeyHintText", i);
 								BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-								bfmsg.WriteByte(true);
+								bfmsg.WriteByte(1);
 								bfmsg.WriteString(print);
 								EndMessage();
 								
