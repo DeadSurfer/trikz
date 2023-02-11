@@ -87,7 +87,7 @@ public Plugin myinfo =
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.266",
+	version = "0.267",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -262,7 +262,7 @@ Action TimerBot(Handle timer)
 
 	int botShouldAdd = 2;
 
-	for(int i = 1; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) == true && IsFakeClient(i) == true && GetClientTeam(i) != CS_TEAM_SPECTATOR)
 		{
@@ -272,7 +272,7 @@ Action TimerBot(Handle timer)
 		continue;
 	}
 
-	for(int i = 1; i <= botShouldAdd; ++i)
+	for(int i = 1; i <= botShouldAdd; i++)
 	{
 		ServerCommand("bot_add");
 
@@ -286,7 +286,7 @@ Action TimerBot(Handle timer)
 		g_database.Query(SQLGetReplayName, query, _, DBPrio_Normal);
 	}
 
-	for(int i = 1; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) == true && IsFakeClient(i) == true && GetClientTeam(i) != CS_TEAM_SPECTATOR)
 		{
@@ -414,7 +414,7 @@ void SQLGetReplayName(Database db, DBResultSet results, const char[] error, any 
 				results.FetchString(i, name[i], MAX_NAME_LENGTH);
 				Format(name[i], MAX_NAME_LENGTH, "RECORD %s", name[i]);
 
-				for(int j = 1; j <= MaxClients; ++j)
+				for(int j = 1; j <= MaxClients; j++)
 				{
 					if(IsClientInGame(j) == true && IsFakeClient(j) == true && GetClientTeam(j) != CS_TEAM_SPECTATOR)
 					{
@@ -555,7 +555,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 				g_frame[client].Resize(g_tick[client] + differ);
 			}
 
-			for(int i = 1; i <= differ; ++i) //life is good. client which start lags compare partner ticks. so just align by partner.
+			for(int i = 1; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
 			{
 				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 
