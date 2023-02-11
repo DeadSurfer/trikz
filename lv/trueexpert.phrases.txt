@@ -162,22 +162,22 @@
 	"DevmapWillBeDisabled"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"lv"	"Devmap režims būs izslēgts. \"Jā\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+		"lv"	"Devmap režims būs izslēgts. {1}%%% vai {2} no {3} spēles dalībnieki apstiprināja balsošanu."
 	}
 	"DevmapWillBeEnabled"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"lv"	"Devmap režims būs ieslēgts. \"Jā\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+		"lv"	"Devmap režims būs ieslēgts. {1}%%% vai {2} no {3} spēles dalībnieki apstiprināja balsošanu."
 	}
 	"DevmapContinue"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"lv"	"Devmap režīms būs pagarināts. \"Nē\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+		"lv"	"Devmap režīms būs pagarināts. {1}%%% vai {2} no {3} spēles dalībnieki noraidīja balsošanu."
 	}
 	"DevmapWillNotBe"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"lv"	"Devmap režims nebūs ieslēgts. \"Nē\" izvēlējās {1}%%% vai {2} no {3} spēles dalībniekiem."
+		"lv"	"Devmap režims nebūs ieslēgts. {1}%%% vai {2} no {3} spēles dalībnieki noraidīja balsošanu."
 	}
 	"AwayFromKeyboard"
 	{
