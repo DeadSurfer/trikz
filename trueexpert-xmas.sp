@@ -50,7 +50,7 @@ public Plugin myinfo =
 	name = "Xmas",
 	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Snowman, gifts, big Christmas tree, Santa hat.",
-	version = "1.31",
+	version = "1.32",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -78,7 +78,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_xmas", CommandXmas, "Open the xmas menu.");
 	RegConsoleCmd("sm_hat", CommandHat, "Do move menu for hat from aim target (!hat m,0,-1.9,4.6) m - move, r - rotate");
 
-	for(int i = 1; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) == true)
 		{
@@ -101,7 +101,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginEnd()
 {
-	for(int i = 1; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) == true)
 		{
@@ -260,7 +260,7 @@ void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 	delete kv;
 
-	for(int i = 1; i <= MaxClients; ++i)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) == true)
 		{
