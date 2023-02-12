@@ -301,7 +301,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Smesh Jurēvičs",
 	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.694",
+	version = "4.695",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -475,7 +475,7 @@ public void OnMapStart()
 	GetCurrentMap(g_map, sizeof(g_map));
 
 	char name[10 + 1] = "trueexpert";
-	any data = 0;
+	int data = 0;
 	Database.Connect(SQLConnect, name, data);
 
 	for(int i = 0; i <= 2; i++)
@@ -928,12 +928,12 @@ Action OnSayMessage(UserMsg msg_id, BfRead msg, const int[] players, int players
 	}
 
 	int serial = GetClientSerial(client);
-	int condition = StrContains(msgBuffer, "_All") != -1;
+	int condition = StrContains(msgBuffer, "_All", true) != -1;
 
 	DataPack dp = new DataPack();
-	dp.WriteCell(serial);
-	dp.WriteCell(condition);
-	dp.WriteString(text);
+	dp.WriteCell(serial, false);
+	dp.WriteCell(condition, false);
+	dp.WriteString(text, false);
 	RequestFrame(FrameSayText2, dp);
 
 	return Plugin_Handled;
@@ -973,7 +973,7 @@ void FrameSayText2(DataPack dp)
 		Handle SayText2 = StartMessage("SayText2", clients, count, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
 		BfWrite bfmsg = UserMessageToBfWrite(SayText2);
 		bfmsg.WriteByte(client);
-		bfmsg.WriteByte(true);
+		bfmsg.WriteByte(1);
 		bfmsg.WriteString(text);
 		EndMessage();
 
@@ -1109,7 +1109,7 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	PropType type = Prop_Data;
 	char prop[13 + 1] = "";
-	any value = 0;
+	int value = 0;
 	int size = 4;
 	int element = 0;
 	Format(prop, sizeof(prop), "m_nModelIndex");
@@ -1118,7 +1118,7 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	PropType type2 = Prop_Data;
 	char prop2[7 + 1] = "";
-	any value2 = 0;
+	int value2 = 0;
 	int size2 = 4;
 	int element2 = 0;
 	Format(prop2, sizeof(prop2), "m_nSkin");
@@ -1261,7 +1261,7 @@ void OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 Action joinclass(int client, const char[] command, int argc)
 {
 	float interval = 1.0;
-	any data = client;
+	int data = client;
 	int flags = TIMER_FLAG_NO_MAPCHANGE;
 	CreateTimer(interval, TimerRespawn, data, flags);
 
@@ -3846,7 +3846,7 @@ void SendMessage(int client, const char[] buffer)
 		Handle msg = StartMessageOne(msgname, client, flags); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
 		BfWrite bf = UserMessageToBfWrite(msg); //dont show color codes in console.
 		bf.WriteByte(client); //Message author
-		bf.WriteByte(true); //Chat message
+		bf.WriteByte(1); //Chat message
 		bf.WriteString(buffer2); //Message text
 		EndMessage();
 	}
@@ -3871,7 +3871,7 @@ Action AdminCommandMaptier(int client, int args)
 
 			Format(g_query, sizeof(g_query), "DELETE FROM tier WHERE map = '%s' LIMIT 1", g_map);
 			DataPack dp = new DataPack();
-			any serial = GetClientSerial(client);
+			int serial = GetClientSerial(client);
 			bool insert = false;
 			dp.WriteCell(serial, insert);
 			dp.WriteCell(tier, insert);
@@ -7325,7 +7325,7 @@ void Devmap(bool force)
 			}
 
 			float interval = 5.0;
-			any data = g_devmap == true ? false : true;
+			bool data = g_devmap == true ? false : true;
 			int flags = 0;
 			CreateTimer(interval, TimerChangelevel, data, flags);
 		}
@@ -7886,7 +7886,7 @@ void OnProjectileSpawnPost(int entity)
 		RequestFrame(FrameExplosionPrevent, entity);
 
 		float interval = 1.5;
-		any data = EntIndexToEntRef(entity);
+		int data = EntIndexToEntRef(entity);
 		int flags = TIMER_FLAG_NO_MAPCHANGE;
 		CreateTimer(interval, TimerProjectileRemove, data, flags);
 
@@ -8309,7 +8309,7 @@ void MLStats(int client, bool ground)
 	{
 		Handle KeyHintText = StartMessageOne("KeyHintText", booster);
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-		bfmsg.WriteByte(true);
+		bfmsg.WriteByte(1);
 		bfmsg.WriteString(ground == true ? print[1] : print[0]);
 		EndMessage();
 	}
@@ -8318,7 +8318,7 @@ void MLStats(int client, bool ground)
 	{
 		Handle KeyHintText = StartMessageOne("KeyHintText", client);
 		BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-		bfmsg.WriteByte(true);
+		bfmsg.WriteByte(1);
 		bfmsg.WriteString(ground == true ? print[2] : print[0]);
 		EndMessage();
 	}
@@ -8342,7 +8342,7 @@ void MLStats(int client, bool ground)
 
 				Handle KeyHintText = StartMessageOne("KeyHintText", i);
 				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
-				bfmsg.WriteByte(true);
+				bfmsg.WriteByte(1);
 				bfmsg.WriteString(ground == true ? print[3] : print[0]);
 				EndMessage();
 
@@ -8738,7 +8738,7 @@ void Greetings(int client)
 
 	float interval = 5.0;
 	int flags = TIMER_FLAG_NO_MAPCHANGE;
-	any data = client;
+	int data = client;
 	CreateTimer(interval, TimerGreetings, data, flags);
 
 	return;
