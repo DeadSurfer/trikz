@@ -708,7 +708,7 @@
 	"MLSFinishMsg"
 	{
 		"#format"	"{1:.0f},{2:s}"
-		"lv"	"Distance: {1} juniti{2}"
+		"lv"	"Distanse: {1} juniti{2}"
 	}
 	"MLSTP"
 	{
