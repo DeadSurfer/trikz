@@ -567,10 +567,29 @@
 						$result3 = mysqli_query($db, $query3);
 						$row3 = mysqli_fetch_array($result3);
 
-						$hours = floor($row['time'] / 3600);
-						$mins = floor($row['time'] / 60 % 60);
-						$secs = floor($row['time'] % 60);
-						$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
+						$hours = floor($row['time'] / 3600.0) % 24;
+						$mins = floor($row['time'] / 60.0) % 60;
+						$secs = floor($row['time']) % 60;
+
+						if($mins < 10 && $hours == 0)
+						{
+							$time = sprintf("%01d:%02d", $mins, $secs);
+						}
+					
+						else if($mins >= 10 && $hours == 0)
+						{
+							$time = sprintf("%02d:%02d", $mins, $secs);
+						}
+					
+						else if(10 > $hours && $hours > 0)
+						{
+							$time = sprintf("%01d:%02d:%02d", $hours, $mins, $secs);
+						}
+					
+						else if($hours >= 10)
+						{
+							$time = sprintf("%02d:%02d:%02d", $hours, $mins, $secs);
+						}
 
 						if($serverRecord == 0.0)
 						{
@@ -578,10 +597,30 @@
 						}
 
 						$timeDiff = $row['time'] - $serverRecord;
-						$timeDiffHours = floor($timeDiff / 3600);
-						$timeDiffMins = floor($timeDiff / 60 % 60);
-						$timeDiffSecs = floor($timeDiff % 60);
-						$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
+						$timeDiffHours = floor($timeDiff / 3600.0) % 24;
+						$timeDiffMins = floor($timeDiff / 60.0) % 60;
+						$timeDiffSecs = floor($timeDiff) % 60;
+
+						if($timeDiffMins < 10 && $timeDiffHours == 0)
+						{
+							$timeDiffFormated = sprintf("%01d:%02d", $timeDiffMins, $timeDiffSecs);
+						}
+					
+						else if($timeDiffMins >= 10 && $timeDiffHours == 0)
+						{
+							$timeDiffFormated = sprintf("%02d:%02d", $timeDiffMins, $timeDiffSecs);
+						}
+					
+						else if(10 > $timeDiffHours && $timeDiffHours > 0)
+						{
+							$timeDiffFormated = sprintf("%01d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
+						}
+					
+						else if($timeDiffHours >= 10)
+						{
+							$timeDiffFormated = sprintf("%02d:%02d:%02d", $timeDiffHours, $timeDiffMins, $timeDiffSecs);
+						}
+
 						$formatedDateYmd = date("Y-m-d", $row['date']);
 						$formatedDateHis = date("H:i:s", $row['date']);
 
