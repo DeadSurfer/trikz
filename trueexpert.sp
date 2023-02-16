@@ -302,7 +302,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Does \"trikz\" mode comfortable.",
-	version = "4.696",
+	version = "4.697",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -3274,7 +3274,7 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 			results.FetchString(0, name1, sizeof(name1));
 			results.FetchString(1, name2, sizeof(name2));
 			
-			FormatSeconds(time, formatTime);
+			FormatSeconds(time, formatTime, false);
 
 			count = ++g_top10Count;
 
@@ -3286,7 +3286,7 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 			float timeDiff = 0.0;
 			timeDiff = time - g_top10SR;
 
-			FormatSeconds(timeDiff, formatTimeDiff);
+			FormatSeconds(timeDiff, formatTimeDiff, false);
 			Format(formatTimeDiff, sizeof(formatTimeDiff), "+%s", formatTimeDiff);
 
 			for(int i = 1; i <= MaxClients; i++)
@@ -3760,7 +3760,7 @@ Action AdminCommandTest(int client, int args)
 	GetCmdArgString(buffer, sizeof(buffer));
 
 	char buffers[2][2 + 1];
-	ExplodeString(buffer, ",", buffers, 2, 3, false);
+	ExplodeString(buffer, " ", buffers, 2, 3, false);
 
 	int nBase = 10;
 	int player1 = 0, player2 = 0;
@@ -3772,7 +3772,7 @@ Action AdminCommandTest(int client, int args)
 		g_partner[player1] = player2;
 		g_partner[player2] = player1;
 
-		Restart(player1, false);
+		Restart(player1, true);
 	}
 
 	for(int i = 1; i <= MaxClients; i++)
@@ -5217,7 +5217,7 @@ Action OnZoneStartTouch(int entity, int other)
 				float time = g_timerTime[other];
 
 				char timeOwn[24] = "";
-				FormatSeconds(time, timeOwn);
+				FormatSeconds(time, timeOwn, false);
 
 				float timeDiff = 0.0;
 				
@@ -5244,7 +5244,7 @@ Action OnZoneStartTouch(int entity, int other)
 				}
 
 				char timeSR[24] = "";
-				FormatSeconds(timeDiff, timeSR);
+				FormatSeconds(timeDiff, timeSR, false);
 
 				Format(timeSR, sizeof(timeSR), record == true ? "-%s" : "+%s", timeSR);
 
@@ -5482,7 +5482,7 @@ Action OnZoneStartTouch(int entity, int other)
 						if(g_cp[other][i] == true)
 						{
 							char timeCP[24] = "";
-							FormatSeconds(g_cpDiffSR[other][i], timeCP);
+							FormatSeconds(g_cpDiffSR[other][i], timeCP, false);
 
 							for(int j = 1; j <= MaxClients; j++)
 							{
@@ -5970,7 +5970,7 @@ void SQLCPSelect(Database db, DBResultSet results, const char[] error, DataPack 
 			float time = g_timerTime[other];
 
 			char timeOwn[24] = "";
-			FormatSeconds(time, timeOwn);
+			FormatSeconds(time, timeOwn, false);
 
 			char timeSR[24] = "+00:00:00";
 
@@ -6022,7 +6022,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 		float time = g_timerTime[other];
 
 		char timeOwn[24] = "";
-		FormatSeconds(time, timeOwn);
+		FormatSeconds(time, timeOwn, false);
 
 		char timeSR[24] = "+00:00:00";
 
@@ -6056,7 +6056,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 				g_cpDiffSR[partner][cpnum] = g_cpTimeSR[cpnum] - g_cpTime[other][cpnum];
 
 				float diff = g_cpDiffSR[other][cpnum];
-				FormatSeconds(diff, timeSR);
+				FormatSeconds(diff, timeSR, false);
 
 				Format(timeSR, sizeof(timeSR), "-%s", timeSR);
 
@@ -6080,7 +6080,7 @@ void SQLCPSelect2(Database db, DBResultSet results, const char[] error, DataPack
 				g_cpDiffSR[partner][cpnum] = g_cpTime[other][cpnum] - g_cpTimeSR[cpnum];
 
 				float diff = g_cpDiffSR[other][cpnum];
-				FormatSeconds(diff, timeSR);
+				FormatSeconds(diff, timeSR, false);
 
 				Format(timeSR, sizeof(timeSR), "+%s", timeSR);
 
@@ -6526,20 +6526,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		//g_timerTime[client] = GetEngineTime() - g_timerTimeStart[client];
 		g_timerTime[client] = (float(GetGameTickCount()) - g_timerTimeStart[client]) * (GetTickInterval() + 0.000000001);
 
-		//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
-		int hour = (RoundToFloor(g_timerTime[client]) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-		int minute = (RoundToFloor(g_timerTime[client]) / 60) % 60;
-		int second = RoundToFloor(g_timerTime[client]) % 60;
-
-		if(hour > 0)
-		{
-			Format(g_clantag[client][1], 256, "%02.i:%02.i:%02.i  ", hour, minute, second);
-		}
-
-		else if(hour == 0)
-		{
-			Format(g_clantag[client][1], 256, "%02.i:%02.i    ", minute, second);
-		}
+		FormatSeconds(g_timerTime[client], g_buffer[client], true);
+		Format(g_clantag[client][1], 256, "%s", g_buffer[client]);
 
 		if(IsPlayerAlive(client) == false)
 		{
@@ -8518,16 +8506,34 @@ MRESReturn DHooksOnTeleport(int client, Handle hParams) //https://github.com/faf
 	return MRES_Ignored;
 }
 
-void FormatSeconds(float time, char[] format)
+void FormatSeconds(float time, char[] format, bool scoreboard)
 {
 	int maxlength = 24;
 
 	//https://forums.alliedmods.net/archive/index.php/t-23912.html ShAyA format OneEyed format second
-	int hour = (RoundToFloor(time) / 3600) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
-	int minute = (RoundToFloor(time) / 60) % 60;
+	int hour = RoundToFloor(time / 3600.0) % 24; //https://forums.alliedmods.net/archive/index.php/t-187536.html
+	int minute = RoundToFloor(time / 60.0) % 60;
 	int second = RoundToFloor(time) % 60;
 
-	Format(format, maxlength, "%02.i:%02.i:%02.i", hour, minute, second);
+	if(minute < 10)
+	{
+		Format(format, maxlength, "%01.i:%02.i%s", minute, second, scoreboard == true ? "     " : "");
+	}
+
+	else if(minute >= 10 && hour == 0)
+	{
+		Format(format, maxlength, "%02.i:%02.i%s", minute, second, scoreboard == true ? "    " : "");
+	}
+
+	else if(10 > hour > 0)
+	{
+		Format(format, maxlength, "%01.i:%02.i:%02.i%s", hour, minute, second, scoreboard == true ? "   ": "");
+	}
+
+	else if(hour >= 10)
+	{
+		Format(format, maxlength, "%02.i:%02.i:%02.i%s", hour, minute, second, scoreboard == true ? "  " : "");
+	}
 
 	return;
 }
