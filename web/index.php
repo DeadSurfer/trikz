@@ -775,7 +775,7 @@
 				{
 					print "<th>
 								<center>
-									<a href=?start=$back&sort=$sort style=color:#ffffff>Previous</a>
+									<a href=?start=$back&sort=$sort&limit=$limit style=color:#ffffff>Previous</a>
 								</center>
 							</th>"; //https://www.codegrepper.com/code-examples/html/how+to+change+color+in+html https://stackoverflow.com/questions/10436017/previous-next-buttons
 				}
@@ -784,7 +784,7 @@
 				{
 					print "<th>
 								<center>
-									<a href=?start=$next&sort=$sort style=color:#ffffff>Next</a>
+									<a href=?start=$next&sort=$sort&limit=$limit style=color:#ffffff>Next</a>
 								</center>
 							</th>"; //https://stackoverflow.com/questions/18737303/how-to-not-make-text-colored-within-a-href-link-but-the-text-is-also-within-div
 				}
