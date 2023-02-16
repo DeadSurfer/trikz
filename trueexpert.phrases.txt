@@ -500,7 +500,7 @@
 	}
 	"Top10details"
 	{
-		"en"	"Place:\tTime:\t\tDifferent:\t\tTeam:"
+		"en"	"Place:\tTime:\tDifferent:\tTeam:"
 	}
 	"Top10source1-9"
 	{
