@@ -500,7 +500,7 @@
 	}
 	"Top10details"
 	{
-		"lv"	"Vieta:\tLaiks:\t\tStarpība:\t\tKomanda:"
+		"lv"	"Vieta:\tLaiks:\tStarpība:\tKomanda:"
 	}
 	"Top10source1-9"
 	{
