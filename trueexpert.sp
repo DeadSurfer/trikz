@@ -119,7 +119,8 @@ ConVar gCV_urlTop = null,
 		gCV_top = null,
 		gCV_mlstats = null,
 		gCV_vel = null,
-		gCV_sourceTV = null;
+		gCV_sourceTV = null,
+		gCV_dissolver = null;
 
 //Game menu system
 bool g_menuOpened[MAXPLAYER] = {false, ...},
@@ -284,7 +285,7 @@ int g_axis[MAXPLAYER] = {0, ...},
 	g_ZoneEditorVIA[MAXPLAYER] = {0, ...},
 	g_entityXYZ[MAXPLAYER] = {0, ...},
 	g_zoneCreatorSelected[MAXPLAYER] = {0, ...};
-char g_axisLater[][] = {"X", "Y", "Z"};
+char g_axisLater[3][1 + 1] = {"X", "Y", "Z"};
 float g_zoneSelected[MAXPLAYER][2][3];
 
 //Game message system
@@ -299,9 +300,9 @@ Handle g_timerDissolver[MAXPLAYER] = {INVALID_HANDLE, ...};
 public Plugin myinfo =
 {
 	name = "TrueExpert",
-	author = "Niks Smesh Jurēvičs",
-	description = "Allow to make \"trikz\" mode comfortable.",
-	version = "4.695",
+	author = "Niks Jurēvičs (Smesh, Smesh292)",
+	description = "Does \"trikz\" mode comfortable.",
+	version = "4.696",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -320,14 +321,14 @@ public void OnPluginStart()
 	gCV_block = CreateConVar("sm_te_block", "0.0", "Allow to toggling block state.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_partner = CreateConVar("sm_te_partner", "0.0", "Allow to use partner system.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_color = CreateConVar("sm_te_color", "0.0", "Toggling color menu.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_restart = CreateConVar("sm_te_restart", "0.0", "Allow player to restart timer.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_restart = CreateConVar("sm_te_restart", "0.0", "Allow to restart timer.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_checkpoint = CreateConVar("sm_te_checkpoint", "0.0", "Allow to use checkpoint in devmap.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_afk = CreateConVar("sm_te_afk", "0.0", "Allow to use !afk command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip for players in devmap.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_noclip = CreateConVar("sm_te_noclip", "0.0", "Allow to use noclip in devmap.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_spec = CreateConVar("sm_te_spec", "0.0", "Allow to use spectator command to swtich to the spectator team.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_button = CreateConVar("sm_te_button", "0.0", "Allow to use text message for button announcments.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_button = CreateConVar("sm_te_button", "0.0", "Allow to use text message for button announcements.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_bhop = CreateConVar("sm_te_bhop", "0.0", "Allow to use autobhop.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automaticly.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_autoswitch = CreateConVar("sm_te_autoswitch", "0.0", "Allow to switch to the flashbang automatically.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_autoflashbang = CreateConVar("sm_te_autoflashbang", "0.0", "Allow to give auto flashbangs.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_macro = CreateConVar("sm_te_macro", "0.0", "Allow to use macro for each player.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_pingtool = CreateConVar("sm_te_pingtool", "0.0", "Allow to use ping tool on E button or +use.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -339,8 +340,9 @@ public void OnPluginStart()
 	gCV_control = CreateConVar("sm_te_control", "0.0", "Allow to use control menu.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_top = CreateConVar("sm_te_top", "0.0", "Allow to use !top command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	gCV_mlstats = CreateConVar("sm_te_mlstats", "0.0", "Allow to use !mlstats command.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_vel = CreateConVar("sm_te_vel", "0.0", "Allow to use velocity in hint.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	gCV_sourceTV = CreateConVar("sm_te_sourcetv", "0.0,", "Save demo only when server record.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_vel = CreateConVar("sm_te_vel", "0.0", "Allow to show velocity in hint.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_sourceTV = CreateConVar("sm_te_sourcetv", "0.0,", "Save demo only on server record.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	gCV_dissolver = CreateConVar("sm_te_dissolver", "0.0", "Allow to dissole dropped weapons from player.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
 	AutoExecConfig(true, "plugin.trueexpert", "sourcemod"); //https://sm.alliedmods.net/new-api/sourcemod/AutoExecConfig
 
@@ -552,7 +554,7 @@ public void OnMapStart()
 
 			ForceChangeLevel(g_map, "Turning on SourceTV");
 
-			//this should provides a crash if reload plugin (DHookEntity). https://issuehint.com/issue/alliedmodders/sourcemod/1688
+			//this may provides a crash if reload plugin (DHookEntity). https://issuehint.com/issue/alliedmodders/sourcemod/1688
 			ServerCommand("tv_delay 0");
 			ServerCommand("tv_transmitall 1");
 		}
@@ -5244,15 +5246,7 @@ Action OnZoneStartTouch(int entity, int other)
 				char timeSR[24] = "";
 				FormatSeconds(timeDiff, timeSR);
 
-				if(record == true)
-				{
-					Format(timeSR, sizeof(timeSR), "-%s", timeSR);
-				}
-
-				else if(record == false)
-				{
-					Format(timeSR, sizeof(timeSR), "+%s", timeSR);
-				}
+				Format(timeSR, sizeof(timeSR), record == true ? "-%s" : "+%s", timeSR);
 
 				int playerid = GetSteamAccountID(other, true);
 				int partnerid = GetSteamAccountID(partner, true);
@@ -5811,10 +5805,10 @@ void FinishMSGHUD(int client, int keynum, const char[] sectiontype, int cpnum, c
 	{
 		if(IsClientInGame(i) == true/* && IsClientObserver(i) == true*/)
 		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
+			int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", element);
+			int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", size, element);
 
-			if(IsClientSourceTV(i) == true || (observerMode < 7 && observerTarget == client))
+			if(IsClientSourceTV(i) == true || (4 <= mode < 7 && target == client))
 			{
 				int channelSpec = 1;
 
@@ -6817,12 +6811,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(IsClientObserver(client) == true)
 		{
-			int observerTarget = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
-			int observerMode = GetEntProp(client, Prop_Data, "m_iObserverMode", 4, 0);
+			int target = GetEntPropEnt(client, Prop_Data, "m_hObserverTarget", 0);
+			int mode = GetEntProp(client, Prop_Data, "m_iObserverMode", 4, 0);
 
-			if(IsValidClient(observerTarget) == true && IsValidPartner(observerTarget) == true && IsPlayerAlive(g_partner[observerTarget]) == true && observerMode < 7)
+			if(IsValidClient(target) == true && IsValidPartner(target) == true && IsPlayerAlive(g_partner[target]) == true && 4 <= mode < 7)
 			{
-				SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[observerTarget], 0);
+				SetEntPropEnt(client, Prop_Data, "m_hObserverTarget", g_partner[target], 0);
 			}
 		}
 
@@ -6973,14 +6967,14 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity", 0);
 
-			char class[32] = "";
+			char clsname[20 + 1] = "";
 
 			if(IsValidEntity(groundEntity) == true)
 			{
-				GetEntityClassname(groundEntity, class, sizeof(class));
+				GetEntityClassname(groundEntity, clsname, sizeof(clsname));
 			}
 
-			if(StrEqual(class, "flashbang_projectile", false) == false)
+			if(StrEqual(clsname, "flashbang_projectile", false) == false)
 			{
 				GetClientAbsOrigin(client, g_mlsDistance[client][1]);
 
@@ -7062,10 +7056,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		if(buttons & IN_ATTACK2 && !(buttons & IN_ATTACK) && g_macroOpened[client] == false)
 		{
-			char classname[32] = "";
-			GetClientWeapon(client, classname, sizeof(classname));
+			char clsname[19 + 1] = "";
+			GetClientWeapon(client, clsname, sizeof(clsname));
 
-			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
+			if(StrEqual(clsname, "weapon_flashbang", false) == true || StrEqual(clsname, "weapon_hegrenade", false) == true || StrEqual(clsname, "weapon_smokegrenade", false) == true)
 			{
 				g_macroTick[client] = 1;
 
@@ -7406,16 +7400,19 @@ Action CommandTop(int client, int args)
 		return Plugin_Continue;
 	}
 
-	float interval = 0.1;
-	int flags = TIMER_FLAG_NO_MAPCHANGE;
-	CreateTimer(interval, TimerMotd, client, flags); //OnMapStart() is not work from first try.
+	//float interval = 0.1;
+	//int flags = TIMER_FLAG_NO_MAPCHANGE;
+	//CreateTimer(interval, TimerMotd, client, flags); //OnMapStart() is not work from first try.
+
+	MOTD(client);
 
 	return Plugin_Handled;
 }
 
-Action TimerMotd(Handle timer, int client)
+//Action TimerMotd(Handle timer, int client)
+void MOTD(int client)
 {
-	if(IsClientInGame(client) == true)
+	//if(IsClientInGame(client) == true)
 	{
 		ConVar hostname = FindConVar("hostname");
 
@@ -7431,7 +7428,7 @@ Action TimerMotd(Handle timer, int client)
 		ShowMOTDPanel(client, title, msg, type); //https://forums.alliedmods.net/showthread.php?t=232476
 	}
 
-	return Plugin_Stop;
+	return;
 }
 
 Action CommandAfk(int client, int args)
@@ -7587,7 +7584,7 @@ Action CommandNoclip(int client, int args)
 
 void Noclip(int client)
 {
-	if(IsValidClient(client) == false)
+	if(IsValidClient(client) == false) //avoid error with sourcemod sm_noclip
 	{
 		return;
 	}
@@ -7776,10 +7773,10 @@ void VelHud(int client)
 	{
 		if(IsClientInGame(i) == true && IsPlayerAlive(i) == false && IsClientSourceTV(i) == false)
 		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 0);
+			int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+			int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 0);
 
-			if(observerMode < 7 && observerTarget == client && g_hudVel[i] == true)
+			if(4 <= mode < 7 && target == client && g_hudVel[i] == true)
 			{
 				PrintHintText(i, "%.0f", velFlat);
 			}
@@ -7936,7 +7933,7 @@ Action TimerProjectileRemove(Handle timer, int entity)
 	{
 		FlashbangEffect(entity);
 
-		char clsname[256] = "";
+		char clsname[20 + 1] = "";
 		GetEntityClassname(entity, clsname, sizeof(clsname));
 		
 		if(StrEqual(clsname, "flashbang_projectile", false) == true)
@@ -8053,9 +8050,16 @@ Action OnWeaponDrop(int client, int weapon)
 
 void Dissolver(int client, int entity)
 {
+	float enable = gCV_dissolver.FloatValue;
+
+	if(enable != 1.0)
+	{
+		return;
+	}
+
 	if((LibraryExists("trueexpert-entityfilter") == false || g_devmap == true) && IsValidEntity(entity) == true)
 	{
-		char clsname[256] = "";
+		char clsname[6 + 1] = "";
 		GetEntityClassname(entity, clsname, sizeof(clsname));
 
 		if(StrContains(clsname, "weapon", false) != -1)
@@ -8327,10 +8331,10 @@ void MLStats(int client, bool ground)
 	{
 		if(IsClientInGame(i) == true && IsClientObserver(i) == true)
 		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+			int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+			int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
 
-			if(observerMode < 7 && (observerTarget == client || (IsValidClient(booster) == true && observerTarget == booster)) && g_mlstats[i] == true)
+			if(4 <= mode < 7 && (target == client || (IsValidClient(booster) == true && target == booster)) && g_mlstats[i] == true)
 			{
 				if(g_teleported[client] == true)
 				{
