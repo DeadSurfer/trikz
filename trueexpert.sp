@@ -240,7 +240,7 @@ float g_skyOrigin[MAXPLAYER][3],
 
 //Ranking system
 int g_points[MAXPLAYER] = {0, ...},
-	g_pointsMaxs = 1,
+	g_pointsMaxs = 0,
 	g_queryLast = 0;
 
 //Entityfilter entity
@@ -302,7 +302,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Does \"trikz\" mode comfortable.",
-	version = "4.697",
+	version = "4.698",
 	url = "http://www.sourcemod.net/"
 };
 
