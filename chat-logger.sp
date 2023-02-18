@@ -35,15 +35,16 @@
 #pragma newdecls required
 
 char g_comtolist[][] = {"say", "say_team"};
-ConVar g_prefixPointEnable = null;
-ConVar g_prefixPointHide = null;
+ConVar g_prefixPointEnable = null,
+        g_prefixPointHide = null,
+        g_consoleShow = null;
 
 public Plugin myinfo = 
 {
     name = "Chat logger",
     description = "Make chat logging to the sourcemod directory.",
     author = "Niks Jurēvičs",
-    version = "0.129",
+    version = "0.13",
     url = "http://sourcemod.net/"
 };
 
@@ -51,11 +52,14 @@ public void OnPluginStart()
 {
     g_prefixPointEnable = CreateConVar("sm_te_log_enable", "0.0", "Enable log message saving.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_prefixPointHide = CreateConVar("sm_te_log_hide", "0.0", "Allow to hide message if they have explamation or slash before all message.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+    g_consoleShow = CreateConVar("sm_te_console", "0.0", "Show console messages.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     AutoExecConfig(true, "plugin.trueexpert-logchat", "sourcemod");
 
     for(int i = 0; i < sizeof(g_comtolist); i++) //We take first cell from array, and ittering to the next cell. "sizeof" function getting all two cells from array.
     {
         AddCommandListener(chatlog, g_comtolist[i]);
+
+        continue;
     }
 
     return;
@@ -64,14 +68,14 @@ public void OnPluginStart()
 /*static private*/ Action chatlog(int client, const char[] command, int argc)
 {
     //declaration
-    float convarEnable, convarPrefix;
-    char name[MAX_NAME_LENGTH], auth[32], type[4 + 1], format[256], buffer[256], /*time[22], */ex, slash;
-    int /*stamp, */findEx, findSlash;
+    float convarEnable, convarPrefix, convarConsole;
+    char name[MAX_NAME_LENGTH], auth[32], type[4 + 1], format[256], buffer[256], ex, slash;
+    int findEx, findSlash;
 
     //initialization
     convarEnable = g_prefixPointEnable.FloatValue;
     convarPrefix = g_prefixPointHide.FloatValue;
-    //stamp = GetTime({0, 0});
+    convarConsole = g_consoleShow.FloatValue;
     ex = '!', slash = '/';
 
     if(convarEnable != 1.0) //If float value not 1.0, plugin going to skip all code under first Plugin_Continue;
@@ -79,12 +83,7 @@ public void OnPluginStart()
         return Plugin_Continue;
     }
 
-    //if(client == 0) //Server send message from sourcemod as convars sm_, because we listen all possible commands. Prevent say from console
-    //{
-    //    return Plugin_Continue;
-    //}
-
-    if(client > 0)
+    if(client > 0 && IsClientInGame(client) == true)
     {
         GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true); //(first account of SteamID64) + SteamID3 = SteamID64
 
@@ -93,6 +92,11 @@ public void OnPluginStart()
 
     else if(client == 0)
     {
+        if(convarConsole != 1.0)
+        {
+            return Plugin_Continue;
+        }
+
         Format(auth, sizeof(auth), "server");
         Format(name, sizeof(name), "console");
     }
@@ -107,21 +111,17 @@ public void OnPluginStart()
         Format(type, sizeof(type), "team");
     }
     
-    GetCmdArgString(format, sizeof(format));
-    Format(buffer, sizeof(buffer), "%s", format);
-    findEx = FindCharInString(buffer, ex, false);
-    findSlash = FindCharInString(buffer, slash, false);
-
-    //PrintToServer("debug here: %s", bufferFirst);
+    GetCmdArgString(buffer, sizeof(buffer));
+    Format(format, sizeof(format), "%s", buffer);
+    findEx = FindCharInString(format, ex, false);
+    findSlash = FindCharInString(format, slash, false);
 
     if(convarPrefix == 1.0 && (findEx != -1 || findSlash != -1)) //float value of convar and char "!" passing values.
     {
         return Plugin_Continue;
     }
 
-    //FormatTime(time, sizeof(time), "%Y-%d-%m (%H:%M:%S)", stamp);
-    //LogToFileEx("addons/sourcemod/logs/trueexpert-logger.log", "Date: [%s] SteamID64: [%s] Name: [%s] Message (%s): [%s]", time, auth, name, type, buffer);
-    LogToFileEx("addons/sourcemod/logs/trueexpert-logger.log", "SteamID64: [%s] Name: [%s] Message (%s): [%s]", auth, name, type, buffer);
+    LogToFileEx("addons/sourcemod/logs/trueexpert-logger.log", "SteamID64: [%s] Name: [%s] Message (%s): [%s]", auth, name, type, format);
 
     return Plugin_Continue;
 }
