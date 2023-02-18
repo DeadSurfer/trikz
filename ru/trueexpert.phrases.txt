@@ -703,7 +703,7 @@
 	}
 	"NoRecords"
 	{
-		"ru"	"\t\t\t\tНет записей."
+		"ru"	"\t\t\tНет записей."
 	}
 	"MLSFinishMsg"
 	{
