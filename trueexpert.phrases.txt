@@ -703,7 +703,7 @@
 	}
 	"NoRecords"
 	{
-		"en"	"\t\t\t\tNo records."
+		"en"	"\t\tNo records."
 	}
 	"MLSFinishMsg"
 	{
