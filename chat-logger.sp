@@ -83,8 +83,13 @@ public void OnPluginStart()
         return Plugin_Continue;
     }
 
-    if(client > 0 && IsClientInGame(client) == true)
+    if(client > 0)
     {
+        if(IsClientInGame(client) == false)
+        {
+            return Plugin_Continue;
+        }
+        
         GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth), true); //(first account of SteamID64) + SteamID3 = SteamID64
 
         GetClientName(client, name, sizeof(name));
