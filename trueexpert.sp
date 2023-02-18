@@ -302,7 +302,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Does \"trikz\" mode comfortable.",
-	version = "4.698",
+	version = "4.699",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -520,7 +520,7 @@ public void OnMapStart()
 	{
 		ConVar CV_sourcetv = FindConVar("tv_enable");
 
-		int sourcetv = CV_sourcetv.IntValue; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
+		float sourcetv = CV_sourcetv.FloatValue; //https://github.com/alliedmodders/sourcemod/blob/master/plugins/funvotes.sp#L280
 
 		if(sourcetv == 1.0)
 		{
@@ -814,7 +814,7 @@ public void OnMapEnd()
 	{
 		ConVar CV_sourcetv = FindConVar("tv_enable");
 
-		int sourcetv = CV_sourcetv.IntValue;
+		float sourcetv = CV_sourcetv.FloatValue;
 
 		if(sourcetv == 1.0)
 		{
@@ -1109,7 +1109,7 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		g_class[client] = 4;
 	}
 
-	PropType type = Prop_Data;
+	PropType type = Prop_Send;
 	char prop[13 + 1] = "";
 	int value = 0;
 	int size = 4;
@@ -1118,7 +1118,7 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	value = g_wModelPlayer[g_class[client]];
 	SetEntProp(client, type, prop, value, size, element);
 
-	PropType type2 = Prop_Data;
+	PropType type2 = Prop_Send;
 	char prop2[7 + 1] = "";
 	int value2 = 0;
 	int size2 = 4;
@@ -1154,9 +1154,9 @@ void OnPlayerButton(const char[] output, int caller, int activator, float delay)
 {
 	if(IsValidClient(activator) == true && GetClientButtons(activator) & IN_USE)
 	{
-		int button = gCV_button.IntValue;
+		float button = gCV_button.FloatValue;
 
-		if(button == 0.0)
+		if(button != 1.0)
 		{
 			return;
 		}
@@ -1336,25 +1336,25 @@ void Control(int client)
 	menu.SetTitle("%s", g_buffer);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTop", client);
-	menu.AddItem("top", g_buffer, gCV_top.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("top", g_buffer, gCV_top.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTop10", client);
-	menu.AddItem("top10", g_buffer, gCV_top10.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("top10", g_buffer, gCV_top10.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlJS", client);
 	menu.AddItem("js", g_buffer, LibraryExists("trueexpert-jumpstats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlBS", client);
 	menu.AddItem("bs", g_buffer, LibraryExists("trueexpert-booststats") == true ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlHUD", client);
-	menu.AddItem("hud", g_buffer, gCV_hud.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("hud", g_buffer, gCV_hud.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlButton", client);
-	menu.AddItem("button", g_buffer, gCV_button.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("button", g_buffer, gCV_button.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlSpec", client);
-	menu.AddItem("spec", g_buffer, gCV_spec.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("spec", g_buffer, gCV_spec.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlColor", client);
-	menu.AddItem("color", g_buffer, gCV_color.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("color", g_buffer, gCV_color.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlAFK", client);
-	menu.AddItem("afk", g_buffer, gCV_afk.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("afk", g_buffer, gCV_afk.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", "ControlTrikz", client);
-	menu.AddItem("trikz", g_buffer, gCV_trikz.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("trikz", g_buffer, gCV_trikz.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	int time = 20;
 	menu.Display(client, time);
@@ -1469,9 +1469,9 @@ Action ACLCPNUM(int client, const char[] command, int argc)
 
 Action CommandCheckpoint(int client, int args)
 {
-	int checkpoint = gCV_checkpoint.IntValue;
+	float checkpoint = gCV_checkpoint.FloatValue;
 
-	if(checkpoint == 0.0)
+	if(checkpoint != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -1655,12 +1655,8 @@ public void OnClientPutInServer(int client)
 
 	if(g_colorBuffer[client][PSkin][0] == 0 && g_colorBuffer[client][PSkin][1] == 0 && g_colorBuffer[client][PSkin][2] == 0)
 	{
-		for(int i = 0; i <= 2; i++)
-		{
-			g_colorBuffer[client][PSkin][i] = 255;
-
-			continue;
-		}
+		int color[3] = {255, ...};
+		g_colorBuffer[client][PSkin] = color;
 	}
 
 	g_boost[client] = 0; //rare case
@@ -1726,12 +1722,8 @@ public void OnClientCookiesCached(int client)
 
 	if(g_colorBuffer[client][FSkin][0] == 0 && g_colorBuffer[client][FSkin][1] == 0 && g_colorBuffer[client][FSkin][2] == 0)
 	{
-		for(int i = 0; i <= 2; i++)
-		{
-			g_colorBuffer[client][FSkin][i] = 255;
-
-			continue;
-		}
+		int color[3] = {255, ...};
+		g_colorBuffer[client][FSkin] = color;
 	}
 
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
@@ -1999,81 +1991,83 @@ void SQLGetPersonalRecord(Database db, DBResultSet results, const char[] error, 
 
 Action OnStartTouch(int client, int other) //client = booster; other = flyer
 {
-	int boostfix = gCV_boostfix.IntValue;
+	float boostfix = gCV_boostfix.FloatValue;
 
-	if(boostfix == 1.0)
+	if(boostfix != 1.0)
 	{
-		if(IsValidClient(client) == true && IsValidClient(other) == true && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
+		return Plugin_Continue;
+	}
+
+	if(IsValidClient(client) == true && IsValidClient(other) == true && !(GetClientButtons(other) & IN_DUCK) && g_entityButtons[other] & IN_JUMP && GetEngineTime() - g_boostTime[client] > 0.15 && g_skyBoost[other] == 0)
+	{
+		float originBooster[3] = {0.0, ...};
+		GetClientAbsOrigin(client, originBooster);
+
+		float originFlyer[3] = {0.0, ...};
+		GetClientAbsOrigin(other, originFlyer);
+
+		float maxsBooster[3] = {0.0, ...};
+		GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+
+		float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
+
+		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			float originBooster[3] = {0.0, ...};
-			GetClientAbsOrigin(client, originBooster);
+			float velBooster[3] = {0.0, ...};
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster, 0);
 
-			float originFlyer[3] = {0.0, ...};
-			GetClientAbsOrigin(other, originFlyer);
-
-			float maxsBooster[3] = {0.0, ...};
-			GetClientMaxs(client, maxsBooster); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-
-			float delta = originFlyer[2] - originBooster[2] - maxsBooster[2];
-
-			if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
+			if(velBooster[2] > 0.0)
 			{
-				float velBooster[3] = {0.0, ...};
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster, 0);
-
-				if(velBooster[2] > 0.0)
+				if(FloatAbs(g_skyOrigin[client][2] - g_skyOrigin[other][2]) >= 16.0 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
-					if(FloatAbs(g_skyOrigin[client][2] - g_skyOrigin[other][2]) >= 16.0 || GetGameTime() - g_skyAble[other] > 0.5)
+					float velFlyer[3] = {0.0, ...};
+					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
+
+					g_skyVel[other][0] = velFlyer[0];
+					g_skyVel[other][1] = velFlyer[1];
+					g_skyVel[other][2] = velBooster[2] * 3.572;
+
+					float midMax = 800.0 - (800.0 - 770.0) / 2.0;
+
+					if(midMax > g_skyVel[other][2])
 					{
-						float velFlyer[3] = {0.0, ...};
-						GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
-
-						g_skyVel[other][0] = velFlyer[0];
-						g_skyVel[other][1] = velFlyer[1];
-						g_skyVel[other][2] = velBooster[2] * 3.572;
-
-						float midMax = 800.0 - (800.0 - 770.0) / 2.0;
-
-						if(midMax > g_skyVel[other][2])
-						{
-							g_skyVel[other][2] = g_skyVel[other][2] - (midMax - (g_skyVel[other][2] / midMax) * midMax) / 2.0;
-						}
-
-						else if(midMax <= g_skyVel[other][2])
-						{
-							g_skyVel[other][2] = g_skyVel[other][2] + (midMax - (g_skyVel[other][2] / midMax) * midMax) / 2.0;
-						}
-
-						if(g_entityFlags[client] & FL_INWATER)
-						{
-							g_skyVel[other][2] = velBooster[2] * 5.0;
-						}
-						
-						else if(!(g_entityFlags[client] & FL_INWATER))
-						{
-							if(velFlyer[2] > -470.0)
-							{
-								if(g_skyVel[other][2] >= 770.0)
-								{
-									g_skyVel[other][2] = 770.0;
-								}
-							}
-
-							else if(velFlyer[2] <= -470.0)
-							{
-								if(g_skyVel[other][2] >= 800.0)
-								{
-									g_skyVel[other][2] = 800.0;
-								}
-							}
-						}
-
-						#if debug == true
-						PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
-						#endif
-
-						g_skyBoost[other] = 1;
+						g_skyVel[other][2] = g_skyVel[other][2] - (midMax - (g_skyVel[other][2] / midMax) * midMax) / 2.0;
 					}
+
+					else if(midMax <= g_skyVel[other][2])
+					{
+						g_skyVel[other][2] = g_skyVel[other][2] + (midMax - (g_skyVel[other][2] / midMax) * midMax) / 2.0;
+					}
+
+					if(g_entityFlags[client] & FL_INWATER)
+					{
+						g_skyVel[other][2] = velBooster[2] * 5.0;
+					}
+					
+					else if(!(g_entityFlags[client] & FL_INWATER))
+					{
+						if(velFlyer[2] > -470.0)
+						{
+							if(g_skyVel[other][2] >= 770.0)
+							{
+								g_skyVel[other][2] = 770.0;
+							}
+						}
+
+						else if(velFlyer[2] <= -470.0)
+						{
+							if(g_skyVel[other][2] >= 800.0)
+							{
+								g_skyVel[other][2] = 800.0;
+							}
+						}
+					}
+
+					#if debug == true
+					PrintToServer("b: %f f: %f", velBooster[2], velFlyer[2]);
+					#endif
+
+					g_skyBoost[other] = 1;
 				}
 			}
 		}
@@ -2084,38 +2078,40 @@ Action OnStartTouch(int client, int other) //client = booster; other = flyer
 
 void OnPostThinkPost(int client)
 {
-	int boostfix = gCV_boostfix.IntValue;
+	float boostfix = gCV_boostfix.FloatValue;
 
-	if(boostfix == 1.0)
+	if(boostfix != 1.0)
 	{
-		if(g_boost[client] == 1)
+		return;
+	}
+
+	if(g_boost[client] == 1)
+	{
+		int entity = EntRefToEntIndex(g_flash[client]);
+
+		#if debug == true
+		PrintToServer("%i", entity);
+		#endif
+
+		if(entity != INVALID_ENT_REFERENCE)
 		{
-			int entity = EntRefToEntIndex(g_flash[client]);
+			float velEntity[3] = {0.0, ...};
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity, 0);
+
+			if(velEntity[2] > 0.0)
+			{
+				velEntity[0] *= 0.135;
+				velEntity[1] *= 0.135;
+				velEntity[2] *= -0.135;
+
+				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velEntity);
+			}
+
+			g_boost[client] = 2; //Trijās vietās kodā atrodas paātrināšana pēc Antona vārdiem.
 
 			#if debug == true
-			PrintToServer("%i", entity);
+			PrintToServer("1x");
 			#endif
-
-			if(entity != INVALID_ENT_REFERENCE)
-			{
-				float velEntity[3] = {0.0, ...};
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velEntity, 0);
-
-				if(velEntity[2] > 0.0)
-				{
-					velEntity[0] *= 0.135;
-					velEntity[1] *= 0.135;
-					velEntity[2] *= -0.135;
-
-					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velEntity);
-				}
-
-				g_boost[client] = 2; //Trijās vietās kodā atrodas paātrināšana pēc Antona vārdiem.
-
-				#if debug == true
-				PrintToServer("1x");
-				#endif
-			}
 		}
 	}
 
@@ -2124,9 +2120,9 @@ void OnPostThinkPost(int client)
 
 Action CommandTrikz(int client, int args)
 {
-	int trikz = gCV_trikz.IntValue;
+	float trikz = gCV_trikz.FloatValue;
 
-	if(trikz == 0.0)
+	if(trikz != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2268,9 +2264,9 @@ int TrikzMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 Action CommandBlock(int client, int args)
 {
-	int block = gCV_block.IntValue;
+	float block = gCV_block.FloatValue;
 
-	if(block == 0.0)
+	if(block != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2306,9 +2302,9 @@ Action Block(int client, bool chat) //thanks maru for optimization.
 
 Action CommandPartner(int client, int args)
 {
-	int partner = gCV_partner.IntValue;
+	float partner = gCV_partner.FloatValue;
 
-	if(partner == 0.0)
+	if(partner != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2636,9 +2632,9 @@ int CancelPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param
 
 Action CommandColor(int client, int args)
 {
-	int color = gCV_color.IntValue;
+	float color = gCV_color.FloatValue;
 
-	if(color == 0.0)
+	if(color != 1.0)
 	{
 		return Plugin_Handled;
 	}
@@ -2724,9 +2720,9 @@ void ColorTeam(int client, bool allowColor)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		int colorCV = gCV_color.IntValue;
+		float colorCV = gCV_color.FloatValue;
 
-		if(colorCV == 0.0)
+		if(colorCV != 1.0)
 		{
 			return;
 		}
@@ -2792,14 +2788,10 @@ void ColorTeam(int client, bool allowColor)
 		{
 			g_colorCount[client][0] = 0;
 			g_colorCount[partner][0] = 0;
-		
-			for(int i = 0; i <= 2; i++)
-			{
-				g_colorBuffer[client][PSkin][i] = 255;
-				g_colorBuffer[partner][PSkin][i] = 255;
 
-				continue;
-			}
+			int color[3] = {255, ...};
+			g_colorBuffer[client][PSkin] = color;
+			g_colorBuffer[partner][PSkin] = color;
 
 			SetEntityRenderColor(client, 255, 255, 255, g_block[client] == true ? 255 : 125);
 			SetEntityRenderColor(partner, 255, 255, 255, g_block[partner] == true ? 255 : 125);
@@ -2813,9 +2805,9 @@ void ColorFlashbang(int client)
 {
 	if(IsClientInGame(client) == true && IsFakeClient(client) == false)
 	{
-		int colorCV = gCV_color.IntValue;
+		float colorCV = gCV_color.FloatValue;
 
-		if(colorCV == 0.0)
+		if(colorCV != 1.0)
 		{
 			return;
 		}
@@ -2880,9 +2872,9 @@ void SQLGetPartnerRecord(Database db, DBResultSet results, const char[] error, a
 
 Action CommandRestart(int client, int args)
 {
-	int restart = gCV_restart.IntValue;
+	float restart = gCV_restart.FloatValue;
 
-	if(restart == 0.0)
+	if(restart != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -2999,10 +2991,9 @@ int MenuHandlerAskForRestart(Menu menu, MenuAction action, int param1, int param
 
 Action CommandAutoflash(int client, int args)
 {
-	float autoflashbang = 0.0;
-	autoflashbang = gCV_autoflashbang.FloatValue;
+	float autoflashbang = gCV_autoflashbang.FloatValue;
 	
-	if(autoflashbang == 0.0)
+	if(autoflashbang != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3031,10 +3022,9 @@ Action CommandAutoflash(int client, int args)
 
 Action CommandAutoswitch(int client, int args)
 {
-	float autoswitch = 0.0;
-	autoswitch = gCV_autoswitch.FloatValue;
+	float autoswitch = gCV_autoswitch.FloatValue;
 	
-	if(autoswitch == 0.0)
+	if(autoswitch != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3061,10 +3051,9 @@ Action CommandAutoswitch(int client, int args)
 
 Action CommandBhop(int client, int args)
 {
-	float bhop = 0.0;
-	bhop = gCV_bhop.FloatValue;
+	float bhop = gCV_bhop.FloatValue;
 	
-	if(bhop == 0.0)
+	if(bhop != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3091,10 +3080,9 @@ Action CommandBhop(int client, int args)
 
 Action CommandEndmsg(int client, int args)
 {
-	float endmsg = 0.0;
-	endmsg = gCV_endmsg.FloatValue;
+	float endmsg = gCV_endmsg.FloatValue;
 
-	if(endmsg == 0.0)
+	if(endmsg != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3121,10 +3109,9 @@ Action CommandEndmsg(int client, int args)
 
 Action CommandTop10(int client, int args)
 {
-	int top10 = 0;
-	top10 = gCV_top10.IntValue;
+	float top10 = gCV_top10.FloatValue;
 
-	if(top10 == 0.0)
+	if(top10 != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3322,9 +3309,9 @@ void SQLTop10_3(Database db, DBResultSet results, const char[] error, any data)
 
 Action CommandControl(int client, int args)
 {
-	int control = gCV_control.IntValue;
+	float control = gCV_control.FloatValue;
 
-	if(control == 0.0)
+	if(control != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -3464,9 +3451,9 @@ int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 Action CommandMacro(int client, int args)
 {
-	int macro = gCV_macro.IntValue;
+	float macro = gCV_macro.FloatValue;
 	
-	if(macro == 0.0)
+	if(macro != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -5903,18 +5890,20 @@ Action TimerSourceTV(Handle timer)
 {
 	ConVar CV_sourcetv = FindConVar("tv_enable");
 
-	int sourcetv = CV_sourcetv.IntValue; //https://sm.alliedmods.net/new-api/convars/__raw
+	float sourcetv = CV_sourcetv.FloatValue; //https://sm.alliedmods.net/new-api/convars/__raw
 
-	if(sourcetv == 1.0)
+	if(sourcetv != 1.0)
 	{
-		ServerCommand("tv_stoprecord");
-
-		g_sourcetvchangedFileName = false;
-
-		CreateTimer(5.0, TimerRunSourceTV, _, TIMER_FLAG_NO_MAPCHANGE);
-
-		g_ServerRecord = false;
+		return Plugin_Stop;
 	}
+
+	ServerCommand("tv_stoprecord");
+
+	g_sourcetvchangedFileName = false;
+
+	CreateTimer(5.0, TimerRunSourceTV, _, TIMER_FLAG_NO_MAPCHANGE);
+
+	g_ServerRecord = false;
 
 	return Plugin_Stop;
 }
@@ -5930,20 +5919,22 @@ Action TimerRunSourceTV(Handle timer)
 	RenameFile(filenameNew, filenameOld);
 	ConVar CV_sourcetv = FindConVar("tv_enable");
 
-	int sourcetv = CV_sourcetv.IntValue; //https://sm.alliedmods.net/new-api/convars/__raw
+	float sourcetv = CV_sourcetv.FloatValue; //https://sm.alliedmods.net/new-api/convars/__raw
 
-	if(sourcetv == 1.0)
+	if(sourcetv != 1.0)
 	{
-		PrintToServer("SourceTV is start recording.");
-
-		FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime());
-		FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime());
-
-		ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map);
-
-		g_sourcetvchangedFileName = true;
+		return Plugin_Continue;
 	}
 
+	PrintToServer("SourceTV is start recording.");
+
+	FormatTime(g_date, sizeof(g_date), "%Y-%m-%d", GetTime());
+	FormatTime(g_time, sizeof(g_time), "%H-%M-%S", GetTime());
+
+	ServerCommand("tv_record %s-%s-%s", g_date, g_time, g_map);
+
+	g_sourcetvchangedFileName = true;
+	
 	return Plugin_Continue;
 }
 
@@ -6513,7 +6504,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	g_entityButtons[client] = buttons;
 
-	int bhop = gCV_bhop.IntValue;
+	float bhop = gCV_bhop.FloatValue;
 
 	if(bhop == 1.0 && g_bhop[client] == true && buttons & IN_JUMP && IsPlayerAlive(client) == true && !(GetEntityFlags(client) & FL_ONGROUND) && GetEntProp(client, Prop_Data, "m_nWaterLevel", 4, 0) <= 1 && !(GetEntityMoveType(client) & MOVETYPE_LADDER)) //https://sm.alliedmods.net/new-api/entity_prop_stocks/GetEntityFlags https://forums.alliedmods.net/showthread.php?t=127948
 	{
@@ -6618,7 +6609,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			}
 		}
 
-		int pingtool = gCV_pingtool.IntValue;
+		float pingtool = gCV_pingtool.FloatValue;
 
 		if(pingtool == 1.0 && g_pingLock[client] == false && GetEngineTime() - g_pingTime[client] >= 0.2)
 		{
@@ -6702,7 +6693,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			TeleportEntity(entity, end, NULL_VECTOR, NULL_VECTOR);
 
 			//https://forums.alliedmods.net/showthread.php?p=1080444
-			int color[4] = {0, 0, 0, 255};
+			int color[4] = {255, ...};
 			color = g_colorBuffer[client][FSkin];
 
 			start[2] -= 8.0;
@@ -7024,8 +7015,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		g_restartLock[client][1] = true;
 
-		int restartCV = gCV_restart.IntValue;
-		int partnerCV = gCV_partner.IntValue;
+		float restartCV = gCV_restart.FloatValue;
+		float partnerCV = gCV_partner.FloatValue;
 
 		if(IsValidPartner(client) == true && restartCV == 1.0)
 		{
@@ -7038,7 +7029,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 
-	int macro = gCV_macro.IntValue;
+	float macro = gCV_macro.FloatValue;
 
 	if(macro == 1.0 && g_macroDisabled[client] == false && IsPlayerAlive(client) == true)
 	{
@@ -7162,9 +7153,9 @@ Action OnProjectileStartTouch(int entity, int other)
 
 Action CommandDevmap(int client, int args)
 {
-	int devmap = gCV_devmap.IntValue;
+	float devmap = gCV_devmap.FloatValue;
 
-	if(devmap == 0.0)
+	if(devmap != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7381,9 +7372,9 @@ Action TimerChangelevel(Handle timer, bool value)
 
 Action CommandTop(int client, int args)
 {
-	int top = gCV_top.IntValue;
+	float top = gCV_top.FloatValue;
 
-	if(top == 0.0)
+	if(top != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7421,9 +7412,9 @@ void MOTD(int client)
 
 Action CommandAfk(int client, int args)
 {
-	int afk = gCV_afk.IntValue;
+	float afk = gCV_afk.FloatValue;
 
-	if(afk == 0.0)
+	if(afk != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7558,9 +7549,9 @@ void AFK(int client, bool force)
 
 Action CommandNoclip(int client, int args)
 {
-	int noclip = gCV_noclip.IntValue;
+	float noclip = gCV_noclip.FloatValue;
 
-	if(noclip == 0.0)
+	if(noclip != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7604,9 +7595,9 @@ void Noclip(int client)
 
 Action CommandSpec(int client, int args)
 {
-	int spec = gCV_spec.IntValue;
+	float spec = gCV_spec.FloatValue;
 
-	if(spec == 0.0)
+	if(spec != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7618,9 +7609,9 @@ Action CommandSpec(int client, int args)
 
 Action CommandHud(int client, int args)
 {
-	int hud = gCV_hud.IntValue;
+	float hud = gCV_hud.FloatValue;
 
-	if(hud == 0.0)
+	if(hud != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7639,11 +7630,11 @@ void HudMenu(int client)
 	menu.SetTitle(fmt);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", g_hudVel[client] == true ? "VelMenuON" : "VelMenuOFF", client);
-	menu.AddItem("vel", g_buffer, gCV_vel.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("vel", g_buffer, gCV_vel.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", g_mlstats[client] == true ? "MLStatsMenuON" : "MLStatsMenuOFF", client);
-	menu.AddItem("mls", g_buffer, gCV_mlstats.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("mls", g_buffer, gCV_mlstats.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	Format(g_buffer, sizeof(g_buffer), "%T", g_endMessage[client] == true ? "EndMessageMenuON" : "EndMessageMenuOFF", client);
-	menu.AddItem("endmsg", g_buffer, gCV_endmsg.IntValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	menu.AddItem("endmsg", g_buffer, gCV_endmsg.FloatValue == 1.0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	int time = 20;
 	menu.Display(client, time);
@@ -7715,9 +7706,9 @@ int MenuCallbackHUD(Menu menu, MenuAction action, int param1, int param2)
 
 Action CommandVel(int client, int args)
 {
-	int vel = gCV_vel.IntValue;
+	float vel = gCV_vel.FloatValue;
 
-	if(vel == 0.0)
+	if(vel != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7778,9 +7769,9 @@ void VelHud(int client)
 
 Action CommandMLStats(int client, int args)
 {
-	int mlstats = gCV_mlstats.IntValue;
+	float mlstats = gCV_mlstats.FloatValue;
 
-	if(mlstats == 0.0)
+	if(mlstats != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7807,9 +7798,9 @@ Action CommandMLStats(int client, int args)
 
 Action CommandButton(int client, int args)
 {
-	int button = gCV_button.IntValue;
+	float button = gCV_button.FloatValue;
 
-	if(button == 0.0)
+	if(button != 1.0)
 	{
 		return Plugin_Continue;
 	}
@@ -7860,7 +7851,7 @@ void OnProjectileSpawnPost(int entity)
 
 	if(IsValidEntity(entity) == true && IsValidEntity(client) == true)
 	{
-		int autoflashbang = gCV_autoflashbang.IntValue;
+		float autoflashbang = gCV_autoflashbang.FloatValue;
 
 		if(autoflashbang == 1.0 && (g_autoflash[client] == true || IsFakeClient(client) == true))
 		{
@@ -7877,13 +7868,13 @@ void OnProjectileSpawnPost(int entity)
 
 		if(g_skinFlashbang[client] > 0)
 		{
-			SetEntProp(entity, Prop_Data, "m_nModelIndex", g_wModelThrown, 4, 0);
-			SetEntProp(entity, Prop_Data, "m_nSkin", g_skinFlashbang[client], 4, 0);
+			SetEntProp(entity, Prop_Send, "m_nModelIndex", g_wModelThrown, 4, 0);
+			SetEntProp(entity, Prop_Send, "m_nSkin", g_skinFlashbang[client], 4, 0);
 		}
 
 		SetEntityRenderColor(entity, g_colorBuffer[client][FSkin][0], g_colorBuffer[client][FSkin][1], g_colorBuffer[client][FSkin][2], 255);
 
-		int autoswitch = gCV_autoswitch.IntValue;
+		float autoswitch = gCV_autoswitch.FloatValue;
 		
 		if(autoswitch == 1.0 && (g_autoswitch[client] == true || IsFakeClient(client) == true))
 		{
@@ -8013,7 +8004,7 @@ Action OnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, in
 
 void OnWeaponEquipPost(int client, int weapon) //https://sm.alliedmods.net/new-api/sdkhooks/__raw Thanks to Lon for gave this idea. (aka trikz_failtime)
 {
-	int autoflashbang = gCV_autoflashbang.IntValue;
+	float autoflashbang = gCV_autoflashbang.FloatValue;
 
 	if(autoflashbang == 1.0)
 	{
@@ -8102,7 +8093,7 @@ Action TimerDissolve(Handle timer, int dissolver)
 
 void GiveFlashbang(int client)
 {
-	int autoflashbang = gCV_autoflashbang.IntValue;
+	float autoflashbang = gCV_autoflashbang.FloatValue;
 	
 	if(autoflashbang == 1.0 && IsClientInGame(client) == true && (g_autoflash[client] == true || IsFakeClient(client) == true) && IsPlayerAlive(client) == true)
 	{
