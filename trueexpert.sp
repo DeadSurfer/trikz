@@ -50,6 +50,15 @@
 #define PSkin 0
 #define FSkin 1
 
+#define PSkinDefault 0
+#define PSkinShadow 1
+#define PSkinBright 3
+
+#define FSkinDefault 0
+#define FSkinShadow 2
+#define FSkinBright 1
+#define FSkinWireframe 3
+
 //Partner system
 int g_partner[MAXPLAYER] = {0, ...};
 
@@ -1636,7 +1645,7 @@ public void OnClientPutInServer(int client)
 		g_bhop[client] = false;
 		g_macroDisabled[client] = true;
 		g_endMessage[client] = true;
-		g_skinFlashbang[client] = 0;
+		g_skinFlashbang[client] = FSkinDefault;
 	}
 
 	ResetFactory(client);
@@ -3329,11 +3338,11 @@ void PlayerSkin(int client)
 	menu.SetTitle(g_buffer);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "Default", client);
-	menu.AddItem("default_ps", g_buffer, g_skinPlayer[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("default_ps", g_buffer, g_skinPlayer[client] == PSkinDefault ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	Format(g_buffer, sizeof(g_buffer), "%T", "Shadow", client);
-	menu.AddItem("shadow_ps", g_buffer, g_skinPlayer[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("shadow_ps", g_buffer, g_skinPlayer[client] == PSkinShadow ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	Format(g_buffer, sizeof(g_buffer), "%T", "Bright", client);
-	menu.AddItem("bright_ps", g_buffer, g_skinPlayer[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("bright_ps", g_buffer, g_skinPlayer[client] == PSkinBright ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -3349,13 +3358,13 @@ void FlashbangSkin(int client)
 	menu.SetTitle(g_buffer);
 
 	Format(g_buffer, sizeof(g_buffer), "%T", "Default", client);
-	menu.AddItem("default_fs", g_buffer, g_skinFlashbang[client] == 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("default_fs", g_buffer, g_skinFlashbang[client] == FSkinDefault ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	Format(g_buffer, sizeof(g_buffer), "%T", "Shadow", client);
-	menu.AddItem("shadow_fs", g_buffer, g_skinFlashbang[client] == 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("shadow_fs", g_buffer, g_skinFlashbang[client] == FSkinShadow ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	Format(g_buffer, sizeof(g_buffer), "%T", "Bright", client);
-	menu.AddItem("bright_fs", g_buffer, g_skinFlashbang[client] == 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("bright_fs", g_buffer, g_skinFlashbang[client] == FSkinBright ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	Format(g_buffer, sizeof(g_buffer), "%T", "Wireframe", client);
-	menu.AddItem("wireframe_fs", g_buffer, g_skinFlashbang[client] == 3 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem("wireframe_fs", g_buffer, g_skinFlashbang[client] == FSkinWireframe ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.ExitBackButton = true;
 	menu.Display(client, 20);
@@ -3378,20 +3387,20 @@ int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				if(StrEqual(item, "default_ps", false) == true)
 				{
-					g_skinPlayer[param1] = 0;
-					SetEntProp(param1, Prop_Send, "m_nSkin", 0, 4, 0);
+					g_skinPlayer[param1] = PSkinDefault;
+					SetEntProp(param1, Prop_Send, "m_nSkin", PSkinDefault, 4, 0);
 				}
 
 				else if(StrEqual(item, "shadow_ps", false) == true)
 				{
-					g_skinPlayer[param1] = 1;
-					SetEntProp(param1, Prop_Send, "m_nSkin", 1, 4, 0);
+					g_skinPlayer[param1] = PSkinShadow;
+					SetEntProp(param1, Prop_Send, "m_nSkin", PSkinShadow, 4, 0);
 				}
 
 				else if(StrEqual(item, "bright_ps", false) == true)
 				{
-					g_skinPlayer[param1] = 2;
-					SetEntProp(param1, Prop_Send, "m_nSkin", 2, 4, 0);
+					g_skinPlayer[param1] = PSkinBright;
+					SetEntProp(param1, Prop_Send, "m_nSkin", PSkinBright, 4, 0);
 				}
 
 				IntToString(g_skinPlayer[param1], str, sizeof(str));
@@ -3404,22 +3413,22 @@ int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				if(StrEqual(item, "default_fs", false) == true)
 				{
-					g_skinFlashbang[param1] = 0;
+					g_skinFlashbang[param1] = FSkinDefault;
 				}
 
 				else if(StrEqual(item, "shadow_fs", false) == true)
 				{
-					g_skinFlashbang[param1] = 2;
+					g_skinFlashbang[param1] = FSkinShadow;
 				}
 
 				else if(StrEqual(item, "bright_fs", false) == true)
 				{
-					g_skinFlashbang[param1] = 1;
+					g_skinFlashbang[param1] = FSkinBright;
 				}
 
 				else if(StrEqual(item, "wireframe_fs", false) == true)
 				{
-					g_skinFlashbang[param1] = 3;
+					g_skinFlashbang[param1] = FSkinWireframe;
 				}
 
 				IntToString(g_skinFlashbang[param1], str, sizeof(str));
@@ -7866,7 +7875,7 @@ void OnProjectileSpawnPost(int entity)
 		int flags = TIMER_FLAG_NO_MAPCHANGE;
 		CreateTimer(interval, TimerProjectileRemove, data, flags);
 
-		if(g_skinFlashbang[client] > 0)
+		if(g_skinFlashbang[client] > FSkinDefault)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", g_wModelThrown, 4, 0);
 			SetEntProp(entity, Prop_Send, "m_nSkin", g_skinFlashbang[client], 4, 0);
