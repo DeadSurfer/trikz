@@ -1729,7 +1729,7 @@ public void OnClientCookiesCached(int client)
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
 	g_skinPlayer[client] = StringToInt(value, nBase);
 
-	if(/*IsValidEntity(client) == true*/IsClientInGame(client) == true)
+	if(/*IsValidEntity(client) == true*/IsClientInGame(client) == true && IsPlayerAlive(client) == true)
 	{
 		SetEntProp(client, Prop_Send, "m_nSkin", g_skinPlayer[client]);
 	}
