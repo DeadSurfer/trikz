@@ -3402,7 +3402,7 @@ int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 			else if(StrContains(item, "fs", false) != -1)
 			{
-				if(StrEqual(item, "default_fs", false))
+				if(StrEqual(item, "default_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = 0;
 				}
