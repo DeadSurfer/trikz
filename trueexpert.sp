@@ -302,7 +302,7 @@ public Plugin myinfo =
 	name = "TrueExpert",
 	author = "Niks Jurēvičs (Smesh, Smesh292)",
 	description = "Does \"trikz\" mode comfortable.",
-	version = "4.699",
+	version = "4.70",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -1729,9 +1729,9 @@ public void OnClientCookiesCached(int client)
 	GetClientCookie(client, g_cookie[10], value, sizeof(value));
 	g_skinPlayer[client] = StringToInt(value, nBase);
 
-	if(IsValidEntity(client) == true)
+	if(/*IsValidEntity(client) == true*/IsClientInGame(client) == true)
 	{
-		SetEntProp(client, Prop_Data, "m_nSkin", g_skinPlayer[client]);
+		SetEntProp(client, Prop_Send, "m_nSkin", g_skinPlayer[client]);
 	}
 
 	GetClientCookie(client, g_cookie[11], value, sizeof(value));
@@ -3379,19 +3379,19 @@ int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 				if(StrEqual(item, "default_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 0;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 0, 4, 0);
+					SetEntProp(param1, Prop_Send, "m_nSkin", 0, 4, 0);
 				}
 
 				else if(StrEqual(item, "shadow_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 1;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 1, 4, 0);
+					SetEntProp(param1, Prop_Send, "m_nSkin", 1, 4, 0);
 				}
 
 				else if(StrEqual(item, "bright_ps", false) == true)
 				{
 					g_skinPlayer[param1] = 2;
-					SetEntProp(param1, Prop_Data, "m_nSkin", 2, 4, 0);
+					SetEntProp(param1, Prop_Send, "m_nSkin", 2, 4, 0);
 				}
 
 				IntToString(g_skinPlayer[param1], str, sizeof(str));
@@ -8601,7 +8601,7 @@ float[] GetAimPosition(int client) //https://github.com/shavitush/bhoptimer/blob
 
 	TR_TraceRayFilter(eyePos, eyeAngles, MASK_PLAYERSOLID, RayType_Infinite, TraceFilterDontHitSelf, client);
 
-	if(TR_DidHit(INVALID_HANDLE))
+	if(TR_DidHit(INVALID_HANDLE) == true)
 	{
 		float end[3] = {0.0, ...};
 		TR_GetEndPosition(end);
