@@ -80,7 +80,7 @@ float g_mathValueDefault[MAXENTITY] = {0.0, ...},
 		g_mathMin[MAXENTITY] = {0.0, ...},
 		g_mathMax[MAXENTITY] = {0.0, ...};
 
-bool g_touchArtifacial[MAXPLAYER][MAXENTITY][2]; //Fully used george logic from https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp. Thanks to Ciallo-Ani for opensource code.
+bool g_touchArtificial[MAXPLAYER][MAXENTITY][2]; //Fully used george logic from https://github.com/Ciallo-Ani/trikz/blob/main/scripting/trikz_solid.sp. Thanks to Ciallo-Ani for opensource code.
 
 //Weapon drop (dissolver)
 //bool g_weapon[MAXPLAYER][MAXENTITY];
@@ -234,7 +234,7 @@ public void OnClientPutInServer(int client)
 		{
 			for(int j = 0; j <= 1; j++)
 			{
-				g_touchArtifacial[client][g_entityID[i]][j] = false;
+				g_touchArtificial[client][g_entityID[i]][j] = false;
 
 				continue;
 			}
@@ -248,7 +248,7 @@ public void OnClientPutInServer(int client)
 
 void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	CreateTimer(2.0, OnTimerPrepare, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
+	CreateTimer(1.0, OnTimerPrepare, _, TIMER_FLAG_NO_MAPCHANGE); //Make work logic_auto on delay.
 
 	return;
 }
@@ -298,7 +298,7 @@ Action OnTimerPrepare(Handle timer)
 
 			for(int k = 0; k <= 1; k++)
 			{
-				g_touchArtifacial[j][i][k] = false;
+				g_touchArtificial[j][i][k] = false;
 
 				continue;
 			}
@@ -720,7 +720,7 @@ void Reset(int client)
 
 		for(int j = 0; j <= 1; j++)
 		{
-			g_touchArtifacial[client][g_entityID[i]][j] = false;
+			g_touchArtificial[client][g_entityID[i]][j] = false;
 
 			continue;
 		}
@@ -1134,7 +1134,7 @@ Action OnPlayerTouchEntity(int entity, int other)
 
 		if(g_stateDisabled[partner][entity] == true)
 		{
-			if(g_touchArtifacial[activator][entity][1] == true)
+			if(g_touchArtificial[activator][entity][1] == true)
 			{
 				AcceptEntityInput(entity, "EndTouch", other, other);
 			}
@@ -1144,27 +1144,27 @@ Action OnPlayerTouchEntity(int entity, int other)
 
 		else if(g_stateDisabled[partner][entity] == false)
 		{
-			if(g_touchArtifacial[activator][entity][1] == false)
+			if(g_touchArtificial[activator][entity][1] == false)
 			{
 				if(StrContains(classname, "projectile", false) == INVALID_ENT_REFERENCE)
 				{
-					g_touchArtifacial[activator][entity][0] = true;
+					g_touchArtificial[activator][entity][0] = true;
 				}
 
 				AcceptEntityInput(entity, "StartTouch", other, other);
 			}
 		}
 
-		/*if(g_touchArtifacial[activator][entity][1] == true || (g_touchArtifacial[activator][entity][1] == true && StrContains(classname, "projectile", false) == -1 && g_stateDisabled[partner][entity] == true))
+		/*if(g_touchArtificial[activator][entity][1] == true || (g_touchArtificial[activator][entity][1] == true && StrContains(classname, "projectile", false) == -1 && g_stateDisabled[partner][entity] == true))
 		{
 			AcceptEntityInput(entity, "EndTouch", other, other);
 		}
 		
-		else if(g_touchArtifacial[activator][entity][1] == false || (g_touchArtifacial[activator][entity][1] == false && StrContains(classname, "projectile", false) == -1 && g_stateDisabled[partner][entity] == false))
+		else if(g_touchArtificial[activator][entity][1] == false || (g_touchArtificial[activator][entity][1] == false && StrContains(classname, "projectile", false) == -1 && g_stateDisabled[partner][entity] == false))
 		{
 			if(StrContains(classname, "projectile", false) == -1)
 			{
-				g_touchArtifacial[activator][entity][0] = true;
+				g_touchArtificial[activator][entity][0] = true;
 			}
 
 			AcceptEntityInput(entity, "StartTouch", other, other);
@@ -1175,7 +1175,7 @@ Action OnPlayerTouchEntity(int entity, int other)
 			return Plugin_Handled;
 		}*/
 
-		g_touchArtifacial[activator][entity][1] = g_stateDisabled[partner][entity] == true ? false : true;
+		g_touchArtificial[activator][entity][1] = g_stateDisabled[partner][entity] == true ? false : true;
 	}
 
 	return Plugin_Continue;
@@ -1282,9 +1282,9 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 
 			if(StrContains(output, "OnStartTouch", false) != -1)
 			{
-				if(g_touchArtifacial[activator][caller][0] == true)
+				if(g_touchArtificial[activator][caller][0] == true)
 				{
-					g_touchArtifacial[activator][caller][0] = false;
+					g_touchArtificial[activator][caller][0] = false;
 
 					return Plugin_Continue;
 				}
@@ -1294,22 +1294,22 @@ Action OnEntityOutput(char[] output, int caller, int activator, float delay)
 					return Plugin_Handled;
 				}
 
-				if(g_touchArtifacial[activator][caller][0] == false && g_stateDisabled[partner][caller] == false)
+				if(g_touchArtificial[activator][caller][0] == false && g_stateDisabled[partner][caller] == false)
 				{
-					g_touchArtifacial[activator][caller][1] = true;
+					g_touchArtificial[activator][caller][1] = true;
 				}
 			}
 
 			else if(StrContains(output, "OnEndTouch", false) != -1)
 			{
-				if(g_stateDisabled[partner][caller] == true && g_touchArtifacial[activator][caller][1] == false)
+				if(g_stateDisabled[partner][caller] == true && g_touchArtificial[activator][caller][1] == false)
 				{
 					return Plugin_Handled;
 				}
 
-				if(g_touchArtifacial[activator][caller][1] == true)
+				if(g_touchArtificial[activator][caller][1] == true)
 				{
-					g_touchArtifacial[activator][caller][1] = false;
+					g_touchArtificial[activator][caller][1] = false;
 				}
 			}
 		}
