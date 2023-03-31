@@ -2550,7 +2550,7 @@ void FrameAskColor(int client)
 	menu.SetTitle("%s", g_buffer);
 
 	char buffers[4][16];
-	char str[1 + 1] = "";
+	char str[2 + 1] = "";
 
 	for(int i = 1; i < sizeof(g_colorType); i++)
 	{
