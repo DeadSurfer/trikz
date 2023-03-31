@@ -59,6 +59,11 @@
 #define FSkinBright 1
 #define FSkinWireframe 3
 
+#define Urban 1
+#define GSG9 2
+#define SAS 3
+#define GIGN 4
+
 //Partner system
 int g_partner[MAXPLAYER] = {0, ...};
 
@@ -1100,46 +1105,39 @@ void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	if(StrEqual(model, "models/player/ct_urban.mdl", false) == true || StrEqual(model, "models/player/t_phoenix.mdl", false) == true)
 	{
-		g_class[client] = 1;
+		g_class[client] = Urban;
 	}
 
 	else if(StrEqual(model, "models/player/ct_gsg9.mdl", false) == true || StrEqual(model, "models/player/t_leet.mdl", false) == true)
 	{
-		g_class[client] = 2;
+		g_class[client] = GSG9;
 	}
 
 	else if(StrEqual(model, "models/player/ct_sas.mdl", false) == true || StrEqual(model, "models/player/t_arctic.mdl", false) == true)
 	{
-		g_class[client] = 3;
+		g_class[client] = SAS;
 	}
 
 	else if(StrEqual(model, "models/player/ct_gign.mdl", false) == true || StrEqual(model, "models/player/t_guerilla.mdl", false) == true)
 	{
-		g_class[client] = 4;
+		g_class[client] = GIGN;
 	}
 
 	PropType type = Prop_Send;
 	char prop[13 + 1] = "";
-	int value = 0;
-	int size = 4;
-	int element = 0;
+	int value = 0, size = 4, element = 0;
 	Format(prop, sizeof(prop), "m_nModelIndex");
 	value = g_wModelPlayer[g_class[client]];
 	SetEntProp(client, type, prop, value, size, element);
 
 	PropType type2 = Prop_Send;
 	char prop2[7 + 1] = "";
-	int value2 = 0;
-	int size2 = 4;
-	int element2 = 0;
+	int value2 = 0, size2 = 4, element2 = 0;
 	Format(prop2, sizeof(prop2), "m_nSkin");
 	value2 = g_skinPlayer[client];
 	SetEntProp(client, type2, prop2, value2, size2, element2);
 
-	int r = 255;
-	int g = 255;
-	int b = 255;
-	int a = 255;
+	int r = 255, g = 255, b = 255, a = 255;
 	SetEntityRenderColor(client, r, g, b, a);
 
 	RenderMode mode = RENDER_TRANSALPHA;
@@ -1210,9 +1208,15 @@ void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 	if(StrEqual(clsname, "cs_ragdoll", false) == true)
 	{
-		RemoveEntity(ragdoll);
+		if(g_devmap == false && LibraryExists("trueexpert-entityfilter") == true)
+		{
+			RemoveEntity(ragdoll);
+		}
 
-		Dissolver(client, ragdoll);
+		else if(g_devmap == true)
+		{
+			Dissolver(client, ragdoll);
+		}
 	}
 
 	if(IsValidPartner(client) == true)
@@ -1782,7 +1786,7 @@ public void OnClientDisconnect(int client)
 
 	g_partner[client] = 0;
 
-	int entity = 0;
+	int entity = INVALID_ENT_REFERENCE;
 
 	while((entity = FindEntityByClassname(entity, "weapon_*")) != INVALID_ENT_REFERENCE) //https://github.com/shavitush/bhoptimer/blob/de1fa353ff10eb08c9c9239897fdc398d5ac73cc/addons/sourcemod/scripting/shavit-misc.sp#L1104-L1106
 	{
@@ -2199,53 +2203,55 @@ int TrikzMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 		case MenuAction_Select:
 		{
-			char item[64] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[64] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
-			if(StrEqual(item, "block", true) == true)
+			int args = 0;
+
+			if(StrEqual(infoBuf, "block", true) == true)
 			{
 				Block(param1, false);
 			}
 
-			else if(StrEqual(item, "autoflash", true) == true)
+			else if(StrEqual(infoBuf, "autoflash", true) == true)
 			{
-				CommandAutoflash(param1, 0);
+				CommandAutoflash(param1, args);
 			}
 
-			else if(StrEqual(item, "autoswitch", true) == true)
+			else if(StrEqual(infoBuf, "autoswitch", true) == true)
 			{
-				CommandAutoswitch(param1, 0);
+				CommandAutoswitch(param1, args);
 			}
 
-			else if(StrEqual(item, "bhop", true) == true)
+			else if(StrEqual(infoBuf, "bhop", true) == true)
 			{
-				CommandBhop(param1, 0);
+				CommandBhop(param1, args);
 			}
 
-			else if(StrEqual(item, "breakup", true) == true || StrEqual(item, "partner", true) == true)
+			else if(StrEqual(infoBuf, "breakup", true) == true || StrEqual(infoBuf, "partner", true) == true)
 			{
 				g_menuOpened[param1] = false;
 				Partner(param1);
 			}
 
-			else if(StrEqual(item, "color", true) == true)
+			else if(StrEqual(infoBuf, "color", true) == true)
 			{
 				g_menuOpened[param1] = false;
 				ColorSelect(param1);
 			}
 
-			else if(StrEqual(item, "restart", true) == true)
+			else if(StrEqual(infoBuf, "restart", true) == true)
 			{
 				g_menuOpened[param1] = false;
 				Restart(param1, true);
 			}
 
-			else if(StrEqual(item, "noclip", true) == true)
+			else if(StrEqual(infoBuf, "noclip", true) == true)
 			{
 				Noclip(param1);
 			}
 
-			else if(StrEqual(item, "checkpoint", true) == true)
+			else if(StrEqual(infoBuf, "checkpoint", true) == true)
 			{
 				g_menuOpened[param1] = false;
 				Checkpoint(param1);
@@ -2367,7 +2373,7 @@ void Partner(int client)
 					{
 						GetClientName(i, name, sizeof(name));
 
-						char nameID[8] = "";
+						char nameID[2 + 1] = "";
 						IntToString(i, nameID, sizeof(nameID));
 						menu.AddItem(nameID, name);
 
@@ -2402,7 +2408,7 @@ void Partner(int client)
 			GetClientName(g_partner[client], name, sizeof(name));
 			menu.SetTitle("%T", "CancelPartnership", client, name);
 
-			char partner[4] = "";
+			char partner[2 + 1] = "";
 			IntToString(g_partner[client], partner, sizeof(partner)); //do global integer to string.
 
 			Format(g_buffer, sizeof(g_buffer), "%T", "Confirm", client);
@@ -2423,15 +2429,15 @@ int PartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) //p
 	{
 		case MenuAction_Select:
 		{
-			char item[4] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[2 + 1] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 			
 			Menu menu2 = new Menu(AskPartnerMenuHandler);
 
 			char name[MAX_NAME_LENGTH] = "";
 			GetClientName(param1, name, sizeof(name));
 
-			int partner = StringToInt(item, 10);
+			int partner = StringToInt(infoBuf, 10);
 			menu2.SetTitle("%T", "ConfirmPartner", partner, name);
 			
 			char str[2 + 1] = "";
@@ -2440,7 +2446,7 @@ int PartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) //p
 			Format(g_buffer, sizeof(g_buffer), "%T", "Confirm", partner);
 			menu2.AddItem(str, g_buffer);
 			Format(g_buffer, sizeof(g_buffer), "%T", "Dissmit", partner);
-			menu2.AddItem(item, g_buffer);
+			menu2.AddItem(infoBuf, g_buffer);
 
 			int time = 20;
 			menu2.Display(partner, time);
@@ -2495,10 +2501,10 @@ int AskPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param2) 
 
 							Restart(param1, false); //Expert-Zone idea.
 
-							int client = GetSteamAccountID(param1, true);
-							int iPartner = GetSteamAccountID(partner, true);
+							int clientID = GetSteamAccountID(param1, true);
+							int partnerID = GetSteamAccountID(partner, true);
 
-							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", client, iPartner, iPartner, client, g_map);
+							Format(g_query, sizeof(g_query), "SELECT time FROM records WHERE ((playerid = %i AND partnerid = %i) OR (playerid = %i AND partnerid = %i)) AND map = '%s' LIMIT 1", clientID, partnerID, partnerID, clientID, g_map);
 							g_sql.Query(SQLGetPartnerRecord, g_query, GetClientSerial(param1), DBPrio_Normal);
 
 							RequestFrame(FrameAskColor, partner);
@@ -2567,10 +2573,10 @@ int MenuAskForColor(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			char item[1 + 1] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[2 + 1] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
-			int num = StringToInt(item);
+			int num = StringToInt(infoBuf, 10);
 
 			for(int i = 1; i <= num; i++)
 			{
@@ -2593,10 +2599,10 @@ int CancelPartnerMenuHandler(Menu menu, MenuAction action, int param1, int param
 	{
 		case MenuAction_Select:
 		{
-			char item[8] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[2 + 1] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
-			int partner = StringToInt(item, 10);
+			int partner = StringToInt(infoBuf, 10);
 
 			switch(param2)
 			{
@@ -3378,26 +3384,26 @@ int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			char item[16] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[16] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
 			char str[1 + 1] = ""; //1 = 2 numbers
 
-			if(StrContains(item, "ps", false) != -1)
+			if(StrContains(infoBuf, "ps", false) != -1)
 			{
-				if(StrEqual(item, "default_ps", false) == true)
+				if(StrEqual(infoBuf, "default_ps", false) == true)
 				{
 					g_skinPlayer[param1] = PSkinDefault;
 					SetEntProp(param1, Prop_Send, "m_nSkin", PSkinDefault, 4, 0);
 				}
 
-				else if(StrEqual(item, "shadow_ps", false) == true)
+				else if(StrEqual(infoBuf, "shadow_ps", false) == true)
 				{
 					g_skinPlayer[param1] = PSkinShadow;
 					SetEntProp(param1, Prop_Send, "m_nSkin", PSkinShadow, 4, 0);
 				}
 
-				else if(StrEqual(item, "bright_ps", false) == true)
+				else if(StrEqual(infoBuf, "bright_ps", false) == true)
 				{
 					g_skinPlayer[param1] = PSkinBright;
 					SetEntProp(param1, Prop_Send, "m_nSkin", PSkinBright, 4, 0);
@@ -3409,24 +3415,24 @@ int SkinTypeMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 				PlayerSkin(param1);
 			}
 
-			else if(StrContains(item, "fs", false) != -1)
+			else if(StrContains(infoBuf, "fs", false) != -1)
 			{
-				if(StrEqual(item, "default_fs", false) == true)
+				if(StrEqual(infoBuf, "default_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = FSkinDefault;
 				}
 
-				else if(StrEqual(item, "shadow_fs", false) == true)
+				else if(StrEqual(infoBuf, "shadow_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = FSkinShadow;
 				}
 
-				else if(StrEqual(item, "bright_fs", false) == true)
+				else if(StrEqual(infoBuf, "bright_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = FSkinBright;
 				}
 
-				else if(StrEqual(item, "wireframe_fs", false) == true)
+				else if(StrEqual(infoBuf, "wireframe_fs", false) == true)
 				{
 					g_skinFlashbang[param1] = FSkinWireframe;
 				}
@@ -4410,10 +4416,10 @@ int ZoneEditorEditZoneMenuHandler(Menu menu, MenuAction action, int param1, int 
 	{
 		case MenuAction_Select:
 		{
-			char item[16] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[16] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
-			if(StrEqual(item, "start", false) == true)
+			if(StrEqual(infoBuf, "start", false) == true)
 			{
 				for(int i = 0; i <= 1; i++)
 				{
@@ -4425,7 +4431,7 @@ int ZoneEditorEditZoneMenuHandler(Menu menu, MenuAction action, int param1, int 
 				ZoneEditorStart(param1);
 			}
 
-			else if(StrEqual(item, "end", false) == true)
+			else if(StrEqual(infoBuf, "end", false) == true)
 			{
 				for(int i = 0; i <= 1; i++)
 				{
@@ -4442,7 +4448,7 @@ int ZoneEditorEditZoneMenuHandler(Menu menu, MenuAction action, int param1, int 
 				char cp[8] = "";
 				IntToString(i, cp, sizeof(cp));
 
-				if(StrEqual(item, cp, false) == true)
+				if(StrEqual(infoBuf, cp, false) == true)
 				{
 					for(int j = 0; j <= 1; j++)
 					{
@@ -4613,25 +4619,25 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 
 		case MenuAction_Select:
 		{
-			char item[32] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[32] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
 			int cpnum = 0;
 
 			char exploded[4][16];
-			ExplodeString(item, ";", exploded, 4, 16, false);
+			ExplodeString(infoBuf, ";", exploded, 4, 16, false);
 
-			if(StrContains(item, "cp", false) != -1)
+			if(StrContains(infoBuf, "cp", false) != -1)
 			{
 				cpnum = StringToInt(exploded[0], 10);
 			}
 
-			bool cpMenu = StrContains(item, "cp", false) != -1;
+			bool cpMenu = StrContains(infoBuf, "cp", false) != -1;
 			int side = StringToInt(exploded[cpMenu == true ? 1 : 0], 10);
 			int axis = StringToInt(exploded[cpMenu == true ? 2 : 1], 10);
 			int mode = StringToInt(exploded[cpMenu == true ? 3 : 2], 10);
 
-			if(StrEqual(item, "step1", false) == true)
+			if(StrEqual(infoBuf, "step1", false) == true)
 			{
 				if(g_step[param1] < 64)
 				{
@@ -4639,7 +4645,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				}
 			}
 
-			else if(StrEqual(item, "step2", false) == true)
+			else if(StrEqual(infoBuf, "step2", false) == true)
 			{
 				if(g_step[param1] > 1)
 				{
@@ -4647,7 +4653,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				}
 			}
 
-			else if(StrEqual(item, "axis", false) == true)
+			else if(StrEqual(infoBuf, "axis", false) == true)
 			{
 				g_axis[param1]++;
 
@@ -4657,7 +4663,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				}
 			}
 
-			if(StrContains(item, "sidestart", false) != -1)
+			if(StrContains(infoBuf, "sidestart", false) != -1)
 			{
 				g_zoneStartOriginTemp[param1][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
 
@@ -4672,7 +4678,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				g_center[ZoneStart][2] -= FloatAbs(value);
 			}
 
-			else if(StrContains(item, "sideend", false) != -1)
+			else if(StrContains(infoBuf, "sideend", false) != -1)
 			{
 				g_zoneEndOriginTemp[param1][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
 
@@ -4687,7 +4693,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				g_center[ZoneEnd][2] -= FloatAbs(value);
 			}
 
-			else if(StrContains(item, "sidecp", false) != -1)
+			else if(StrContains(infoBuf, "sidecp", false) != -1)
 			{
 				g_cpPosTemp[param1][cpnum][side][axis] += mode == 1 ? g_step[param1] : -g_step[param1];
 
@@ -4702,7 +4708,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				g_centerCP[cpnum][2] -= FloatAbs(value);
 			}
 
-			if(StrEqual(item, "startapply", false) == true)
+			if(StrEqual(infoBuf, "startapply", false) == true)
 			{
 				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = %i LIMIT 1", g_map, ZoneStart);
 				DataPack dp = new DataPack();
@@ -4712,7 +4718,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				g_sql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
-			else if(StrEqual(item, "endapply", false) == true)
+			else if(StrEqual(infoBuf, "endapply", false) == true)
 			{
 				Format(g_query, sizeof(g_query), "DELETE FROM zones WHERE map = '%s' AND type = %i LIMIT 1", g_map, ZoneEnd);
 				DataPack dp = new DataPack();
@@ -4722,7 +4728,7 @@ int ZoneEditortZoneMenuHandler(Menu menu, MenuAction action, int param1, int par
 				g_sql.Query(SQLDeleteZone, g_query, dp, DBPrio_Normal);
 			}
 
-			else if(StrContains(item, "cpapply", false) != -1)
+			else if(StrContains(infoBuf, "cpapply", false) != -1)
 			{
 				Format(g_query, sizeof(g_query), "DELETE FROM cp WHERE cpnum = %i AND map = '%s' LIMIT 1", cpnum, g_map);
 				DataPack dp = new DataPack();
@@ -4835,29 +4841,29 @@ int ZoneEditorTPMenuHandler(Menu menu, MenuAction action, int param1, int param2
 	{
 		case MenuAction_Select:
 		{
-			char item[16] = "";
-			menu.GetItem(param2, item, sizeof(item));
+			char infoBuf[16] = "";
+			menu.GetItem(param2, infoBuf, sizeof(infoBuf));
 
 			float pos[3] = {0.0, ...};
 
-			if(StrEqual(item, "start", false) == true)
+			if(StrEqual(infoBuf, "start", false) == true)
 			{
 				pos = g_center[ZoneStart];
 				pos[2] += 1.0;
 				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
 
-			else if(StrEqual(item, "end", false) == true)
+			else if(StrEqual(infoBuf, "end", false) == true)
 			{
 				pos = g_center[ZoneEnd];
 				pos[2] += 1.0;
 				TeleportEntity(param1, pos, NULL_VECTOR, NULL_VECTOR);
 			}
 
-			else if(StrContains(item, "cp", false) != -1)
+			else if(StrContains(infoBuf, "cp", false) != -1)
 			{
 				char exploded[1][8];
-				ExplodeString(item, ";", exploded, 1, 8, false);
+				ExplodeString(infoBuf, ";", exploded, 1, 8, false);
 				int cpnum = StringToInt(exploded[0], 10);
 
 				pos = g_centerCP[cpnum];
