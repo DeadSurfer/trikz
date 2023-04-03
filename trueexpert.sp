@@ -52,7 +52,7 @@
 
 #define PSkinDefault 0
 #define PSkinShadow 1
-#define PSkinBright 3
+#define PSkinBright 2
 
 #define FSkinDefault 0
 #define FSkinShadow 2
