@@ -4996,10 +4996,7 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 				continue;
 			}
 
-			if(g_devmap == false)
-			{
-				CreateCP(data);
-			}
+			CreateCP(data);
 
 			g_cpCount++;
 		}
@@ -5036,6 +5033,11 @@ void SQLCPSetup2(Database db, DBResultSet results, const char[] error, any data)
 
 void CreateCP(int cpnum)
 {
+	if(g_cpPos[cpnum][0][0] == 0.0 && g_cpPos[cpnum][0][1] == 0.0 && g_cpPos[cpnum][0][2] == 0.0 && g_cpPos[cpnum][1][0] == 0.0 && g_cpPos[cpnum][1][1] == 0.0 && g_cpPos[cpnum][1][2] == 0.0)
+	{
+		return;
+	}
+
 	char trigger[32] = "";
 	Format(trigger, sizeof(trigger), "trueexpert_cp%i", cpnum);
 
