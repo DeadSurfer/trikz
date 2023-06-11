@@ -5492,7 +5492,7 @@ Action OnZoneStartTouch(int entity, int other)
 							{
 								if(IsClientInGame(j) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", j, g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									Format(g_buffer, sizeof(g_buffer), "%T%s%T", "PrefixTimer", j, g_cpTime[other][i] < g_cpTimeSR[i] == true ? "-" : "+", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
 									SendMessage(j, g_buffer);
 								}
 
@@ -8118,8 +8118,10 @@ void GiveFlashbang(int client)
 
 		if(GetEntData(client, offset, 4) == 0)
 		{
-			GivePlayerItem(client, "weapon_flashbang", 0);
-			GivePlayerItem(client, "weapon_flashbang", 0);
+			for(int i = 0; i <= 1; i++)
+			{
+				GivePlayerItem(client, "weapon_flashbang", 0);
+			}
 		}
 
 		if(GetPlayerWeaponSlot(client, CS_SLOT_KNIFE) == -1)
