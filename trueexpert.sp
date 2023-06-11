@@ -5488,11 +5488,21 @@ Action OnZoneStartTouch(int entity, int other)
 							char timeCP[24] = "";
 							FormatSeconds(g_cpDiffSR[other][i], timeCP, false);
 
+							if(g_cpTime[other][i] < g_cpTimeSR[i])
+							{
+								Format(timeCP, sizeof(timeCP), "-%s", timeCP);
+							}
+
+							else if(g_cpTime[other][i] >= g_cpTimeSR[i])
+							{
+								Format(timeCP, sizeof(timeCP), "+%s", timeCP);
+							}
+
 							for(int j = 1; j <= MaxClients; j++)
 							{
 								if(IsClientInGame(j) == true)
 								{
-									Format(g_buffer, sizeof(g_buffer), "%T%s%T", "PrefixTimer", j, g_cpTime[other][i] < g_cpTimeSR[i] == true ? "-" : "+", g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
+									Format(g_buffer, sizeof(g_buffer), "%T%T", "PrefixTimer", j, g_cpTime[other][i] < g_cpTimeSR[i] == true ? "CPImprove" : "CPDeprove", j, i, timeCP);
 									SendMessage(j, g_buffer);
 								}
 
