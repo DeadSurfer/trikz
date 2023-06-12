@@ -3866,8 +3866,7 @@ Action AdminCommandMaptier(int client, int args)
 		GetCmdArgString(buffer, sizeof(buffer)); //https://www.sourcemod.net/new-api/console/GetCmdArgString
 
 		int nBase = 10;
-		char str[2 + 1] = "";
-		int tier = StringToInt(str, nBase);
+		int tier = StringToInt(buffer, nBase);
 
 		if(tier > 0)
 		{
