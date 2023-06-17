@@ -80,14 +80,13 @@ char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smo
 						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"};
 native bool Trikz_GetDevmap();
 char g_replayType[][] = {"", "_partner"};
-ArrayList g_frameBeforeLag[MAXPLAYER] = {null, ...};
 
 public Plugin myinfo =
 {
 	name = "Replay",
 	author = "Niks Smesh Jurēvičs",
 	description = "Replay module for trueexpert.",
-	version = "0.267",
+	version = "0.27",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -203,7 +202,7 @@ public void OnClientPutInServer(int client)
 		SDKHook(client, SDKHook_SetTransmit, OnPlayerTransmit);
 	}
 
-	SDKHook(client, SDKHook_WeaponSwitchPost, OnPlayerWeaponSwitchPost);
+	//SDKHook(client, SDKHook_WeaponSwitchPost, OnPlayerWeaponSwitchPost);
 
 	return;
 }
@@ -355,9 +354,9 @@ void SetupSave(int client, int partner, float time)
 		SaveRecord(team[i], record, time, false);
 
 		char recordBackup[PLATFORM_MAX_PATH] = "";
-		char timeFormat[32] = "";
-		FormatTime(timeFormat, sizeof(timeFormat), "%Y%b%d_%H_%M_%S", GetTime());
-		BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s%s.replay", g_map, timeFormat, g_replayType[i]);
+		char buffer[32] = "";
+		FormatTime(buffer, sizeof(buffer), "%Y%b%d_%H_%M_%S", GetTime());
+		BuildPath(Path_SM, recordBackup, sizeof(recordBackup), "data/trueexpert/backup/%s_%s%s.replay", g_map, buffer, g_replayType[i]);
 		SaveRecord(team[i], recordBackup, time, team[i] == partner ? true : false);
 
 		continue;
@@ -374,6 +373,8 @@ void SaveRecord(int client, const char[] path, float time, bool load)
 	f.WriteInt32(g_tick[client]);
 	f.WriteInt32(GetSteamAccountID(client));
 	f.WriteInt32(view_as<int>(time));
+	
+	LogToFileEx("addons/sourcemod/logs/trueexpert.log", "Replay tick: %i (%N)", g_tick[client], client);
 
 	any data[sizeof(eFrame)];
 
@@ -457,7 +458,7 @@ void LoadRecord()
 
 	for(int i = 0; i < sizeof(g_replayType); i++)
 	{
-		f = OpenFile(filePath[i], "rb");
+		f = OpenFile(filePath[i], "rb", false, "GAME");
 		f.ReadInt32(tickcount);
 		f.ReadInt32(g_steamid3[i]);
 		f.ReadInt32(time);
@@ -502,7 +503,8 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	if(Trikz_GetTimerState(client) == true && g_frame[client] != INVALID_HANDLE)
 	{
 		eFrame frame;
-		GetClientAbsOrigin(client, frame.pos);
+		//GetClientAbsOrigin(client, frame.pos);
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", frame.pos);
 		float ang[3] = {0.0, ...};
 		GetClientEyeAngles(client, ang);
 		frame.ang[0] = ang[0];
@@ -510,6 +512,24 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		frame.buttons = buttons;
 		frame.flags = GetEntityFlags(client);
 		frame.movetype = GetEntityMoveType(client);
+
+		/*char weaponName[32] = "";
+		GetClientWeapon(client, weaponName, sizeof(weaponName));
+
+		for(int i = 0; i < sizeof(g_weaponName); i++)
+		{
+			char format[32] = "";
+			FormatEx(format, sizeof(format), "weapon_%s", g_weaponName[i]);
+
+			if(StrEqual(weaponName, format, true) == true)
+			{
+				frame.weapon = i;
+				
+				break;
+			}
+
+			continue;
+		}*/
 
 		if(g_weapon[client] > 0)
 		{
@@ -548,50 +568,27 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		int partner = Trikz_GetClientPartner(client);
 		int differ = g_tick[partner] - g_tick[client];
 
-		if(differ > 0)
+		if(differ > 6)
 		{
-			if(g_frame[client].Length <= g_tick[client])
-			{
-				g_frame[client].Resize(g_tick[client] + differ);
-			}
+			g_frame[client].Resize(g_tick[client] + differ);
 
 			for(int i = 1; i <= differ; i++) //life is good. client which start lags compare partner ticks. so just align by partner.
 			{
+				GetEntPropVector(client, Prop_Send, "m_vecOrigin", frame.pos);
+				GetClientEyeAngles(client, ang);
+				frame.ang[0] = ang[0];
+				frame.ang[1] = ang[1];
+				frame.buttons = buttons;
+				frame.flags = GetEntityFlags(client);
+				frame.movetype = GetEntityMoveType(client);
 				g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 
 				continue;
 			}
-
-			/*
-			if(g_tick[partner] < g_tick[client])
-			{
-				g_frameBeforeLag[partner].GetArray(0, ang, 2);
-				angles[0] = ang[0];
-				angles[1] = ang[1];
-				buttons = g_frameBeforeLag[partner].Get(0, 1, false);
-				SetEntityFlags(partner) = g_frameBeforeLag[partner].Get(0, 2, false);
-				SetEntityMoveType(partner) = g_frameBeforeLag[partner].Get(0, 3, false);
-			}
-			*/
 		}
 
-		else if(differ == 0)
-		{
-			/*
-				//g_frameBeforeLag
-				g_frameBeforeLag[client].SetArray(0, ang, 2);
-				g_frameBeforeLag[client].Set(0, buttons, 0, false);
-				g_frameBeforeLag[client].Set(0, GetEntitytFlags(client), 0, false);
-				g_frmaeBeforeLag[client].Set(0, GetEntityMoveType, 0, false);
-			*/
-
-			if(g_frame[client].Length <= g_tick[client])
-			{
-				g_frame[client].Resize(g_tick[client] + 1);
-			}
-
-			g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
-		}
+		g_frame[client].Resize(g_tick[client] + 1);
+		g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 	}
 
 	return;
@@ -628,8 +625,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			g_frameCache[client].GetArray(g_tick[client], frame, sizeof(eFrame));
 
 			float posPrev[3] = {0.0, ...};
-			//GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
-			GetClientAbsOrigin(client, posPrev);
+			GetEntPropVector(client, Prop_Send, "m_vecOrigin", posPrev);
+			//GetClientAbsOrigin(client, posPrev);
 
 			float velNew[3] = {0.0, ...};
 			MakeVectorFromPoints(posPrev, frame.pos, velNew);
@@ -650,7 +647,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			if(g_flagsLast[client] & FL_ONGROUND && !(frame.flags & FL_ONGROUND) && g_DoAnimationEvent != INVALID_HANDLE)
 			{
-				SDKCall(g_DoAnimationEvent, g_Linux ? EntIndexToEntRef(client) : client, 3, 0);
+				SDKCall(g_DoAnimationEvent, g_Linux == true ? EntIndexToEntRef(client) : client, 3, 0);
 			}
 
 			g_flagsLast[client] = frame.flags;
@@ -678,6 +675,19 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					continue;
 				}
 			}
+
+			/*char weaponName[32] = "";
+			GetClientWeapon(client, weaponName, sizeof(weaponName));
+
+			char format[32] = "";
+			FormatEx(format, sizeof(format), "weapon_%s", g_weaponName[frame.weapon]);
+
+			if(StrEqual(weaponName, format, true) == false)
+			{
+				FakeClientCommandEx(client, "use %s", format);
+
+				PrintToServer("%s", format);
+			}*/
 
 			if(g_tick[client] == 0)
 			{
@@ -749,12 +759,6 @@ public void Trikz_OnTimerStart(int client, int partner)
 		delete g_frame[partner];
 		g_frame[partner] = new ArrayList((sizeof(eFrame)));
 		g_tick[partner] = 0;
-
-		delete g_frameBeforeLag[client];
-		g_frameBeforeLag[client] = new ArrayList(sizeof(eFrame));
-
-		delete g_frameBeforeLag[partner];
-		g_frameBeforeLag[partner] = new ArrayList(sizeof(eFrame));
 	}
 
 	return;
