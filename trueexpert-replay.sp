@@ -647,6 +647,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 							break;
 						}
 					}
+
+					continue;
 				}
 			}
 
