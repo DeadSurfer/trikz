@@ -56,15 +56,13 @@ enum struct eFrame
 
 int g_tick[MAXPLAYER] = {0, ...};
 int g_steamid3[2] = {0, ...};
-Database g_database = null;
+Database g_sql = null;
 native bool Trikz_GetTimerState(int client);
 int g_flagsLast[MAXPLAYER] = {0, ...};
 Handle g_DoAnimationEvent = INVALID_HANDLE;
 DynamicDetour g_MaintainBotQuota = null;
 float g_timeToRestart = 0.0;
 float g_timeToStart = 0.0;
-int g_weapon[MAXPLAYER] = {0, ...};
-bool g_switchPrevent[MAXPLAYER] = {false, ...};
 DynamicHook g_UpdateStepSound = null;
 bool g_Linux = false;
 native int Trikz_GetClientPartner(int client);
@@ -80,6 +78,7 @@ char g_weaponName[][] = {"knife", "glock", "usp", "flashbang", "hegrenade", "smo
 						"mac10", "tmp", "mp5navy", "ump45", "p90", "m249", "c4"};
 native bool Trikz_GetDevmap();
 char g_replayType[][] = {"", "_partner"};
+char g_query[256] = "";
 
 public Plugin myinfo =
 {
@@ -278,11 +277,10 @@ Action TimerBot(Handle timer)
 		continue;
 	}
 
-	if(botShouldAdd == 2 && g_database != INVALID_HANDLE)
+	if(botShouldAdd == 2 && g_sql != INVALID_HANDLE)
 	{
-		char query[128] = "";
-		Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
-		g_database.Query(SQLGetReplayName, query, _, DBPrio_Normal);
+		Format(g_query, sizeof(g_query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
+		g_sql.Query(SQLGetReplayName, g_query, _, DBPrio_Normal);
 	}
 
 	for(int i = 1; i <= MaxClients; i++)
@@ -482,11 +480,10 @@ void LoadRecord()
 
 		delete f;
 
-		if(g_database != INVALID_HANDLE)
+		if(g_sql != INVALID_HANDLE)
 		{
-			char query[128] = "";
-			Format(query, sizeof(query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
-			g_database.Query(SQLGetReplayName, query, _, DBPrio_Normal);
+			Format(g_query, sizeof(g_query), "SELECT username, (SELECT username FROM users WHERE steamid = %i LIMIT 1) FROM users WHERE steamid = %i LIMIT 1", g_steamid3[1], g_steamid3[0]);
+			g_sql.Query(SQLGetReplayName, g_query, _, DBPrio_Normal);
 		}
 
 		g_loaded[i] = true;
@@ -513,56 +510,21 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		frame.flags = GetEntityFlags(client);
 		frame.movetype = GetEntityMoveType(client);
 
-		/*char weaponName[32] = "";
-		GetClientWeapon(client, weaponName, sizeof(weaponName));
+		char weaponCurrent[32] = "", weaponName[32] = "";
+		GetClientWeapon(client, weaponCurrent, sizeof(weaponCurrent));
 
 		for(int i = 0; i < sizeof(g_weaponName); i++)
 		{
-			char format[32] = "";
-			FormatEx(format, sizeof(format), "weapon_%s", g_weaponName[i]);
+			FormatEx(weaponName, sizeof(weaponName), "weapon_%s", g_weaponName[i]);
 
-			if(StrEqual(weaponName, format, true) == true)
+			if(StrEqual(weaponCurrent, weaponName, true) == true)
 			{
-				frame.weapon = i;
-				
+				frame.weapon = i + 1;
+
 				break;
 			}
 
 			continue;
-		}*/
-
-		if(g_weapon[client] > 0)
-		{
-			g_switchPrevent[client] = true;
-			frame.weapon = g_weapon[client];
-			g_weapon[client] = 0;
-		}
-
-		else if(g_weapon[client] == 0)
-		{
-			if(g_tick[client] == 0)
-			{
-				char weaponName[32] = "";
-				GetClientWeapon(client, weaponName, sizeof(weaponName));
-
-				for(int i = 0; i < sizeof(g_weaponName); i++)
-				{
-					if(frame.weapon == i + 1)
-					{
-						char format[32] = "";
-						Format(format, sizeof(format), "weapon_%s", g_weaponName[i]);
-
-						if(StrEqual(weaponName, g_weaponName[i], true) == true)
-						{
-							frame.weapon = i + 1;
-							
-							break;
-						}
-					}
-
-					continue;
-				}
-			}
 		}
 
 		int partner = Trikz_GetClientPartner(client);
@@ -587,7 +549,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			}
 		}
 
-		g_frame[client].Resize(g_tick[client] + 1);
+		g_frame[client].Resize(++g_tick[client]);
 		g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 	}
 
@@ -661,22 +623,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			SetEntityMoveType(client, movetype);
 
-			if(frame.weapon > 0)
-			{
-				for(int i = 0; i < sizeof(g_weaponName); i++)
-				{
-					if(frame.weapon == i + 1)
-					{
-						FakeClientCommandEx(client, "use weapon_%s", g_weaponName[i]);
-
-						break;
-					}
-
-					continue;
-				}
-			}
-
-			/*char weaponName[32] = "";
+			char weaponName[32] = "";
 			GetClientWeapon(client, weaponName, sizeof(weaponName));
 
 			char format[32] = "";
@@ -685,9 +632,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			if(StrEqual(weaponName, format, true) == false)
 			{
 				FakeClientCommandEx(client, "use %s", format);
-
-				PrintToServer("%s", format);
-			}*/
+			}
 
 			if(g_tick[client] == 0)
 			{
@@ -725,7 +670,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		else if(g_tick[client] == g_replayTickcount[client] && GetGameTime() - g_timeToRestart >= 3.0)
 		{
 			g_tick[client] = 0;
-			//g_tick[Trikz_GetClientPartner(client)] = 0;
 		}
 	}
 
@@ -743,7 +687,8 @@ void SQLConnect(Database db, const char[] error, any data)
 
 	PrintToServer("Successfuly connected to database."); //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
 
-	g_database = db;
+	g_sql = db;
+	g_sql.SetCharset("utf8");
 
 	return;
 }
@@ -795,7 +740,7 @@ Action BotSilent(Event event, const char[] name, bool dontBroadcast)
 
 	if(IsFakeClient(client) == true)
 	{
-		event.BroadcastDisabled = true;
+		return Plugin_Handled;
 	}
 
 	return Plugin_Continue;
@@ -811,41 +756,6 @@ void ApplyFlags(int &flags1, int flags2, int flag)
 	else if((flags2 & flag) == 0)
 	{
 		flags1 &= ~flag;
-	}
-
-	return;
-}
-
-void OnPlayerWeaponSwitchPost(int client, int weapon)
-{
-	if(Trikz_GetTimerState(client) == true)
-	{
-		if(g_switchPrevent[client] == true)
-		{
-			g_switchPrevent[client] = false;
-		}
-
-		else if(g_switchPrevent[client] == false)
-		{
-			char classname[32] = "";
-			GetEntityClassname(weapon, classname, sizeof(classname));
-
-			char weaponName[32] = "";
-
-			for(int i = 0; i < sizeof(g_weaponName); i++)
-			{
-				Format(weaponName, sizeof(weaponName), "weapon_%s", g_weaponName[i]);
-
-				if(StrEqual(classname, weaponName, true))
-				{
-					g_weapon[client] = i + 1;
-
-					break;
-				}
-
-				continue;
-			}
-		}
 	}
 
 	return;
@@ -909,15 +819,20 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 	// trigger_once | trigger_multiple.. etc
 	// func_door | func_door_rotating
-	if(StrContains(classname, "trigger_") != -1 || StrContains(classname, "_door") != -1 || StrContains(classname, "_button") != -1)
+	char name[3][8 + 1] = {"trigger_", "_door", "_button"};
+
+	for(int i = 0; i < sizeof(name); i++)
 	{
-		SDKHook(entity, SDKHook_StartTouch, HookTriggers);
-		SDKHook(entity, SDKHook_EndTouch, HookTriggers);
-		SDKHook(entity, SDKHook_Touch, HookTriggers);
-		SDKHook(entity, SDKHook_Use, HookTriggers);
+		if(StrContains(classname, name[i], true) != -1)
+		{
+			SDKHook(entity, SDKHook_StartTouch, HookTriggers);
+			SDKHook(entity, SDKHook_EndTouch, HookTriggers);
+			SDKHook(entity, SDKHook_Touch, HookTriggers);
+			SDKHook(entity, SDKHook_Use, HookTriggers);
+		}
 	}
 
-	if(StrContains(classname, "projectile", false) != -1)
+	if(StrContains(classname, "projectile", true) != -1)
 	{
 		SDKHook(entity, SDKHook_SetTransmit, TransmitNade);
 	}
@@ -985,7 +900,7 @@ MRESReturn PassServerEntityFilter(Handle hReturn, Handle hParams)
 	char classname[32] = "";
 	GetEntityClassname(ent2, classname, sizeof(classname));
 
-	if(StrContains(classname, "projectile", false) != -1)
+	if(StrContains(classname, "projectile", true) != -1)
 	{
 		if(IsValidClient(ent1) == true)
 		{
