@@ -623,15 +623,31 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 			SetEntityMoveType(client, movetype);
 
+			char weaponCurrent[32] = "";
+			GetClientWeapon(client, weaponCurrent, sizeof(weaponCurrent));
+
 			char weaponName[32] = "";
-			GetClientWeapon(client, weaponName, sizeof(weaponName));
+			FormatEx(weaponName, sizeof(weaponName), "weapon_%s", g_weaponName[frame.weapon]);
 
-			char format[32] = "";
-			FormatEx(format, sizeof(format), "weapon_%s", g_weaponName[frame.weapon]);
-
-			if(StrEqual(weaponName, format, true) == false)
+			if(StrEqual(weaponCurrent, weaponName, true) == false)
 			{
-				FakeClientCommandEx(client, "use %s", format);
+				for(int i = 0; i <= 4; i++)
+				{
+					int index = GetPlayerWeaponSlot(client, i);
+
+					if(index != INVALID_ENT_REFERENCE)
+					{
+						char clsname[32] = "";
+						GetEntityClassname(index, clsname, sizeof(clsname));
+
+						if(StrEqual(clsname, weaponName, true) == true)
+						{
+							FakeClientCommandEx(client, "use %s", weaponName);
+
+							break;
+						}
+					}
+				}
 			}
 
 			if(g_tick[client] == 0)
