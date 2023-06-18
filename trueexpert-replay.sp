@@ -519,7 +519,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 			if(StrEqual(weaponCurrent, weaponName, true) == true)
 			{
-				frame.weapon = i + 1;
+				frame.weapon = i;
 
 				break;
 			}
