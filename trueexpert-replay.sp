@@ -549,7 +549,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			}
 		}
 
-		g_frame[client].Resize(++g_tick[client]);
+		g_frame[client].Resize(g_tick[client] + 1);
 		g_frame[client].SetArray(g_tick[client]++, frame, sizeof(eFrame));
 	}
 
