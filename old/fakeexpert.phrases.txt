@@ -1,0 +1,378 @@
+"Phrases"
+{
+	//Example: "Hello, Bail! Welcome to FakeExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
+	"Hello"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"Hello, ;#FF5733{2}! {default}Welcome to ;#FF4040{1}. {default}Your team is {teamcolor}{3}."
+	}
+	"dbPressed"
+	{
+		"en"	"Database is not passed througt gate. Please check your database configuration."
+	}
+	//"YMHP"
+	//{
+	//	"en"	"You must have a partner."
+	//}
+	"NewServerRecord"
+	{
+		"en"	";#7CFC00New Server Record!"
+	}
+	"NewServerRecordDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+	}
+	"NewServerRecordDetailNew"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#7CFC00-{6}:{7}:{8}{default})"
+	}
+	"NewServerRecordNew"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5}"
+	}
+	"DevMapStart"
+	{
+		"#format"	"{1:s}"
+		"en"	"Devmap vote started by {1}"
+	}
+	"DevMapIsOFF"
+	{
+		//"#format"	""
+		"en"	"Turn on devmap."
+	}
+	"NoClipEnabled"
+	{
+		"en"	"Noclip enabled."
+	}
+	"NoClipDisabled"
+	{
+		"en"	"Noclip disabled."
+	}
+	"MLStatsOFF"
+	{
+		"en"	"ML stats is off"
+	}
+	"MLStatsON"
+	{
+		"en"	"ML stats is on"
+	}
+	"ButtonAnonserON"
+	{
+		"en"	"Button announcer is on."
+	}
+	"ButtonAnonserOFF"
+	{
+		"en"	"Button announcer is off."
+	}
+	"ButtonAnnouncerPartnerON"
+	{
+		"en"	"Partner button announcer is on."
+	}
+	"ButtonAnnouncerPartnerOFF"
+	{
+		"en"	"Partner button announcer is off."
+	}
+	"AFKCHECK"
+	{
+		"#format"	"{1:s}"
+		"en"	"Afk check - vote started by {1}"
+	}
+	"AFKCHECK2"
+	{
+		"en"	"Afk vote is not allowed yet."
+	}
+	"AreYouHere?"
+	{
+		"en"	"Are you here?"
+	}
+	"Yes"
+	{
+		"en"	"Yes"
+	}
+	"No"
+	{
+		"en"	"No"
+	}
+	"BlockON"
+	{
+		"en"	"Block enabled."
+	}
+	"BlockOFF"
+	{
+		"en"	"Block disabled."
+	}
+	"GroupAgreed"
+	{
+		"#format"	"{1:s}"
+		"en"	"You agreed {1}"
+	}
+	"GetAgreed"
+	{
+		"#format"	"{1:s}"
+		"en"	"You have {1} as partner."
+	}
+	"AlreadyHavePartner"
+	{
+		"en"	"A player already have a partner."
+	}
+	"PartnerDeclined"
+	{
+		"#format"	"{1:s}"
+		"en"	"Partnersheep declined with {1}."
+	}
+	"PartnerCanceled"
+	{
+		"#format"	"{1:s}"
+		"en"	"Partnership is canceled with {1}."
+	}
+	"PartnerCanceledBy"
+	{
+		"#foramt"	"{1:s}"
+		"en"	"Partnership is canceled by {1}."
+	}
+	"DevMapNotAllowed"
+	{
+		"en"	"Devmap vote is not allowed yet."
+	}
+	"YouMustHaveAPartner"
+	{
+		"en"	"You must have a partner."
+	}
+	"NoFreePlayer"
+	{
+		"en"	"No free player."
+	}
+	"DevMapContinue"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will be be continue. \"No\" chose {1}%%% or {2} of {3} players."
+	}
+	"DevMapWillNotBe"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"	"Devmap will not be enabled. \"No\" chose {1}%%% or {2} of {3} players."
+	}
+	"AwayFromKeyboard"
+	{
+		"en"	"Away from keyboard"
+	}
+	"CancelPartnership"
+	{
+		"#format"	"{1:s}"
+		"en"	"Cancel partnership with {1}"
+	}
+	"AgreePartner"
+	{
+		"#format"	"{1:s}"
+		"en"	"Agree partnership with {1}?"
+	}
+	"PassedImproved"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+	}
+	"Passed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+	}
+	"Spectator"
+	{
+		"en"	"Spectator"
+	}
+	"Terorrist"
+	{
+		"en"	"Terrorist"
+	}
+	"Counter-Terrorist"
+	{
+		"en"	"Counter-Terrorist"
+	}
+	"JustPassed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s},{7:s},{8:s}"
+		"en"	"{1} and {2} finished map in ;#7CFC00{3}:{4}:{5} {default}(SR ;#FF0000+{6}:{7}:{8}{default})"
+	}
+	"CPImprove"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s}"
+		"en"	"{1}. Checkpoint: ;#7CFC00-{2}:{3}:{4}"
+	}
+	"CPDeprove"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s}"
+		"en"	"{1}. Checkpoint: ;#FF0000+{2}:{3}:{4}"
+	}
+	"CPNEW"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1}. Checkpoint: ;#FF0000+00:00:00"
+	}
+	"YouPressedButton"
+	{
+		"en"	"You have pressed a button."
+	}
+	"YourPartnerPressedButton"
+	{
+		"en"	"Your partner have pressed a button."
+	}
+	"Checkpoint"
+	{
+		"en"	"Checkpoint"
+	}
+	"CP-save"
+	{
+		"en"	"Save"
+	}
+	"CP-teleport"
+	{
+		"en"	"Teleport"
+	}
+	"CP-saveSecond"
+	{
+		"en"	"Save second"
+	}
+	"CP-teleportSecond"
+	{
+		"en"	"Teleport second"
+	}
+	"Trikz"
+	{
+		"en"	"Trikz"
+	}
+	"Block [v]"
+	{
+		"en"	"Block [v]"
+	}
+	"Block [x]"
+	{
+		"en"	"Block [x]"
+	}
+	"Breakup"
+	{
+		"en"	"Breakup"
+	}
+	"Partner"
+	{
+		"en"	"Partner"
+	}
+	"Noclip [v]"
+	{
+		"en"	"Noclip [v]"
+	}
+	"Noclip [x]"
+	{
+		"en"	"Noclip [x]"
+	}
+	"ChoosePartner"
+	{
+		"en"	"Choose partner"
+	}
+	"CP-record"
+	{
+		"#format"	"{1:i}"
+		"en"	"{1}. CHECKPOINT RECORD!"
+	}
+	"CP-recordDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"CHECKPOINT: {1}:{2}:{3}"
+	}
+	"CP-DetailZero"
+	{
+		"en"	"+00:00:00"
+	}
+	"CP-recordNotFirst"
+	{
+		"#format"	"{1:i}"
+		"en"	"{1}. CHECKPOINT RECORD!"
+	}
+	"CP-recordDetailNotFirst"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"CHECKPOINT: {1}:{2}:{3}"
+	}
+	"CP-recordImproveNotFirst"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"-{1}:{2}:{3}"
+	}
+	"CP-recordNon"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"CHECKPOINT: {1}:{2}:{3}"
+	}
+	"CP-recordDeprove"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"+{1}:{2}:{3}"
+	}
+	"MapFinishedFirstRecord"
+	{
+		"MAP FINISHED!"
+	}
+	"NewServerRecordHud"
+	{
+		"NEW SERVER RECORD!"
+	}
+	"FirstRecordHud"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"TIME: {1}:{2}:{3}"
+	}
+	"FirstRecordZeroHud"
+	{
+		"+00:00:00"
+	}
+	"NewServerRecordMapFinishedNotFirst"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"NewServerRecordNotFirst"
+	{
+		"en"	"NEW SERVER RECORD!"
+	}
+	"NewServerRecordDetailNotFirst"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"TIME: {1}:{2}:{3}"
+	}
+	"NewServerRecordImproveNotFirst"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"-{1}:{2}:{3}"
+	}
+	"MapFinishedDeprove"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"MapFinishedTimeDeprove"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"TIME: {1}:{2}:{3}"
+	}
+	"MapFinishedTimeDeproveOwn"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"+{1}:{2}:{3}"
+	}
+	"AutoflashON"
+	{
+		"en"	"Auto flashbang is turned on."
+	}
+	"AutoflashOFF"
+	{
+		"en"	"Auto flashbang is turned off."
+	}
+	"AutoswitchON"
+	{
+		"en"	"Auto switch is truned on."
+	}
+	"AutoswitchOFF"
+	{
+		"en"	"Auto switch is turned off."
+	}
+}

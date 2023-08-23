@@ -1,0 +1,35 @@
+"Games"
+{
+	"#default"
+	{
+		"Signatures"
+		{
+			"PassServerEntityFilter"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x56\x8B\x2A\x2A\x85\x2A\x75\x2A\xB0\x2A\x5E"
+				"linux"		"@_Z22PassServerEntityFilterPK13IHandleEntityS1_"
+			}
+		}
+		"Functions"
+		{
+			"PassServerEntityFilter"
+			{
+				"signature"	"PassServerEntityFilter"
+				"callconv"	"cdecl"
+				"return"	"bool"
+				"arguments"
+				{
+					"pTouch"
+					{
+						"type"	"cbaseentity"
+					}
+					"pPass"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+		}
+	}
+}

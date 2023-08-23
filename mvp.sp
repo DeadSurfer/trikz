@@ -40,7 +40,7 @@ public Plugin myinfo =
 	name = "MVP by kills",
 	author = "Smesh",
 	description = "Giving MVP star by kills",
-	version = "0.1",
+	version = "0.2",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -51,11 +51,13 @@ public void OnPluginStart()
 	gCV_MVPLimit = CreateConVar("sm_mvplimit", "9999", "Stop giving mvp stars (9999 engine limit CS:S OB).")
 	gCV_MVPStep = CreateConVar("sm_mvpstep", "6", "Give mvp star each step number (ex. 6, 12, 18).")
 	AutoExecConfig(true)
+	LoadTranslations("mvp.phrases");
 }
 
-Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
+public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int victim = GetClientOfUserId(event.GetInt("userid"))
+	
 	if(gI_killCount[victim] != 0)
 		gI_killCount[victim] = 0
 	
@@ -65,18 +67,26 @@ Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	char sFirst[5]
 	GetConVarString(gCV_MVPFirst, sFirst, 5)
 	int iFirst = StringToInt(sFirst)
+	
 	char sLimit[5]
 	GetConVarString(gCV_MVPLimit, sLimit, 5)
 	int iLimit = StringToInt(sLimit)
+	
 	char sStep[5]
 	GetConVarString(gCV_MVPStep, sStep, 5)
 	int iStep = StringToInt(sStep)
+	
 	for(int i = iFirst; i <= iLimit; i += iStep)
 	{
 		if(gI_killCount[attacker] == i)
 		{
 			CS_SetMVPCount(attacker, CS_GetMVPCount(attacker) + 1)
-			PrintToChat(attacker, "[SM] You received mvp star by %i kills.", gI_killCount[attacker])
+			//PrintToChat(attacker, "[SM] You received mvp star by %i kills.", gI_killCount[attacker])
+			char format[256];
+			Format(format, sizeof(format), "\x01%T", "MVP", attacker, gI_killCount[attacker]);
+			PrintToChat(attacker, format);
 		}
 	}
+	
+	return Plugin_Continue;
 }

@@ -1,0 +1,28 @@
+"Phrases"
+{
+	"connect"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Игрок {1} вступает в игру"
+	}
+	"disconnect"
+	{
+		"#format"	"{1:s},{2:s}"
+		"ru"	"Игрок {1} покидает игру ({2})"
+	}
+	"joinSpectator"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1} is joining the Spectators"
+	}
+	"joinTerrorist"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1} is joining the Terrosist force"
+	}
+	"joinCounterTerrorist"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1} is joining the Counter-Terrorist force"
+	}
+}

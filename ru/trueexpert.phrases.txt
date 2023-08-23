@@ -1,0 +1,934 @@
+"Phrases"
+{
+	//Example: "Hello, Bail! Welcome to TrueExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
+	"Hello"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"Hello, ;#FF5733{2}! {default}Welcome to ;#FF4040{1}. {default}Your team is {teamcolor}{3}."
+	}
+	"dbPressed"
+	{
+		"ru"	"Database is not passed througt gate. Please check your database configuration."
+	}
+	"NewServerRecord"
+	{
+		"ru"	";#7CFC00Новый серверный рекорд!"
+	}
+	"NewServerRecordDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
+	}
+	"NewServerRecordNewDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
+	}
+	"NewServerRecordNew"
+	{
+		"ru"	";#7CFC00Новый серверный рекорд!"
+	}
+	"DevmapStart"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Devmap голосование начал {1}"
+	}
+	"DevmapIsOFF"
+	{
+		"ru"	"Включите devmap."
+	}
+	"DevmapIsON"
+	{
+		"ru"	"Выключите devmap."
+	}
+	"TurnOFFDevmap"
+	{
+		"ru"	"Выключить devmap?"
+	}
+	"TurnONDevmap"
+	{
+		"ru"	"Включить devmap?"
+	}
+	"NoclipMenuON"
+	{
+		"ru"	"✓ Полёт"
+	}
+	"NoclipMenuOFF"
+	{
+		"ru"	"☓ Полёт"
+	}
+	"MLStatsChatOFF"
+	{
+		"ru"	"ML статистика теперь выключена."
+	}
+	"MLStatsChatON"
+	{
+		"ru"	"ML статистика теперь включена."
+	}
+	"VelChatOFF"
+	{
+		"ru"	"Скорость теперь не будет отоброжатся."
+	}
+	"VelChatON"
+	{
+		"ru"	"Скорость теперь будет отоброжатся."
+	}
+	"MLStatsMenuON"
+	{
+		"ru"	"✓ ML Статистика"
+	}
+	"MLStatsMenuOFF"
+	{
+		"ru"	"☓ ML Статистика"
+	}
+	"VelMenuON"
+	{
+		"ru"	"✓ Скорость"
+	}
+	"VelMenuOFF"
+	{
+		"ru"	"☓ Скорость"
+	}
+	"ButtonAnnouncerON"
+	{
+		"ru"	"Оповещение о нажатие кнопки теперь включено."
+	}
+	"ButtonAnnouncerOFF"
+	{
+		"ru"	"Оповещение о нажатии кнопки теперь выключено."
+	}
+	"AFKCHECK"
+	{
+		"#format"	"{1:s}"
+		"ru"	"AFK проверка - голосование начал {1}"
+	}
+	"AFKCHECK2"
+	{
+		"ru"	"AFK проверка - голосование в данный момент недоступно."
+	}
+	"AreYouHere?"
+	{
+		"ru"	"Вы здесь?"
+	}
+	"Confirm"
+	{
+		"ru"	"Подтвердить"
+	}
+	"Dissmit"
+	{
+		"ru"	"Отклонить"
+	}
+	"TeamConfirming"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Вы потвердили партнёрство с {1}."
+	}
+	"GetConfirmed"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Ваш партнёр сейчас {1}."
+	}
+	"AlreadyHavePartner"
+	{
+		"ru"	"У данного игрока уже есть партнёр."
+	}
+	"PartnerDeclined"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Вы отклонили партнёрство от {1}."
+	}
+	"PartnerCanceled"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Вы разорвали партнёрство с {1}."
+	}
+	"PartnerCanceledBy"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Партнерсво разорвал {1}."
+	}
+	"DevmapNotAllowed"
+	{
+		"ru"	"Devmap голосование недоступно в данный момент."
+	}
+	"DontHavePartner"
+	{
+		"ru"	"У вас нет партнёра."
+	}
+	"NoFreePlayer"
+	{
+		"ru"	"Нет свободных игроков."
+	}
+	"DevmapWillBeDisabled"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"ru"	"Devmap режим будет выключен. {1}%%% или {2} из {3} игроков подтвердили голосование."
+	}
+	"DevmapWillBeEnabled"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"ru"	"Devmap режим будет включен. {1}%%% или {2} из {3} игроков подтвердили голосование."
+	}
+	"DevmapContinue"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"ru"	"Devmap режим будет продолжен. {1}%%% или {2} из {3} игроков отклонили голосование."
+	}
+	"DevmapWillNotBe"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"ru"	"Devmap режим не будет включен. {1}%%% или {2} из {3} игроков отклонили голосование."
+	}
+	"AwayFromKeyboard"
+	{
+		"ru"	"Отошел от клавиатуры"
+	}
+	"CancelPartnership"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Вы хотите разорвать партнёрство с {1}"
+	}
+	"ConfirmPartner"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Вы хотите подтвердить партнёрство c {1}?"
+	}
+	"PassedImproved"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"Passed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"Spectator"
+	{
+		"ru"	"Наблюдатель"
+	}
+	"Terrorist"
+	{
+		"ru"	"Террорист"
+	}
+	"Counter-Terrorist"
+	{
+		"ru"	"Спецназ"
+	}
+	"Spec"
+	{
+		"ru"	"Наблюдатель"
+	}
+	"Dead"
+	{
+		"ru"	"МЕРТВ"
+	}
+	"JustPassed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"CPImprove"
+	{
+		"#format"	"{1:i},{2:s}"
+		"ru"	"Чекпоинт #{1}: ;#7CFC00{2}"
+	}
+	"CPDeprove"
+	{
+		"#format"	"{1:i},{2:s}"
+		"ru"	"Чекпоинт #{1}: ;#FF0000{2}"
+	}
+	"NewServerRecordFirst"
+	{
+		"ru"	";#7CFC00Новый серверный рекорд!"
+	}
+	"NewServerRecordFirstDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"ru"	"{1} и {2} завершили карту за ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"CPNEW"
+	{
+		"#format"	"{1:i},{2:s}"
+		"ru"	"Чекпоинт #{1}: ;#FF0000{2}"
+	}
+	"YouPressedButton"
+	{
+		"ru"	"Вы нажали кнопку."
+	}
+	"YourPartnerPressedButton"
+	{
+		"ru"	"Ваш парнер нажал кнопку."
+	}
+	"Checkpoint"
+	{
+		"ru"	"Точка сохранения"
+	}
+	"CP-save"
+	{
+		"ru"	"Сохраниться"
+	}
+	"CP-teleport"
+	{
+		"ru"	"Телепортироватся"
+	}
+	"CP-saveSecond"
+	{
+		"ru"	"Сохранится вторично"
+	}
+	"CP-teleportSecond"
+	{
+		"ru"	"Телепортироватся вторично"
+	}
+	"Trikz"
+	{
+		"ru"	"Трикз"
+	}
+	"BlockMenuON"
+	{
+		"ru"	"✓ Блок" //U+2713 https://www.compart.com/en/unicode/U+2713
+	}
+	"BlockMenuOFF"
+	{
+		"ru"	"☓ Блок" //U+2613 https://www.compart.com/en/unicode/U+2613
+	}
+	"AutoflashMenuON"
+	{
+		"ru"	"✓ Автофлеш"
+	}
+	"AutoflashMenuOFF"
+	{
+		"ru"	"☓ Автофлеш"
+	}
+	"AutoswitchMenuON"
+	{
+		"ru"	"✓ Автосвитч"
+	}
+	"AutoswitchMenuOFF"
+	{
+		"ru"	"☓ Автосвитч"
+	}
+	"BhopMenuON"
+	{
+		"ru"	"✓ Бхоп"
+	}
+	"BhopMenuOFF"
+	{
+		"ru"	"☓ Бхоп"
+	}
+	"BlockChatON"
+	{
+		"ru"	"Блокирование теперь включено."
+	}
+	"BlockChatOFF"
+	{
+		"ru"	"Блокирование теперь выключено."
+	}
+	"Breakup"
+	{
+		"ru"	"Разорвать партнёрство"
+	}
+	"Color"
+	{
+		"ru"	"Цвет"
+	}
+	"ColorTeam"
+	{
+		"ru"	"Цвет команды"
+	}
+	"ColorPingFL"
+	{
+		"ru"	"Цвет метки / флешки"
+	}
+	"Partner"
+	{
+		"ru"	"Партнер"
+	}
+	"Restart"
+	{
+		"ru"	"Начать заново"
+	}
+	"NoclipChatON"
+	{
+		"ru"	"Полёт теперь включен."
+	}
+	"NoclipChatOFF"
+	{
+		"ru"	"Полёт теперь выключен."
+	}
+	"ChoosePartner"
+	{
+		"ru"	"Выбрать партнёра"
+	}
+	"CP-recordHud"
+	{
+		"#format"	"{1:i}"
+		"ru"	"ЧЕКПОИНТ #{1} РЕКОРД!"
+	}
+	"CP-recordDetailHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"ЧЕКПОИНТ: {1}"
+	}
+	"CP-DetailZeroHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1}"
+	}
+	"CP-recordNotFirstHud"
+	{
+		"#format"	"{1:i}"
+		"ru"	"ЧЕКПОИНТ #{1} РЕКОРД!"
+	}
+	"CP-recordDetailNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"ЧЕКПОИНТ: {1}"
+	}
+	"CP-recordImproveNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1}"
+	}
+	"CP-recordNonHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"ЧЕКПОИНТ: {1}"
+	}
+	"CP-recordDeproveHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1}"
+	}
+	"MapFinishedFirstRecordHud"
+	{
+		"ru"	"КАРТА ЗАВЕРШЕНА!"
+	}
+	"NewServerRecordHud"
+	{
+		"ru"	"НОВЫЙ СЕРВЕРНЫЙ РЕКОРД!"
+	}
+	"FirstRecordHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"ВРЕМЯ: {1}"
+	}
+	"FirstRecordZeroHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1}"
+	}
+	"NewServerRecordMapFinishedNotFirstHud"
+	{
+		"ru"	"КАРТА ЗАВЕРШЕНА!"
+	}
+	"NewServerRecordNotFirstHud"
+	{
+		"ru"	"НОВЫЙ СЕРВЕРНЫЙ РЕКОРД!"
+	}
+	"NewServerRecordDetailNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"ВРЕМЯ: {1}"
+	}
+	"NewServerRecordImproveNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1}"
+	}
+	"MapFinishedDeproveHud"
+	{
+		"ru"	"КАРТА ЗАВЕРШЕНА!"
+	}
+	"MapFinishedTimeDeproveHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"ВРЕМЯ: {1}"
+	}
+	"MapFinishedTimeDeproveOwnHud"
+	{
+		"#format"	"{1:s}"
+		"ru"	"{1}"
+	}
+	"AutoflashChatON"
+	{
+		"ru"	"Автофлеш теперь включен."
+	}
+	"AutoflashChatOFF"
+	{
+		"ru"	"Автофлеш теперь выключен."
+	}
+	"AutoswitchChatON"
+	{
+		"ru"	"Автосвитч теперь включен."
+	}
+	"AutoswitchChatOFF"
+	{
+		"ru"	"Автосвитч теперь выключен."
+	}
+	"BhopChatON"
+	{
+		"ru"	"Автораспрыжка теперь включена."
+	}
+	"BhopChatOFF"
+	{
+		"ru"	"Автораспрыжка теперь выключена."
+	}
+	"MacroOFF"
+	{
+		"ru"	"Макрос теперь выключен."
+	}
+	"MacroON"
+	{
+		"ru"	"Макрос теперь включен."
+	}
+	"EndMessageChatON"
+	{
+		"ru"	"Конечное оповещение теперь включено."
+	}
+	"EndMessageChatOFF"
+	{
+		"ru"	"Конечное оповещение теперь выключено."
+	}
+	"EndMessageMenuON"
+	{
+		"ru"	"✓ Конечное оповещение"
+	}
+	"EndMessageMenuOFF"
+	{
+		"ru"	"☓ Конечное оповещение"
+	}
+	"Top10details"
+	{
+		"ru"	"Место:\tВремя:\tРазница:\tКоманда:"
+	}
+	"Top10source1-9"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"ru"	"#{1}\t\t;#7CFC00{2}\t\t;#FF0000{3}{default}\t{4} & {5}"
+	}
+	"Top10source10"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"ru"	"#{1}\t;#7CFC00{2}\t\t;#FF0000{3}{default}\t{4} & {5}"
+	}
+	/*"Cstrike_Chat_AllSpec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"*SPEC* [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_Spec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"*DEAD*(Terrorist) [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"[{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"[{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"*DEAD* [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"*DEAD* [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"*DEAD*(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"*DEAD*(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"ru"	"*DEAD*(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}*/
+	"Top10ac"
+	{
+		"#format"	"{1:s}"
+		"ru"	"Не флудите с \"top10\". Подождите {1} секунд."
+	}
+	"Cover_me"
+	{
+		"ru"	"Прикройте меня!"
+	}
+	"You_take_the_point"
+	{
+		"ru"	"Удерживайте эту точку."
+	}
+	"Hold_this_position"
+	{
+		"ru"	"Удерживайте эту позицию."
+	}
+	"Regroup_team"
+	{
+		"ru"	"Перегруппируйтесь."
+	}
+	"Follow_me"
+	{
+		"ru"	"За мной."
+	}
+	"Taking_fire"
+	{
+		"ru"	"Под обстрелом… требуется помощь!"
+	}
+	"Go_go_go"
+	{
+		"ru"	"Пошли, пошли!"
+	}
+	"Team_fall_back"
+	{
+		"ru"	"Команда, отступаем!"
+	}
+	"Stick_together_team"
+	{
+		"ru"	"Держаться вместе, команда."
+	}
+	"Get_in_position_and_wait"
+	{
+		"ru"	"Займите позицию и ждите моей команды."
+	}
+	"Storm_the_front"
+	{
+		"ru"	"В атаку!"
+	}
+	"Report_in_team"
+	{
+		"ru"	"Доложите, команда."
+	}
+	"Affirmative"
+	{
+		"ru"	"Подтверждаю."
+	}
+	"Roger_that"
+	{
+		"ru"	"Подтверждаю."
+	}
+	"Enemy_spotted"
+	{
+		"ru"	"Противник замечен."
+	}
+	"Need_backup"
+	{
+		"ru"	"Нужно подкрепление."
+	}
+	"Sector_clear"
+	{
+		"ru"	"Сектор чист."
+	}
+	"In_position"
+	{
+		"ru"	"Я на позиции."
+	}
+	"Reporting_in"
+	{
+		"ru"	"Докладываю."
+	}
+	"Get_out_of_there"
+	{
+		"ru"	"Уходите оттуда, сейчас рванет!"
+	}
+	"Negative"
+	{
+		"ru"	"Не согласен."
+	}
+	"Enemy_down"
+	{
+		"ru"	"Противник убит."
+	}
+	"PlayerSkin"
+	{
+		"ru"	"Скин игрока"
+	}
+	"FlashbangSkin"
+	{
+		"ru"	"Скин флешки"
+	}
+	"Default"
+	{
+		"ru"	"Обычный"
+	}
+	"Shadow"
+	{
+		"ru"	"Затемненный"
+	}
+	"Bright"
+	{
+		"ru"	"Яркий"
+	}
+	"Wireframe"
+	{
+		"ru"	"Сетчатый"
+	}
+	"AskForRestart"
+	{
+		"ru"	"Вы действительно хотите начать заново?"
+	}
+	"YouAreDead"
+	{
+		"ru"	"Вы мертвы."
+	}
+	"Game_radio"
+	{
+		"ru"	"(РАДИО)"
+	}
+	"NoRecords"
+	{
+		"ru"	"\t\t\tНет записей."
+	}
+	"MLSFinishMsg"
+	{
+		"#format"	"{1:.0f},{2:s}"
+		"ru"	"Расстояние: {1} юнитов{2}"
+	}
+	"MLSTP"
+	{
+		"ru"	" [ТП]"
+	}
+	"CursorPossitionON"
+	{
+		"ru"	"✓ Позиция курсора"
+	}
+	"CursorPossitionOFF"
+	{
+		"ru"	"☓ Позиция курсора"
+	}
+	"DBLoading"
+	{
+		"ru"	"Пожалуйста подождите пока считываются данные!"
+	}
+	"ZoneEditor"
+	{
+		"ru"	"Конструктор зон"
+	}
+	"ZoneEditorAddButton"
+	{
+		"ru"	"Добавить новую зону"
+	}
+	"ZoneEditorEditButton"
+	{
+		"ru"	"Редактировать зону"
+	}
+	"ZoneEditorTPButton"
+	{
+		"ru"	"Переместится на зону"
+	}
+	"ZoneEditorAdd"
+	{
+		"ru"	"Конструктор зон - Добавить"
+	}
+	"ZoneEditorStartZoneButton"
+	{
+		"ru"	"Начальная зона"
+	}
+	"ZoneEditorEndZoneButton"
+	{
+		"ru"	"Конечная зона"
+	}
+	"ZoneEditorCPZoneButton"
+	{
+		"ru"	"Чекпоинт зона"
+	}
+	"ZoneEditorEdit"
+	{
+		"ru"	"Конструктор зон - Редактировать"
+	}
+	"ZoneEditorCPButton"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Чекпоинт зона #{1}"
+	}
+	"ZoneEditorNoZone"
+	{
+		"ru"	"Зоны не настроены."
+	}
+	"ZoneEditorUse"
+	{
+		"ru"	"Нажмите ИСПОЛЬЗОВАТЬ, чтобы установить углы зоне"
+	}
+	"ZoneEditorStep1"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Шаг + ({1})"
+	}
+	"ZoneEditorStep2"
+	{
+		"ru"	"Шаг -"
+	}
+	"ZoneEditorSelectedCPnum"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Чекпоинт #{1}"
+	}
+	"ZoneEditorTypeCPnum"
+	{
+		"ru"	"Наберите номер чекпоинта в игровой чат. (1 - 10)"
+	}
+	"ZoneEditorStartZone"
+	{
+		"ru"	"Конструктор зон - Начальная зона"
+	}
+	"ZoneEditorEndZone"
+	{
+		"ru"	"Конструктор зон - Конечная зона"
+	}
+	"ZoneEditorSide1+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 1 | {1} +{2}"
+	}
+	"ZoneEditorSide1-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 1 | {1} -{2}"
+	}
+	"ZoneEditorSide2+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 2 | {1} +{2}"
+	}
+	"ZoneEditorSide2-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"ru"	"Сторона 2 | {1} -{2}"
+	}
+	"ZoneEditorAxis"
+	{
+		"ru"	"Сменить ось"
+	}
+	"ZoneEditorApplyStartZone"
+	{
+		"ru"	"Применить начальную зону"
+	}
+	"ZoneEditorApplyEndZone"
+	{
+		"ru"	"Применить конечную зону"
+	}
+	"ZoneEditorCPZone"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Конструктор зон - ЦП зона #{1}"
+	}
+	"ZoneEditorApplyCPZone"
+	{
+		"#format"	"{1:i}"
+		"ru"	"Применить чекпоинт зону #{1}"
+	}
+	"ZoneEditorTP"
+	{
+		"ru"	"Конструктор зон - Телепорт"
+	}
+	"GreetingsStatistics"
+	{
+		"ru"	"\n\n\n\n\nДобро пожаловать!\n\n•   •   •\n\nТекущий режим - статистика.\nПриятной игры!"
+	}
+	"GreetingsPractice"
+	{
+		"ru"	"\n\n\n\n\nДобро пожаловать!\n\n•   •   •\n\nТекущий режим - практика.\nПриятной игры!"
+	}
+	"Control"
+	{
+		"ru"	"Управление"
+	}
+	"ControlTop"
+	{
+		"ru"	"!top - Осмотр записей."
+	}
+	"ControlTop10"
+	{
+		"ru"	"!top10 - Оповощения первых 10 позиций."
+	}
+	"ControlJS"
+	{
+		"ru"	"!js - Оповещения о прыжке."
+	}
+	"ControlBS"
+	{
+		"ru"	"!bs - Оповещения о браске."
+	}
+	"ControlHUD"
+	{
+		"ru"	"!hud - Дополнительные оповещения."
+	}
+	"ControlButton"
+	{
+		"ru"	"!button - Оповещение активации кнопки карты."
+	}
+	"ControlSpec"
+	{
+		"ru"	"!spec - Перейти в команду наблюдателей."
+	}
+	"ControlColor"
+	{
+		"ru"	"!color - Раскраска."
+	}
+	"ControlAFK"
+	{
+		"ru"	"!afk - Проверка на активность игроков."
+	}
+	"ControlTrikz"
+	{
+		"ru"	"!trikz - Основное меню."
+	}
+	"TeamColor"
+	{
+		"ru"	"Выберите цвет команды"
+	}
+	"Blue"
+	{
+		"ru"	"Синий"
+	}
+	"Red"
+	{
+		"ru"	"Красный"
+	}
+	"Green"
+	{
+		"ru"	"Зелёный"
+	}
+	"Yellow"
+	{
+		"ru"	"Желтый"
+	}
+	"PrefixTimer"
+	{
+		"ru"	"[Таймер] "
+	}
+	"PrefixTrikz"
+	{
+		"ru"	"[Трикз] "
+	}
+	"SetupZone"
+	{
+		"ru"	"Зоны полностью не установлены."
+	}
+}

@@ -29,153 +29,331 @@
 	your programs, too.
 */
 #include <sdkhooks>
+#include <sdktools>
 #include <clientprefs>
 
-float gF_boostTimeStart[MAXPLAYERS + 1]
-float gF_boostTimeEnd[MAXPLAYERS + 1]
-bool gB_boostRead[MAXPLAYERS + 1][2]
-float gF_projectileVel[MAXPLAYERS + 1]
-float gF_vel[MAXPLAYERS + 1]
-bool gB_duck[MAXPLAYERS + 1]
-bool gB_boostStats[MAXPLAYERS + 1]
-float gF_angles[MAXPLAYERS + 1][3]
-bool gB_projectile[MAXPLAYERS + 1]
-Handle gH_cookie
+#define semicolon 1
+#define newdecls required
+
+#define MAXPLAYER MAXPLAYERS + 1
+#define IsClientValid(%1) (0 < %1 <= MaxClients && IsClientInGame(%1))
+
+int g_throwTick[MAXPLAYER][2];
+float g_projectileVel[MAXPLAYER] = {0.0, ...};
+float g_vel[MAXPLAYER] = {0.0, ...};
+bool g_boostStats[MAXPLAYER] = {false, ...};
+float g_angles[MAXPLAYER][3];
+Handle g_cookie = INVALID_HANDLE;
+native int Trikz_GetClientPartner(int client);
+bool g_duck[MAXPLAYER] = {false, ...};
 
 public Plugin myinfo =
 {
 	name = "Boost stats",
-	author = "Smesh",
-	description = "Measures time between attack and jump",
-	version = "0.1",
+	author = "Smesh (Niks Jurēvičs)",
+	description = "Measures time between attack and jump.",
+	version = "0.40",
 	url = "http://www.sourcemod.net/"
-}
+};
 
 public void OnPluginStart()
 {
-	RegConsoleCmd("sm_bs", cmd_booststats)
-	gH_cookie = RegClientCookie("bs", "booststats", CookieAccess_Protected)
+	LoadTranslations("booststats.phrases");
+
+	RegPluginLibrary("trueexpert-booststats");
+
+	HookEvent("player_jump", OnPlayerJump, EventHookMode_PostNoCopy);
+
+	g_cookie = RegClientCookie("bs", "booststats", CookieAccess_Protected);
+
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsValidEntity(i))
-			OnClientPutInServer(i)
+	{
+		if(IsValidEntity(i) == true)
+		{
+			OnClientPutInServer(i);
+		}
+	}
+
+	RegConsoleCmd("sm_bs", CommandBooststats);
+
+	return;
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("Trikz_GetClientPartner");
+
+	return APLRes_Success;
 }
 
 public void OnClientPutInServer(int client)
 {
-	if(!AreClientCookiesCached(client))
-		gB_boostStats[client] = false
-	gB_projectile[client] = false
-	SDKHook(client, SDKHook_StartTouch, SDKStartTouch)
+	if(AreClientCookiesCached(client) == false)
+	{
+		g_boostStats[client] = false;
+	}
+
+	SDKHook(client, SDKHook_StartTouch, SDKStartTouch);
+
+	g_throwTick[client][0] = 0;
+
+	return;
 }
 
 public void OnClientCookiesCached(int client)
 {
-	char sValue[16]
-	GetClientCookie(client, gH_cookie, sValue, 16)
-	gB_boostStats[client] = view_as<bool>(StringToInt(sValue))
+	char value[8] = "";
+	GetClientCookie(client, g_cookie, value, sizeof(value));
+	g_boostStats[client] = view_as<bool>(StringToInt(value));
+
+	return;
 }
 
-Action cmd_booststats(int client, int args)
+Action CommandBooststats(int client, int args)
 {
-	gB_boostStats[client] = !gB_boostStats[client]
-	char sValue[16]
-	IntToString(gB_boostStats[client], sValue, 16)
-	SetClientCookie(client, gH_cookie, sValue)
-	PrintToChat(client, gB_boostStats[client] ? "Boost stats is on." : "Boost stats is off.")
-	return Plugin_Handled
+	g_boostStats[client] = !g_boostStats[client];
+
+	char value[8] = "";
+	IntToString(g_boostStats[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie, value);
+
+	char format[256] = "";
+	Format(format, sizeof(format), "%T", g_boostStats[client] ? "BSON" : "BSOFF", client);
+	SendMessage(client, format);
+
+	return Plugin_Handled;
 }
 
-public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+void CalculationProcess(int client)
 {
-	if(!IsChatTrigger())
-		if(StrEqual(sArgs, "bs"))
-			cmd_booststats(client, 0)
+	//g_throwTick[client][0] = GetEngineTime();
+	g_throwTick[client][0] = GetGameTickCount();
+
+	float vel[3] = {0.0, ...};
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0);
+	vel[2] = 0.0;
+
+	g_vel[client] = GetVectorLength(vel);
+
+	GetClientEyeAngles(client, g_angles[client]);
+	g_duck[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucked", 4, 0));
+
+	return;
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "flashbang_projectile"))
-		SDKHook(entity, SDKHook_Spawn, SDKSpawnProjectile)
-}
-
-Action SDKSpawnProjectile(int entity)
-{
-	RequestFrame(frame_projectileVel, entity)
-}
-
-void frame_projectileVel(int entity)
-{
-	if(IsValidEntity(entity))
+	if(StrContains(classname, "projectile", false) != -1)
 	{
-		float vel[3]
-		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
-		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity")
-		gF_projectileVel[client] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
-		gB_projectile[client] = true
+		SDKHook(entity, SDKHook_SpawnPost, SDKSpawnProjectile);
 	}
+
+	return;
 }
 
-public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+void SDKSpawnProjectile(int entity)
 {
-	char sWeapon[32]
-	int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon")
-	if(IsValidEntity(activeWeapon))
-		GetEntityClassname(activeWeapon, sWeapon, 32)
-	if(StrEqual(sWeapon, "weapon_flashbang"))
+	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
+
+	RequestFrame(FrameProjectileVel, entity);
+
+	CalculationProcess(client);
+
+	return;
+}
+
+void FrameProjectileVel(int entity)
+{
+	if(IsValidEntity(entity) == true)
 	{
-		if(buttons & IN_ATTACK)
-			gB_boostRead[client][0] = true
-		if(!(buttons & IN_ATTACK) && gB_boostRead[client][0])
+		int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", 0);
+		
+		if(IsClientValid(client) == true && g_projectileVel[client] == 0.0)
 		{
-			gF_boostTimeStart[client] = GetEngineTime()
-			gB_boostRead[client][1] = true
-			float velAbs[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs)
-			gF_vel[client] = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0))
-			gB_duck[client] = view_as<bool>(buttons & IN_DUCK)
-			gF_angles[client][0] = angles[0]
-			gF_angles[client][1] = angles[1]
-			gB_boostRead[client][0] = false
-		}
-		if(GetEntityFlags(client) & FL_ONGROUND && buttons & IN_JUMP && gB_boostRead[client][1])
-		{
-			gF_boostTimeEnd[client] = GetEngineTime()
-			if(gF_boostTimeEnd[client] - gF_boostTimeStart[client] < 0.3)
-				CreateTimer(0.1, timer_finalMSG, client, TIMER_FLAG_NO_MAPCHANGE)
-			gB_boostRead[client][1] = false
+			float vel[3] = {0.0, ...};
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel, 0);
+
+			g_projectileVel[client] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		}
 	}
-}
 
-Action timer_finalMSG(Handle timer, int client)
-{
-	if(IsClientInGame(client) && gB_boostStats[client] && gB_projectile[client])
-		PrintToChat(client, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_vel[client], gB_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
-	for(int i = 1; i <= MaxClients; i++)
-	{
-		if(IsClientInGame(i) && IsClientObserver(i))
-		{
-			int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-			int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-			if(observerMode < 7 && observerTarget == client && gB_boostStats[i] && gB_projectile[client])
-				PrintToChat(i, "Time: %.3f, Speed: %.1f, Run: %.1f, Duck: %s, Angles: %.0f/%.0f", gF_boostTimeEnd[client] - gF_boostTimeStart[client], gF_projectileVel[client], gF_vel[client], gB_duck[client] ? "Yes" : "No", gF_angles[client][0], gF_angles[client][1])
-		}
-	}
-	gB_projectile[client] = false
-	gF_projectileVel[client] = 0.0
+	return;
 }
 
 Action SDKStartTouch(int entity, int other)
 {
-	if(0 < other <= MaxClients && !gF_projectileVel[other])
+	if(IsClientValid(other) == true && g_projectileVel[other] == 0.0)
 	{
-		char sClassname[32]
-		GetEntityClassname(entity, sClassname, 32)
-		if(StrEqual(sClassname, "flashbang_projectile"))
+		char classname[32] = "";
+		GetEntityClassname(entity, classname, sizeof(classname));
+
+		if(StrContains(classname, "projectile", false) != -1)
 		{
-			float vel[3]
-			GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vel)
-			gF_projectileVel[other] = GetVectorLength(vel) //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
+			float vel[3] = {0.0, ...};
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel, 0);
+
+			g_projectileVel[other] = GetVectorLength(vel); //https://github.com/shavitush/bhoptimer/blob/36a468615d0cbed8788bed6564a314977e3b775a/addons/sourcemod/scripting/shavit-hud.sp#L1470
 		}
 	}
+
+	return Plugin_Continue
+}
+
+void OnPlayerJump(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+
+	//g_throwTick[client][1] = GetEngineTime();
+	g_throwTick[client][1] = GetGameTickCount();
+
+	CreateTimer(0.1, TimerPrint, client, TIMER_FLAG_NO_MAPCHANGE);
+
+	return;
+}
+
+Action TimerPrint(Handle timer, int client)
+{
+	DoPrint(client);
+
+	return Plugin_Continue;
+}
+
+void DoPrint(int client)
+{
+	if(IsClientInGame(client) == true)
+	{
+		float time = (float(g_throwTick[client][1]) - float(g_throwTick[client][0])) * (GetTickInterval() + 0.000000001);
+
+		if(time < 0.3)
+		{
+			char format[256] = "";
+			char color[8 + 1] = "";
+			char duck[256] = "";
+
+			char colorBuffer[53 + 1] = "";
+			Format(colorBuffer, sizeof(colorBuffer), "%T", "TimeColor", client);
+			char buffers[6][8 + 1];
+			ExplodeString(colorBuffer, ",", buffers, 6, 9, false);
+
+			if(time <= -0.100)
+			{
+				Format(color, sizeof(color), "%s", buffers[0]);
+			}
+
+			else if(-0.070 >= time > -0.100)
+			{
+				Format(color, sizeof(color), "%s", buffers[1]);
+			}
+
+			else if(-0.050 >= time > -0.070)
+			{
+				Format(color, sizeof(color), "%s", buffers[2]);
+			}
+
+			else if(-0.030 >= time > -0.050)
+			{
+				Format(color, sizeof(color), "%s", buffers[3]);
+			}
+
+			else if(0.000 >= time > -0.030)
+			{
+				Format(color, sizeof(color), "%s", buffers[4]);
+			}
+
+			else if(time > 0.0)
+			{
+				Format(color, sizeof(color), "%s", buffers[5]);
+			}
+
+			int partner = LibraryExists("trueexpert") ? Trikz_GetClientPartner(client) : 0;
+
+			if(g_boostStats[client] == true)
+			{
+				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", client);
+				Format(format, sizeof(format), "%T", "Message", client, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+				SendMessage(client, format);
+			}
+
+			if(IsClientValid(partner) == true && IsClientInGame(partner) == true && g_boostStats[partner] == true)
+			{
+				Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", partner);
+				Format(format, sizeof(format), "%T", "MessagePartner", partner, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+				SendMessage(partner, format);
+			}
+
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) == true && IsClientObserver(i) == true)
+				{
+					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+
+					if(observerMode < 7 && observerTarget == client && g_boostStats[i] == true)
+					{
+						Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", i);
+						Format(format, sizeof(format), "%T", "Message", i, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+						SendMessage(i, format);
+					}
+
+					else if(IsClientValid(partner) == true && observerMode < 7 && observerTarget == partner && g_boostStats[i] == true)
+					{
+						Format(duck, sizeof(duck), "%T", g_duck[client] == true ? "DuckYes" : "DuckNo", i);
+						Format(format, sizeof(format), "%T", "MessagePartner", i, color, time, g_projectileVel[client], g_vel[client], duck, g_angles[client][0], g_angles[client][1]);
+						SendMessage(i, format);
+					}
+				}
+			}
+		}
+
+		g_projectileVel[client] = 0.0;
+	}
+
+	return;
+}
+
+void SendMessage(int client, const char[] text)
+{
+	char name[MAX_NAME_LENGTH] = "";
+	GetClientName(client, name, sizeof(name));
+
+	int team = GetClientTeam(client);
+
+	char teamColor[32] = "";
+
+	switch(team)
+	{
+		case 1:
+		{
+			Format(teamColor, sizeof(teamColor), "\x07CCCCCC");
+		}
+
+		case 2:
+		{
+			Format(teamColor, sizeof(teamColor), "\x07FF4040");
+		}
+
+		case 3:
+		{
+			Format(teamColor, sizeof(teamColor), "\x0799CCFF");
+		}
+	}
+
+	char textReplaced[256] = "";
+	Format(textReplaced, sizeof(textReplaced), "\x01%s", text);
+
+	ReplaceString(textReplaced, sizeof(textReplaced), ";#", "\x07");
+	ReplaceString(textReplaced, sizeof(textReplaced), "{default}", "\x01");
+	ReplaceString(textReplaced, sizeof(textReplaced), "{teamcolor}", teamColor);
+
+	if(IsClientValid(client) == true)
+	{
+		Handle buf = StartMessageOne("SayText2", client, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS); //https://github.com/JoinedSenses/SourceMod-IncludeLibrary/blob/master/include/morecolors.inc#L195
+		BfWrite bf = UserMessageToBfWrite(buf); //dont show color codes in console.
+		bf.WriteByte(client); //Message author
+		bf.WriteByte(true); //Chat message
+		bf.WriteString(textReplaced); //Message text
+		EndMessage();
+	}
+
+	return;
 }

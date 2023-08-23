@@ -31,485 +31,973 @@
 #include <sdkhooks>
 #include <sdktools>
 #include <clientprefs>
+#include <dhooks>
 
-bool gB_jumped[MAXPLAYERS + 1]
-float gF_origin[MAXPLAYERS + 1][3]
-int gI_strafeCount[MAXPLAYERS + 1]
-bool gB_ladder[MAXPLAYERS + 1]
-float gF_preVel[MAXPLAYERS + 1][3]
-bool gB_jumpstats[MAXPLAYERS + 1]
-bool gB_strafeFirst[MAXPLAYERS + 1]
-int gI_tick[MAXPLAYERS + 1]
-int gI_syncTick[MAXPLAYERS + 1]
-int gI_tickAir[MAXPLAYERS + 1]
-bool gB_isCountJump[MAXPLAYERS + 1]
-float gF_dot[MAXPLAYERS + 1]
-bool gB_strafeBlockD[MAXPLAYERS + 1]
-bool gB_strafeBlockA[MAXPLAYERS + 1]
-bool gB_strafeBlockS[MAXPLAYERS + 1]
-bool gB_strafeBlockW[MAXPLAYERS + 1]
-char gS_style[MAXPLAYERS + 1][32]
-float gF_dotTime[MAXPLAYERS + 1]
-bool gB_runboost[MAXPLAYERS + 1]
-int gI_rbBooster[MAXPLAYERS + 1]
-float gF_boostTime[MAXPLAYERS + 1]
-float gF_skyOrigin[MAXPLAYERS + 1][3]
-int gI_entityButtons[MAXPLAYERS + 1]
-native int Trikz_GetClientButtons(int client)
-bool gB_teleported[MAXPLAYERS + 1]
-Handle gH_cookie
-float gF_skyAble[MAXPLAYERS + 1]
+#pragma semicolon 1
+#pragma newdecls required
+
+#define MAXPLAYER MAXPLAYERS + 1
+
+bool g_jumped[MAXPLAYER] = {false, ...};
+float g_origin[MAXPLAYER][3];
+int g_strafeCount[MAXPLAYER] = {0, ...};
+bool g_ladder[MAXPLAYER] = {false, ...};
+float g_preVel[MAXPLAYER][2][3];
+bool g_jumpstats[MAXPLAYER] = {false, ...};
+bool g_strafeFirst[MAXPLAYER] = {false, ...};
+int g_tick[MAXPLAYER] = {0, ...};
+float g_tickTime[MAXPLAYER] = {0.0, ...};
+int g_syncTick[MAXPLAYER] = {0, ...};
+int g_tickAir[MAXPLAYER] = {0, ...};
+bool g_countjump[MAXPLAYER] = {false, ...};
+float g_dot[MAXPLAYER] = {0.0, ...};
+bool g_strafeBlockD[MAXPLAYER] = {false, ...};
+bool g_strafeBlockA[MAXPLAYER] = {false, ...};
+bool g_strafeBlockS[MAXPLAYER] = {false, ...};
+bool g_strafeBlockW[MAXPLAYER] = {false, ...};
+char g_style[MAXPLAYER][32];
+float g_dotTime[MAXPLAYER] = {0.0, ...};
+bool g_runboost[MAXPLAYER] = {false, ...};
+int g_rbBooster[MAXPLAYER] = {0, ...};
+float g_boostTime[MAXPLAYER] = {0.0, ...};
+float g_skyOrigin[MAXPLAYER] = {0.0, ...};
+int g_entityButtons[MAXPLAYER] = {0, ...};
+native int Trikz_GetClientButtons(int client);
+bool g_teleported[MAXPLAYER] = {false, ...};
+Handle g_cookie = INVALID_HANDLE;
+float g_skyAble[MAXPLAYER] = {0.0, ...};
+float g_gain[MAXPLAYER] = {0.0, ...};
+int g_entityFlags[MAXPLAYER] = {0, ...};
+DynamicHook g_teleport = null;
+float g_oldVel[MAXPLAYER][3];
+float g_loss[MAXPLAYER] = {0.0, ...};
+float g_maxVel[MAXPLAYER] = {0.0, ...};
+bool g_dotNormal[MAXPLAYER] = {false, ...};
 
 public Plugin myinfo =
 {
 	name = "Jump stats",
-	author = "Smesh",
-	description = "Measures distance difference between two vectors",
-	version = "0.1",
+	author = "Smesh (Nick Jurevich)",
+	description = "Measures distance difference between two vectors.",
+	version = "0.28",
 	url = "http://www.sourcemod.net/"
-}
+};
 
 public void OnPluginStart()
 {
-	HookEvent("player_jump", Event_PlayerJump)
-	gH_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected)
+	HookEvent("player_jump", OnPlayerJump, EventHookMode_Post); //https://hlmod.ru/threads/sourcepawn-urok-3-sobytija-events.36891/
+
+	g_cookie = RegClientCookie("js", "jumpstats", CookieAccess_Protected);
+
 	for(int i = 1; i <= MaxClients; i++)
-		if(IsValidEntity(i))
-			OnClientPutInServer(i)
-	RegConsoleCmd("sm_js", cmd_jumpstats)
-	char sOutputs[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"}
-	for(int i = 0; i < sizeof(sOutputs); i++)
 	{
-		HookEntityOutput("trigger_teleport", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport
-		HookEntityOutput("trigger_teleport_relative", sOutputs[i], output_teleport) //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+		if(IsValidEntity(i) == true)
+		{
+			OnClientPutInServer(i);
+		}
 	}
+
+	RegConsoleCmd("sm_js", CommandJumpstats, "Show statistics of jumps to key hint (HUD).");
+
+	//char output[][] = {"OnStartTouch", "OnEndTouchAll", "OnTouching", "OnStartTouch", "OnTrigger"};
+
+	//for(int i = 0; i < sizeof(output); i++)
+	//{
+	//	HookEntityOutput("trigger_teleport", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport
+	//	HookEntityOutput("trigger_teleport_relative", output[i], output_teleport); //https://developer.valvesoftware.com/wiki/Trigger_teleport_relative
+	//}
+
+	if(LibraryExists("trueexpert") == false)
+	{
+		Handle gamedata = LoadGameConfigFile("sdktools.games");
+
+		int offset = GameConfGetOffset(gamedata, "Teleport");
+
+		delete gamedata;
+		
+		if(offset == -1)
+		{
+			SetFailState("[DHooks] Offset for Teleport function is not found!");
+
+			return;
+		}
+		
+		g_teleport = DHookCreate(offset, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, DHooks_OnTeleport);
+
+		if(g_teleport == INVALID_HANDLE)
+		{
+			SetFailState("[DHooks] Could not create Teleport hook function!");
+
+			return;
+		}
+		
+		g_teleport.AddParam(HookParamType_VectorPtr);
+		g_teleport.AddParam(HookParamType_ObjectPtr);
+		g_teleport.AddParam(HookParamType_VectorPtr);
+	}
+
+	RegPluginLibrary("trueexpert-jumpstats");
+
+	return;
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("Trikz_GetClientButtons");
+
+	return APLRes_Success;
 }
 
 public void OnClientPutInServer(int client)
 {
-	SDKHook(client, SDKHook_Touch, TouchClient)
-	SDKHook(client, SDKHook_StartTouch, SDKSkyJump)
-	if(!AreClientCookiesCached(client))
-		gB_jumpstats[client] = false
+	SDKHook(client, SDKHook_Touch, TouchClient);
+	SDKHook(client, SDKHook_StartTouch, SDKSkyJump);
+
+	if(AreClientCookiesCached(client) == false)
+	{
+		g_jumpstats[client] = false;
+	}
+
+	return;
 }
 
 public void OnClientCookiesCached(int client)
 {
-	char sValue[16]
-	GetClientCookie(client, gH_cookie, sValue, 16)
-	gB_jumpstats[client] = view_as<bool>(StringToInt(sValue))
+	char value[8] = "";
+	GetClientCookie(client, g_cookie, value, sizeof(value));
+	g_jumpstats[client] = view_as<bool>(StringToInt(value));
+
+	return;
 }
 
-Action cmd_jumpstats(int client, int args)
+Action CommandJumpstats(int client, int args)
 {
-	gB_jumpstats[client] = !gB_jumpstats[client]
-	char sValue[16]
-	IntToString(gB_jumpstats[client], sValue, 16)
-	SetClientCookie(client, gH_cookie, sValue)
-	PrintToChat(client, gB_jumpstats[client] ? "Jump stats is on." : "Jump stats is off.")
-	return Plugin_Handled
+	g_jumpstats[client] = !g_jumpstats[client];
+
+	char value[8] = "";
+	IntToString(g_jumpstats[client], value, sizeof(value));
+	SetClientCookie(client, g_cookie, value);
+
+	PrintToChat(client, "Jump stats is %s now.", g_jumpstats[client]  == true ? "on" : "off");
+
+	return Plugin_Handled;
 }
 
-public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+/*public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
-	if(!IsChatTrigger())
-		if(StrEqual(sArgs, "js"))
-			cmd_jumpstats(client, 0)
-}
+	if(IsChatTrigger() == false)
+	{
+		if(StrEqual(sArgs, "js", false) == true)
+		{
+			CommandJumpstats(client, 0);
+		}
+	}
 
-void output_teleport(const char[] output, int caller, int activator, float delay)
+	return Plugin_Continue;
+}*/
+
+/*void output_teleport(const char[] output, int caller, int activator, float delay)
 {
 	if(0 < activator <= MaxClients)
-		gB_teleported[activator] = true
-}
-
-Action Event_PlayerJump(Event event, const char[] name, bool dontBroadcast)
-{
-	int client = GetClientOfUserId(event.GetInt("userid"))
-	if(gI_tick[client] == 30 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
 	{
-		gB_jumped[client] = true
-		gB_teleported[client] = false
-		float origin[3]
-		if(gB_runboost[client])
-			GetClientAbsOrigin(gI_rbBooster[client], origin)
-		else
-			GetClientAbsOrigin(client, origin)
-		gF_origin[client][0] = origin[0]
-		gF_origin[client][1] = origin[1]
-		gF_origin[client][2] = origin[2]
-		float vel[3]
-		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel) //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
-		gF_preVel[client][0] = vel[0]
-		gF_preVel[client][1] = vel[1]
-		gB_isCountJump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1))
-		gF_dotTime[client] = GetEngineTime()
+		g_teleported[activator] = true;
 	}
-	GetClientAbsOrigin(client, gF_skyOrigin[client])
-	gF_skyAble[client] = GetGameTime()
+
+	return;
+}*/
+
+void OnPlayerJump(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+
+	if(g_tickTime[client] >= 0.1 && (GetEntityGravity(client) == 0.0 || GetEntityGravity(client) == 1.0))
+	{
+		g_jumped[client] = true;
+
+		g_teleported[client] = false;
+
+		float origin[3] = {0.0, ...};
+		GetClientAbsOrigin(g_runboost[client] == true ? g_rbBooster[client] : client, origin);
+
+		g_origin[client][0] = origin[0];
+		g_origin[client][1] = origin[1];
+		g_origin[client][2] = g_runboost[client] == true ? GetGroundPos(g_rbBooster[client]) : GetGroundPos(client);
+
+		float vel[3] = {0.0, ...};
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+		vel[2] = 0.0;
+		
+		g_preVel[client][0] = vel;
+
+		g_countjump[client] = view_as<bool>(GetEntProp(client, Prop_Data, "m_bDucking", 1, 0));
+
+		g_dotTime[client] = GetEngineTime();
+
+		float flatVel[3] = {0.0, ...};
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel, 0);
+		flatVel[2] = 0.0;
+
+		g_oldVel[client] = flatVel;
+
+		g_dotNormal[client] = true;
+	}
+
+	g_skyOrigin[client] = GetGroundPos(client);
+
+	g_skyAble[client] = GetGameTime();
+
+	return;
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	gI_entityButtons[client] = buttons
+	if(IsPlayerAlive(client) == false || IsFakeClient(client) == true)
+	{
+		return Plugin_Continue;
+	}
+
+	g_entityButtons[client] = buttons;
+
+	g_entityFlags[client] = GetEntityFlags(client);
+
+	if(GetEntityMoveType(client) == MOVETYPE_NOCLIP) //Is not an bit. https://github.com/alliedmodders/sourcemod/blob/master/plugins/funcommands/noclip.sp#L38
+	{
+		if(g_jumped[client] == true || g_ladder[client] == true)
+		{
+			ResetFactory(client);
+		}
+	}
+
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
-		if(gI_tick[client] < 30)
-			gI_tick[client]++
-	}
-	else
-	{
-		if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && (gB_jumped[client] || gB_ladder[client]))
+		if(GetEntPropFloat(client, Prop_Send, "m_flStamina", 0) < 675.789428)
 		{
-			if(GetEngineTime() - gF_dotTime[client] < 0.4)
-			{
-				float eye[3]
-				GetClientEyeAngles(client, eye)
-				eye[0] = Cosine(DegToRad(eye[1]))
-				eye[1] = Sine(DegToRad(eye[1]))
-				//eye[2] = 0.0
-				float velAbs[3]
-				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs)
-				float length = SquareRoot(Pow(velAbs[0], 2.0) + Pow(velAbs[1], 2.0))
-				velAbs[0] /= length
-				velAbs[1] /= length
-				//velNew[2] = 0.0
-				gF_dot[client] = GetVectorDotProduct(eye, velAbs) //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
-				//PrintToServer("%f", gF_dot[client])
-			}
-			gI_tickAir[client]++
+			g_tick[client]++;
+
+			g_tickTime[client] = g_tick[client] * GetTickInterval();
 		}
 	}
-	if(gB_jumped[client])
+
+	else if(!(GetEntityFlags(client) & FL_ONGROUND))
 	{
-		if(gF_dot[client] < -0.9) //backward
+		if(g_tick[client] > 0)
 		{
-			if(mouse[0] > 0)
-			{
-				if(buttons & IN_MOVELEFT)
-				{
-					if(!gB_strafeBlockA[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = false
-						gB_strafeBlockA[client] = true
-					}
-					gI_syncTick[client]++
-				}
-			}
-			else
-			{
-				if(buttons & IN_MOVERIGHT)
-				{
-					if(!gB_strafeBlockD[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = true
-						gB_strafeBlockA[client] = false
-					}
-					gI_syncTick[client]++
-				}
-			}
-			if(!StrEqual(gS_style[client], "Backward"))
-				Format(gS_style[client], 32, "Backward")
+			g_tick[client] = 0;
 		}
-		else if(gF_dot[client] > 0.9) //forward
+
+		if(g_jumped[client] == true || g_ladder[client] == true)
 		{
-			if(mouse[0] > 0)
+			if(GetEngineTime() - g_dotTime[client] <= 0.3 || g_dotNormal[client] == false)
 			{
-				if(buttons & IN_MOVERIGHT)
-				{
-					if(!gB_strafeBlockD[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = true
-						gB_strafeBlockA[client] = false
-					}
-					gI_syncTick[client]++
-				}
+				float eye[3] = {0.0, ...};
+				GetClientEyeAngles(client, eye);
+				eye[0] = Cosine(DegToRad(eye[1]));
+				eye[1] = Sine(DegToRad(eye[1]));
+				eye[2] = 0.0;
+
+				float velAbs[3] = {0.0, ...};
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velAbs, 0);
+				velAbs[2] = 0.0;
+
+				float length = GetVectorLength(velAbs);
+				velAbs[0] /= length;
+				velAbs[1] /= length;
+				
+				g_dot[client] = GetVectorDotProduct(eye, velAbs); //https://onedrive.live.com/?authkey=%21ACwrZlLqDTC92n0&cid=879961B2A0BE0AAE&id=879961B2A0BE0AAE%2116116&parId=879961B2A0BE0AAE%2126502&o=OneUp
 			}
-			else
-			{
-				if(buttons & IN_MOVELEFT)
-				{
-					if(!gB_strafeBlockA[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockD[client] = false
-						gB_strafeBlockA[client] = true
-					}
-					gI_syncTick[client]++
-				}
-			}
-			if(!StrEqual(gS_style[client], "Forward"))
-				Format(gS_style[client], 32, "Forward")
-		}
-		else //sideways
-		{
-			if(mouse[0] > 0)
-			{
-				if(buttons & IN_BACK)
-				{
-					if(!gB_strafeBlockS[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockS[client] = true
-						gB_strafeBlockW[client] = false
-					}
-					gI_syncTick[client]++
-				}
-			}
-			else
-			{
-				if(buttons & IN_FORWARD)
-				{
-					if(!gB_strafeBlockW[client])
-					{
-						gI_strafeCount[client]++
-						gB_strafeBlockS[client] = false
-						gB_strafeBlockW[client] = true
-					}
-					gI_syncTick[client]++
-				}
-			}
-			if(!StrEqual(gS_style[client], "Sideways"))
-				Format(gS_style[client], 32, "Sideways")
+
+			g_tickAir[client]++;
 		}
 	}
-	if(GetEntityFlags(client) & FL_ONGROUND && gB_jumped[client])
+
+	if(g_jumped[client] == true)
 	{
-		float origin[3]
-		GetClientAbsOrigin(client, origin)
-		char sZLevel[32]
-		if(origin[2] - gF_origin[client][2] > 1.705139) //1.475586 without rb
-			Format(sZLevel, 32, "[Rise|%.1f] ", origin[2] - gF_origin[client][2])
-		if(origin[2] - gF_origin[client][2] < -1.285155) //0.017089 without rb
-			Format(sZLevel, 32, "[Fall|%.1f] ", origin[2] - gF_origin[client][2])
-		PrintToServer("jump: %f", origin[2] - gF_origin[client][2])
-		float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0)) + 32.0 //http://mathonline.wikidot.com/the-distance-between-two-vectors
-		float pre = SquareRoot(Pow(gF_preVel[client][0], 2.0) + Pow(gF_preVel[client][1], 2.0)) //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
-		float sync = -1.0
-		sync += float(gI_syncTick[client])
+		Sync(client, buttons, mouse);
+
+		GainAndLoss(client);
+
+		MaxVel(client);
+	}
+
+	if(GetEntityFlags(client) & FL_ONGROUND && g_jumped[client] == true)
+	{
+		char print[2][256] = {"", ""};
+
+		float origin[3] = {0.0, ...};
+		GetClientAbsOrigin(client, origin);
+
+		char flat[32] = "";
+
+		if(GetGroundPos(client) - g_origin[client][2] > 0.0)
+		{
+			Format(flat, sizeof(flat), "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+		}
+
+		else if(GetGroundPos(client) - g_origin[client][2] < 0.0)
+		{
+			Format(flat, sizeof(flat), "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+		}
+
+		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0)) + 32.0; //http://mathonline.wikidot.com/the-distance-between-two-vectors
+
+		float pre = GetVectorLength(g_preVel[client][0]); //https://math.stackexchange.com/questions/1448163/how-to-calculate-velocity-from-speed-current-location-and-destination-point
+		float preBooster = GetVectorLength(g_preVel[g_rbBooster[client]][1]);
+
+		char pre_[8] = "";
+		Format(pre_, sizeof(pre_), "%.0f", pre);
+		char preRB[16] = "";
+		Format(preRB, sizeof(preRB), "%.0f/%.0f", pre, preBooster);
+
+		float sync = -1.0;
+		sync += float(g_syncTick[client]);
+
 		if(sync == -1.0)
-			sync = 0.0
-		sync /= float(gI_tickAir[client])
-		sync *= 100.0
-		if(1000.0 > distance >= 230.0 && pre < 280.0)
 		{
-			if(gB_jumpstats[client])
-				PrintToChat(client, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
-			if(gB_runboost[client] && gB_jumpstats[gI_rbBooster[client]])
-				PrintToChat(gI_rbBooster[client], "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+			sync = 0.0;
 		}
+
+		sync /= float(g_tickAir[client]);
+		sync *= 100.0;
+
+		Format(print[0], 256, "%s%s%s%sJump: %.2f units\nPre: %s u/s\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s\nStyle: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]); //https://en.wikipedia.org/wiki/Percent_sign U+FF05
+		Format(print[1], 256, "%s%s%s%sJump: %.2f units, Pre: %s u/s, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s, Style: %s", g_runboost[client] == true ? "[RB] " : "", g_teleported[client] == true ? "[TP] " : "", flat, g_countjump[client] == true ? "[CJ] " : "", distance, g_runboost[client] == true ? preRB : pre_, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client], g_style[client]);
+		
+		if(distance >= 230.0 && pre < 280.0)
+		{
+			if(g_jumpstats[client] == true)
+			{
+				if(g_teleported[client] == false)
+				{
+					Handle KeyHintText = StartMessageOne("KeyHintText", client);
+					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+					bfmsg.WriteByte(1);
+					bfmsg.WriteString(print[0]);
+					EndMessage();
+				}
+
+				PrintToConsole(client, "%s", print[1]);
+			}
+
+			if(g_runboost[client] == true && g_jumpstats[g_rbBooster[client]] == true && IsClientInGame(g_rbBooster[client]) == true)
+			{
+				if(g_teleported[client] == false)
+				{
+					Handle KeyHintText = StartMessageOne("KeyHintText", g_rbBooster[client]);
+					BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+					bfmsg.WriteByte(1);
+					bfmsg.WriteString(print[0]);
+					EndMessage();
+				}
+
+				PrintToConsole(g_rbBooster[client], "%s", print[1]);
+			}
+		}
+
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(IsClientInGame(i) && IsClientObserver(i))
+			if(IsClientInGame(i) == true)
 			{
-				int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-				int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-				if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-					if(1000.0 > distance >= 230.0 && pre < 280.0)
-						PrintToChat(i, "%s%s%s%sJump: %.1f units, Strafes: %i, Pre: %.1f u/s, Sync: %.1f%, Style: %s", gB_runboost[client] ? "[RB] " : "", gB_teleported[client] ? "[TP] " : "", sZLevel, gB_isCountJump[client] ? "[CJ] " : "", distance, gI_strafeCount[client], pre, sync, gS_style[client])
+				int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+
+				if(4 <= mode < 7 && target == client && g_jumpstats[i] == true)
+				{
+					if(distance >= 230.0 && pre < 280.0)
+					{
+						if(g_teleported[client] == false)
+						{
+							Handle KeyHintText = StartMessageOne("KeyHintText", i);
+							BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+							bfmsg.WriteByte(1);
+							bfmsg.WriteString(print[0]);
+							EndMessage();
+						}
+
+						PrintToConsole(i, "%s", print[1]);
+					}
+				}
 			}
 		}
-		ResetFactory(client)
+
+		ResetFactory(client);
 	}
+
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
-		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity")
-		if(!groundEntity && gB_runboost[client])
-			gB_runboost[client] = false
-	}
-	if(GetEntityMoveType(client) & MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND)) //ladder bit bugs with noclip
-	{
-		ResetFactory(client)
-		gB_ladder[client] = true
-		float origin[3]
-		GetClientAbsOrigin(client, origin)
-		gF_origin[client][0] = origin[0]
-		gF_origin[client][1] = origin[1]
-		gF_origin[client][2] = origin[2]
-		gB_strafeFirst[client] = true
-	}
-	if(!(GetEntityMoveType(client) & MOVETYPE_LADDER) && gB_ladder[client])
-	{
-		if(mouse[0] > 0)
+		int groundEntity = GetEntPropEnt(client, Prop_Data, "m_hGroundEntity", 0);
+
+		if((groundEntity == 0 || groundEntity > MaxClients) && g_runboost[client] == true)
 		{
-			if(buttons & IN_MOVERIGHT)
-			{
-				if(!gB_strafeBlockD[client])
-				{
-					gI_strafeCount[client]++
-					gB_strafeBlockD[client] = true
-					gB_strafeBlockA[client] = false
-				}
-				gI_syncTick[client]++
-			}
-		}
-		else
-		{
-			if(buttons & IN_MOVELEFT)
-			{
-				if(!gB_strafeBlockA[client])
-				{
-					gI_strafeCount[client]++
-					gB_strafeBlockD[client] = false
-					gB_strafeBlockA[client] = true
-				}
-				gI_syncTick[client]++
-			}
+			g_runboost[client] = false;
 		}
 	}
-	if(GetEntityFlags(client) & FL_ONGROUND && gB_ladder[client])
+
+	if(GetEntityMoveType(client) == MOVETYPE_LADDER && !(GetEntityFlags(client) & FL_ONGROUND))
 	{
-		float origin[3]
-		GetClientAbsOrigin(client, origin)
-		PrintToServer("ladder: %f", origin[2] - gF_origin[client][2])
-		if(4.549926 >= origin[2] - gF_origin[client][2] >= -3.872436)
+		ResetFactory(client);
+
+		g_ladder[client] = true;
+
+		GetClientAbsOrigin(client, g_origin[client]);
+
+		g_strafeFirst[client] = true;
+
+		g_dotNormal[client] = false;
+	}
+
+	if(GetEntityMoveType(client) != MOVETYPE_LADDER && g_ladder[client] == true)
+	{
+		Sync(client, buttons, mouse);
+
+		GainAndLoss(client);
+
+		MaxVel(client);
+	}
+	
+	if(GetEntityFlags(client) & FL_ONGROUND && g_ladder[client] == true)
+	{
+		char print[2][256] = {"", ""};
+
+		float origin[3] = {0.0, ...};
+		GetClientAbsOrigin(client, origin);
+
+		//PrintToServer("%f", GetGroundPos(client) - g_origin[client][2]);
+
+		char flat[32] = "";
+
+		if(GetGroundPos(client) - g_origin[client][2] > 1.0)
 		{
-			float distance = SquareRoot(Pow(gF_origin[client][0] - origin[0], 2.0) + Pow(gF_origin[client][1] - origin[1], 2.0))
-			float sync = -1.0
-			sync += float(gI_syncTick[client])
-			if(sync == -1.0)
-				sync = 0.0
-			sync /= float(gI_tickAir[client])
-			sync *= 100.0
-			if(gB_jumpstats[client])
-				if(190.0 > distance >= 22.0)
-					PrintToChat(client, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
-			for(int i = 1; i <= MaxClients; i++)
+			Format(flat, sizeof(flat), "[UP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+		}
+
+		else if(GetGroundPos(client) - g_origin[client][2] < -4.0)
+		{
+			Format(flat, sizeof(flat), "[DROP|%.0f] ", GetGroundPos(client) - g_origin[client][2]);
+		}
+
+		float distance = SquareRoot(Pow(g_origin[client][0] - origin[0], 2.0) + Pow(g_origin[client][1] - origin[1], 2.0));
+
+		float sync = -1.0;
+		sync += float(g_syncTick[client]);
+		sync = sync == -1 ? 0.0 : sync;
+		sync /= float(g_tickAir[client]);
+		sync *= 100.0;
+
+		Format(print[0], 256, "%s%sLadder: %.2f units\nStrafes: %i\nSync: %.0f％\nGain: %.0f u/s\nLoss: %.0f u/s\nMax: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+		Format(print[1], 256, "%s%sLadder: %.2f units, Strafes: %i, Sync: %.0f%%, Gain: %.0f u/s, Loss: %.0f u/s, Max: %.0f u/s", g_teleported[client] == true ? "[TP] " : "", flat, distance, g_strafeCount[client], sync, g_gain[client], g_loss[client], g_maxVel[client]);
+
+		//PrintToServer("Z differents: %f", GetGroundPos(client) - g_origin[client][2]);
+
+		if(g_jumpstats[client] == true)
+		{
+			if(distance >= 22.0) //190.0
 			{
-				if(IsClientInGame(i) && IsClientObserver(i))
+				Handle KeyHintText = StartMessageOne("KeyHintText", client);
+				BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+				bfmsg.WriteByte(1);
+				bfmsg.WriteString(print[0]);
+				EndMessage();
+
+				PrintToConsole(client, "%s", print[1]);
+			}
+		}
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) == true)
+			{
+				int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+				int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+
+				if(4 <= mode < 7 && target == client && g_jumpstats[i] == true)
 				{
-					int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-					int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-					if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-						if(190.0 > distance >= 22.0)
-							PrintToChat(i, "%sLadder: %.1f units, Strafes: %i, Sync: %.1f", gB_teleported[client] ? "[TP] " : "", distance, gI_strafeCount[client], sync)
+					if(distance >= 22.0)
+					{
+						Handle KeyHintText = StartMessageOne("KeyHintText", i);
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+						bfmsg.WriteByte(1);
+						bfmsg.WriteString(print[0]);
+						EndMessage();
+
+						PrintToConsole(i, "%s", print[1]);
+					}
 				}
 			}
 		}
-		ResetFactory(client)
+
+		ResetFactory(client);
 	}
+
+	return Plugin_Continue;
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrContains(classname, "projectile") != -1)
-		SDKHook(entity, SDKHook_StartTouch, StartTouchProjectile)
+	if(StrContains(classname, "projectile", true) != -1)
+	{
+		SDKHook(entity, SDKHook_StartTouch, StartTouchProjectile);
+	}
+
+	return;
 }
 
 void ResetFactory(int client)
 {
-	gB_jumped[client] = false
-	gB_ladder[client] = false
-	gI_strafeCount[client] = 0
-	gI_syncTick[client] = 0
-	gI_tick[client] = 0
-	gI_tickAir[client] = 0
-	gB_strafeBlockD[client] = false
-	gB_strafeBlockA[client] = false
-	gB_strafeBlockS[client] = false
-	gB_strafeBlockW[client] = false
-	gB_runboost[client] = false
-	gB_teleported[client] = false
+	g_jumped[client] = false;
+	g_ladder[client] = false;
+	g_strafeCount[client] = 0;
+	g_syncTick[client] = 0;
+	g_tickAir[client] = 0;
+	g_strafeBlockD[client] = false;
+	g_strafeBlockA[client] = false;
+	g_strafeBlockS[client] = false;
+	g_strafeBlockW[client] = false;
+	g_runboost[client] = false;
+	g_teleported[client] = false;
+	g_gain[client] = 0.0;
+	g_loss[client] = 0.0;
+	g_maxVel[client] = 0.0;
+
+	return;
 }
 
 Action StartTouchProjectile(int entity, int other)
 {
-	if(0 < other <= MaxClients && (gB_jumped[other] || gB_ladder[other]))
+	if(0 < other <= MaxClients && (g_jumped[other] == true || g_ladder[other] == true))
 	{
 		//https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L220-L231
-		float entityOrigin[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityOrigin)
-		float otherOrigin[3]
-		GetClientAbsOrigin(other, otherOrigin)
-		float entityMaxs[3]
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", entityMaxs)
-		float delta = otherOrigin[2] - entityOrigin[2] - entityMaxs[2]
+		float nadeOrigin[3] = {0.0, ...};
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", nadeOrigin, 0);
+
+		float clientOrigin[3] = {0.0, ...};
+		GetClientAbsOrigin(other, clientOrigin);
+
+		float nadeMaxs[3] = {0.0, ...};
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", nadeMaxs, 0);
+
+		float delta = clientOrigin[2] - nadeOrigin[2] - nadeMaxs[2];
+
 		if(0.0 < delta < 2.0)
 		{
-			ResetFactory(other)
-			gF_boostTime[other] = GetEngineTime()
+			ResetFactory(other);
+
+			g_boostTime[other] = GetEngineTime();
 		}
 	}
+
+	return Plugin_Continue;
 }
 
-void TouchClient(int client, int other)
+Action TouchClient(int client, int other)
 {
-	if(0 < other <= MaxClients && gI_tick[client] == 30)
+	if(0 < other <= MaxClients && g_tickTime[client] >= 0.1)
 	{
-		float clientOrigin[3]
-		GetClientAbsOrigin(client, clientOrigin)
-		float otherOrigin[3]
-		GetClientAbsOrigin(other, otherOrigin)
-		float clientMaxs[3]
-		GetClientMaxs(client, clientMaxs)
-		float delta = otherOrigin[2] - clientOrigin[2] - clientMaxs[2]
-		if(delta == -124.031250)
+		float originClient[3] = {0.0, ...};
+		GetClientAbsOrigin(client, originClient);
+
+		float originBooster[3] = {0.0, ...};
+		GetClientAbsOrigin(other, originBooster);
+
+		float clientMaxs[3] = {0.0, ...};
+		GetClientMaxs(client, clientMaxs);
+
+		float delta = originClient[2] - originBooster[2] - clientMaxs[2];
+
+		//PrintToServer("%f", delta);
+
+		if(delta == 0.031250) //Runboost?
 		{
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				gB_runboost[i] = false
-				gI_rbBooster[i] = 0
-			}
-			gB_runboost[client] = true
-			gI_rbBooster[client] = other
+			g_runboost[client] = true;
+			g_runboost[other] = true;
+
+			g_rbBooster[client] = other;
+
+			float vel[3] = {0.0, ...};
+			GetEntPropVector(other, Prop_Data, "m_vecVelocity", vel, 0); //https://forums.alliedmods.net/showpost.php?p=2439964&postcount=3
+			vel[2] = 0.0;
+
+			g_preVel[other][1] = vel;
+		}
+
+		if(!(GetEntityFlags(other) & FL_ONGROUND)) //Allow to see sky boost after rb.
+		{
+			ResetFactory(client);
 		}
 	}
+
+	return Plugin_Continue;
 }
 
-void SDKSkyJump(int client, int other) //client = booster; other = flyer
+Action SDKSkyJump(int client, int other) //client = booster; other = flyer
 {
-	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("fakeexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : gI_entityButtons[other] & IN_JUMP) && GetEngineTime() - gF_boostTime[client] > 0.15)
+	if(0 < client <= MaxClients && 0 < other <= MaxClients && !(GetClientButtons(other) & IN_DUCK) && view_as<int>(LibraryExists("trueexpert") ? Trikz_GetClientButtons(other) & IN_JUMP : g_entityButtons[other] & IN_JUMP) && GetEngineTime() - g_boostTime[client] > 0.15)
 	{
-		float originBooster[3]
-		GetClientAbsOrigin(client, originBooster)
-		float originFlyer[3]
-		GetClientAbsOrigin(other, originFlyer)
-		float maxs[3]
-		GetEntPropVector(client, Prop_Data, "m_vecMaxs", maxs) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
-		float delta = originFlyer[2] - originBooster[2] - maxs[2]
+		float originBooster[3] = {0.0, ...};
+		GetClientAbsOrigin(client, originBooster);
+
+		float originFlyer[3] = {0.0, ...};
+		GetClientAbsOrigin(other, originFlyer);
+
+		float boosterMaxs[3] = {0.0, ...};
+		GetClientMaxs(client, boosterMaxs); //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L71
+
+		float delta = originFlyer[2] - originBooster[2] - boosterMaxs[2];
+
 		if(0.0 < delta < 2.0) //https://github.com/tengulawl/scripting/blob/master/boost-fix.sp#L75
 		{
-			float velBooster[3]
-			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster)
+			float velBooster[3] = {0.0, ...};
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velBooster, 0);
+
 			if(velBooster[2] > 0.0)
 			{
-				float velFlyer[3]
-				GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer)
-				velBooster[2] *= 3.0
-				float velNew[3]
-				velNew[0] = velFlyer[0]
-				velNew[1] = velFlyer[1]
-				velNew[2] = velBooster[2]
-				if(velFlyer[2] > -700.0)
+				if(FloatAbs(g_skyOrigin[client] - g_skyOrigin[other]) > 0.0 || GetGameTime() - g_skyAble[other] > 0.5)
 				{
-					if(velBooster[2] > 750.0)
-						velNew[2] = 750.0
-				}
-				else
-					if(velBooster[2] > 800.0)
-						velNew[2] = 800.0
-				if(FloatAbs(gF_skyOrigin[client][2] - gF_skyOrigin[other][2]) > 1.5 || GetGameTime() - gF_skyAble[other] > 0.5)
-				{
-					ConVar CV_gravity = FindConVar("sv_gravity")
-					if(gB_jumpstats[client])
-						PrintToChat(client, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue))) //https://www.omnicalculator.com/physics/maximum-height-projectile-motion 
-					if(gB_jumpstats[other])
-						PrintToChat(other, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+					float velFlyer[3] = {0.0, ...};
+					GetEntPropVector(other, Prop_Data, "m_vecAbsVelocity", velFlyer, 0);
+
+					float velNew[3] = {0.0, ...};
+					//velNew[0] = velFlyer[0];
+					//velNew[1] = velFlyer[1];
+					velNew[2] = velBooster[2] * 3.572;
+
+					float midMax = 800.0 - (800.0 - 770.0) / 2.0;
+
+					if(midMax > velNew[2])
+					{
+						velNew[2] = velNew[2] - (midMax - (velNew[2] / midMax) * midMax) / 2.0;
+					}
+
+					else if(midMax <= velNew[2])
+					{
+						velNew[2] = velNew[2] + (midMax - (velNew[2] / midMax) * midMax) / 2.0;
+					}
+
+					if(g_entityFlags[client] & FL_INWATER)
+					{
+						velNew[2] = velBooster[2] * 5.0;
+					}
+					
+					else if(!(g_entityFlags[client] & FL_INWATER))
+					{
+						if(velFlyer[2] > -470.0)
+						{
+							if(velNew[2] >= 770.0)
+							{
+								velNew[2] = 770.0;
+							}
+						}
+
+						else if(velFlyer[2] <= -470.0)
+						{
+							if(velNew[2] >= 800.0)
+							{
+								velNew[2] = 800.0;
+							}
+						}
+					}
+
+					char print[256] = "";
+
+					ConVar gravity = FindConVar("sv_gravity");
+
+					if(g_jumpstats[client] == true)
+					{
+						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
+
+						Handle KeyHintText = StartMessageOne("KeyHintText", client);
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+						bfmsg.WriteByte(1);
+						bfmsg.WriteString(print);
+						EndMessage();
+
+						PrintToConsole(client, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2])); //https://www.omnicalculator.com/physics/maximum-height-projectile-motion
+					} 
+
+					if(g_jumpstats[other] == true)
+					{
+						Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
+
+						Handle KeyHintText = StartMessageOne("KeyHintText", other);
+						BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+						bfmsg.WriteByte(1);
+						bfmsg.WriteString(print);
+						EndMessage();
+
+						PrintToConsole(other, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
+					}
+
 					for(int i = 1; i <= MaxClients; i++)
 					{
-						if(IsClientInGame(i) && IsClientObserver(i))
+						if(IsClientInGame(i) == true)
 						{
-							int observerTarget = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget")
-							int observerMode = GetEntProp(i, Prop_Data, "m_iObserverMode")
-							if(observerMode < 7 && observerTarget == client && gB_jumpstats[i])
-								PrintToChat(i, "Sky boost: %.1f u/s, ~%.1f units", velNew[2], Pow(velNew[2], 2.0) / (1.666666666666 * float(CV_gravity.IntValue)))
+							int target = GetEntPropEnt(i, Prop_Data, "m_hObserverTarget", 0);
+							int mode = GetEntProp(i, Prop_Data, "m_iObserverMode", 4, 0);
+
+							if(4 <= mode < 7 && (target == client || target == other) && g_jumpstats[i] == true)
+							{
+								Format(print, sizeof(print), "Sky boost:\n%.0f u/s\n~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
+
+								Handle KeyHintText = StartMessageOne("KeyHintText", i);
+								BfWrite bfmsg = UserMessageToBfWrite(KeyHintText);
+								bfmsg.WriteByte(1);
+								bfmsg.WriteString(print);
+								EndMessage();
+								
+								PrintToConsole(i, "Sky boost: %.0f u/s, ~%.0f units", velNew[2], Pow(velNew[2], 2.0) / (1.91 * float(gravity.IntValue)) + FloatAbs(originFlyer[2] - originBooster[2]));
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+
+	return Plugin_Continue;
+}
+
+float GetGroundPos(int client) //https://forums.alliedmods.net/showpost.php?p=1042515&postcount=4
+{
+	float origin[3] = {0.0, ...};
+	GetClientAbsOrigin(client, origin);
+
+	float originDir[3] = {0.0, ...};
+	GetClientAbsOrigin(client, originDir);
+	originDir[2] -= 90.0;
+
+	float mins[3] = {0.0, ...};
+	GetClientMins(client, mins);
+
+	float maxs[3] = {0.0, ...};
+	GetClientMaxs(client, maxs);
+
+	TR_TraceHullFilter(origin, originDir, mins, maxs, MASK_PLAYERSOLID, TraceEntityFilterPlayer, client);
+
+	float pos[3] = {0.0, ...};
+
+	if(TR_DidHit(INVALID_HANDLE) == true)
+	{
+		TR_GetEndPosition(pos);
+	}
+
+	return pos[2];
+}
+
+bool TraceEntityFilterPlayer(int entity, int contentsMask, any data)
+{
+	if(entity == data)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void Sync(int client, int buttons, int mouse[2])
+{
+	if(g_dot[client] < -0.9) //backward
+	{
+		if(g_jumped[client] == true || g_ladder[client] == true)
+		{
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_MOVELEFT)
+				{
+					if(g_strafeBlockA[client] == false)
+					{
+						g_strafeCount[client]++;
+
+						g_strafeBlockD[client] = false;
+
+						g_strafeBlockA[client] = true;
+					}
+
+					g_syncTick[client]++;
+				}
+			}
+
+			else if(!(mouse[0] > 0))
+			{
+				if(buttons & IN_MOVERIGHT)
+				{
+					if(g_strafeBlockD[client] == false)
+					{
+						g_strafeCount[client]++;
+
+						g_strafeBlockD[client] = true;
+
+						g_strafeBlockA[client] = false;
+					}
+
+					g_syncTick[client]++;
+				}
+			}
+
+			if(StrEqual(g_style[client], "Backward", true) == false)
+			{
+				Format(g_style[client], 32, "Backward");
+			}
+		}
+	}
+
+	else if(g_dot[client] > 0.9) //forward
+	{
+		if(g_jumped[client] == true || g_ladder[client] == true)
+		{
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_MOVERIGHT)
+				{
+					if(g_strafeBlockD[client] == false)
+					{
+						g_strafeCount[client]++;
+
+						g_strafeBlockD[client] = true;
+
+						g_strafeBlockA[client] = false;
+					}
+
+					g_syncTick[client]++;
+				}
+			}
+
+			else if(!(mouse[0] > 0))
+			{
+				if(buttons & IN_MOVELEFT)
+				{
+					if(g_strafeBlockA[client] == false)
+					{
+						g_strafeCount[client]++;
+
+						g_strafeBlockD[client] = false;
+
+						g_strafeBlockA[client] = true;
+					}
+
+					g_syncTick[client]++;
+				}
+			}
+
+			if(StrEqual(g_style[client], "Forward", true) == false)
+			{
+				Format(g_style[client], 32, "Forward");
+			}
+		}
+	}
+
+	else if(!(g_dot[client] < -0.9) && !(g_dot[client] > 0.9)) //sideways
+	{
+		if(g_jumped[client] == true || g_ladder[client] == true)
+		{
+			if(mouse[0] > 0)
+			{
+				if(buttons & IN_BACK)
+				{
+					if(g_strafeBlockS[client] == false)
+					{
+						g_strafeCount[client]++;
+
+						g_strafeBlockS[client] = true;
+
+						g_strafeBlockW[client] = false;
+					}
+
+					g_syncTick[client]++;
+				}
+			}
+
+			else if(!(mouse[0] > 0))
+			{
+				if(buttons & IN_FORWARD)
+				{
+					if(g_strafeBlockW[client] == false)
+					{
+						g_strafeCount[client]++;
+
+						g_strafeBlockS[client] = false;
+
+						g_strafeBlockW[client] = true;
+					}
+
+					g_syncTick[client]++;
+				}
+			}
+
+			if(StrEqual(g_style[client], "Sideways", true) == false)
+			{
+				Format(g_style[client], 32, "Sideways");
+			}
+		}
+	}
+
+	return;
+}
+
+void GainAndLoss(int client) //https://forums.alliedmods.net/showthread.php?p=2060983
+{
+	float flatVel[3] = {0.0, ...};
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flatVel, 0);
+	flatVel[2] = 0.0;
+	
+	float velDelta = GetVectorLength(flatVel, false) - GetVectorLength(g_oldVel[client], false);
+	
+	if(velDelta > 0.0)
+	{
+		//g_PlayerStates[client][fStrafeGain][g_PlayerStates[client][nStrafes] - 1] += velDelta;
+		g_gain[client] += velDelta;
+	}
+
+	else if(!(velDelta > 0.0))
+	{
+		//g_PlayerStates[client][fStrafeLoss][g_PlayerStates[client][nStrafes] - 1] -= velDelta;
+		g_loss[client] -= velDelta;
+	}
+
+	g_oldVel[client] = flatVel;
+
+	return;
+}
+
+void MaxVel(int client)
+{
+	float vel[3] = {0.0, ...};
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel, 0);
+	vel[2] = 0.0;
+
+	float flatVel = GetVectorLength(vel);
+
+	if(g_maxVel[client] < flatVel)
+	{
+		g_maxVel[client] = flatVel;
+	}
+
+	return;
+}
+
+MRESReturn DHooks_OnTeleport(int client, Handle hParams) //https://github.com/fafa-junhe/My-srcds-plugins/blob/0de19c28b4eb8bdd4d3a04c90c2489c473427f7a/all/teleport_stuck_fix.sp#L84
+{
+	bool originNull = DHookIsNullParam(hParams, 1);
+	
+	if(originNull == true)
+	{
+		return MRES_Ignored;
+	}
+	
+	float origin[3] = {0.0, ...};
+	DHookGetParamVector(hParams, 1, origin);
+
+	GlobalForward hForward = new GlobalForward("JS_OnTeleport", ET_Ignore, Param_Cell, Param_Array); //https://github.com/alliedmodders/sourcemod/blob/master/plugins/basecomm/forwards.sp
+	Call_StartForward(hForward);
+	Call_PushCell(client);
+	Call_PushArray(origin, 3);
+	Call_Finish();
+	delete hForward;
+	
+	return MRES_Ignored;
+}
+
+public void Trikz_OnTeleport(int client, float origin[3])
+{
+	g_teleported[client] = true;
+
+	return;
 }

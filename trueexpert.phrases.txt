@@ -1,0 +1,934 @@
+"Phrases"
+{
+	//Example: "Hello, Bail! Welcome to TrueExpert. Your team is Counter-Terrorist." //{default}, {teamcolor}
+	"Hello"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"Hello, ;#FF5733{2}! {default}Welcome to ;#FF4040{1}. {default}Your team is {teamcolor}{3}."
+	}
+	"dbPressed"
+	{
+		"en"	"Database is not passed througt gate. Please check your database configuration."
+	}
+	"NewServerRecord"
+	{
+		"en"	";#7CFC00New Server Record!"
+	}
+	"NewServerRecordDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
+	}
+	"NewServerRecordNewDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#7CFC00{4}{default})"
+	}
+	"NewServerRecordNew"
+	{
+		"en"	";#7CFC00New Server Record!"
+	}
+	"DevmapStart"
+	{
+		"#format"	"{1:s}"
+		"en"	"Devmap vote started by {1}"
+	}
+	"DevmapIsOFF"
+	{
+		"en"	"Turn on devmap."
+	}
+	"DevmapIsON"
+	{
+		"en"	"Turn off devmap."
+	}
+	"TurnOFFDevmap"
+	{
+		"en"	"Turn off devmap?"
+	}
+	"TurnONDevmap"
+	{
+		"en"	"Turn on devmap?"
+	}
+	"NoclipMenuON"
+	{
+		"en"	"✓ Noclip"
+	}
+	"NoclipMenuOFF"
+	{
+		"en"	"☓ Noclip"
+	}
+	"MLStatsChatOFF"
+	{
+		"en"	"ML stats is off now"
+	}
+	"MLStatsChatON"
+	{
+		"en"	"ML stats is on now"
+	}
+	"VelChatOFF"
+	{
+		"en"	"Hide velocity now"
+	}
+	"VelChatON"
+	{
+		"en"	"Show Velocity now"
+	}
+	"MLStatsMenuON"
+	{
+		"en"	"✓ ML Stats"
+	}
+	"MLStatsMenuOFF"
+	{
+		"en"	"☓ ML Stats"
+	}
+	"VelMenuON"
+	{
+		"en"	"✓ Velocity"
+	}
+	"VelMenuOFF"
+	{
+		"en"	"☓ Velocity"
+	}
+	"ButtonAnnouncerON"
+	{
+		"en"	"Button announcer is on now."
+	}
+	"ButtonAnnouncerOFF"
+	{
+		"en"	"Button announcer is off now."
+	}
+	"AFKCHECK"
+	{
+		"#format"	"{1:s}"
+		"en"	"AFK check - a vote started by {1}"
+	}
+	"AFKCHECK2"
+	{
+		"en"	"AFK check - a vote is not allowed yet."
+	}
+	"AreYouHere?"
+	{
+		"en"	"Are you here?"
+	}
+	"Confirm"
+	{
+		"en"	"Confirm"
+	}
+	"Dissmit"
+	{
+		"en"	"Dissmit"
+	}
+	"TeamConfirming"
+	{
+		"#format"	"{1:s}"
+		"en"	"You have confirmed a partnership with {1}."
+	}
+	"GetConfirmed"
+	{
+		"#format"	"{1:s}"
+		"en"	"Your partner is {1} now."
+	}
+	"AlreadyHavePartner"
+	{
+		"en"	"A player already have a partner."
+	}
+	"PartnerDeclined"
+	{
+		"#format"	"{1:s}"
+		"en"	"You declined a partnership from {1}."
+	}
+	"PartnerCanceled"
+	{
+		"#format"	"{1:s}"
+		"en"	"You breakup with {1}."
+	}
+	"PartnerCanceledBy"
+	{
+		"#format"	"{1:s}"
+		"en"	"Partnership is canceled by {1}."
+	}
+	"DevmapNotAllowed"
+	{
+		"en"	"Devmap vote is not allowed yet."
+	}
+	"DontHavePartner"
+	{
+		"en"	"You don't have a partner."
+	}
+	"NoFreePlayer"
+	{
+		"en"	"No free player."
+	}
+	"DevmapWillBeDisabled"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"	"Devmap will be disabled. {1}%%% or {2} of {3} players confirmed a vote."
+	}
+	"DevmapWillBeEnabled"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"	"Devmap will be enabled. {1}%%% or {2} of {3} players confirmed a vote."
+	}
+	"DevmapContinue"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"	"Devmap will be be continue. {1}%%% or {2} of {3} players dismissed a vote."
+	}
+	"DevmapWillNotBe"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"	"Devmap will not be enabled. {1}%%% or {2} of {3} players dismissed a vote."
+	}
+	"AwayFromKeyboard"
+	{
+		"en"	"Away from keyboard"
+	}
+	"CancelPartnership"
+	{
+		"#format"	"{1:s}"
+		"en"	"Cancel a partnership with {1}"
+	}
+	"ConfirmPartner"
+	{
+		"#format"	"{1:s}"
+		"en"	"I confirm a partnership with {1}?"
+	}
+	"PassedImproved"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"Passed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"Spectator"
+	{
+		"en"	"Spectator"
+	}
+	"Terrorist"
+	{
+		"en"	"Terrorist"
+	}
+	"Counter-Terrorist"
+	{
+		"en"	"Counter-Terrorist"
+	}
+	"Spec"
+	{
+		"en"	"SPEC"
+	}
+	"Dead"
+	{
+		"en"	"DEAD"
+	}
+	"JustPassed"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"CPImprove"
+	{
+		"#format"	"{1:i},{2:s}"
+		"en"	"Checkpoint #{1}: ;#7CFC00{2}"
+	}
+	"CPDeprove"
+	{
+		"#format"	"{1:i},{2:s}"
+		"en"	"Checkpoint #{1}: ;#FF0000{2}"
+	}
+	"NewServerRecordFirstDetail"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"	"{1} and {2} finished a map in ;#FFFFFF{3} {default}(SR ;#FF0000{4}{default})"
+	}
+	"NewServerRecordFirst"
+	{
+		"en"	";#7CFC00New Server Record!"
+	}
+	"CPNEW"
+	{
+		"#format"	"{1:i},{2:s}"
+		"en"	"Checkpoint #{1}: ;#FF0000{2}"
+	}
+	"YouPressedButton"
+	{
+		"en"	"You have pressed a button."
+	}
+	"YourPartnerPressedButton"
+	{
+		"en"	"Your partner have pressed a button."
+	}
+	"Checkpoint"
+	{
+		"en"	"Checkpoint"
+	}
+	"CP-save"
+	{
+		"en"	"Save"
+	}
+	"CP-teleport"
+	{
+		"en"	"Teleport"
+	}
+	"CP-saveSecond"
+	{
+		"en"	"Save secondary"
+	}
+	"CP-teleportSecond"
+	{
+		"en"	"Teleport secondary"
+	}
+	"Trikz"
+	{
+		"en"	"Trikz"
+	}
+	"BlockMenuON"
+	{
+		"en"	"✓ Block"
+	}
+	"BlockMenuOFF"
+	{
+		"en"	"☓ Block"
+	}
+	"AutoflashMenuON"
+	{
+		"en"	"✓ Autoflash"
+	}
+	"AutoflashMenuOFF"
+	{
+		"en"	"☓ Autoflash"
+	}
+	"AutoswitchMenuON"
+	{
+		"en"	"✓ Autoswitch"
+	}
+	"AutoswitchMenuOFF"
+	{
+		"en"	"☓ Autoswitch"
+	}
+	"BhopMenuON"
+	{
+		"en"	"✓ Bhop"
+	}
+	"BhopMenuOFF"
+	{
+		"en"	"☓ Bhop"
+	}
+	"BlockChatON"
+	{
+		"en"	"Block is turned on now."
+	}
+	"BlockChatOFF"
+	{
+		"en"	"Block is turned off now."
+	}
+	"Breakup"
+	{
+		"en"	"Breakup"
+	}
+	"Color"
+	{
+		"en"	"Color"
+	}
+	"ColorTeam"
+	{
+		"en"	"Team Color"
+	}
+	"ColorPingFL"
+	{
+		"en"	"Ping / Flashbang Color"
+	}
+	"Partner"
+	{
+		"en"	"Partner"
+	}
+	"Restart"
+	{
+		"en"	"Restart"
+	}
+	"NoclipChatON"
+	{
+		"en"	"Noclip is turned on now."
+	}
+	"NoclipChatOFF"
+	{
+		"en"	"Noclip is turned off now."
+	}
+	"ChoosePartner"
+	{
+		"en"	"Choose a partner"
+	}
+	"CP-recordHud"
+	{
+		"#format"	"{1:i}"
+		"en"	"CHECKPOINT #{1} RECORD!"
+	}
+	"CP-recordDetailHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"CHECKPOINT: {1}"
+	}
+	"CP-DetailZeroHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1}"
+	}
+	"CP-recordNotFirstHud"
+	{
+		"#format"	"{1:i}"
+		"en"	"CHECKPOINT #{1} RECORD!"
+	}
+	"CP-recordDetailNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"CHECKPOINT: {1}"
+	}
+	"CP-recordImproveNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1}"
+	}
+	"CP-recordNonHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"CHECKPOINT: {1}"
+	}
+	"CP-recordDeproveHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1}"
+	}
+	"MapFinishedFirstRecordHud"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"NewServerRecordHud"
+	{
+		"en"	"NEW SERVER RECORD!"
+	}
+	"FirstRecordHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"TIME: {1}"
+	}
+	"FirstRecordZeroHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1}"
+	}
+	"NewServerRecordMapFinishedNotFirstHud"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"NewServerRecordNotFirstHud"
+	{
+		"en"	"NEW SERVER RECORD!"
+	}
+	"NewServerRecordDetailNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"TIME: {1}"
+	}
+	"NewServerRecordImproveNotFirstHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1}"
+	}
+	"MapFinishedDeproveHud"
+	{
+		"en"	"MAP FINISHED!"
+	}
+	"MapFinishedTimeDeproveHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"TIME: {1}"
+	}
+	"MapFinishedTimeDeproveOwnHud"
+	{
+		"#format"	"{1:s}"
+		"en"	"{1}"
+	}
+	"AutoflashChatON"
+	{
+		"en"	"Autoflashbang is turned on now."
+	}
+	"AutoflashChatOFF"
+	{
+		"en"	"Autoflashbang is turned off now."
+	}
+	"AutoswitchChatON"
+	{
+		"en"	"Autoswitch is truned on now."
+	}
+	"AutoswitchChatOFF"
+	{
+		"en"	"Autoswitch is turned off now."
+	}
+	"BhopChatON"
+	{
+		"en"	"Autobunnyhopping is turned on now."
+	}
+	"BhopChatOFF"
+	{
+		"en"	"Autobunnyhoping is turned off now."
+	}
+	"MacroOFF"
+	{
+		"en"	"Macro is disabled."
+	}
+	"MacroON"
+	{
+		"en"	"Macro is enabled."
+	}
+	"EndMessageChatON"
+	{
+		"en"	"End message is turned on now."
+	}
+	"EndMessageChatOFF"
+	{
+		"en"	"End message is turned off now."
+	}
+	"EndMessageMenuON"
+	{
+		"en"	"✓ End message"
+	}
+	"EndMessageMenuOFF"
+	{
+		"en"	"☓ End message"
+	}
+	"Top10details"
+	{
+		"en"	"Place:\tTime:\tDifferent:\tTeam:"
+	}
+	"Top10source1-9"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"#{1}\t\t;#7CFC00{2}\t\t;#FF0000{3}{default}\t{4} & {5}"
+	}
+	"Top10source10"
+	{
+		"#format"	"{1:i},{2:s},{3:s},{4:s},{5:s}"
+		"en"	"#{1}\t;#7CFC00{2}\t\t;#FF0000{3}{default}\t{4} & {5}"
+	}
+	/*"Cstrike_Chat_AllSpec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*SPEC* [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_Spec"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#CCCCCC{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"[{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_All2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"[{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD* [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_AllDead2"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD* [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Counter-Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_CT"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#99CCFF{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}
+	"Cstrike_Chat_T_Dead"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"	"*DEAD*(Terrorist) [{1}] ;#FF4040{2} {default}:  {3}"
+	}*/
+	"Top10ac"
+	{
+		"#format"	"{1:s}"
+		"en"	"Don't spam with \"top10\". Wait {1} seconds."
+	}
+	"Cover_me"
+	{
+		"en"	"Cover Me!"
+	}
+	"You_take_the_point"
+	{
+		"en"	"You Take the Point."
+	}
+	"Hold_this_position"
+	{
+		"en"	"Hold This Position."
+	}
+	"Regroup_team"
+	{
+		"en"	"Regroup Team."
+	}
+	"Follow_me"
+	{
+		"en"	"Follow Me."
+	}
+	"Taking_fire"
+	{
+		"en"	"Taking Fire...Need Assistance!"
+	}
+	"Go_go_go"
+	{
+		"en"	"Go go go!"
+	}
+	"Team_fall_back"
+	{
+		"en"	"Team, fall back!"
+	}
+	"Stick_together_team"
+	{
+		"en"	"Stick together, team."
+	}
+	"Get_in_position_and_wait"
+	{
+		"en"	"Get in position and wait for my go."
+	}
+	"Storm_the_front"
+	{
+		"en"	"Storm the Front!"
+	}
+	"Report_in_team"
+	{
+		"en"	"Report in, team."
+	}
+	"Affirmative"
+	{
+		"en"	"Affirmative."
+	}
+	"Roger_that"
+	{
+		"en"	"Roger that."
+	}
+	"Enemy_spotted"
+	{
+		"en"	"Enemy spotted."
+	}
+	"Need_backup"
+	{
+		"en"	"Need backup."
+	}
+	"Sector_clear"
+	{
+		"en"	"Sector clear."
+	}
+	"In_position"
+	{
+		"en"	"I'm in position."
+	}
+	"Reporting_in"
+	{
+		"en"	"Reporting in."
+	}
+	"Get_out_of_there"
+	{
+		"en"	"Get out of there, it's gonna blow!"
+	}
+	"Negative"
+	{
+		"en"	"Negative."
+	}
+	"Enemy_down"
+	{
+		"en"	"Enemy down."
+	}
+	"PlayerSkin"
+	{
+		"en"	"Player skin"
+	}
+	"FlashbangSkin"
+	{
+		"en"	"Flashbang skin"
+	}
+	"Default"
+	{
+		"en"	"Default"
+	}
+	"Shadow"
+	{
+		"en"	"Shadow"
+	}
+	"Bright"
+	{
+		"en"	"Bright"
+	}
+	"Wireframe"
+	{
+		"en"	"Wireframe"
+	}
+	"AskForRestart"
+	{
+		"en"	"Do you really want to restart?"
+	}
+	"YouAreDead"
+	{
+		"en"	"You are dead."
+	}
+	"Game_radio"
+	{
+		"en"	"(RADIO)"
+	}
+	"NoRecords"
+	{
+		"en"	"\t\tNo records."
+	}
+	"MLSFinishMsg"
+	{
+		"#format"	"{1:.0f},{2:s}"
+		"en"	"Distance: {1} units{2}"
+	}
+	"MLSTP"
+	{
+		"en"	" [TP]"
+	}
+	"CursorPossitionON"
+	{
+		"en"	"✓ Cursor position"
+	}
+	"CursorPossitionOFF"
+	{
+		"en"	"☓ Cursor position"
+	}
+	"DBLoading"
+	{
+		"en"	"Please wait for database loading!"
+	}
+	"ZoneEditor"
+	{
+		"en"	"Zone editor"
+	}
+	"ZoneEditorAddButton"
+	{
+		"en"	"Add new map zone"
+	}
+	"ZoneEditorEditButton"
+	{
+		"en"	"Edit map zone"
+	}
+	"ZoneEditorTPButton"
+	{
+		"en"	"Teleport to exist zone"
+	}
+	"ZoneEditorAdd"
+	{
+		"en"	"Zone editor - Add"
+	}
+	"ZoneEditorStartZoneButton"
+	{
+		"en"	"Start zone"
+	}
+	"ZoneEditorEndZoneButton"
+	{
+		"en"	"End zone"
+	}
+	"ZoneEditorCPZoneButton"
+	{
+		"en"	"Checkpoint zone"
+	}
+	"ZoneEditorEdit"
+	{
+		"en"	"Zone editor - Edit"
+	}
+	"ZoneEditorCPButton"
+	{
+		"#format"	"{1:i}"
+		"en"	"CP nr. {1} zone"
+	}
+	"ZoneEditorNoZone"
+	{
+		"en"	"No zones are setup."
+	}
+	"ZoneEditorUse"
+	{
+		"en"	"Press USE to set zone corners"
+	}
+	"ZoneEditorStep1"
+	{
+		"#format"	"{1:i}"
+		"en"	"Step + ({1})"
+	}
+	"ZoneEditorStep2"
+	{
+		"en"	"Step -"
+	}
+	"ZoneEditorSelectedCPnum"
+	{
+		"#format"	"{1:i}"
+		"en"	"Checkpoint nr. {1}"
+	}
+	"ZoneEditorTypeCPnum"
+	{
+		"en"	"Type checkpoint number to in-game chat. (1 - 10)"
+	}
+	"ZoneEditorStartZone"
+	{
+		"en"	"Zone editor - Start zone"
+	}
+	"ZoneEditorEndZone"
+	{
+		"en"	"Zone editor - End zone"
+	}
+	"ZoneEditorSide1+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 1 | {1} +{2}"
+	}
+	"ZoneEditorSide1-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 1 | {1} -{2}"
+	}
+	"ZoneEditorSide2+"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 2 | {1} +{2}"
+	}
+	"ZoneEditorSide2-"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"Side 2 | {1} -{2}"
+	}
+	"ZoneEditorAxis"
+	{
+		"en"	"Change axis"
+	}
+	"ZoneEditorApplyStartZone"
+	{
+		"en"	"Apply start zone"
+	}
+	"ZoneEditorApplyEndZone"
+	{
+		"en"	"Apply end zone"
+	}
+	"ZoneEditorCPZone"
+	{
+		"#format"	"{1:i}"
+		"en"	"Zone editor - CP nr. {1} zone"
+	}
+	"ZoneEditorApplyCPZone"
+	{
+		"#format"	"{1:i}"
+		"en"	"Apply CP nr. {1} zone"
+	}
+	"ZoneEditorTP"
+	{
+		"en"	"Zone editor - Teleport"
+	}
+	"GreetingsStatistics"
+	{
+		"en"	"\n\n\n\n\nGreetings!\n\n•   •   •\n\nCurrent mode is statistics.\nHave a nice game!"
+	}
+	"GreetingsPractice"
+	{
+		"en"	"\n\n\n\n\nGreetings!\n\n•   •   •\n\nCurrent mode is practice.\nHave a nice game!"
+	}
+	"Control"
+	{
+		"en"	"Control"
+	}
+	"ControlTop"
+	{
+		"en"	"!top - Rank list."
+	}
+	"ControlTop10"
+	{
+		"en"	"!top10 - First 10 ranks."
+	}
+	"ControlJS"
+	{
+		"en"	"!js - Jump statistics."
+	}
+	"ControlBS"
+	{
+		"en"	"!bs - Throw statistics."
+	}
+	"ControlHUD"
+	{
+		"en"	"!hud - Advanced announcements."
+	}
+	"ControlButton"
+	{
+		"en"	"!button - Map button announcements."
+	}
+	"ControlSpec"
+	{
+		"en"	"!spec - Switch to Spectator team."
+	}
+	"ControlColor"
+	{
+		"en"	"!color - Advanced coloring."
+	}
+	"ControlAFK"
+	{
+		"en"	"!afk - Vote of player activity."
+	}
+	"ControlTrikz"
+	{
+		"en"	"!trikz - Main menu."
+	}
+	"TeamColor"
+	{
+		"en"	"Choose team color"
+	}
+	"Blue"
+	{
+		"en"	"Blue"
+	}
+	"Red"
+	{
+		"en"	"Red"
+	}
+	"Green"
+	{
+		"en"	"Green"
+	}
+	"Yellow"
+	{
+		"en"	"Yellow"
+	}
+	"PrefixTimer"
+	{
+		"en"	"[Timer] "
+	}
+	"PrefixTrikz"
+	{
+		"en"	"[Trikz] "
+	}
+	"SetupZone"
+	{
+		"en"	"A zones fully not set."
+	}
+}

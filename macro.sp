@@ -1,185 +1,161 @@
-#include <sourcemod>
-#include <sdktools>
-#include <clientprefs>
-#include <morecolors>
+/*
+	GNU GENERAL PUBLIC LICENSE
 
-//#pragma semicolon 1
+	VERSION 2, JUNE 1991
 
-//#pragma newdecls required
+	Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+	51 Franklin Street, Fith Floor, Boston, MA 02110-1301, USA
 
-#define TICKS_TO_TIME(%1)	( GetTickInterval() * %1 )
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
 
-bool attack[MAXPLAYERS] = {false, ...};
-bool macro[MAXPLAYERS] = {false, ...};
-bool set_time[MAXPLAYERS] = {false, ...};
-float macro_time[MAXPLAYERS] = 0.0;
-int ground_ticks[MAXPLAYERS] = 0;
+	GNU GENERAL PUBLIC LICENSE VERSION 3, 29 June 2007
+	Copyright (C) 2007 Free Software Foundation, Inc. {http://fsf.org/}
+	Everyone is permitted to copy and distribute verbatim copies
+	of this license document, but changing it is not allowed.
 
-int macro_repeat_delay[MAXPLAYERS] = 0;
-Handle macro_delay_cookie;
+							Preamble
+
+	The GNU General Public License is a free, copyleft license for
+	software and other kinds of works.
+
+	The licenses for most software and other practical works are designed
+	to take away your freedom to share and change the works. By contrast,
+	the GNU General Public license is intended to guarantee your freedom to 
+	share and change all versions of a progrm--to make sure it remins free
+	software for all its users. We, the Free Software Foundation, use the
+	GNU General Public license for most of our software; it applies also to
+	any other work released this way by its authors. You can apply it to
+	your programs, too.
+*/
+#define semicolon 1
+#define required newdecls
+
+#define MAXPLAYER MAXPLAYERS + 1
+
+int g_macroTick[MAXPLAYER] = {0, ...};
+bool g_macroOpened[MAXPLAYER] = {false, ...};
+bool g_macroDisabled[MAXPLAYER] = {false, ...};
+ConVar gCV_macroEnable = null;
+ConVar gCV_tickMain = null;
+ConVar gCV_tickRepeat = null;
+ConVar gCV_tickAttack = null;
+int g_macroTickMain = 0;
+int g_macroTickRepeat = 0;
+int g_macroTickAttack = 0;
 
 public Plugin myinfo =
 {
-	name = "boost macro",
-	author = "rumour",
-	description = "server-side macro",
-	version = "2.0",
-	url = ""
-};
+	name = "Macro",
+	author = "Nick Jurevich",
+	description = "Make trikz game more comfortable.",
+	version = "0.98",
+	url = "http://www.sourcemod.net/"
+}
 
 public void OnPluginStart()
 {
-	RegConsoleCmd("+macro", plus_macro, "Jumps after throwing the flashbang for max gainz.");
-	RegConsoleCmd("-macro", minus_macro, "Jumps after throwing the flashbang for max gainz.");
-	RegConsoleCmd("sm_macro_delay", sm_macro_delay, "Sets the delay of the repeat for the client.");
-	
-	macro_delay_cookie = RegClientCookie("macro_delay", "macro_delay", CookieAccess_Protected);
-	
-	// Late loading
+	RegConsoleCmd("sm_macro", cmd_macro);
+
+	gCV_macroEnable = CreateConVar("sm_macro_enable", "0.0", "Do enable or disable plugin.", FCVAR_NOTIFY, false, 0.0, true, 1.0);
+	gCV_tickMain = CreateConVar("sm_macro_main", "13.0", "Make main delay for attack2.", FCVAR_NOTIFY, false, 0.0, true);
+	gCV_tickRepeat = CreateConVar("sm_macro_repeat", "33.0", "Make repeat delay if hold attack2.", FCVAR_NOTIFY, false, 0.0, true);
+	gCV_tickAttack = CreateConVar("sm_macro_attack", "2.0", "Do attack in tick if press or hold attack2.", FCVAR_NOTIFY, false, 0.0, true);
+
+	AutoExecConfig(true, "macro", "sourcemod");
+
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(AreClientCookiesCached(i))
+		if(IsClientInGame(i) == true)
 		{
-			OnClientCookiesCached(i);
+			OnClientPutInServer(i);
 		}
 	}
+
+	return;
+}
+
+public Action cmd_macro(int client, int args)
+{
+	float convar = GetConVarFloat(gCV_macroEnable);
+
+	if(convar == 0.0)
+	{
+		return Plugin_Continue;
+	}
+
+	g_macroDisabled[client] = !g_macroDisabled[client];
+
+	PrintToServer("Macro is %s now.", g_macroDisabled[client] == true ? "disabled" : "enabled");
+
+	return Plugin_Handled;
 }
 
 public void OnClientPutInServer(int client)
 {
-	if(!IsFakeClient(client) && IsClientInGame(client))
+	bool macro = gCV_macroEnable.BoolValue;
+	
+	if(macro == false)
 	{
-		CreateTimer(1.5, timer_join, client, TIMER_FLAG_NO_MAPCHANGE);
-	}	
-}
-
-public void OnClientDisconnect(int client)
-{
-	macro_repeat_delay[client] = 0;
-}
-
-Action timer_join(Handle timer, any data)
-{
-	if(IsClientInGame(data))
-	{
-		CPrintToChat(data, "{white}[{violet}Macro{white}] - To use server-side macro bind any key to +macro.");
-		CPrintToChat(data, "{white}To set the repetition delay use !macro_delay #. (current: %d ticks)", macro_repeat_delay[data]);
-		CPrintToChat(data, "{white}The delay is the amount of ticks to wait upon landing on the ground (2-15) recommended.");
+		return;
 	}
-	return Plugin_Stop
+
+	g_macroDisabled[client] = false;
+	g_macroOpened[client] = false;
+	g_macroTickMain = RoundToFloor(gCV_tickMain.FloatValue);
+	g_macroTickRepeat = RoundToFloor(gCV_tickRepeat.FloatValue);
+	g_macroTickAttack = RoundToFloor(gCV_tickAttack.FloatValue);
+
+	return;
 }
 
-void SetCookie(int client, Handle cookie, int n)
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	char[] buf = new char[8];
-	IntToString(n, buf, 8);
+	bool macro = gCV_macroEnable.BoolValue;
 	
-	SetClientCookie(client, cookie, buf);
-}
-
-public void OnClientCookiesCached(int client)
-{
-	char buf[8];	
-	GetClientCookie(client, macro_delay_cookie, buf, sizeof(buf));
-	macro_repeat_delay[client] = StringToInt(buf);
-}
-
-public Action sm_macro_delay( int client, int args )
-{
-	if(args < 1)
+	if(macro == true && g_macroDisabled[client] == false && IsPlayerAlive(client) == true)
 	{
-		CPrintToChat(client, "{white}[{violet}Macro{white}] - Specify a number for the delay.");
-		return Plugin_Handled;
-	}
-	
-	char arg[255];
-	GetCmdArg(1, arg, sizeof(arg));
-	
-	int delay = StringToInt(arg);
-	
-	if(delay < 2)
-	{
-		CPrintToChat(client, "{white}[{violet}Macro{white}] - Macro delay has to be above 1 tick.");
-		return Plugin_Handled;
-	}
-	
-	macro_repeat_delay[client] = delay;
-	
-	SetCookie(client, macro_delay_cookie, macro_repeat_delay[client]);
-	
-	CPrintToChat(client, "{white}[{violet}Macro{white}] - Macro delay set to %d.", macro_repeat_delay[client]);
-	
-	return Plugin_Handled;
-}
-
-public Action plus_macro( int client, int args )
-{
-	attack[client] = true;
-	macro[client] = true;
-	
-	return Plugin_Handled;
-}
-
-public Action minus_macro( int client, int args )
-{
-	macro[client] = false;
-	
-	return Plugin_Handled;
-}
-
-public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
-{
-	if(IsFakeClient(client))
-		return Plugin_Continue;
-	
-	if(macro_repeat_delay[client] < 2)
-		macro_repeat_delay[client] = 2;
-	
-	int tick_base = GetEntProp(client, Prop_Send, "m_nTickBase");
-	
-	if(macro[client] && macro_time[client] == 0.0)
-	{
-		int flags = GetEntProp(client, Prop_Send, "m_fFlags");
-		
-		if(ground_ticks[client] == macro_repeat_delay[client])
+		if(buttons & IN_ATTACK2 && !(buttons & IN_ATTACK) && g_macroOpened[client] == false)
 		{
-			attack[client] = true;
+			char classname[32] = "";
+			GetClientWeapon(client, classname, sizeof(classname));
+
+			if(StrEqual(classname, "weapon_flashbang", false) == true || StrEqual(classname, "weapon_hegrenade", false) == true || StrEqual(classname, "weapon_smokegrenade", false) == true)
+			{
+				g_macroTick[client] = 1;
+
+				g_macroOpened[client] = true;
+			}
 		}
-		
-		if(flags & FL_ONGROUND)
+
+		if(g_macroOpened[client] == true)
 		{
-			ground_ticks[client]++;
+			if(g_macroTick[client] <= g_macroTickAttack)
+			{
+				buttons |= IN_ATTACK;
+			}
+
+			if(g_macroTick[client] == g_macroTickMain)
+			{
+				buttons |= IN_JUMP;
+			}
+
+			if(g_macroTick[client] >= g_macroTickMain && !(buttons & IN_ATTACK2))
+			{
+				g_macroOpened[client] = false;
+			}
+
+			if(g_macroTick[client] < g_macroTickRepeat)
+			{
+				g_macroTick[client]++;
+
+				if(g_macroTick[client] == g_macroTickRepeat)
+				{
+					g_macroOpened[client] = false;
+				}
+			}
 		}
 	}
-	
-	if(set_time[client])
-	{
-		macro_time[client] = TICKS_TO_TIME(tick_base) + 0.1;
-		set_time[client] = false;
-	}
-	
-	if(attack[client])
-	{
-		attack[client] = false;
-		char weapon_name[64];
-		GetClientWeapon(client, weapon_name, sizeof(weapon_name));
-		if(StrEqual(weapon_name, "weapon_flashbang"))
-		{
-			buttons |= IN_ATTACK;
-			attack[client] = false;
-			set_time[client] = true;
-		}
-	}
-	
-	if(macro_time[client] > 0.0)
-	{
-		if(TICKS_TO_TIME(tick_base) > macro_time[client])
-		{
-			buttons |= IN_JUMP;
-			ground_ticks[client] = 0;
-			macro_time[client] = 0.0;
-		}
-	}
-	
+
 	return Plugin_Continue;
 }

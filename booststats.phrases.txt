@@ -1,0 +1,39 @@
+"Phrases"
+{
+    "BSON"
+    {
+        "en"    "Boost stats is on now."
+    }
+
+    "BSOFF"
+    {
+        "en"    "Boost stats is off now."
+    }
+
+    "TimeColor"
+    {
+        "en"    ";#FF0000,;#FF8000,;#FFFF00,;#80FF00,;#00FF00,;#808080" //-0.100, -0.070, -0.050, -0.030, -0.000, 0.050
+    }
+
+    "DuckNo"
+    {
+        "en"    "No"
+    }
+
+    "DuckYes"
+    {
+        "en"    "Yes"
+    }
+
+    "Message"
+    {
+        "#format" "{1:s},{2:.3f},{3:.0f},{4:.0f},{5:s},{6:.0f},{7:.0f}"
+        "en"    "Time: {1}{2}{default}, Speed: {3}, Run: {4}, Duck: {5}, Angles: {6}/{7}"
+    }
+
+    "MessagePartner"
+    {
+        "#format" "{1:s},{2:.3f},{3:.0f},{4:.0f},{5:s},{6:.0f},{7:.0f}"
+        "en"    ";#DCDCDCTime: {1}{2}{default}, Speed: {3}, Run: {4}, Duck: {5}, Angles: {6}/{7}"
+    }
+}
